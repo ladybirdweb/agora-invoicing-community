@@ -73,7 +73,7 @@ class Request
     }
 
     /**
-     * @param $name
+     * @param  $name
      * @return string|null
      */
     public function getParameter($name)
@@ -90,7 +90,7 @@ class Request
     }
 
     /**
-     * @param $name
+     * @param  $name
      */
     public function removeParameter($name)
     {

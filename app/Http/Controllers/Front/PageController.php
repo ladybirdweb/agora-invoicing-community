@@ -19,7 +19,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs','postDemoReq']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -344,9 +344,9 @@ class PageController extends Controller
     /**
      * Get  Template For Products.
      *
-     * @param $helpdesk_products
-     * @param $data
-     * @param $trasform
+     * @param  $helpdesk_products
+     * @param  $data
+     * @param  $trasform
      * @return string
      */
     public function getTemplateOne($helpdesk_products, $data, $trasform)
@@ -459,7 +459,6 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
-           
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
@@ -476,7 +475,6 @@ class PageController extends Controller
         }
     }
 
-
     public function viewDemoReq()
     {
         try {
@@ -485,7 +483,6 @@ class PageController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function postDemoReq(Request $request)
     {
@@ -512,8 +509,6 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
-            
-
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)

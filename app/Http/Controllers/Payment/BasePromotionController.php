@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Promotion;
-use App\Model\Product\Product;
 
 class BasePromotionController extends Controller
 {

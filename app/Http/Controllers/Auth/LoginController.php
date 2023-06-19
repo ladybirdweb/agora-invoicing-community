@@ -7,14 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
-use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -67,29 +62,29 @@ class LoginController extends Controller
     {
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        
+
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
             'g-recaptcha-response' => [
-                $captchaRule . 'required',
+                $captchaRule.'required',
                 function ($attribute, $value, $fail) use ($request) {
-                    $response = Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
+                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                         'secret' => config('services.recaptcha.secret_key'),
                         'response' => $value,
-                        'remoteip' => $request->ip()
+                        'remoteip' => $request->ip(),
                     ]);
-        
-                    if (!$response->json('success')) {
+
+                    if (! $response->json('success')) {
                         $fail("The {$attribute} is invalid.");
                     }
-                }
-            ]
+                },
+            ],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
-]);
+        ]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
@@ -140,6 +135,7 @@ class LoginController extends Controller
     {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
+
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
@@ -152,9 +148,4 @@ class LoginController extends Controller
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
-
- 
-
-
-   
 }

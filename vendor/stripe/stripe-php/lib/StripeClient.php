@@ -55,6 +55,7 @@ namespace Stripe;
  * @property \Stripe\Service\SubscriptionItemService $subscriptionItems
  * @property \Stripe\Service\SubscriptionScheduleService $subscriptionSchedules
  * @property \Stripe\Service\SubscriptionService $subscriptions
+ * @property \Stripe\Service\Tax\TaxServiceFactory $tax
  * @property \Stripe\Service\TaxCodeService $taxCodes
  * @property \Stripe\Service\TaxRateService $taxRates
  * @property \Stripe\Service\Terminal\TerminalServiceFactory $terminal
@@ -74,10 +75,15 @@ class StripeClient extends BaseStripeClient
 
     public function __get($name)
     {
+        return $this->getService($name);
+    }
+
+    public function getService($name)
+    {
         if (null === $this->coreServiceFactory) {
             $this->coreServiceFactory = new \Stripe\Service\CoreServiceFactory($this);
         }
 
-        return $this->coreServiceFactory->__get($name);
+        return $this->coreServiceFactory->getService($name);
     }
 }

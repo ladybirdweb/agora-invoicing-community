@@ -5,23 +5,20 @@
 namespace Stripe\Checkout;
 
 /**
- * A Checkout Session represents your customer's session as they pay for one-time
- * purchases or subscriptions through <a
- * href="https://stripe.com/docs/payments/checkout">Checkout</a> or <a
- * href="https://stripe.com/docs/payments/payment-links">Payment Links</a>. We
- * recommend creating a new Session each time your customer attempts to pay.
+ * A Checkout Session represents your customer's session as they pay for
+ * one-time purchases or subscriptions through <a href="https://stripe.com/docs/payments/checkout">Checkout</a>
+ * or <a href="https://stripe.com/docs/payments/payment-links">Payment Links</a>. We recommend creating a
+ * new Session each time your customer attempts to pay.
  *
- * Once payment is successful, the Checkout Session will contain a reference to the
- * <a href="https://stripe.com/docs/api/customers">Customer</a>, and either the
- * successful <a
- * href="https://stripe.com/docs/api/payment_intents">PaymentIntent</a> or an
- * active <a href="https://stripe.com/docs/api/subscriptions">Subscription</a>.
+ * Once payment is successful, the Checkout Session will contain a reference
+ * to the <a href="https://stripe.com/docs/api/customers">Customer</a>, and either the successful
+ * <a href="https://stripe.com/docs/api/payment_intents">PaymentIntent</a> or an active
+ * <a href="https://stripe.com/docs/api/subscriptions">Subscription</a>.
  *
- * You can create a Checkout Session on your server and redirect to its URL to
- * begin Checkout.
+ * You can create a Checkout Session on your server and redirect to its URL
+ * to begin Checkout.
  *
- * Related guide: <a href="https://stripe.com/docs/checkout/quickstart">Checkout
- * Quickstart</a>.
+ * Related guide: <a href="https://stripe.com/docs/checkout/quickstart">Checkout quickstart</a>
  *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
@@ -37,6 +34,7 @@ namespace Stripe\Checkout;
  * @property null|\Stripe\StripeObject $consent_collection When set, provides configuration for the Checkout Session to gather active consent from customers.
  * @property int $created Time at which the object was created. Measured in seconds since the Unix epoch.
  * @property null|string $currency Three-letter <a href="https://www.iso.org/iso-4217-currency-codes.html">ISO currency code</a>, in lowercase. Must be a <a href="https://stripe.com/docs/currencies">supported currency</a>.
+ * @property null|\Stripe\StripeObject $currency_conversion Currency conversion details for automatic currency conversion sessions
  * @property \Stripe\StripeObject[] $custom_fields Collect additional information from your customer using custom fields. Up to 2 fields are supported.
  * @property \Stripe\StripeObject $custom_text
  * @property null|string|\Stripe\Customer $customer The ID of the customer for this Session. For Checkout Sessions in <code>payment</code> or <code>subscription</code> mode, Checkout will create a new customer object based on information provided during the payment flow unless an existing customer was provided when the Session was created.

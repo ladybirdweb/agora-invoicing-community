@@ -46,9 +46,7 @@ final class DateTimeValueResolver implements ArgumentValueResolverInterface, Val
         $class = \DateTimeInterface::class === $argument->getType() ? \DateTimeImmutable::class : $argument->getType();
 
         if ($value instanceof \DateTimeInterface) {
-            yield $value instanceof $class ? $value : $class::createFromInterface($value);
-
-            return;
+            return [$value instanceof $class ? $value : $class::createFromInterface($value)];
         }
 
         if ($argument->isNullable() && !$value) {

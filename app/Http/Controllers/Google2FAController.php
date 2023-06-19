@@ -69,7 +69,6 @@ class Google2FAController extends Controller
         if (session('2fa:user:id')) {
             return redirect('verify-2fa');
         }
-
         return redirect('login');
     }
 
@@ -126,12 +125,18 @@ class Google2FAController extends Controller
 
     public function verifyPassword(Request $request)
     {
-        $user = \Auth::user();
+        if(!$request->user_password && $request->login_type == "social"){
+            return successResponse('password_verified');
+        }
+        else{
+            $user = \Auth::user();
         if (\Hash::check($request->input('user_password'), $user->getAuthPassword())) {
             return successResponse('password_verified');
         } else {
             return errorResponse('password_incorrect');
         }
+        }
+        
     }
 
     public function postSetupValidateToken(Request $request)

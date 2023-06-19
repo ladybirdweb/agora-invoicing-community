@@ -45,15 +45,26 @@ Social Logins
 
 
                     <label for="email" class="form-label">Activate Login via Google</label>
-
-                    <div class="form-check" name="status">
-                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1" checked>Yes
+                    @if($socialLogins->status ==1)
+                    <div class="form-check" >
+                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status" checked>Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="radio2" name="optradio" value="0">No
+                        <input type="radio" class="form-check-input" id="radio2" name="optradio" value="0" name="status">No
                         <label class="form-check-label" for="radio2"></label>
                     </div>
+                    @endif
+                     @if($socialLogins->status ==0)
+                    <div class="form-check" >
+                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status">Yes
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio2" name="optradio" value="0" name="status" checked>No
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                    @endif
 
 
 

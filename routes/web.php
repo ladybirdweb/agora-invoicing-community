@@ -25,6 +25,10 @@ use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Model\Common\Bussiness;
+use App\Model\Common\ChatScript;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,31 +47,14 @@ Route::post('refresh-csrf', function () {
         'token' => csrf_token(), ],
         200);
 });
-// gurmeeen
-Route::get('SocialLogins', [SocialLoginsController::class, 'view'])->middleware('auth');
+// social logins routes
+  Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
+Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
 Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
 Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
-
-// mobile verification routes  verify/phone
-// Route::get('/verify/phone', [PhoneVerificationController::class, 'showVerificationPage'])->name('verification.page');
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
-// Route::post('verify', [PhoneVerificationController::class, 'verify'])->name('verify');
-
-Route::get('mobile/verification', [SocialLoginsController::class, 'mobileVerification'])->name('mobile/verification');
-// Route::get('verify/phone', [SocialLoginsController::class, 'mobileVerification']);
-// Route::post('verify/phone', function () {
-//   dd('fgvbh');
-// });
-//  Route::get('/auth/redirect/{provider}', [SocialLoginsController::class, 'redirectToGithub']);
-//   Route::get('/auth/callback/{provider}', [SocialLoginsController::class, 'handler']);
-//  Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
-//  Route::get('SocialLogins', [Auth\LoginController::class, 'view'])->middleware('auth');
-//     Route::get('edit/SocialLogins/{id}', [Auth\LoginController::class, 'edit'])->middleware('auth');
-//     Route::post('update-social-login', [Auth\LoginController::class, 'update'])->name('update-social-login');
-
-// return redirect((new Auth\LoginController())->redirectPath());
-
-// gurmeenend'
+Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
+// !social logins rotes end
 /*
 * Installer Routes
 */
@@ -157,11 +144,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('LocalizedLicense/downloadLicense/{fileName}', [License\LocalizedLicenseController::class, 'downloadFileAdmin']);
     Route::get('request', [License\LocalizedLicenseController::class, 'tempOrderLink']);
     Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', [License\LocalizedLicenseController::class, 'downloadPrivateKeyAdmin']);
-
-    // Social Logins routes
-
-    // social Logins routes end
-
     /*
      * 2FA Routes
      */
@@ -195,6 +177,12 @@ Route::middleware('installAgora')->group(function () {
     // gurmeen
     Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
     Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
+    //
+    //  Route::post('basic-details', [Auth\LoginController::class, 'basicDetailsView'])->name(basic-details);
+       
+    //  Route::post('save-basic-details', [Auth\LoginController::class, 'storeBasicDetails']);
+     
+
     // gurmeenend
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
 
@@ -571,7 +559,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
     Route::get('verify', function () {
         $user = \Session::get('user');
-        // dd($user);
         if ($user) {
             return view('themes.default1.user.verify', compact('user'));
         }

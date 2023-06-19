@@ -204,15 +204,10 @@ main
         app.controller('smsCtrl', function($scope, $http) {
 
             $scope.sendOTP = function() {
-                alert('hello');
                 $('#mobcheck').hide();
-                //  alert($('#u_code'));
                 if (verify_mobnumber_check()) {
                     // var oldnumber = $('#oldno').val().replace(/[\. ,:-]+/g, '');
-                    // alert(oldnumber);
-                   
                     var newnumber = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
-                    alert(newnumber);
                     $("#sendOTP").attr('disabled', true);
                     $("#sendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                     $scope.newObj = {};
@@ -227,11 +222,7 @@ main
                         method: "GET",
                         params: $scope.newObj
                     }).success(function(data) {
-                        alert('hi');
-                        // console.log(data);
-                        alert(data);
                         if (data.type == "success") {
-                            console.log('hi');
                             $("#sendOTP").attr('disabled', false);
                             $scope.showOTP = true;
                             $scope.msg2 = true;

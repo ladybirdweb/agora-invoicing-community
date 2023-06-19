@@ -190,7 +190,7 @@ Settings
                  <div class="col-md-2 col-sm-6">
                 <div class="settingiconblue">
                     <div class="settingdivblue">
-                        <a href="{{url('SocialLogins')}}">
+                        <a href="{{url('social-logins')}}">
                             <span class="fa-stack fa-2x">
                                 <i class="fas fa-globe fa-stack-1x"></i>
                             </span>

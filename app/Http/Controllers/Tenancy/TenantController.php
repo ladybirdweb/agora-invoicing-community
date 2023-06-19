@@ -39,13 +39,13 @@ class TenantController extends Controller
             $responseData = json_decode($responseBody, true);
 
             $de = collect($responseData['message'])->paginate(5);
-            $cloudButton = StatusSetting::value('cloud_button');
+            
         } else {
             $de = null;
             $cloudButton = null;
             $cloud = null;
         }
-
+        $cloudButton = StatusSetting::value('cloud_button');
         return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud'));
     }
 

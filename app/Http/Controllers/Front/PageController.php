@@ -476,6 +476,15 @@ class PageController extends Controller
         }
     }
 
+    public function viewDemoReq()
+    {
+        try {
+            return view('themes.default1.front.demoForm');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function postDemoReq(Request $request)
     {
         $this->validate($request, [

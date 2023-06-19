@@ -36,14 +36,18 @@ class Authenticate
     {
         if ($this->auth->guest()) {
             if ($request->ajax()) {
+                // dd('hlo');
                 return response('Unauthorized.', 401);
             } else {
+                // dd('hi');
                 return redirect()->guest('auth/login');
             }
         }
         if (\Auth::user()->active == 1) {
+            // dd('bye');
             return $next($request);
         } else {
+            // dd('fghj');
             \Auth::logout();
 
             return redirect('home')->with('fails', 'Activate Your Account');

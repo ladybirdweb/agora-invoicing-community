@@ -42,14 +42,14 @@ Sign in or Register
         }
 
 
-        }
+        
 
         .wizard-inner
         {
             display:none;
         }
 
-        }
+        
 
         .nav-tabs{
             border-bottom: none;
@@ -203,14 +203,29 @@ Sign in or Register
 
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                                                        <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
-                                                                    Send Email
-                                                        </button> -->
+                                                    <div class="form-group col-12 ">
+                                                    <div class="row">
+                                                        <div class="form-group col">
+                                                            <button type="submit" class="btn btn-primary  btn-modern w-100 text-uppercase rounded-2 font-weight-bold text-3 py-2" id="submitbtn" data-loading-text="Loading...">Login</button>
+                                                            <div class="divider">
+                                                                <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">or</span>
+                                                            </div>
+                                                            @if($google_status == 1)
+                                                            <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary-scale-2 m-1  btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-google text-5 me-2"></i>&nbsp Login With Google</a>
+                                                            @endif
+                                                            @if($twitter_status == 1)
+                                                            <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary-scale-2 m-1 social_buttons btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-twitter text-5 me-2"></i>&nbsp Login With Twitter</a>
+                                                            @endif
+                                                            @if($github_status == 1 )
+                                                            <a href="{{ url('/auth/redirect/github') }}" class="btn btn-primary-scale-2 m-1 social_buttons btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-github text-5 me-2"></i>&nbsp Login With Github</a>
+                                                            @endif
 
+                                                            @if($linkedin_status == 1 )
+                                                            <a href="{{ url('/auth/redirect/linkedin') }}" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none rounded-2 m-1 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-linkedin text-5 me-2"></i>&nbsp Login With Linkedin</a>
+                                                            @endif
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </div>                          </div>
                                                 {!! Form::close() !!}
                                             </div>
                                         </div>
@@ -302,11 +317,7 @@ Sign in or Register
                                                             <span id="error-msg" class="hide"></span>
                                                             <span id="mobile_codecheck"></span>
                                                         </div>
-
-
-
                                                     </div>
-
                                                     <div class="form-row hidden">
                                                         <div class="form-group col{{ $errors->has('state') ? 'has-error' : '' }}">
                                                             {!! Form::label('state',Lang::get('message.state')) !!}
@@ -324,9 +335,6 @@ Sign in or Register
 
                                                             <span id="statecheck"></span>
                                                         </div>
-
-
-
 
                                                     </div>
 

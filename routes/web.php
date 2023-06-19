@@ -15,8 +15,10 @@ use App\Http\Controllers\License;
 use App\Http\Controllers\License\LocalizedLicenseController;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\Payment;
+use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\Product;
 use App\Http\Controllers\RazorpayController;
+use App\Http\Controllers\SocialLoginsController;
 use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
@@ -41,7 +43,14 @@ Route::post('refresh-csrf', function () {
         'token' => csrf_token(), ],
         200);
 });
-
+// social logins routes
+Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
+Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
+Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
+Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
+Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
+Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
+// !social logins rotes end
 /*
 * Installer Routes
 */
@@ -132,7 +141,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('LocalizedLicense/downloadLicense/{fileName}', [License\LocalizedLicenseController::class, 'downloadFileAdmin']);
     Route::get('request', [License\LocalizedLicenseController::class, 'tempOrderLink']);
     Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', [License\LocalizedLicenseController::class, 'downloadPrivateKeyAdmin']);
-
     /*
      * 2FA Routes
      */
@@ -164,19 +172,10 @@ Route::middleware('installAgora')->group(function () {
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index']);
 
+    Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
+    Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
+
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
 
     /*
      * Client
@@ -185,7 +184,6 @@ Route::middleware('installAgora')->group(function () {
     /*
      * Profile Process
      */
-
     Route::get('profile', [User\ProfileController::class, 'profile']);
     Route::patch('profile', [User\ProfileController::class, 'updateProfile']);
     Route::patch('password', [User\ProfileController::class, 'updatePassword']);

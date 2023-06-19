@@ -100,9 +100,9 @@ class OrderSearchController extends Controller
     /**
      * Searches for order for selected versions.
      *
-     * @param $baseQuery
-     * @param $versionFrom
-     * @param $versionTill
+     * @param  $baseQuery
+     * @param  $versionFrom
+     * @param  $versionTill
      * @return Builder
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>

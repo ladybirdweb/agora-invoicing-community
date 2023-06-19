@@ -4,10 +4,6 @@ namespace Tests\Unit;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modals\Users;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
 use Tests\TestCase;
 
 class SocialLoginTest extends TestCase
@@ -18,7 +14,7 @@ class SocialLoginTest extends TestCase
     {
         $user = User::factory()->create();
         $response = $this->call('POST', '/auth/redirect/{github}', [
-            
+
             'email' =>Str::random(10).gmail.com,
             'country' => 'India',
             'mobile_code' => '91',
@@ -26,9 +22,9 @@ class SocialLoginTest extends TestCase
             'address' => $user->address,
         ]);
         $response->assertStatus(302);
-         $this->assertDatabaseHas('users', [
-        'country' => 'India',
-        'mobile_code' => '91',
-    ]);
+        $this->assertDatabaseHas('users', [
+            'country' => 'India',
+            'mobile_code' => '91',
+        ]);
     }
 }

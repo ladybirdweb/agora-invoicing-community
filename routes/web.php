@@ -25,10 +25,6 @@ use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Model\Common\Bussiness;
-use App\Model\Common\ChatScript;
-use App\Model\Common\StatusSetting;
-use App\ApiKey;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +44,7 @@ Route::post('refresh-csrf', function () {
         200);
 });
 // social logins routes
-  Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
+Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
 Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
 Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
 Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
@@ -179,9 +175,8 @@ Route::middleware('installAgora')->group(function () {
     Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
     //
     //  Route::post('basic-details', [Auth\LoginController::class, 'basicDetailsView'])->name(basic-details);
-       
+
     //  Route::post('save-basic-details', [Auth\LoginController::class, 'storeBasicDetails']);
-     
 
     // gurmeenend
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);

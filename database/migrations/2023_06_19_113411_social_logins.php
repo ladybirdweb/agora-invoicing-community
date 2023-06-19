@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-            Schema::create('social_logins', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('type');
-                $table->string('client_id')->nullable;
-                $table->string('client_secret')->nullable();
-                $table->string('redirect_url')->nullable();
-                $table->tinyInteger('status')->nullable();
-                $table->timestamps();
-            });
+        Schema::create('social_logins', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('type');
+            $table->string('client_id')->nullable;
+            $table->string('client_secret')->nullable();
+            $table->string('redirect_url')->nullable();
+            $table->tinyInteger('status')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

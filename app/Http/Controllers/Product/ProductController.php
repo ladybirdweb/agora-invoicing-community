@@ -20,7 +20,6 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
-use App\Model\Product\Type;
 use App\Traits\Upload\ChunkUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;

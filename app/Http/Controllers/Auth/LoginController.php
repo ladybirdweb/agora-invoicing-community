@@ -11,10 +11,8 @@ use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 use Session;
 
 class LoginController extends Controller
@@ -78,19 +76,19 @@ class LoginController extends Controller
             'email1' => 'required',
             'password1' => 'required',
             'g-recaptcha-response' => [
-                $captchaRule . 'required',
+                $captchaRule.'required',
                 function ($attribute, $value, $fail) use ($request) {
-                    $response = Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
+                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                         'secret' => config('services.recaptcha.secret_key'),
                         'response' => $value,
-                        'remoteip' => $request->ip()
+                        'remoteip' => $request->ip(),
                     ]);
 
-                    if (!$response->json('success')) {
+                    if (! $response->json('success')) {
                         $fail("The {$attribute} is invalid.");
                     }
-                }
-            ]
+                },
+            ],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',
@@ -100,14 +98,14 @@ class LoginController extends Controller
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
         $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
-        if (!$auth) { //Check for correct email
+        if (! $auth) { //Check for correct email
             $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
             $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
         }
 
-        if (!$auth) { //Check for correct username
+        if (! $auth) { //Check for correct username
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-            if (!$user) {
+            if (! $user) {
                 return redirect()->back()
                     ->withInput()
                     ->withErrors([
@@ -115,7 +113,7 @@ class LoginController extends Controller
                     ]);
             }
 
-            if (!\Hash::check($password, $user->password)) { //Check for correct password
+            if (! \Hash::check($password, $user->password)) { //Check for correct password
                 return redirect()->back()
                     ->withInput()
                     ->withErrors([
@@ -132,6 +130,7 @@ class LoginController extends Controller
             $userId = \Auth::user()->id;
             \Auth::logout();
             $request->session()->put('2fa:user:id', $userId);
+
             return redirect('2fa/validate');
         }
         activity()->log('Logged In');
@@ -148,12 +147,13 @@ class LoginController extends Controller
     {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/' . $url;
+
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
-            
+
             if (strpos($intendedUrl, 'autopaynow') == false) {
                 return ($user == 'user') ? 'my-invoices' : '/';
             }
@@ -171,6 +171,7 @@ class LoginController extends Controller
 
         return Socialite::driver($provider)->redirect();
     }
+
     public function handler($provider)
     {
         $details = SocialLogin::where('type', $provider)->first();
@@ -183,7 +184,7 @@ class LoginController extends Controller
                 'email' => $githubUser->getemail(),
             ],
             [
-                'user_name' => $githubUser->getname() . substr(($githubUser->id), -2),
+                'user_name' => $githubUser->getname().substr($githubUser->id, -2),
                 'first_name' => $githubUser->getname(),
                 'role' => 'user',
                 'active' => '1',
@@ -200,6 +201,7 @@ class LoginController extends Controller
             $userId = \Auth::user()->id;
             Session::put('2fa:user:id', $userId);
             \Auth::logout();
+
             return redirect('2fa/validate');
         }
 

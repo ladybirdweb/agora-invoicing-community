@@ -139,16 +139,15 @@ class AuthController extends BaseAuthController
             $result = $this->sendOtp($mobile, $code);
             // dd($result);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
-        //   dd('fghj');
+            //   dd('fghj');
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-            \Log::error('Error: ' . $ex->getMessage()); 
+            \Log::error('Error: '.$ex->getMessage());
+
             return response()->json(compact('result'), 500);
         }
     }
-    
-    
 
     public function retryOTP(Request $request)
     {

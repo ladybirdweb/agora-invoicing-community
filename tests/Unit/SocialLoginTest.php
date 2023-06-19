@@ -4,11 +4,7 @@ namespace Tests\Unit;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\DBTestCase;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Tests\TestCase;
 
@@ -64,6 +60,7 @@ class SocialLoginTest extends TestCase
         $this->mockOtpSender(function ($mobileParam, $codeParam) use ($mobile, $code) {
             $this->assertEquals($mobile, $mobileParam);
             $this->assertEquals($code, $codeParam);
+
             return true; // Mocked successful response from sendOtp
         });
 
@@ -97,5 +94,3 @@ class SocialLoginTest extends TestCase
         $this->app->instance(OtpSender::class, $mockedOtpSender);
     }
 }
-
-

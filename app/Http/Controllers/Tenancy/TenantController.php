@@ -28,20 +28,25 @@ class TenantController extends Controller
 
     public function viewTenant()
     {
-        $cloud = $this->cloud;
+        if ($this->cloud && $this->cloud->cloud_central_domain) {
+            $cloud = $this->cloud;
+            $response = $this->client->request(
+                'GET',
+                $this->cloud->cloud_central_domain . '/tenants'
+            );
 
-        $response = $this->client->request(
-            'GET',
-            $this->cloud->cloud_central_domain.'/tenants'
-        );
+            $responseBody = (string) $response->getBody();
+            $responseData = json_decode($responseBody, true);
 
-        $responseBody = (string) $response->getBody();
-        $response = json_decode($responseBody, true);
+            $de = collect($responseData['message'])->paginate(5);
+            $cloudButton = StatusSetting::value('cloud_button');
+        } else {
+            $de = null;
+            $cloudButton = null;
+            $cloud = null;
+        }
 
-        $de = collect($response['message'])->paginate(5);
-        $cloudButton = StatusSetting::value('cloud_button');
-
-        return view('themes.default1.tenant.index', compact('cloud', 'de', 'cloudButton'));
+        return view('themes.default1.tenant.index', compact('de', 'cloudButton','cloud'));
     }
 
     public function enableCloud(Request $request)

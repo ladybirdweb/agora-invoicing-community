@@ -62,18 +62,15 @@ class LoginController extends Controller
     {
         $status = StatusSetting::value('v3recaptcha_status');
         $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required' : 'sometimes';
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
 
-        $rules = [
+        $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-        ];
-
-        if ($status == 1) {
-            $rules['g-recaptcha-response'] = [
-                'required',
+            'g-recaptcha-response' => [
+                $captchaRule.'required',
                 function ($attribute, $value, $fail) use ($request) {
-                    $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                         'secret' => config('services.recaptcha.secret_key'),
                         'response' => $value,
                         'remoteip' => $request->ip(),
@@ -83,12 +80,8 @@ class LoginController extends Controller
                         $fail("The {$attribute} is invalid.");
                     }
                 },
-            ];
-        } else {
-            $rules['g-recaptcha-response'] = $captchaRule.'|captcha';
-        }
-
-        $this->validate($request, $rules, [
+            ],
+        ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
@@ -143,6 +136,7 @@ class LoginController extends Controller
     {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
+
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;

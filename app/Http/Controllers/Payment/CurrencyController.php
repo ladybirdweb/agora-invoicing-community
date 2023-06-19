@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
-use Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Lang;

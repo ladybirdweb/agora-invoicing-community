@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Admin\User;
 
-use App\Http\Controllers\User\ClientController;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;

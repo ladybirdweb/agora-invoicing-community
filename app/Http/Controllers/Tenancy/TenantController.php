@@ -32,7 +32,7 @@ class TenantController extends Controller
             $cloud = $this->cloud;
             $response = $this->client->request(
                 'GET',
-                $this->cloud->cloud_central_domain . '/tenants'
+                $this->cloud->cloud_central_domain.'/tenants'
             );
 
             $responseBody = (string) $response->getBody();
@@ -46,7 +46,7 @@ class TenantController extends Controller
             $cloud = null;
         }
 
-        return view('themes.default1.tenant.index', compact('de', 'cloudButton','cloud'));
+        return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud'));
     }
 
     public function enableCloud(Request $request)

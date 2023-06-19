@@ -99,6 +99,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('contact-us', [Front\PageController::class, 'contactUs']);
     Route::post('contact-us', [Front\PageController::class, 'postContactUs']);
 
+    Route::get('demo-request', [Front\PageController::class, 'viewDemoReq'])->withoutMiddleware(['auth']);
     Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
 
     /*

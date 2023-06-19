@@ -1,5 +1,85 @@
 # Changelog
 
+## 10.15.0 - 2023-06-08
+* [#1506](https://github.com/stripe/stripe-php/pull/1506) Update generated code
+  * Add support for `preferred_locales` on `Issuing.Cardholder`
+
+## 10.14.0 - 2023-05-25
+* [#1503](https://github.com/stripe/stripe-php/pull/1503) Update generated code
+  * Add support for `zip` on `PaymentMethod`
+  * Add support for new value `zip` on enum `PaymentMethod.type`
+* [#1502](https://github.com/stripe/stripe-php/pull/1502) Generate error codes
+* [#1501](https://github.com/stripe/stripe-php/pull/1501) Update generated code
+
+* [#1499](https://github.com/stripe/stripe-php/pull/1499) Update generated code
+  * Add support for new values `amusement_tax` and `communications_tax` on enum `TaxRate.tax_type`
+
+## 10.13.0 - 2023-05-11
+* [#1490](https://github.com/stripe/stripe-php/pull/1490) Update generated code
+  * Add support for `paypal` on `PaymentMethod`
+  * Add support for `effective_percentage` on `TaxRate`
+* [#1488](https://github.com/stripe/stripe-php/pull/1488) Increment PHPStan to strictness level 2
+* [#1483](https://github.com/stripe/stripe-php/pull/1483) Update generated code
+
+* [#1480](https://github.com/stripe/stripe-php/pull/1480) Update generated code
+  * Change type of `Identity.VerificationSession.options` from `VerificationSessionOptions` to `nullable(VerificationSessionOptions)`
+  * Change type of `Identity.VerificationSession.type` from `enum('document'|'id_number')` to `nullable(enum('document'|'id_number'))`
+* [#1478](https://github.com/stripe/stripe-php/pull/1478) Update generated code
+  * Release specs are identical.
+* [#1475](https://github.com/stripe/stripe-php/pull/1475) Update generated code
+
+
+## 10.12.1 - 2023-04-04
+* [#1473](https://github.com/stripe/stripe-php/pull/1473) Update generated code
+  * Add back `deleted` from `Invoice.status`.
+
+## 10.12.0 - 2023-03-30
+* [#1470](https://github.com/stripe/stripe-php/pull/1470) Update generated code
+  * Remove support for `create` method on resource `Tax.Transaction`
+    * This is not a breaking change, as this method was deprecated before the Tax Transactions API was released in favor of the `createFromCalculation` method.
+  * Remove support for value `deleted` from enum `Invoice.status`
+    * This is not a breaking change, as the value was never returned or accepted as input.
+* [#1468](https://github.com/stripe/stripe-php/pull/1468) Trigger workflow for tags
+* [#1467](https://github.com/stripe/stripe-php/pull/1467) Update generated code (new)
+  * Release specs are identical.
+
+## 10.11.0 - 2023-03-23
+* [#1458](https://github.com/stripe/stripe-php/pull/1458) Update generated code
+  * Add support for new resources `Tax.CalculationLineItem`, `Tax.Calculation`, `Tax.TransactionLineItem`, and `Tax.Transaction`
+  * Add support for `create` and `list_line_items` methods on resource `Calculation`
+  * Add support for `create_from_calculation`, `create_reversal`, `create`, `list_line_items`, and `retrieve` methods on resource `Transaction`
+  * Add support for `currency_conversion` on `Checkout.Session`
+  * Add support for new value `automatic_async` on enum `PaymentIntent.capture_method`
+  * Add support for new value `link` on enum `PaymentLink.payment_method_types[]`
+  * Add support for `automatic_payment_methods` on `SetupIntent`
+
+## 10.10.0 - 2023-03-16
+* [#1457](https://github.com/stripe/stripe-php/pull/1457) API Updates
+  * Add support for `future_requirements` and `requirements` on `BankAccount`
+  * Add support for new value `automatic_async` on enum `PaymentIntent.capture_method`
+  * Add support for new value `cashapp` on enum `PaymentLink.payment_method_types[]`
+  * Add support for `cashapp` on `PaymentMethod`
+  * Add support for new value `cashapp` on enum `PaymentMethod.type`
+* [#1454](https://github.com/stripe/stripe-php/pull/1454) Update generated code (new)
+  * Add support for new value `cashapp` on enum `PaymentLink.payment_method_types[]`
+  * Add support for `cashapp` on `PaymentMethod`
+  * Add support for new value `cashapp` on enum `PaymentMethod.type`
+
+## 10.9.1 - 2023-03-14
+* [#1453](https://github.com/stripe/stripe-php/pull/1453) Restore StripeClient.getService
+
+## 10.9.0 - 2023-03-09
+* [#1450](https://github.com/stripe/stripe-php/pull/1450) API Updates
+  * Add support for `cancellation_details` on `Subscription`
+  * Fix return types on custom methods (extends https://github.com/stripe/stripe-php/pull/1446)
+
+* [#1446](https://github.com/stripe/stripe-php/pull/1446) stripe->customers->retrievePaymentMethod returns the wrong class (type hint)
+
+## 10.8.0 - 2023-03-02
+* [#1447](https://github.com/stripe/stripe-php/pull/1447) API Updates
+  * Add support for `reconciliation_status` on `Payout`
+  * Add support for new value `lease_tax` on enum `TaxRate.tax_type`
+
 ## 10.7.0 - 2023-02-23
 * [#1444](https://github.com/stripe/stripe-php/pull/1444) API Updates
   * Add support for new value `igst` on enum `TaxRate.tax_type`

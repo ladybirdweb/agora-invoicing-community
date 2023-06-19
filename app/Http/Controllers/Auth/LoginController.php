@@ -149,20 +149,15 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
-        // dd('vbn');
-
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-            // dd($url);
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
-            // dd($user);
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
             if (strpos($intendedUrl, 'autopaynow') == false) {
                 return ($user == 'user') ? 'my-invoices' : '/';
-                // return ($user == 'user') ? 'verify' : '/';
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';

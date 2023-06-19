@@ -208,12 +208,16 @@ class LoginController extends Controller
 
     public function storeBasicDetailsss(Request $request)
     {
+         $this->validate($request, [
+            'company' => 'required|string',
+            'address' => 'required|string',
+        ]);
         $userId = Auth::id();
         $user = User::find($userId);
         $user->company = $request->company;
         $user->address = $request->address;
         $user->save();
 
-        return redirect()->back()->with('success_message', 'You have successfully registered and logged in.');
+        return redirect()->back();
     }
 }

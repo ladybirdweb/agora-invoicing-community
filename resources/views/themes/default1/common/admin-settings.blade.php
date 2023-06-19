@@ -186,7 +186,7 @@ Settings
                         <p class="box-title">Localized License</p>
                     </div>
                 </div>
-                <!---->
+                <!--/.col-md-2-->
                  <div class="col-md-2 col-sm-6">
                 <div class="settingiconblue">
                     <div class="settingdivblue">

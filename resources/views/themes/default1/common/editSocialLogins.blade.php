@@ -12,7 +12,7 @@ Social Logins
         <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
         <li class="breadcrumb-item active">Social Logins</li>
     </ol>
-</div><!-- /.col -->
+</div>
 @stop
 @section('content')
 

@@ -19,20 +19,35 @@
 
 @section('content')
 <style>
-    a.btn:hover {
-        -webkit-transform: scale(0.8);
-        -moz-transform: scale(0.8);
-        -o-transform: scale(0.8);
-    }
-
-    a.btn {
-        -webkit-transform: scale(0.7);
-        -moz-transform: scale(0.7);
-        -o-transform: scale(0.7);
-        -webkit-transition-duration: 0.5s;
-        -moz-transition-duration: 0.5s;
-        -o-transition-duration: 0.15s;
-    }
+.btn {
+    display: inline-block;
+    font-weight: 300;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.175rem 0.55rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+    .btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    box-shadow: none;
+}
+    .btn-secondary:hover {
+    color: #fff;
+    background-color: #5a6268;
+    border-color: #545b62;
+}
 </style>
 
 <div id="response">
@@ -67,9 +82,10 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="edit/SocialLogins/{{$item->id}}" class="btn btn-primary a-btn-slide-text">
+                                        <a href="edit/SocialLogins/{{$item->id}}" class="btn btn-secondary a-btn-slide-text">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                            <span><strong>Edit</strong></span>
+                                            <span><strong><i class="fas fa-edit"></i></strong></span>
+                                           
                                         </a>
                                     </td>
                                 </tr>

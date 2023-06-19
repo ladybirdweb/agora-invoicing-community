@@ -132,14 +132,11 @@ class AuthController extends BaseAuthController
         $newNumber = ltrim($request->newnumber, '0');
         User::where('id', $request->id)->update(['mobile' => $newNumber]);
         try {
-            // dd('fghj');
             $code = $request->input('code');
             $mobile = ltrim($request->input('mobile'), '0');
             $number = '(+'.$code.') '.$mobile;
             $result = $this->sendOtp($mobile, $code);
-            // dd($result);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
-        //   dd('fghj');
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];

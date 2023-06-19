@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "482ca83aaa8ec416ca47baa708997c82",
+    "content-hash": "07e2d5295488af444ee5b05b5a5cce08",
     "packages": [
         {
             "name": "anhskohbo/no-captcha",
@@ -2960,71 +2960,88 @@
             "time": "2023-04-17T16:11:26+00:00"
         },
         {
-            "name": "itsgoingd/clockwork",
-            "version": "dev-master",
+            "name": "guzzlehttp/uri-template",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ladybirdweb/clockwork.git",
-                "reference": "e29be8125ce999947d60986dcd8e606c04c012ab"
+                "url": "https://github.com/guzzle/uri-template.git",
+                "reference": "b945d74a55a25a949158444f09ec0d3c120d69e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ladybirdweb/clockwork/zipball/e29be8125ce999947d60986dcd8e606c04c012ab",
-                "reference": "e29be8125ce999947d60986dcd8e606c04c012ab",
+                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/b945d74a55a25a949158444f09ec0d3c120d69e2",
+                "reference": "b945d74a55a25a949158444f09ec0d3c120d69e2",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
-                "php": ">=5.6"
+                "php": "^7.2.5 || ^8.0",
+                "symfony/polyfill-php80": "^1.17"
             },
-            "default-branch": true,
+            "require-dev": {
+                "phpunit/phpunit": "^8.5.19 || ^9.5.8",
+                "uri-template/tests": "1.0.0"
+            },
             "type": "library",
             "extra": {
-                "laravel": {
-                    "providers": [
-                        "Clockwork\\Support\\Laravel\\ClockworkServiceProvider"
-                    ],
-                    "aliases": {
-                        "Clockwork": "Clockwork\\Support\\Laravel\\Facade"
-                    }
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Clockwork\\": "Clockwork/"
+                    "GuzzleHttp\\UriTemplate\\": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "itsgoingd",
-                    "email": "itsgoingd@luzer.sk",
-                    "homepage": "https://twitter.com/itsgoingd"
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
                 }
             ],
-            "description": "php dev tools in your browser",
-            "homepage": "https://underground.works/clockwork",
+            "description": "A polyfill class for uri_template of PHP",
             "keywords": [
-                "debugging",
-                "devtools",
-                "laravel",
-                "logging",
-                "lumen",
-                "profiling",
-                "slim"
+                "guzzlehttp",
+                "uri-template"
             ],
             "support": {
-                "source": "https://github.com/ladybirdweb/clockwork/tree/master"
+                "issues": "https://github.com/guzzle/uri-template/issues",
+                "source": "https://github.com/guzzle/uri-template/tree/v1.0.1"
             },
             "funding": [
                 {
-                    "type": "github",
-                    "url": "https://github.com/itsgoingd"
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/uri-template",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2023-04-14T10:39:18+00:00"
+            "time": "2021-10-07T12:57:01+00:00"
         },
         {
             "name": "itsgoingd/clockwork",
@@ -7409,16 +7426,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v10.7.0",
+            "version": "v10.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "91876a7dd88148f8b4bac6e3202503312ae5d581"
+                "reference": "d0e48cc85e1aa54cbff3644d1979a4a4c3fdd7bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/91876a7dd88148f8b4bac6e3202503312ae5d581",
-                "reference": "91876a7dd88148f8b4bac6e3202503312ae5d581",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/d0e48cc85e1aa54cbff3644d1979a4a4c3fdd7bf",
+                "reference": "d0e48cc85e1aa54cbff3644d1979a4a4c3fdd7bf",
                 "shasum": ""
             },
             "require": {
@@ -7464,9 +7481,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v10.7.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v10.15.0"
             },
-            "time": "2023-02-23T23:30:31+00:00"
+            "time": "2023-06-08T21:47:46+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -12527,68 +12544,8 @@
             "time": "2023-02-15T10:37:22+00:00"
         },
         {
-            "name": "beyondcode/laravel-query-detector",
-            "version": "1.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/beyondcode/laravel-query-detector.git",
-                "reference": "40c7e168fcf7eeb80d8e96f7922e05ab194269c8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/beyondcode/laravel-query-detector/zipball/40c7e168fcf7eeb80d8e96f7922e05ab194269c8",
-                "reference": "40c7e168fcf7eeb80d8e96f7922e05ab194269c8",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^5.5 || ^6.0 || ^7.0 || ^8.0 || ^9.0|^10.0",
-                "php": "^7.1 || ^8.0"
-            },
-            "require-dev": {
-                "laravel/legacy-factories": "^1.0",
-                "orchestra/testbench": "^3.0 || ^4.0 || ^5.0 || ^6.0|^8.0",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "BeyondCode\\QueryDetector\\QueryDetectorServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "BeyondCode\\QueryDetector\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marcel Pociot",
-                    "email": "marcel@beyondco.de",
-                    "homepage": "https://beyondcode.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel N+1 Query Detector",
-            "homepage": "https://github.com/beyondcode/laravel-query-detector",
-            "keywords": [
-                "beyondcode",
-                "laravel-query-detector"
-            ],
-            "support": {
-                "issues": "https://github.com/beyondcode/laravel-query-detector/issues",
-                "source": "https://github.com/beyondcode/laravel-query-detector/tree/1.7.0"
-            },
-            "time": "2023-02-15T10:37:22+00:00"
-        },
-        {
-            "name": "composer/pcre",
-            "version": "3.0.0",
+            "name": "composer/class-map-generator",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/class-map-generator.git",

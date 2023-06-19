@@ -78,6 +78,10 @@ final class NotTaggedControllerValueResolver implements ArgumentValueResolverInt
                 : $controller.'::__invoke';
         }
 
+        if ($this->container->has($controller)) {
+            return [];
+        }
+
         $what = sprintf('argument $%s of "%s()"', $argument->getName(), $controller);
         $message = sprintf('Could not resolve %s, maybe you forgot to register the controller as a service or missed tagging it with the "controller.service_arguments"?', $what);
 

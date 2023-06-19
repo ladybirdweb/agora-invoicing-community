@@ -4,9 +4,7 @@ namespace Tests\Unit;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\DBTestCase;
-
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+// use Tests\DBTestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;

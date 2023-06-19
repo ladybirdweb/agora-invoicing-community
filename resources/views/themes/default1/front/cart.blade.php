@@ -265,9 +265,10 @@
                                             @php
                                                 $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
                                             @endphp
-
-
+                                        
+                                           @if(!is_null($data))
                                             <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn btn-primary">CONTINUE SHOPPING
+                                                @endif
 
                                                 @else
                                                     <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING

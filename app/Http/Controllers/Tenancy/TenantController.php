@@ -126,7 +126,7 @@ class TenantController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $company =(string) $request->input('domain');
+            $company = (string) $request->input('domain');
 
             // Convert spaces to underscores
             $company = str_replace(' ', '', $company);
@@ -398,5 +398,4 @@ class TenantController extends Controller
             'body' => json_encode($message),
         ]);
     }
-
 }

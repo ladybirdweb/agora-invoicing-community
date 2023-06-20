@@ -131,7 +131,10 @@ class TenantController extends Controller
         $this->validate($request,
             [
                 'orderNo' => 'required',
-                'domain' => 'required',
+                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
+            ],
+            [
+                'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
         $settings = Setting::find(1);
@@ -140,7 +143,13 @@ class TenantController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $faveoCloud = (string) $request->input('domain');
+            $company =(string) $request->input('domain');
+
+            // Convert spaces to underscores
+            $company = str_replace(' ', '', $company);
+
+            // Convert uppercase letters to lowercase
+            $faveoCloud = strtolower($company).'.faveocloud.com';
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
             if (! strpos($faveoCloud, 'faveocloud.com')) {
                 if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
@@ -156,7 +165,6 @@ class TenantController extends Controller
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $client = new Client([]);
             $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(), 'product'=>$product, 'product_id'=>$order[0]->product()->value('id')];
-
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
@@ -318,42 +326,6 @@ class TenantController extends Controller
         }
     }
 
-    public function changeDomain(Request $request)
-    {
-        $this->validate($request, [
-            'currentDomain'=> 'required',
-            'newDomain'=>'required',
-        ]);
-        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-        $token = str_random(32);
-        $newDomain = $request->get('newDomain');
-        $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
-        $dns_record = dns_get_record($newDomain, DNS_CNAME);
-        if (! strpos($newDomain, 'faveocloud.com')) {
-            if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
-                throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
-            }
-        }
-        $encodedData = http_build_query($data);
-        $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
-        $client = new Client([]);
-        $response = $client->request(
-            'POST',
-            $this->cloud->cloud_central_domain.'/changeDomain', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
-        );
-        if (! strpos($newDomain, 'faveocloud.com')) {
-            $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
-                'auth' => ['clouduser', env('CLOUD_AUTH')],
-                'query' => [
-                    'token' => env('CLOUD_OAUTH_TOKEN'),
-                    'domain' => $newDomain,
-                ],
-            ]);
-        }
-
-        return response(['status'=>true, 'message'=> 'Domain changed please reissue your license and use the license code in your domain']);
-    }
-
     public function DeleteCloudInstanceForClient($orderNumber, $isDelete)
     {
         if ($isDelete) {
@@ -443,4 +415,5 @@ class TenantController extends Controller
             'body' => json_encode($message),
         ]);
     }
+
 }

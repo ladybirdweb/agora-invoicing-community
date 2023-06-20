@@ -155,7 +155,7 @@ $set = $set->findOrFail(1);
                                                         <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
                                                             <div>
                                                                 <i class="fas fa-cloud"></i>
-                                                                <span style="margin-left: 3px;">Faveo Cloud</span>
+                                                                <span style="margin-left: 3px;">Start free trial</span>
                                                             </div>
                                                         </a>
                                                     </li>
@@ -458,7 +458,7 @@ $set = $set->findOrFail(1);
                 <div class="modal-content">
                     {!! Form::open() !!}
                     <div class="modal-header">
-                        <h4 class="modal-title">Hey, Lets create a Faveo cloud instance!</h4>
+                        <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
                     </div>
 
                     <div class="modal-body">
@@ -471,20 +471,15 @@ $set = $set->findOrFail(1);
                         <div class="container">
                             <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                                 <div class="form-group">
-                                    <div class="card" style="background-color: #0088CC;; color: white;">
-                                        <div class="card-body" style="text-align: justify">
-                                            {!! trans('message.cloud_info') !!}
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <label>Enter your cloud domain here!</label>
+                                    <label><b>{{trans('message.cloud_field_label')}}</b></label>
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
-
-                                        <input  type="text"  name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="YourCloudName.faveocloud.com" required>
+                                        <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-4 rounded-0" placeholder="Domain" required>
+                                        <input type="text" class="form-control col col-8 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
 
                                     </div>
 
                                 </div>
+                                <label style="margin-top: 2px;"><b>Choose your desired cloud product</b></label>
                                 <div class="row">
                                     <div class="col col-6">
                                         <div class="radio-option">
@@ -499,21 +494,44 @@ $set = $set->findOrFail(1);
                                         </div>
                                     </div>
                                 </div>
-
+                                <hr class="custom-line">
+                                <div class="text-center">
+                                <div class="row data-center">
+                                    <div class="col col-12">
+                                        <p>Your data center location is <b data-nearest-center="">United States </b><a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a></p>
+                                    </div>
+                                </div>
+                                </div>
                             </form>
                         </div>
-
-
-
                     </div>
+                    <script>
+                        $(document).ready(function() {
+                            $.ajax({
+                                url: '{{url("/api/domain")}}',
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(data) {
+                                    if(data.data.length !== 0){
+                                        $('.createTenant').attr('disabled', false);
+                                    }
+                                    $('#userdomain').val(data.data);
+                                },
+                                error: function(error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        });
+                    </script>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                        <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                        <button type="submit"  class="btn btn-primary createTenant" id="createTenant" onclick="createTenant()"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                         {!! Form::close()  !!}
                     </div>
                     <!-- /Form -->
                 </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
+            </div><!-- /.modal-dialog-->
         </div><!-- /.modal -->
     @endauth
 
@@ -779,7 +797,7 @@ $set = $set->findOrFail(1);
 
     $('#mailchimp-subscription').click(function(){
         var email = $('#newsletterEmail').val();
-        $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
         $.ajax({
             type: 'POST',
             url: '{{url("mail-chimp/subcribe")}}',
@@ -868,7 +886,7 @@ $set = $set->findOrFail(1);
     function firstlogin(id)
     {
         $('#createTenant').attr('disabled',true)
-        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
         var domain = $('#userdomain').val();
         var password = $('#password').val();
         var product = $('input[name="option"]:checked').val();
@@ -945,6 +963,11 @@ $set = $set->findOrFail(1);
         location.reload();
     });
 
+        $(document).ready(function() {
+        $('#tenant').on('shown.bs.modal', function () {
+            $('#userdomain').focus();
+        });
+    });
 
 
 </script>
@@ -958,6 +981,14 @@ $set = $set->findOrFail(1);
 
 
 </script>
+        <style>
+            .custom-line {
+                border: none;
+                border-top: 1px solid #ccc;
+                margin: 10px 0;
+            }
+        </style>
+
 
 
 

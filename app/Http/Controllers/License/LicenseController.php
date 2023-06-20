@@ -498,4 +498,16 @@ class LicenseController extends Controller
 
         $this->postCurl($url.'api/admin/installation/reissue', "api_key_secret=$api_key_secret&installation_path=$installationPath", $token);
     }
+
+    public function updateLicense($license_code,$oldLicense){
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+
+        $this->postCurl($url.'api/admin/installation/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code", $token);
+        $this->postCurl($url.'api/admin/License/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code&old_license_code=$oldLicense", $token);
+
+    }
 }

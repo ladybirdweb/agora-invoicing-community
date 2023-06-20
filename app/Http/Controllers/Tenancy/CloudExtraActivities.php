@@ -155,7 +155,9 @@ class CloudExtraActivities extends Controller
 
         return json_decode($response);
     }
-    public function domainCloudAutofill(){
+
+    public function domainCloudAutofill()
+    {
         // Fetch the company value from the database
         $company = User::where('id', \Auth::user()->id)->value('company');
 
@@ -169,13 +171,14 @@ class CloudExtraActivities extends Controller
         return response()->json(['data'=> $company]);
     }
 
-    public function orderDomainCloudAutofill(Request $request){
+    public function orderDomainCloudAutofill(Request $request)
+    {
         // Output the modified domain value
-        return response()->json(['data'=> InstallationDetail::where('order_id',$request->orderId)->value('installation_path')]);
+        return response()->json(['data'=> InstallationDetail::where('order_id', $request->orderId)->value('installation_path')]);
     }
 
-    public function getUpgradeCost(Request $request){
-
+    public function getUpgradeCost(Request $request)
+    {
         try {
             $planid = $request->input('plan');
             $userid = $request->input('user');
@@ -188,7 +191,6 @@ class CloudExtraActivities extends Controller
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
-
     }
 
     public function changeDomain(Request $request)
@@ -207,8 +209,8 @@ class CloudExtraActivities extends Controller
             }
             $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
-            if (!strpos($newDomain, 'faveocloud.com')) {
-                if (empty($dns_record) || !in_array('faveocloud.com', array_column($dns_record, 'target'))) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
+                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                     throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
                 }
             }
@@ -217,22 +219,23 @@ class CloudExtraActivities extends Controller
             $client = new Client([]);
             $client->request(
                 'POST',
-                $this->cloud->cloud_central_domain . '/changeDomain', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                $this->cloud->cloud_central_domain.'/changeDomain', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
             );
             $this->jobsForCloudDomain($newDomain, $currentDomain);
+
             return response(['status' => true, 'message' => trans('message.cloud_domain_change')]);
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             return response(['status' => true, 'message' => trans('message.change_domain_failed')]);
         }
     }
 
     //No need to worry about performance because of if else,
     // these are just triggers that wait for no response
-    private function jobsForCloudDomain($newDomain,$currentDomain){
+    private function jobsForCloudDomain($newDomain, $currentDomain)
+    {
         $client = new Client([]);
-        if (!strpos($currentDomain, 'faveocloud.com')) {
-            if(!strpos($newDomain,'faveocloud.com')){
+        if (! strpos($currentDomain, 'faveocloud.com')) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
                 $client->request('GET', env('CLOUD_JOB_URL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -240,8 +243,7 @@ class CloudExtraActivities extends Controller
                         'domain' => $newDomain,
                     ],
                 ]);
-            }
-            else{
+            } else {
                 $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -257,10 +259,9 @@ class CloudExtraActivities extends Controller
                     'domain' => $currentDomain,
                 ],
             ]);
-        }
-        else{
+        } else {
             //normal
-            if(!strpos($newDomain,'faveocloud.com')){
+            if (! strpos($newDomain, 'faveocloud.com')) {
                 $client->request('GET', env('CLOUD_JOB_URL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -268,8 +269,7 @@ class CloudExtraActivities extends Controller
                         'domain' => $newDomain,
                     ],
                 ]);
-            }
-            else{
+            } else {
                 $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -288,78 +288,81 @@ class CloudExtraActivities extends Controller
         }
     }
 
-     public function agentAlteration(Request $request){
-        try {
-            $newAgents = $request->newAgents;
-            $orderId = $request->input('orderId');
-            $installation_path = InstallationDetail::where('order_id', $orderId)
-                ->value('installation_path');
-            $product_id = $request->product_id;
-            if (!$this->checktheAgent($newAgents, $installation_path)) {
-                return response(['status' => false, 'message' => trans('message.agent_reduce')]);
-            }
-            $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
-            $len = strlen($newAgents);
-            switch ($len) {//Get Last Four digits based on No.Of Agents
-                case '1':
-                    $lastFour = '000' . $newAgents;
-                    break;
-                case '2':
-                    $lastFour = '00' . $newAgents;
-                    break;
-                case '3':
-                    $lastFour = '0' . $newAgents;
-                    break;
-                case '4':
-                    $lastFour = $newAgents;
-                    break;
-                default:
-                    $lastFour = '0000';
-            }
-            $license_code = substr($oldLicense, 0, -4) . $lastFour;
-            (new LicenseController())->updateLicense($license_code, $oldLicense);
-            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-            $token = str_random(32);
-            $data = ['licenseCode' => $license_code, 'installation_path' => $installation_path, 'product_id' => $product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
-            $encodedData = http_build_query($data);
-            $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+     public function agentAlteration(Request $request)
+     {
+         try {
+             $newAgents = $request->newAgents;
+             $orderId = $request->input('orderId');
+             $installation_path = InstallationDetail::where('order_id', $orderId)
+                 ->value('installation_path');
+             $product_id = $request->product_id;
+             if (! $this->checktheAgent($newAgents, $installation_path)) {
+                 return response(['status' => false, 'message' => trans('message.agent_reduce')]);
+             }
+             $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
+             $len = strlen($newAgents);
+             switch ($len) {//Get Last Four digits based on No.Of Agents
+                 case '1':
+                     $lastFour = '000'.$newAgents;
+                     break;
+                 case '2':
+                     $lastFour = '00'.$newAgents;
+                     break;
+                 case '3':
+                     $lastFour = '0'.$newAgents;
+                     break;
+                 case '4':
+                     $lastFour = $newAgents;
+                     break;
+                 default:
+                     $lastFour = '0000';
+             }
+             $license_code = substr($oldLicense, 0, -4).$lastFour;
+             (new LicenseController())->updateLicense($license_code, $oldLicense);
+             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+             $token = str_random(32);
+             $data = ['licenseCode' => $license_code, 'installation_path' => $installation_path, 'product_id' => $product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
+             $encodedData = http_build_query($data);
+             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
 
-            $client = new Client([]);
-            $client->request(
-                'POST',
-                $this->cloud->cloud_central_domain . '/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-            );
+             $client = new Client([]);
+             $client->request(
+                 'POST',
+                 $this->cloud->cloud_central_domain.'/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+             );
 
-            Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12) . $lastFour)]);
-            return response(['status' => true, 'message' => trans('message.agent_updated')]);
-        }
-        Catch(\Exception $e){
-            Logger::exception($e);
-            return response(['status' => false, 'message' => trans('message.wrong_agent')]);
-        }
+             Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12).$lastFour)]);
+
+             return response(['status' => true, 'message' => trans('message.agent_updated')]);
+         } catch(\Exception $e) {
+             Logger::exception($e);
+
+             return response(['status' => false, 'message' => trans('message.wrong_agent')]);
+         }
      }
-     public function upgradeDowngradeCloud(Request $request){
+
+     public function upgradeDowngradeCloud(Request $request)
+     {
          try {
              $qty = 1;
-             $planId =  $request->id;
+             $planId = $request->id;
              $price = $request->price;
              $agents = $request->agents;
-             $product_id = Plan::where('id',$planId)->pluck('product')->first();
+             $product_id = Plan::where('id', $planId)->pluck('product')->first();
 
              $product = Product::find($product_id);
              $plan = $product->planRelation->find($planId);
              $currency = userCurrencyAndPrice('', $plan);
 
-
              $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
-                 'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product,];
+                 'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product, ];
 
              \Cart::add($items); //Add Items To the Cart Collection
 
-             return response()->json(['redirectTo' => env('APP_URL') . '/show/cart']);
-         }
-         Catch(\Exception $e){
+             return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
+         } catch(\Exception $e) {
              app('log')->error($e->getMessage());
+
              return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
          }
      }

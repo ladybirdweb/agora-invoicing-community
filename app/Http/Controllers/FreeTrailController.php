@@ -48,6 +48,13 @@ class FreeTrailController extends Controller
      */
     public function firstLoginAttempt(Request $request)
     {
+        $this->validate($request,
+            [
+                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
+            ],
+            [
+                'domain.regex' => 'Special characters are not allowed in domain name',
+            ]);
         try {
             if (! Auth::check()) {
                 return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));

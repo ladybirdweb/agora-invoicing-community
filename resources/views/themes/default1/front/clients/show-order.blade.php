@@ -263,13 +263,16 @@ $json = json_encode($data);
                  ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
             ];
 
+            if($product->type == '4'){
+                $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
+            }
+
             if ($price == '0' && $product->type != '4') {
                 $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
             }
             elseif($price != '0' && $product->type == '4')
             {
               $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
- 
             }
           @endphp
 
@@ -553,6 +556,148 @@ $json = json_encode($data);
                
                 @endslot
 
+                    @slot('cloud')
+                        <br>
+                        <div class="row">
+                            <div class="col col-6">
+                        <div class="card" data-toggle="modal" data-target="#cloudDomainModal">
+                            <div class="card-body">
+                                <h5 class="card-title">Change your cloud domain here</h5>
+                                <p class="card-text">Click to update your cloud domain.</p>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="col col-6">
+                        <div class="card" data-toggle="modal" data-target="#numberOfAgentsModal">
+                            <div class="card-body">
+                                <h5 class="card-title">Increase or decrease the number of agents</h5>
+                                <p class="card-text">Click to update the number of agents.</p>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    <div class="row">
+                            <div class="col col-6">
+                        <div class="card" data-toggle="modal" data-target="#cloudPlanModal">
+                            <div class="card-body">
+                                <h5 class="card-title">Upgrade or downgrade your cloud plan</h5>
+                                <p class="card-text">Click to upgrade or downgrade your cloud plan.</p>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                        <!-- Cloud Domain Modal -->
+                        <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <script>
+                                            $(document).ready(function() {
+                                                var orderId = {{$id}};
+                                                $.ajax({
+                                                    data:{'orderId' : orderId},
+                                                    url: '{{url("/api/takeCloudDomain")}}',
+                                                    method: 'POST',
+                                                    dataType: 'json',
+                                                    success: function(data) {
+                                                        $('#clouduserdomain').val(data.data);
+                                                    },
+                                                    error: function(error) {
+                                                        console.error('Error:', error);
+                                                    }
+                                                });
+                                            });
+                                        </script>
+                                        <input type="text" name="clouddomain" autocomplete="off" id="clouduserdomain" class="form-control" placeholder="Domain" required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="changeDomain">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Number of Agents Modal -->
+                        <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php
+                                        $latestAgents = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->latest()->value('agents');
+                                        ?>
+                                        <script>
+                                            $(document).ready(function() {
+                                                var numberOfagents = {{$latestAgents}};
+                                                $('#number').val(numberOfagents);
+                                            });
+                                        </script>
+                                        <div class="quantity">
+                                            <input data-v-e381b3b5="" class="form-control" type="number" id="number" min="0" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="agentNumber">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cloud Plan Modal -->
+                        <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cloudPlanModalLabel">Upgrade or Downgrade Cloud Plan</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php
+
+                                        $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                                            ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                                            ->where('plans.product','!=',$product->id)
+                                            ->where('products.type',4)
+                                            ->where('products.can_modify_agent',1)
+                                            ->where('plan_prices.renew_price','!=','0')
+                                            ->pluck('plans.name', 'plans.id')
+                                            ->toArray();
+
+                                        //add more cloud ids until we have a generic way to differentiate
+                                        if(in_array($product->id,[117,119])){
+                                            $plans = array_filter($plans, function ($value) {
+                                                return stripos($value, 'free') === false;
+                                            });
+                                        }
+                                        ?>
+                                        <div class="row">
+                                            &nbsp;
+                                            {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control col-6','onchange'=>'getPrice(this.value)']) !!}
+                                            {!! Form::hidden('user',\Auth::user()->id) !!}
+                                            &nbsp;
+                                            {!! Form::text('cost',null,['class' => 'form-control price col-6','id'=>'price','readonly'=>'readonly']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="upgradedowngrade">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endslot
 
 
             @endcomponent
@@ -1147,20 +1292,6 @@ var rzp = new Razorpay(options);
                  });
 
              }
-
-             function getPrice(val) {
-
-                 var user = document.getElementsByName('user')[0].value;
-                 $.ajax({
-                     type: "get",
-                     url: "{{url('get-renew-cost')}}",
-                     data: {'user': user, 'plan': val},
-                     success: function (data) {
-                         var price = data
-                         $("#price").val(price);
-                     }
-                 });
-             }
     </script>
     <style>
         .mdm{
@@ -1230,7 +1361,252 @@ $(function() {
     }
   
 });
+     /*
+      * Increase No. Of Agents
+      */
+     $('#agentplus').on('click',function(){
+         var $agtqty=$(this).parents('.quantity').find('.qty');
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var $agentprice = $(this).parents('.quantity').find('.agentprice');
+         var $currency = $(this).parents('.quantity').find('.currency');
+         var $symbol  = $(this).parents('.quantity').find('.symbol');
+         var currency = $currency.val();//Get the Currency for the Product
+         var symbol = $symbol.val();//Get the Symbol for the Currency
+         var productid = parseInt($productid.val()); //get Product Id
+         var currentAgtQty = parseInt($agtqty.val()); //Get Current Quantity of Prduct
+         var actualAgentPrice = parseInt($agentprice.val());//Get Initial Price of Prduct
+         // console.log(productid,currentVal,actualprice);
+
+         var finalAgtqty = $('#agtqty').val(currentAgtQty + 1).val();
+         var finalAgtprice = $('#agentprice').val(actualAgentPrice * finalAgtqty).val();
+
+         $.ajax({
+             type: "POST",
+             data:{'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+             },
+             url: "{{url('update-agent-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+     /*
+     *Decrease No. of Agents
+      */
+     $(document).ready(function(){
+         var currentagtQty = $('#agtqty').val();
+         if(currentagtQty>1) {
+             $('#agentminus').on('click', function () {
+
+                 var $agtqty = $(this).parents('.quantity').find('.qty');
+                 var $productid = $(this).parents('.quantity').find('.productid');
+                 var $agentprice = $(this).parents('.quantity').find('.agentprice');
+                 var $currency = $(this).parents('.quantity').find('.currency');
+                 var $symbol = $(this).parents('.quantity').find('.symbol');
+                 var currency = $currency.val();//Get the Currency for the Product
+                 var symbol = $symbol.val();//Get the Symbol for the Currency
+                 var productid = parseInt($productid.val()); //get Product Id
+                 var currentAgtQty = parseInt($agtqty.val()); //Get Current Agent of Prduct
+                 var actualAgentPrice = parseInt($agentprice.val()); //Get Initial Price of Prduct
+                 // console.log(productid,currentVal,actualprice);
+                 console.log(actualAgentPrice);
+                 if (!isNaN(currentAgtQty)) {
+                     var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val(); //Quantity After decreasinf
+                     var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val(); //Final Price aftr decresing  qty
+                 }
+                 $.ajax({
+                     type: "POST",
+                     data: {'productid': productid},
+                     beforeSend: function () {
+                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                     },
+                     url: "{{url('reduce-agent-qty')}}",
+                     success: function () {
+                         location.reload();
+                     }
+                 });
+
+             });
+         }
+
+     });
+
+
+
+
+     /*
+     *Increse Product Quantity
+      */
+     $('#quantityplus').on('click',function(){
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var productid = parseInt($productid.val()); //get Product Id
+         // console.log(productid,currentVal,actualprice);
+         $.ajax({
+             type: "POST",
+             data: {'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+             },
+             url: "{{url('update-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+
+     /*
+      * Reduce Procut Quantity
+      */
+     $('#quantityminus').on('click',function(){
+         var $qty=$(this).parents('.quantity').find('.qty');
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var $price = $(this).parents('.quantity').find('.quatprice');
+         var productid = parseInt($productid.val()); //get Product Id
+         var currentQty = parseInt($qty.val()); //Get Current Quantity of Prduct
+         var incraesePrice = parseInt($price.val()); //Get Initial Price of Prduct
+         if (!isNaN(currentQty)) {
+             var finalqty = $('#qty').val(currentQty -1 ).val() ; //Quantity After Increasing
+             var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
+         }
+         $.ajax({
+             type: "POST",
+             data: {'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+             },
+             url: "{{url('reduce-product-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+
+     function Addon(id){
+         $.ajax({
+             type: "GET",
+             data:{"id": id, "category": "addon"},
+             url: "{{url('cart')}}",
+             success: function (data) {
+                 location.reload();
+             }
+         });
+     }
+
+
+
+
+    $(document).ready(function() {
+        $('#changeDomain').on('click', function() {
+            var newDomain = $('#clouduserdomain').val();
+            var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->value('installation_path') !!}";
+
+            $.ajax({
+                type: "POST",
+                data: { 'newDomain': newDomain, 'currentDomain': currentDomain },
+                beforeSend: function() {
+                    $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                url: "{{ url('change/domain') }}",
+                success: function() {
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        $('#agentNumber').on('click', function() {
+            var newAgents = $('#number').val();
+            var orderId = {!! $id !!};
+            var productId ={!! $product->id !!};
+
+            $.ajax({
+                type: "POST",
+                data: { 'newAgents': newAgents, 'orderId': orderId, 'product_id':productId },
+                beforeSend: function() {
+                    $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                url: "{{ url('changeAgents') }}",
+                success: function() {
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        $('#upgradedowngrade').on('click', function() {
+            var planId = $('select[name="plan"]').val();
+            var user = $('input[name="user"]').val();
+            var Price = $('input[name="cost"]').val();
+            var agents = {{$latestAgents}};
+            $.ajax({
+                type: "POST",
+                data: { 'id': planId, 'price': Price, 'agents': agents,'userId': user },
+                beforeSend: function() {
+                    $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                url: "{{ url('upgradeDowngradeCloud') }}",
+                success: function (data) {
+                    window.location.href = data.redirectTo;
+                    if (data.message =='success'){
+                        window.location = data.redirectTo;
+                        var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                        $('#response').html(result);
+                        $('#response').css('color', 'green');
+                        setTimeout(function(){
+                            window.location.reload();
+                        },3000);
+                    }
+
+                }, error: function(err) {
+                }
+
+            });
+        });
+    });
+
+
 </script>
+ <script>
+     function getPrice(val) {
+         var user = document.getElementsByName('user')[0].value;
+         $.ajax({
+             type: "POST",
+             url: "{{url('get-cloud-upgrade-cost')}}",
+             data: {'user': user, 'plan': val, 'agents': {{$latestAgents}}},
+             success: function (data) {
+                 $(".price").val(data);
+             }
+         });
+     }
+
+
+ </script>
+ <style>
+     .card {
+         transition: box-shadow 0.3s ease;
+         margin-bottom: 20px;
+         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+     }
+
+     .card:hover {
+         box-shadow: 0 0 10px rgba(0, 136, 204, 0.8);
+     }
+     .modal {
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+     }
+     .card-title{
+         color: #0088CC;
+     }
+ </style>
+
 
 
 @stop

@@ -505,14 +505,23 @@ Route::middleware('installAgora')->group(function () {
      */
 
     Route::resource('third-party-keys', ThirdPartyAppController::class);
+
     Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
+
     Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
+
     Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
+
     Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
-    Route::post('change/domain', [Tenancy\TenantController::class, 'changeDomain']);
+
+    Route::post('change/domain', [Tenancy\CloudExtraActivities::class, 'changeDomain']);
+
     Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
+
     Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
+
     Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
+
     Route::get('delete/domain/{orderNumber}/{isDelete}', [Tenancy\TenantController::class, 'DeleteCloudInstanceForClient']);
 
     Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
@@ -520,6 +529,18 @@ Route::middleware('installAgora')->group(function () {
     Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
 
     Route::post('upgrade-plan-for-cloud', [Tenancy\CloudExtraActivities::class, 'upgradePlan']);
+
+    Route::get('api/domain',[Tenancy\CloudExtraActivities::class,'domainCloudAutofill']);
+
+    Route::post('api/takeCloudDomain',[Tenancy\CloudExtraActivities::class,'orderDomainCloudAutofill']);
+
+    Route::post('get-cloud-upgrade-cost',[Tenancy\CloudExtraActivities::class,'getUpgradeCost']);
+
+    Route::post('changeAgents',[Tenancy\CloudExtraActivities::class,'agentAlteration']);
+
+    Route::post('upgradeDowngradeCloud',[Tenancy\CloudExtraActivities::class,'upgradeDowngradeCloud']);
+
+
 
     /*
      * Api

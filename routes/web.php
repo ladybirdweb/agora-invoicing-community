@@ -545,6 +545,18 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
 
+    Route::get('api/domain',[Tenancy\CloudExtraActivities::class,'domainCloudAutofill']);
+
+    Route::post('api/takeCloudDomain',[Tenancy\CloudExtraActivities::class,'orderDomainCloudAutofill']);
+
+    Route::post('get-cloud-upgrade-cost',[Tenancy\CloudExtraActivities::class,'getUpgradeCost']);
+
+    Route::post('changeAgents',[Tenancy\CloudExtraActivities::class,'agentAlteration']);
+
+    Route::post('upgradeDowngradeCloud',[Tenancy\CloudExtraActivities::class,'upgradeDowngradeCloud']);
+
+
+
     /*
      * Api
      */

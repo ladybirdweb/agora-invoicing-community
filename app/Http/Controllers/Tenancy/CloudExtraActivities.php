@@ -165,7 +165,7 @@ class CloudExtraActivities extends Controller
         $company = str_replace(' ', '', $company);
 
         // Convert uppercase letters to lowercase
-        $company = substr(strtolower($company), 0, 28);
+        $company = strtolower($company);
 
         // Output the modified company value
         return response()->json(['data'=> $company]);
@@ -191,6 +191,7 @@ class CloudExtraActivities extends Controller
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
+
     }
 
     public function changeDomain(Request $request)
@@ -244,6 +245,7 @@ class CloudExtraActivities extends Controller
                     ],
                 ]);
             } else {
+
                 $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -288,28 +290,28 @@ class CloudExtraActivities extends Controller
         }
     }
 
-    public function agentAlteration(Request $request)
-    {
+
+     public function agentAlteration(Request $request){
         try {
             $newAgents = $request->newAgents;
             $orderId = $request->input('orderId');
             $installation_path = InstallationDetail::where('order_id', $orderId)
                 ->value('installation_path');
             $product_id = $request->product_id;
-            if (! $this->checktheAgent($newAgents, $installation_path)) {
+            if (!$this->checktheAgent($newAgents, $installation_path)) {
                 return response(['status' => false, 'message' => trans('message.agent_reduce')]);
             }
             $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
             $len = strlen($newAgents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
                 case '1':
-                    $lastFour = '000'.$newAgents;
+                    $lastFour = '000' . $newAgents;
                     break;
                 case '2':
-                    $lastFour = '00'.$newAgents;
+                    $lastFour = '00' . $newAgents;
                     break;
                 case '3':
-                    $lastFour = '0'.$newAgents;
+                    $lastFour = '0' . $newAgents;
                     break;
                 case '4':
                     $lastFour = $newAgents;
@@ -317,7 +319,7 @@ class CloudExtraActivities extends Controller
                 default:
                     $lastFour = '0000';
             }
-            $license_code = substr($oldLicense, 0, -4).$lastFour;
+            $license_code = substr($oldLicense, 0, -4) . $lastFour;
             (new LicenseController())->updateLicense($license_code, $oldLicense);
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
@@ -328,42 +330,40 @@ class CloudExtraActivities extends Controller
             $client = new Client([]);
             $client->request(
                 'POST',
-                $this->cloud->cloud_central_domain.'/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                $this->cloud->cloud_central_domain . '/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
             );
 
-            Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12).$lastFour)]);
-
+            Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12) . $lastFour)]);
             return response(['status' => true, 'message' => trans('message.agent_updated')]);
-        } catch(\Exception $e) {
+        }
+        Catch(\Exception $e){
             Logger::exception($e);
-
             return response(['status' => false, 'message' => trans('message.wrong_agent')]);
         }
-    }
+     }
+     public function upgradeDowngradeCloud(Request $request){
+         try {
+             $qty = 1;
+             $planId =  $request->id;
+             $price = $request->price;
+             $agents = $request->agents;
+             $product_id = Plan::where('id',$planId)->pluck('product')->first();
 
-    public function upgradeDowngradeCloud(Request $request)
-    {
-        try {
-            $qty = 1;
-            $planId = $request->id;
-            $price = $request->price;
-            $agents = $request->agents;
-            $product_id = Plan::where('id', $planId)->pluck('product')->first();
+             $product = Product::find($product_id);
+             $plan = $product->planRelation->find($planId);
+             $currency = userCurrencyAndPrice('', $plan);
 
-            $product = Product::find($product_id);
-            $plan = $product->planRelation->find($planId);
-            $currency = userCurrencyAndPrice('', $plan);
 
-            $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
-                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product, ];
+             $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
+                 'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product,];
 
-            \Cart::add($items); //Add Items To the Cart Collection
+             \Cart::add($items); //Add Items To the Cart Collection
 
-            return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
-        } catch(\Exception $e) {
-            app('log')->error($e->getMessage());
-
-            return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
-        }
-    }
+             return response()->json(['redirectTo' => env('APP_URL') . '/show/cart']);
+         }
+         Catch(\Exception $e){
+             app('log')->error($e->getMessage());
+             return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
+         }
+     }
 }

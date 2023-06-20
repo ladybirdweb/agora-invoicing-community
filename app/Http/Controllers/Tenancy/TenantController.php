@@ -500,4 +500,5 @@ class TenantController extends Controller
             'body' => json_encode($message),
         ]);
     }
+
 }

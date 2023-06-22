@@ -149,7 +149,6 @@ class ProcessController extends Controller
 
     public function response(Request $request)
     {
-        dd('jiji');
         $id = '';
         $url = 'checkout';
         if (\Session::has('invoiceid')) {

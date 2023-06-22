@@ -264,7 +264,7 @@ $json = json_encode($data);
             ];
 
             if($product->type == '4'){
-                $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
+               // $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
             }
 
             if ($price == '0' && $product->type != '4') {
@@ -570,7 +570,7 @@ $json = json_encode($data);
                             <div class="col col-6">
                         <div class="card" data-toggle="modal" data-target="#numberOfAgentsModal">
                             <div class="card-body">
-                                <h5 class="card-title">Increase or decrease the number of agents</h5>
+                                <h5 class="card-title">Increase or decrease your agents</h5>
                                 <p class="card-text">Click to update the number of agents.</p>
                             </div>
                         </div>
@@ -597,27 +597,33 @@ $json = json_encode($data);
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <script>
-                                            $(document).ready(function() {
-                                                var orderId = {{$id}};
-                                                $.ajax({
-                                                    data:{'orderId' : orderId},
-                                                    url: '{{url("/api/takeCloudDomain")}}',
-                                                    method: 'POST',
-                                                    dataType: 'json',
-                                                    success: function(data) {
-                                                        $('#clouduserdomain').val(data.data);
-                                                    },
-                                                    error: function(error) {
-                                                        console.error('Error:', error);
-                                                    }
+                                        <div class="form-group">
+                                            <script>
+                                                $(document).ready(function() {
+                                                    var orderId = {{$id}};
+                                                    $.ajax({
+                                                        data:{'orderId' : orderId},
+                                                        url: '{{url("/api/takeCloudDomain")}}',
+                                                        method: 'POST',
+                                                        dataType: 'json',
+                                                        success: function(data) {
+                                                            $('#clouduserdomain').val(data.data);
+                                                        },
+                                                        error: function(error) {
+                                                            console.error('Error:', error);
+                                                        }
+                                                    });
                                                 });
-                                            });
-                                        </script>
-                                        <input type="text" name="clouddomain" autocomplete="off" id="clouduserdomain" class="form-control" placeholder="Domain" required>
+                                            </script>
+                                            {!! Form::label('clouddomain', 'Cloud Domain:', ['class' => 'col-12']) !!}
+                                            <div class="col-12">
+                                                {!! Form::text('clouddomain', null, ['class' => 'form-control', 'id' => 'clouduserdomain', 'autocomplete' => 'off', 'placeholder' => 'Domain', 'required']) !!}
+                                            </div>
+                                        </div>
                                     </div>
+
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="changeDomain">Submit</button>
+                                        <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -637,18 +643,23 @@ $json = json_encode($data);
                                         <?php
                                         $latestAgents = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->latest()->value('agents');
                                         ?>
-                                        <script>
-                                            $(document).ready(function() {
-                                                var numberOfagents = {{$latestAgents}};
-                                                $('#number').val(numberOfagents);
-                                            });
-                                        </script>
-                                        <div class="quantity">
-                                            <input data-v-e381b3b5="" class="form-control" type="number" id="number" min="0" placeholder="">
+                                        <div class="form-group">
+                                            {!! Form::label('number', 'Number of Agents:', ['class' => 'col-12']) !!}
+                                            <div class="col-12">
+                                                <script>
+                                                    $(document).ready(function() {
+                                                        var numberOfagents = {{$latestAgents}};
+                                                        $('#number').val(numberOfagents);
+                                                    });
+                                                </script>
+                                                <div class="quantity">
+                                                    {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'number', 'min' => '1', 'placeholder' => '']) !!}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="agentNumber">Submit</button>
+                                        <button type="button" class="btn btn-primary" id="agentNumber"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -666,7 +677,7 @@ $json = json_encode($data);
                                     </div>
                                     <div class="modal-body">
                                         <?php
-
+                                        // Retrieve the plans data as before
                                         $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
                                             ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
                                             ->where('plans.product','!=',$product->id)
@@ -676,25 +687,38 @@ $json = json_encode($data);
                                             ->pluck('plans.name', 'plans.id')
                                             ->toArray();
 
-                                        //add more cloud ids until we have a generic way to differentiate
+                                        // Add more cloud IDs until we have a generic way to differentiate
                                         if(in_array($product->id,[117,119])){
                                             $plans = array_filter($plans, function ($value) {
                                                 return stripos($value, 'free') === false;
                                             });
                                         }
                                         ?>
-                                        <div class="row">
-                                            &nbsp;
-                                            {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control col-6','onchange'=>'getPrice(this.value)']) !!}
-                                            {!! Form::hidden('user',\Auth::user()->id) !!}
-                                            &nbsp;
-                                            {!! Form::text('cost',null,['class' => 'form-control price col-6','id'=>'price','readonly'=>'readonly']) !!}
+                                        <div class="form-group">
+                                            {!! Form::label('plan', 'Select Plan:', ['class' => 'col-12']) !!}
+                                            <div class="col-12">
+                                                {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-12">
+                                                {!! Form::hidden('user', \Auth::user()->id) !!}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {!! Form::label('cost', 'Cost:', ['class' => 'col-12']) !!}
+                                            <div class="col-12">
+                                                {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="upgradedowngrade">Submit</button>
+                                        <button type="button" class="btn btn-primary" id="upgradedowngrade">
+                                            <i class="fa fa-check"></i> Submit
+                                        </button>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     @endslot
@@ -1500,6 +1524,7 @@ $(function() {
 
     $(document).ready(function() {
         $('#changeDomain').on('click', function() {
+            $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
             var newDomain = $('#clouduserdomain').val();
             var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->value('installation_path') !!}";
 
@@ -1519,6 +1544,7 @@ $(function() {
 
     $(document).ready(function() {
         $('#agentNumber').on('click', function() {
+            $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
             var newAgents = $('#number').val();
             var orderId = {!! $id !!};
             var productId ={!! $product->id !!};
@@ -1539,6 +1565,7 @@ $(function() {
 
     $(document).ready(function() {
         $('#upgradedowngrade').on('click', function() {
+            $('#upgradedowngrade').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
             var planId = $('select[name="plan"]').val();
             var user = $('input[name="user"]').val();
             var Price = $('input[name="cost"]').val();

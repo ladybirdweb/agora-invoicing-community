@@ -33,11 +33,20 @@
                         {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'getPrice(this.value)']) !!}
                         {!! Form::hidden('user',$userid) !!}
                     </div>
-
-                
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
+
                         <!-- last name -->
-                        {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
+                         @if(in_array($productid,[117,119]))
+                             <script>
+                                 $(function() {
+                                     $('[data-toggle="tooltip"]').tooltip();
+                                 });
+
+                             </script>
+                             {!! Form::label('cost', Lang::get('message.cloud_price'), ['class' => 'required', 'data-toggle' => 'tooltip', 'title' => 'The price shown here is price of one single agent for your plan the total price will be shown at checkout.']) !!}
+                         @else
+                             {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
+                         @endif
                         {!! Form::text('cost',null,['class' => 'form-control price','id'=>'price','readonly'=>'readonly']) !!}
 
                     </div>

@@ -697,6 +697,7 @@ return [
     'cname' => 'Your domain\'s DNS CNAME record is not pointing to our cloud. Please ensure that the CNAME record is correctly set to proceed with the desired action. Please <a href="https://docs.faveohelpdesk.com/docs/helper/cname">Click here!</a> to know more.',
     'cloud_heading' => 'Let\'s create your Faveo cloud instance together!',
     'cloud_field_label' => 'Enter your desired cloud domain name',
+    'cloud_price' =>'Price per agent',
 
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',

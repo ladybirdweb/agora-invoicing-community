@@ -287,6 +287,19 @@ Settings
                     </div>
                 </div>
 
+                   <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('settings/paymentlog') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-money-check-alt fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Payment Log</p>
+                    </div>
+                </div>
+
           <!--        <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">

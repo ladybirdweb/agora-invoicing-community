@@ -234,6 +234,12 @@ Route::middleware('installAgora')->group(function () {
     Route::post('v3captchaDetails', [Common\BaseSettingsController::class, 'v3captchaDetails'])->name('v3captchaDetails');
     Route::get('demo/page', [Front\PageController::class, 'VewDemoPage']);
     Route::post('save/demo', [Front\PageController::class, 'saveDemoPage']);
+    Route::get('settings/paymentlog', [Common\SettingsController::class, 'settingsPayment']);
+    Route::get('get-paymentlog', [Common\SettingsController::class, 'getPaymentlog'])->name('get-paymentlog');
+    Route::delete('paymentlog-delete', [Common\SettingsController::class, 'destroyPayment'])->name('paymentlog-delete');
+
+
+
 
     /*
      * Client

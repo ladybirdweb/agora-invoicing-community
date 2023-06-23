@@ -228,6 +228,12 @@ Route::middleware('installAgora')->group(function () {
     Route::post('replace-sales-manager', [Common\SystemManagerController::class, 'replaceSalesManager'])->name('replace-sales-manager');
     Route::get('debugg', [Common\SettingsController::class, 'debugSettings']);
     Route::post('save/debugg', [Common\SettingsController::class, 'postdebugSettings']);
+    Route::get('settings/paymentlog', [Common\SettingsController::class, 'settingsPayment']);
+    Route::get('get-paymentlog', [Common\SettingsController::class, 'getPaymentlog'])->name('get-paymentlog');
+    Route::delete('paymentlog-delete', [Common\SettingsController::class, 'destroyPayment'])->name('paymentlog-delete');
+
+
+
 
     /*
      * Client

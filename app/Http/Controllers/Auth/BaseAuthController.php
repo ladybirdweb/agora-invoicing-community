@@ -10,7 +10,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
-use App\VerificationAttempt;
 use Symfony\Component\Mime\Email;
 
 class BaseAuthController extends Controller
@@ -50,9 +49,9 @@ class BaseAuthController extends Controller
     /**
      * Sends Otp.
      */
-    public  function sendOtp($mobile, $code)
+    public function sendOtp($mobile, $code)
     {
-        $user = User::where('mobile',$mobile)->first();
+        $user = User::where('mobile', $mobile)->first();
         $this->mobileVerificationAttempt($user);
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
@@ -64,7 +63,6 @@ class BaseAuthController extends Controller
             // 'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
 
-
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
         if ($array['type'] == 'error') {
@@ -72,9 +70,6 @@ class BaseAuthController extends Controller
         }
 
         return $array['type'];
-        
-        
-
     }
 
     /**
@@ -82,7 +77,7 @@ class BaseAuthController extends Controller
      */
     public function sendForReOtp($mobile, $code, $type)
     {
-        $user = User::where('mobile',$mobile)->first();
+        $user = User::where('mobile', $mobile)->first();
         $this->mobileVerificationAttempt($user);
 
         $client = new \GuzzleHttp\Client();
@@ -99,7 +94,6 @@ class BaseAuthController extends Controller
         }
 
         return $array['type'];
-        
     }
 
     /**
@@ -281,29 +275,27 @@ class BaseAuthController extends Controller
 
     public function emailverificationAttempt($user)
     {
-
         $attempt = $user->verificationAttempts()->where('type', 'email')->first();
-        if($attempt) {
-         $attempt->attempt_count = $attempt->attempt_count + 1;
-         $user->verificationAttempts()->where('type', 'email')->update(['attempt_count' => $attempt->attempt_count]);
+        if ($attempt) {
+            $attempt->attempt_count = $attempt->attempt_count + 1;
+            $user->verificationAttempts()->where('type', 'email')->update(['attempt_count' => $attempt->attempt_count]);
 
-         // var_dump($attempt->attempt_count);
-         } else {
-        $emailAttempt = $user->verificationAttempts()->create(['type' => 'email', 'attempt_count' => 1]);
+            // var_dump($attempt->attempt_count);
+        } else {
+            $emailAttempt = $user->verificationAttempts()->create(['type' => 'email', 'attempt_count' => 1]);
         }
     }
+
     public function mobileVerificationAttempt($user)
     {
+        $mobileAttempt = $user->verificationAttempts()->where('type', 'mobile')->first();
+        if ($mobileAttempt) {
+            $mobileAttempt->attempt_count = $mobileAttempt->attempt_count + 1;
+            $user->verificationAttempts()->where('type', 'mobile')->update(['attempt_count' => $mobileAttempt->attempt_count]);
 
-    $mobileAttempt = $user->verificationAttempts()->where('type', 'mobile')->first();
-    if ($mobileAttempt) {
-        $mobileAttempt->attempt_count = $mobileAttempt->attempt_count+1;
-        $user->verificationAttempts()->where('type', 'mobile')->update(['attempt_count' => $mobileAttempt->attempt_count]);
-
-        // var_dump($mobileAttempt->attempt_count);
-    } else {
-        $mobileAttempt = $user->verificationAttempts()->create(['type' => 'mobile', 'attempt_count' => 1]);
-
-    }
+            // var_dump($mobileAttempt->attempt_count);
+        } else {
+            $mobileAttempt = $user->verificationAttempts()->create(['type' => 'mobile', 'attempt_count' => 1]);
+        }
     }
 }

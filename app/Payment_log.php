@@ -12,5 +12,4 @@ class Payment_log extends Model
     protected $table = 'payment_logs';
 
     protected $fillable = ['id', 'from', 'to', 'date', 'subject', 'body', 'status', 'created_at'];
-
 }

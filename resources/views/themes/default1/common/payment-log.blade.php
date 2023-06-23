@@ -1,20 +1,21 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Email Logs
+Payment Logs
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Email Log</h1>
+        <h1>Payment Log</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
-            <li class="breadcrumb-item active">Email Log</li>
+            <li class="breadcrumb-item active">Payment Log</li>
         </ol>
     </div><!-- /.col -->
 @stop
 @section('content')
+
 
 <div class="card card-secondary card-outline">
 
@@ -34,10 +35,10 @@ Email Logs
                          <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('from','From') !!}
-                            <div class="input-group date" id="maillogreservationdate_from" data-target-input="nearest">
-                                <input type="text" name="mailfrom" class="form-control datetimepicker-input" autocomplete="off" value="" data-target="#maillogreservationdate_from"/>
+                            <div class="input-group date" id="paymentreservationdate_from" data-target-input="nearest">
+                                <input type="text" name="from" class="form-control datetimepicker-input" autocomplete="off" value="" data-target="#paymentreservationdate_from"/>
 
-                                <div class="input-group-append" data-target="#maillogreservationdate_from" data-toggle="datetimepicker">
+                                <div class="input-group-append" data-target="#paymentreservationdate_from" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
 
@@ -47,10 +48,10 @@ Email Logs
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('till','Till') !!}
-                            <div class="input-group date" id="mailligreservationdate" data-target-input="nearest">
-                                <input type="text" name="mailtill" class="form-control datetimepicker-input" autocomplete="off" value="" data-target="#mailligreservationdate"/>
+                            <div class="input-group date" id="paymentreservationdate" data-target-input="nearest">
+                                <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off" value="" data-target="#paymentreservationdate"/>
 
-                                <div class="input-group-append" data-target="#mailligreservationdate" data-toggle="datetimepicker">
+                                <div class="input-group-append" data-target="#paymentreservationdate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
 
@@ -65,13 +66,17 @@ Email Logs
                 <!-- /.card-body -->
                     <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
-                    <a href="{!! url('settings/maillog') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    <a href="{!! url('settings/paymentlog') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
             
 
 
 </div>
 
 </div>
+
+
+ 
+
 
 
 </style>
@@ -83,10 +88,10 @@ Email Logs
   <div class="row">
           <div class="col-md-12">
 
-	
+    
          
                            
-             <table id="email-table" class="table display" cellspacing="0"  styleClass="borderless">
+             <table id="payment-table" class="table display" cellspacing="0"  styleClass="borderless">
                      <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
@@ -117,18 +122,14 @@ Email Logs
 
 <script type="text/javascript">
   
-        $('#email-table').DataTable({
+        $('#payment-table').DataTable({
           
            
-             processing: true,
-             serverSide: true,
-             ordering: true,
-             searching:true,
-             select: true,
+            processing: true,
+            serverSide: true,
             order: [[ 1, "asc" ]],
              ajax: {
-            url: "{!! route('get-email', ['from' => $from, 'till' => $till]) !!}",
-
+            "url":  '{!! route('get-paymentlog',"from=$from&till=$till") !!}',
                error: function(xhr) {
                    
                if(xhr.status == 401) {
@@ -174,7 +175,7 @@ Email Logs
         });
     </script>
 <!-- <script>
-    $(document).on('click','#email-table tbody tr td .read-more',function(){
+    $(document).on('click','#payment-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');
         console.log(text)
         $(this).siblings(".more-text").html(text);
@@ -185,10 +186,11 @@ Email Logs
     $('[data-toggle="popover"]').popover()
     })
 </script> -->
-    <script>
+
+ <script>
 
        function checking(e){
-              $('#email-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+              $('#payment-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
          }
          
 
@@ -202,7 +204,7 @@ Email Logs
                 if(id.length >0)
                 { 
                    $.ajax({
-                          url:"{!! route('email-delete') !!}",
+                          url:"{!! route('paymentlog-delete') !!}",
                           method:"delete",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {
@@ -227,8 +229,6 @@ Email Logs
 
        
     </script>
-
-
     @stop
 @section('datepicker')
 
@@ -244,10 +244,10 @@ Email Logs
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 
 
-       $('#mailligreservationdate').datetimepicker({
+       $('#paymentreservationdate').datetimepicker({
        format: 'L'
    });
-        $('#maillogreservationdate_from').datetimepicker({
+        $('#paymentreservationdate_from').datetimepicker({
         format: 'L'
     });
 </script>

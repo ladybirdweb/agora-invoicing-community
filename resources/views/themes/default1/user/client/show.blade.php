@@ -373,6 +373,14 @@ User
                                         <li class="list-group-item">
                                             <b>Referrer</b>: <span class="pull-right referrer" style="float:right;"></span>
                                         </li>
+                                        <li class="list-group-item">
+                                        <b>Number of Email Verification Attempts:</b>
+                                        <span class="pull-right mailVerify" style="float:right;">{{ $email }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Number of Mobile Verification Attempts:</b>
+                                        <span class="pull-right mobileVerify" style="float:right;">{{$mobile}}</span>
+                                    </li>
 
 
                                 </ul>

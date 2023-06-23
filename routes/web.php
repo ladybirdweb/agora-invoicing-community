@@ -237,9 +237,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-paymentlog', [Common\SettingsController::class, 'getPaymentlog'])->name('get-paymentlog');
     Route::delete('paymentlog-delete', [Common\SettingsController::class, 'destroyPayment'])->name('paymentlog-delete');
 
-
-
-
     /*
      * Client
      */

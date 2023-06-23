@@ -17,7 +17,6 @@ use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
 use Yajra\DataTables\DataTables;
-use App\verificationAttempts;
 
 class ClientController extends AdvanceSearchController
 {
@@ -307,12 +306,12 @@ class ClientController extends AdvanceSearchController
             $orders = $order->where('client', $id)->get();
             $comments = Comment::where('user_id', $client->id)->get();
             $mobile = $client->verificationAttempts()->where('type', 'mobile')->value('attempt_count');
-             $email = $client->verificationAttempts()->where('type', 'email')->value('attempt_count');
+            $email = $client->verificationAttempts()->where('type', 'email')->value('attempt_count');
 
             return view(
                 'themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'orders', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt', 'comments',
-                    'is2faEnabled','email','mobile')
+                    'is2faEnabled', 'email', 'mobile')
             );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());

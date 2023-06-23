@@ -12,6 +12,7 @@ use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
 use Symfony\Component\Mime\Email;
+use App\User;
 use Validator;
 
 class SettingsController extends Controller

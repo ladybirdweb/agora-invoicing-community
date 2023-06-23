@@ -10,6 +10,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
+use App\VerificationAttempt;
 use Symfony\Component\Mime\Email;
 
 class BaseAuthController extends Controller
@@ -49,8 +50,10 @@ class BaseAuthController extends Controller
     /**
      * Sends Otp.
      */
-    public static function sendOtp($mobile, $code)
+    public  function sendOtp($mobile, $code)
     {
+        $user = User::where('mobile',$mobile)->first();
+        $this->mobileVerificationAttempt($user);
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
@@ -61,6 +64,7 @@ class BaseAuthController extends Controller
             // 'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
 
+
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
         if ($array['type'] == 'error') {
@@ -68,6 +72,9 @@ class BaseAuthController extends Controller
         }
 
         return $array['type'];
+        
+        
+
     }
 
     /**
@@ -75,6 +82,9 @@ class BaseAuthController extends Controller
      */
     public function sendForReOtp($mobile, $code, $type)
     {
+        $user = User::where('mobile',$mobile)->first();
+        $this->mobileVerificationAttempt($user);
+
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
@@ -89,6 +99,7 @@ class BaseAuthController extends Controller
         }
 
         return $array['type'];
+        
     }
 
     /**
@@ -163,6 +174,8 @@ class BaseAuthController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         $html = $template->data;
+        $this->emailverificationAttempt($user);
+
         try {
             $activate_model = new AccountActivate();
             if (! $user) {
@@ -264,5 +277,33 @@ class BaseAuthController extends Controller
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $mailchimp->addSubscriber($user->email);
         }
+    }
+
+    public function emailverificationAttempt($user)
+    {
+
+        $attempt = $user->verificationAttempts()->where('type', 'email')->first();
+        if($attempt) {
+         $attempt->attempt_count = $attempt->attempt_count + 1;
+         $user->verificationAttempts()->where('type', 'email')->update(['attempt_count' => $attempt->attempt_count]);
+
+         // var_dump($attempt->attempt_count);
+         } else {
+        $emailAttempt = $user->verificationAttempts()->create(['type' => 'email', 'attempt_count' => 1]);
+        }
+    }
+    public function mobileVerificationAttempt($user)
+    {
+
+    $mobileAttempt = $user->verificationAttempts()->where('type', 'mobile')->first();
+    if ($mobileAttempt) {
+        $mobileAttempt->attempt_count = $mobileAttempt->attempt_count+1;
+        $user->verificationAttempts()->where('type', 'mobile')->update(['attempt_count' => $mobileAttempt->attempt_count]);
+
+        // var_dump($mobileAttempt->attempt_count);
+    } else {
+        $mobileAttempt = $user->verificationAttempts()->create(['type' => 'mobile', 'attempt_count' => 1]);
+
+    }
     }
 }

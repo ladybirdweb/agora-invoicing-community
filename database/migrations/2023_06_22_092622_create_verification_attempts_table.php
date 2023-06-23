@@ -16,12 +16,11 @@ return new class extends Migration
         if (! Schema::hasTable('verification_attempts')) {
        Schema::create('verification_attempts', function (Blueprint $table) {
         $table->bigIncrements('id');
-        $table->unsignedBigInteger('user_id');
+        $table->integer('user_id')->unsigned()->index('verification_attempts_user_id_foreign');
         $table->string('type');
         $table->unsignedInteger('attempt_count');
         $table->timestamps();
 
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
       });
     }
     }

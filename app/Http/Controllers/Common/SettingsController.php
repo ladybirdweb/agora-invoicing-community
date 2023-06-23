@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
-use App\Payment_log;
+use App\Http\Controllers\Order\OrderSearchController;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
@@ -13,12 +13,12 @@ use App\Model\Common\Template;
 use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
+use App\Payment_log;
 use App\User;
 use DB;
 use File;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
-use App\Http\Controllers\Order\OrderSearchController;
 use Yajra\DataTables\DataTables;
 
 class SettingsController extends BaseSettingsController
@@ -330,7 +330,8 @@ class SettingsController extends BaseSettingsController
         try {
             $from = $request->input('mailfrom');
             $till = $request->input('mailtill');
-            return view('themes.default1.common.email-log',compact('from','till'));
+
+            return view('themes.default1.common.email-log', compact('from', 'till'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -420,11 +421,8 @@ class SettingsController extends BaseSettingsController
     public function getMails(Request $request)
     {
         try {
-           
             $from = $request->input('from');
             $till = $request->input('till');
-          
-
 
             $email_log = $this->mailSearch($from, $till);
 
@@ -447,7 +445,8 @@ class SettingsController extends BaseSettingsController
                     return $model->from;
                 })
                 ->addColumn('to', function ($model) {
-                    $id = User::where('email',$model->to)->value('id');
+                    $id = User::where('email', $model->to)->value('id');
+
                     return '<a href='.url('clients/'.$id).'>'.ucfirst($model->to).'<a>';
                 })
 
@@ -483,7 +482,6 @@ class SettingsController extends BaseSettingsController
 
     public function mailSearch($from = '', $till = '')
     {
-       
         $join = new Email_log();
         if ($from) {
             $from = $this->getDateFormat($from);
@@ -497,10 +495,10 @@ class SettingsController extends BaseSettingsController
             $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
             $join = $join->whereBetween('date', [$fromDate, $till]);
         }
- 
+
         $join = $join
         ->select(
-            'id', 'from', 'to', 'date', 'subject','status'
+            'id', 'from', 'to', 'date', 'subject', 'status'
         );
 
         return $join;
@@ -591,150 +589,153 @@ class SettingsController extends BaseSettingsController
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
-    public function settingsPayment(Setting $settings,Request $request)
+    public function settingsPayment(Setting $settings, Request $request)
     {
         try {
             $from = $request->input('from');
             $till = $request->input('till');
-            return view('themes.default1.common.payment-log',compact('from','till'));
+
+            return view('themes.default1.common.payment-log', compact('from', 'till'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
        public function getPaymentlog(Request $request)
-    {
-        try {
-            $from = $request->input('from');
-            $till = $request->input('till');
-            $query = $this->paymentSearch($from, $till);
+       {
+           try {
+               $from = $request->input('from');
+               $till = $request->input('till');
+               $query = $this->paymentSearch($from, $till);
 
-            return Datatables::of($query)
-            ->orderColumn('date', '-date $1')
-            ->orderColumn('from', '-date $1')
-             ->orderColumn('to', '-date $1')
-            ->orderColumn('subject', '-date $1')
+               return Datatables::of($query)
+               ->orderColumn('date', '-date $1')
+               ->orderColumn('from', '-date $1')
+                ->orderColumn('to', '-date $1')
+               ->orderColumn('subject', '-date $1')
 
-                ->addColumn('checkbox', function ($model) {
-                    return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
-                })
+                   ->addColumn('checkbox', function ($model) {
+                       return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
+                   })
 
-                ->addColumn('date', function ($model) {
-                    $date = $model->date;
+                   ->addColumn('date', function ($model) {
+                       $date = $model->date;
 
-                    return getDateHtml($date);
-                })
-                ->addColumn('from', function ($model) {
-                    return $model->from;
-                })
-                ->addColumn('to', function ($model) {
-                    // return $model->to;
-                    $id = User::where('email',$model->to)->value('id');
-                     return '<a href='.url('clients/'.$id).'>'.ucfirst($model->to).'<a>';
-                })
+                       return getDateHtml($date);
+                   })
+                   ->addColumn('from', function ($model) {
+                       return $model->from;
+                   })
+                   ->addColumn('to', function ($model) {
+                       // return $model->to;
+                       $id = User::where('email', $model->to)->value('id');
 
-                ->addColumn('subject', function ($model) {
-                    return ucfirst($model->subject);
-                })
-                ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status', ])
-                ->filterColumn('from', function ($query, $keyword) {
-                    $sql = '`from` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('to', function ($query, $keyword) {
-                    $sql = '`to` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('subject', function ($query, $keyword) {
-                    $sql = '`subject` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('status', function ($query, $keyword) {
-                    $sql = '`status` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status', ])
+                       return '<a href='.url('clients/'.$id).'>'.ucfirst($model->to).'<a>';
+                   })
 
-                ->make(true);
-        } catch (\Exception $e) {
-            dd($e);
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
+                   ->addColumn('subject', function ($model) {
+                       return ucfirst($model->subject);
+                   })
+                   ->rawColumns(['checkbox', 'date', 'from', 'to',
+                       'bcc', 'subject',  'status', ])
+                   ->filterColumn('from', function ($query, $keyword) {
+                       $sql = '`from` like ?';
+                       $query->whereRaw($sql, ["%{$keyword}%"]);
+                   })
+                   ->filterColumn('to', function ($query, $keyword) {
+                       $sql = '`to` like ?';
+                       $query->whereRaw($sql, ["%{$keyword}%"]);
+                   })
+                   ->filterColumn('subject', function ($query, $keyword) {
+                       $sql = '`subject` like ?';
+                       $query->whereRaw($sql, ["%{$keyword}%"]);
+                   })
+                   ->filterColumn('status', function ($query, $keyword) {
+                       $sql = '`status` like ?';
+                       $query->whereRaw($sql, ["%{$keyword}%"]);
+                   })
+                   ->rawColumns(['checkbox', 'date', 'from', 'to',
+                       'bcc', 'subject',  'status', ])
+
+                   ->make(true);
+           } catch (\Exception $e) {
+               dd($e);
+
+               return redirect()->back()->with('fails', $e->getMessage());
+           }
+       }
 
         public function paymentSearch($from = '', $till = '')
-    {
-        $join = new Payment_log();
-        if ($from) {
-            $from = $this->getDateFormat($from);
-            $tills = $this->getDateFormat();
-            $tillDate = (new OrderSearchController())->getTillDate($from, $till, $tills);
-            $join = $join->whereBetween('date', [$from, $tillDate]);
-        }
-        if ($till) {
-            $till = $this->getDateFormat($till);
-            $froms = Payment_log::first()->date;
-            $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
-            $join = $join->whereBetween('date', [$fromDate, $till]);
-        }
- 
-        $join = $join
-        ->select(
-            'id', 'from', 'to', 'date', 'subject','status','created_at'
-        );
+        {
+            $join = new Payment_log();
+            if ($from) {
+                $from = $this->getDateFormat($from);
+                $tills = $this->getDateFormat();
+                $tillDate = (new OrderSearchController())->getTillDate($from, $till, $tills);
+                $join = $join->whereBetween('date', [$from, $tillDate]);
+            }
+            if ($till) {
+                $till = $this->getDateFormat($till);
+                $froms = Payment_log::first()->date;
+                $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
+                $join = $join->whereBetween('date', [$fromDate, $till]);
+            }
 
-        return $join;
-    }
+            $join = $join
+            ->select(
+                'id', 'from', 'to', 'date', 'subject', 'status', 'created_at'
+            );
+
+            return $join;
+        }
 
       public function destroyPayment(Request $request)
-    {
-        try {
-            $ids = $request->input('select');
-            if (! empty($ids)) {
-                foreach ($ids as $id) {
-                    $email = \DB::table('payment_logs')->where('id', $id)->delete();
-                    if ($email) {
-                        // $email->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
+      {
+          try {
+              $ids = $request->input('select');
+              if (! empty($ids)) {
+                  foreach ($ids as $id) {
+                      $email = \DB::table('payment_logs')->where('id', $id)->delete();
+                      if ($email) {
+                          // $email->delete();
+                      } else {
+                          echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+                          /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
 
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                     </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                }
-                echo "<div class='alert alert-success alert-dismissable'>
+                          //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                      }
+                  }
+                  echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
-                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                          ./* @scrutinizer ignore-type */\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
-            } else {
-                echo "<div class='alert alert-danger alert-dismissable'>
+              } else {
+                  echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
-                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                          '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';
-                //echo \Lang::get('message.select-a-row');
-            }
-        } catch (\Exception $e) {
-            echo "<div class='alert alert-danger alert-dismissable'>
+                  //echo \Lang::get('message.select-a-row');
+              }
+          } catch (\Exception $e) {
+              echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                          /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             '.$e->getMessage().'
                     </div>';
-        }
-    }
+          }
+      }
 }

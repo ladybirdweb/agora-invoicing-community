@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
+use App\User;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
 use Symfony\Component\Mime\Email;
-use App\User;
 use Validator;
 
 class SettingsController extends Controller
@@ -168,7 +168,7 @@ class SettingsController extends Controller
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
                     if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total,$user,$invoice->invoiceItem()->first()->product_name);
+                        $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
@@ -188,13 +188,13 @@ class SettingsController extends Controller
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($amount, $e->getMessage(),$invoice->invoiceItem()->first()->product_name,$user);
+                $this->sendFailedPaymenttoAdmin($amount, $e->getMessage(), $invoice->invoiceItem()->first()->product_name, $user);
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($invoice->currency,$invoice->invoiceItem()->first()->product_name,$invoice->grand_total,$e->getMessage(),$user);
+                $this->sendFailedPaymenttoAdmin($invoice->currency, $invoice->invoiceItem()->first()->product_name, $invoice->grand_total, $e->getMessage(), $user);
             }
             \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
@@ -265,7 +265,7 @@ class SettingsController extends Controller
         }
     }
 
-    public static function sendFailedPaymenttoAdmin($currency,$productName,$total, $exceptionMessage,$user)
+    public static function sendFailedPaymenttoAdmin($currency, $productName, $total, $exceptionMessage, $user)
     {
         try {
             $email = (new Email())
@@ -277,8 +277,6 @@ class SettingsController extends Controller
             $mail->payment_log_success($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         } catch (\Exception $e) {
             $mail->payment_log_fail($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.'of'.' '.$user()->currency.' '.$amount.' '.'failed by'.' '.$user()->first_name.' '.$user()->last_name.' '.'. User Email:'.' '.$user()->email.'<br>'.'Reason:'.$exceptionMessage);
-
-           
         }
     }
 
@@ -297,9 +295,7 @@ class SettingsController extends Controller
             $mailer->send($email);
             $mail->payment_log_success($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         } catch (\Exception $e) {
-        $mail->payment_log_fail($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.'of'.' '.$user()->currency.' '.$amount.' '.'failed by'.' '.$user()->first_name.' '.$user()->last_name.' '.'. User Email:'.' '.$user()->email.'<br>'.'Reason:'.$exceptionMessage);
-
-           
+            $mail->payment_log_fail($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.'of'.' '.$user()->currency.' '.$amount.' '.'failed by'.' '.$user()->first_name.' '.$user()->last_name.' '.'. User Email:'.' '.$user()->email.'<br>'.'Reason:'.$exceptionMessage);
         }
     }
 }

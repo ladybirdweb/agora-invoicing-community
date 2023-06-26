@@ -68,9 +68,9 @@ class Kernel extends ConsoleKernel
                 unlink($lockFilePath);
             }
         })->everyFiveMinutes()->name('sendCloudEmail');
-        // $condition = new \App\Model\Mailjob\Condition();
-        // $command = $condition->getConditionValue($task = 'cloud');
-        // $this->getCondition($schedule->job(new NotifyMail), $command);
+        $condition = new \App\Model\Mailjob\Condition();
+        $command = $condition->getConditionValue($task = 'cloud');
+        $this->getCondition($schedule->job(new NotifyMail), $command);
     }
 
     public function execute($schedule, $task)

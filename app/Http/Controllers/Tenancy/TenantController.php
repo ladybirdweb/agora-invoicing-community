@@ -63,41 +63,43 @@ class TenantController extends Controller
     public function getTenants(Request $request)
     {
         try {
-            $response = $this->client->request(
-                'GET',
-                $this->cloud->cloud_central_domain.'/tenants'
-            );
+         $response = $this->client->request(
+        'GET',
+        $this->cloud->cloud_central_domain.'/tenants'
+        );
 
-            $responseBody = (string) $response->getBody();
-            $response = json_decode($responseBody);
+        $responseBody = (string) $response->getBody();
+        $responseData = json_decode($responseBody);
 
-            return \DataTables::of($response)
+        $collection = collect($responseData->message)->reject(function ($item) {
+            return $item === null;
+        });
 
-                ->addColumn('tenants', function ($model) {
-                    return $model->id;
-                })
-                ->addColumn('domain', function ($model) {
-                    return $model->domain;
-                })
-                ->addColumn('db_name', function ($model) {
-                    return $model->database_name;
-                })
-                ->addColumn('db_username', function ($model) {
-                    return $model->database_user_name;
-                })
-                ->addColumn('action', function ($model) {
-                    return "<p><button data-toggle='modal' 
-                 data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
-                 class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
-                 style='color:white;'> </i></button>&nbsp;</p>";
-                })
-                ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
-                ->make(true);
-        } catch (ConnectException|Exception $e) {
+        return \DataTables::collection($collection)
+            ->addColumn('tenants', function ($model) {
+                return $model->id ?? '';
+            })
+            ->addColumn('domain', function ($model) {
+                return $model->domain ?? '';
+            })
+            ->addColumn('db_name', function ($model) {
+                return $model->database_name ?? '';
+            })
+            ->addColumn('db_username', function ($model) {
+                return $model->database_user_name ?? '';
+            })
+            ->addColumn('action', function ($model) {
+                return "<p><button data-toggle='modal' 
+                data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
+                class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
+                style='color:white;'> </i></button>&nbsp;</p>";
+            })
+            ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
+            ->make(true);
+           } catch (ConnectException|Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
-        // $tenants =
     }
 
     private function postCurl($post_url, $post_info)

@@ -54,14 +54,14 @@ class LoginController extends Controller
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
             $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
             $location = getLocation();
-            $google_status = SocialLogin::where('type', 'google')->first()->status;
-            $github_status = SocialLogin::where('type', 'github')->first()->status;
-            $twitter_status = SocialLogin::where('type', 'twitter')->first()->status;
-            $linkedin_status = SocialLogin::where('type', 'linkedin')->first()->status;
 
-            return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag', 'google_status', 'github_status', 'linkedin_status', 'twitter_status'));
+            $google_status = SocialLogin::select('status')->where('type', 'google')->value('status');
+            $github_status = SocialLogin::select('status')->where('type', 'github')->value('status');
+            $twitter_status = SocialLogin::select('status')->where('type', 'twitter')->value('status');
+            $linkedin_status = SocialLogin::select('status')->where('type', 'linkedin')->value('status');
+            
+            return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag', 'google_status', 'github_status', 'linkedin_status', 'twitter_status' ));
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
             $error = $ex->getMessage();
         }
@@ -208,14 +208,15 @@ class LoginController extends Controller
         return redirect($this->redirectPath());
     }
 
+    //stores basic details for social logins
     public function storeBasicDetailsss(Request $request)
     {
         $this->validate($request, [
             'company' => 'required|string',
             'address' => 'required|string',
         ]);
-        $userId = Auth::id();
-        $user = User::find($userId);
+
+        $user = Auth::user();
         $user->company = $request->company;
         $user->address = $request->address;
         $user->save();

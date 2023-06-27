@@ -29,12 +29,11 @@ class SocialLoginsController extends Controller
                 'client_id' => $request->client_id,
                 'client_secret' => $request->client_secret,
                 'redirect_url' => $request->redirect_url,
-                'status' => $request->optradio
+                'status' => $request->optradio,
             ]);
 
             Session::flash('success', 'Social login settings updated successfully');
         } catch (\Exception $e) {
-
             Session::flash('error', 'An error occurred while updating social login settings');
         }
 

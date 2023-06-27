@@ -19,13 +19,30 @@ Social Logins
 
 <div class="row">
     <div class="col-md-12">
+        @if($message = Session::get('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> {{ $message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+        {!! Session::forget('error') !!}
+        @if($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> {{ $message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+        {!! Session::forget('success') !!}
         <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Api Keys</h3>
             </div>
 
             <div class="card-body table-responsive">
-                
                 <form method="POST" action="{{ url('update-social-login') }}">
                     @csrf
 
@@ -43,10 +60,9 @@ Social Logins
                         <input type="password" class="form-control" id="pwd" value="{{old('title', $socialLogins->redirect_url)}}" name="redirect_url">
                     </div>
 
-
                     <label for="email" class="form-label">Activate Login via Google</label>
-                    @if($socialLogins->status ==1)
-                    <div class="form-check" >
+                    @if($socialLogins->status == 1)
+                    <div class="form-check">
                         <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status" checked>Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
@@ -55,8 +71,8 @@ Social Logins
                         <label class="form-check-label" for="radio2"></label>
                     </div>
                     @endif
-                     @if($socialLogins->status ==0)
-                    <div class="form-check" >
+                     @if($socialLogins->status == 0)
+                    <div class="form-check">
                         <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status">Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
@@ -66,8 +82,6 @@ Social Logins
                     </div>
                     @endif
 
-
-
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="fa fa-sync-alt"></i> &nbspUpdate
                     </button>
@@ -75,8 +89,7 @@ Social Logins
             </div>
         </div>
     </div>
- </div>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-    @stop
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+@stop

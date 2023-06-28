@@ -122,7 +122,6 @@ class AuthController extends BaseAuthController
 
     public function requestOtp(Request $request)
     {
-        // dd($request);
         $this->validate($request, [
             // 'code' => 'required|numeric',
             'mobile' => 'required|numeric',

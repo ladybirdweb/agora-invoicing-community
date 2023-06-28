@@ -49,8 +49,8 @@ return [
         'redirect' => '', //https://developers.productdemourl.com/Agurmeen/agoraBilling/public/auth/callback
     ],
     'google' => [
-        'client_id' => '',//15644360529-pufkmq6kgrcj0aqe4e6i23tjvb02a5mg.apps.googleusercontent.com
-        'client_secret' => '',//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'
+        'client_id' => '', //15644360529-pufkmq6kgrcj0aqe4e6i23tjvb02a5mg.apps.googleusercontent.com
+        'client_secret' => '', //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'
         'redirect' => '', //https://developers.productdemourl.com/Agurmeen/agoraBilling/public/auth/callback
     ],
     'twitter' => [

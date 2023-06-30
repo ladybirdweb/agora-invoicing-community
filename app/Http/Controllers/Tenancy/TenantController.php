@@ -80,8 +80,7 @@ class TenantController extends Controller
                     return $model->id ?? '';
                 })
                 ->addColumn('domain', function ($model) {
-                    return '<a href="http://' . $model->domain . '" target="_blank">' . $model->domain . '</a>';
-
+                    return '<a href="http://'.$model->domain.'" target="_blank">'.$model->domain.'</a>';
                 })
                 ->addColumn('db_name', function ($model) {
                     return $model->database_name ?? '';

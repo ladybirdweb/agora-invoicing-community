@@ -176,6 +176,9 @@ $(document).ready(function(){
                 "sSearch"    : "Search: ",
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
+            columnDefs: [
+             { orderable: false, targets:4 }
+          ],
        
             columns: [
                 {data: 'tenants', name: 'tenants'},

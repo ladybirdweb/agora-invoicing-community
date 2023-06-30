@@ -106,6 +106,7 @@ Tenants
 </div>
 
 </div>
+@if($cloud != null)
    <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">Tenants</h3>
@@ -139,6 +140,7 @@ Tenants
     </div>
 
 </div>
+@endif
 
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">

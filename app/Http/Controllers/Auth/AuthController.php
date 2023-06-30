@@ -123,11 +123,8 @@ class AuthController extends BaseAuthController
     public function requestOtp(Request $request)
     {
         $this->validate($request, [
-            // 'code' => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
-
-        // $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
         User::where('id', $request->id)->update(['mobile' => $newNumber]);
         try {

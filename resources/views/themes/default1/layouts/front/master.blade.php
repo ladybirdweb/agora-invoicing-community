@@ -498,7 +498,7 @@ $set = $set->findOrFail(1);
                                 <div class="text-center">
                                 <div class="row data-center">
                                     <div class="col col-12">
-                                        <p>Your data center location is <b data-nearest-center="">United States </b><a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a></p>
+                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
                                     </div>
                                 </div>
                                 </div>

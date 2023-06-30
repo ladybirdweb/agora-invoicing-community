@@ -101,7 +101,7 @@ class BaseRenewController extends Controller
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
-            if (!empty($agents) && in_array($product->id,[117,119])) {
+            if (! empty($agents) && in_array($product->id, [117, 119])) {
                 $cost = $cost * $agents;
             }
             $renewalPrice = $cost; //Get Renewal Price before calculating tax over it to save as regular price of product

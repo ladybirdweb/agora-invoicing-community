@@ -11,7 +11,6 @@ return [
     'social_succes' => 'Social login settings updated successfully',
     'social_fail' => 'An error occurred while updating social login settings',
 
-
     /*
 
 

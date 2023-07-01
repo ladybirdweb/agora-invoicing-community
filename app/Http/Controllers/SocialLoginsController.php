@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\SocialLogin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Session;
 
 class SocialLoginsController extends Controller
 {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\SocialLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Lang;
 
 class SocialLoginsController extends Controller
 {
@@ -32,9 +33,9 @@ class SocialLoginsController extends Controller
                 'status' => $request->optradio,
             ]);
 
-            Session::flash('success', 'Social login settings updated successfully');
+            Session::flash('success', Lang::get('message.social_succes'));
         } catch (\Exception $e) {
-            Session::flash('error', 'An error occurred while updating social login settings');
+            Session::flash('error', Lang::get('message.social_fail'));
         }
 
         return redirect()->back();

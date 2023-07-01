@@ -1,5 +1,4 @@
 @extends('themes.default1.layouts.master')
-
 @section('title')
     Social Logins
 @stop

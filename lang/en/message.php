@@ -8,6 +8,9 @@ return [
     'free-login' => 'Sign in to start your session',
     'false' => 'Free trail has been expired',
     'succs_fre' => 'Invoice and Order has been generated successfully',
+    'social_succes' => 'Social login settings updated successfully',
+    'social_fail' => 'An error occurred while updating social login settings',
+
 
     /*
 

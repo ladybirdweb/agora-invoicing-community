@@ -149,10 +149,10 @@ class TenantController extends Controller
             $company = str_replace(' ', '', $company);
 
             // Convert uppercase letters to lowercase
-            $faveoCloud = strtolower($company).'.faveocloud.com';
+            $faveoCloud = strtolower($company).'.ragnork.ml';
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if (! strpos($faveoCloud, 'faveocloud.com')) {
-                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
+            if (! strpos($faveoCloud, 'ragnork.ml')) {
+                if (empty($dns_record) || ! in_array('ragnork.ml', array_column($dns_record, 'target'))) {
                     return ['status' => 'false', 'message' => trans('message.cname')];
                 }
             }
@@ -186,7 +186,7 @@ class TenantController extends Controller
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                if (! strpos($faveoCloud, 'faveocloud.com')) {
+                if (! strpos($faveoCloud, 'ragnork.ml')) {
                     CloudEmail::create([
                         'result_message' => $result->message,
                         'user' => $user,
@@ -290,7 +290,7 @@ class TenantController extends Controller
     private function deleteCronForTenant($tenantId)
     {
         $client = new Client();
-        if (strpos($tenantId, 'faveocloud.com')) {
+        if (strpos($tenantId, 'ragnork.ml')) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
                 'auth' => ['clouduser', env('CLOUD_AUTH')],
                 'query' => [

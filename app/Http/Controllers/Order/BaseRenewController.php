@@ -102,7 +102,8 @@ class BaseRenewController extends Controller
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
             if (! empty($agents) && in_array($product->id, [117, 119])) {
-                $cost = $cost * $agents;
+                $license_code = Order::where('id',$orderid)->value('serial_key');
+                $cost = $cost * (int)substr($license_code, -4);
             }
             $renewalPrice = $cost; //Get Renewal Price before calculating tax over it to save as regular price of product
             $controller = new \App\Http\Controllers\Order\InvoiceController();

@@ -21,8 +21,8 @@
                             <label><b>{{trans('message.cloud_field_label')}}</b></label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-4 rounded-0" placeholder="Domain" required>
-                                <input type="text" class="form-control col col-8 rounded-0" value=".ragnork.ml" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
+                                <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                             </div>
                         </div>
                         <div class="text-center">
@@ -121,7 +121,7 @@
                 } else {
                     $('#error').hide();
                     $('#success').show();
-                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success! </strong>'+data.message+'!</div>';
                     $('#success').html(result);
                 }
             },error: function (response) {

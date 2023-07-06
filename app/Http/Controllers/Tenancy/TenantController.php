@@ -195,7 +195,7 @@ class TenantController extends Controller
                     ]);
                     $client = new Client();
                     $client->request('GET', env('CLOUD_JOB_URL'), [
-                        'auth' => ['clouduser', env('CLOUD_AUTH')],
+                        'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                         'query' => [
                             'token' => env('CLOUD_OAUTH_TOKEN'),
                             'domain' => $faveoCloud,
@@ -205,7 +205,7 @@ class TenantController extends Controller
                     return ['status' => $result->status, 'message' => trans('message.create_in_progress').'.'];
                 } else {
                     $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
-                        'auth' => ['clouduser', env('CLOUD_AUTH')],
+                        'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                         'query' => [
                             'token' => env('CLOUD_OAUTH_TOKEN'),
                             'domain' => $faveoCloud,
@@ -292,7 +292,7 @@ class TenantController extends Controller
         $client = new Client();
         if (strpos($tenantId, 'faveocloud.com')) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
-                'auth' => ['clouduser', env('CLOUD_AUTH')],
+                'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                 'query' => [
                     'token' => env('CLOUD_OAUTH_TOKEN'),
                     'domain' => $tenantId,
@@ -300,7 +300,7 @@ class TenantController extends Controller
             ]);
         } else {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_CUSTOM'), [
-                'auth' => ['clouduser', env('CLOUD_AUTH')],
+                'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                 'query' => [
                     'token' => env('CLOUD_OAUTH_TOKEN'),
                     'domain' => $tenantId,

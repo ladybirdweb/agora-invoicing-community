@@ -2,6 +2,39 @@
 @section('title')
 Tenants
 @stop
+<style type="text/css">
+    #loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+</style>
 @section('content-header')
 
     <div class="col-sm-6">
@@ -113,8 +146,11 @@ Tenants
 
           
         </div>
+        <div id="loading" style="display: none;">
+  <div class="spinner"></div>
+</div>
 
-        <div id="success"></div>
+        <div id="successmsg"></div>
         <div id="error"></div>
        <div class="card-body table-responsive">
              
@@ -134,6 +170,7 @@ Tenants
                         </tr></thead>
 
                    </table>
+
             </div>
         </div>
 
@@ -202,52 +239,54 @@ $(document).ready(function(){
 
 
 <script>
-
-  
-  function deleteTenant(id) {
-     var id = id;
-      if (confirm("Are you sure you want to destroy this tenant?")) {
-         $.ajax({
-          url: "{!! url('delete-tenant') !!}",
-          method:"delete",
-          data: {'id':id},
-          success: function (data) {
-            if(data.success = true) {
-              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
-              $('#success').show();
-              $('#error').hide();
-              $('#success').html(result);
-              setInterval(function(){ 
-                $('#success').slideUp(5000);
-                  location.reload();
-            }, 3000);
-
-            } else if(data.success = false) {
-              $('#success').hide();
-              $('#error').show();
-              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.message+'!</div>';
-              $('#error').html(result);
-              setInterval(function(){ 
-                $('#error').slideUp(5000); 
-           location.reload(); },10000);
-
-            }
-             
-          },error: function(data) {
-            $('#success').hide();
-              $('#error').show();
-              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.responseJSON.message+'!</div>';
-              $('#error').html(result);
-              setInterval(function(){ 
-                $('#error').slideUp(5000); location.reload();
-            }, 10000);
-          }
-
-        })
+function deleteTenant(id) {
+  var id = id;
+  if (confirm("Are you sure you want to destroy this tenant?")) {
+    var loadingElement = document.getElementById("loading");
+    loadingElement.style.display = "flex"; 
+    $.ajax({
+      url: "{!! url('delete-tenant') !!}",
+      method: "delete",
+      data: { 'id': id },
+      success: function (data) {
+        if (data.success === true) {
+          console.log(data.message);
+          var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>' + data.message + '!</div>';
+          $('#successmsg').show();
+          $('#error').hide();
+          $('#successmsg').html(result);
+          setInterval(function () {
+            $('#successmsg').slideUp(5000);
+            location.reload();
+          }, 3000);
+        } else if (data.success === false) {
+          $('#successmsg').hide();
+          $('#error').show();
+          var result = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>' + data.message + '!</div>';
+          $('#error').html(result);
+          setInterval(function () {
+            $('#error').slideUp(5000);
+            location.reload();
+          }, 10000);
+        }
+      },
+      error: function (data) {
+        $('#successmsg').hide();
+        $('#error').show();
+        var result = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>' + data.responseJSON.message + '!</div>';
+        $('#error').html(result);
+        setInterval(function () {
+          $('#error').slideUp(5000);
+          location.reload();
+        }, 10000);
+      },
+      complete: function () {
+        loadingElement.style.display = "none"; // Hide the loading indicator
       }
-   
-  
+    });
   }
+}
+
   
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';

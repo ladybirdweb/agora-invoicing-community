@@ -90,7 +90,7 @@ class PhpMailController extends Controller
     {
         $expiredDate = now()->subDays(7);
         $today = new Carbon('today');
-        $sub = Subscription::where('update_ends_at', '<', $expiredDate)->get();
+        $sub = Subscription::whereIn('product_id', ['117,119'])->where('update_ends_at', '<', $expiredDate)->get();
         if ($sub) {
             foreach ($sub as $data) {
                 $cron = new CronController();

@@ -22,7 +22,7 @@
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
                                 <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                <input type="text" class="form-control col col-5 rounded-0" value=".ragnork.ml" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                             </div>
                         </div>
                         <div class="text-center">

@@ -149,10 +149,10 @@ class TenantController extends Controller
             $company = str_replace(' ', '', $company);
 
             // Convert uppercase letters to lowercase
-            $faveoCloud = strtolower($company).'.ragnork.ml';
+            $faveoCloud = strtolower($company).'.faveocloud.com';
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if (! strpos($faveoCloud, 'ragnork.ml')) {
-                if (empty($dns_record) || ! in_array('ragnork.ml', array_column($dns_record, 'target'))) {
+            if (! strpos($faveoCloud, 'faveocloud.com')) {
+                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                     return ['status' => 'false', 'message' => trans('message.cname')];
                 }
             }
@@ -186,7 +186,7 @@ class TenantController extends Controller
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                if (! strpos($faveoCloud, 'ragnork.ml')) {
+                if (! strpos($faveoCloud, 'faveocloud.com')) {
                     CloudEmail::create([
                         'result_message' => $result->message,
                         'user' => $user,
@@ -290,7 +290,7 @@ class TenantController extends Controller
     private function deleteCronForTenant($tenantId)
     {
         $client = new Client();
-        if (strpos($tenantId, 'ragnork.ml')) {
+        if (strpos($tenantId, 'faveocloud.com')) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
                 'auth' => ['clouduser', env('CLOUD_AUTH')],
                 'query' => [
@@ -332,7 +332,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $order_id = Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->value('id');
-            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'billing.ragnork.ml')->value('installation_path');
+            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
             $response = $this->client->request(
                 'GET',
                 $this->cloud->cloud_central_domain.'/tenants'

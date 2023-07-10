@@ -284,7 +284,7 @@ class BaseOrderController extends ExtendedOrderController
         $html = $template->data;
 
         try {
-            if ($value !== '4') {
+            if ($value == '4') {
                 $knowledgeBaseUrl = $setting->company_url;
                 $type = '';
                 if ($template) {

@@ -134,7 +134,7 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('Expiry Mail for Auto Renewal to be sent before..')}}</label>
+                <label>{{Lang::get('Product Auto-renewal due date reminder Email to be sent before..')}}</label>
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {
@@ -175,7 +175,7 @@ Cron Setting
 
                 <div class="col-md-6">
               <div class="form-group">
-                <label>{{Lang::get('Expiry Mail sent for Faveo Cloud')}}</label>
+                <label>{{Lang::get('Faveo Cloud Trial version expiry email tobe sent before..')}}</label>
                   @if ($cloudStatus == 0)
                     <select id ="days" name="cloud_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('Please Enable the Faveo cloud cron')}}</option>
@@ -196,7 +196,7 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('Expiry Mail to be sent After..')}}</label>
+                <label>{{Lang::get('Product renewal reminder Email to be sent for Expired products after..')}}</label>
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {

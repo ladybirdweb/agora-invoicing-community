@@ -132,7 +132,7 @@ class PhpMailController extends Controller
     {
         $day = ExpiryMailDay::value('cloud_days');
         $today = new Carbon('today');
-        $sub = Subscription::where('product_id', '117')
+        $sub = Subscription::whereIn('product_id', ['117,119'])
                             ->whereDate('update_ends_at', '<', $today)
                             ->whereBetween('update_ends_at', [Carbon::now()->subDays($day)->toDateString(), Carbon::now()->toDateString()])
                             ->get();

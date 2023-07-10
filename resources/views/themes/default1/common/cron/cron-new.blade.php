@@ -142,7 +142,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('sub_fetching',Lang::get('Expiry Mails(Auto Renewal)')) !!}<br>
+                            {!! Form::label('sub_fetching',Lang::get('Product Auto-renewal due date reminder Email to be sent before')) !!}<br>
                             {!! Form::checkbox('subs_expirymail',1,$condition->checkActiveJob()['subsExpirymail'],['id'=>'sub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                             <!-- <input type="checkbox" name="subs_expirymail" value="1"> -->
                         </div>
@@ -178,7 +178,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('postsub_fetching',Lang::get('Expiry Mails(After Expiry)')) !!}<br>
+                            {!! Form::label('postsub_fetching',Lang::get('Product renewal reminder Email to be sent for Expired products after')) !!}<br>
                             {!! Form::checkbox('postsubs_expirymail',1,$condition->checkActiveJob()['postExpirymail'],['id'=>'postsub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                         </div>
 
@@ -206,7 +206,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('cloud_fetching',Lang::get('Cloud Expiry Mail')) !!}<br>
+                            {!! Form::label('cloud_fetching',Lang::get('Faveo Cloud Trial version expiry email tobe sent before..')) !!}<br>
                             {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
                         </div>
 

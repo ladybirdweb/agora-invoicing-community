@@ -210,6 +210,8 @@ class BaseSettingsController extends PaymentSettingsController
             '60' => '60 Days',
             '30' => '30 Days',
             '15' => '15 Days',
+            '7' => '7 days',
+            '1' => '1 day',
         ];
 
         $selectedDays = [];

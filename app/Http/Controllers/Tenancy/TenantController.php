@@ -30,9 +30,19 @@ class TenantController extends Controller
     {
         if ($this->cloud && $this->cloud->cloud_central_domain) {
             $cloud = $this->cloud;
+            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+
+            if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
+                throw new Exception('Invalid App key provided. Please contact admin.');
+            }
             $response = $this->client->request(
                 'GET',
-                $this->cloud->cloud_central_domain.'/tenants'
+                $this->cloud->cloud_central_domain.'/tenants',
+                [
+                    'query' => [
+                        'key' => $keys->app_key,
+                    ],
+                ]
             );
 
             $responseBody = (string) $response->getBody();
@@ -63,9 +73,19 @@ class TenantController extends Controller
     public function getTenants(Request $request)
     {
         try {
+            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+
+            if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
+                throw new Exception('Invalid App key provided. Please contact admin.');
+            }
             $response = $this->client->request(
                 'GET',
-                $this->cloud->cloud_central_domain.'/tenants'
+                $this->cloud->cloud_central_domain.'/tenants',
+                [
+                    'query' => [
+                        'key' => $keys->app_key,
+                    ],
+                ]
             );
 
             $responseBody = (string) $response->getBody();

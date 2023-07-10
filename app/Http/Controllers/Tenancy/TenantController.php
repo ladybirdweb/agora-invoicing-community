@@ -180,7 +180,7 @@ class TenantController extends Controller
             if ($result->status == 'fails') {
                 $this->prepareMessages($faveoCloud, $user);
 
-                return ['status' => 'false', 'message' => $result->message];
+                return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
                 $this->prepareMessages($faveoCloud, $user);
 

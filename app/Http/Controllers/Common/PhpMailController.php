@@ -73,12 +73,9 @@ class PhpMailController extends Controller
     public function NotifyMailing()
     {
         try {
-            //Notification sending for before expiry
-            $this->notifyFreeTrail();
-
+         $this->notifyFreeTrail();
             //Notification for After expiry
             $this->mailSendForCloud();
-
             //Delete cloud
             $this->deleteCloudDetails();
         } catch(\Exception $ex) {
@@ -88,15 +85,17 @@ class PhpMailController extends Controller
 
     public function notifyFreeTrail()
     {
+        try{
         $expiredDate = now()->subDays(7);
         $today = new Carbon('today');
-        $sub = Subscription::whereIn('product_id', ['117,119'])->where('update_ends_at', '<', $expiredDate)->get();
-        if ($sub) {
+        $sub = Subscription::whereIn('product_id', [117,119])->where('update_ends_at', '<', $expiredDate)->get();
+      
             foreach ($sub as $data) {
                 $cron = new CronController();
                 $user = \DB::table('users')->find($data->user_id);
                 $product = Product::find($data->product_id);
                 $order = $cron->getOrderById($data->order_id);
+                if($order){
                 $invoice = $cron->getInvoiceByOrderId($data->order_id);
                 $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
 
@@ -106,7 +105,7 @@ class PhpMailController extends Controller
 
                 //template
                 $template = new \App\Model\Common\Template();
-                $temp_id = $settings->where('id', 1)->first()->Free_trail_gonna_expired;
+                $temp_id = $settings->where('id', 1)->value('Free_trail_gonna_expired');
                 $template = $template->where('id', $temp_id)->first();
 
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
@@ -120,11 +119,16 @@ class PhpMailController extends Controller
                           ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                               'product' => $product->name,
                               'number' => $order->number,
-                              'expiry' => $data->update_ends_at,
+                              'expiry' => date('j M y', strtotime($data->update_ends_at)),
                               'url' => $url, ]));
 
                 $mailer->send($email);
+                }
             }
+        
+        }catch(\Exception $ex)
+        {
+          \Log::error($ex->getMessage());
         }
     }
 
@@ -132,7 +136,7 @@ class PhpMailController extends Controller
     {
         $day = ExpiryMailDay::value('cloud_days');
         $today = new Carbon('today');
-        $sub = Subscription::whereIn('product_id', ['117,119'])
+        $sub = Subscription::whereIn('product_id', [117,119])
                             ->whereDate('update_ends_at', '<', $today)
                             ->whereBetween('update_ends_at', [Carbon::now()->subDays($day)->toDateString(), Carbon::now()->toDateString()])
                             ->get();
@@ -142,6 +146,7 @@ class PhpMailController extends Controller
 
     public function mailSendForCloud()
     {
+        try{
         $sub_data = $this->getCloudSubscriptions();
         if ($sub_data) {
             foreach ($sub_data as $data) {
@@ -149,6 +154,8 @@ class PhpMailController extends Controller
                 $user = \DB::table('users')->find($data->user_id);
                 $product = Product::find($data->product_id);
                 $order = $cron->getOrderById($data->order_id);
+                if($order){
+                
                 $invoice = $cron->getInvoiceByOrderId($data->order_id);
                 $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
 
@@ -158,7 +165,7 @@ class PhpMailController extends Controller
 
                 //template
                 $template = new \App\Model\Common\Template();
-                $temp_id = $settings->where('id', 1)->first()->Free_trail_expired;
+                $temp_id = $settings->where('id', 1)->value('free_trail_expired');
                 $template = $template->where('id', $temp_id)->first();
 
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
@@ -172,31 +179,47 @@ class PhpMailController extends Controller
                           ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                               'product' => $product->name,
                               'number' => $order->number,
-                              'expiry' => $data->update_ends_at,
+                              'expiry' => date('j M y', strtotime($data->update_ends_at)),
                               'url' => $url, ]));
 
                 $mailer->send($email);
+                }
+                
+                
             }
         }
+        }catch(\Exception $ex){
+            \Log::error($ex->getMessage());
+        }
     }
-
-    public function deleteCloudDetails()
+   public function deleteCloudDetails()
     {
+        try{
         $day = ExpiryMailDay::value('cloud_days');
         $today = new Carbon('today');
-        $sub = Subscription::whereNotNull('update_ends_at')
-                           ->where('product_id', '117')
-                           ->whereDate('update_ends_at', '<', $today)
-                           ->whereDate('update_ends_at', $today->subDays($day + 1))
-                           ->get();
-        if ($sub) {
+         $sub = Subscription::whereNotNull('update_ends_at')
+        ->whereIn('product_id', [117, 119])
+        ->where(function ($query) use ($today, $day) {
+            $query->whereDate('update_ends_at', '<', $today)
+                ->orWhereDate('update_ends_at', $today->subDays($day + 1));
+        })
+        ->get();
+    
             foreach ($sub as $data) {
                 $cron = new CronController();
                 $user = \DB::table('users')->find($data->user_id);
                 $product = Product::find($data->product_id);
                 $order = $cron->getOrderById($data->order_id);
+                
+                if(empty($order)){
+                    continue;
+                }
                 $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
+                if(is_null($id) || $id=='billing.faveocloud.com'){
+                    $data->delete();
+                }
+                else{
                 //Destroy the tenat
                 $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
 
@@ -213,15 +236,23 @@ class PhpMailController extends Controller
                     $email = (new Email())
                               ->from($settings->email)
                               ->to($user->email)
-                              ->subject('Destroyed email')
-                              ->html('<p>Your Free trail product is Expired, we deleted your instance</p>');
+                              ->subject('Faveo cloud deleted')
+                              ->html('<p>We regret to inform you that your period for your cloud product has expired, and we have deleted your instance.</p>');
                     $mailer->send($email);
+                    $data->delete();
                 }
+                              
+            }
 
-                return $destroy;
             }
         }
+        Catch(\Exception $e){
+           \Log::error($ex->getMessage());
+        }
+        
     }
+
+
 
     public function mailing($from, $to, $data, $subject, $replace = [],
      $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])

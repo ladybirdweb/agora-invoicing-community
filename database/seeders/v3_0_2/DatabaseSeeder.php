@@ -130,7 +130,7 @@ class DatabaseSeeder extends Seeder
                 </table>
                 <p>&nbsp;</p>']);
 
-          Template::create(['id' => 17, 'name' => '[Faveo Cloud] Free Trail has Expired', 'type' => 17, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+          Template::create(['id' => 17, 'name' => '[Faveo Cloud] Cloud has Expired', 'type' => 17, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
                                 <tbody>
                                 <tr>
                                 <td style="width: 30px;">&nbsp;</td>
@@ -147,7 +147,7 @@ class DatabaseSeeder extends Seeder
                                 <tr>
                                 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {$name},<br /><br />
-                                <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud - Free Trail has Expired</h1>
+                                <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud - has Expired</h1>
                                 </td>
                                 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 </tr>
@@ -221,7 +221,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-          Template::create(['id' => 18, 'name' => '[Faveo Cloud] Free Trail Gonna Expire', 'type' => 18, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+          Template::create(['id' => 18, 'name' => '[Faveo Cloud] Cloud Gonna Expire', 'type' => 18, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
                                 <tbody>
                                 <tr>
                                 <td style="width: 30px;">&nbsp;</td>

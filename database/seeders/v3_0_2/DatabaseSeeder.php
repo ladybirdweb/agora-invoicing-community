@@ -239,14 +239,14 @@ class DatabaseSeeder extends Seeder
                                 <tr>
                                 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {$name},<br /><br />
-                                <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Free Trial Cloud Product is Expiring in 7 Days!</h1>
+                                <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud Product is Expiring soon!</h1>
                                 </td>
                                 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 </tr>
                                 <tr>
                                 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 <td style="background: #fff; padding: 0; width: 560px;" align="left">
-                                <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">We hope this email finds you well. We wanted to remind you that your free trial for our cloud product is coming to an end in just 7 days. We appreciate your interest in our services and would like to offer you the opportunity to continue enjoying the benefits of our product by upgrading to the paid version.</p></br>
+                                <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">We hope this email finds you well. We wanted to remind you that your cloud product is coming to an end soon. We appreciate your interest in our services and would like to offer you the opportunity to continue enjoying the benefits of our product by upgrading to the paid version.</p></br>
                               
                                 <p>To renew your subscription please use the below link.</p></br>
                                 <p>Thankyou For Choosing Faveo!</p>

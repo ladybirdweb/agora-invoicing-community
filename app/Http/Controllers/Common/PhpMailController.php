@@ -242,7 +242,7 @@ class PhpMailController extends Controller
                                      'product' => $product->name,
                                      'number' => $order->number,
                                      'expiry' => date('j M y', strtotime($data->update_ends_at)),
-                                     'url' => $url, ]));
+                                 ]));
                        $mailer->send($email);
                        $data->delete();
                    }

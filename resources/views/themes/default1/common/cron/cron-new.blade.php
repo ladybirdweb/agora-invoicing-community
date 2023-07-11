@@ -206,7 +206,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('cloud_fetching',Lang::get('Faveo Cloud Trial version expiry email to be sent before..')) !!}<br>
+                            {!! Form::label('cloud_fetching',Lang::get('Faveo Cloud version expiry email to be sent before..')) !!}<br>
                             {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
                         </div>
 

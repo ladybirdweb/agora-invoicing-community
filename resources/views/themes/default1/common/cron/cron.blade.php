@@ -175,7 +175,7 @@ Cron Setting
 
                 <div class="col-md-6">
               <div class="form-group">
-                <label>{{Lang::get('Faveo Cloud Trial version expiry email to be sent before..')}}</label>
+                <label>{{Lang::get('Faveo Cloud version expiry email to be sent before..')}}</label>
                   @if ($cloudStatus == 0)
                     <select id ="days" name="cloud_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('Please Enable the Faveo cloud cron')}}</option>

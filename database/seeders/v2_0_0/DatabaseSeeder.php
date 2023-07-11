@@ -925,7 +925,7 @@ class FormatCurrenciesSeeder extends Seeder
 //         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 //         DB::table('faveo_cloud')->truncate();
 //         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-//         DB::table('faveo_cloud')->insert(['id' => 1, 'cloud_central_domain' => 'https://billing.ragnork.ml', 'cron_server_url' => 'http://165.227.242.64', 'cron_server_key' => '31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c']);
+//         DB::table('faveo_cloud')->insert(['id' => 1, 'cloud_central_domain' => 'https://billing.faveocloud.com', 'cron_server_url' => 'http://165.227.242.64', 'cron_server_key' => '31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c']);
 //     }
 // }
 

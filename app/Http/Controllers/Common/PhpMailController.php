@@ -119,7 +119,7 @@ class PhpMailController extends Controller
                               ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                                   'product' => $product->name,
                                   'number' => $order->number,
-                                  'expiry' => date('j M y', strtotime($data->update_ends_at)),
+                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                   'url' => $url, ]));
 
                     $mailer->send($email);
@@ -176,7 +176,7 @@ class PhpMailController extends Controller
                                   ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                                       'product' => $product->name,
                                       'number' => $order->number,
-                                      'expiry' => date('j M y', strtotime($data->update_ends_at)),
+                                      'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                       'url' => $url, ]));
 
                         $mailer->send($email);
@@ -213,7 +213,7 @@ class PhpMailController extends Controller
                $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
                if (is_null($id) || $id == 'billing.faveocloud.com') {
-                   $data->delete();
+                   $order->delete();
                } else {
                    //Destroy the tenat
                    $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
@@ -241,10 +241,10 @@ class PhpMailController extends Controller
                                  ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                                      'product' => $product->name,
                                      'number' => $order->number,
-                                     'expiry' => date('j M y', strtotime($data->update_ends_at)),
+                                     'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                  ]));
                        $mailer->send($email);
-                       $data->delete();
+                       $order->delete();
                    }
                }
            }

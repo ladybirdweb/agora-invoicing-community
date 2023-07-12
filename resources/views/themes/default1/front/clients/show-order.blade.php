@@ -344,18 +344,18 @@ $json = json_encode($data);
                  <thead>
                 <tr>
                 
-                 <th >Installation Path</th>
-                  <th>Installation IP</th>
-                   
+                 <th>Installation Path</th>
+                    @if($product->type != '4')
+                    <th>Installation IP</th>
+                    @endif
                     <th>Current Version </th>
                     <th>  Last Active</th>
                     
                 </tr></thead>
                     <tbody>
-                    
                         @foreach($installationDetails['installed_path'] as $key => $ins)
                         <?php
-                        
+                        dd('e');
                         $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
                      
                         $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
@@ -369,8 +369,8 @@ $json = json_encode($data);
                        
                         ?>
                             <tr>
-                            <td>{{$ins}}</td>
-                            <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                <td>{{$installationDetails['installed_ip'][$key]}}</td>
                             @if($productversion)
                             @if($productversion < $Latestversion)
                             <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">

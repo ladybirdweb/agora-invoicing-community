@@ -296,6 +296,7 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
+                \DB::table('free_trial_allowed')->where('domain',$request->input('id'))->delete();
                 (new LicenseController())->reissueDomain($request->input('id'));
 
                 return successResponse($response->message);
@@ -376,6 +377,7 @@ class TenantController extends Controller
                         $this->deleteCronForTenant($domainArray[$i]->id);
                         $this->reissueCloudLicense($order_id);
                         Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
+                        \DB::table('free_trial_allowed')->where('domain',$installation_path)->delete();
 
                         return redirect()->back()->with('success', $response->message);
                     } else {

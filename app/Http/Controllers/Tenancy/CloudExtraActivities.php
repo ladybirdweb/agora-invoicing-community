@@ -299,6 +299,7 @@ class CloudExtraActivities extends Controller
              if (! $this->checktheAgent($newAgents, $installation_path)) {
                  return response(['status' => false, 'message' => trans('message.agent_reduce')]);
              }
+             $item = $this->getThePaymentCalculation();
              $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
              $len = strlen($newAgents);
              switch ($len) {//Get Last Four digits based on No.Of Agents
@@ -366,4 +367,49 @@ class CloudExtraActivities extends Controller
              return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
          }
      }
+    private function getThePaymentCalculation($newAgents,$oldAgents,$planId,$orderId){
+        $product_id = Plan::where('id', $planId)->pluck('product')->first();
+        $planDays = Plan::where('id', $planId)->pluck('days')->first();
+        $product = Product::find($product_id);
+        $plan = $product->planRelation->find($planId);
+        $currency = userCurrencyAndPrice('', $plan);
+
+
+        if($newAgents>$oldAgents){
+            if(Carbon::now()==$ends_at){
+                $price = $base_price * $newAgents;
+            }
+            else{
+               $agentsAdded=$newAgents-$oldAgents;
+               $pricePerDay = $base_price/$planDays;
+               $daysRemain = $ends_at-Carbon::now();
+               $pricePerThatAgent = $pricePerDay * $daysRemain;
+               $price = $agentsAdded * $pricePerThatAgent;
+            }
+        }
+        else{
+            if(Carbon::now()==$ends_at){
+                $price = $base_price * $newAgents;
+            }
+            else{
+                $currentPrice = $base_price * $oldAgents;
+                $newPrice  = $base_price * $newAgents;
+                $newDiscountPrice = $currentPrice - $newPrice;
+                if($newDiscountPrice == $newPrice){
+                    $discount = $newPrice;
+                }
+                elseif ($newDiscountPrice < $newPrice){
+                    $discount = $newPrice - $newDiscountPrice;
+                }
+                else{
+                    $discount = $newDiscountPrice;
+                }
+                $price = 0;
+            }
+            Order::where('id',$orderId)->updateOrCreate(['order_discount'=>$discount]);
+        }
+        $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
+            'quantity' => 1, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $newAgents], 'associatedModel' => $product, ];
+        return $items;
+    }
 }

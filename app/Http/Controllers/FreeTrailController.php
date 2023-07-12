@@ -65,7 +65,7 @@ class FreeTrailController extends Controller
             if (Auth::user()->id == $userId) {
                 $userLogin = User::find($userId);
                 if (\DB::table('free_trial_allowed')->where('user_id', $userId)->count() == 2) {
-                    return errorResponse(Lang::get('message.false'), 400);
+                    return ['status' => 'false', 'message' => trans('message.limit_is_up')];
                 }
 
                 DB::beginTransaction(); // Start a database transaction

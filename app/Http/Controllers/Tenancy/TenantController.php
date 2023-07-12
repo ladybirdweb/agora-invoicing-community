@@ -170,6 +170,9 @@ class TenantController extends Controller
 
             // Convert uppercase letters to lowercase
             $faveoCloud = strtolower($company).'.faveocloud.com';
+            if(strlen($faveoCloud)>=32){
+                return ['status' => 'false', 'message' => trans('message.too_long')];
+            }
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
             if (! strpos($faveoCloud, 'faveocloud.com')) {
                 if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {

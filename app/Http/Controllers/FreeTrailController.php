@@ -55,15 +55,16 @@ class FreeTrailController extends Controller
         ]);
 
         try {
-            if (!Auth::check()) {
+            if (! Auth::check()) {
                 return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
             }
+
             return errorResponse(Lang::get('message.false'), 400);
 
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
                 $userLogin = User::find($userId);
-                if (\DB::table('free_trial_allowed')->where('user_id',$userId)->count()==2) {
+                if (\DB::table('free_trial_allowed')->where('user_id', $userId)->count() == 2) {
                     return errorResponse(Lang::get('message.false'), 400);
                 }
 
@@ -80,14 +81,16 @@ class FreeTrailController extends Controller
                         (new LicenseController())->deActivateTheLicense($serial_key);
 
                         DB::rollback(); // Rollback the transaction
+
                         return $isSuccess;
                     }
                     \DB::table('free_trial_allowed')->insert([
                         'user_id' => $userId,
-                        'product_id' => ($request->get('product')=='Helpdesk'?117:119),
+                        'product_id' => ($request->get('product') == 'Helpdesk' ? 117 : 119),
                         'domain' => $request->domain.'.faveocloud.com',
                     ]);
                     DB::commit(); // Commit the transaction
+
                     return $isSuccess;
                 } catch (\Exception $ex) {
                     DB::rollback(); // Rollback the transaction
@@ -100,7 +103,6 @@ class FreeTrailController extends Controller
             throw new \Exception('Can not Generate Freetrial Cloud instance');
         }
     }
-
 
     /**
      * Generate invoice from client panel for free trial.

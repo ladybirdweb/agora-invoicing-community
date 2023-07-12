@@ -48,47 +48,59 @@ class FreeTrailController extends Controller
      */
     public function firstLoginAttempt(Request $request)
     {
-        $this->validate($request,
-            [
-                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
-            ],
-            [
-                'domain.regex' => 'Special characters are not allowed in domain name',
-            ]);
+        $this->validate($request, [
+            'domain' => 'required|regex:/^[a-zA-Z0-9]+$/u',
+        ], [
+            'domain.regex' => 'Special characters are not allowed in domain name',
+        ]);
+
         try {
-            if (! Auth::check()) {
+            if (!Auth::check()) {
                 return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
             }
+            return errorResponse(Lang::get('message.false'), 400);
 
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
                 $userLogin = User::find($userId);
-                if ($userLogin->first_time_login != 0) {
+                if (\DB::table('free_trial_allowed')->where('user_id',$userId)->count()==2) {
                     return errorResponse(Lang::get('message.false'), 400);
                 }
-                //User::where('id', $userId)->update(['first_time_login' => 1]);
 
-                $this->generateFreetrailInvoice();
+                DB::beginTransaction(); // Start a database transaction
 
-                $this->createFreetrailInvoiceItems($request->get('product'));
+                try {
+                    $this->generateFreetrailInvoice();
+                    $this->createFreetrailInvoiceItems($request->get('product'));
+                    $serial_key = $this->executeFreetrailOrder();
 
-                $serial_key = $this->executeFreetrailOrder();
+                    $isSuccess = (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
 
-                $isSuccess = (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
-                if ($isSuccess['status'] == 'false') {
-                    (new LicenseController())->deActivateTheLicense($serial_key);
+                    if ($isSuccess['status'] == 'false') {
+                        (new LicenseController())->deActivateTheLicense($serial_key);
 
+                        DB::rollback(); // Rollback the transaction
+                        return $isSuccess;
+                    }
+                    \DB::table('free_trial_allowed')->insert([
+                        'user_id' => $userId,
+                        'product_id' => ($request->get('product')=='Helpdesk'?117:119),
+                        'domain' => $request->domain.'.faveocloud.com',
+                    ]);
+                    DB::commit(); // Commit the transaction
                     return $isSuccess;
+                } catch (\Exception $ex) {
+                    DB::rollback(); // Rollback the transaction
+                    app('log')->error($ex->getMessage());
+                    throw new \Exception('Can not Generate Freetrial Cloud instance');
                 }
-
-                return $isSuccess;
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-
             throw new \Exception('Can not Generate Freetrial Cloud instance');
         }
     }
+
 
     /**
      * Generate invoice from client panel for free trial.

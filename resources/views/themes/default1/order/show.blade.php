@@ -338,8 +338,10 @@ input:checked + .slider:before {
                     <thead><tr>
                         
                          <th >Installation Path</th>
-                          <th>Installation IP</th>
-                           
+
+                        @if(!in_array($order->product,[117,119]))
+                        <th>Installation IP</th>
+                        @endif
                             <th>Current Version </th>
                             <th>  Last Active</th>
                             
@@ -362,8 +364,9 @@ input:checked + .slider:before {
                        
                         ?>
                             <tr>
-                            <td>{{$ins}}</td>
-                            <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+
+                                <td>{{$installationDetails['installed_ip'][$key]}}</td>
                             @if($productversion)
                             @if($productversion < $Latestversion)
                             <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">

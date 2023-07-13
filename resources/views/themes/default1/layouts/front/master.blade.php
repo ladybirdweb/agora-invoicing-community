@@ -68,6 +68,9 @@ foreach($scripts as $script)
     .alert {
         font-weight:bolder;
     }
+    .breadcrumb > li + li:before {
+        content: "\3e";
+    }
 </style>
 <body>
 <?php

@@ -61,10 +61,11 @@ class OrderSearchController extends Controller
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
+            ->leftJoin('installation_details','orders.id','=','installation_details.order_id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
-                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id'
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id', 'installation_details.installation_path'
             );
     }
 
@@ -294,7 +295,7 @@ class OrderSearchController extends Controller
             if (str_finish($domain, '/')) {
                 $domain = substr_replace($domain, '', -1, 0);
             }
-            $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
+            $join = $join->where('installation_details.installation_path', 'LIKE', '%'.$domain.'%');
 
             return $join;
         }

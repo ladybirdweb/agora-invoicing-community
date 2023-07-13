@@ -347,20 +347,22 @@ input:checked + .slider:before {
                           <tbody>
                       
                         @foreach($installationDetails['installed_path'] as $key => $ins)
-                        <?php
-                        
+                       <?php
                         $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
-                     
-                        $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
-                       
-                        $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                        $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
-                       
-                      $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at ;
-                     
-                       
-                       
+
+                        $productversion = DB::table('installation_details')->where('installation_path', $installationDetails['installed_path'])->first();
+
+                        if ($productversion) {
+                            $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                            $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                            $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at;
+                        } else {
+                            $date = null;
+                            $dateTime = null;
+                            $active = false;
+                        }
                         ?>
+
                             <tr>
                             <td>{{$ins}}</td>
                             <td>{{$installationDetails['installed_ip'][$key]}}</td>

@@ -355,7 +355,6 @@ $json = json_encode($data);
                     <tbody>
                         @foreach($installationDetails['installed_path'] as $key => $ins)
                         <?php
-                        dd('e');
                         $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
                      
                         $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
@@ -363,7 +362,7 @@ $json = json_encode($data);
                         $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
                         $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
                        
-                      $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at ;
+                        $active = !empty($ins)?true:false;
                      
                        
                        

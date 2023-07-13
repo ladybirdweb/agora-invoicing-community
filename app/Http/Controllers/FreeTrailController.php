@@ -64,7 +64,8 @@ class FreeTrailController extends Controller
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
                 $userLogin = User::find($userId);
-                if (\DB::table('free_trial_allowed')->where('user_id', $userId)->count() == 2) {
+                $product_is = ($request->product=='Helpdesk')?117:119;
+                if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id',$product_is)->count() >= 1) {
                     return ['status' => 'false', 'message' => trans('message.limit_is_up')];
                 }
 
@@ -95,12 +96,12 @@ class FreeTrailController extends Controller
                 } catch (\Exception $ex) {
                     DB::rollback(); // Rollback the transaction
                     app('log')->error($ex->getMessage());
-                    throw new \Exception('Can not Generate Freetrial Cloud instance');
+                    throw new \Exception('Can not Generate Free-trial Cloud instance');
                 }
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            throw new \Exception('Can not Generate Freetrial Cloud instance');
+            throw new \Exception('Can not Generate Free-trial Cloud instance');
         }
     }
 

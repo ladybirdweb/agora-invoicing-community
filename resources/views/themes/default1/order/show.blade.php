@@ -358,7 +358,7 @@ input:checked + .slider:before {
                         $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
                         $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
                        
-                      $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at ;
+                         $active = !empty($ins)?true:false ;
                      
                        
                        

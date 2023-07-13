@@ -234,21 +234,26 @@ class TenantController extends Controller
                             'domain' => $faveoCloud,
                         ],
                     ]);
+
+                    //check in the settings
+                    $settings = new \App\Model\Common\Setting();
+                    $settings = $settings->where('id', 1)->first();
+
+                    //template
+                    $template = new \App\Model\Common\Template();
+                    $temp_id = $settings->where('id', 1)->value('Free_trail_gonna_expired');
+                    $template = $template->where('id', $temp_id)->first();
                     $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
                     $email = (new Email())
                         ->from($settings->email)
                         ->to($user)
-                        ->subject('New instance created')
-                        ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                        ->subject($template->name)
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData]));
 
                     $mailer->send($email);
 
                     $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-
-//                    $mail = new \App\Http\Controllers\Common\PhpMailController();
-//
-//                    $mail->sendEmail($settings->email, $user, $userData, 'New instance created');
 
                     return ['status' => $result->status, 'message' => $result->message.'.'];
                 }

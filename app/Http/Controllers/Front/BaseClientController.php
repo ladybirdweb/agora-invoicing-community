@@ -243,9 +243,9 @@ class BaseClientController extends Controller
     public function getInvoiceLinkUrl($invoiceId)
     {
         $link = 'my-invoice/'.$invoiceId;
-        if (\Auth::user()->role == 'admin') {
-            $link = '/invoices/show?invoiceid='.$invoiceId;
-        }
+//        if (\Auth::user()->role == 'admin') {
+//            $link = '/invoices/show?invoiceid='.$invoiceId;
+//        }
 
         return $link;
     }

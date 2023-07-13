@@ -161,7 +161,8 @@ Tenants
                  <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                      
                     <thead><tr>
-                       
+
+                            <th>Order</th>
                             <th>Tenant</th>
                             <th>Domain</th>
                             <th>Database name</th>
@@ -220,6 +221,7 @@ $(document).ready(function(){
           ],
        
             columns: [
+                {data:'Order', name: 'Order'},
                 {data: 'tenants', name: 'tenants'},
                 {data: 'domain', name: 'domain'},
                 {data: 'db_name', name: 'db_name'},
@@ -239,15 +241,16 @@ $(document).ready(function(){
 
 
 <script>
-function deleteTenant(id) {
+function deleteTenant(id,orderId="") {
   var id = id;
+  var orderId = orderId;
   if (confirm("Are you sure you want to destroy this tenant?")) {
     var loadingElement = document.getElementById("loading");
     loadingElement.style.display = "flex"; 
     $.ajax({
       url: "{!! url('delete-tenant') !!}",
       method: "delete",
-      data: { 'id': id },
+      data: { 'id': id ,'orderId':orderId},
       success: function (data) {
         if (data.success === true) {
           console.log(data.message);

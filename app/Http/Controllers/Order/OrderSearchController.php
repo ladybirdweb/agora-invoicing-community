@@ -61,7 +61,7 @@ class OrderSearchController extends Controller
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
-            ->leftJoin('installation_details','orders.id','=','installation_details.order_id')
+            ->leftJoin('installation_details', 'orders.id', '=', 'installation_details.order_id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',

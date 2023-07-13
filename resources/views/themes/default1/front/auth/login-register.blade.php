@@ -159,7 +159,7 @@ Sign in or Register
 
                                                         <label class="required">Username or E-mail Address</label>
                                                         <div class="input-group">
-                                                            {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
+                                                            {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text"><i class="fa fa-user"></i></span>
                                                             </div>
@@ -176,7 +176,7 @@ Sign in or Register
                                                         <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                         <label class="required">Password</label>
                                                         <div class="input-group">
-                                                            {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
+                                                            {!! Form::password('password1', ['class' => 'form-control input-lg', 'id' => 'pass', 'style' => 'height: calc(1.5em + 0.75rem + 2px);']) !!}
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text"><i class="fa fa-key"></i></span>
                                                             </div>

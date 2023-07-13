@@ -64,8 +64,8 @@ class FreeTrailController extends Controller
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
                 $userLogin = User::find($userId);
-                $product_is = ($request->product=='Helpdesk')?117:119;
-                if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id',$product_is)->count() >= 1) {
+                $product_is = ($request->product == 'Helpdesk') ? 117 : 119;
+                if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id', $product_is)->count() >= 1) {
                     return ['status' => 'false', 'message' => trans('message.limit_is_up')];
                 }
 

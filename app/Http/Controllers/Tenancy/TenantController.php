@@ -96,6 +96,17 @@ class TenantController extends Controller
             });
 
             return \DataTables::collection($collection)
+                ->addColumn('Order', function ($model) {
+                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
+                    $order_number = \DB::table('orders')->where('id', $order_id)->value('number');
+
+                    if (empty($order_id)|| empty($order_number)) {
+                        return '';
+                    }
+
+                    return "<p><a href='" . url('/orders/' . $order_id) . "'>$order_number</a></p>";
+                })
+
                 ->addColumn('tenants', function ($model) {
                     return $model->id ?? '';
                 })
@@ -109,12 +120,22 @@ class TenantController extends Controller
                     return $model->database_user_name ?? '';
                 })
                 ->addColumn('action', function ($model) {
-                    return "<p><button data-toggle='modal' 
+                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
+                    $order_number = \DB::table('orders')->where('id', $order_id)->value('number');
+
+                    if (empty($order_id)|| empty($order_number)) {
+                        return "<p><button data-toggle='modal' 
                 data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
                 class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
+                    }
+                    return "<p><button data-toggle='modal'
+    data-id='" . $model->id . "' data-name='' onclick='deleteTenant(" . $model->id . ", \"" . $order_number . "\")' id='delten" . $model->id . "'
+    class='btn btn-sm btn-danger btn-xs delTenant' " . tooltip('Delete') . "><i class='fa fa-trash'
+    style='color:white;'> </i></button>&nbsp;</p>";
+
                 })
-                ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
+                ->rawColumns(['Order','tenants', 'domain', 'db_name', 'db_username', 'action'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -305,6 +326,7 @@ class TenantController extends Controller
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
                 \DB::table('free_trial_allowed')->where('domain', $request->input('id'))->delete();
+                (empty($request->orderId))?:Order::where('id',$request->get('orderId'))->delete();
                 (new LicenseController())->reissueDomain($request->input('id'));
 
                 return successResponse($response->message);

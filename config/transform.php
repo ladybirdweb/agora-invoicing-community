@@ -39,9 +39,8 @@ return[
         'serialkeyurl' => '{$serialkeyurl}',
         'knowledge_base' => '{$knowledge_base}',
     ],
-    
-    
-       'cloud_order' => [
+
+    'cloud_order' => [
         'name' => '{$name}',
         'downloadurl' => '{$downloadurl}',
         'invoiceurl' => '{$invoiceurl}',
@@ -112,62 +111,61 @@ return[
         'manager_mobile' => '{$manager_mobile}',
         'manager_skype' => '{$manager_skype}',
     ],
-    
+
     'autosubscription_going_to_end' => [
         'name' => '{$name}',
         'number' => '{$number}',
         'product' => '{$product}',
         'expiry' => '{$expiry}',
     ],
-    
+
     'payment_failed' => [
         'name' => '{$name}',
         'product' => '{$product}',
-         'total' => '{$total}',
-         'number' => '{$number}',
-         'expiry' => '{$expiry}',
-         'exception' => '{$exception}',
-         'url' => '{$url}',
-        ],
+        'total' => '{$total}',
+        'number' => '{$number}',
+        'expiry' => '{$expiry}',
+        'exception' => '{$exception}',
+        'url' => '{$url}',
+    ],
     'payment_successfull' => [
-          'name' => '{$name}',
-         'product' => '{$product}',
-         'currency' => '{$currency}',
-         'total' =>'{$total}',
-         'number' => '{$number}',
-        ],
-        
+        'name' => '{$name}',
+        'product' => '{$product}',
+        'currency' => '{$currency}',
+        'total' =>'{$total}',
+        'number' => '{$number}',
+    ],
+
     'card_failed' => [
-         'name' => '{$name}',
-          'product' => '{$product}',
-          'total' => '{$total}',
-          'number' => '{$number}',
-          'expiry' => '{$expiry}',
-          'exception' => '{$exception}',
-         'url' => '{$url}',
-        ],
-        
+        'name' => '{$name}',
+        'product' => '{$product}',
+        'total' => '{$total}',
+        'number' => '{$number}',
+        'expiry' => '{$expiry}',
+        'exception' => '{$exception}',
+        'url' => '{$url}',
+    ],
+
     'Free_trail_gonna_expired' => [
         ' name' => '{$name}',
-          'product' => '{$product}',
-          'number' => '{$number}',
-          'expiry' => '{$expiry}',
-          'url' => '{$url}', 
-        ],
+        'product' => '{$product}',
+        'number' => '{$number}',
+        'expiry' => '{$expiry}',
+        'url' => '{$url}',
+    ],
     'free_trail_expired' => [
-          'name' => '{$name}',
-          'product' => '{$product}',
-          'number' => '{$number}',
-          'expiry' => '{$expiry}',
-          'url' => '{$url}',
-              ],
-              
-    'cloud_deleted' =>
-       [
-         'name' => '{$name}',
-          'product' => '{$product}',
-          'number' => '{$number}',
-          'expiry' => '{$expiry}',
-        ],
+        'name' => '{$name}',
+        'product' => '{$product}',
+        'number' => '{$number}',
+        'expiry' => '{$expiry}',
+        'url' => '{$url}',
+    ],
+
+    'cloud_deleted' => [
+        'name' => '{$name}',
+        'product' => '{$product}',
+        'number' => '{$number}',
+        'expiry' => '{$expiry}',
+    ],
 
 ];

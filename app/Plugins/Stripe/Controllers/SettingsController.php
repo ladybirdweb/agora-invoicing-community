@@ -9,15 +9,15 @@ use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Order\Order;
 use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
+use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use App\User;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
-use Symfony\Component\Mime\Email;
 use Validator;
-use App\Model\Common\Setting;
+
 class SettingsController extends Controller
 {
     public function __construct()
@@ -268,11 +268,10 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
-            $setting = Setting::find(1);
-            $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->mailing($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-       
+        $setting = Setting::find(1);
+        $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->mailing($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)

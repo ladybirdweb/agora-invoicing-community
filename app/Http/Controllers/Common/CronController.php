@@ -21,7 +21,6 @@ use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Carbon\Carbon;
 use Razorpay\Api\Api;
-use Symfony\Component\Mime\Email;
 
 class CronController extends BaseCronController
 {
@@ -710,7 +709,7 @@ class CronController extends BaseCronController
         $subject = $template->name;
         $data = $template->data;
         $mail->mailing($from, $to, $data, $subject, $replace, $type);
-  }
+    }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

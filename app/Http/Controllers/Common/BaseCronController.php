@@ -218,7 +218,7 @@ class BaseCronController extends Controller
         $data = $template->data;
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y H:m A');
-        $replace = 
+        $replace =
         ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'expiry'       => $end,
             'product'      => $product,
@@ -233,7 +233,6 @@ class BaseCronController extends Controller
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->mailing($from, $to, $data, $subject, $replace, $type);
-      
     }
 
     public function Auto_renewalMail($user, $end, $product, $order, $sub)
@@ -263,7 +262,7 @@ class BaseCronController extends Controller
              'number' => $order->number,'contact' => $contact['contact'],
              'logo' => $contact['logo'] ];
         $type = '';
-         if ($template) {
+        if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;

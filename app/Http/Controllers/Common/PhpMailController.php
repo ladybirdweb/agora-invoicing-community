@@ -102,7 +102,7 @@ class PhpMailController extends Controller
 
                     //check in the settings
                     $settings = new \App\Model\Common\Setting();
-                    $setting = $settings::find(1);
+                    $setting = $settings->where('id', 1)->first();
 
                     //template
                     $template = new \App\Model\Common\Template();
@@ -110,18 +110,25 @@ class PhpMailController extends Controller
                     $template = $template->where('id', $temp_id)->first();
 
                     $mail = new \App\Http\Controllers\Common\PhpMailController();
-                    $type = '';
+                    $mailer = $mail->setMailConfig($settings);
+                    $url = url('my-orders');
                     $replace = ['name' => $user->first_name.' '.$user->last_name,
-                        'product' => $product->name,
-                        'number' => $order->number,
-                        'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                        'url' => url('my-orders'), ];
-                    if ($template) {
+                                  'product' => $product->name,
+                                  'number' => $order->number,
+                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                                  'url' => $url, ];
+                    $type = '';
+                     if ($template) {
                         $type_id = $template->type;
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
                     }
-                    $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
+                    $from = $setting->email;
+                    $to = $user->email;
+                    $subject = $template->name;
+                    $data = $template->data;
+                    $mail->mailing($from, $to, $data, $subject, $replace, $type);
+
                 }
             }
         } catch(\Exception $ex) {
@@ -157,7 +164,7 @@ class PhpMailController extends Controller
 
                         //check in the settings
                         $settings = new \App\Model\Common\Setting();
-                        $setting = $settings::find(1);
+                        $setting = $settings->where('id', 1)->first();
 
                         //template
                         $template = new \App\Model\Common\Template();
@@ -165,18 +172,23 @@ class PhpMailController extends Controller
                         $template = $template->where('id', $temp_id)->first();
 
                         $mail = new \App\Http\Controllers\Common\PhpMailController();
-                        $type = '';
-                        $replace = ['name' => $user->first_name.' '.$user->last_name,
-                            'product' => $product->name,
-                            'number' => $order->number,
-                            'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                            'url' => url('my-orders'), ];
-                        if ($template) {
-                            $type_id = $template->type;
-                            $temp_type = new \App\Model\Common\TemplateType();
-                            $type = $temp_type->where('id', $type_id)->first()->name;
-                        }
-                        $mail->SendEmail($setting->email, $to, $template->data, $template->name, $replace, $type);
+                        $url = url('my-orders');
+                         $replace = ['name' => $user->first_name.' '.$user->last_name,
+                                  'product' => $product->name,
+                                  'number' => $order->number,
+                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                                  'url' => $url, ];
+                    $type = '';
+                     if ($template) {
+                        $type_id = $template->type;
+                        $temp_type = new \App\Model\Common\TemplateType();
+                        $type = $temp_type->where('id', $type_id)->first()->name;
+                    }
+                    $from = $setting->email;
+                    $to = $user->email;
+                    $subject = $template->name;
+                    $data = $template->data;
+                    $mail->mailing($from, $to, $data, $subject, $replace, $type);
                     }
                 }
             }
@@ -185,12 +197,12 @@ class PhpMailController extends Controller
         }
     }
 
-    public function deleteCloudDetails()
-    {
-        try {
-            $day = ExpiryMailDay::value('cloud_days');
-            $today = new Carbon('today');
-            $sub = Subscription::whereNotNull('update_ends_at')
+   public function deleteCloudDetails()
+   {
+       try {
+           $day = ExpiryMailDay::value('cloud_days');
+           $today = new Carbon('today');
+           $sub = Subscription::whereNotNull('update_ends_at')
         ->whereIn('product_id', [117, 119])
         ->where(function ($query) use ($today, $day) {
             $query->whereDate('update_ends_at', '<', $today)
@@ -198,56 +210,60 @@ class PhpMailController extends Controller
         })
         ->get();
 
-            foreach ($sub as $data) {
-                $cron = new CronController();
-                $user = \DB::table('users')->find($data->user_id);
-                $product = Product::find($data->product_id);
-                $order = $cron->getOrderById($data->order_id);
+           foreach ($sub as $data) {
+               $cron = new CronController();
+               $user = \DB::table('users')->find($data->user_id);
+               $product = Product::find($data->product_id);
+               $order = $cron->getOrderById($data->order_id);
 
-                if (empty($order)) {
-                    continue;
-                }
-                $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
+               if (empty($order)) {
+                   continue;
+               }
+               $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-                if (is_null($id) || $id == 'billing.faveocloud.com') {
-                    $order->delete();
-                } else {
-                    //Destroy the tenat
-                    $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
+               if (is_null($id) || $id == 'billing.faveocloud.com') {
+                   $order->delete();
+               } else {
+                   //Destroy the tenat
+                   $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
 
-                    //Mail Sending
+                   //Mail Sending
 
-                    if ($destroy->status() == 200) {
-                        //check in the settings
-                        $settings = new \App\Model\Common\Setting();
-                        $setting = $settings::find(1);
+                   if ($destroy->status() == 200) {
+                       //check in the settings
+                       $settings = new \App\Model\Common\Setting();
+                       $setting = $settings->where('id', 1)->first();
 
-                        //template
-                        $template = new \App\Model\Common\Template();
-                        $temp_id = \DB::table('template_types')->where('name', 'cloud_deleted')->value('id');
-                        $template = $template->where('id', $temp_id)->first();
+                       //template
+                       $template = new \App\Model\Common\Template();
+                       $temp_id = \DB::table('template_types')->where('name', 'cloud_deleted')->value('id');
+                       $template = $template->where('id', $temp_id)->first();
 
-                        $mail = new \App\Http\Controllers\Common\PhpMailController();
-                        $type = '';
-                        $replace = ['name' => $user->first_name.' '.$user->last_name,
-                            'product' => $product->name,
-                            'number' => $order->number,
-                            'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                        ];
-                        if ($template) {
-                            $type_id = $template->type;
-                            $temp_type = new \App\Model\Common\TemplateType();
-                            $type = $temp_type->where('id', $type_id)->first()->name;
-                        }
-                        $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
-                        $order->delete();
+                       $mail = new \App\Http\Controllers\Common\PhpMailController();
+                       $replace = ['name' => $user->first_name.' '.$user->last_name,
+                                  'product' => $product->name,
+                                  'number' => $order->number,
+                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                       ];
+                      $type = '';
+                     if ($template) {
+                        $type_id = $template->type;
+                        $temp_type = new \App\Model\Common\TemplateType();
+                        $type = $temp_type->where('id', $type_id)->first()->name;
                     }
-                }
-            }
-        } catch(\Exception $e) {
-            \Log::error($ex->getMessage());
-        }
-    }
+                    $from = $setting->email;
+                    $to = $user->email;
+                    $subject = $template->name;
+                    $data = $template->data;
+                    $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+                    $order->delete();
+                   }
+               }
+           }
+       } catch(\Exception $e) {
+           \Log::error($ex->getMessage());
+       }
+   }
 
     public function mailing($from, $to, $data, $subject, $replace = [],
          $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])

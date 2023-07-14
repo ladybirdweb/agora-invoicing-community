@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Common;
 
 use Exception;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+
+
 
 class CommonMailer
 {
-    public function setSmtpDriver($config)
+     public function setSmtpDriver($config)
     {
+        dd($config);
         try {
             if (! $config) {
                 return false;

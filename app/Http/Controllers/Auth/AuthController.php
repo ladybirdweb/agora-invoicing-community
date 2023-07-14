@@ -11,7 +11,6 @@ use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mime\Email;
 use Validator;
 
 class AuthController extends BaseAuthController
@@ -283,73 +282,68 @@ class AuthController extends BaseAuthController
 
     public function salesManagerMail($user, $bcc = [])
     {
- 
-            $manager = $user->manager()
+        $manager = $user->manager()
 
-                ->where('position', 'manager')
-                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+            ->where('position', 'manager')
+            ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+            ->first();
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->first();
+        $from = $setting->email;
+        $to = $user->email;
+        $templates = new \App\Model\Common\Template();
+        $template = $templates
+                ->join('template_types', 'templates.type', '=', 'template_types.id')
+                ->where('template_types.name', '=', 'sales_manager_email')
+                ->select('templates.data', 'templates.name')
                 ->first();
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->first();
-            $from = $setting->email;
-            $to = $user->email;
-            $templates = new \App\Model\Common\Template();
-            $template = $templates
-                    ->join('template_types', 'templates.type', '=', 'template_types.id')
-                    ->where('template_types.name', '=', 'sales_manager_email')
-                    ->select('templates.data', 'templates.name')
-                    ->first();
-            $template_data = $template->data;
-            $template_name = $template->name;
-            $template_controller = new \App\Http\Controllers\Common\TemplateController();
-            $replace = [
-                'name'               => $user->first_name.' '.$user->last_name,
-                'manager_first_name' => $manager->first_name,
-                'manager_last_name'  => $manager->last_name,
-                'manager_email'      => $manager->email,
-                'manager_code'       => $manager->mobile_code,
-                'manager_mobile'     => $manager->mobile,
-                'manager_skype'      => $manager->skype,
-            ];
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
-            $mail->email_log_success($setting->email, $user->email, $template->name,$template_data);
-            
-
+        $template_data = $template->data;
+        $template_name = $template->name;
+        $template_controller = new \App\Http\Controllers\Common\TemplateController();
+        $replace = [
+            'name'               => $user->first_name.' '.$user->last_name,
+            'manager_first_name' => $manager->first_name,
+            'manager_last_name'  => $manager->last_name,
+            'manager_email'      => $manager->email,
+            'manager_code'       => $manager->mobile_code,
+            'manager_mobile'     => $manager->mobile,
+            'manager_skype'      => $manager->skype,
+        ];
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
+        $mail->email_log_success($setting->email, $user->email, $template->name, $template_data);
     }
 
     public function accountManagerMail($user, $bcc = [])
     {
- 
-            $manager = $user->accountManager()
+        $manager = $user->accountManager()
 
-                ->where('position', 'account_manager')
-                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+            ->where('position', 'account_manager')
+            ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+            ->first();
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->first();
+        $from = $setting->email;
+        $to = $user->email;
+        $templates = new \App\Model\Common\Template();
+        $template = $templates
+                ->join('template_types', 'templates.type', '=', 'template_types.id')
+                ->where('template_types.name', '=', 'account_manager_email')
+                ->select('templates.data', 'templates.name')
                 ->first();
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->first();
-            $from = $setting->email;
-            $to = $user->email;
-            $templates = new \App\Model\Common\Template();
-            $template = $templates
-                    ->join('template_types', 'templates.type', '=', 'template_types.id')
-                    ->where('template_types.name', '=', 'account_manager_email')
-                    ->select('templates.data', 'templates.name')
-                    ->first();
-            $template_data = $template->data;
-            $template_name = $template->name;
-            $template_controller = new \App\Http\Controllers\Common\TemplateController();
-            $replace = [
-                'name'               => $user->first_name.' '.$user->last_name,
-                'manager_first_name' => $manager->first_name,
-                'manager_last_name'  => $manager->last_name,
-                'manager_email'      => $manager->email,
-                'manager_code'       => $manager->mobile_code,
-                'manager_mobile'     => $manager->mobile,
-                'manager_skype'      => $manager->skype,
-            ];
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->mailing($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
-   
+        $template_data = $template->data;
+        $template_name = $template->name;
+        $template_controller = new \App\Http\Controllers\Common\TemplateController();
+        $replace = [
+            'name'               => $user->first_name.' '.$user->last_name,
+            'manager_first_name' => $manager->first_name,
+            'manager_last_name'  => $manager->last_name,
+            'manager_email'      => $manager->email,
+            'manager_code'       => $manager->mobile_code,
+            'manager_mobile'     => $manager->mobile,
+            'manager_skype'      => $manager->skype,
+        ];
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->mailing($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
     }
 }

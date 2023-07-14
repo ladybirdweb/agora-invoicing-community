@@ -10,7 +10,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 
 class BaseAuthController extends Controller
 {
@@ -185,7 +184,7 @@ class BaseAuthController extends Controller
                 $token = $activate->token;
             }
 
-             $url = url("activate/$token");
+            $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
@@ -211,7 +210,6 @@ class BaseAuthController extends Controller
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->mailing($from, $to, $data, $subject, $replace, $type);
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

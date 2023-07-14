@@ -468,10 +468,10 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-    public function sendWelcomeMail($user)
+     public function sendWelcomeMail($user)
     {
         $settings = new \App\Model\Common\Setting();
-        $setting = $settings::find(1);
+        $setting = $settings->where('id', 1)->first();
         $from = $setting->email;
         $to = $user['email'];
         if (! $user['active']) {
@@ -485,29 +485,28 @@ class ClientController extends AdvanceSearchController
             //template
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->welcome_mail;
-            $template = $templates::find($temp_id);
+            $template = $templates->where('id', $temp_id)->first();
 
             $subject = $template->name;
             $data = $template->data;
             $website_url = url('/');
             $replace = ['name' => $user['first_name'].' '.$user['last_name'],
-                'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url];
+                'username' => $user['email'], 'password' => $str, 'url' => $url,'website_url' => $website_url ];
             $type = '';
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type::find($type_id)->name;
+                $type = $temp_type->where('id', $type_id)->first()->name;
             }
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+            $mail->mailing($from, $to, $data, $subject, $replace, $type);
         } else {
-            $loginData = 'You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass';
+            $loginData = "You have been successfully registered. Your login details are:<br>Email:" . $user['email'] . "<br> Password:demopass";
 
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($from, $to, $loginData, 'Login details ');
+            $mail->mailing($from, $to, $loginData, 'Login details ');
         }
     }
-
     /**
      * Gets baseQuery for user search by appending all the allowed filters.
      *

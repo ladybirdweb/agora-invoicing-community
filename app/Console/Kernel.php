@@ -169,7 +169,7 @@ class Kernel extends ConsoleKernel
         try {
             $setting = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $clouds = cloudemailsend::cursor();
+            $clouds = cloudemailsend::all();
 
             foreach ($clouds as $cloud) {
                 if ($this->checkTheAvailabilityOfCustomDomain($cloud->domain, $cloud->counter, $cloud->user)) {

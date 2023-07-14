@@ -157,7 +157,7 @@ class TenantController extends Controller
                 'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
-        $settings = Setting::find(1);
+        $setting = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($settings);
@@ -233,13 +233,8 @@ class TenantController extends Controller
                     ]);
                     $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
-                    $email = (new Email())
-                        ->from($settings->email)
-                        ->to($user)
-                        ->subject('New instance created')
-                        ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                    $mail->mailing($setting->email, $user, $userData, 'New instance created');
 
-                    $mailer->send($email);
 
                     $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 

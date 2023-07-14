@@ -2,6 +2,7 @@
 @section('title')
 Edit User
 @stop
+
     @section('content-header')
         <div class="col-sm-6">
             <h1>Edit User</h1>
@@ -13,7 +14,6 @@ Edit User
             </ol>
         </div><!-- /.col -->
     @stop
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
 @section('content')
 <div class="card card-secondary card-outline">

@@ -15,7 +15,6 @@ use App\Traits\PaymentsAndInvoices;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 use Yajra\DataTables\DataTables;
 
 class ClientController extends AdvanceSearchController
@@ -506,10 +505,6 @@ class ClientController extends AdvanceSearchController
         } else {
             $loginData = "You have been successfully registered. Your login details are:<br>Email:" . $user['email'] . "<br> Password:demopass";
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->mailing($from, $to, $loginData, 'Login details ');
-        }
-    }
     /**
      * Gets baseQuery for user search by appending all the allowed filters.
      *

@@ -7,7 +7,6 @@ use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\User;
-use Symfony\Component\Mime\Email;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
@@ -147,7 +146,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->mailing($from, $to, $data, $subject, $replace, $type);
-    
     }
 
     public function invoiceUrl($invoiceid)

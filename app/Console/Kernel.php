@@ -12,7 +12,6 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Schema;
-use Symfony\Component\Mime\Email;
 use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel

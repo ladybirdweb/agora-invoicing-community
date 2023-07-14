@@ -14,7 +14,6 @@ use App\Payment_log;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
 {

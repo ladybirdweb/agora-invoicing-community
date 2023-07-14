@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use Schema;
 use Symfony\Component\Mime\Email;
 use Validator;
-
+use App\Model\Common\Setting;
 class SettingsController extends Controller
 {
     public function __construct()
@@ -139,7 +139,6 @@ class SettingsController extends Controller
             $currency = strtolower($invoice->currency);
 
             $strCharge = $this->stripePay($request);
-
             if ($strCharge['charge']['status'] == 'succeeded') {
                 $stripeCustomerId = $strCharge['customer']['id'];
                 $customer_details = [
@@ -269,50 +268,20 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
-        try {
-            $payment = Payment::where('invoice_id', $invoice->id)->first();
-            $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
-            $order = Order::find($orderid);
-            $set = new \App\Model\Common\Setting();
-            $set = $set->findOrFail(1);
+            $setting = Setting::find(1);
+            $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($set);
-            $email = (new Email())
-                ->from($set->email)
-                ->to($set->company_email)
-                ->subject('Payment Failed')
-                ->replyTo($user->email)
-                ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-            $mailer->send($email);
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);
-            $mail->email_log_success($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-        } catch(\Exception $ex) {
-            $mail->email_log_fail($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-        }
+            $mail->mailing($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
+       
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
     {
-        try {
-            $payment = Payment::where('invoice_id', $invoice->id)->first();
-            $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
-            $order = Order::find($orderid);
-            $set = new \App\Model\Common\Setting();
-            $set = $set->findOrFail(1);
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($set);
+        $setting = Setting::find(1);
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
 
-            $email = (new Email())
-               ->from($set->email)
-               ->to($set->company_email)
-               ->subject('Payment Successful')
-               ->replyTo($user->email)
-               ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-            $mailer->send($email);
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number);
-            $mail->email_log_success($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-        } catch(\Exception $ex) {
-            $mail->email_log_fail($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
-        }
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->mailing($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
 }

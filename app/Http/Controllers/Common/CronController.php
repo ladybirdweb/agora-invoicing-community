@@ -656,15 +656,8 @@ class CronController extends BaseCronController
         $temp_id = $setting->payment_failed;
 
         $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
         $url = url("autopaynow/$invoice->invoice_id");
-
-        $email = (new Email())
-         ->from($setting->email)
-         ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = [
-             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product_details->name,
              'total' => currencyFormat($total, $code = $currency),
              'number' => $number,
@@ -672,10 +665,18 @@ class CronController extends BaseCronController
              'exception' => $exceptionMessage,
              'url' => $url,
              'contact' => $contact['contact'],
-             'logo' => $contact['logo'],
-         ]));
-        $mailer->send($email);
-        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
+            'logo' => $contact['logo'],];
+             $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->mailing($from, $to, $data, $subject, $replace, $type);
     }
 
     public static function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
@@ -687,37 +688,29 @@ class CronController extends BaseCronController
         $setting = $settings->where('id', 1)->first();
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->payment_successfull;
 
         $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
         $url = url('my-orders');
-
-        $date = date_create($future_expiry->update_ends_at);
-        $end = date_format($date, 'l, F j, Y ');
-
-        $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
-        $invo = Invoice::find($invoiceid)->first();
-        $email = (new Email())
-         ->from($setting->email)
-         ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = [
-             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $replace =   ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product,
-             'total' => currencyFormat($total, $code = $currency),
-             'number' => $number,
-             'contact' => $contact['contact'],
-             'logo' => $contact['logo'],
-             'future_expiry' => $end,
-
-         ]));
-        $mailer->send($email);
-        $this->PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template->name, $number, $payment = 'stripe');
-    }
+             'currency' => $invo->currency,
+             'total' => $total,
+             'number' => $number,'logo' => $contact['logo'],'contact' => $contact['contact']];
+             $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+  }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

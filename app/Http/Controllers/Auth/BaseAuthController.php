@@ -160,14 +160,6 @@ class BaseAuthController extends Controller
         $settings = new \App\Model\Common\Setting();
         $settings = $settings->where('id', 1)->first();
 
-        //template
-        $template = new \App\Model\Common\Template();
-        $temp_id = $settings->where('id', 1)->first()->welcome_mail;
-        $template = $template->where('id', $temp_id)->first();
-
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($settings);
-
         $html = $template->data;
         $this->emailverificationAttempt($user);
 
@@ -186,21 +178,32 @@ class BaseAuthController extends Controller
                 $token = $activate->token;
             }
 
-            $url = url("activate/$token");
+             $url = url("activate/$token");
 
+
+            //template
+            $template = new \App\Model\Common\Template();
+            $temp_id = $settings->where('id', 1)->first()->welcome_mail;
+            $template = $template->where('id', $temp_id)->first();
+            $from = $settings->email;
+            $to = $user->email;
             $website_url = url('/');
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name,
+                'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, 'contact' => $contact['contact'],
+                'logo' => $contact['logo'], ];
+            $type = '';
 
-            $email = (new Email())
-                ->from($settings->email)
-                ->to($user->email)
-                ->subject($template->name)
-                ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                    'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, 'contact' => $contact['contact'],
-                    'logo' => $contact['logo'], ]));
-            $mailer->send($email);
-            $mail->email_log_success($settings->email, $user->email, $template->name, $html);
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->mailing($from, $to, $data, $subject, $replace, $type);
         } catch (\Exception $ex) {
-            $mail->email_log_fail($settings->email, $user->email, $template->name, $html);
+
             throw new \Exception($ex->getMessage());
         }
     }

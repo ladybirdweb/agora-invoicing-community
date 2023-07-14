@@ -146,9 +146,23 @@ Email
                         </td>
                         </div>
                     </tr>
+                    
+                      <tr>
+                        <div class="form-group {{ $errors->has('from_name') ? 'has-error' : '' }}">
+                        <td><b>{!! Form::label('from_name',Lang::get('From Name'),['class'=>'required']) !!}</b></td>
+                        <td>
+
+
+                                {!! Form::text('from_name',$set->from_name,['class' => 'form-control','id'=>'from_name']) !!}
+                                <p><i> {{Lang::get('Enter Fron Name')}} </i> </p>
+
+
+                        </td>
+                        </div>
+                    </tr>
 
                     <tr>
-                        <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }} showWhenSmtpSelected">
                             <td><b>{!! Form::label('password',Lang::get('message.password'),['class'=>'required']) !!}</b></td>
                         <td>
 
@@ -280,6 +294,8 @@ Email
                 $('#region').val('');
                 $('.secret').hide(); 
                 $('#secret').val('');
+                $('#password').val('');
+
             }
         })
 
@@ -294,6 +310,7 @@ Email
                 url : '{{url("settings/email")}}',
                 type : 'patch',
                 data: {
+                    "from_name" : $('#from_name').val(),
                      "email" : $('#email').val(),
                      "password" : $('#password').val(),
                      "driver" : $('#driver').val(),

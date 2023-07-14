@@ -490,6 +490,8 @@ function setServiceConfig($emailConfig)
         //setting that service configuration
         \Config::set("services.$sendingProtocol", $dynamicServiceConfig);
     } else {
+        \Config::set('mail.sendmail', '/usr/sbin/sendmail -t -i -f' . $emailConfig['email']);
+
         \Config::set('mail.host', $emailConfig['host']);
         \Config::set('mail.port', $emailConfig['port']);
         \Config::set('mail.password', $emailConfig['password']);

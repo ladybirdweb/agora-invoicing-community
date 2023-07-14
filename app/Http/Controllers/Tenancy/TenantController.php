@@ -192,7 +192,7 @@ class TenantController extends Controller
                 'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
-        $settings = Setting::find(1);
+        $setting = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($settings);
@@ -284,15 +284,8 @@ class TenantController extends Controller
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
                     $contact = getContactData();
-                    $email = (new Email())
-                        ->from($settings->email)
-                        ->to($user)
-                        ->subject($subject)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'product' => $order[0]->product()->value('name'), 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name, 'contact' => $contact['contact'], 'logo' => $contact['logo']]));
-
-                    $mailer->send($email);
-
-                    $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                   $mail->SendEmail($setting->email, $user, $userData, 'New instance created');
+                   $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }

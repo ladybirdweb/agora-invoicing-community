@@ -469,51 +469,45 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-    public function sendWelcomeMail($user)
+     public function sendWelcomeMail($user)
     {
-        try {
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        $from = $setting->email;
+        $to = $user['email'];
+        if (! $user['active']) {
+            $activate_model = new AccountActivate();
+            $str = str_random(40);
+            $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
+            $token = $activate->token;
+            $url = url("activate/$token");
             //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->where('id', 1)->first();
-            $from = $setting->email;
-            $to = $user['email'];
+
+            //template
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->welcome_mail;
             $template = $templates->where('id', $temp_id)->first();
-            $html = $template->data;
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
-            if (! $user['active']) {
-                $activate_model = new AccountActivate();
-                $str = str_random(40);
-                $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
-                $token = $activate->token;
-                $url = url("activate/$token");
-                $website_url = url('/');
 
-                //template
-
-                $email = (new Email())
-                ->from($setting->email)
-                ->to($user['email'])
-                ->subject($template->name)
-                ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
-                $mailer->send($email);
-            } else {
-                $email = (new Email())
-                ->from($setting->email)
-                ->to($user['email'])
-                ->subject('Login details ')
-                ->html('You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass');
-                $mailer->send($email);
-                $mail->email_log_success($setting->email, $user['email'], $template->name, $html);
+            $subject = $template->name;
+            $data = $template->data;
+            $website_url = url('/');
+            $replace = ['name' => $user['first_name'].' '.$user['last_name'],
+                'username' => $user['email'], 'password' => $str, 'url' => $url,'website_url' => $website_url ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
             }
-        } catch (\Exception $ex) {
-            $mail->email_log_fail($setting->email, $user['email'], $template->name, $html);
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->mailing($from, $to, $data, $subject, $replace, $type);
+        } else {
+            $loginData = "You have been successfully registered. Your login details are:<br>Email:" . $user['email'] . "<br> Password:demopass";
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->mailing($from, $to, $loginData, 'Login details ');
         }
     }
-
     /**
      * Gets baseQuery for user search by appending all the allowed filters.
      *

@@ -612,24 +612,25 @@ class CronController extends BaseCronController
         $temp_id = $setting->payment_failed;
 
         $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
         $url = url("autopaynow/$invoice->invoice_id");
-
-        $email = (new Email())
-         ->from($setting->email)
-         ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = [
-             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product_details->name,
              'total' => currencyFormat($total, $code = $currency),
              'number' => $number,
              'expiry' => date('d-m-Y', strtotime($end)),
              'exception' => $exceptionMessage,
-             'url' => $url,
-         ]));
-        $mailer->send($email);
-        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
+             'url' => $url];
+             $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->mailing($from, $to, $data, $subject, $replace, $type);
     }
 
     public function sendPaymentSuccessMail($invoice, $total, $user, $product, $number)
@@ -639,68 +640,67 @@ class CronController extends BaseCronController
         $setting = $settings->where('id', 1)->first();
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->payment_successfull;
 
         $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
         $url = url('my-orders');
-
-        $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
-        $invo = Invoice::find($invoiceid)->first();
-        $email = (new Email())
-         ->from($setting->email)
-         ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = [
-             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $replace =   ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product,
              'currency' => $invo->currency,
              'total' => $total,
-             'number' => $number,
-         ]));
-        $mailer->send($email);
-        $this->PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template->name, $number, $payment = 'stripe');
-    }
-
-    public function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
-    {
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-
-        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
-
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->card_failed;
-
-        $template = $templates->where('id', $temp_id)->first();
+             'number' => $number,];
+             $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
         $data = $template->data;
-        // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-        $url = url("autopaynow/$invoice->invoice_id");
+        dd("ko");
+        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+  }
 
-        $email = (new Email())
-          ->from($setting->email)
-          ->to($user->email)
-          ->subject($template->name)
-          ->html($mail->mailTemplate($template->data, $templatevariables = [
-              'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-              'product' => $product_details->name,
-              'total' => currencyFormat($total, $code = $currency),
-              'number' => $number,
-              'expiry' => date('d-m-Y', strtotime($end)),
-              'exception' => $exceptionMessage,
-              'url' => $url,
-          ]));
-        $mailer->send($email);
+        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
+        {
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
 
-        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
-    }
+            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->card_failed;
+
+            $template = $templates->where('id', $temp_id)->first();
+            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
+            $url = url("autopaynow/$invoice->invoice_id");
+             $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+                  'product' => $product_details->name,
+                  'total' => currencyFormat($total, $code = $currency),
+                  'number' => $number,
+                  'expiry' => date('d-m-Y', strtotime($end)),
+                  'exception' => $exceptionMessage,
+                  'url' => $url,];
+                  $type = '';
+                   if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                $from = $setting->email;
+                $to = $user->email;
+                $subject = $template->name;
+                $data = $template->data;
+                $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+ }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

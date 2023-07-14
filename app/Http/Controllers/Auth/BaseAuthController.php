@@ -169,7 +169,7 @@ class BaseAuthController extends Controller
                 $activate_model->create(['email' => $email, 'token' => $token]);
             }
 
-             $url = url("activate/$token");
+            $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
@@ -195,7 +195,6 @@ class BaseAuthController extends Controller
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->mailing($from, $to, $data, $subject, $replace, $type);
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

@@ -640,13 +640,13 @@ class CronController extends BaseCronController
         $template = $templates->where('id', $temp_id)->first();
         $url = url("autopaynow/$invoice->invoice_id");
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'product' => $product_details->name,
-             'total' => currencyFormat($total, $code = $currency),
-             'number' => $number,
-             'expiry' => date('d-m-Y', strtotime($end)),
-             'exception' => $exceptionMessage,
-             'url' => $url];
-             $type = '';
+            'product' => $product_details->name,
+            'total' => currencyFormat($total, $code = $currency),
+            'number' => $number,
+            'expiry' => date('d-m-Y', strtotime($end)),
+            'exception' => $exceptionMessage,
+            'url' => $url];
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
@@ -672,12 +672,12 @@ class CronController extends BaseCronController
 
         $template = $templates->where('id', $temp_id)->first();
         $url = url('my-orders');
-        $replace =   ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'product' => $product,
-             'currency' => $currency,
-             'total' => $total,
-             'number' => $number,];
-             $type = '';
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'product' => $product,
+            'currency' => $currency,
+            'total' => $total,
+            'number' => $number, ];
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
@@ -687,9 +687,9 @@ class CronController extends BaseCronController
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        dd("ko");
+        dd('ko');
         $mail->mailing($from, $to, $data, $subject, $replace, $type);
-  }
+    }
 
         public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
         {

@@ -125,30 +125,29 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->invoice;
         $template = $templates->where('id', $temp_id)->first();
-
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-
-        $html = $template->data;
-        try {
-            $email = (new Email())
-                ->from($setting->email)
-                ->to($user->email)
-                ->subject($template->name)
-                ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                    'number' => $number,
-                    'address' => $user->address,
-                    'invoiceurl' => $invoiceurl,
-                    'content' => $this->invoiceContent($invoiceid),
-                    'currency' => $this->currency($invoiceid),
-                    'contact' => $contact['contact'],
-                    'logo' => $contact['logo'], ]));
-
-            $mailer->send($email);
-            $mail->email_log_success($setting->email, $user->email, $template->name, $html);
-        } catch (\Exception $ex) {
-            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $replace = [
+            'name'       => $user->first_name.' '.$user->last_name,
+            'number'     => $number,
+            'address'    => $user->address,
+            'invoiceurl' => $invoiceurl,
+            'content'    => $this->invoiceContent($invoiceid),
+            'currency'   => $this->currency($invoiceid),
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
+        ];
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
         }
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+    
     }
 
     public function invoiceUrl($invoiceid)

@@ -67,7 +67,6 @@ class EmailSettingRequest extends FormRequest
             return [
                 'driver' => 'required',
                 'email' => 'required',
-                'password' => 'required',
             ];
         }
     }

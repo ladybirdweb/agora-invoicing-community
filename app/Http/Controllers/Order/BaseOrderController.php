@@ -275,23 +275,53 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-        $contact = getContactData();
-        $value = Product::where('name', $product)->value('type');
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        $templates = new \App\Model\Common\Template();
-        $temp_id = TemplateType::where('name', 'order_mail')->value('id');
-
-        $template = $templates->where('type', $temp_id)->first();
-        $html = $template->data;
-
-        try {
+       try {
+            $contact = getContactData();
+            $value = Product::where('name', $product)->value('type');
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            $templates = new \App\Model\Common\Template();
+            $temp_id = ($value != '4') ? $setting->order_mail : $setting->cloud_order;
+    
+            $template = $templates->where('id', $temp_id)->first();
+            $url = url('my-orders');
             $knowledgeBaseUrl = $setting->company_url;
+            $from = $setting->email;
+            $to = $user->email;
+            $adminEmail = $setting->company_email;
+            $subject = $template->name;
+            $data = $template->data;
             $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
+            $replace =  ['name' => $user->first_name.' '.$user->last_name,
+                    'serialkeyurl' => $myaccounturl,
+                    'url' => $url,
+                    'downloadurl' => $downloadurl,
+                    'invoiceurl' => $invoiceurl,
+                    'product' => $product,
+                    'number' => $order->number,
+                    'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                    'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                    'knowledge_base' => $knowledgeBaseUrl, ];
+
+            if ($value == '4') {
+               
+                
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                 $mail->mailing($from, $to, $data, $subject, $replace, $type);
+
+            } else {
+   
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                $mail->mailing($from, $to, $data, $subject, $replace, $type);
+
             }
             $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
             $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
@@ -320,15 +350,11 @@ class BaseOrderController extends ExtendedOrderController
 
             $mailer->send($email);
 
-            $mail->email_log_success($setting->email, $user->email, $template->name, $html);
 
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice, $order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
-            SettingsController::sendFailedPaymenttoAdmin($order->invoice, $order->invoice->grand_total, $product, $ex->getMessage(), $user);
-
-            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
             throw new \Exception($ex->getMessage());
         }
     }

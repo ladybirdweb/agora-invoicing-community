@@ -5,21 +5,27 @@ namespace App\Http\Controllers\Common;
 use Exception;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+
+
 
 class CommonMailer
 {
-    public function setSmtpDriver($config)
+     public function setSmtpDriver($config)
     {
+        dd($config);
         try {
             if (! $config) {
                 return false;
             }
+            $transport = new EsmtpTransport($config['host'], $config['port']);
+            $transport->setUsername($config['username']);
+            $transport->setPassword($config['password']);
 
-            $transport = Transport::fromDsn('smtp://'.$config['username'].':'.$config['password'].'@smtp.gmail.com?verify_peer=0');
+            // Set the mailer
+            \Mail::setSymfonyTransport($transport);
 
-            $mailer = new Mailer($transport);
-
-            return $mailer;
+            return true;
         } catch (Exception $e) {
             loging($e->getMessage());
 

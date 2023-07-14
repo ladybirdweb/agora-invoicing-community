@@ -11,7 +11,6 @@ use App\Model\Product\Subscription;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
 {
@@ -112,12 +111,12 @@ class PhpMailController extends Controller
                     $mailer = $mail->setMailConfig($settings);
                     $url = url('my-orders');
                     $replace = ['name' => $user->first_name.' '.$user->last_name,
-                                  'product' => $product->name,
-                                  'number' => $order->number,
-                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                                  'url' => $url, ];
+                        'product' => $product->name,
+                        'number' => $order->number,
+                        'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                        'url' => $url, ];
                     $type = '';
-                     if ($template) {
+                    if ($template) {
                         $type_id = $template->type;
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
@@ -127,7 +126,6 @@ class PhpMailController extends Controller
                     $subject = $template->name;
                     $data = $template->data;
                     $mail->mailing($from, $to, $data, $subject, $replace, $type);
-
                 }
             }
         } catch(\Exception $ex) {
@@ -172,22 +170,22 @@ class PhpMailController extends Controller
 
                         $mail = new \App\Http\Controllers\Common\PhpMailController();
                         $url = url('my-orders');
-                         $replace = ['name' => $user->first_name.' '.$user->last_name,
-                                  'product' => $product->name,
-                                  'number' => $order->number,
-                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                                  'url' => $url, ];
-                    $type = '';
-                     if ($template) {
-                        $type_id = $template->type;
-                        $temp_type = new \App\Model\Common\TemplateType();
-                        $type = $temp_type->where('id', $type_id)->first()->name;
-                    }
-                    $from = $setting->email;
-                    $to = $user->email;
-                    $subject = $template->name;
-                    $data = $template->data;
-                    $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                        $replace = ['name' => $user->first_name.' '.$user->last_name,
+                            'product' => $product->name,
+                            'number' => $order->number,
+                            'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                            'url' => $url, ];
+                        $type = '';
+                        if ($template) {
+                            $type_id = $template->type;
+                            $temp_type = new \App\Model\Common\TemplateType();
+                            $type = $temp_type->where('id', $type_id)->first()->name;
+                        }
+                        $from = $setting->email;
+                        $to = $user->email;
+                        $subject = $template->name;
+                        $data = $template->data;
+                        $mail->mailing($from, $to, $data, $subject, $replace, $type);
                     }
                 }
             }
@@ -240,22 +238,22 @@ class PhpMailController extends Controller
 
                        $mail = new \App\Http\Controllers\Common\PhpMailController();
                        $replace = ['name' => $user->first_name.' '.$user->last_name,
-                                  'product' => $product->name,
-                                  'number' => $order->number,
-                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                           'product' => $product->name,
+                           'number' => $order->number,
+                           'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                        ];
-                      $type = '';
-                     if ($template) {
-                        $type_id = $template->type;
-                        $temp_type = new \App\Model\Common\TemplateType();
-                        $type = $temp_type->where('id', $type_id)->first()->name;
-                    }
-                    $from = $setting->email;
-                    $to = $user->email;
-                    $subject = $template->name;
-                    $data = $template->data;
-                    $mail->mailing($from, $to, $data, $subject, $replace, $type);
-                    $order->delete();
+                       $type = '';
+                       if ($template) {
+                           $type_id = $template->type;
+                           $temp_type = new \App\Model\Common\TemplateType();
+                           $type = $temp_type->where('id', $type_id)->first()->name;
+                       }
+                       $from = $setting->email;
+                       $to = $user->email;
+                       $subject = $template->name;
+                       $data = $template->data;
+                       $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                       $order->delete();
                    }
                }
            }

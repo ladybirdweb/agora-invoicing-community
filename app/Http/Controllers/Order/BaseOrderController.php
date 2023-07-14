@@ -281,7 +281,7 @@ class BaseOrderController extends ExtendedOrderController
             $mailer = $mail->setMailConfig($setting);
             $templates = new \App\Model\Common\Template();
             $temp_id = ($value != '4') ? $setting->order_mail : $setting->cloud_order;
-    
+
             $template = $templates->where('id', $temp_id)->first();
             $url = url('my-orders');
             $knowledgeBaseUrl = $setting->company_url;
@@ -304,24 +304,19 @@ class BaseOrderController extends ExtendedOrderController
                 'logo' => $contact['logo'], ];
 
             if ($value == '4') {
-               
-                
-                if ($template) {
-                    $type_id = $template->type;
-                    $temp_type = new \App\Model\Common\TemplateType();
-                    $type = $temp_type->where('id', $type_id)->first()->name;
-                }
-                 $mail->mailing($from, $to, $data, $subject, $replace, $type);
-
-            } else {
-   
                 if ($template) {
                     $type_id = $template->type;
                     $temp_type = new \App\Model\Common\TemplateType();
                     $type = $temp_type->where('id', $type_id)->first()->name;
                 }
                 $mail->mailing($from, $to, $data, $subject, $replace, $type);
-
+            } else {
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                $mail->mailing($from, $to, $data, $subject, $replace, $type);
             }
             $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
             $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
@@ -349,7 +344,6 @@ class BaseOrderController extends ExtendedOrderController
                     ]));
 
             $mailer->send($email);
-
 
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice, $order->invoice->grand_total, $user, $product);

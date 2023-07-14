@@ -292,7 +292,6 @@ class TenantController extends Controller
                     $this->prepareMessages($faveoCloud, $user, true);
                     $contact = getContactData();
                     $mail->SendEmail($settings->email, $user, $userData, 'New instance created');
-                    $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }

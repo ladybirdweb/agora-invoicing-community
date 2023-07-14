@@ -67,20 +67,18 @@ class ForgotPasswordController extends Controller
             }
             //check in the settings
             $settings = new \App\Model\Common\Setting();
-            $setting = $settings::find(1);
+            $setting = $settings->where('id', 1)->first();
             //template
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->forgot_password;
             $template = $templates->where('id', $temp_id)->first();
 
-            $contact = getContactData();
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs,'contact' => $contact['contact'],
-            'logo' => $contact['logo']];
             $from = $setting->email;
             $to = $user->email;
             $contactUs = $setting->website;
             $subject = $template->name;
             $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs];
             $type = '';
 
             if ($template) {
@@ -89,14 +87,15 @@ class ForgotPasswordController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
             if (emailSendingStatus()) {
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
-                $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$user->email.'
+                $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$to.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {
                 $response = ['type' => 'fails',   'message' =>'System email is not configured. Please contact admin.'];
             }
+
 
             return response()->json($response);
         } catch (\Exception $ex) {

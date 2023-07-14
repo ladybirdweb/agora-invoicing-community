@@ -169,33 +169,33 @@ class BaseAuthController extends Controller
                 $activate_model->create(['email' => $email, 'token' => $token]);
             }
 
-            $url = url("activate/$token");
+             $url = url("activate/$token");
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $settings = $settings->where('id', 1)->first();
 
-            // Check the settings
-            $settings = \App\Model\Common\Setting::find(1);
-
-            // Retrieve the template
-            $template = \App\Model\Common\Template::find($settings->welcome_mail);
+            //template
+            $template = new \App\Model\Common\Template();
+            $temp_id = $settings->where('id', 1)->first()->welcome_mail;
+            $template = $template->where('id', $temp_id)->first();
+            $from = $settings->email;
+            $to = $user->email;
             $website_url = url('/');
-            $replace = [
-                'name' => $user->first_name.' '.$user->last_name,
-                'username' => $user->email,
-                'url' => $url,
-                'website_url' => $website_url,
-                'contact' => $contact['contact'],
-                'logo' => $contact['logo'],
-            ];
-
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name,
+                'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
             $type = '';
+
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
+            $mail->mailing($from, $to, $data, $subject, $replace, $type);
         } catch (\Exception $ex) {
+
             throw new \Exception($ex->getMessage());
         }
     }

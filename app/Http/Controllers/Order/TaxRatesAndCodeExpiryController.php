@@ -112,7 +112,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
     {
-   
         //user
         $users = new User();
         $user = $users->find($userid);
@@ -144,7 +143,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->mailing($from, $to, $data, $subject, $replace, $type);
-    
     }
 
     public function invoiceUrl($invoiceid)

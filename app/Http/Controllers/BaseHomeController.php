@@ -182,23 +182,23 @@ class BaseHomeController extends Controller
         }
     }
 
-  public function getData($subscription)
-  {
-      $productName = Product::where('id', $subscription->product_id)->value('name');
-      $plan = Plan::where('id', $subscription->plan_id)->value('name');
-      if (\Carbon\Carbon::now()->toDateTimeString() < $subscription->update_ends_at) {
-          $data = [
-              'product' => $productName,
-              'plan' => $plan,
-              'update_ends' => $subscription->update_ends_at,
-              'version' => $subscription->version,
-              'support_end' => $subscription->support_ends_at,
+    public function getData($subscription)
+    {
+        $productName = Product::where('id', $subscription->product_id)->value('name');
+        $plan = Plan::where('id', $subscription->plan_id)->value('name');
+        if (\Carbon\Carbon::now()->toDateTimeString() < $subscription->update_ends_at) {
+            $data = [
+                'product' => $productName,
+                'plan' => $plan,
+                'update_ends' => $subscription->update_ends_at,
+                'version' => $subscription->version,
+                'support_end' => $subscription->support_ends_at,
 
-          ];
+            ];
 
-          return $data;
-      }
-  }
+            return $data;
+        }
+    }
 
     public function updateLatestVersion(Request $request)
     {

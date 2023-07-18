@@ -8,11 +8,13 @@ use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
+use Carbon\Carbon;
 
 class TenantController extends Controller
 {
@@ -106,6 +108,17 @@ class TenantController extends Controller
 
                     return "<p><a href='".url('/orders/'.$order_id)."'>$order_number</a></p>";
                 })
+                ->addColumn('Deletion day', function ($model) {
+                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
+                    $subscription_date = Subscription::where('order_id',$order_id)->value('ends_at');
+                    if(empty($subscription_date)){
+                        return "--";
+                    }
+                    $days = \DB::table('expiry_mail_days')->where('cloud_days','!=',null)->value('cloud_days');
+                    $originalDate = Carbon::parse($subscription_date)->addDays($days);
+                    $formattedDate = Carbon::parse($originalDate)->format('Y M d');
+                    return $formattedDate;
+                })
 
                 ->addColumn('tenants', function ($model) {
                     return $model->id ?? '';
@@ -135,9 +148,10 @@ class TenantController extends Controller
     class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."><i class='fa fa-trash'
     style='color:white;'> </i></button>&nbsp;</p>";
                 })
-                ->rawColumns(['Order', 'tenants', 'domain', 'db_name', 'db_username', 'action'])
+                ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
+            dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -192,6 +206,7 @@ class TenantController extends Controller
             // Convert uppercase letters to lowercase
             $faveoCloud = strtolower($company).'.faveocloud.com';
             if (strlen($faveoCloud) >= 32) {
+                $this->googleChat(trans('message.too_long').' Domain: '.$faveoCloud.' Email: '.$user);
                 return ['status' => 'false', 'message' => trans('message.too_long')];
             }
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
@@ -224,9 +239,15 @@ class TenantController extends Controller
             if ($result->status == 'fails') {
                 $this->prepareMessages($faveoCloud, $user);
 
+                $this->googleChat($result->message);
+
+
                 return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
                 $this->prepareMessages($faveoCloud, $user);
+
+                $this->googleChat($result->message);
+
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
@@ -280,7 +301,12 @@ class TenantController extends Controller
                 }
             }
         } catch (Exception $e) {
-            //$mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+
+            $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$user;
+
+            $this->googleChat($message);
+
+            $mail->email_log_fail($settings->email, $user, 'New instance created', $e->getMessage().'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
             return ['status' => 'false', 'message' => trans('message.something_bad')];
         }

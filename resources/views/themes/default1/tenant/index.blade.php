@@ -163,6 +163,7 @@ Tenants
                     <thead><tr>
 
                             <th>Order</th>
+                            <th>Deletion day</th>
                             <th>Tenant</th>
                             <th>Domain</th>
                             <th>Database name</th>
@@ -222,6 +223,7 @@ $(document).ready(function(){
        
             columns: [
                 {data:'Order', name: 'Order'},
+                {data: 'Deletion day', name: 'Deletion day'},
                 {data: 'tenants', name: 'tenants'},
                 {data: 'domain', name: 'domain'},
                 {data: 'db_name', name: 'db_name'},

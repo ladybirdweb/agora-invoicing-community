@@ -568,7 +568,7 @@ class ClientController extends BaseClientController
                                     $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
-                                if(!in_array($model->product_id,[117,119])){
+                                if (! in_array($model->product_id, [117, 119])) {
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
 

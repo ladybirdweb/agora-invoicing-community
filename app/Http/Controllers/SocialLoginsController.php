@@ -12,7 +12,6 @@ class SocialLoginsController extends Controller
     public function view()
     {
         $socialLoginss = SocialLogin::get();
-
         return view('themes.default1.common.socialLogins', compact('socialLoginss'));
     }
 

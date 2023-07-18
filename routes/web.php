@@ -45,7 +45,7 @@ Route::post('refresh-csrf', function () {
 });
 // social logins routes
 Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
-Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
+Route::get('social-logins', [SocialLoginsController::class, 'view']);
 Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
 Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
@@ -171,28 +171,9 @@ Route::middleware('installAgora')->group(function () {
     Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index']);
-    // gurmeen
     Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
     Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
-    //
-    //  Route::post('basic-details', [Auth\LoginController::class, 'basicDetailsView'])->name(basic-details);
-
-    //  Route::post('save-basic-details', [Auth\LoginController::class, 'storeBasicDetails']);
-
-    // gurmeenend
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
 
     /*
      * Client

@@ -10,11 +10,11 @@ use Tests\DBTestCase;
 class SocialLoginTest extends DBTestCase
 {
     use DatabaseTransactions;
-
+   
     public function login_register_testwithemail()
     {
         $user = User::factory()->create();
-        $response = $this->call('GET', '/auth/redirect/{provider}', 
+        $response = $this->call('GET', '/auth/redirect/google', 
         [
             'email' => $user->email,
             'role' => 'user',

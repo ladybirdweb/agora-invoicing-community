@@ -10,11 +10,11 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
-use Carbon\Carbon;
 
 class TenantController extends Controller
 {
@@ -110,13 +110,14 @@ class TenantController extends Controller
                 })
                 ->addColumn('Deletion day', function ($model) {
                     $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
-                    $subscription_date = Subscription::where('order_id',$order_id)->value('ends_at');
-                    if(empty($subscription_date)){
-                        return "--";
+                    $subscription_date = Subscription::where('order_id', $order_id)->value('ends_at');
+                    if (empty($subscription_date)) {
+                        return '--';
                     }
-                    $days = \DB::table('expiry_mail_days')->where('cloud_days','!=',null)->value('cloud_days');
+                    $days = \DB::table('expiry_mail_days')->where('cloud_days', '!=', null)->value('cloud_days');
                     $originalDate = Carbon::parse($subscription_date)->addDays($days);
                     $formattedDate = Carbon::parse($originalDate)->format('Y M d');
+
                     return $formattedDate;
                 })
 
@@ -152,6 +153,7 @@ class TenantController extends Controller
                 ->make(true);
         } catch (ConnectException|Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -207,6 +209,7 @@ class TenantController extends Controller
             $faveoCloud = strtolower($company).'.faveocloud.com';
             if (strlen($faveoCloud) >= 32) {
                 $this->googleChat(trans('message.too_long').' Domain: '.$faveoCloud.' Email: '.$user);
+
                 return ['status' => 'false', 'message' => trans('message.too_long')];
             }
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
@@ -241,13 +244,11 @@ class TenantController extends Controller
 
                 $this->googleChat($result->message);
 
-
                 return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
                 $this->prepareMessages($faveoCloud, $user);
 
                 $this->googleChat($result->message);
-
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
@@ -301,7 +302,6 @@ class TenantController extends Controller
                 }
             }
         } catch (Exception $e) {
-
             $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$user;
 
             $this->googleChat($message);

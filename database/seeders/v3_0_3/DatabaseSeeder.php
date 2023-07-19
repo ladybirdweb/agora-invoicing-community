@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
 

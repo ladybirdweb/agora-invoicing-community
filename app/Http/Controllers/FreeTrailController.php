@@ -53,17 +53,13 @@ class FreeTrailController extends Controller
         ], [
             'domain.regex' => 'Special characters are not allowed in domain name',
         ]);
-
         try {
             if (! Auth::check()) {
                 return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
             }
 
-            return errorResponse(Lang::get('message.false'), 400);
-
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
-                $userLogin = User::find($userId);
                 $product_is = ($request->product == 'Helpdesk') ? 117 : 119;
                 if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id', $product_is)->count() >= 1) {
                     return ['status' => 'false', 'message' => trans('message.limit_is_up')];
@@ -88,7 +84,7 @@ class FreeTrailController extends Controller
                     \DB::table('free_trial_allowed')->insert([
                         'user_id' => $userId,
                         'product_id' => ($request->get('product') == 'Helpdesk' ? 117 : 119),
-                        'domain' => $request->domain.'.faveocloud.com',
+                        'domain' => $request->domain.'.ragnork.ml',
                     ]);
                     DB::commit(); // Commit the transaction
 

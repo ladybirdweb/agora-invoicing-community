@@ -44,14 +44,14 @@ return [
         'secret' => '',
     ],
     'github' => [
-        'client_id' => '', 
+        'client_id' => '',
         'client_secret' => '',
-        'redirect' => '', 
+        'redirect' => '',
     ],
     'google' => [
-        'client_id' => '', 
-        'client_secret' => '', 
-        'redirect' => '', 
+        'client_id' => '',
+        'client_secret' => '',
+        'redirect' => '',
     ],
     'twitter' => [
         'client_id' => '',

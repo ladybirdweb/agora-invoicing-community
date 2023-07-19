@@ -21,7 +21,6 @@ use Crypt;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Lang;
 
 class FreeTrailController extends Controller
 {

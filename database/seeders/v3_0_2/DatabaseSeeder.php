@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Model\Common\TemplateType;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
-use Database\Seeders\SocialLoginsTableSeeder;
+use Database\Seeders\v3_0_2\SocialLoginsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Template table seeded!');
 
         $this->call(SettingsSeeder::class);
-    }	    
+        $this->call(SocialLoginsTableSeeder::class);
+    }	 
 }	
     
     class TemplateTypeTableSeeder extends Seeder
@@ -400,37 +401,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-                        $social_logins = [
-                            [
-                                'type' => 'google',
-                                'client_id' => '915644360529-pufkmq6kgrcj0aqe4e6i23tjvb02a5mg.apps.googleusercontent.com',
-                                'client_secret' => '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',
-                                'redirect_url' => 'https://qa.faveodemo.com/Agora/agoraBilling/agoraBilling/public/auth/callback/google',
-                                'status' => 1,
-                            ],
-                            [
-                                'type' => 'github',
-                                'client_id' => 'Iv1.f2bdc32a0799a0a0',
-                                'client_secret' => '92957c0954dc3cd476c855c0ecc3fac69e5f8196',
-                                'redirect_url' => 'https://qa.faveodemo.com/Agora/agoraBilling/agoraBilling/public/auth/callback/github',
-                                'status' => 1,
-                            ],
-                            [
-                                'type' => 'twitter',
-                                'client_id' => 'OWp4LXE5YXpyZzF4dlByVXpZeXM6MTpjaQ',
-                                'client_secret' => 'BBCrvmGyASMa355Gfu5aYurxbd0kPnkDjqrFd3omXIMMJN8LtE',
-                                'redirect_url' => 'https://qa.faveodemo.com/Agora/agoraBilling/agoraBilling/public/auth/redirect/twitter',
-                                'status' => 0,
-                            ],
-                            [
-                                'type' => 'LinkedIn',
-                                'client_id' => 'linkedin_client_id',
-                                'client_secret' => 'linkedin_client_secret',
-                                'redirect_url' => 'linkedin_redirect_url',
-                                'status' => 0,
-                            ],
-                        ];
-                        \DB::table('social_logins')->insert($social_logins);
+                        
 
     }
     

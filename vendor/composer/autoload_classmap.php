@@ -195,6 +195,7 @@ return array(
     'App\\Http\\Requests\\ValidateSecretRequest' => $baseDir . '/app/Http/Requests/ValidateSecretRequest.php',
     'App\\Http\\Requests\\verifyOtp' => $baseDir . '/app/Http/Requests/verifyOtp.php',
     'App\\Jobs\\Command' => $baseDir . '/app/Jobs/Command.php',
+    'App\\Jobs\\NotifyMail' => $baseDir . '/app/Jobs/NotifyMail.php',
     'App\\Jobs\\SendEmail' => $baseDir . '/app/Jobs/SendEmail.php',
     'App\\Model\\Common\\Bussiness' => $baseDir . '/app/Model/Common/Bussiness.php',
     'App\\Model\\Common\\ChatScript' => $baseDir . '/app/Model/Common/ChatScript.php',
@@ -1938,6 +1939,11 @@ return array(
     'Database\\Seeders\\v3_0_1\\CountrySeeder' => $baseDir . '/database/seeders/v3_0_1/CountrySeeder.php',
     'Database\\Seeders\\v3_0_1\\DatabaseSeeder' => $baseDir . '/database/seeders/v3_0_1/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_1\\StatesSubdivisionSeeder' => $baseDir . '/database/seeders/v3_0_1/StatesSubdivisionSeeder.php',
+    'Database\\Seeders\\v3_0_2\\DatabaseSeeder' => $baseDir . '/database/seeders/v3_0_2/DatabaseSeeder.php',
+    'Database\\Seeders\\v3_0_2\\SettingsSeeder' => $baseDir . '/database/seeders/v3_0_2/SettingsSeeder.php',
+    'Database\\Seeders\\v3_0_2\\SocialLoginsTableSeeder' => $baseDir . '/database/seeders/v3_0_2/SocialLoginsTableSeeder.php',
+    'Database\\Seeders\\v3_0_2\\TemplateTableSeeder' => $baseDir . '/database/seeders/v3_0_2/DatabaseSeeder.php',
+    'Database\\Seeders\\v3_0_2\\TemplateTypeTableSeeder' => $baseDir . '/database/seeders/v3_0_2/DatabaseSeeder.php',
     'DebugBar\\Bridge\\CacheCacheCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',
     'DebugBar\\Bridge\\DoctrineCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/DoctrineCollector.php',
     'DebugBar\\Bridge\\MonologCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/MonologCollector.php',
@@ -5035,9 +5041,7 @@ return array(
     'Laravel\\SerializableClosure\\Support\\ClosureStream' => $vendorDir . '/laravel/serializable-closure/src/Support/ClosureStream.php',
     'Laravel\\SerializableClosure\\Support\\ReflectionClosure' => $vendorDir . '/laravel/serializable-closure/src/Support/ReflectionClosure.php',
     'Laravel\\SerializableClosure\\Support\\SelfReference' => $vendorDir . '/laravel/serializable-closure/src/Support/SelfReference.php',
-
     'Laravel\\SerializableClosure\\UnsignedSerializableClosure' => $vendorDir . '/laravel/serializable-closure/src/UnsignedSerializableClosure.php',
-
     'Laravel\\Socialite\\AbstractUser' => $vendorDir . '/laravel/socialite/src/AbstractUser.php',
     'Laravel\\Socialite\\Contracts\\Factory' => $vendorDir . '/laravel/socialite/src/Contracts/Factory.php',
     'Laravel\\Socialite\\Contracts\\Provider' => $vendorDir . '/laravel/socialite/src/Contracts/Provider.php',
@@ -5061,7 +5065,6 @@ return array(
     'Laravel\\Socialite\\Two\\ProviderInterface' => $vendorDir . '/laravel/socialite/src/Two/ProviderInterface.php',
     'Laravel\\Socialite\\Two\\TwitterProvider' => $vendorDir . '/laravel/socialite/src/Two/TwitterProvider.php',
     'Laravel\\Socialite\\Two\\User' => $vendorDir . '/laravel/socialite/src/Two/User.php',
-
     'Laravel\\Tinker\\ClassAliasAutoloader' => $vendorDir . '/laravel/tinker/src/ClassAliasAutoloader.php',
     'Laravel\\Tinker\\Console\\TinkerCommand' => $vendorDir . '/laravel/tinker/src/Console/TinkerCommand.php',
     'Laravel\\Tinker\\TinkerCaster' => $vendorDir . '/laravel/tinker/src/TinkerCaster.php',

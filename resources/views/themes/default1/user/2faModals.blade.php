@@ -51,7 +51,8 @@ $user = DB::table('users')->where('id',Auth::id())->first();
          <input type="hidden" name="user_password" id="user_password" value="">
          <input type="hidden" name="login_type" id="login_type" value="social">
            <h5>Hi {{$user->first_name}},</h5>
-      <p><b>To continue,Please click on Verify to verify it's you </b></p>
+           
+      <p><b>Lang::get('message.social_continue_verify') </b></p>
      </form>
    </div>
    <div class="modal-footer">

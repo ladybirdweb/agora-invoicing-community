@@ -178,6 +178,7 @@ class LoginController extends Controller
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
+
         $githubUser = Socialite::driver($provider)->user();
         $user = User::updateOrCreate(
             [

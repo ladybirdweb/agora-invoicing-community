@@ -10,7 +10,7 @@ return [
     'succs_fre' => 'Invoice and Order has been generated successfully',
     'social_succes' => 'Social login settings updated successfully',
     'social_fail' => 'An error occurred while updating social login settings',
-
+    'social_continue_verify' => "To continue,Please click on Verify to verify it's you ",
 
     /*
 

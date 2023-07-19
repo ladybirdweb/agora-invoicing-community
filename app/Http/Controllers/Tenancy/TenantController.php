@@ -116,7 +116,7 @@ class TenantController extends Controller
                     }
                     $days = \DB::table('expiry_mail_days')->where('cloud_days', '!=', null)->value('cloud_days');
                     $originalDate = Carbon::parse($subscription_date)->addDays($days);
-                    $formattedDate = Carbon::parse($originalDate)->format('Y M d');
+                    $formattedDate = Carbon::parse($originalDate)->format('d M Y');
 
                     return $formattedDate;
                 })
@@ -206,15 +206,15 @@ class TenantController extends Controller
             $company = str_replace(' ', '', $company);
 
             // Convert uppercase letters to lowercase
-            $faveoCloud = strtolower($company).'.faveocloud.com';
+            $faveoCloud = strtolower($company).'.ragnork.ml';
             if (strlen($faveoCloud) >= 32) {
                 $this->googleChat(trans('message.too_long').' Domain: '.$faveoCloud.' Email: '.$user);
 
                 return ['status' => 'false', 'message' => trans('message.too_long')];
             }
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if (! strpos($faveoCloud, 'faveocloud.com')) {
-                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
+            if (! strpos($faveoCloud, 'ragnork.ml')) {
+                if (empty($dns_record) || ! in_array('ragnork.ml', array_column($dns_record, 'target'))) {
                     return ['status' => 'false', 'message' => trans('message.cname')];
                 }
             }
@@ -252,7 +252,7 @@ class TenantController extends Controller
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                if (! strpos($faveoCloud, 'faveocloud.com')) {
+                if (! strpos($faveoCloud, 'ragnork.ml')) {
                     CloudEmail::create([
                         'result_message' => $result->message,
                         'user' => $user,
@@ -284,8 +284,8 @@ class TenantController extends Controller
 
                     //template
                     $template = new \App\Model\Common\Template();
-                    $temp_id = $settings->where('id', 1)->value('Free_trail_gonna_expired');
-                    $template = $template->where('id', $temp_id)->first();
+                    $temp_type_id = \DB::table('template_types')->where('name','cloud_created')->value('id');
+                    $template = $template->where('type', $temp_type_id)->first();
                     $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
                     $email = (new Email())
@@ -367,7 +367,7 @@ class TenantController extends Controller
     private function deleteCronForTenant($tenantId)
     {
         $client = new Client();
-        if (strpos($tenantId, 'faveocloud.com')) {
+        if (strpos($tenantId, 'ragnork.ml')) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
                 'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                 'query' => [
@@ -409,7 +409,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $order_id = Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->value('id');
-            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
+            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'billing.ragnork.ml')->value('installation_path');
             $response = $this->client->request(
                 'GET',
                 $this->cloud->cloud_central_domain.'/tenants'

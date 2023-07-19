@@ -465,9 +465,9 @@ $set = $set->findOrFail(1);
                     </div>
 
                     <div class="modal-body">
-                        <div id="success">
+                        <div id="cloudsuccess">
                         </div>
-                        <div id="error">
+                        <div id="clouderror">
                         </div>
                         <!-- Form  -->
 
@@ -477,7 +477,7 @@ $set = $set->findOrFail(1);
                                     <label><b>{{trans('message.cloud_field_label')}}</b></label>
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                         <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                        <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                        <input type="text" class="form-control col col-5 rounded-0" value=".ragnork.ml" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
 
                                     </div>
 
@@ -909,25 +909,25 @@ $set = $set->findOrFail(1);
                         html += '<li>' + data.message[key][0] + '</li>'
                     }
                     html += '</ul></div>';
-                    $('#error').show();
-                    $('#success').hide();
+                    $('#clouderror').show();
+                    $('#cloudsuccess').hide();
                     document.getElementById('error').innerHTML = html;
                 } else if(data.status == 'false') {
-                    $('#error').show();
-                    $('#success').hide();
+                    $('#clouderror').show();
+                    $('#cloudsuccess').hide();
                     var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong!!<br><ul><li>'+data.message+'</li></ul></div>';
-                    $('#error').html(result);
+                    $('#clouderror').html(result);
                 } else if(data.status == 'success_with_warning') {
                     console.log('here');
-                    $('#error').show();
-                    $('#success').hide();
+                    $('#clouderror').show();
+                    $('#cloudsuccess').hide();
                     var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong><br><ul><li>'+data.message+'</li></ul></div>';
-                    $('#error').html(result);
+                    $('#clouderror').html(result);
                 } else {
-                    $('#error').hide();
-                    $('#success').show();
+                    $('#clouderror').hide();
+                    $('#cloudsuccess').show();
                     var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success! </strong>'+data.message+'!</div>';
-                    $('#success').html(result);
+                    $('#cloudsuccess').html(result);
                 }
             },error: function (response) {
                 $('#createTenant').attr('disabled',false)
@@ -947,8 +947,8 @@ $set = $set->findOrFail(1);
                 }
 
                 html += '</ul></div>';
-                $('#error').show();
-                $('#success').hide();
+                $('#clouderror').show();
+                $('#cloudsuccess').hide();
                 document.getElementById('error').innerHTML = html;
 
             }

@@ -212,7 +212,7 @@ class PhpMailController extends Controller
                 }
                 $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-                if (is_null($id) || $id == 'billing.faveocloud.com') {
+                if (is_null($id) || $id == 'billing.ragnork.ml') {
                     $order->delete();
                 } else {
                     //Destroy the tenat

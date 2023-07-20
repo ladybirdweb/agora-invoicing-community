@@ -245,7 +245,7 @@
                       <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>-->
 
-
+                
 
                             <tr>
                                 <td class="col-md-2">Google reCAPTCHA</td>
@@ -253,7 +253,7 @@
                                     <label class="switch toggle_event_editing">
 
                                         <input type="checkbox" value="{{$captchaStatus}}"  name="modules_settings"
-                                               class="checkbox2" id="captcha">
+                                               class="checkbox2" id="captcha" @if($v3captchaStatus === 1) disabled @endif>
                                         <span class="slider round"></span>
                                     </label>
 
@@ -287,18 +287,18 @@
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
-                            
+                        
 
 
 
-
+                         
                                   <tr>
                                 <td class="col-md-2">Google reCAPTCHA(v3)</td>
                                 <td class="col-md-2">
                                     <label class="switch toggle_event_editing">
 
                                         <input type="checkbox" value="{{$v3captchaStatus}}"  name="modules_settings"
-                                               class="checkbox3" id="v3captcha">
+                                               class="checkbox3" id="v3captcha"  @if($captchaStatus === 1) disabled  @endif>
                                         <span class="slider round"></span>
                                     </label>
 
@@ -332,6 +332,7 @@
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="v3captchaDetails()" id="submitv3"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
+                       
 
 
 

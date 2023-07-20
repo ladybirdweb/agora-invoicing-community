@@ -291,6 +291,13 @@
                                     </a>
                                 </li>
                                 @endif
+
+                                 <li class="nav-item">
+                                    <a href="{{url('demo/page')}}" class="nav-link" id="all_new_page">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{Lang::get('message.add-demo')}}</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">

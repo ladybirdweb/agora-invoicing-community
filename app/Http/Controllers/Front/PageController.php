@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\DefaultPage;
+use App\Demo_page;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
@@ -11,8 +12,6 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use App\Http\Controllers\License\LicenseController;
-use App\Demo_page;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -21,7 +20,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq','postContactUs']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq', 'postContactUs']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -491,7 +490,7 @@ class PageController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'demoemail' => 'required|email',
-            'product' => 'required'
+            'product' => 'required',
         ]);
 
         $set = new \App\Model\Common\Setting();
@@ -524,54 +523,55 @@ class PageController extends Controller
             $data = [
                 'requester' => $data->email,
                 'subject' => 'Requesting for Demo',
-                'description' => 'Requesting for Demo'.' ' . $request->input('product'),
+                'description' => 'Requesting for Demo'.' '.$request->input('product'),
                 'priority_id' => '1',
                 'help_topic_id' => '1',
             ];
-           $ch = curl_init();
-
+            $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
-
             $response = curl_exec($ch);
+
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
     public function VewDemoPage()
     {
         try {
             $Demo_page = Demo_page::first();
-            return view('themes.default1.common.setting.demo-page',compact('Demo_page'));
+
+            return view('themes.default1.common.setting.demo-page', compact('Demo_page'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
     public function saveDemoPage(Request $request)
     {
-      $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-      $data = $request->validate([
+        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+        $data = $request->validate([
             'status' => 'required',
             'link' => 'required|url|regex:'.$regex,
             'email' => 'required|email',
         ]);
-       $data = [
-        "link" => $request->input('link'),
-        "email" => $request->input('email'),
-        "status" => $request->input('status') === 'true' ? 1 : 0,
-       ];
+        $data = [
+            'link' => $request->input('link'),
+            'email' => $request->input('email'),
+            'status' => $request->input('status') === 'true' ? 1 : 0,
+        ];
 
         $existingData = Demo_page::first();
         $existingData ? $existingData->update($data) : Demo_page::create($data);
 
         $message = $existingData ? 'Data updated successfully.' : 'Data created successfully.';
+
         return redirect()->back()->with('success', $message);
-
-
     }
 }

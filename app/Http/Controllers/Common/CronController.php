@@ -665,27 +665,27 @@ class CronController extends BaseCronController
         }
     }
 
-        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
-        {
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->where('id', 1)->first();
+    public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
+    {
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
 
-            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
+        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->card_failed;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->card_failed;
 
-            $template = $templates->where('id', $temp_id)->first();
-            $data = $template->data;
-            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-            $url = url("autopaynow/$invoice->invoice_id");
+        $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
+        // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
+        $url = url("autopaynow/$invoice->invoice_id");
 
-            try {
-                $email = (new Email())
+        try {
+            $email = (new Email())
               ->from($setting->email)
               ->to($user->email)
               ->subject($template->name)
@@ -698,12 +698,12 @@ class CronController extends BaseCronController
                   'exception' => $exceptionMessage,
                   'url' => $url,
               ]));
-                $mailer->send($email);
-                $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-            } catch (\Exception $ex) {
-                throw new Exception($ex->getMessage());
-            }
+            $mailer->send($email);
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+        } catch (\Exception $ex) {
+            throw new Exception($ex->getMessage());
         }
+    }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

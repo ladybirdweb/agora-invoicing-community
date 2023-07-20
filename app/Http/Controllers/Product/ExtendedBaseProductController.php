@@ -249,7 +249,7 @@ class ExtendedBaseProductController extends Controller
      *
      * @date   2019-01-07T20:40:20+0530
      *
-     *@param  Illuminate\Http\Request  $input      All the Product Detais Sent from  the form
+     * @param  Illuminate\Http\Request  $input  All the Product Detais Sent from  the form
      * @param Illuminate\Http\Request; $request
      * @param  array  $product  instance of the Product
      * @return Save The Details

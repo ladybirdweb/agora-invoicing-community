@@ -60,7 +60,7 @@
                <div class="form-group col">
                     
                         <label class="required">Message</label>
-                        <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message" required></textarea>
+                        <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message"></textarea>
                     </div>
                 
             </div>

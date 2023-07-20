@@ -49,7 +49,22 @@ foreach($scripts as $script)
     margin-top: -7px !important;*/
     
 
-   
+    .highlight-button {
+        background-color: #0088CC;
+        color: white !important;
+        font-weight: bold;
+    }
+    .highlight {
+        border: 2px solid;
+        border-radius: 5px;
+        padding: 8px;
+        transition: background-color 0.3s;
+        height: 90%;
+    }
+    .highlight:hover {
+        background-color: blue;
+        color: white;
+    }
 </style>
 <head>
     <!-- Basic -->
@@ -137,7 +152,7 @@ $days = $pay->where('product','117')->value('days');
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3" style="margin-right: 310px;">
+                        <div class="header-row pt-3">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -158,9 +173,7 @@ $days = $pay->where('product','117')->value('days');
                                     @if(!Auth::user())
                                         <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap">
-                                                        <a style="color: inherit" href="{{url('login')}}">
-                                                             <i class="fas fa-user"></i>
-                                                        My Account</a>
+                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal"><i class="fas fa-user"></i>My Account</a>
                                                     </span>
                                         </li>
                                     @endif
@@ -168,11 +181,10 @@ $days = $pay->where('product','117')->value('days');
                                 </ul>
                             </nav>
                         </div>
-                       
 
 
                         <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;margin-right: 320px;">
+                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
 
                                 <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                     <i class="fa fa-bars"></i>
@@ -382,18 +394,23 @@ $days = $pay->where('product','117')->value('days');
                                                 @endif
 
 
-                                            @if(!Auth::user())
+                                             @if($Demo_page->status)
                                                 <li class="dropdown">
                                                 <a class="nav-link highlight-button" href="{{url('login')}} ">
                                                         SIGNUP FOR FREE
                                                     </a>
                                                 </li>&nbsp&nbsp&nbsp
+                                                @endif
 
-                                                  <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req">
-                                                        REQUEST FOR DEMO
+
+                                            @if(!Auth::user())
+                                                <li class="dropdown">
+                                                <a class="nav-link highlight-button" href="{{url('login')}} ">
+                                                        SIGNUP FOR FREE
                                                     </a>
                                                 </li>
+
+
 
 
 
@@ -413,8 +430,6 @@ $days = $pay->where('product','117')->value('days');
                                                     </ul>
                                                 </li>
                                             @endif
-
-                                          
 
 
                                         </ul>
@@ -1023,8 +1038,8 @@ $days = $pay->where('product','117')->value('days');
     $('.closebutton').on('click',function(){
         location.reload();
     });
-   $(document).on("click", "#demo-req", function () {
 
+    $(document).on("click", "#demo-req", function () {
         $('#demo-req').modal('show');
     });
     $('.closebutton').on('click',function(){

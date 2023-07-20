@@ -9,7 +9,7 @@ class Demo_page extends Model
 {
     use HasFactory;
 
-     protected $table = 'demo_pages';
+    protected $table = 'demo_pages';
 
-    protected $fillable = ['id','link','email','status'];
+    protected $fillable = ['id', 'link', 'email', 'status'];
 }

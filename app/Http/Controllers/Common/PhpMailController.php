@@ -470,17 +470,17 @@ class PhpMailController extends Controller
         ]);
     }
 
-       public function payment_log_success($from, $to, $subject, $body)
-       {
-           \DB::table('payment_logs')->insert([
-               'date' => date('Y-m-d H:i:s'),
-               'from' => $from,
-               'to' => $to,
-               'subject' => $subject,
-               'body' => $body,
-               'status' => 'success',
-           ]);
-       }
+    public function payment_log_success($from, $to, $subject, $body)
+    {
+        \DB::table('payment_logs')->insert([
+            'date' => date('Y-m-d H:i:s'),
+            'from' => $from,
+            'to' => $to,
+            'subject' => $subject,
+            'body' => $body,
+            'status' => 'success',
+        ]);
+    }
 
     public function payment_log_fail($from, $to, $subject, $body)
     {

@@ -12,8 +12,6 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use App\Http\Controllers\License\LicenseController;
-use App\Demo_page;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -523,6 +521,7 @@ class PageController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
     public function VewDemoPage()
     {
         try {

@@ -287,28 +287,7 @@
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
-                        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            
-
-                            <tr>
+                         <tr>
 
                                 <td class="col-md-2">Msg 91(Mobile Verification)</td>
                                 <td class="col-md-2">

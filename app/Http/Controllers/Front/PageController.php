@@ -12,6 +12,8 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use App\Http\Controllers\License\LicenseController;
+use App\Demo_page;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -504,6 +506,7 @@ class PageController extends Controller
             $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
+            $subject = 'Requesting for Demo';
             if (emailSendingStatus()) {
                 $email = (new Email())
                    ->from($set->email)
@@ -511,16 +514,15 @@ class PageController extends Controller
                    ->subject('Requesting for Demo for'.'  '.$product)
                     ->replyTo($request->input('demoemail'))
                    ->html($data);
-
                 $mailer->send($email);
             }
+            $data = Demo_page::first();
 
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
     public function VewDemoPage()
     {
         try {

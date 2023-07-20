@@ -89,23 +89,12 @@ main
                                 <input type="hidden" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code">
                                  <label for="mobile" class="required">Mobile</label><br />
                                   <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user ->  mobile}}" id="u_mobile">
-                                
-                                <!--<div class="selected-dial-code">+91</div>-->
-                                @else
-                                
+                                 @else
                                  <input type="hidden" name="countryCode" id="u_code">
                                   <label for="mobile" class="required">Mobile</label><br />
                                    <input type="text" class="form-control input-lg phonecode" name="mobile" id="u_mobile">
-                                
+
                                 @endif
-                                <!--<input type="hidden" class="form-control" name="code" id="u_code">-->
-                                <!--<label for="mobile" class="required">Mobile</label><br />-->
-
-                               
-                               
-
-                                <!--<input type="hidden"  name="oldno" value="{{$user -> mobile}}" id="oldno">-->
-                                <!-- <input type="hidden" name="oldno" value="7051221014" id="oldno"> -->
                                 <h6 id="mobcheck"></h6>
                                 <div class="clear"></div>
                                 <div class="form-group col"><button class="btn btn-primary float-right mb-5" id="sendOTP" ng-click="sendOTP()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send OTP</button></div>
@@ -206,12 +195,10 @@ main
             $scope.sendOTP = function() {
                 $('#mobcheck').hide();
                 if (verify_mobnumber_check()) {
-                    // var oldnumber = $('#oldno').val().replace(/[\. ,:-]+/g, '');
                     var newnumber = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
                     $("#sendOTP").attr('disabled', true);
                     $("#sendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                     $scope.newObj = {};
-                    // $scope.newObj['oldnumber'] = oldnumber;
                     $scope.newObj['newnumber'] = newnumber;
 
                     $scope.newObj['id'] = $('#u_id').val();

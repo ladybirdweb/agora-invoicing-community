@@ -170,28 +170,11 @@ Route::middleware('installAgora')->group(function () {
     Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index']);
-    // gurmeen
+    
     Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
     Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
-    //
-    //  Route::post('basic-details', [Auth\LoginController::class, 'basicDetailsView'])->name(basic-details);
-
-    //  Route::post('save-basic-details', [Auth\LoginController::class, 'storeBasicDetails']);
-
-    // gurmeenend
+    
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
-
-    /*
-     * Client
-     */
 
     /*
      * Client
@@ -200,7 +183,6 @@ Route::middleware('installAgora')->group(function () {
     /*
      * Profile Process
      */
-
     Route::get('profile', [User\ProfileController::class, 'profile']);
     Route::patch('profile', [User\ProfileController::class, 'updateProfile']);
     Route::patch('password', [User\ProfileController::class, 'updatePassword']);

@@ -709,11 +709,10 @@ class CronController extends BaseCronController
                   'exception' => $exceptionMessage,
                   'url' => $url,
               ]));
-                $mailer->send($email);
-                $mail->payment_log_success($setting->email, $user->email, $template->name, $data);
-            } catch (\Exception $ex) {
-                $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
-            }
+            $mailer->send($email);
+            $mail->payment_log_success($setting->email, $user->email, $template->name, $data);
+        } catch (\Exception $ex) {
+            $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
         }
     }
 

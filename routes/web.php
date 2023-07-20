@@ -170,10 +170,10 @@ Route::middleware('installAgora')->group(function () {
     Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index']);
-    
+
     Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
     Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
-    
+
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
 
     /*

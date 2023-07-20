@@ -81,10 +81,7 @@ Sign in or Register
         line-height: normal;
     }
 
-.g-recaptcha {
-  margin-bottom: 10px; /* Adjust the margin as needed */
-  z-index: 1;
-}
+
 
     </style>
     <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
@@ -150,7 +147,6 @@ Sign in or Register
                                     <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
-                                                
 
                                                 <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
                                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
@@ -207,31 +203,15 @@ Sign in or Register
 
                                                         </div>
                                                     </div>
-                                                    <?php
-                                                    use App\Model\Common\StatusSetting;
-                                                    $v3Status = StatusSetting::value('v3recaptcha_status');
-                                                  
-                                                    ?>
-                                                    @if($v3Status!= 0) 
                                                     <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl g-recaptcha" data-loading-text="Loading..." data-sitekey="{{ config('services.recaptcha.site_key')}}" data-callback='onSubmit' data-action='submit'>
+                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
                                                         <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->
 
                                                     </div>
-                                                    @else
-                                                      <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading..." >
-                                                        <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
-                                                                    Send Email
-                                                        </button> -->
-
-                                                    </div>
-                                                    @endif
                                                 </div>
                                                 {!! Form::close() !!}
-
                                             </div>
                                         </div>
                                     </div>
@@ -302,16 +282,16 @@ Sign in or Register
                                                 </div>
 
 
-                                                    <!--<div class="form-row">-->
-                                                    <!--    <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">-->
-                                                    <!--        {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}-->
-                                                    <!--        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>-->
-                                                    <!--        {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}-->
-                                                    <!--        <span id="countrycheck"></span>-->
+                                                    <div class="form-row">
+                                                        <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
+                                                            {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
+                                                            <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                                                            {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                            <span id="countrycheck"></span>
 
-                                                    <!--    </div>-->
+                                                        </div>
 
-                                                    <!--</div>-->
+                                                    </div>
                                                     <div class="form-row">
                                                         <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                                                             <label class="required">Mobile</label>
@@ -580,7 +560,6 @@ Sign in or Register
 @stop
 @section('script')
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
-     <script src="https://www.google.com/recaptcha/api.js"></script>
 
     <script>
         ///////////////////////////////////////////////////////////////////////////////
@@ -592,12 +571,6 @@ Sign in or Register
         }
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
-
-  <script>
-       function onSubmit(token) {
-         document.getElementById("formoid").submit();
-       }
-     </script>
 
     <script type="text/javascript">
 
@@ -1172,25 +1145,25 @@ Sign in or Register
 
 
 
-        // function countrycheck(){
-        //     var country_val = $('#country').val();
-        //     if(country_val == ''){
-        //         $('#countrycheck').show();
-        //         $('#countrycheck').html("Please Select One Country ");
-        //         $('#countrycheck').focus();
-        //         $('#country').css("border-color","red");
-        //         $('#countrycheck').css({"color":"red","margin-top":"5px"});
-        //         // userErr =false;
-        //         $('html, body').animate({
-        //             scrollTop: $("#countrycheck").offset().top - 200
-        //         }, 1000)
-        //     }
-        //     else{
-        //         $('#countrycheck').hide();
-        //         $('#country').css("border-color","");
-        //         return true;
-        //     }
-        // }
+        function countrycheck(){
+            var country_val = $('#country').val();
+            if(country_val == ''){
+                $('#countrycheck').show();
+                $('#countrycheck').html("Please Select One Country ");
+                $('#countrycheck').focus();
+                $('#country').css("border-color","red");
+                $('#countrycheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#countrycheck").offset().top - 200
+                }, 1000)
+            }
+            else{
+                $('#countrycheck').hide();
+                $('#country').css("border-color","");
+                return true;
+            }
+        }
 
         function mobile_codecheck(){
             var mobile_val = $('#mobilenum').val();
@@ -1394,7 +1367,7 @@ Sign in or Register
             var termsErr = true;
             // con_password_check();
 
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
             {
                
                  var tag = "<?php echo $analyticsTag; ?>";
@@ -1415,7 +1388,7 @@ Sign in or Register
                         "bussiness": $('#business').val(),
                         "company_type": $('#company_type').val(),
                         "company_size": $('#company_size').val(),
-                        // "country": $('#country').val(),
+                        "country": $('#country').val(),
                         "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
                         "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
                         "address": $('#address').val(),
@@ -1729,7 +1702,7 @@ Sign in or Register
                 });
             },
             initialCountry: "auto",
-            separateDialCode: true,
+            separateDialCode: false,
         });
         var reset = function() {
             errorMsg.innerHTML = "";
@@ -1804,7 +1777,7 @@ Sign in or Register
             // formatOnDisplay: false,
             geoIpLookup: function(callback) {
                 $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                    resp.country = country;
+                    resp.country= country;
                     var countryCode = (resp && resp.country) ? resp.country : "";
                     callback(countryCode);
                 });
@@ -1815,7 +1788,7 @@ Sign in or Register
             // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
             placeholderNumberType: "MOBILE",
             // preferredCountries: ['cn', 'jp'],
-            separateDialCode: true,
+            separateDialCode: false,
 
             utilsScript: "{{asset('js/intl/js/utils.js')}}"
         });

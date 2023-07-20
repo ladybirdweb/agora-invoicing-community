@@ -14,35 +14,23 @@ foreach($scripts as $script)
     .dataTables_wrapper {
         overflow-x: auto;
     }
+
     .highlight-button {
-    background-color: #0088CC;
-    color: white !important;
-
-    font-weight: bold;
-}
-   .highlight {
-    border: 2px solid;
-    border-radius: 5px;
-    padding: 8px;
-    transition: background-color 0.3s;
-    height: 90%;
-}
-
-.highlight:hover {
-    background-color: blue;
-    color: white;
-}
-  /* border: none;
-    color: white !important;
-    padding: 8px 12px !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    cursor: pointer;
-    background-color: #00AEEF !important;
-    margin-top: -7px !important;*/
-    
-
-   
+        background-color: #0088CC;
+        color: white !important;
+        font-weight: bold;
+    }
+    .highlight {
+        border: 2px solid;
+        border-radius: 5px;
+        padding: 8px;
+        transition: background-color 0.3s;
+        height: 90%;
+    }
+    .highlight:hover {
+        background-color: blue;
+        color: white;
+    }
 </style>
 <head>
     <!-- Basic -->
@@ -97,31 +85,30 @@ foreach($scripts as $script)
     .alert {
         font-weight:bolder;
     }
-   </style>
-    <body>
-        <?php
-         $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-            $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-            $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-            $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
-            $location = getLocation();
-        ?>
+</style>
+<body>
+<?php
+$bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+$status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+$apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+$analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+$location = getLocation();
+?>
 
-        <?php
-        $domain = [];
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-        $pay = new \App\Model\Payment\Plan();
-        $days = $pay->where('product','117')->value('days');
-     
-        ?>
-        
-                       @include('themes.default1.front.demoForm')
-
-        <div class="body">
-            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
-            <div class="header-body"  style="top: -50px;">
-                    <div class="header-container container">
+<?php
+$domain = [];
+$set = new \App\Model\Common\Setting();
+$set = $set->findOrFail(1);
+$pay = new \App\Model\Payment\Plan();
+$days = $pay->where('product','117')->value('days');
+?>
+@include('themes.default1.front.demoForm')
+<div class="body">
+    <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
+        <div class="header-body"  style="top: -50px;">
+            <div class="header-container container">
+                <div class="header-row">
+                    <div class="header-column">
                         <div class="header-row">
                             <div class="header-logo">
                                 <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">
@@ -131,7 +118,7 @@ foreach($scripts as $script)
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3" style="margin-right: 310px;">
+                        <div class="header-row pt-3">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -152,9 +139,7 @@ foreach($scripts as $script)
                                     @if(!Auth::user())
                                         <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap">
-                                                        <a style="color: inherit" href="{{url('login')}}">
-                                                             <i class="fas fa-user"></i>
-                                                        My Account</a>
+                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal"><i class="fas fa-user"></i>My Account</a>
                                                     </span>
                                         </li>
                                     @endif
@@ -162,11 +147,10 @@ foreach($scripts as $script)
                                 </ul>
                             </nav>
                         </div>
-                       
 
 
                         <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;margin-right: 320px;">
+                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
 
                                 <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                     <i class="fa fa-bars"></i>
@@ -188,9 +172,9 @@ foreach($scripts as $script)
 
 
                                                     <li class="dropdown">
-                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">
-                                                            <div>
-                                                                <i class="fas fa-cloud "></i>
+                                                   <a class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
+                                                    <div>
+                                                                <i class="fas fa-cloud"></i>
                                                                 <span style="margin-left: 3px;">START FREE TRAIL</span>
                                                             </div>
                                                         </a>
@@ -229,7 +213,8 @@ foreach($scripts as $script)
                                             </li>
 
 
-                                            <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
+                                            <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get();
+                                             ?>
 
                                             @foreach($pages as $page)
 
@@ -361,21 +346,28 @@ foreach($scripts as $script)
                                                         </div>
                                                     </li>
                                                 </ul>
-                                            </li>
+                                            </li>&nbsp&nbsp
+                                            <?php
+                                             $Demo_page = App\Demo_page::first();
+                                            ?>
+
+                                             @if($Demo_page->status)
+                                                <li class="dropdown">
+                                                    <a  class="nav-link highlight" id="demo-req">
+                                                        REQUEST FOR DEMO
+                                                    </a>
+                                                </li>&nbsp&nbsp&nbsp
+                                                @endif
 
 
                                             @if(!Auth::user())
                                                 <li class="dropdown">
-                                                    <a  class="nav-link highlight-button"  href="{{url('login')}} ">
+                                                <a class="nav-link highlight-button" href="{{url('login')}} ">
                                                         SIGNUP FOR FREE
                                                     </a>
-                                                </li>&nbsp&nbsp&nbsp
-
-                                                  <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req">
-                                                        REQUEST FOR DEMO
-                                                    </a>
                                                 </li>
+
+
 
 
 
@@ -395,8 +387,6 @@ foreach($scripts as $script)
                                                     </ul>
                                                 </li>
                                             @endif
-
-                                          
 
 
                                         </ul>
@@ -1004,8 +994,8 @@ foreach($scripts as $script)
     $('.closebutton').on('click',function(){
         location.reload();
     });
-   $(document).on("click", "#demo-req", function () {
 
+    $(document).on("click", "#demo-req", function () {
         $('#demo-req').modal('show');
     });
     $('.closebutton').on('click',function(){
@@ -1024,6 +1014,89 @@ foreach($scripts as $script)
 
 
 </script>
+@if(request()->path() !== 'contact-us')
+       
+        <script type="text/javascript">
+    
+    
+            var demotelInput = $('#mobilenumdemo'),
+            errorMsgdemo = document.querySelector("#error-msgdemo"),
+            validMsgdemo = document.querySelector("#valid-msgdemo"),
+            addressDropdowndemo = $("#country");
+        var errorMapdemo = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+        demotelInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCodedemo = (resp && resp.country) ? resp.country : "";
+                    callback(countryCodedemo);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var resetdemo = function() {
+            errorMsgdemo.innerHTML = "";
+            errorMsgdemo.classList.add("hide");
+            validMsgdemo.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        demotelInput.on('blur', function () {
+            resetdemo();
+            if ($.trim(demotelInput.val())) {
+                if (demotelInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenumdemo').css("border-color","");
+                    $("#error-msgdemo").html('');
+                    errorMsgdemo.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCodedemo = demotelInput.intlTelInput("getValidationError");
+                    errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
+                    $('#mobile_codecheckdemo').html("");
+
+                    $('#mobilenumdemo').css("border-color","red");
+                    $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
+                    errorMsgdemo.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdowndemo.change(function() {
+            demotelInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(demotelInput.val())) {
+                if (demotelInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenumdemo').css("border-color","");
+                    $("#error-msgdemo").html('');
+                    errorMsgdemo.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCodedemo = demotelInput.intlTelInput("getValidationError");
+                    errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
+                    $('#mobile_codecheckdemo').html("");
+
+                    $('#mobilenumdemo').css("border-color","red");
+                    $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
+                    errorMsgdemo.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+
+
+
+</script>
+@endif
         <style>
             .custom-line {
                 border: none;

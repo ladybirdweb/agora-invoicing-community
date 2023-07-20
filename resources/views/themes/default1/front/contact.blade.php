@@ -50,12 +50,12 @@ $set = $set->findOrFail(1);
             <div class="form-row">
                     <div class="form-group col">
                          <label class="required">Mobile No</label>
-                                                            {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
-                                                            <input class="form-control input-lg" id="mobilenum" name="Mobile" type="tel">
+                                                            {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenco','name'=>'country_code']) !!}
+                                                            <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel">
                                                             {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                                                            <span id="valid-msg" class="hide"></span>
-                                                            <span id="error-msg" class="hide"></span>
-                                                            <span id="mobile_codecheck"></span>
+                                                            <span id="valid-msgcon" class="hide"></span>
+                                                            <span id="error-msgcon" class="hide"></span>
+                                                            <span id="mobile_codecheckcon"></span>
                        
                     
                 </div>
@@ -98,12 +98,13 @@ $set = $set->findOrFail(1);
 </div>
 @stop
 @section('script')
+@if(request()->path() === 'contact-us')
 <script type="text/javascript">
     
     
-            var telInput = $('#mobilenum'),
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg"),
+            var telInput = $('#mobilenumcon'),
+            errorMsg = document.querySelector("#error-msgcon"),
+            validMsg = document.querySelector("#valid-msgcon"),
             addressDropdown = $("#country");
         var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
@@ -130,17 +131,17 @@ $set = $set->findOrFail(1);
             reset();
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color","");
-                    $("#error-msg").html('');
+                    $('#mobilenumcon').css("border-color","");
+                    $("#error-msgcon").html('');
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
                     var errorCode = telInput.intlTelInput("getValidationError");
                     errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
+                    $('#mobile_codecheckcon').html("");
 
-                    $('#mobilenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    $('#mobilenumcon').css("border-color","red");
+                    $('#error-msgcon').css({"color":"red","margin-top":"5px"});
                     errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
@@ -153,17 +154,17 @@ $set = $set->findOrFail(1);
             telInput.intlTelInput("setCountry", $(this).val());
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color","");
-                    $("#error-msg").html('');
+                    $('#mobilenumcon').css("border-color","");
+                    $("#error-msgcon").html('');
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
                     var errorCode = telInput.intlTelInput("getValidationError");
                     errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
+                    $('#mobile_codecheckcon').html("");
 
-                    $('#mobilenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    $('#mobilenumcon').css("border-color","red");
+                    $('#error-msgcon').css({"color":"red","margin-top":"5px"});
                     errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
@@ -175,4 +176,5 @@ $set = $set->findOrFail(1);
         });
 
 </script>
+@endif
 @stop

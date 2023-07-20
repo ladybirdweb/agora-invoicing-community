@@ -705,5 +705,6 @@ return [
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',
     'cloud_domain_change'=>'Domain changed please reissue your license and use the license code in your domain',
+    'add-demo' => 'Demo Page',
 
 ];

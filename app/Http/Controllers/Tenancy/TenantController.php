@@ -152,7 +152,6 @@ class TenantController extends Controller
                 ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -291,7 +290,7 @@ class TenantController extends Controller
                         ->from($settings->email)
                         ->to($user)
                         ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData,'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name]));
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name]));
 
                     $mailer->send($email);
 

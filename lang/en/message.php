@@ -709,5 +709,8 @@ return [
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
     'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
     'add-demo' => 'Demo Page',
+    'err_msg' => 'OOPS! Something went wrong.',
+    'mail_verify' => 'Number of Email Verification Attempts',
+    'mobile_verify' => 'Number of Mobile Verification Attempts',
 
 ];

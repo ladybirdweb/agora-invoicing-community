@@ -52,21 +52,6 @@ class RegisterController extends Controller
         ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
-
-        //check in the settings
-        // $settings = new \App\Model\Common\Setting();
-        // $settings = $settings->where('id', 1)->first();
-
-        //template
-        // $template = new \App\Model\Common\Template();
-        // $temp_id = $settings->where('id', 1)->first()->password_mail;
-
-        // $template = $template->where('id', $temp_id)->first();
-
-        // $mail = new \App\Http\Controllers\Common\PhpMailController();
-        // $mailer = $mail->setMailConfig($settings);
-
-        // $html = $template->data;
         try {
             $location = getLocation();
 
@@ -81,7 +66,6 @@ class RegisterController extends Controller
                 'profile_pic' => '',
                 'active' => 0,
                 'mobile_verified' => 0,
-                // 'country' => $request->input('country'),
                 'mobile' => ltrim($request->input('mobile'), '0'),
                 'mobile_code' =>  $request->input('mobile_code'),
                 'role' => 'user',
@@ -101,24 +85,12 @@ class RegisterController extends Controller
             $userInput = User::create($user);
             $userId = User::get()->last()->id;
 
-            // $email = (new Email())
-            //       ->from($settings->email)
-            //       ->to($user['email'])
-            //       ->subject($template->name)
-            //       ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
-            //           'username' => $user['email'], 'password' => $password, ]));
-
-            // $mailer->send($email);
-            // $mail->email_log_success($settings->email, $user['email'], $template->name, $html);
-
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
-            // dd($ex);
-            // $mail->email_log_fail($settings->email, $user['email'], $template->name, $html);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 

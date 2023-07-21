@@ -146,7 +146,7 @@ class TenantController extends Controller
 
                     return "<p><button data-toggle='modal' 
                 data-id='".$model->id."' data-name='' onclick=\"deleteTenant('".$model->id."','".$order_number."')\" id='delten".$model->id."'
-                class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."><i class='fa fa-trash'
+                class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
                 })
                 ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action'])
@@ -284,7 +284,7 @@ class TenantController extends Controller
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
                     $template = $template->where('type', $temp_type_id)->first();
-                    $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
+                    $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
                     $email = (new Email())
                         ->from($settings->email)

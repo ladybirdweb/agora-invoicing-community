@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
-use App\Http\Controllers\Order\OrderSearchController;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\QueueService;
+use App\Model\Order\Order;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\Payment_log;
@@ -18,7 +18,6 @@ use App\User;
 use DB;
 use File;
 use Illuminate\Http\Request;
-use App\Model\Order\Order;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
 
@@ -481,28 +480,25 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-         public function mailSearch($from = '', $till = '')
-        {
-            $join = Email_log::select('id', 'from', 'to', 'date', 'subject', 'status');
+    public function mailSearch($from = '', $till = '')
+    {
+        $join = Email_log::select('id', 'from', 'to', 'date', 'subject', 'status');
 
-            if ($from) {
-                $from = $this->DateFormat($from);
-                $tillDate = $this->DateFormat($till ?: $this->DateFormat()); // Use $till if provided, otherwise, use current date
-                $join = $join->whereBetween('date', [$from, $tillDate]);
-            }
-
-            if ($till) {
-                $till = $this->DateFormat($till);
-                $fromDate = Email_log::first()->date;
-                $fromDate = $this->DateFormat($from ?: $fromDate); // Use $from if provided, otherwise, use the first email log date
-                $join = $join->whereBetween('date', [$fromDate, $till]);
-            }
-
-            return $join;
+        if ($from) {
+            $from = $this->DateFormat($from);
+            $tillDate = $this->DateFormat($till ?: $this->DateFormat()); // Use $till if provided, otherwise, use current date
+            $join = $join->whereBetween('date', [$from, $tillDate]);
         }
 
+        if ($till) {
+            $till = $this->DateFormat($till);
+            $fromDate = Email_log::first()->date;
+            $fromDate = $this->DateFormat($from ?: $fromDate); // Use $from if provided, otherwise, use the first email log date
+            $join = $join->whereBetween('date', [$fromDate, $till]);
+        }
 
-
+        return $join;
+    }
 
     public function destroy(Request $request)
     {
@@ -562,7 +558,7 @@ class SettingsController extends BaseSettingsController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-             return redirect()->back()->with('fails',\Lang::get('message.err_msg'));
+            return redirect()->back()->with('fails', \Lang::get('message.err_msg'));
         }
     }
 
@@ -597,7 +593,7 @@ class SettingsController extends BaseSettingsController
 
             return view('themes.default1.common.payment-log', compact('from', 'till'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',\Lang::get('message.err_msg'));
+            return redirect()->back()->with('fails', \Lang::get('message.err_msg'));
         }
     }
 
@@ -640,21 +636,22 @@ class SettingsController extends BaseSettingsController
                     return ucfirst($model->payment_method);
                 })
                 ->addColumn('ordernumber', function ($model) {
-                    $id = Order::where('number',$model->order)->select('id')->value('id');
+                    $id = Order::where('number', $model->order)->select('id')->value('id');
                     $orderLink = '<a href='.url('orders/'.$id).'>'.$model->order.'</a>';
 
                     return $orderLink;
                 })
                 ->addColumn('status', function ($model) {
-                        if ($model->status === 'failed') {
-                       $exceptionMessage = $model->exception;
+                    if ($model->status === 'failed') {
+                        $exceptionMessage = $model->exception;
 
-                    return '<a href="#" class="show-exception" data-message="' . $exceptionMessage . '">Failed</a>';
-                   }
+                        return '<a href="#" class="show-exception" data-message="'.$exceptionMessage.'">Failed</a>';
+                    }
+
                     return ucfirst($model->status);
                 })
                 ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status','paymentmethod','ordernumber' ])
+                    'bcc', 'subject',  'status', 'paymentmethod', 'ordernumber'])
                 ->filterColumn('from', function ($query, $keyword) {
                     $sql = '`from` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -672,52 +669,49 @@ class SettingsController extends BaseSettingsController
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                  ->filterColumn('paymentmethod', function ($query, $keyword) {
-                    $sql = '`payment_method` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+                     $sql = '`payment_method` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
                  ->filterColumn('ordernumber', function ($query, $keyword) {
-                    $sql = '`order` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-          
+                     $sql = '`order` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
 
                 ->make(true);
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-        public function paymentSearch($from = '', $till = '')
-        {
-            $join = Payment_log::query()
-                ->select('id', 'from', 'to', 'date', 'subject', 'status', 'created_at', 'payment_method', 'order', 'exception');
+    public function paymentSearch($from = '', $till = '')
+    {
+        $join = Payment_log::query()
+            ->select('id', 'from', 'to', 'date', 'subject', 'status', 'created_at', 'payment_method', 'order', 'exception');
 
-            if ($from) {
-                $from = $this->DateFormat($from);
-                $tillDate = $this->DateFormat($till ?: date('Y-m-d H:i:s'));
-                $join->whereBetween('date', [$from, $tillDate]);
-            }
-
-            if ($till) {
-                $till = $this->DateFormat($till);
-                $fromDate = Payment_log::oldest('date')->value('date');
-                $fromDate = $this->DateFormat($from ?: $fromDate);
-                $join->whereBetween('date', [$fromDate, $till]);
-            }
-
-            return $join;
+        if ($from) {
+            $from = $this->DateFormat($from);
+            $tillDate = $this->DateFormat($till ?: date('Y-m-d H:i:s'));
+            $join->whereBetween('date', [$from, $tillDate]);
         }
 
-        private function DateFormat($date = null)
-        {
-            if ($date === null) {
-                return date('Y-m-d H:i:s');
-            }
-
-            return date('Y-m-d H:i:s', strtotime($date));
+        if ($till) {
+            $till = $this->DateFormat($till);
+            $fromDate = Payment_log::oldest('date')->value('date');
+            $fromDate = $this->DateFormat($from ?: $fromDate);
+            $join->whereBetween('date', [$fromDate, $till]);
         }
 
+        return $join;
+    }
+
+    private function DateFormat($date = null)
+    {
+        if ($date === null) {
+            return date('Y-m-d H:i:s');
+        }
+
+        return date('Y-m-d H:i:s', strtotime($date));
+    }
 
     public function destroyPayment(Request $request)
     {

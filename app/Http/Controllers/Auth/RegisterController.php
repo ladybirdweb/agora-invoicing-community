@@ -66,7 +66,6 @@ class RegisterController extends Controller
                 'profile_pic' => '',
                 'active' => 0,
                 'mobile_verified' => 0,
-                // 'country' => $request->input('country'),
                 'mobile' => ltrim($request->input('mobile'), '0'),
                 'mobile_code' =>  $request->input('mobile_code'),
                 'role' => 'user',

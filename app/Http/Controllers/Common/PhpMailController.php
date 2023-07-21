@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Email_log;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Payment_log;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Payment_log;
-use App\Email_log;
 use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
@@ -470,7 +470,7 @@ class PhpMailController extends Controller
         ]);
     }
 
-     public function payment_log($from, $to, $subject, $body, $method, $status, $order, $exception = null)
+    public function payment_log($from, $to, $subject, $body, $method, $status, $order, $exception = null)
     {
         $data = [
             'date' => date('Y-m-d H:i:s'),

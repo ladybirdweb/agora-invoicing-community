@@ -268,7 +268,7 @@ Create Invoice
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&quantity=' + quantity + '&user=' + user;
             }
-            else if($('#agents').val()){
+            else if(document.getElementsByName('agents')[0]){
                 var agents = document.getElementsByName('agents')[0].value;
                 var data = $("#formoid").serialize() + '&agents=' + agents + '&user=' + user;
             }

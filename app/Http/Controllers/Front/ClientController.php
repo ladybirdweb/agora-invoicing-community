@@ -561,16 +561,15 @@ class ClientController extends BaseClientController
                                 $deleteCloud = '';
                                 $listUrl = '';
                                 if ($status == 'success' && $model->price != '0' && $model->type == '4') {
-                                    $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
-                                    $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
                                 if (! in_array($model->product_id, [117, 119])) {
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
+                                $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
                                 $url = $this->renewPopup($model->sub_id, $model->product_id);
 

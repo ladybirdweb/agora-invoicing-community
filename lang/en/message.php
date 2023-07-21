@@ -707,5 +707,6 @@ return [
     'cloud_domain_change'=>'Domain changed please reissue your license and use the license code in your domain',
     'limit_is_up' => 'It has come to our notice that you have crossed the free trial limit, please delete your existing instances to proceed further.',
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
+    'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
 
 ];

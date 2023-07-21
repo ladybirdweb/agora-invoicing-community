@@ -1,7 +1,7 @@
 <?php
-    
-    namespace App\Http\Controllers\Common;
-    
+
+namespace App\Http\Controllers\Common;
+
     use App\Http\Controllers\Controller;
     use App\Http\Controllers\Tenancy\TenantController;
     use App\Model\Common\FaveoCloud;
@@ -12,33 +12,33 @@
     use GuzzleHttp\Client;
     use Illuminate\Http\Request;
     use Symfony\Component\Mime\Email;
-    
+
     class PhpMailController extends Controller
     {
         protected $commonMailer;
-    
+
         protected $queueManager;
-    
+
         public function __construct()
         {
             $this->commonMailer = new CommonMailer();
             $this->queueManager = app('queue');
         }
-    
+
         public function sendEmail($from, $to, $template_data, $template_name, $replace = [], $type = '', $bcc = [])
         {
             $this->setQueue();
             $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, $type);
             dispatch($job);
         }
-    
+
         public function NotifyMail($from, $to, $template_data, $template_name)
         {
             $this->setQueue();
             $job = new \App\Jobs\NotifyMail();
             dispatchNow($job);
         }
-    
+
         /**
          * set the queue service.
          */
@@ -46,7 +46,7 @@
         {
             $this->queueManager->setDefaultDriver($this->getActiveQueue()->driver);
         }
-    
+
         private function getActiveQueue()
         {
             return persistentCache('queue_configuration', function () {
@@ -57,7 +57,7 @@
                     'queue' => 'default',
                     'expire' => 60,
                 ];
-    
+
                 $queue = new \App\Model\Mailjob\QueueService();
                 $active_queue = $queue->where('status', 1)->first();
                 if ($active_queue) {
@@ -65,11 +65,11 @@
                     $fields = new \App\Model\Mailjob\FaveoQueue();
                     $field = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
                 }
-    
+
                 return (object) ['driver' => $short, 'config' => $field];
             });
         }
-    
+
         public function NotifyMailing()
         {
             try {
@@ -82,14 +82,14 @@
                 \Log::error($ex->getMessage());
             }
         }
-    
+
         public function notifyFreeTrail()
         {
             try {
                 $expiredDate = now()->subDays(7);
                 $today = new Carbon('today');
                 $sub = Subscription::whereIn('product_id', [117, 119])->where('update_ends_at', '<', $expiredDate)->get();
-    
+
                 foreach ($sub as $data) {
                     $cron = new CronController();
                     $user = \DB::table('users')->find($data->user_id);
@@ -98,20 +98,20 @@
                     if ($order) {
                         $invoice = $cron->getInvoiceByOrderId($data->order_id);
                         $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
-    
+
                         //check in the settings
                         $settings = new \App\Model\Common\Setting();
                         $settings = $settings->where('id', 1)->first();
-    
+
                         //template
                         $template = new \App\Model\Common\Template();
                         $temp_id = $settings->where('id', 1)->value('Free_trail_gonna_expired');
                         $template = $template->where('id', $temp_id)->first();
-    
+
                         $mail = new \App\Http\Controllers\Common\PhpMailController();
                         $mailer = $mail->setMailConfig($settings);
                         $url = url('my-orders');
-    
+
                         $email = (new Email())
                                  ->from($settings->email)
                                  ->to($user->email)
@@ -121,7 +121,7 @@
                                       'number' => $order->number,
                                       'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                       'url' => $url, ]));
-    
+
                         $mailer->send($email);
                     }
                 }
@@ -129,7 +129,7 @@
                 \Log::error($ex->getMessage());
             }
         }
-    
+
         public function getCloudSubscriptions()
         {
             $day = ExpiryMailDay::value('cloud_days');
@@ -138,10 +138,10 @@
                                 ->whereDate('update_ends_at', '<', $today)
                                 ->whereBetween('update_ends_at', [Carbon::now()->subDays($day)->toDateString(), Carbon::now()->toDateString()])
                                 ->get();
-    
+
             return $sub;
         }
-    
+
         public function mailSendForCloud()
         {
             try {
@@ -155,20 +155,20 @@
                         if ($order) {
                             $invoice = $cron->getInvoiceByOrderId($data->order_id);
                             $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
-    
+
                             //check in the settings
                             $settings = new \App\Model\Common\Setting();
                             $settings = $settings->where('id', 1)->first();
-    
+
                             //template
                             $template = new \App\Model\Common\Template();
                             $temp_id = $settings->where('id', 1)->value('free_trail_expired');
                             $template = $template->where('id', $temp_id)->first();
-    
+
                             $mail = new \App\Http\Controllers\Common\PhpMailController();
                             $mailer = $mail->setMailConfig($settings);
                             $url = url('my-orders');
-    
+
                             $email = (new Email())
                                      ->from($settings->email)
                                      ->to($user->email)
@@ -178,7 +178,7 @@
                                           'number' => $order->number,
                                           'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                           'url' => $url, ]));
-    
+
                             $mailer->send($email);
                         }
                     }
@@ -187,7 +187,7 @@
                 \Log::error($ex->getMessage());
             }
         }
-    
+
         public function deleteCloudDetails()
         {
             try {
@@ -200,39 +200,39 @@
                     ->orWhereDate('update_ends_at', $today->subDays($day + 1));
             })
             ->get();
-    
+
                 foreach ($sub as $data) {
                     $cron = new CronController();
                     $user = \DB::table('users')->find($data->user_id);
                     $product = Product::find($data->product_id);
                     $order = $cron->getOrderById($data->order_id);
-    
+
                     if (empty($order)) {
                         continue;
                     }
                     $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
-    
+
                     if (is_null($id) || $id == 'billing.fratergroup.in') {
                         $order->delete();
                     } else {
                         //Destroy the tenat
                         $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
-    
+
                         //Mail Sending
-    
+
                         if ($destroy->status() == 200) {
                             //check in the settings
                             $settings = new \App\Model\Common\Setting();
                             $settings = $settings->where('id', 1)->first();
-    
+
                             //template
                             $template = new \App\Model\Common\Template();
                             $temp_id = \DB::table('template_types')->where('name', 'cloud_deleted')->value('id');
                             $template = $template->where('id', $temp_id)->first();
-    
+
                             $mail = new \App\Http\Controllers\Common\PhpMailController();
                             $mailer = $mail->setMailConfig($settings);
-    
+
                             $email = (new Email())
                                       ->from($settings->email)
                                       ->to($user->email)
@@ -252,23 +252,23 @@
                 \Log::error($e->getMessage());
             }
         }
-    
+
         public function mailing($from, $to, $data, $subject, $replace = [],
          $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
         {
             try {
                 $transform = [];
                 $page_controller = new \App\Http\Controllers\Front\PageController();
-    
+
                 $transform[0] = $replace;
                 $data = $page_controller->transform($type, $data, $transform);
                 $settings = \App\Model\Common\Setting::find(1);
                 $fromname = $settings->company;
-    
+
                 $this->setMailConfig($settings);
                 \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
                     $m->from($from, $fromname);
-    
+
                     $m->to($to, $toname)->subject($subject);
                     /* if cc is need  */
                     if (! empty($cc)) {
@@ -276,13 +276,13 @@
                             $m->cc($address['a ress'], $address['name']);
                         }
                     }
-    
+
                     if (! empty($bcc)) {
                         foreach ($bcc as $address) {
                             $m->bcc($address);
                         }
                     }
-    
+
                     /*  if attachment is need */
                     if (! empty($attach)) {
                         foreach ($attach as $file) {
@@ -298,7 +298,7 @@
                     'body' => $data,
                     'status' => 'success',
                 ]);
-    
+
                 return 'success';
             } catch (\Exception $ex) {
                 \DB::table('email_log')->insert([
@@ -312,34 +312,34 @@
                 if ($ex instanceof \Swift_TransportException) {
                     throw new \Exception($ex->getMessage());
                 }
-    
+
                 throw new \Exception($ex->getMessage());
             }
         }
-    
+
         public function setMailConfig($settings)
         {
             switch ($settings->driver) {
                 case 'smtp':
-    
+
                     $config = ['host' => $settings->host,
                         'port' => $settings->port,
                         'security' => $settings->encryption,
                         'username' => $settings->email,
                         'password' => $settings->password,
                     ];
-    
+
                     $mail = new \App\Http\Controllers\Common\CommonMailer();
                     $mailer = $mail->setSmtpDriver($config);
                     if (! $this->commonMailer->setSmtpDriver($config)) {
                         \Log::info('Invaid configuration :- '.$config);
-    
+
                         return 'invalid mail configuration';
                     }
-    
+
                     return $mailer;
                     break;
-    
+
                 case 'send_mail':
                     $config = [
                         'host' => \Config::get('mail.host'),
@@ -350,13 +350,13 @@
                     ];
                     $this->commonMailer->setSmtpDriver($config);
                     break;
-    
+
                 default:
                     setServiceConfig($settings);
                     break;
             }
         }
-    
+
         public function mailTemplate($contents, $templatevariables)
         {
             $variables = $this->getVariableValues($contents, $templatevariables);
@@ -364,10 +364,10 @@
             foreach ($variables as $v =>$k) {
                 $messageBody = str_replace($v, $k, $messageBody);
             }
-    
+
             return $messageBody;
         }
-    
+
         public function getVariableValues($contents, $templatevariables)
         {
             $variables = [];
@@ -388,7 +388,7 @@
             $manager_mobile = $this->checkElement('manager_mobile', $templatevariables);
             $manager_skype = $this->checkElement('manager_skype', $templatevariables);
             $contact_us = $this->checkElement('contact_us', $templatevariables);
-    
+
             $serialkeyurl = $this->checkElement('serialkeyurl', $templatevariables);
             $downloadurl = $this->checkElement('downloadurl', $templatevariables);
             $invoiceurl = $this->checkElement('invoiceurl', $templatevariables);
@@ -400,7 +400,7 @@
             $total = $this->checkElement('total', $templatevariables);
             $exceptionMessage = $this->checkElement('exception', $templatevariables);
             $message = $this->checkElement('message', $templatevariables);
-    
+
             $variables['{$name}'] = $name;
             $variables['{$username}'] = $email;
             $variables['{$password}'] = $password;
@@ -418,7 +418,7 @@
             $variables['{$manager_mobile}'] = $manager_mobile;
             $variables['{$manager_skype}'] = $manager_skype;
             $variables['{$contact_us}'] = $contact_us;
-    
+
             $variables['{$serialkeyurl}'] = $serialkeyurl;
             $variables['{$downloadurl}'] = $downloadurl;
             $variables['{$invoiceurl}'] = $invoiceurl;
@@ -430,10 +430,10 @@
             $variables['{$total}'] = $total;
             $variables['{$exception}'] = $exceptionMessage;
             $variables['{$message}'] = $message;
-    
+
             return $variables;
         }
-    
+
         public function checkElement($element, $array)
         {
             $value = '';
@@ -442,10 +442,10 @@
                     $value = $array[$element];
                 }
             }
-    
+
             return $value;
         }
-    
+
         public function email_log_success($from, $to, $subject, $body)
         {
             \DB::table('email_log')->insert([
@@ -457,7 +457,7 @@
                 'status' => 'success',
             ]);
         }
-    
+
         public function email_log_fail($from, $to, $subject, $body)
         {
             \DB::table('email_log')->insert([

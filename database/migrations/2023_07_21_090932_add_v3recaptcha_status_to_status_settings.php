@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('demo_pages', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('status')->default(0);
-            $table->string('link')->nullable();
-            $table->string('email')->nullable();
-            $table->timestamps();
+        if (! Schema::hasColumn('status_settings', 'v3recaptcha')) {
+        Schema::table('status_settings', function (Blueprint $table) {
+            $table->boolean('v3recaptcha')->default(0);
         });
+    }
     }
 
     /**
@@ -29,6 +27,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('demo_pages');
+        Schema::table('status_settings', function (Blueprint $table) {
+            $table->dropColumn('v3recaptcha');
+        });
     }
 };

@@ -468,7 +468,7 @@ class PhpMailController extends Controller
         ]);
     }
 
-    public function payment_log_success($from, $to, $subject, $body,$method,$status,$order)
+    public function payment_log_success($from, $to, $subject, $body, $method, $status, $order)
     {
         \DB::table('payment_logs')->insert([
             'date' => date('Y-m-d H:i:s'),
@@ -482,7 +482,7 @@ class PhpMailController extends Controller
         ]);
     }
 
-    public function payment_log_fail($from, $to, $subject,$body,$method,$status,$order,$exception)
+    public function payment_log_fail($from, $to, $subject, $body, $method, $status, $order, $exception)
     {
         \DB::table('payment_logs')->insert([
             'date' => date('Y-m-d H:i:s'),

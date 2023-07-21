@@ -10,6 +10,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
@@ -19,7 +20,6 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Carbon\Carbon;
-use App\Model\Order\InvoiceItem;
 use Razorpay\Api\Api;
 use Symfony\Component\Mime\Email;
 
@@ -547,8 +547,8 @@ class CronController extends BaseCronController
                     if ($invoice) {
                         $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
                         $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
-                        $invoiceid = InvoiceItem::where('invoice_id',$invoice->invoice_id)->first();
-                       $invoice = Invoice::find($invoiceid);
+                        $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
+                        $invoice = Invoice::find($invoiceid);
                         $this->stripeController->sendPaymentSuccessMailtoAdmin($invoice, $cost, $user, $product_name);
                     }
 
@@ -593,9 +593,9 @@ class CronController extends BaseCronController
                 }
                 $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $oldinvoice->currency);
                 $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
-                $invoiceid = InvoiceItem::where('invoice_id',$oldinvoice->invoice_id)->first();
+                $invoiceid = InvoiceItem::where('invoice_id', $oldinvoice->invoice_id)->first();
                 $invoice = Invoice::find($invoiceid);
-                $this->stripeController->sendPaymentSuccessMailtoAdmin($invoice,$cost,$user,$product_details->name);
+                $this->stripeController->sendPaymentSuccessMailtoAdmin($invoice, $cost, $user, $product_details->name);
             }
         } catch(\Exception $ex) {
             echo $ex->getMessage();
@@ -635,9 +635,9 @@ class CronController extends BaseCronController
              'url' => $url,
          ]));
             $mailer->send($email);
-            $invoiceid = InvoiceItem::where('invoice_id',$invoice->invoice_id)->first();
+            $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
             $invoice = Invoice::find($invoiceid);
-            $mail->sendFailedPaymenttoAdmin($invoice,$total,$product_details->name,$exceptionMessage,$user);
+            $mail->sendFailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user);
         } catch (\Exception $ex) {
             // $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
         }
@@ -645,7 +645,6 @@ class CronController extends BaseCronController
 
     public static function sendPaymentSuccessMail($invoice, $total, $user, $product, $number)
     {
-
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -660,10 +659,10 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url('my-orders');
 
-        $invoiceid = InvoiceItem::where('invoice_id',$invoice->invoice_id)->first();
+        $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
         $invoice = Invoice::find($invoiceid);
 
-            $email = (new Email())
+        $email = (new Email())
          ->from($setting->email)
          ->to($user->email)
          ->subject($template->name)
@@ -674,9 +673,8 @@ class CronController extends BaseCronController
              'total' => $total,
              'number' => $number,
          ]));
-            $mailer->send($email);
-            $mail->sendPaymentSuccessMailtoAdmin($invoice,$total,$user,$product);
-        
+        $mailer->send($email);
+        $mail->sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $product);
     }
 
     public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
@@ -713,9 +711,9 @@ class CronController extends BaseCronController
                   'url' => $url,
               ]));
             $mailer->send($email);
-            $invoiceid = InvoiceItem::where('invoice_id',$invoice->invoice_id)->first();
+            $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
             $invoice = Invoice::find($invoiceid);
-           $mail->sendFailedPaymenttoAdmin($invoice,$total,$product_details->name,$exceptionMessage,$user);
+            $mail->sendFailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user);
         } catch (\Exception $ex) {
             // $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
         }

@@ -11,6 +11,7 @@ use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\QueueService;
+use App\Model\Order\Order;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\Payment_log;
@@ -18,7 +19,6 @@ use App\User;
 use DB;
 use File;
 use Illuminate\Http\Request;
-use App\Model\Order\Order;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
 
@@ -641,21 +641,22 @@ class SettingsController extends BaseSettingsController
                     return ucfirst($model->payment_method);
                 })
                 ->addColumn('ordernumber', function ($model) {
-                    $id = Order::where('number',$model->order)->select('id')->value('id');
+                    $id = Order::where('number', $model->order)->select('id')->value('id');
                     $orderLink = '<a href='.url('orders/'.$id).'>'.$model->order.'</a>';
 
                     return $orderLink;
                 })
                 ->addColumn('status', function ($model) {
-                        if ($model->status === 'failed') {
-                       $exceptionMessage = $model->exception;
+                    if ($model->status === 'failed') {
+                        $exceptionMessage = $model->exception;
 
-                    return '<a href="#" class="show-exception" data-message="' . $exceptionMessage . '">Failed</a>';
-                   }
+                        return '<a href="#" class="show-exception" data-message="'.$exceptionMessage.'">Failed</a>';
+                    }
+
                     return ucfirst($model->status);
                 })
                 ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status','paymentmethod','ordernumber' ])
+                    'bcc', 'subject',  'status', 'paymentmethod', 'ordernumber'])
                 ->filterColumn('from', function ($query, $keyword) {
                     $sql = '`from` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -673,18 +674,16 @@ class SettingsController extends BaseSettingsController
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                  ->filterColumn('paymentmethod', function ($query, $keyword) {
-                    $sql = '`payment_method` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+                     $sql = '`payment_method` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
                  ->filterColumn('ordernumber', function ($query, $keyword) {
-                    $sql = '`order` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-          
+                     $sql = '`order` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
 
                 ->make(true);
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -707,7 +706,7 @@ class SettingsController extends BaseSettingsController
 
         $join = $join
         ->select(
-            'id', 'from', 'to', 'date', 'subject', 'status', 'created_at','payment_method','order','exception'
+            'id', 'from', 'to', 'date', 'subject', 'status', 'created_at', 'payment_method', 'order', 'exception'
         );
 
         return $join;

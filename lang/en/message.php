@@ -712,5 +712,8 @@ return [
     'remove_coupon' => 'Coupon Code has been removed Successfully',
     'no_product' => 'No coupon applied. Cannot remove coupon code.',
     'oops' => 'OOPS! Something went wrong.',
+    'err_msg' => 'OOPS! Something went wrong.',
+    'mail_verify' => 'Number of Email Verification Attempts',
+    'mobile_verify' => 'Number of Mobile Verification Attempts',
 
 ];

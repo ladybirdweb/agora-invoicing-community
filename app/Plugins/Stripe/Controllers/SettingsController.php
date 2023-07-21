@@ -284,15 +284,18 @@ class SettingsController extends Controller
                ->subject('Payment Failed')
                ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
             $mailer->send($email);
-            $mail->payment_log_fail($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage,$payment->payment_method,$payment->payment_status,$order->number,$exceptionMessage);
+            $mail->payment_log($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage,$payment->payment_method,$payment->payment_status,$order->number,$exceptionMessage);
+            $mail->email_log_success($set->email, $set->company_email,'Payment Failed','Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         }catch(\Exception $ex){
-            dd($ex);
+          $mail->email_log_fail($set->email, $set->company_email,'Payment Failed','Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+
         }
         
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice,$total,$user,$productName)
     {
+        try{
         $payment = Payment::where('invoice_id',$invoice->id)->first();
         $orderid = OrderInvoiceRelation::where('invoice_id',$invoice->id)->value('order_id');
         $order = Order::find($orderid);
@@ -307,7 +310,13 @@ class SettingsController extends Controller
                ->subject('Payment Successful')
                ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
             $mailer->send($email);
-            $mail->payment_log_success($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$invoice->grand_total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email,$payment->payment_method,$payment->payment_status,$order->number);
+            $mail->payment_log($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$invoice->grand_total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email,$payment->payment_method,$payment->payment_status,$order->number);
+            $mail->email_log_success($set->email, $set->company_email,'Payment Successful','Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+
  
+    }catch(\Exception $ex)
+    {
+         $mail->email_log_fail($set->email, $set->company_email,'Payment Successful','Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
     }
+}
 }

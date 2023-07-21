@@ -63,7 +63,7 @@ class TemplateTableSeeder extends Seeder
             <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
             <td style="background: #fff; padding: 0; width: 560px;" align="left">
             <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">{{$message}}</p>
-            <p>Thank-you For Choosing Faveo!</p>
+            <p>Thank-you for choosing Faveo!</p>
             <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">&nbsp;</p>
             </td>
             <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>

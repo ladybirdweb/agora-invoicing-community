@@ -26,12 +26,12 @@ Users
                     <h3 class="card-title">Advance Search</h3>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
                             </button>
                        
                     </div>
                 </div>
-                <div class="card-body table-responsive" id="advance-search" style="display:none;">
+                <div class="card-body" id="advance-search" style="display:block;">
                     {!! Form::open(['method'=>'get']) !!}
 
                     <div class="row">
@@ -102,14 +102,14 @@ Users
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('reg_from','Registered From') !!}
-                            <div class="input-group date" id="reservationdate_from" data-target-input="nearest">
-                                <input type="text" name="reg_from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_from !!}" data-target="#reservationdate_from"/>
-
-                                <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
+                               <div class="input-group date" id="reservationdate_from" data-target-input="nearest">
+                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker','autocomplete'=>'off']) !!}
+                            <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-
+                            
                             </div>
+
+                        </div>
                         </div>
 
                         <div class="col-md-3 form-group">
@@ -333,11 +333,19 @@ Users
         return false;
 
      });
+ </script>
+ @stop
+ @section('datepicker')
+ <script type="text/javascript">
+
    $('#reservationdate').datetimepicker({
        format: 'L'
+
    });
         $('#reservationdate_from').datetimepicker({
       format: 'L'
+
     });
 </script>
+
 @stop

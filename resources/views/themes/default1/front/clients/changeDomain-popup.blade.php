@@ -21,15 +21,15 @@
                             <label>Enter current domain</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="userdomain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="billing.ragnork.ml" required>
-                                <!-- <input type="text" class="form-control col col-8" value=".ragnork.ml" disabled="true">-->
+                                <input  type="text" name="userdomain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="billing.fratergroup.in" required>
+                                <!-- <input type="text" class="form-control col col-8" value=".fratergroup.in" disabled="true">-->
                             </div>
                             <br>
                             <label>Enter new domain</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="usernewdomain" autocomplete="off" id= "usernewdomain"  class="form-control col col-12" placeholder="billing.ragnork.ml" required>
-                                <!-- <input type="text" class="form-control col col-8" value=".ragnork.ml" disabled="true">-->
+                                <input  type="text" name="usernewdomain" autocomplete="off" id= "usernewdomain"  class="form-control col col-12" placeholder="billing.fratergroup.in" required>
+                                <!-- <input type="text" class="form-control col col-8" value=".fratergroup.in" disabled="true">-->
                             </div>
                         </div>
                     </form>

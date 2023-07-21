@@ -251,26 +251,32 @@ Create Invoice
         if ($('#description').length > 0) {
             var description = document.getElementsByName('description')[0].value;
         }
-        if ($('#domain').length > 0) {
+        if (console.log($('#domain').length > 0)) {
             var domain = document.getElementsByName('domain')[0].value;
             var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             if ($('#quantity').length > 0) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&quantity=' + quantity + '&user=' + user;
-            } else if ($('#agents').length > 0) {
+            } else if (console.log($('#agents').length > 0)) {
                  var agents = document.getElementsByName('agents')[0].value;
                  var data = $("#formoid").serialize() + '&domain=' + domain + '&agents=' + agents + '&user=' + user;
             } else{
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             }
         } else {
-            if ($('#quantity').length > 0) {
+            if (console.log($('#quantity').length > 0)) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&quantity=' + quantity + '&user=' + user;
-            } else {
+            }
+            else if($('#agents').val()){
+                var agents = document.getElementsByName('agents')[0].value;
+                var data = $("#formoid").serialize() + '&agents=' + agents + '&user=' + user;
+            }
+            else {
                 var data = $("#formoid").serialize() + '&user=' + user;
             }
         }
+        console.log(data);
         data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
         $("#generate").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
 
@@ -389,5 +395,6 @@ Create Invoice
        var $state = $( '<div><div style="width: 14%;display: inline-block;"><img src='+state.image+' width=35px" height="35px" style="vertical-align:inherit"></div><div style="width: 80%;display: inline-block;"><div>'+state.text+'</div><div>'+state.email+'</div></div></div>');
         return $state;
     }
+
 </script>
 @stop

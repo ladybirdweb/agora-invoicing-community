@@ -365,8 +365,10 @@ input:checked + .slider:before {
                         ?>
                             <tr>
                                 <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                @if(!in_array($order->product,[117,119]))
 
                                 <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                @endif
                             @if($productversion)
                             @if($productversion < $Latestversion)
                             <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">

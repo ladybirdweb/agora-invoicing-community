@@ -369,7 +369,9 @@ $json = json_encode($data);
                         ?>
                             <tr>
                                 <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                @if($product->type != '4')
                                 <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                @endif
                             @if($productversion)
                             @if($productversion < $Latestversion)
                             <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">

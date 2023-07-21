@@ -344,9 +344,11 @@ class BaseOrderController extends ExtendedOrderController
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);
 
             if ($order->invoice->grand_total) {
-                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
+                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice,$order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
+            SettingsController::sendFailedPaymenttoAdmin($order->invoice,$order->invoice->grand_total,$product,$ex->getMessage(),$user);
+
             $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
             throw new \Exception($ex->getMessage());
         }

@@ -2,6 +2,48 @@
 @section('title')
 Payment Logs
 @stop
+<style>
+    .modal-dialog-scrollable {
+        max-height: calc(100vh - 200px);
+        margin-top: 100px;
+    }
+
+    .modal-body {
+        overflow-y: auto;
+    }
+
+    @media (max-width: 767.98px) {
+        .modal-dialog-scrollable {
+            max-height: calc(100vh - 120px);
+            margin-top: 60px;
+        }
+    }
+
+       .modal-lg .modal-content {
+        background-color: black;
+        border: none; 
+    }
+
+    .modal-lg .modal-content,
+    .modal-lg .modal-header,
+    .modal-lg .modal-footer {
+        color: white;
+    }
+
+    .modal-lg .modal-header {
+        border-bottom-color: transparent; 
+    }
+
+    .modal-lg .modal-header .close {
+        color: white; 
+    }
+
+    .modal-lg .modal-body {
+        max-height: 400px; 
+        overflow-y: auto;
+    }
+</style>
+
 @section('content-header')
     <div class="col-sm-6">
         <h1>Payment Log</h1>
@@ -25,6 +67,25 @@ Payment Logs
         <h5>Search Here
           </h5>
     </div>
+
+
+<div class="modal fade" id="exception-modal" tabindex="-1" role="dialog" aria-labelledby="exception-modal-label" aria-hidden="true" style="margin-top: 10%;">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exception-modal-label">Exception Message</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="exception-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
  
         <div class="card-body">
 
@@ -101,7 +162,9 @@ Payment Logs
                             <th>Date</th>
                             <th>From</th>
                              <th>To</th>   
-                               <th>Subject</th>      
+                               <th>Subject</th>  
+                               <th>Order No</th> 
+                               <th>Method</th>   
                            
                              <th>Status</th>
                                </tr></thead>
@@ -120,52 +183,70 @@ Payment Logs
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <!--  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
 
-<script type="text/javascript">
-  
+<script>
+    $(document).ready(function() {
+             $(document).on('click', '.show-exception', function(event) {
+            event.preventDefault();
+
+            var exceptionMessage = $(this).data('message');
+
+            $('.exception-message').text(exceptionMessage);
+
+            $('#exception-modal').modal('show');
+        });
+
+
         $('#payment-table').DataTable({
-          
-           
             processing: true,
             serverSide: true,
-            order: [[ 1, "asc" ]],
-             ajax: {
-            "url":  '{!! route('get-paymentlog',"from=$from&till=$till") !!}',
-               error: function(xhr) {
-                   
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
-
+            order: [[1, "asc"]],
+            ajax: {
+                "url": '{!! route('get-paymentlog', "from=$from&till=$till") !!}',
+                error: function(xhr) {
+                    if (xhr.status == 401) {
+                        alert('Your session has expired. Please login again to continue.');
+                        window.location.href = '/login';
+                    }
+                }
             },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                       "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                "sSearch": "Search: ",
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-                { 
-                    targets: 'no-sort', 
+                {
+                    targets: 'no-sort',
                     orderable: false,
                     order: []
                 }
             ],
             columns: [
-                {data: 'checkbox', name: 'checkbox'},
-                {data: 'date', name: 'date'},
-                {data: 'from', name: 'from'},
-                {data: 'to', name: 'to'},
-                 {data: 'subject', name: 'subject'},
-                
-                 {data: 'status', name: 'status'},
-                
+                { data: 'checkbox', name: 'checkbox' },
+                { data: 'date', name: 'date' },
+                { data: 'from', name: 'from' },
+                { data: 'to', name: 'to' },
+                { data: 'subject', name: 'subject' },
+                { data: 'ordernumber', name: 'ordernumber' },
+                { data: 'paymentmethod', name: 'paymentmethod' },
+                {
+                    data: 'status',
+                    name: 'status',
+                    render: function(data, type, row) {
+                        // Handle the exception message for the 'Failed' status
+                        if (row.status === 'failed') {
+                            return '<a href="#" class="show-exception" data-message="' + row.exception_message + '">Failed</a>';
+                        }
+
+                        return data;
+                    }
+                }
             ],
-            "fnDrawCallback": function( oSettings ) {
+            "fnDrawCallback": function(oSettings) {
                 $(function () {
-                $('[data-toggle="tooltip"]').tooltip({
-                    container : 'body'
-                });
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container: 'body'
+                    });
                 });
                 $('.loader').css('display', 'none');
             },
@@ -173,7 +254,8 @@ Payment Logs
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
+    });
+</script>
 <!-- <script>
     $(document).on('click','#payment-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');
@@ -251,6 +333,9 @@ Payment Logs
         format: 'L'
     });
 </script>
+
+
+
 
 
 @stop

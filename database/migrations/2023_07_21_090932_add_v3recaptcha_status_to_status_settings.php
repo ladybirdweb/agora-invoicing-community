@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('status_settings', 'v3recaptcha')) {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('v3recaptcha')->default(0);
-        });
-    }
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->boolean('v3recaptcha')->default(0);
+            });
+        }
     }
 
     /**

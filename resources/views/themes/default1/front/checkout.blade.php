@@ -258,11 +258,15 @@ $cartSubtotalWithoutCondition = 0;
             </tbody>
         </table>
         {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-            <div class="input-group" style="margin-top: 10px">
-                <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
-                &nbsp;&nbsp;
-                <input type="submit" value="Apply" class="btn btn-primary">
-            </div>
+           <div class="input-group" style="margin-top: 10px;">
+    <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
+    <div class="input-group-append">
+        <span class="input-group-text clear-icon" style="cursor: pointer;"><i class="fas fa-times-circle"></i></span>
+    </div>
+    <div class="input-group-append">
+        <input type="submit" value="Apply" class="btn btn-primary">
+    </div>
+</div>
         {!! Form::close() !!}
     </div>
 
@@ -295,6 +299,13 @@ $cartSubtotalWithoutCondition = 0;
     </div>
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function() {
+        $('.clear-icon').click(function() {
+            $(this).closest('.input-group').find('input[name=coupon]').val('').focus();
+        });
+    });
+</script>
 <script>
 
   $('#checkoutsubmitform').submit(function(){

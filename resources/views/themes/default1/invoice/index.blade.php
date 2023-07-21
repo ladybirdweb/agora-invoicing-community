@@ -21,13 +21,13 @@ Invoices
         <h3 class="card-title">Advance Search</h3>
 
                 <div class="card-tools">
-                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
                             </button>
                    
                 </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body table-responsive" id="advance-search" style="display:none;">
+    <div class="card-body" id="advance-search" style="display:block;">
 
         {!! Form::open(['method'=>'get']) !!}
 
@@ -46,32 +46,38 @@ Invoices
                 {!! Form::text('invoice_no',$request->invoice_no,['class' => 'form-control','id'=>'invoice_no']) !!}
 
             </div>
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('status','Status') !!}
-               <select name="status"  class="form-control" id="status">
-                    <option value="">Choose</option>
-                   <option value="pending">Unpaid</option>
-                   <option value="Partially paid">Partially Paid</option>
-                  <option value="success">Paid</option>
-                 </select>
+       <div class="col-md-3 form-group">
+    <!-- first name -->
+    {!! Form::label('status', 'Status') !!}
+    <select name="status" class="form-control" id="status">
+        <option value="">Choose</option>
+        <option value="pending" @if($request->input('status') === 'pending') selected @endif>Unpaid</option>
+        <option value="Partially paid" @if($request->input('status') === 'Partially paid') selected @endif>Partially Paid</option>
+        <option value="success" @if($request->input('status') === 'success') selected @endif>Paid</option>
+    </select>
+</div>
 
-            </div>
-           <div class="col-md-3 form-group">
-                {!! Form::label('currency','Currency') !!}
-             <select name="currency_id"  class="form-control" id="currency">
-             <option value="">Choose</option>
-               @foreach($currencies as $key=>$value)
-            <option value={{$value}}>{{$value}}</option>
-              @endforeach
-               </select>
-          </div>
+
+              <div class="col-md-3 form-group">
+            {!! Form::label('currency', 'Currency') !!}
+            <select name="currency_id" class="form-control" id="currency">
+                <option value="">Choose</option>
+                @foreach($currencies as $currency)
+                    @if($currency === $request->input('currency_id'))
+                        <option value="{{ $currency }}" selected>{{ $currency }}</option>
+                    @else
+                        <option value="{{ $currency }}">{{ $currency }}</option>
+                    @endif
+                @endforeach
+            </select>
+        </div>
+
             
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Invoice From') !!}
                 <div class="input-group date" id="invoice_from" data-target-input="nearest">
-                    <input type="text" name="from" class="form-control datetimepicker-input" autocomplete="off"  data-target="#invoice_from"/>
+                    <input type="text" name="from" class="form-control datetimepicker-input" autocomplete="off" value="{{ $request->input('from') }}"  data-target="#invoice_from"/>
 
                     <div class="input-group-append" data-target="#invoice_from" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -86,7 +92,7 @@ Invoices
                 <!-- first name -->
                 {!! Form::label('till','Invoice Till') !!}
                 <div class="input-group date" id="invoice_till" data-target-input="nearest">
-                    <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off"  data-target="#invoice_till"/>
+                    <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off" value="{{ $request->input('till') }}"  data-target="#invoice_till"/>
 
                     <div class="input-group-append" data-target="#invoice_till" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>

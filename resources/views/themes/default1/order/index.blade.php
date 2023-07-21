@@ -23,13 +23,13 @@ Orders
 
         <div class="card-tools">
 
-             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
                             </button>
             
         </div>
     </div>
     <!-- /.box-header -->
-      <div class="card-body table-responsive" id="advance-search" style="display:none;">
+      <div class="card-body" id="advance-search" style="display:block;">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">

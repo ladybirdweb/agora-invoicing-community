@@ -284,6 +284,7 @@ class TenantController extends Controller
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
                     $template = $template->where('type', $temp_type_id)->first();
+                    $result->message = str_replace("website",strtolower($product),$result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
                     $email = (new Email())

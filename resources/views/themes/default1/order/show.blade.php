@@ -354,11 +354,13 @@ input:checked + .slider:before {
                         $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
                      
                         $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+
+                        if($productversion) {
+                            $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                            $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                        }
                        
-                        $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                        $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
-                       
-                         $active = !empty($ins)?true:false ;
+                        $active = !empty($ins)?true:false ;
                      
                        
                        

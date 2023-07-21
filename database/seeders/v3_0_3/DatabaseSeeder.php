@@ -38,7 +38,7 @@ class TemplateTableSeeder extends Seeder
     public function run()
     {
 
-        Template::create(['id' => 20, 'name' => '[Faveo Helpdesk] New instance created', 'type' => 20, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 20, 'name' => '[Faveo Cloud] New instance created', 'type' => 20, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
            <tbody>
             <tr>
             <td style="width: 30px;">&nbsp;</td>

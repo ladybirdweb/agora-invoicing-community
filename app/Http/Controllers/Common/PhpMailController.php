@@ -194,12 +194,12 @@ class PhpMailController extends Controller
             $day = ExpiryMailDay::value('cloud_days');
             $today = new Carbon('today');
             $sub = Subscription::whereNotNull('update_ends_at')
-            ->whereIn('product_id', [117, 119])
-            ->where(function ($query) use ($today, $day) {
-                $query->whereDate('update_ends_at', '<', $today)
-                    ->orWhereDate('update_ends_at', $today->subDays($day + 1));
-            })
-            ->get();
+        ->whereIn('product_id', [117, 119])
+        ->where(function ($query) use ($today, $day) {
+            $query->whereDate('update_ends_at', '<', $today)
+                ->orWhereDate('update_ends_at', $today->subDays($day + 1));
+        })
+        ->get();
 
             foreach ($sub as $data) {
                 $cron = new CronController();
@@ -249,7 +249,7 @@ class PhpMailController extends Controller
                 }
             }
         } catch(\Exception $e) {
-            \Log::error($e->getMessage());
+            \Log::error($ex->getMessage());
         }
     }
 

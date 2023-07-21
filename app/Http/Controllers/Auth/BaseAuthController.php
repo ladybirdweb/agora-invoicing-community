@@ -279,8 +279,6 @@ class BaseAuthController extends Controller
         if ($attempt) {
             $attempt->attempt_count = $attempt->attempt_count + 1;
             $user->verificationAttempts()->where('type', 'email')->update(['attempt_count' => $attempt->attempt_count]);
-
-            // var_dump($attempt->attempt_count);
         } else {
             $emailAttempt = $user->verificationAttempts()->create(['type' => 'email', 'attempt_count' => 1]);
         }

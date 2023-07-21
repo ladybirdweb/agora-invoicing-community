@@ -705,5 +705,8 @@ return [
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',
     'cloud_domain_change'=>'Domain changed please reissue your license and use the license code in your domain',
+    'err_msg' => 'OOPS! Something went wrong.',
+    'mail_verify' => 'Number of Email Verification Attempts',
+    'mobile_verify' => 'Number of Mobile Verification Attempts',
 
 ];

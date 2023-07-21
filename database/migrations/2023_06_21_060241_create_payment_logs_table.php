@@ -22,6 +22,9 @@ return new class extends Migration
                 $table->string('subject');
                 $table->text('body');
                 $table->string('status', 255)->nullable();
+                $table->text('exception')->nullable();
+                $table->string('order')->nullable();
+                $table->string('payment_method')->nullable();
                 $table->timestamps();
             });
         }

@@ -11,6 +11,8 @@ use App\Model\Product\Subscription;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Payment_log;
+use App\Email_log;
 use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
@@ -446,7 +448,7 @@ class PhpMailController extends Controller
 
     public function email_log_success($from, $to, $subject, $body)
     {
-        \DB::table('email_log')->insert([
+        Email_log::insert([
             'date' => date('Y-m-d H:i:s'),
             'from' => $from,
             'to' => $to,
@@ -458,7 +460,7 @@ class PhpMailController extends Controller
 
     public function email_log_fail($from, $to, $subject, $body)
     {
-        \DB::table('email_log')->insert([
+        Email_log::insert([
             'date' => date('Y-m-d H:i:s'),
             'from' => $from,
             'to' => $to,
@@ -468,9 +470,9 @@ class PhpMailController extends Controller
         ]);
     }
 
-    public function payment_log_success($from, $to, $subject, $body,$method,$status,$order)
+     public function payment_log($from, $to, $subject, $body, $method, $status, $order, $exception = null)
     {
-        \DB::table('payment_logs')->insert([
+        $data = [
             'date' => date('Y-m-d H:i:s'),
             'from' => $from,
             'to' => $to,
@@ -479,21 +481,12 @@ class PhpMailController extends Controller
             'status' => $status,
             'payment_method' => $method,
             'order' => $order,
-        ]);
-    }
+        ];
 
-    public function payment_log_fail($from, $to, $subject,$body,$method,$status,$order,$exception)
-    {
-        \DB::table('payment_logs')->insert([
-            'date' => date('Y-m-d H:i:s'),
-            'from' => $from,
-            'to' => $to,
-            'subject' => $subject,
-            'body' => $body,
-            'status' => $status,
-            'payment_method' => $method,
-            'order' => $order,
-            'exception' => $exception,
-        ]);
+        if ($exception !== null) {
+            $data['exception'] = $exception;
+        }
+
+        Payment_log::insert($data);
     }
 }

@@ -481,29 +481,28 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function mailSearch($from = '', $till = '')
-    {
-        $join = new Email_log();
-        if ($from) {
-            $from = $this->getDateFormat($from);
-            $tills = $this->getDateFormat();
-            $tillDate = (new OrderSearchController())->getTillDate($from, $till, $tills);
-            $join = $join->whereBetween('date', [$from, $tillDate]);
-        }
-        if ($till) {
-            $till = $this->getDateFormat($till);
-            $froms = Email_log::first()->date;
-            $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
-            $join = $join->whereBetween('date', [$fromDate, $till]);
+         public function mailSearch($from = '', $till = '')
+        {
+            $join = Email_log::select('id', 'from', 'to', 'date', 'subject', 'status');
+
+            if ($from) {
+                $from = $this->DateFormat($from);
+                $tillDate = $this->DateFormat($till ?: $this->DateFormat()); // Use $till if provided, otherwise, use current date
+                $join = $join->whereBetween('date', [$from, $tillDate]);
+            }
+
+            if ($till) {
+                $till = $this->DateFormat($till);
+                $fromDate = Email_log::first()->date;
+                $fromDate = $this->DateFormat($from ?: $fromDate); // Use $from if provided, otherwise, use the first email log date
+                $join = $join->whereBetween('date', [$fromDate, $till]);
+            }
+
+            return $join;
         }
 
-        $join = $join
-        ->select(
-            'id', 'from', 'to', 'date', 'subject', 'status'
-        );
 
-        return $join;
-    }
+
 
     public function destroy(Request $request)
     {
@@ -550,7 +549,7 @@ class SettingsController extends BaseSettingsController
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                         /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.$e->getMessage().'
+                            '.\Lang::get('message.err_msg.').'
                     </div>';
         }
     }
@@ -563,7 +562,7 @@ class SettingsController extends BaseSettingsController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+             return redirect()->back()->with('fails',\Lang::get('message.err_msg'));
         }
     }
 
@@ -598,7 +597,7 @@ class SettingsController extends BaseSettingsController
 
             return view('themes.default1.common.payment-log', compact('from', 'till'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails',\Lang::get('message.err_msg'));
         }
     }
 
@@ -689,29 +688,36 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function paymentSearch($from = '', $till = '')
-    {
-        $join = new Payment_log();
-        if ($from) {
-            $from = $this->getDateFormat($from);
-            $tills = $this->getDateFormat();
-            $tillDate = (new OrderSearchController())->getTillDate($from, $till, $tills);
-            $join = $join->whereBetween('date', [$from, $tillDate]);
-        }
-        if ($till) {
-            $till = $this->getDateFormat($till);
-            $froms = Payment_log::first()->date;
-            $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
-            $join = $join->whereBetween('date', [$fromDate, $till]);
+        public function paymentSearch($from = '', $till = '')
+        {
+            $join = Payment_log::query()
+                ->select('id', 'from', 'to', 'date', 'subject', 'status', 'created_at', 'payment_method', 'order', 'exception');
+
+            if ($from) {
+                $from = $this->DateFormat($from);
+                $tillDate = $this->DateFormat($till ?: date('Y-m-d H:i:s'));
+                $join->whereBetween('date', [$from, $tillDate]);
+            }
+
+            if ($till) {
+                $till = $this->DateFormat($till);
+                $fromDate = Payment_log::oldest('date')->value('date');
+                $fromDate = $this->DateFormat($from ?: $fromDate);
+                $join->whereBetween('date', [$fromDate, $till]);
+            }
+
+            return $join;
         }
 
-        $join = $join
-        ->select(
-            'id', 'from', 'to', 'date', 'subject', 'status', 'created_at','payment_method','order','exception'
-        );
+        private function DateFormat($date = null)
+        {
+            if ($date === null) {
+                return date('Y-m-d H:i:s');
+            }
 
-        return $join;
-    }
+            return date('Y-m-d H:i:s', strtotime($date));
+        }
+
 
     public function destroyPayment(Request $request)
     {

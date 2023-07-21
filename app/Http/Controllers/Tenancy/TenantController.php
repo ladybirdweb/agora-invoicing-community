@@ -144,15 +144,14 @@ class TenantController extends Controller
                 style='color:white;'> </i></button>&nbsp;</p>";
                     }
 
-                    return "<p><button data-toggle='modal'
-    data-id='".$model->id."' data-name='' onclick='deleteTenant(".$model->id.', "'.$order_number."\")' id='delten".$model->id."'
-    class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."><i class='fa fa-trash'
-    style='color:white;'> </i></button>&nbsp;</p>";
+                    return "<p><button data-toggle='modal' 
+                data-id='".$model->id."' data-name='' onclick=\"deleteTenant('".$model->id."','".$order_number."')\" id='delten".$model->id."'
+                class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."><i class='fa fa-trash'
+                style='color:white;'> </i></button>&nbsp;</p>";
                 })
                 ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
-            dd($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -292,13 +291,13 @@ class TenantController extends Controller
                         ->from($settings->email)
                         ->to($user)
                         ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData]));
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData,'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name]));
 
                     $mailer->send($email);
 
                     $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
-                    return ['status' => $result->status, 'message' => $result->message.'.'];
+                    return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }
             }
         } catch (Exception $e) {

@@ -398,13 +398,11 @@ class BaseSettingsController extends PaymentSettingsController
             file_put_contents($path_to_file, $file_contents_secretchek);
         }
 
-          StatusSetting::findOrFail(1)->update(['v3recaptcha_status' => $status]);
-          ApiKey::findOrFail(1)->update([
-                'v3captcha_sitekey' => $nocaptcha_sitekey,
-                'v3captcha_secretCheck' => $captcha_secretCheck,
-            ]);
-
-    
+        StatusSetting::findOrFail(1)->update(['v3recaptcha_status' => $status]);
+        ApiKey::findOrFail(1)->update([
+            'v3captcha_sitekey' => $nocaptcha_sitekey,
+            'v3captcha_secretCheck' => $captcha_secretCheck,
+        ]);
 
         return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }

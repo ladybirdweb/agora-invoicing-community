@@ -26,7 +26,6 @@ class ExtendedOrderController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.not-saved-successfully'));
             }
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

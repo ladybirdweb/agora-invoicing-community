@@ -709,5 +709,8 @@ return [
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
     'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
     'add-demo' => 'Demo Page',
+    'remove_coupon' => 'Coupon Code has been removed Successfully',
+    'no_product' => 'No coupon applied. Cannot remove coupon code.',
+    'oops' => 'OOPS! Something went wrong.',
 
 ];

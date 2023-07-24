@@ -13,7 +13,6 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use Cart;
 use Illuminate\Http\Request;
-use Darryldecode\Cart\CartCondition;
 use Session;
 
 class CartController extends BaseCartController
@@ -272,7 +271,6 @@ class CartController extends BaseCartController
      */
     public function addCouponUpdate(Request $request)
     {
-
         try {
             $code = \Request::get('coupon');
             $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
@@ -287,30 +285,29 @@ class CartController extends BaseCartController
         }
     }
 
-public function removeCoupon(Request $request)
-{
-    try {
-        $productid = ''; 
-        $originalPrice = Session::get('oldprice');
+    public function removeCoupon(Request $request)
+    {
+        try {
+            $productid = '';
+            $originalPrice = Session::get('oldprice');
             foreach (\Cart::getContent() as $item) {
-              $productid = $item->id;
-                 }
+                $productid = $item->id;
+            }
 
-        if ($productid && $originalPrice) {
-              Cart::update($productid, [
-                'price' => $originalPrice,
-            ]);     
-            Session::forget('code');
-            Session::forget('oldprice');
-            Session::forget('usage');
-         return redirect()->back()->with('success', \Lang::get('message.remove_coupon'));
-        } else {
-            return redirect()->back()->with('fails', \Lang::get('message.no_product'));
+            if ($productid && $originalPrice) {
+                Cart::update($productid, [
+                    'price' => $originalPrice,
+                ]);
+                Session::forget('code');
+                Session::forget('oldprice');
+                Session::forget('usage');
+
+                return redirect()->back()->with('success', \Lang::get('message.remove_coupon'));
+            } else {
+                return redirect()->back()->with('fails', \Lang::get('message.no_product'));
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', \Lang::get('message.oops'));
         }
-    } catch (\Exception $ex) {
-        return redirect()->back()->with('fails', \Lang::get('message.oops'));
     }
-}
-
-
 }

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Promotion;
-use Darryldecode\Cart\CartCondition;
-use Session;
 
 class BasePromotionController extends Controller
 {

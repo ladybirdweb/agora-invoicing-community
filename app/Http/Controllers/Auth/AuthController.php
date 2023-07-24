@@ -314,10 +314,9 @@ class AuthController extends BaseAuthController
                      'manager_first_name' => $manager->first_name,
                      'manager_last_name' => $manager->last_name,
                      'manager_email' => $manager->email,
-                     'manager_code' => $manager->mobile_code,
+                     'manager_code' => '+' . $manager->mobile_code,
                      'manager_mobile' => $manager->mobile,
                      'manager_skype' => $manager->skype, ]));
-
                 $mailer->send($email);
                 $mail->email_log_success($setting->email, $user->email, $template->name, $html);
             }
@@ -355,7 +354,7 @@ class AuthController extends BaseAuthController
              'manager_first_name' => $manager->first_name,
              'manager_last_name' => $manager->last_name,
              'manager_email' => $manager->email,
-             'manager_code' => $manager->mobile_code,
+             'manager_code' => '+' . $manager->mobile_code,
              'manager_mobile' => $manager->mobile,
              'manager_skype' => $manager->skype, ]));
 

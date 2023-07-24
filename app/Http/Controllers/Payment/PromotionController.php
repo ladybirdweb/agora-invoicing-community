@@ -276,7 +276,7 @@ class PromotionController extends BasePromotionController
             $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
             $productid = '';
             foreach (\Cart::getContent() as $item) {
-                \Session::put('oldprice',$item->price);
+                \Session::put('oldprice', $item->price);
                 if ($item->id == $validProductForPromo) {
                     $productid = $item->id;
                 }

@@ -10777,5 +10777,5 @@ return array(
     'phpmock\\spy\\Spy' => $vendorDir . '/php-mock/php-mock/classes/spy/Spy.php',
     'phpmock\\spy\\SpyTest' => $vendorDir . '/php-mock/php-mock/tests/spy/SpyTest.php',
     'voku\\helper\\ASCII' => $vendorDir . '/voku/portable-ascii/src/voku/helper/ASCII.php',
-    '©' => $vendorDir . '/symfony/cache/Traits/ValueWrapper.php',
+    'ï¿½' => $vendorDir . '/symfony/cache/Traits/ValueWrapper.php',
 );

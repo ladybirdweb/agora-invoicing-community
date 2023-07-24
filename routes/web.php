@@ -89,6 +89,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-group-field/{value}', [Common\MailChimpController::class, 'addInterestFieldsToAgora']);
     Route::get('contact-us', [Front\PageController::class, 'contactUs']);
     Route::post('contact-us', [Front\PageController::class, 'postContactUs']);
+    Route::post('remove-coupon', [Front\CartController::class, 'removeCoupon']);
 
     /*
      * Front Client Pages

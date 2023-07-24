@@ -93,6 +93,7 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
+
         if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
@@ -126,7 +127,6 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
-
             return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

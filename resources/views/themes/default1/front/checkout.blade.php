@@ -241,6 +241,7 @@ $cartSubtotalWithoutCondition = 0;
                 
                 @endforeach
                @endif
+             
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
@@ -248,7 +249,7 @@ $cartSubtotalWithoutCondition = 0;
                     <td>
                         <strong class="text-dark">
                             <span class="amount">
-                                  
+
                                   <div>{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </div>
                             </span>
                         </strong>
@@ -268,6 +269,13 @@ $cartSubtotalWithoutCondition = 0;
     </div>
 </div>
         {!! Form::close() !!}
+
+        <form action="{{ url('remove-coupon') }}" method="POST">
+    @csrf
+    <div class="input-group" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-danger">Remove Coupon</button>
+    </div>
+</form>
     </div>
 
 </div>

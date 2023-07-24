@@ -705,5 +705,8 @@ return [
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',
     'cloud_domain_change'=>'Domain changed please reissue your license and use the license code in your domain',
+    'remove_coupon' => 'Coupon Code has been removed Successfully',
+    'no_product' => 'No coupon applied. Cannot remove coupon code.',
+    'oops' => 'OOPS! Something went wrong.',
 
 ];

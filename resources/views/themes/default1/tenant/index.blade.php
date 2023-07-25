@@ -17,6 +17,12 @@ Tenants
         white-space: nowrap;
         padding-right: 20px;
     }
+    table.dataTable thead th:nth-child(7),
+    table.dataTable tbody td:nth-child(7) {
+        width: 150px;
+        white-space: nowrap;
+        padding-right: 20px;
+    }
     #loading {
   position: fixed;
   top: 0;

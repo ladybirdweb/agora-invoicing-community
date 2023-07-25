@@ -546,7 +546,7 @@ input:checked + .slider:before {
             processing: true,
             serverSide: true,
               ajax: {
-            "url":  "{{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}",
+            "url":  "{{Url('get-my-invoices/'.$order->id.'/'.$user->id.'/admin')}}",
                error: function(xhr) {
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')

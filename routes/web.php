@@ -99,7 +99,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('my-invoices', [Front\ClientController::class, 'invoices'])->name('my-invoices');
 
     Route::get('get-my-invoices', [Front\ClientController::class, 'getInvoices'])->name('get-my-invoices');
-    Route::get('get-my-invoices/{orderid}/{userid}', [Front\ClientController::class, 'getInvoicesByOrderId']);
+    Route::get('get-my-invoices/{orderid}/{userid}/{admin?}', [Front\ClientController::class, 'getInvoicesByOrderId']);
 
     Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 

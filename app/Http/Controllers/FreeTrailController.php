@@ -214,7 +214,7 @@ class FreeTrailController extends Controller
             $serial_key = $this->generateFreetrailSerialKey($product, 1); //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             //$plan_id = $this->plan($item->id);
-            $plan_id = Plan::where('product', $product)
+            $plan_id = Plan::where('product', $product)->where('name','LIKE','%free%')
                 ->value('id');
 
             $order = $this->order->create([

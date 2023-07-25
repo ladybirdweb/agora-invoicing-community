@@ -251,20 +251,20 @@ Create Invoice
         if ($('#description').length > 0) {
             var description = document.getElementsByName('description')[0].value;
         }
-        if (console.log($('#domain').length > 0)) {
+        if ($('#domain').length > 0) {
             var domain = document.getElementsByName('domain')[0].value;
             var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             if ($('#quantity').length > 0) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&quantity=' + quantity + '&user=' + user;
-            } else if (console.log($('#agents').length > 0)) {
+            } else if ($('#agents').length > 0) {
                  var agents = document.getElementsByName('agents')[0].value;
                  var data = $("#formoid").serialize() + '&domain=' + domain + '&agents=' + agents + '&user=' + user;
             } else{
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             }
         } else {
-            if (console.log($('#quantity').length > 0)) {
+            if ($('#quantity').length > 0) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&quantity=' + quantity + '&user=' + user;
             }

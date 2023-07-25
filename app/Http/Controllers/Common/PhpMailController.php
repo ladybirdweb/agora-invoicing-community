@@ -120,7 +120,7 @@ class PhpMailController extends Controller
                    if ($destroy->status() == 200) {
                        //check in the settings
                        $settings = new \App\Model\Common\Setting();
-                       $setting = $settings->where('id', 1)->first();
+                       $setting = $settings::find(1);
 
                        //template
                        $template = new \App\Model\Common\Template();
@@ -135,18 +135,13 @@ class PhpMailController extends Controller
                                   'contact' => $contact['contact'],
                                   'logo' => $contact['logo'],
                        ];
-                      $type = '';
-                     if ($template) {
-                        $type_id = $template->type;
-                        $temp_type = new \App\Model\Common\TemplateType();
-                        $type = $temp_type->where('id', $type_id)->first()->name;
-                    }
-                    $from = $setting->email;
-                    $to = $user->email;
-                    $subject = $template->name;
-                    $data = $template->data;
-                    $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-                    $order->delete();
+                       if ($template) {
+                           $type_id = $template->type;
+                           $temp_type = new \App\Model\Common\TemplateType();
+                           $type = $temp_type->where('id', $type_id)->first()->name;
+                       }
+                       $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
+                       $order->delete();
                    }
                }
            }

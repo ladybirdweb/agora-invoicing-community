@@ -454,7 +454,7 @@ class PageController extends Controller
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->mailing($from, $to, $data, $subject);
+                $mail->SendEmail($set->email, $to, $data,'Faveo billing enquiry');
             }
 
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
@@ -490,4 +490,5 @@ class PageController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
+      
 }

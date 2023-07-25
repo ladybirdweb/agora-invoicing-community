@@ -128,6 +128,7 @@ class PhpMailController extends Controller
                        $template = $template->where('id', $temp_id)->first();
 
                        $mail = new \App\Http\Controllers\Common\PhpMailController();
+                       $type = '';
                        $replace = ['name' => $user->first_name.' '.$user->last_name,
                                   'product' => $product->name,
                                   'number' => $order->number,
@@ -140,7 +141,7 @@ class PhpMailController extends Controller
                            $temp_type = new \App\Model\Common\TemplateType();
                            $type = $temp_type->where('id', $type_id)->first()->name;
                        }
-                       $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
+                       $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type);
                        $order->delete();
                    }
                }

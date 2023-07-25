@@ -644,7 +644,7 @@ class CronController extends BaseCronController
         $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        $setting = $settings::find(1);
 
         Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
@@ -666,16 +666,14 @@ class CronController extends BaseCronController
              'contact' => $contact['contact'],
             'logo' => $contact['logo'],];
              $type = '';
+
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+
+        $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type = '');
     }
 
     public static function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
@@ -684,7 +682,7 @@ class CronController extends BaseCronController
         $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        $setting = $settings::find(1);
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         //template
@@ -704,12 +702,45 @@ class CronController extends BaseCronController
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+        $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
     }
+
+        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
+        {
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
+
+            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->card_failed;
+
+            $template = $templates->where('id', $temp_id)->first();
+            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
+            $url = url("autopaynow/$invoice->invoice_id");
+            $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+                'product' => $product_details->name,
+                'total' => currencyFormat($total, $code = $currency),
+                'number' => $number,
+                'expiry' => date('d-m-Y', strtotime($end)),
+                'exception' => $exceptionMessage,
+                'url' => $url, ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $from = $setting->email;
+            $to = $user->email;
+            $subject = $template->name;
+            $data = $template->data;
+            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+        }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

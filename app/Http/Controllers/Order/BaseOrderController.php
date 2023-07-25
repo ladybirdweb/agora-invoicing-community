@@ -256,7 +256,7 @@ class BaseOrderController extends ExtendedOrderController
         $user = $users->find($userid);
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        $setting = $settings::find(1);
         $orders = new Order();
         $order = $orders->where('id', $orderid)->first();
         $invoice = $this->invoice->find($order->invoice_id);
@@ -278,12 +278,10 @@ class BaseOrderController extends ExtendedOrderController
             $contact = getContactData();
             $value = Product::where('name', $product)->value('type');
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
             $templates = new \App\Model\Common\Template();
             $temp_id = ($value != '4') ? $setting->order_mail : $setting->cloud_order;
 
             $template = $templates->where('id', $temp_id)->first();
-            $url = url('my-orders');
             $knowledgeBaseUrl = $setting->company_url;
             $from = $setting->email;
             $to = $user->email;
@@ -293,7 +291,6 @@ class BaseOrderController extends ExtendedOrderController
             $type = '';
             $replace = ['name' => $user->first_name.' '.$user->last_name,
                 'serialkeyurl' => $myaccounturl,
-                'url' => $url,
                 'downloadurl' => $downloadurl,
                 'invoiceurl' => $invoiceurl,
                 'product' => $product,
@@ -310,14 +307,14 @@ class BaseOrderController extends ExtendedOrderController
                     $temp_type = new \App\Model\Common\TemplateType();
                     $type = $temp_type->where('id', $type_id)->first()->name;
                 }
-                $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
             } else {
                 if ($template) {
                     $type_id = $template->type;
                     $temp_type = new \App\Model\Common\TemplateType();
                     $type = $temp_type->where('id', $type_id)->first()->name;
                 }
-                $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
             }
             $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
             $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');

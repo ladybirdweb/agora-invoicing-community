@@ -310,7 +310,7 @@ class AuthController extends BaseAuthController
             'manager_skype'      => $manager->skype,
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
+        $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
         $mail->email_log_success($setting->email, $user->email, $template->name, $template_data);
     }
 
@@ -344,6 +344,6 @@ class AuthController extends BaseAuthController
             'manager_skype'      => $manager->skype,
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->mailing($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
+        $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
     }
 }

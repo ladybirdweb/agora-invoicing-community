@@ -539,22 +539,17 @@ class PageController extends Controller
            $set = $set->findOrFail(1);
 
            try {
-               $from = $set->email;
-               $fromname = $set->company;
-               $toname = '';
-               $to = $set->company_email;
                $data = '';
                $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
                $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
                $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
                $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-               $subject = 'Faveo billing enquiry';
                if (emailSendingStatus()) {
                    $mail = new \App\Http\Controllers\Common\PhpMailController();
-                   $mail->mailing($from, $to, $data, $subject);
+                   $mail->SendEmail($set->email, $to, $data,'Faveo billing enquiry');
                }
 
-               //$this->templateController->Mailing($from, $to, $data, $subject);
+               //$this->templateController->SendEmail($from, $to, $data, $subject);
                return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
            } catch (\Exception $ex) {
                return redirect()->back()->with('fails', $ex->getMessage());

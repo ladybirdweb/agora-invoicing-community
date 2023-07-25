@@ -103,7 +103,7 @@ class PhpMailController extends Controller
 
                     //check in the settings
                     $settings = new \App\Model\Common\Setting();
-                    $setting = $settings->where('id', 1)->first();
+                    $setting = $settings::find(1);
 
                     //template
                     $template = new \App\Model\Common\Template();
@@ -111,24 +111,17 @@ class PhpMailController extends Controller
                     $template = $template->where('id', $temp_id)->first();
 
                     $mail = new \App\Http\Controllers\Common\PhpMailController();
-                    $mailer = $mail->setMailConfig($settings);
-                    $url = url('my-orders');
                     $replace = ['name' => $user->first_name.' '.$user->last_name,
                         'product' => $product->name,
                         'number' => $order->number,
                         'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                        'url' => $url, ];
-                    $type = '';
+                        'url' => url('my-orders'), ];
                     if ($template) {
                         $type_id = $template->type;
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
                     }
-                    $from = $setting->email;
-                    $to = $user->email;
-                    $subject = $template->name;
-                    $data = $template->data;
-                    $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                    $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
                 }
             }
         } catch(\Exception $ex) {
@@ -164,7 +157,7 @@ class PhpMailController extends Controller
 
                         //check in the settings
                         $settings = new \App\Model\Common\Setting();
-                        $setting = $settings->where('id', 1)->first();
+                        $setting = $settings::find(1);
 
                         //template
                         $template = new \App\Model\Common\Template();
@@ -172,23 +165,17 @@ class PhpMailController extends Controller
                         $template = $template->where('id', $temp_id)->first();
 
                         $mail = new \App\Http\Controllers\Common\PhpMailController();
-                        $url = url('my-orders');
                         $replace = ['name' => $user->first_name.' '.$user->last_name,
                             'product' => $product->name,
                             'number' => $order->number,
                             'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                            'url' => $url, ];
-                        $type = '';
+                            'url' => url('my-orders'), ];
                         if ($template) {
                             $type_id = $template->type;
                             $temp_type = new \App\Model\Common\TemplateType();
                             $type = $temp_type->where('id', $type_id)->first()->name;
                         }
-                        $from = $setting->email;
-                        $to = $user->email;
-                        $subject = $template->name;
-                        $data = $template->data;
-                        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+                        $mail->SendEmail($setting->email, $to,$template->data,$template->name, $replace, $type = '');
                     }
                 }
             }
@@ -232,7 +219,7 @@ class PhpMailController extends Controller
                    if ($destroy->status() == 200) {
                        //check in the settings
                        $settings = new \App\Model\Common\Setting();
-                       $setting = $settings->where('id', 1)->first();
+                       $setting = $settings::find(1);
 
                        //template
                        $template = new \App\Model\Common\Template();
@@ -245,18 +232,13 @@ class PhpMailController extends Controller
                            'number' => $order->number,
                            'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                        ];
-                      $type = '';
-                     if ($template) {
-                        $type_id = $template->type;
-                        $temp_type = new \App\Model\Common\TemplateType();
-                        $type = $temp_type->where('id', $type_id)->first()->name;
-                    }
-                    $from = $setting->email;
-                    $to = $user->email;
-                    $subject = $template->name;
-                    $data = $template->data;
-                    $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-                    $order->delete();
+                       if ($template) {
+                           $type_id = $template->type;
+                           $temp_type = new \App\Model\Common\TemplateType();
+                           $type = $temp_type->where('id', $type_id)->first()->name;
+                       }
+                       $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
+                       $order->delete();
                    }
                }
            }

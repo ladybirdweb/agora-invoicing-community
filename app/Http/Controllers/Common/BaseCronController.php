@@ -202,33 +202,26 @@ class BaseCronController extends Controller
         $expiryDays = ExpiryMailDay::first()->cloud_days;
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-        $url = url('my-orders');
+        $settings = $settings::find(1);
+        $url = ;
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->subscription_going_to_end;
         $template = $templates->where('id', $temp_id)->first();
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $date = date_create($end);
-        $end = date_format($date, 'l, F j, Y H:m A');
-        $replace =
+
         ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'expiry'       => $end,
             'product'      => $product,
             'number'       => $order->number,
-            'url'          => $url,
+            'url'          => url('my-orders'),
         ];
-        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+        $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
     }
 
     public function Auto_renewalMail($user, $end, $product, $order, $sub)
@@ -250,8 +243,7 @@ class BaseCronController extends Controller
 
         $template = $templates->where('type', $temp_id)->first();
         $data = $template->data;
-        $date = date_create($end);
-        $end = date_format($date, 'l, F j, Y H:m A');
+
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'expiry' => $end,
             'product' => $product,
@@ -266,7 +258,7 @@ class BaseCronController extends Controller
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
     }
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)

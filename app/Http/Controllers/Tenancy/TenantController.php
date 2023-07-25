@@ -103,7 +103,7 @@ class TenantController extends Controller
                     $order_number = \DB::table('orders')->where('id', $order_id)->value('number');
 
                     if (empty($order_id) || empty($order_number)) {
-                        return '';
+                        return '--';
                     }
 
                     return "<p><a href='".url('/orders/'.$order_id)."'>$order_number</a></p>";

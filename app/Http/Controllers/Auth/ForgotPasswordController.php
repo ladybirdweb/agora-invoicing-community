@@ -71,7 +71,7 @@ class ForgotPasswordController extends Controller
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->forgot_password;
             $template = $templates->where('id', $temp_id)->first();
-
+            $type = '';
             $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$setting->website];
 
             if ($template) {
@@ -82,8 +82,8 @@ class ForgotPasswordController extends Controller
 
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             if (emailSendingStatus()) {
-                $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type = '');
-                $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$to.'
+                $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type);
+                $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$user->email.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {
                 $response = ['type' => 'fails',   'message' =>'System email is not configured. Please contact admin.'];

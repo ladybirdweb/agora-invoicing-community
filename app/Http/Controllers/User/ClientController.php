@@ -492,13 +492,14 @@ class ClientController extends AdvanceSearchController
              $website_url = url('/');
              $replace = ['name' => $user['first_name'].' '.$user['last_name'],
                  'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url];
+            $type = '';
              if ($template) {
                  $type_id = $template->type;
                  $temp_type = new \App\Model\Common\TemplateType();
                  $type = $temp_type::find($type_id)->name;
              }
              $mail = new \App\Http\Controllers\Common\PhpMailController();
-             $mail->SendEmail($from, $to, $data, $subject, $replace, $type = '');
+             $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
          } else {
              $loginData = 'You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass';
 

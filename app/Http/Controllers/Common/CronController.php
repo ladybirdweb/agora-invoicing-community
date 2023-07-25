@@ -673,11 +673,8 @@ class CronController extends BaseCronController
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $mail->mailing($from, $to, $data, $subject, $replace, $type);
+
+        $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type = '');
     }
 
     public static function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)

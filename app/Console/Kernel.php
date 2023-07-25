@@ -170,7 +170,7 @@ class Kernel extends ConsoleKernel
             $contact = getContactData();
             $setting = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $clouds = cloudemailsend::all();
+            $clouds = cloudemailsend::cursor();
 
             foreach ($clouds as $cloud) {
                 if ($this->checkTheAvailabilityOfCustomDomain($cloud->domain, $cloud->counter, $cloud->user)) {

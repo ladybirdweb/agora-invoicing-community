@@ -684,6 +684,7 @@ class CronController extends BaseCronController
 
         $template = $templates->where('id', $temp_id)->first();
         $url = url("autopaynow/$invoice->invoice_id");
+        $type = '';
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'product' => $product_details->name,
             'total' => currencyFormat($total, $code = $currency),
@@ -697,7 +698,7 @@ class CronController extends BaseCronController
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
 
-        $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type = '');
+        $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type);
     }
 
     public static function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
@@ -714,6 +715,7 @@ class CronController extends BaseCronController
         $temp_id = $setting->payment_successfull;
 
         $template = $templates->where('id', $temp_id)->first();
+        $type = '';
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'product' => $product,
             'currency' => $currency,
@@ -724,7 +726,7 @@ class CronController extends BaseCronController
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
+        $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type);
     }
 
         public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)

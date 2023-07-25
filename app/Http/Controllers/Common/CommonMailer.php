@@ -9,7 +9,6 @@ class CommonMailer
 {
     public function setSmtpDriver($config)
     {
-        dd($config);
         try {
             if (! $config) {
                 return false;

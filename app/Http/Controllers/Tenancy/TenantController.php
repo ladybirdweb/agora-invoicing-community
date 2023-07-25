@@ -195,7 +195,6 @@ class TenantController extends Controller
         $setting = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($settings);
 
         try {
             $company = (string) $request->input('domain');

@@ -10,6 +10,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BaseAuthController extends Controller
 {
@@ -144,50 +145,54 @@ class BaseAuthController extends Controller
         }
     }
 
-    public function sendActivation($email, $method, $str = '')
-    {
-        $user = new User();
-        $user = $user->where('email', $email)->first();
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        try {
-            $activate_model = new AccountActivate();
-            if (! $user) {
+     public function sendActivation($email, $method)
+        {
+            $user = User::where('email', $email)->first();
+        
+            if (!$user) {
                 throw new \Exception('User with this email does not exist');
             }
-
-            if ($method == 'GET') {
-                $activate_model = $activate_model->where('email', $email)->first();
-                $token = $activate_model->token;
-            } else {
-                $token = str_random(40);
-                $activate = $activate_model->create(['email' => $email, 'token' => $token]);
-                $token = $activate->token;
+        
+            try {
+                $activate_model = new AccountActivate();
+        
+                if ($method == 'GET') {
+                    $activate_model = $activate_model->where('email', $email)->first();
+                    $token = $activate_model->token;
+                } else {
+                    $token = Str::random(40);
+                    $activate_model->create(['email' => $email, 'token' => $token]);
+                }
+        
+                $url = url("activate/$token");
+        
+                // Check the settings
+                $settings = \App\Model\Common\Setting::find(1);
+        
+                // Retrieve the template
+                $template = \App\Model\Common\Template::find($settings->welcome_mail);
+                $website_url = url('/');
+                $replace = [
+                    'name' => $user->first_name . ' ' . $user->last_name,
+                    'username' => $user->email,
+                    'url' => $url,
+                    'website_url' => $website_url,
+                ];
+        
+                $type = '';
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+        
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+                $mail->SendEmail($settings->email, $user->email,$template->data ,$template->name, $replace, $type);
+            } catch (\Exception $ex) {
+                throw new \Exception($ex->getMessage());
             }
-
-            $url = url("activate/$token");
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings::find(1);
-
-            //template
-            $template = new \App\Model\Common\Template();
-            $temp_id = $settings::find(1)->welcome_mail;
-            $template = $template->where('id', $temp_id)->first();
-            $website_url = url('/');
-            $replace = ['name' => $user->first_name.' '.$user->last_name,
-                'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
-
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
-            }
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($settings->email,$user->email,$template->data,$template->name, $replace, $type = '');
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
         }
-    }
+
 
     protected function addUserToPipedrive($user, $pipeDriveStatus)
     {

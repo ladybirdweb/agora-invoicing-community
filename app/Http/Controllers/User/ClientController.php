@@ -500,7 +500,7 @@ class ClientController extends AdvanceSearchController
                  $type = $temp_type::find($type_id)->name;
              }
              $mail = new \App\Http\Controllers\Common\PhpMailController();
-             $mail->SendEmail($from, $to, $data, $subject, $replace, $type = '');
+             $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
          } else {
              $loginData = 'You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass';
 

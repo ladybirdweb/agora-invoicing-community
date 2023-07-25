@@ -148,20 +148,7 @@ class BaseAuthController extends Controller
     {
         $user = new User();
         $user = $user->where('email', $email)->first();
-
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $settings = $settings->where('id', 1)->first();
-
-        //template
-        $template = new \App\Model\Common\Template();
-        $temp_id = $settings->where('id', 1)->first()->welcome_mail;
-        $template = $template->where('id', $temp_id)->first();
-
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($settings);
-
-        $html = $template->data;
         try {
             $activate_model = new AccountActivate();
             if (! $user) {
@@ -180,20 +167,15 @@ class BaseAuthController extends Controller
             $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
+            $settings = $settings::find(1);
 
             //template
             $template = new \App\Model\Common\Template();
-            $temp_id = $settings->where('id', 1)->first()->welcome_mail;
+            $temp_id = $settings::find(1)->welcome_mail;
             $template = $template->where('id', $temp_id)->first();
-            $from = $settings->email;
-            $to = $user->email;
             $website_url = url('/');
-            $subject = $template->name;
-            $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
                 'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
-            $type = '';
 
             if ($template) {
                 $type_id = $template->type;
@@ -201,7 +183,7 @@ class BaseAuthController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->mailing($from, $to, $data, $subject, $replace, $type);
+            $mail->SendEmail($settings->email,$user->email,$template->data,$template->name, $replace, $type = '');
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

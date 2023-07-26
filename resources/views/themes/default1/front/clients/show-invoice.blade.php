@@ -24,7 +24,7 @@ active
     <section class="box-content">
         @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
-             $date = getDateHtml($invoice->date);
+             $date = getDateHtmlcopy($invoice->created_at);
             $symbol = $invoice->currency;
             $itemsSubtotal = 0;
             $taxAmt = 0;

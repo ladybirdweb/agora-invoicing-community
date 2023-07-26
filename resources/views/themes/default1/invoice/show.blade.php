@@ -30,7 +30,7 @@ Invoice
             <div class="col-12">
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); 
-                $date = getDateHtml($invoice->date);
+                $date = getDateHtml($invoice->created_at);
                  $symbol = $invoice->currency;
                 $itemsSubtotal = 0;
                 ?>

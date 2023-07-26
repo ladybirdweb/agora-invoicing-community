@@ -328,7 +328,6 @@ class OrderController extends BaseOrderController
     public function destroy(Request $request)
     {
         try {
-            // dd('df');
             $ids = $request->input('select');
             if (! empty($ids)) {
                 foreach ($ids as $id) {

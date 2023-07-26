@@ -220,7 +220,7 @@ class ClientController extends BaseClientController
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
             ->leftJoin('orders', 'order_invoice_relations.order_id', '=', 'orders.id')
             ->select('orders.number')
-            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
+            ->select('invoices.id', 'invoices.created_at', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
             ->groupBy('invoices.number')
             ->where('invoices.user_id', '=', \Auth::user()->id);
 
@@ -260,7 +260,7 @@ class ClientController extends BaseClientController
                             }
                         })
                     ->addColumn('date', function ($model) {
-                        return getDateHtml($model->date);
+                        return getDateHtmlcopy($model->created_at);
                     })
                     ->addColumn('total', function ($model) {
                         return  currencyFormat($model->grand_total, $code = $model->currency);
@@ -694,9 +694,7 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
-            // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
-            // dd($order);
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             if (count($relation) > 0) {
                 $invoices = $relation;
@@ -741,7 +739,6 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
-            // dd($order);
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             if (count($relation) > 0) {
                 $invoices = $relation;

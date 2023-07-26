@@ -236,7 +236,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $invoice = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
+                ->select('invoices.id', 'invoices.user_id' ,'invoices.created_at', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
             if (User::onlyTrashed()->find($invoice->user_id)) {

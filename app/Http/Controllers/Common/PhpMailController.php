@@ -212,7 +212,7 @@ namespace App\Http\Controllers\Common;
                     }
                     $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-                    if (is_null($id) || $id == 'billing.fratergroup.in') {
+                    if (is_null($id) || $id == 'billing.faveocloud.com') {
                         $order->delete();
                     } else {
                         //Destroy the tenat

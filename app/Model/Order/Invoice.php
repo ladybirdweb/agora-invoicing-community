@@ -4,7 +4,6 @@ namespace App\Model\Order;
 
 use App\BaseModel;
 use DateTime;
-use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -87,16 +86,15 @@ class Invoice extends BaseModel
     }
 
     public function getStatusAttribute($value)
-    { 
+    {
         return ucfirst($value);
     }
-   
 
-    
     public function getCreatedAtAttribute($value)
     {
         $date1 = new DateTime($value);
         $date = $date1->format('M j, Y, g:i a ');
+
         return $date;
     }
 

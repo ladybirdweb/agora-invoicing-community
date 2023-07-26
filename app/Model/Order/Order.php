@@ -4,7 +4,6 @@ namespace App\Model\Order;
 
 use App\BaseModel;
 use DateTime;
-use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
@@ -103,7 +102,6 @@ class Order extends BaseModel
 
     public function getCreatedAtAttribute($value)
     {
-
         $date1 = new DateTime($value);
         $date = $date1->format('M j, Y, g:i a ');
 

@@ -109,6 +109,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
     $timezone = Cache::remember('timezone_'.Auth::user()->id, 5, function () {
         return Auth::user()->timezone->name;
     });
+
     return (new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone))->format($format);
 }
 
@@ -126,7 +127,8 @@ function getDateHtml(string $dateTimeString = null)
             return '--';
         }
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
-    $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
+        $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
+
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';
@@ -139,8 +141,9 @@ function getDateHtmlcopy(string $dateTimeString = null)
         if (! $dateTimeString) {
             return '--';
         }
-       $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
+        $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
+
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';
@@ -153,8 +156,9 @@ function getDateHtmlDate(string $dateTimeString = null)
         if (! $dateTimeString) {
             return '--';
         }
-       $date = date('M d, Y', strtotime($dateTimeString));
+        $date = date('M d, Y', strtotime($dateTimeString));
         $dateTime = date('M d, Y, h:i a', strtotime($dateTimeString));
+
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';

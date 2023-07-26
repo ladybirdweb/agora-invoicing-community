@@ -168,7 +168,7 @@ class BaseClientController extends Controller
         }
     }
 
-    public function getInvoicesByOrderId($orderid, $userid, $admin=null)
+    public function getInvoicesByOrderId($orderid, $userid, $admin = null)
     {
         try {
             $order = Order::where('id', $orderid)->where('client', $userid)->first();
@@ -190,8 +190,8 @@ class BaseClientController extends Controller
             ->orderColumn('total', '-invoices.id $1')
              ->orderColumn('status', '-invoices.id $1')
 
-             ->addColumn('number', function ($model) use($admin) {
-                 $url = $this->getInvoiceLinkUrl($model->id,$admin);
+             ->addColumn('number', function ($model) use ($admin) {
+                 $url = $this->getInvoiceLinkUrl($model->id, $admin);
 
                  return '<a href='.url($url).'>'.$model->number.'</a>';
              })
@@ -211,8 +211,8 @@ class BaseClientController extends Controller
 
                 return getStatusLabel($model->status, 'badge');
             })
-            ->addColumn('action', function ($model) use($admin){
-                $url = $this->getInvoiceLinkUrl($model->id,$admin);
+            ->addColumn('action', function ($model) use ($admin) {
+                $url = $this->getInvoiceLinkUrl($model->id, $admin);
                 $status = $model->status;
                 $payment = '';
                 if ($status != 'Success' && $model->grand_total > 0) {
@@ -240,10 +240,10 @@ class BaseClientController extends Controller
         }
     }
 
-    public function getInvoiceLinkUrl($invoiceId,$admin=null)
+    public function getInvoiceLinkUrl($invoiceId, $admin = null)
     {
         $link = 'my-invoice/'.$invoiceId;
-        if ($admin=='admin') {
+        if ($admin == 'admin') {
             $link = '/invoices/show?invoiceid='.$invoiceId;
         }
 

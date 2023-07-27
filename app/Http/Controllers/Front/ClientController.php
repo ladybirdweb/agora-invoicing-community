@@ -260,7 +260,7 @@ class ClientController extends BaseClientController
                             }
                         })
                     ->addColumn('date', function ($model) {
-                        return getDateHtmlcopy($model->created_at);
+                        return getDateHtmlDate($model->date);
                     })
                     ->addColumn('total', function ($model) {
                         return  currencyFormat($model->grand_total, $code = $model->currency);

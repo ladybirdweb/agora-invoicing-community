@@ -120,6 +120,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
  */
 function getDateHtml(string $dateTimeString = null)
 {
+    //dd($dateTimeString);
     try {
         if (! $dateTimeString) {
             return '--';
@@ -133,12 +134,27 @@ function getDateHtml(string $dateTimeString = null)
 }
 function getDateHtmlcopy(string $dateTimeString = null)
 {
+    dd($dateTimeString);
     try {
         if (! $dateTimeString) {
             return '--';
         }
        $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
+        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
+    } catch (Exception $e) {
+        return '--';
+    }
+}
+
+function getDateHtmlDate(string $dateTimeString = null)
+{
+    try {
+        if (! $dateTimeString) {
+            return '--';
+        }
+       $date = date('M d, Y', strtotime($dateTimeString));
+        $dateTime = date('M d, Y, h:i a', strtotime($dateTimeString));
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';

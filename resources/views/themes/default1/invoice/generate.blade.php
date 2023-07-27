@@ -69,10 +69,13 @@ Create Invoice
                             {!! Form::label('date',Lang::get('message.date'),['class'=>'required']) !!}
                            
                          <div class="input-group date" id="invoice_date" data-target-input="nearest">
-                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker','autocomplete'=>'off']) !!}
-                            <div class="input-group-append" data-target="#invoice_date" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            
+    <input type="text" name="date" class="form-control datetimepicker-input" data-target="#invoice_date" />
+    <div class="input-group-append" data-target="#invoice_date" data-toggle="datetimepicker">
+        <div class="input-group-text">
+            <i class="fa fa-calendar"></i>
+        </div>
+  
+
                             </div>
 
                         </div>
@@ -339,12 +342,23 @@ Create Invoice
 @stop
 
 @section('datepicker')
+
 <script>
-     $('#invoice_date').datetimepicker({
-      format: 'L'
-    })
-   
+    $(document).ready(function () {
+        $('#invoice_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        });
+
+        // Add the close icon to the datetime picker
+        $('.bootstrap-datetimepicker-widget').prepend('<i class="fa fa-times-circle close-icon" aria-hidden="true"></i>');
+
+        // Close the datetime picker when clicking on the close icon
+        $(document).on('click', '.close-icon', function () {
+            $('#invoice_date').data('datetimepicker').hide();
+        });
+    });
 </script>
+
 
 <script>
    

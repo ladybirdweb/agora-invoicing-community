@@ -93,7 +93,7 @@ class Invoice extends BaseModel
    
 
     
-    public function getCreatedAtAttribute2($value)
+    public function getCreatedAtAttribute($value)
     {
         $date1 = new DateTime($value);
         $date = $date1->format('M j, Y, g:i a ');

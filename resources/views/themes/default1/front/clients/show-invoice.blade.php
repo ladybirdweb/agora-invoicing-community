@@ -22,14 +22,6 @@ active
     <div class="featured-box featured-box-primary text-left mt-5" style="max-width: 900px">
 
     <section class="box-content">
-        @php
-            $set = App\Model\Common\Setting::where('id', '1')->first();
-             $date = getDateHtmlcopy($invoice->created_at);
-            $symbol = $invoice->currency;
-            $itemsSubtotal = 0;
-            $taxAmt = 0;
-        @endphp
-
         <div>
             @if($set->logo)
                 <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}" style="margin-top: -2px">

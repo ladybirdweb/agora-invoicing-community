@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use Hash;
+use App\Facades\ImageUpload;
 
 class ProfileController extends Controller
 {
@@ -48,17 +49,14 @@ class ProfileController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
-                $file = $request->file('profile_pic');
-                $name = \Request::file('profile_pic')->getClientOriginalName();
-                $destinationPath = public_path('common/images/users');
-                $fileName = rand(0000, 9999).'.'.$name;
-                $file->move($destinationPath, $fileName);
-                $user->profile_pic = $fileName;
+                $fileName = ImageUpload::saveImageToStorage($request->file('profile_pic'), 'common/images/user');
+                $user->profile_pic = $fileName;   
             }
             $user->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

@@ -28,7 +28,7 @@ foreach($scripts as $script)
 
     <!-- Favicon -->
     @if($setting->fav_icon)
-        <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
+        <link rel="shortcut icon" href='{{asset("storage/common/images/$setting->fav_icon")}}' type="image/x-icon" />
     @endif
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
@@ -92,7 +92,7 @@ $set = $set->findOrFail(1);
                         <div class="header-row">
                             <div class="header-logo">
                                 <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">
-                                    <img alt="Logo" width="100" height="51" data-sticky-width="70" data-sticky-height="36" data-sticky-top="30" src="{{asset('common/images/'.$setting->logo)}}">
+                                    <img alt="Logo" width="100" height="51" data-sticky-width="70" data-sticky-height="36" data-sticky-top="30" src="{{asset('storage/images/'.$setting->logo)}}">
                                 </a>
                             </div>
                         </div>
@@ -727,7 +727,7 @@ $set = $set->findOrFail(1);
                 <div class="row py-4">
                     <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
                         <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
-                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('storage/common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                     </div>
 
                 </div>

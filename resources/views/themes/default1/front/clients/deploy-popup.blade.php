@@ -23,6 +23,7 @@
                                 <input type="hidden"  name="order" id="orderId" value=""/>
                                 <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
                                 <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                <p id="validationMessage"></p>
                             </div>
                         </div>
                         <div class="text-center">
@@ -69,6 +70,14 @@
         border-top: 1px solid #ccc;
         margin: 10px 0;
     }
+    #validationMessage {
+      position: absolute;
+      top: 80px; /* Adjust this value to align the error message properly */
+      margin-left:32px;
+      left: 0;
+      font-size: 12px;
+      color: red;
+     }
 </style>
 
 <script>
@@ -76,6 +85,16 @@
         var orderId = $(this).data('id');
         $(".modal-body #orderId").val( orderId );
         $('#tenancy').modal('show');
+    });
+
+    $(document).ready(function(){
+        $('.createtenancy').attr('disabled',true);
+        $('#userdomain').keyup(function(){
+            if($(this).val().length ==0 || $(this).val().length>28)
+                $('.createtenancy').attr('disabled', true);
+            else
+                $('.createtenancy').attr('disabled',false);
+        })
     });
 
 
@@ -154,5 +173,20 @@
         $('#tenancy').on('shown.bs.modal', function () {
             $('#userdomain').focus();
         });
+    });
+
+    const domainInput = document.getElementById("userdomain");
+    const validationMessage = document.getElementById("validationMessage");
+
+    domainInput.addEventListener("input", function() {
+      const domain = domainInput.value;
+
+      if (domain.length > 28) {
+        validationMessage.textContent = "Domain must be 28 characters or less.";
+        validationMessage.style.color = "red";
+      } else {
+        validationMessage.textContent = "";
+        validationMessage.style.color = "";
+      }
     });
 </script>

@@ -148,7 +148,7 @@ $set = $set->findOrFail(1);
                                                 $id = \Auth::user()->id;
                                                 $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
                                                 ?>
-                                            
+
 
                                                 @if(Auth::check() && $cloud == 1)
 
@@ -476,9 +476,10 @@ $set = $set->findOrFail(1);
                                 <div class="form-group">
                                     <label><b>{{trans('message.cloud_field_label')}}</b></label>
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
-                                        <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                        <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
 
+                                      <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
+                                      <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                      <p id="validationMessage"></p>
                                     </div>
 
                                 </div>
@@ -877,10 +878,10 @@ $set = $set->findOrFail(1);
     $(document).ready(function(){
         $('.createTenant').attr('disabled',true);
         $('#userdomain').keyup(function(){
-            if($(this).val().length !=0)
-                $('.createTenant').attr('disabled', false);
+            if($(this).val().length ==0 || $(this).val().length>28)
+                $('.createTenant').attr('disabled', true);
             else
-                $('.createTenant').attr('disabled',true);
+                $('.createTenant').attr('disabled',false);
         })
     });
 
@@ -972,6 +973,21 @@ $set = $set->findOrFail(1);
         });
     });
 
+const domainInput = document.getElementById("userdomain");
+const validationMessage = document.getElementById("validationMessage");
+
+domainInput.addEventListener("input", function() {
+  const domain = domainInput.value;
+
+  if (domain.length > 28) {
+    validationMessage.textContent = "Domain must be 28 characters or less.";
+    validationMessage.style.color = "red";
+  } else {
+    validationMessage.textContent = "";
+    validationMessage.style.color = "";
+  }
+});
+
 
 </script>
 @yield('script')
@@ -990,6 +1006,14 @@ $set = $set->findOrFail(1);
                 border-top: 1px solid #ccc;
                 margin: 10px 0;
             }
+            #validationMessage {
+              position: absolute;
+              top: 80px; /* Adjust this value to align the error message properly */
+              margin-left:32px;
+              left: 0;
+              font-size: 12px;
+              color: red;
+}
         </style>
 
 

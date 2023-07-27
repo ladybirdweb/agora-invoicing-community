@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         \Log::channel('daily')->error($exception->getMessage());
-         parent::report($exception);
+        parent::report($exception);
         // Send unhandled exceptions to bugsnag
         $this->reportToBugsnag($exception);
     }

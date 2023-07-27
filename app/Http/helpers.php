@@ -136,7 +136,6 @@ function getDateHtml(string $dateTimeString = null)
 }
 function getDateHtmlcopy(string $dateTimeString = null)
 {
-    dd($dateTimeString);
     try {
         if (! $dateTimeString) {
             return '--';

@@ -145,54 +145,53 @@ class BaseAuthController extends Controller
         }
     }
 
-     public function sendActivation($email, $method)
-        {
-            $user = User::where('email', $email)->first();
-        
-            if (!$user) {
-                throw new \Exception('User with this email does not exist');
-            }
-        
-            try {
-                $activate_model = new AccountActivate();
-        
-                if ($method == 'GET') {
-                    $activate_model = $activate_model->where('email', $email)->first();
-                    $token = $activate_model->token;
-                } else {
-                    $token = Str::random(40);
-                    $activate_model->create(['email' => $email, 'token' => $token]);
-                }
-        
-                $url = url("activate/$token");
-        
-                // Check the settings
-                $settings = \App\Model\Common\Setting::find(1);
-        
-                // Retrieve the template
-                $template = \App\Model\Common\Template::find($settings->welcome_mail);
-                $website_url = url('/');
-                $replace = [
-                    'name' => $user->first_name . ' ' . $user->last_name,
-                    'username' => $user->email,
-                    'url' => $url,
-                    'website_url' => $website_url,
-                ];
-        
-                $type = '';
-                if ($template) {
-                    $type_id = $template->type;
-                    $temp_type = new \App\Model\Common\TemplateType();
-                    $type = $temp_type->where('id', $type_id)->first()->name;
-                }
-        
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($settings->email, $user->email,$template->data ,$template->name, $replace, $type);
-            } catch (\Exception $ex) {
-                throw new \Exception($ex->getMessage());
-            }
+    public function sendActivation($email, $method)
+    {
+        $user = User::where('email', $email)->first();
+
+        if (! $user) {
+            throw new \Exception('User with this email does not exist');
         }
 
+        try {
+            $activate_model = new AccountActivate();
+
+            if ($method == 'GET') {
+                $activate_model = $activate_model->where('email', $email)->first();
+                $token = $activate_model->token;
+            } else {
+                $token = Str::random(40);
+                $activate_model->create(['email' => $email, 'token' => $token]);
+            }
+
+            $url = url("activate/$token");
+
+            // Check the settings
+            $settings = \App\Model\Common\Setting::find(1);
+
+            // Retrieve the template
+            $template = \App\Model\Common\Template::find($settings->welcome_mail);
+            $website_url = url('/');
+            $replace = [
+                'name' => $user->first_name.' '.$user->last_name,
+                'username' => $user->email,
+                'url' => $url,
+                'website_url' => $website_url,
+            ];
+
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
 
     protected function addUserToPipedrive($user, $pipeDriveStatus)
     {

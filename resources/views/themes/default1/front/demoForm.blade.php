@@ -1,5 +1,5 @@
 
-        <div class="modal fade" id="demo-req" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="demo-req" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -12,7 +12,7 @@
                 
 
                     <div class="card-body">
-      
+     
                         <div class="box-content">
 
                            
@@ -37,7 +37,7 @@
                     <div class="form-group col">
                          <label class="required">Mobile No</label>
                                                             {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
-                                                            <input class="form-control input-lg" id="mobilenumdemo" name="Mobile" type="tel">
+                                                            <input class="form-control input-lg" id="mobilenumdemo" name="Mobile" type="tel" required>
                                                              {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
                                                             <span id="valid-msgdemo" class="hide"></span>
                                                             <span id="error-msgdemo" class="hide"></span>
@@ -48,8 +48,8 @@
             </div>
                 <div class="form-row">
                     <div class="form-group col">
-                         <label class="required">Product</label>
-                    <select id="demoType" name="product" class="form-control" required>
+                    <label>Product</label>
+                    <select id="demoType" name="product" class="form-control">
                     <option value="online">Select</option>
                     <option value="ServiceDesk">ServiceDesk</option>
                     <option value="HelpDesk">HelpDesk</option>
@@ -60,7 +60,7 @@
                <div class="form-group col">
                     
                         <label class="required">Message</label>
-                        <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message"></textarea>
+                        <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message" required></textarea>
                     </div>
                 
             </div>
@@ -69,9 +69,7 @@
                         <input type="submit" style="width: 100%;" value="Book a Demo" class="btn btn-primary btn-lg mb-xlg" data-loading-text="Loading...">
                     </div>
                 </div>
-        
-
-          <p style="text-align: center;font-size: 17px;"><a style="color: green;font-weight: bold !important;" href="{{url('login')}}">Or sign up for a {{$days}}-day free trial</a></p>
+  
                             {!! Form::close() !!}
                         </div>
                     </div>

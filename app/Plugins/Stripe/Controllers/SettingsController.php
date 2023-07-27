@@ -282,6 +282,7 @@ class SettingsController extends Controller
                 ->from($set->email)
                 ->to($set->company_email)
                 ->subject('Payment Failed')
+                ->replyTo($user->email)
                 ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
             $mailer->send($email);
             $mail->payment_log($set->email, $set->company_email, 'Payment Failed', 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);
@@ -306,6 +307,7 @@ class SettingsController extends Controller
                ->from($set->email)
                ->to($set->company_email)
                ->subject('Payment Successful')
+               ->replyTo($user->email)
                ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
             $mailer->send($email);
             $mail->payment_log($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$invoice->grand_total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email, $payment->payment_method, $payment->payment_status, $order->number);

@@ -144,8 +144,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
                 } else {
                     unlink($file);
                 }
-            }
-            else{
+            } else {
                 return $value;
             }
         }

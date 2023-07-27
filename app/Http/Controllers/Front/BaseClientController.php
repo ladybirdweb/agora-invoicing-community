@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Facades\ImageUpload;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
@@ -10,7 +11,6 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
 use Hash;
-use App\Facades\ImageUpload;
 
 class BaseClientController extends Controller
 {

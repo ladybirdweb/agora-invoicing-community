@@ -31,6 +31,10 @@ foreach($scripts as $script)
         background-color: blue;
         color: white;
     }
+
+    label.required:after {
+        color: red;
+     }
 </style>
 <head>
     <!-- Basic -->

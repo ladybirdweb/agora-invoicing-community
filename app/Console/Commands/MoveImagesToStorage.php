@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Http\Controllers\Common\SettingsController;
 use Illuminate\Console\Command;
 
@@ -27,9 +28,8 @@ class MoveImagesToStorage extends Command
      */
     public function handle()
     {
-       $controller = new SettingsController();
-       $controller->MoveImagesToStorage();
-       $this->info('storage/images:move Command Run successfully!');
-
+        $controller = new SettingsController();
+        $controller->MoveImagesToStorage();
+        $this->info('storage/images:move Command Run successfully!');
     }
 }

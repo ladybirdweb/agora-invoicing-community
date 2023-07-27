@@ -249,7 +249,7 @@ class PhpMailController extends Controller
                 }
             }
         } catch(\Exception $e) {
-            \Log::error($e->getMessage());
+            \Log::error($ex->getMessage());
         }
     }
 

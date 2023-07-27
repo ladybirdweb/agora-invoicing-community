@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
+use App\Facades\ImageUpload;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
@@ -18,8 +19,6 @@ use File;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
-use App\Facades\ImageUpload;
-
 
 class SettingsController extends BaseSettingsController
 {
@@ -186,7 +185,7 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $setting = $settings->find(1);
-            
+
             if ($request->hasFile('logo')) {
                 $path = ImageUpload::saveImageToStorage($request->file('logo'), 'images');
                 $setting->logo = $path;
@@ -218,37 +217,37 @@ class SettingsController extends BaseSettingsController
      *
      * Remove the logo from the DB and local storage.
      */
-   public function delete(Request $request)
-   {
-    try {
-        if (isset($request->id)) {
-            $todo = Setting::findOrFail($request->id);
-            if ($request->column == 'logo') {
-                $logoPath = $todo->logo;
-                ImageUpload::deleteImage($logoPath);
-                $todo->logo = null;
-            }
-            if ($request->column == 'admin') {
-                $adminLogoPath = $todo->admin_logo;
-                ImageUpload::deleteImage($adminLogoPath);
-                $todo->admin_logo = null;
-            }
-            if ($request->column == 'fav') {
-                $favIconPath = $todo->fav_icon;
-                ImageUpload::deleteImage($favIconPath);
-                $todo->fav_icon = null;
-            }
-            $todo->save();
-            $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
+    public function delete(Request $request)
+    {
+        try {
+            if (isset($request->id)) {
+                $todo = Setting::findOrFail($request->id);
+                if ($request->column == 'logo') {
+                    $logoPath = $todo->logo;
+                    ImageUpload::deleteImage($logoPath);
+                    $todo->logo = null;
+                }
+                if ($request->column == 'admin') {
+                    $adminLogoPath = $todo->admin_logo;
+                    ImageUpload::deleteImage($adminLogoPath);
+                    $todo->admin_logo = null;
+                }
+                if ($request->column == 'fav') {
+                    $favIconPath = $todo->fav_icon;
+                    ImageUpload::deleteImage($favIconPath);
+                    $todo->fav_icon = null;
+                }
+                $todo->save();
+                $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
 
-            return response()->json($response);
+                return response()->json($response);
+            }
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
         }
-    } catch (\Exception $ex) {
-        $result = [$ex->getMessage()];
-
-        return response()->json(compact('result'), 500);
     }
-   }
 
     public function settingsEmail(Setting $settings)
     {

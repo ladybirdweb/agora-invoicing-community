@@ -94,9 +94,9 @@ class Product extends BaseModel
     public function getImageAttribute($value)
     {
         if (! $value) {
-            $image = asset('common/images/No-image-found.jpg');
+            $image = asset('storage/common/images/No-image-found.jpg');
         } else {
-            $image = asset("common/images/$value");
+            $image = asset("storage/common/images/$value");
         }
 
         return $image;

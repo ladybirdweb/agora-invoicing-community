@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
+use App\Facades\ImageUpload;
 
 // use Input;
 
@@ -286,7 +287,7 @@ class ProductController extends BaseProductController
             'name' => 'required|unique:products,name',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'image' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
             'product_sku' => 'required|unique:products,product_sku',
             'group' => 'required',
             'show_agent' => 'required',
@@ -311,9 +312,7 @@ class ProductController extends BaseProductController
             $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
             $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
-                $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'common/images';
-                $request->file('image')->move($imagedestinationPath, $image);
+                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
                 $this->product->image = $image;
             }
             $can_modify_agent = $request->input('can_modify_agent');
@@ -412,7 +411,7 @@ class ProductController extends BaseProductController
             'name' => 'required',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'image' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
             'product_sku' => 'required',
             'group' => 'required',
         ]);
@@ -428,9 +427,7 @@ class ProductController extends BaseProductController
             }
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
-                $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'common/images';
-                $request->file('image')->move($imagedestinationPath, $image);
+                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
                 $product->image = $image;
             }
             if ($request->hasFile('file')) {

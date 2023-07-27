@@ -239,7 +239,7 @@ input:checked + .slider:before {
                     {!! Form::file('profile_pic') !!}
                     <br>
                     @if($user->profile_pic) 
-                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
+                    <img src='{{ asset("storage/common/images/user/$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
                     @endif
 
                 </div>

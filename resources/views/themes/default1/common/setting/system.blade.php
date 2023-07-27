@@ -262,7 +262,7 @@ System Setting
                                 
                                 <p><i> {{Lang::get('Upload Application logo')}}</i> </p>
                                 @if($set->admin_logo) 
-                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
+                                <img src='{{ asset("storage/admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
                                 
 
                                  <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
@@ -285,7 +285,7 @@ System Setting
                                
                                 <p><i> {{Lang::get('Upload favicon for Admin and Client Panel')}}</i> </p>
                                 @if($set->fav_icon) 
-                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
+                                <img src='{{asset("storage/common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
 
                       
 
@@ -340,7 +340,7 @@ System Setting
                                 
                                 <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
+                                <img src='{{asset("storage/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
                                  
                                  <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
                                 <i class="fa fa-trash"></i></button>

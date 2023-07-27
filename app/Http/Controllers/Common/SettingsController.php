@@ -18,6 +18,8 @@ use File;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
+use App\Facades\ImageUpload;
+
 
 class SettingsController extends BaseSettingsController
 {
@@ -184,26 +186,25 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $setting = $settings->find(1);
+            
             if ($request->hasFile('logo')) {
-                $name = $request->file('logo')->getClientOriginalName();
-                $destinationPath = public_path('images');
-                $request->file('logo')->move($destinationPath, $name);
-                $setting->logo = $name;
+                $path = ImageUpload::saveImageToStorage($request->file('logo'), 'images');
+                $setting->logo = $path;
             }
+
             if ($request->hasFile('admin-logo')) {
-                $logoName = $request->file('admin-logo')->getClientOriginalName();
-                $destinationPath = public_path('admin/images');
-                $request->file('admin-logo')->move($destinationPath, $logoName);
-                $setting->admin_logo = $logoName;
+                $path = ImageUpload::saveImageToStorage($request->file('admin-logo'), 'admin/images');
+                $setting->admin_logo = $path;
             }
+
             if ($request->hasFile('fav-icon')) {
-                $iconName = $request->file('fav-icon')->getClientOriginalName();
-                $destinationPath = public_path('common/images');
-                $request->file('fav-icon')->move($destinationPath, $iconName);
-                $setting->fav_icon = $iconName;
+                $path = ImageUpload::saveImageToStorage($request->file('fav-icon'), 'common/images');
+                $setting->fav_icon = $path;
             }
+
             $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
                             ->pluck('symbol')->first();
+
             $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -217,36 +218,37 @@ class SettingsController extends BaseSettingsController
      *
      * Remove the logo from the DB and local storage.
      */
-    public function delete(Request $request)
-    {
-        try {
-            if (isset($request->id)) {
-                $todo = Setting::findOrFail($request->id);
-                if ($request->column == 'logo') {
-                    File::delete(public_path('images/').$todo->logo);
-
-                    $todo->logo = null;
-                }
-                if ($request->column == 'admin') {
-                    File::delete(public_path('admin/images/').$todo->admin_logo);
-
-                    $todo->admin_logo = null;
-                }
-                if ($request->column == 'fav') {
-                    File::delete(public_path('common/images/').$todo->fav_icon);
-                    $todo->fav_icon = null;
-                }
-                $todo->save();
-                $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
-
-                return response()->json($response);
+   public function delete(Request $request)
+   {
+    try {
+        if (isset($request->id)) {
+            $todo = Setting::findOrFail($request->id);
+            if ($request->column == 'logo') {
+                $logoPath = $todo->logo;
+                ImageUpload::deleteImage($logoPath);
+                $todo->logo = null;
             }
-        } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
+            if ($request->column == 'admin') {
+                $adminLogoPath = $todo->admin_logo;
+                ImageUpload::deleteImage($adminLogoPath);
+                $todo->admin_logo = null;
+            }
+            if ($request->column == 'fav') {
+                $favIconPath = $todo->fav_icon;
+                ImageUpload::deleteImage($favIconPath);
+                $todo->fav_icon = null;
+            }
+            $todo->save();
+            $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
 
-            return response()->json(compact('result'), 500);
+            return response()->json($response);
         }
+    } catch (\Exception $ex) {
+        $result = [$ex->getMessage()];
+
+        return response()->json(compact('result'), 500);
     }
+   }
 
     public function settingsEmail(Setting $settings)
     {

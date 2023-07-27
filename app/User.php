@@ -132,9 +132,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function getProfilePicAttribute($value)
     {
+        // dd($value);
         $image = \Gravatar::get($this->attributes['email']);
         if ($value) {
-            $file = public_path('common/images/users/'.$value);
+            $file = storage_path('common/images/users/'.$value);
             if (is_file($file)) {
                 $mime = \File::mimeType($file);
                 $extension = \File::extension($file);
@@ -143,6 +144,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
                 } else {
                     unlink($file);
                 }
+            }
+            else{
+                return $value;
             }
         }
 

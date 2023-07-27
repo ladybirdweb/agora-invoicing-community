@@ -485,7 +485,6 @@ class PageController extends Controller
         }
     }
 
-   
     public function postDemoReq(Request $request)
     {
         $this->validate($request, [
@@ -499,7 +498,7 @@ class PageController extends Controller
         $mailer = $mail->setMailConfig($set);
 
         try {
-            $product = $request->input('product') != 'online'  ? $request->input('product') : 'our product ';
+            $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
             $data = '';
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
@@ -509,13 +508,13 @@ class PageController extends Controller
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
-                   ->subject('Requesting for Demo for' . '  ' . $product)
+                   ->subject('Requesting for Demo for'.'  '.$product)
                     ->replyTo($request->input('demoemail'))
                    ->html($data);
 
                 $mailer->send($email);
             }
-           
+
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -485,12 +485,12 @@ class PageController extends Controller
         }
     }
 
+   
     public function postDemoReq(Request $request)
     {
         $this->validate($request, [
             'name' => 'required',
             'demoemail' => 'required|email',
-            'product' => 'required',
         ]);
 
         $set = new \App\Model\Common\Setting();
@@ -499,43 +499,23 @@ class PageController extends Controller
         $mailer = $mail->setMailConfig($set);
 
         try {
-            $from = $set->email;
-            $fromname = $set->company;
-            $toname = '';
-            $to = $set->company_email;
+            $product = $request->input('product') != 'online'  ? $request->input('product') : 'our product ';
             $data = '';
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-            $subject = 'Requesting for Demo';
             if (emailSendingStatus()) {
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
-                   ->subject('Requesting for Demo')
+                   ->subject('Requesting for Demo for' . '  ' . $product)
+                    ->replyTo($request->input('demoemail'))
                    ->html($data);
+
                 $mailer->send($email);
             }
-            $data = Demo_page::first();
-
-            $url = $data->link;
-            $data = [
-                'requester' => $data->email,
-                'subject' => 'Requesting for Demo',
-                'description' => 'Requesting for Demo'.' '.$request->input('product'),
-                'priority_id' => '1',
-                'help_topic_id' => '1',
-            ];
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-            $response = curl_exec($ch);
-
+           
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

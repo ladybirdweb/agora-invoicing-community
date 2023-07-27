@@ -20,7 +20,13 @@ active
 
 @section('content')
     <div class="featured-box featured-box-primary text-left mt-5" style="max-width: 900px">
-
+    @php
+            $set = App\Model\Common\Setting::where('id', '1')->first();
+             $date = getDateHtmlDate($invoice->date);
+            $symbol = $invoice->currency;
+            $itemsSubtotal = 0;
+            $taxAmt = 0;
+        @endphp
     <section class="box-content">
         <div>
             @if($set->logo)

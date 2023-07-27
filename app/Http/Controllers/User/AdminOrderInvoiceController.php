@@ -33,7 +33,7 @@ class AdminOrderInvoiceController extends Controller
                             value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('date', function ($model) {
-                            return getDateHtml($model->date);
+                            return getDateHtmlDate($model->date);
                         })
                         ->addColumn('invoice_no', function ($model) {
                             $label = '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';

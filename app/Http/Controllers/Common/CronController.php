@@ -863,6 +863,7 @@ class CronController extends BaseCronController
            ->from($set->email)
            ->to($set->company_email)
            ->subject($template)
+           ->replyTo($user->email)
            ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         $mailer->send($email);
         $mail->payment_log_success($set->email, $set->company_email, $template, 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$invoice->grand_total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email, $payment, 'success', $order);
@@ -879,6 +880,7 @@ class CronController extends BaseCronController
             ->from($set->email)
             ->to($set->company_email)
             ->subject($template)
+            ->replyTo($user->email)
             ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->first()->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         $mailer->send($email);
         dump('kol');

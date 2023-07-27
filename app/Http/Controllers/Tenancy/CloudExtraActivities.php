@@ -165,7 +165,7 @@ class CloudExtraActivities extends Controller
         $company = str_replace(' ', '', $company);
 
         // Convert uppercase letters to lowercase
-        $company = substr(strtolower($company),0,28);
+        $company = substr(strtolower($company), 0, 28);
 
         // Output the modified company value
         return response()->json(['data'=> $company]);

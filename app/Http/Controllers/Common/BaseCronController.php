@@ -219,7 +219,7 @@ class BaseCronController extends Controller
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($setting->email,$user->email,$template->data,$template->name, $replace, $type = '');
+        $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type = '');
     }
 
     public function Auto_renewalMail($user, $end, $product, $order, $sub)

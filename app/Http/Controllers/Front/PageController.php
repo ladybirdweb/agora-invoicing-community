@@ -434,7 +434,7 @@ class PageController extends Controller
         return $result;
     }
 
-       public function postContactUs(Request $request)
+    public function postContactUs(Request $request)
     {
         $this->validate($request, [
             'name'    => 'required',
@@ -454,14 +454,13 @@ class PageController extends Controller
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'Mobile: '.strip_tags($request->input('country_code'). ' ' .$request->input('Mobile')).'<br/>';
-            $subject = 'Faveo billing enquiry';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->mailing($from, $to, $data, $subject);
+                $mail->SendEmail($set->email, $to, $data, 'Faveo billing enquiry');
             }
 
-            //$this->templateController->Mailing($from, $to, $data, $subject);
+            //$this->templateController->SendEmail($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 
 class TenantController extends Controller
 {

@@ -82,7 +82,7 @@ class ForgotPasswordController extends Controller
 
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             if (emailSendingStatus()) {
-                $mail->SendEmail($setting->email,$user->email, $template->data,$template->name, $replace, $type);
+                $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
                 $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$user->email.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {

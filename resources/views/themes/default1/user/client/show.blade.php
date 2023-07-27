@@ -50,7 +50,7 @@ User
         </div>
 
         <div class="widget-user-image">
-            <img class="img-circle" src="{{ $client->profile_pic }}" alt="User Avatar">
+            <img class="img-circle" src="{{ asset('storage/common/images/user/' . $client->profile_pic) }}" alt="User Avatar" style="width: 100px;height: 100px;">
         </div>
         <div class="card-footer">
             <div class="row">

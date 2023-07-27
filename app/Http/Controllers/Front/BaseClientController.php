@@ -10,6 +10,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
 use Hash;
+use App\Facades\ImageUpload;
 
 class BaseClientController extends Controller
 {
@@ -109,11 +110,7 @@ class BaseClientController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
-                $file = $request->file('profile_pic');
-                $name = \Request::file('profile_pic')->getClientOriginalName();
-                $destinationPath = public_path('common/images/users');
-                $fileName = rand(0000, 9999).'.'.$name;
-                $file->move($destinationPath, $fileName);
+                $fileName = ImageUpload::saveImageToStorage($request->file('profile_pic'), 'common/images/user');
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));

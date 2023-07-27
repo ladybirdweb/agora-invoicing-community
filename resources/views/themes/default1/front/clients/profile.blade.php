@@ -306,7 +306,7 @@ input:checked + .slider:before {
                     {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
                     <br>
                      @if($user->profile_pic) 
-                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
+                    <img src='{{ asset("storage/common/images/user/$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
                     @endif
                     <h6 id="profilePicCheck"></h6>
 
@@ -364,9 +364,9 @@ input:checked + .slider:before {
                 <div class="col-md-10">
                     <h6>
                         @if($is2faEnabled ==0)
-                            <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
+                            <img src="{{asset('storage/common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
                         @else
-                            <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
+                            <img src="{{asset('storage/common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
                             <br><br><br>
                             <div class="row">
                                 <div class="col-md-4">

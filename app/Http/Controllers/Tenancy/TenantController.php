@@ -191,7 +191,7 @@ class TenantController extends Controller
                 'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
-        $setting = Setting::find(1);
+        $settings = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
 
@@ -275,10 +275,10 @@ class TenantController extends Controller
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
                     $template = $template->where('type', $temp_type_id)->first();
                     $replace = [
-                        'message' => $userData,
-                        'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                    ];
-                    $type = '';
+                     'message' => $userData, 
+                     'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name
+                 ];
+                     $type = '';
                     if ($template) {
                         $type_id = $template->type;
                         $temp_type = new \App\Model\Common\TemplateType();
@@ -287,17 +287,13 @@ class TenantController extends Controller
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
-                    $mail->SendEmail($setting->email, $user, $userData, 'New instance created');
-
-                    $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-
+                    $mail->SendEmail($settings->email, $user,$template->data, $template->name, $replace, $type);
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }
             }
         } catch (Exception $e) {
             $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$user;
             $this->googleChat($message);
-
             return ['status' => 'false', 'message' => trans('message.something_bad')];
         }
     }

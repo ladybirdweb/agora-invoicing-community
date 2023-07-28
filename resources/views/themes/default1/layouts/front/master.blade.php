@@ -532,7 +532,7 @@ $days = $pay->where('product','117')->value('days');
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
 
                                       <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                      <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                      <input type="text" class="form-control col col-5 rounded-0" value=".fratergroup.in" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                                       <p id="validationMessage"></p>
                                     </div>
 

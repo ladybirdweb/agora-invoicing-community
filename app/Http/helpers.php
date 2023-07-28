@@ -134,21 +134,6 @@ function getDateHtml(string $dateTimeString = null)
         return '--';
     }
 }
-function getDateHtmlcopy(string $dateTimeString = null)
-{
-    try {
-        if (! $dateTimeString) {
-            return '--';
-        }
-        $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
-        $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
-
-        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
-    } catch (Exception $e) {
-        return '--';
-    }
-}
-
 function getDateHtmlDate(string $dateTimeString = null)
 {
     try {

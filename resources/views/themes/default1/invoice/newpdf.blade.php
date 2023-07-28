@@ -34,7 +34,7 @@
                 <?php 
                 use App\Model\Order\Order;
                 $set = App\Model\Common\Setting::where('id', '1')->first(); 
-                $date = getDateHtml($invoice->date);
+                $date = getDateHtmlDate($invoice->date);
                  $symbol = $invoice->currency;
                 $itemsSubtotal = 0;
                  $taxAmt = 0;

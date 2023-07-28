@@ -195,7 +195,7 @@ class BaseCronController extends Controller
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $settings = $settings::find(1);
+        $setting = $settings::find(1);
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->subscription_going_to_end;

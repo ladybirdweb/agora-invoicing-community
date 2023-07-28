@@ -288,128 +288,125 @@ class CloudExtraActivities extends Controller
         }
     }
 
-     public function agentAlteration(Request $request)
-     {
-         try {
-             $newAgents = $request->newAgents;
-             $orderId = $request->input('orderId');
-             $installation_path = InstallationDetail::where('order_id', $orderId)
-                 ->value('installation_path');
-             $product_id = $request->product_id;
-             if (! $this->checktheAgent($newAgents, $installation_path)) {
-                 return response(['status' => false, 'message' => trans('message.agent_reduce')]);
-             }
-             $item = $this->getThePaymentCalculation();
-             $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
-             $len = strlen($newAgents);
-             switch ($len) {//Get Last Four digits based on No.Of Agents
-                 case '1':
-                     $lastFour = '000'.$newAgents;
-                     break;
-                 case '2':
-                     $lastFour = '00'.$newAgents;
-                     break;
-                 case '3':
-                     $lastFour = '0'.$newAgents;
-                     break;
-                 case '4':
-                     $lastFour = $newAgents;
-                     break;
-                 default:
-                     $lastFour = '0000';
-             }
-             $license_code = substr($oldLicense, 0, -4).$lastFour;
-             (new LicenseController())->updateLicense($license_code, $oldLicense);
-             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-             $token = str_random(32);
-             $data = ['licenseCode' => $license_code, 'installation_path' => $installation_path, 'product_id' => $product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
-             $encodedData = http_build_query($data);
-             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+    public function agentAlteration(Request $request)
+    {
+        try {
+            $newAgents = $request->newAgents;
+            $orderId = $request->input('orderId');
+            $installation_path = InstallationDetail::where('order_id', $orderId)
+                ->value('installation_path');
+            $product_id = $request->product_id;
+            if (! $this->checktheAgent($newAgents, $installation_path)) {
+                return response(['status' => false, 'message' => trans('message.agent_reduce')]);
+            }
+            $item = $this->getThePaymentCalculation();
+            $oldLicense = \Crypt::decrypt(Order::where('id', $orderId)->value('license_code'));
+            $len = strlen($newAgents);
+            switch ($len) {//Get Last Four digits based on No.Of Agents
+                case '1':
+                    $lastFour = '000'.$newAgents;
+                    break;
+                case '2':
+                    $lastFour = '00'.$newAgents;
+                    break;
+                case '3':
+                    $lastFour = '0'.$newAgents;
+                    break;
+                case '4':
+                    $lastFour = $newAgents;
+                    break;
+                default:
+                    $lastFour = '0000';
+            }
+            $license_code = substr($oldLicense, 0, -4).$lastFour;
+            (new LicenseController())->updateLicense($license_code, $oldLicense);
+            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+            $token = str_random(32);
+            $data = ['licenseCode' => $license_code, 'installation_path' => $installation_path, 'product_id' => $product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
+            $encodedData = http_build_query($data);
+            $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
 
-             $client = new Client([]);
-             $client->request(
-                 'POST',
-                 $this->cloud->cloud_central_domain.'/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-             );
+            $client = new Client([]);
+            $client->request(
+                'POST',
+                $this->cloud->cloud_central_domain.'/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+            );
 
-             Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12).$lastFour)]);
+            Order::where('id', $orderId)->update(['license_code' => \Crypt::encrypt(substr($license_code, 0, 12).$lastFour)]);
 
-             return response(['status' => true, 'message' => trans('message.agent_updated')]);
-         } catch(\Exception $e) {
-             Logger::exception($e);
+            return response(['status' => true, 'message' => trans('message.agent_updated')]);
+        } catch(\Exception $e) {
+            Logger::exception($e);
 
-             return response(['status' => false, 'message' => trans('message.wrong_agent')]);
-         }
-     }
+            return response(['status' => false, 'message' => trans('message.wrong_agent')]);
+        }
+    }
 
-     public function upgradeDowngradeCloud(Request $request)
-     {
-         try {
-             $qty = 1;
-             $planId = $request->id;
-             $price = $request->price;
-             $agents = $request->agents;
-             $product_id = Plan::where('id', $planId)->pluck('product')->first();
+    public function upgradeDowngradeCloud(Request $request)
+    {
+        try {
+            $qty = 1;
+            $planId = $request->id;
+            $price = $request->price;
+            $agents = $request->agents;
+            $product_id = Plan::where('id', $planId)->pluck('product')->first();
 
-             $product = Product::find($product_id);
-             $plan = $product->planRelation->find($planId);
-             $currency = userCurrencyAndPrice('', $plan);
+            $product = Product::find($product_id);
+            $plan = $product->planRelation->find($planId);
+            $currency = userCurrencyAndPrice('', $plan);
 
-             $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
-                 'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product, ];
+            $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
+                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product, ];
 
-             \Cart::add($items); //Add Items To the Cart Collection
+            \Cart::add($items); //Add Items To the Cart Collection
 
-             return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
-         } catch(\Exception $e) {
-             app('log')->error($e->getMessage());
+            return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
+        } catch(\Exception $e) {
+            app('log')->error($e->getMessage());
 
-             return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
-         }
-     }
-    private function getThePaymentCalculation($newAgents,$oldAgents,$planId,$orderId){
+            return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
+        }
+    }
+
+    private function getThePaymentCalculation($newAgents, $oldAgents, $planId, $orderId)
+    {
         $product_id = Plan::where('id', $planId)->pluck('product')->first();
         $planDays = Plan::where('id', $planId)->pluck('days')->first();
         $product = Product::find($product_id);
         $plan = $product->planRelation->find($planId);
         $currency = userCurrencyAndPrice('', $plan);
 
-
-        if($newAgents>$oldAgents){
-            if(Carbon::now()==$ends_at){
+        if ($newAgents > $oldAgents) {
+            if (Carbon::now() == $ends_at) {
                 $price = $base_price * $newAgents;
+            } else {
+                $agentsAdded = $newAgents - $oldAgents;
+                $pricePerDay = $base_price / $planDays;
+                $daysRemain = $ends_at - Carbon::now();
+                $pricePerThatAgent = $pricePerDay * $daysRemain;
+                $price = $agentsAdded * $pricePerThatAgent;
             }
-            else{
-               $agentsAdded=$newAgents-$oldAgents;
-               $pricePerDay = $base_price/$planDays;
-               $daysRemain = $ends_at-Carbon::now();
-               $pricePerThatAgent = $pricePerDay * $daysRemain;
-               $price = $agentsAdded * $pricePerThatAgent;
-            }
-        }
-        else{
-            if(Carbon::now()==$ends_at){
+        } else {
+            if (Carbon::now() == $ends_at) {
                 $price = $base_price * $newAgents;
-            }
-            else{
+            } else {
                 $currentPrice = $base_price * $oldAgents;
-                $newPrice  = $base_price * $newAgents;
+                $newPrice = $base_price * $newAgents;
                 $newDiscountPrice = $currentPrice - $newPrice;
-                if($newDiscountPrice == $newPrice){
+                if ($newDiscountPrice == $newPrice) {
                     $discount = $newPrice;
-                }
-                elseif ($newDiscountPrice < $newPrice){
+                } elseif ($newDiscountPrice < $newPrice) {
                     $discount = $newPrice - $newDiscountPrice;
-                }
-                else{
+                } else {
                     $discount = $newDiscountPrice;
                 }
                 $price = 0;
             }
-            Order::where('id',$orderId)->updateOrCreate(['order_discount'=>$discount]);
+            Order::where('id', $orderId)->updateOrCreate(['order_discount'=>$discount]);
         }
         $items = ['id' => $product_id, 'name' => $product->name, 'price' => $price,
             'quantity' => 1, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $newAgents], 'associatedModel' => $product, ];
+
         return $items;
     }
 }

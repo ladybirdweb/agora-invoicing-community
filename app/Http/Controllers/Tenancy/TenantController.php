@@ -191,7 +191,7 @@ class TenantController extends Controller
                 'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
-        $setting = Setting::find(1);
+        $settings = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
 
@@ -270,46 +270,30 @@ class TenantController extends Controller
                         ],
                     ]);
 
-                    //check in the settings
-                    $settings = new \App\Model\Common\Setting();
-                    $settings = $settings->where('id', 1)->first();
-                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     //template
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
                     $template = $template->where('type', $temp_type_id)->first();
-                    $contact = getContactData();
-
                     $replace = [
-                        'message' => $userData, 
-                        'product' => $order[0]->product()->value('name'), 
-                        'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                        'contact' => $contact['contact'],
-                        'logo' => $contact['logo'],
-                        'title' => $settings->title,
-                        'company_email' => $settings->company_email,
-                    ];
-                    $type = '';
+                     'message' => $userData, 
+                     'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name
+                 ];
+                     $type = '';
                     if ($template) {
                         $type_id = $template->type;
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
                     }
-                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
-                    $mail->SendEmail($setting->email, $user, $userData, 'New instance created');
-
-                    $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-
+                    $mail->SendEmail($settings->email, $user,$template->data, $template->name, $replace, $type);
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }
             }
         } catch (Exception $e) {
             $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$user;
             $this->googleChat($message);
-
             return ['status' => 'false', 'message' => trans('message.something_bad')];
         }
     }

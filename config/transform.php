@@ -166,4 +166,9 @@ return[
         'expiry' => '{$expiry}',
     ],
 
+    'cloud_created' => [
+        'name' => '{$name}',
+        'message' => '{$message}',
+    ],
+
 ];

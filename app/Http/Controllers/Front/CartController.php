@@ -293,7 +293,6 @@ class CartController extends BaseCartController
             foreach (\Cart::getContent() as $item) {
                 $productid = $item->id;
             }
-
             if ($productid && $originalPrice) {
                 Cart::update($productid, [
                     'price' => $originalPrice,

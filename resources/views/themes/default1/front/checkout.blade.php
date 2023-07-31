@@ -10,6 +10,14 @@ Checkout
 @stop
 @section('breadcrumb')
  @if(Auth::check())
+ <style>
+.remove-coupon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+ </style>
 <li><a href="{{url('my-invoices')}}">Home</a></li>
   @else
   <li><a href="{{url('login')}}">Home</a></li>
@@ -184,7 +192,7 @@ $cartSubtotalWithoutCondition = 0;
                     <th>
                         <strong>Discount</strong>
                     </th>
-                    <td>
+                    <td style="position: absolute;">
                         <?php
                         if (strpos(\Session::get('codevalue'), '%') == true) {
                                 $discountValue = \Session::get('codevalue');
@@ -192,9 +200,15 @@ $cartSubtotalWithoutCondition = 0;
                                 $discountValue = currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency);
                             }
                         ?>
-
                         {{$discountValue}}
+                    <form action="{{ url('remove-coupon') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="remove-coupon-btn" title="Click to remove coupon code">
+                        <i class="fas fa-times-circle" style="left: 50px;bottom: 33px;position: absolute;"></i>
+                    </button>
+                </form>
                     </td>
+
                 </tr>
                 @endif
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
@@ -262,20 +276,10 @@ $cartSubtotalWithoutCondition = 0;
            <div class="input-group" style="margin-top: 10px;">
     <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
     <div class="input-group-append">
-        <span class="input-group-text clear-icon" style="cursor: pointer;"><i class="fas fa-times-circle"></i></span>
-    </div>
-    <div class="input-group-append">
         <input type="submit" value="Apply" class="btn btn-primary">
     </div>
 </div>
         {!! Form::close() !!}
-
-        <form action="{{ url('remove-coupon') }}" method="POST">
-    @csrf
-    <div class="input-group" style="margin-top: 10px;">
-        <button type="submit" class="btn btn-danger">Remove Coupon</button>
-    </div>
-</form>
     </div>
 
 </div>

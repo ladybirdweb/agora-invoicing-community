@@ -36,9 +36,8 @@ class BasePromotionController extends Controller
 
     public function getPromotionDetails($code)
     {
-        if(empty($code)){
+        if (empty($code)) {
             throw new \Exception('Oops! No coupon code applied.');
-
         }
         $promo = Promotion::where('code', $code)->first();
         //check promotion code is valid

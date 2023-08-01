@@ -195,16 +195,17 @@ $cartSubtotalWithoutCondition = 0;
                     <td style="position: absolute;">
                         <?php
                         if (strpos(\Session::get('codevalue'), '%') == true) {
-                                $discountValue = \Session::get('codevalue');
+                                $discountValue = currencyFormat($discountPrice,$code = $item->attributes->currency);
+                                echo $discountValue . '(<strong title="Coupon code">' . (\Session::get('code')) . '</strong>)';
                             } else {
                                 $discountValue = currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency);
+                                echo $discountValue . '(<strong title="Coupon code">' . (\Session::get('code')) . '</strong>)';
                             }
                         ?>
-                        {{$discountValue}}
                     <form action="{{ url('remove-coupon') }}" method="POST">
                     @csrf
-                    <button type="submit" class="remove-coupon-btn" title="Click to remove coupon code">
-                        <i class="fas fa-times-circle" style="left: 50px;bottom: 33px;position: absolute;"></i>
+                   <button type="submit" class="remove-coupon-btn" title="Click to remove coupon code">
+                        <i class="fas fa-times-circle" style="left: 115px;bottom: 33px;position: absolute;"></i>
                     </button>
                 </form>
                     </td>

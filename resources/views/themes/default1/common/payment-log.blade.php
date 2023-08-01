@@ -160,13 +160,10 @@ Payment Logs
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
 
                             <th>Date</th>
-                            <th>From</th>
-                             <th>To</th>   
-                               <th>Subject</th>  
+                             <th>User</th>   
                                <th>Order No</th> 
-                               <th>Method</th>   
-                           
-                             <th>Status</th>
+                               <th>Payment Method</th>   
+                               <th>Status</th>
                                </tr></thead>
 
                    </table>
@@ -224,9 +221,7 @@ Payment Logs
             columns: [
                 { data: 'checkbox', name: 'checkbox' },
                 { data: 'date', name: 'date' },
-                { data: 'from', name: 'from' },
-                { data: 'to', name: 'to' },
-                { data: 'subject', name: 'subject' },
+                { data: 'user', name: 'user' },
                 { data: 'ordernumber', name: 'ordernumber' },
                 { data: 'paymentmethod', name: 'paymentmethod' },
                 {

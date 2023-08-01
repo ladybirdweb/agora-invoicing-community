@@ -612,7 +612,7 @@ class SettingsController extends BaseSettingsController
             return Datatables::of($query)
             ->orderColumn('date', '-date $1')
             ->orderColumn('from', '-date $1')
-             ->orderColumn('to', '-date $1')
+             ->orderColumn('user', '-date $1')
             ->orderColumn('subject', '-date $1')
 
                 ->addColumn('checkbox', function ($model) {
@@ -624,19 +624,14 @@ class SettingsController extends BaseSettingsController
 
                     return getDateHtml($date);
                 })
-                ->addColumn('from', function ($model) {
-                    return $model->from;
+                ->addColumn('user', function ($model) {
+                $user = User::where('email', $model->to)->select('first_name', 'last_name', 'id')->first();
+                if ($user) {
+                return '<a href=' . url('clients/' . $user->id) . '>' . ucfirst($user->first_name) . ' ' . ucfirst($user->last_name) . '</a>';
+                }
+                return '';
                 })
-                ->addColumn('to', function ($model) {
-                    // return $model->to;
-                    $id = User::where('email', $model->to)->value('id');
-
-                    return '<a href='.url('clients/'.$id).'>'.ucfirst($model->to).'<a>';
-                })
-
-                ->addColumn('subject', function ($model) {
-                    return ucfirst($model->subject);
-                })
+   
                 ->addColumn('paymentmethod', function ($model) {
                     return ucfirst($model->payment_method);
                 })
@@ -655,20 +650,17 @@ class SettingsController extends BaseSettingsController
 
                     return ucfirst($model->status);
                 })
-                ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status', 'paymentmethod', 'ordernumber'])
+                ->rawColumns(['checkbox', 'date', 'user',
+                    'bcc', 'status', 'paymentmethod', 'ordernumber'])
                 ->filterColumn('from', function ($query, $keyword) {
                     $sql = '`from` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
-                ->filterColumn('to', function ($query, $keyword) {
-                    $sql = '`to` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
+
+                ->filterColumn('user', function ($query, $keyword) {
+                    $query->whereRaw("concat(users.first_name, ' ', users.last_name) like ?", ["%$keyword%"]);
                 })
-                ->filterColumn('subject', function ($query, $keyword) {
-                    $sql = '`subject` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+    
                 ->filterColumn('status', function ($query, $keyword) {
                     $sql = '`status` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -684,14 +676,15 @@ class SettingsController extends BaseSettingsController
 
                 ->make(true);
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
     public function paymentSearch($from = '', $till = '')
     {
-        $join = Payment_log::query()
-            ->select('id', 'from', 'to', 'date', 'subject', 'status', 'created_at', 'payment_method', 'order', 'exception');
+        $join = Payment_log::query()->leftJoin('users', 'payment_logs.to', '=', 'users.email')
+            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception','users.email','users.first_name','users.last_name','users.id');
 
         if ($from) {
             $from = $this->DateFormat($from);

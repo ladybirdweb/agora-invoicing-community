@@ -20,8 +20,8 @@ return new class extends Migration
                 $table->string('number');
                 $table->timestamp('date')->nullable();
                 $table->string('discount')->nullable();
-                $table->string('discount_mode');
-                $table->string('coupon_code');
+                $table->string('discount_mode')->nullable();
+                $table->string('coupon_code')->nullable();
                 $table->string('grand_total', 225);
                 $table->string('currency', 225)->default('USD');
                 $table->string('status', 225);

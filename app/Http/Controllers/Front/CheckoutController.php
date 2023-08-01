@@ -17,6 +17,7 @@ use App\Traits\TaxCalculation;
 use App\User;
 use Cart;
 use Darryldecode\Cart\CartCondition;
+use App\Model\Payment\Promotion;
 use Illuminate\Http\Request;
 
 class CheckoutController extends InfoController
@@ -126,8 +127,14 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
+            $discountPrice = null;
+            if(! empty(\Session::get('code'))){
+             $value = Promotion::where('code',\Session::get('code'))->value('value');
+             $discountPrice =  \Session::get('originalPrice') * (intval($value) / 100);
+             \Session::put('discountPrice',$discountPrice);
+              }
 
-            return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
+            return view('themes.default1.front.checkout', compact('content', 'taxConditions','discountPrice'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

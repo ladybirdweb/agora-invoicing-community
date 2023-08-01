@@ -26,12 +26,12 @@ Users
                     <h3 class="card-title">Advance Search</h3>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
+                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
                             </button>
                        
                     </div>
                 </div>
-                <div class="card-body" id="advance-search" style="display:block;">
+                <div class="card-body" id="advance-search" style="display:none;">
                     {!! Form::open(['method'=>'get']) !!}
 
                     <div class="row">
@@ -157,7 +157,7 @@ Users
                             </select>
                         </div>                </div>
                 <!-- /.card-body -->
-                    <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
+                    <button name="Search" type="submit" id="search"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
                     <a href="{!! url('clients') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
             </div>
@@ -216,71 +216,75 @@ Users
 <script type="text/javascript">
 
 
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_user';
-    }).addClass('active');
+                 $('ul.nav-sidebar a').filter(function() {
+                    return this.id == 'all_user';
+                }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_user';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+                // for treeview
+                $('ul.nav-treeview a').filter(function() {
+                    return this.id == 'all_user';
+                }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 
-        $('#user-table').DataTable({
+               $(document).ready(function() {
+              var userTable = $('#user-table').DataTable({
+                processing: true,
+                serverSide: true,
+                stateSave: false,
+                order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]],
+                ajax: {
+                  "url": '{!! route('get-clients', "company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager") !!}',
+                  error: function(xhr) {
+                    if (xhr.status == 401) {
+                      alert('Your session has expired. Please login again to continue.')
+                      window.location.href = '/login';
+                    }
+                  }
+                },
 
-            processing: true,
-            serverSide: true,
-            stateSave: false,
-            // if in request sort field is present, it will take that else default order
-            // need to stringify the sort_order, else it will be considered as a javascript variable
-            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
-            ajax: {
-            "url":  '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
-               error: function(xhr) {
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
-
-            },
-
-          
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch": "Search: ",
-                "sProcessing": ' <div class="overlay dataTables_processing"><i class="fas fa-3x fa-sync-alt fa-spin" style=" margin-top: -25px;"></i><div class="text-bold pt-2">Loading...</div></div>'
-                   
-            },
-            columnDefs: [
-                {
+                "oLanguage": {
+                  "sLengthMenu": "_MENU_ Records per page",
+                  "sSearch": "Search: ",
+                  "sProcessing": ' <div class="overlay dataTables_processing"><i class="fas fa-3x fa-sync-alt fa-spin" style=" margin-top: -25px;"></i><div class="text-bold pt-2">Loading...</div></div>'
+                },
+                columnDefs: [
+                  {
                     targets: 'no-sort',
                     orderable: false,
                     order: []
-                }
-            ],
-            columns: [
-                {data: 'checkbox', name: 'checkbox'},
-                {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
-                {data: 'mobile', name: 'mobile'},
-                {data: 'country', name: 'country'},
-                {data: 'created_at', name: 'created_at'},
-                {data: 'active', name: 'active'},
-                {data: 'action', name: 'action'}
-            ],
-            "fnDrawCallback": function (oSettings) {
-                $(function () {
+                  }
+                ],
+                columns: [
+                  { data: 'checkbox', name: 'checkbox' },
+                  { data: 'name', name: 'name' },
+                  { data: 'email', name: 'email' },
+                  { data: 'mobile', name: 'mobile' },
+                  { data: 'country', name: 'country' },
+                  { data: 'created_at', name: 'created_at' },
+                  { data: 'active', name: 'active' },
+                  { data: 'action', name: 'action' }
+                ],
+                "fnDrawCallback": function(oSettings) {
+                  $(function() {
                     $('[data-toggle="tooltip"]').tooltip({
-                        container : 'body'
+                      container: 'body'
                     });
-                });
-                $('.loader').css('display', 'none');
-            },
-            "fnPreDrawCallback": function (oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
-        });
-    </script>
+                  });
+                  $('.loader').css('display', 'none');
+                },
+                "fnPreDrawCallback": function(oSettings) {
+                  var urlParams = new URLSearchParams(window.location.search);
+                  var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry');
+                  if (hasSearchParams) {
+                    $("#advance-search").css('display','block');
+                  } else {
+                    $("#advance-search").collapse("hide");
+                  }
+
+                  $('.loader').css('display', 'block');
+                }
+              });
+            });
+  </script>
 
 
 @stop
@@ -347,5 +351,6 @@ Users
 
     });
 </script>
+
 
 @stop

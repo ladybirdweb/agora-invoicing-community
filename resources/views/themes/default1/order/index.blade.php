@@ -23,13 +23,13 @@ Orders
 
         <div class="card-tools">
 
-             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
+             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
                             </button>
             
         </div>
     </div>
     <!-- /.box-header -->
-      <div class="card-body" id="advance-search" style="display:block;">
+      <div class="card-body" id="advance-search" style="display:none;">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">
@@ -209,53 +209,54 @@ Orders
         });
     });
 
-        $('#order-table').DataTable({
+           $(document).ready(function() {
+              var orderTable = $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: false,
-            order: [[ 1, "asc" ]],
-
-
+            stateSave: false, // Change stateSave to true
+            order: [[1, "asc"]], // Change the default order if needed
 
             ajax: {
-            "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version" ) !!}',
-               error: function(xhr) {
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
-
+              "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
+              error: function(xhr) {
+                if (xhr.status == 401) {
+                  alert('Your session has expired. Please login again to continue.')
+                  window.location.href = '/login';
+                }
+              }
             },
 
-            // if in request sort field is present, it will take that else default order
-            // need to stringify the sort_order, else it will be considered as a javascript variable
-           
             "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+              "sLengthMenu": "_MENU_ Records per page",
+              "sSearch": "Search: ",
+              "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columns: [
-                {data: 'checkbox', name: 'checkbox'},
-                {data: 'client', name: 'client'},
-                {data: 'number', name: 'number'},
-                {data: 'product_name', name: 'product_name'},
-                {data: 'version', name: 'version'},
-                {data: 'order_status', name: 'order_status'},
-                {data: 'order_date', name: 'order_date'},
-                {data: 'update_ends_at', name: 'update_ends_at'},
-                {data: 'action', name: 'action'}
+              { data: 'checkbox', name: 'checkbox' },
+              { data: 'client', name: 'client' },
+              { data: 'number', name: 'number' },
+              { data: 'product_name', name: 'product_name' },
+              { data: 'version', name: 'version' },
+              { data: 'order_status', name: 'order_status' },
+              { data: 'order_date', name: 'order_date' },
+              { data: 'update_ends_at', name: 'update_ends_at' },
+              { data: 'action', name: 'action' }
             ],
-            "fnDrawCallback": function( oSettings ) {
-                $('[data-toggle="tooltip"]').tooltip({
-                    container : 'body'
-                });
-                $('.loader').css('display', 'none');
+            "fnDrawCallback": function(oSettings) {
+              $('[data-toggle="tooltip"]').tooltip({
+                container: 'body'
+              });
+              $('.loader').css('display', 'none');
+              var urlParams = new URLSearchParams(window.location.search);
+              var hasSearchParams = urlParams.has('order_no') || urlParams.has('product_id') || urlParams.has('expiry') || urlParams.has('expiryTill') || urlParams.has('from') || urlParams.has('till') || urlParams.has('sub_from') || urlParams.has('sub_till') || urlParams.has('ins_not_ins') || urlParams.has('domain') || urlParams.has('p_un') || urlParams.has('act_inst') || urlParams.has('renewal') || urlParams.has('inact_ins') || urlParams.has('version');
+              if (hasSearchParams) {
+                $("#advance-search").css('display','block');
+              }
             },
             "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
+              $('.loader').css('display', 'block');
+            }
+          });
         });
 
         function getProductVersion(val) {

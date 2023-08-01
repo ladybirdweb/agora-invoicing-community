@@ -236,7 +236,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $invoice = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id','invoices.coupon_code')
+                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.coupon_code')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
             if (User::onlyTrashed()->find($invoice->user_id)) {
@@ -407,7 +407,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $coupon = rounding($grand_total * (intval($couponTotal['value']) / 100));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
                 'coupon_code' => $couponTotal['code'], 'discount' => $coupon, 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
-
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
                 $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);

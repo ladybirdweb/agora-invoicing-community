@@ -236,7 +236,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $invoice = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
+                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id','invoices.coupon_code')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
             if (User::onlyTrashed()->find($invoice->user_id)) {
@@ -304,8 +304,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = round($grand_total);
             }
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
+            $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => $currency, ]);
+                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon']);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
@@ -403,8 +404,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $user = User::where('id', $user_id)->select('state', 'country')->first();
             $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
             $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
+            $coupon = rounding($grand_total * (intval($couponTotal['value']) / 100));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-                'coupon_code' => $couponTotal['code'], 'discount' => $couponTotal['value'], 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
+                'coupon_code' => $couponTotal['code'], 'discount' => $coupon, 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
+
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
                 $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);

@@ -620,13 +620,14 @@ class SettingsController extends BaseSettingsController
                     return getDateHtml($date);
                 })
                 ->addColumn('user', function ($model) {
-                $user = User::where('email', $model->to)->select('first_name', 'last_name', 'id')->first();
-                if ($user) {
-                return '<a href=' . url('clients/' . $user->id) . '>' . ucfirst($user->first_name) . ' ' . ucfirst($user->last_name) . '</a>';
-                }
-                return '';
+                    $user = User::where('email', $model->to)->select('first_name', 'last_name', 'id')->first();
+                    if ($user) {
+                        return '<a href='.url('clients/'.$user->id).'>'.ucfirst($user->first_name).' '.ucfirst($user->last_name).'</a>';
+                    }
+
+                    return '';
                 })
-   
+
                 ->addColumn('paymentmethod', function ($model) {
                     return ucfirst($model->payment_method);
                 })
@@ -655,7 +656,7 @@ class SettingsController extends BaseSettingsController
                 ->filterColumn('user', function ($query, $keyword) {
                     $query->whereRaw("concat(users.first_name, ' ', users.last_name) like ?", ["%$keyword%"]);
                 })
-    
+
                 ->filterColumn('status', function ($query, $keyword) {
                     $sql = '`status` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -672,6 +673,7 @@ class SettingsController extends BaseSettingsController
                 ->make(true);
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -679,7 +681,7 @@ class SettingsController extends BaseSettingsController
     public function paymentSearch($from = '', $till = '')
     {
         $join = Payment_log::query()->leftJoin('users', 'payment_logs.to', '=', 'users.email')
-            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception','users.email','users.first_name','users.last_name','users.id');
+            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'users.email', 'users.first_name', 'users.last_name', 'users.id');
 
         if ($from) {
             $from = $this->DateFormat($from);

@@ -21,13 +21,13 @@ Invoices
         <h3 class="card-title">Advance Search</h3>
 
                 <div class="card-tools">
-                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-minus"></i>
+                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
                             </button>
                    
                 </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body" id="advance-search" style="display:block;">
+    <div class="card-body" id="advance-search" style="display:none;">
 
         {!! Form::open(['method'=>'get']) !!}
 
@@ -110,32 +110,12 @@ Invoices
                     <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search">&nbsp;</i>{!!Lang::get('Search')!!}</button>
                      &nbsp;&nbsp;
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                     <button name="Reset" type="submit" id="reset" class="btn btn-secondary"><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
-
-
-                </div>
+                   <a class="btn btn-secondary" href="{!! url('/invoices') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    </div>
             </div>
 
 
         </div>
-            <script type="text/javascript">
-                    $(function () {
-                    $('#reset').on('click', function () {
-                      
-                        $('#name').val('');
-                        $('#invoice_no').val('');
-                        $('#status').val('');
-                        $('#currency').val('');
-                        $('.from').val('');
-                        $('.till').val('');
-                      
-                    
-                          
-                    });
-                });
-                </script>
-
-
         {!! Form::close() !!}
     </div>
         </div>
@@ -196,55 +176,63 @@ Invoices
 <script type="text/javascript">
 
 
-        $('#invoice-table').DataTable({
+     $(document).ready(function() {
+          var invoiceTable = $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: false,
-            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
+            stateSave: true, // Change stateSave to true
+            order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]], // Change the default order if needed
+
             ajax: {
-            "url":  '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
-               error: function(xhr) {
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
-
+              "url": '{!! route('get-invoices', "name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
+              error: function(xhr) {
+                if (xhr.status == 401) {
+                  alert('Your session has expired. Please login again to continue.')
+                  window.location.href = '/login';
+                }
+              }
             },
-
 
             "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+              "sLengthMenu": "_MENU_ Records per page",
+              "sSearch": "Search: ",
+              "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
-                columnDefs: [
-                { 
-                    targets: 'no-sort', 
-                    orderable: false,
-                    order: []
-                }
+            columnDefs: [
+              {
+                targets: 'no-sort',
+                orderable: false,
+                order: []
+              }
             ],
             columns: [
-                 {data: 'checkbox', name: 'checkbox'},
-                {data: 'user_id', name: 'user_id'},
-                {data: 'number', name: 'number'},
-                {data: 'date', name: 'created_at'},
-                {data: 'grand_total', name: 'grand_total'},
-                {data: 'status', name: 'status'},
-                {data: 'action', name: 'action'}
+              { data: 'checkbox', name: 'checkbox' },
+              { data: 'user_id', name: 'user_id' },
+              { data: 'number', name: 'number' },
+              { data: 'date', name: 'created_at' },
+              { data: 'grand_total', name: 'grand_total' },
+              { data: 'status', name: 'status' },
+              { data: 'action', name: 'action' }
             ],
+            "fnDrawCallback": function(oSettings) {
+              $('[data-toggle="tooltip"]').tooltip({
+                container: 'body'
+              });
+              $('.loader').css('display', 'none');
 
-            "fnDrawCallback": function( oSettings ) {
-                $('[data-toggle="tooltip"]').tooltip({
-                    container : 'body'
-                });
-                $('.loader').css('display', 'none');
+              // Check the URL parameters after DataTables redraws
+              var urlParams = new URLSearchParams(window.location.search);
+              var hasSearchParams = urlParams.has('name') || urlParams.has('invoice_no') || urlParams.has('status') || urlParams.has('currency_id') || urlParams.has('from') || urlParams.has('till');
+              if (hasSearchParams) {
+                $("#advance-search").css('display','block');
+              }
             },
             "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
+              $('.loader').css('display', 'block');
+            }
+          });
         });
+
     </script>
 
 

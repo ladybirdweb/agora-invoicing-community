@@ -212,10 +212,10 @@ class TemplateController extends Controller
             $plan_form.
             \Form::hidden('id', $id);
             $product = Product::find($id);
-            if($product->status == '1')
-            {
-                return "";
+            if ($product->status == '1') {
+                return '';
             }
+
             return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

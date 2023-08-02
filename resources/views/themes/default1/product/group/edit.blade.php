@@ -135,6 +135,29 @@ Edit Group
 
                     </tr>
 
+                           <tr>
+
+                        <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
+
+                                                {!! Form::hidden('status', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if($group->status==1){
+                                                 $value = 'true';   
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('status',1,$value) !!}  {{Lang::get('message.check-this-box_to_toggle_status')}}</p>
+
+                               
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
 
 
                     {!! Form::close() !!}

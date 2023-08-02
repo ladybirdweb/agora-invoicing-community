@@ -20,38 +20,38 @@ main
 
 @section('content')
 <style>
-  .highlight_batch {
-    background: green;
-    padding: 0px 5px;
-    font-size: smaller;
-    color: #FFF;
-    border-radius: 16px;
-    border-bottom-left-radius: 0;
-    position: absolute;
-    right: -20px;
-    top: -25px;
-}
-.strike
-{
-    text-decoration: line-through;
-    font-weight: normal;
-    font-size: 20px;
-    color: #212529;
-    font-weight: 300;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-    .subscription {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
+      .highlight_batch {
+        background: green;
+        padding: 0px 5px;
+        font-size: smaller;
+        color: #FFF;
+        border-radius: 16px;
+        border-bottom-left-radius: 0;
+        position: absolute;
+        right: -20px;
+        top: -25px;
     }
-         .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
+    .strike
+    {
+        text-decoration: line-through;
+        font-weight: normal;
+        font-size: 20px;
+        color: #212529;
+        font-weight: 300;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+        .subscription {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        }
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
         }
 
         .switch input {display:none;}
@@ -109,20 +109,41 @@ main
         .pricing-table .plan .plan-price .price-label {
             text-transform: lowercase;
         }
-</style>
 
+        .cantact
+        {
+            font-size: 2.7 rem !important;
+        }
+        .sales
+        {
+            margin-top: -20px !important;
+        }
+
+</style>
+      <?php
+     $templates = preg_replace(
+        '/<span\s+class="price">Custom Pricing<\/span>/',
+        '<span class="price cantact" >Custom Pricing</span>',
+        $templates
+    );
+  ?>
 <div class="row">
 
  <div class="col-md-12">
-@if($description == "Per Month")
-  <div class="row mb-5">
+
+
+
+
+         @if($status->status == "1")
+         
+            <div class="row mb-5">
             <div class="col text-center">
               <div class="d-flex justify-content-center align-items-center">
                 <div class="text-3 p-relative bottom-7">Yearly</div>
                 <div class="px-2">
                   <label class="switch toggle_event_editing">
 
-                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" class="form-check-input checkbox" checked>
+                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" class="form-check-input checkbox">
                     <span class="slider round"></span>
                   </label>
                   
@@ -132,7 +153,10 @@ main
             </div>
           </div>
           @endif
-           <h4 style="text-align: center;">{{$tagline}} </h4>
+        <h4 style="text-align: center;">{{$tagline}} </h4>
+
+       
+ 
         <div class="pricing-table mb-4">
         {!! html_entity_decode($templates) !!}
    
@@ -152,17 +176,6 @@ main
 
 
 </div>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('.checkbox').on('change', function() {
-    var isChecked = $(this).is(':checked');
-    
-    // Store the checked value in a cookie
-    document.cookie = 'isChecked=' + isChecked + '; path=/';
-    
-  });
-});
-</script>
 
 @stop
 

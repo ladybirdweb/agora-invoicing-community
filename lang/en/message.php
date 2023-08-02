@@ -710,4 +710,7 @@ return [
     'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
     'add-demo' => 'Demo Page',
 
+    'toggle_status' => 'Price Frequency',
+    'check-this-box_to_toggle_status' => 'Check this box if you want to see the monthly/yearly price in templates',
+
 ];

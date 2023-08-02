@@ -709,4 +709,7 @@ return [
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
     'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
 
+    'toggle_status' => 'Price Frequency',
+    'check-this-box_to_toggle_status' => 'Check this box if you want to see the monthly/yearly price in templates',
+
 ];

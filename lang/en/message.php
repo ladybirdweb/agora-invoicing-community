@@ -716,4 +716,7 @@ return [
     'mail_verify' => 'Number of Email Verification Attempts',
     'mobile_verify' => 'Number of Mobile Verification Attempts',
 
+    'toggle_status' => 'Price Frequency',
+    'check-this-box_to_toggle_status' => 'Check this box if you want to see the monthly/yearly price in templates',
+
 ];

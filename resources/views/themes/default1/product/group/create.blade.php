@@ -130,6 +130,22 @@ Create Group
 
                     </tr>
 
+                          <tr>
+
+                        <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
+                        <td>
+                             <p>{!! Form::hidden('status',0) !!}</p>
+                            <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
+
+                               
+                                <p>{!! Form::checkbox('status',1) !!}  {{Lang::get('message.check-this-box_to_toggle_status')}}</p>
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
 
 
                    <!--  <tr>

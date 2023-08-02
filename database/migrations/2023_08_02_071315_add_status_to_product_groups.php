@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-         if (! Schema::hasColumn('product_groups', 'status')) {
-        Schema::table('product_groups', function (Blueprint $table) {
-            $table->string('status')->default(0);
-        });
+        if (! Schema::hasColumn('product_groups', 'status')) {
+            Schema::table('product_groups', function (Blueprint $table) {
+                $table->string('status')->default(0);
+            });
+        }
     }
-   }
 
     /**
      * Reverse the migrations.

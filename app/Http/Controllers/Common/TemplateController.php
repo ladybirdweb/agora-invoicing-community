@@ -211,7 +211,11 @@ class TemplateController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
-
+            $product = Product::find($id);
+            if($product->status == '1')
+            {
+                return "";
+            }
             return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -231,7 +235,7 @@ class TemplateController extends Controller
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
             if ($plans->count() == 0) {
-                return 'Contact Sales';
+                return 'Custom Pricing';
             }
 
             $prices = [];

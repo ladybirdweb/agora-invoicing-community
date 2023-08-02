@@ -316,75 +316,75 @@ class PageController extends Controller
         }
     }
 
-        public function transform($type, $data, $trasform = [])
-        {
-            $config = \Config::get("transform.$type");
-            $result = '';
-            $array = [];
-            foreach ($trasform as $trans) {
-                $array[] = $this->checkConfigKey($config, $trans);
+    public function transform($type, $data, $trasform = [])
+    {
+        $config = \Config::get("transform.$type");
+        $result = '';
+        $array = [];
+        foreach ($trasform as $trans) {
+            $array[] = $this->checkConfigKey($config, $trans);
+        }
+        $c = count($array);
+        for ($i = 0; $i < $c; $i++) {
+            $array1 = $this->keyArray($array[$i]);
+            $array2 = $this->valueArray($array[$i]);
+            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
+            $id = Product::where('name', $array2[0])->value('id');
+            $offerprice = $this->getOfferprice($id);
+            $description = self::getPriceDescription($id);
+            if (! isset($offerprice) || $offerprice == $array2[1] || $offerprice == '' || $offerprice == null) {
+                $data = str_replace('<span class="strike">{{strike-price}}</span><br>', '', $data);
+                $data = str_replace('{{strike-priceyear}}', '', $data);
+            } else {
+                $offerprice = $this->getPayingprice($id);
+                $offerpriceYear = $this->getstrikePriceYear($id);
+                $strikePrice = $this->YearlyAmount($id);
+                $data = str_replace('{{price}}', $offerprice, $data);
+                $data = str_replace('{{strike-price}}', $array2[1], $data);
+                $data = str_replace('{{price-year}}', $offerpriceYear, $data);
+                $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
             }
-            $c = count($array);
-            for ($i = 0; $i < $c; $i++) {
-                $array1 = $this->keyArray($array[$i]);
-                $array2 = $this->valueArray($array[$i]);
-                $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
-                $id = Product::where('name', $array2[0])->value('id');
-                $offerprice = $this->getOfferprice($id);
-                $description = self::getPriceDescription($id);
-                if (! isset($offerprice) || $offerprice == $array2[1] || $offerprice == '' || $offerprice == null) {
-                    $data = str_replace('<span class="strike">{{strike-price}}</span><br>', '', $data);
-                    $data = str_replace('{{strike-priceyear}}', '', $data);
-                } else {
-                    $offerprice = $this->getPayingprice($id);
-                    $offerpriceYear = $this->getstrikePriceYear($id);
-                    $strikePrice = $this->YearlyAmount($id);
-                    $data = str_replace('{{price}}', $offerprice, $data);
-                    $data = str_replace('{{strike-price}}', $array2[1], $data);
-                    $data = str_replace('{{price-year}}', $offerpriceYear, $data);
-                    $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
-                }
-                $result .= str_replace($array1, $array2, $data);
-            }
-
-            return $result;
+            $result .= str_replace($array1, $array2, $data);
         }
 
-   public function getPayingprice($id)
-   {
-       $countryCheck = true;
-       try {
-           $cost = 'Free';
-           $plans = Plan::where('product', $id)->get();
+        return $result;
+    }
 
-           $prices = [];
-           if ($plans->count() > 0) {
-               foreach ($plans as $plan) {
-                   $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                   $planDetails = userCurrencyAndPrice('', $plan);
-                   $price = $planDetails['plan']->add_price;
-                   $symbol = $planDetails['symbol'];
-                   $currency = $planDetails['currency'];
+    public function getPayingprice($id)
+    {
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
 
-                   if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                       $price = $price - ($offerprice / 100 * $price);
-                   }
+            $prices = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $plan) {
+                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $price = $planDetails['plan']->add_price;
+                    $symbol = $planDetails['symbol'];
+                    $currency = $planDetails['currency'];
 
-                   $prices[] = $price;
-                   $prices[] .= $symbol;
-                   $prices[] .= $currency;
-               }
+                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                        $price = $price - ($offerprice / 100 * $price);
+                    }
 
-               $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-               $finalPrice = str_replace($prices[1], '', $format);
-               $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-           }
+                    $prices[] = $price;
+                    $prices[] .= $symbol;
+                    $prices[] .= $currency;
+                }
 
-           return $cost;
-       } catch (\Exception $ex) {
-           return redirect()->back()->with('fails', $ex->getMessage());
-       }
-   }
+                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+            }
+
+            return $cost;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 
     /**
      * Get Page Template when Group in Store Dropdown is
@@ -504,17 +504,17 @@ class PageController extends Controller
         }
     }
 
-        public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
-        {
-            $cost = $cost * 12;
-            if (isset($offer) && $offer !== '' && $offer !== null) {
-                $cost = $cost - ($offer / 100 * $cost);
-            }
-            $price1 = currencyFormat($cost, $code = $currency);
-            $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
-
-            return $price;
+    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
+    {
+        $cost = $cost * 12;
+        if (isset($offer) && $offer !== '' && $offer !== null) {
+            $cost = $cost - ($offer / 100 * $cost);
         }
+        $price1 = currencyFormat($cost, $code = $currency);
+        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
+        return $price;
+    }
 
     public function prices($id)
     {
@@ -556,32 +556,32 @@ class PageController extends Controller
         return $offerprice;
     }
 
-public function YearlyAmount($id)
-{
-    $countryCheck = true;
-    try {
-        $cost = 'Free';
-        $plans = Plan::where('product', $id)->get();
+    public function YearlyAmount($id)
+    {
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
 
-        $prices = [];
-        if ($plans->count() > 0) {
-            foreach ($plans as $plan) {
-                $planDetails = userCurrencyAndPrice('', $plan);
-                $prices[] = $planDetails['plan']->add_price;
-                $prices[] .= $planDetails['symbol'];
-                $prices[] .= $planDetails['currency'];
+            $prices = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $plan) {
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
+                }
+                $prices[0] = $prices[0] * 12;
+                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-            $prices[0] = $prices[0] * 12;
-            $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-            $finalPrice = str_replace($prices[1], '', $format);
-            $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-        }
 
-        return $cost;
-    } catch (\Exception $ex) {
-        return redirect()->back()->with('fails', $ex->getMessage());
+            return $cost;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
-}
 
     /**
      * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.

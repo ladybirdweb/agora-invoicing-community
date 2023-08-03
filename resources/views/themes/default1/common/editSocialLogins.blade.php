@@ -53,11 +53,11 @@ Social Logins
                     <input type="hidden" name="type" value="{{old('title', $socialLogins->type)}}">
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Client Secret</label>
-                        <input type="text" class="form-control" id="pwd" value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
+                        <input type="password" class="form-control" id="pwd" value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Redirect URL</label>
-                        <input type="password" class="form-control" id="pwd" value="{{old('title', $socialLogins->redirect_url)}}" name="redirect_url">
+                        <input type="text" class="form-control" id="pwd" value="{{old('title', $socialLogins->redirect_url)}}" name="redirect_url">
                     </div>
 
                     <label for="email" class="form-label">Activate Login via Google</label>

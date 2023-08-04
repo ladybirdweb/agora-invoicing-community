@@ -16,25 +16,29 @@ Social Logins
 @stop
 @section('content')
 
+<?php
+$httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
 
+
+?>
 <div class="row">
     <div class="col-md-12">
         @if($message = Session::get('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ $message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ $message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         @endif
         {!! Session::forget('error') !!}
         @if($message = Session::get('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ $message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> {{ $message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         @endif
         {!! Session::forget('success') !!}
         <div class="card card-secondary card-outline">
@@ -57,13 +61,13 @@ Social Logins
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Redirect URL</label>
-                        <input type="text" class="form-control" id="pwd" value="{{old('title', $socialLogins->redirect_url)}}" name="redirect_url">
+                        <input type="text" class="form-control" id="pwd" value="{{ url('/auth/callback/' . $socialLogins->type) }}" name="redirect_url">
                     </div>
 
                     <label for="email" class="form-label">Activate Login via Google</label>
                     @if($socialLogins->status == 1)
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status" checked>Yes
+                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1" name="status" checked>Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
                     <div class="form-check">
@@ -71,9 +75,9 @@ Social Logins
                         <label class="form-check-label" for="radio2"></label>
                     </div>
                     @endif
-                     @if($socialLogins->status == 0)
+                    @if($socialLogins->status == 0)
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1"  name="status">Yes
+                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1" name="status">Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
                     <div class="form-check">

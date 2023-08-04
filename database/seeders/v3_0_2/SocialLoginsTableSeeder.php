@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\SocialLogin;
 
 class SocialLoginsTableSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class SocialLoginsTableSeeder extends Seeder
      */
     public function run()
     {
-       $social_logins = [
+        $social_logins = [
             [
                 'type' => 'google',
                 'client_id' => '',
@@ -44,7 +44,12 @@ class SocialLoginsTableSeeder extends Seeder
                 'status' => 1,
             ],
         ];
-       \DB::table('social_logins')->insert($social_logins);
+
+        foreach ($social_logins as $login) {
+            SocialLogin::updateOrCreate(
+                ['type' => $login['type']],
+                $login
+            );
+        }
     }
-    
 }

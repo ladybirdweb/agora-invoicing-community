@@ -23,28 +23,28 @@ class DatabaseSeeder extends Seeder
                 'client_id' => '',
                 'client_secret' => '',
                 'redirect_url' => '',
-                'status' => 1,
+                'status' => 0,
             ],
             [
                 'type' => 'Github',
                 'client_id' => '',
                 'client_secret' => '',
                 'redirect_url' => '',
-                'status' => 1,
+                'status' => 0,
             ],
             [
                 'type' => 'Twitter',
                 'client_id' => '',
                 'client_secret' => '',
                 'redirect_url' => '',
-                'status' => 1,
+                'status' => 0,
             ],
             [
                 'type' => 'LinkedIn',
                 'client_id' => '',
                 'client_secret' => '',
                 'redirect_url' => '',
-                'status' => 1,
+                'status' => 0,
             ],
         ];
        foreach ($social_logins as $data) {

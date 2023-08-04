@@ -99,8 +99,7 @@ Invoice
                             <br>
                             @endif
                         </div><!-- /.col -->
-                        <div class="col-sm-4 invoice-col" style=" position: relative;
-                        top: 1px;left: 21%;">
+                        <div class="col-sm-4 invoice-col text-right">
                             <b>Invoice   #{{$invoice->number}}</b><br>
                            
                         </div><!-- /.col -->

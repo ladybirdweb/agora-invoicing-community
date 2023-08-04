@@ -52,16 +52,16 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
 
                     <div class="mb-3">
                         <label for="id" class="form-label">Client Id</label>
-                        <input type="text" class="form-control" id="id" required value="{{old('title', $socialLogins->client_id)}}" name="client_id">
+                        <input type="text" class="form-control" id="id" value="{{old('title', $socialLogins->client_id)}}" name="client_id">
                     </div>
                     <input type="hidden" name="type" value="{{old('title', $socialLogins->type)}}">
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Client Secret</label>
-                        <input type="password" class="form-control" id="pwd" required value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
+                        <input type="password" class="form-control" id="pwd" value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Redirect URL</label>
-                        <input type="text" class="form-control" id="pwd" disabled value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}" name="redirect_url">
+                        <input type="text" class="form-control" id="pwd" value="{{ url('/auth/callback/' . $socialLogins->type) }}" name="redirect_url">
                     </div>
 
                     <label for="email" class="form-label">Activate Login via Google</label>

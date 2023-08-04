@@ -61,7 +61,7 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Redirect URL</label>
-                        <input type="text" class="form-control" id="pwd" value="{{ url('/auth/callback/' . $socialLogins->type) }}" name="redirect_url">
+                        <input type="text" class="form-control" id="pwd" value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}" name="redirect_url">
                     </div>
 
                     <label for="email" class="form-label">Activate Login via Google</label>

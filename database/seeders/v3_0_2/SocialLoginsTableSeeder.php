@@ -39,7 +39,7 @@ class SocialLoginsTableSeeder extends Seeder
             [
                 'type' => 'LinkedIn',
                 'client_id' => '',
-                'client_secret' => 't',
+                'client_secret' => '',
                 'redirect_url' => '',
                 'status' => 1,
             ],

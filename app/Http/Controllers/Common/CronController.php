@@ -427,6 +427,7 @@ class CronController extends BaseCronController
                 if ($productType->type == '4' && $price == '0') {
                     Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
+                $subscription = $subscription->refresh();
                 $status = $subscription->is_subscribed;
                 if ($status == '1' && $subscription->rzp_subscription == '0') {
                     //create invoice

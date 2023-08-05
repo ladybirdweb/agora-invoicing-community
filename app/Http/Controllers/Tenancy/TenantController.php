@@ -283,11 +283,12 @@ class TenantController extends Controller
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
+                    $contact = getContactData();
                     $email = (new Email())
                         ->from($settings->email)
                         ->to($user)
                         ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name]));
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,'contact' => $contact['contact'],'logo' => $contact['logo']]));
 
                     $mailer->send($email);
 

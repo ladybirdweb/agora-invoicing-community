@@ -283,6 +283,7 @@ class AuthController extends BaseAuthController
 
     public function salesManagerMail($user, $bcc = [])
     {
+        $contact = getContactData();
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->first();
         $templates = new \App\Model\Common\Template();
@@ -313,7 +314,9 @@ class AuthController extends BaseAuthController
                      'manager_email' => $manager->email,
                      'manager_code' => $manager->mobile_code,
                      'manager_mobile' => $manager->mobile,
-                     'manager_skype' => $manager->skype, ]));
+                     'manager_skype' => $manager->skype, 
+                     'contact' => $contact['contact'],
+                     'logo' => $contact['logo'],]));
 
                 $mailer->send($email);
                 $mail->email_log_success($setting->email, $user->email, $template->name, $html);
@@ -325,6 +328,7 @@ class AuthController extends BaseAuthController
 
     public function accountManagerMail($user, $bcc = [])
     {
+        $contact = getContactData();
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->first();
         $templates = new \App\Model\Common\Template();
@@ -354,7 +358,9 @@ class AuthController extends BaseAuthController
              'manager_email' => $manager->email,
              'manager_code' => $manager->mobile_code,
              'manager_mobile' => $manager->mobile,
-             'manager_skype' => $manager->skype, ]));
+             'manager_skype' => $manager->skype, 
+             'contact' => $contact['contact'],
+             'logo' => $contact['logo'],]));
 
                 $mailer->send($email);
                 $mail->email_log_success($setting->email, $user->email, $template->name, $html);

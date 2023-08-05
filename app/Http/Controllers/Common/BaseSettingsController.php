@@ -180,36 +180,28 @@ class BaseSettingsController extends PaymentSettingsController
         ];
 
         $expiryDays = [
-            '120' => '120 Days',
-            '90' => '90 Days',
-            '60' => '60 Days',
-            '30' => '30 Days',
-            '15' => '15 Days',
-            '5' => '5 Days',
-            '3' => '3 Days',
-            '1' => '1 Day',
-            '0' => 'On the Expiry Day',
+            '30' => '30 days',
+            '15' => '15 days',
+            '7' => '7 days',
+            '1' => '1 day',
         ];
 
         $Subs_expiry = [
             '30' => '30 days',
             '15' => '15 days',
-            '5' => '5 days',
-            '1' => '1 days',
+            '7' => '7 days',
+            '1' => '1 day',
         ];
 
         $post_expiry = [
             '30' => '30 days',
             '15' => '15 days',
             '5' => '5 days',
-            '1' => '1 days',
+            '1' => '1 day',
         ];
         $cloudDays = [
-            '120' => '120 Days',
-            '90' => '90 Days',
-            '60' => '60 Days',
-            '30' => '30 Days',
-            '15' => '15 Days',
+            '30' => '30 days',
+            '15' => '15 days',
             '7' => '7 days',
             '1' => '1 day',
         ];

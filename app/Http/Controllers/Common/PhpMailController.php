@@ -13,6 +13,7 @@ use App\Payment_log;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Model\Common\StatusSetting;
 use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
@@ -75,115 +76,9 @@ class PhpMailController extends Controller
     public function NotifyMailing()
     {
         try {
-            $this->notifyFreeTrail();
-            //Notification for After expiry
-            $this->mailSendForCloud();
-            //Delete cloud
-            $this->deleteCloudDetails();
-        } catch(\Exception $ex) {
-            \Log::error($ex->getMessage());
-        }
-    }
-
-    public function notifyFreeTrail()
-    {
-        try {
-            $expiredDate = now()->subDays(7);
-            $today = new Carbon('today');
-            $sub = Subscription::whereIn('product_id', [117, 119])->where('update_ends_at', '<', $expiredDate)->get();
-
-            foreach ($sub as $data) {
-                $cron = new CronController();
-                $user = \DB::table('users')->find($data->user_id);
-                $product = Product::find($data->product_id);
-                $order = $cron->getOrderById($data->order_id);
-                if ($order) {
-                    $invoice = $cron->getInvoiceByOrderId($data->order_id);
-                    $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
-
-                    //check in the settings
-                    $settings = new \App\Model\Common\Setting();
-                    $settings = $settings->where('id', 1)->first();
-
-                    //template
-                    $template = new \App\Model\Common\Template();
-                    $temp_id = $settings->where('id', 1)->value('Free_trail_gonna_expired');
-                    $template = $template->where('id', $temp_id)->first();
-
-                    $mail = new \App\Http\Controllers\Common\PhpMailController();
-                    $mailer = $mail->setMailConfig($settings);
-                    $url = url('my-orders');
-
-                    $email = (new Email())
-                             ->from($settings->email)
-                             ->to($user->email)
-                              ->subject($template->name)
-                              ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                                  'product' => $product->name,
-                                  'number' => $order->number,
-                                  'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                                  'url' => $url, ]));
-
-                    $mailer->send($email);
-                }
-            }
-        } catch(\Exception $ex) {
-            \Log::error($ex->getMessage());
-        }
-    }
-
-    public function getCloudSubscriptions()
-    {
-        $day = ExpiryMailDay::value('cloud_days');
-        $today = new Carbon('today');
-        $sub = Subscription::whereIn('product_id', [117, 119])
-                            ->whereDate('update_ends_at', '<', $today)
-                            ->whereBetween('update_ends_at', [Carbon::now()->subDays($day)->toDateString(), Carbon::now()->toDateString()])
-                            ->get();
-
-        return $sub;
-    }
-
-    public function mailSendForCloud()
-    {
-        try {
-            $sub_data = $this->getCloudSubscriptions();
-            if ($sub_data) {
-                foreach ($sub_data as $data) {
-                    $cron = new CronController();
-                    $user = \DB::table('users')->find($data->user_id);
-                    $product = Product::find($data->product_id);
-                    $order = $cron->getOrderById($data->order_id);
-                    if ($order) {
-                        $invoice = $cron->getInvoiceByOrderId($data->order_id);
-                        $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
-
-                        //check in the settings
-                        $settings = new \App\Model\Common\Setting();
-                        $settings = $settings->where('id', 1)->first();
-
-                        //template
-                        $template = new \App\Model\Common\Template();
-                        $temp_id = $settings->where('id', 1)->value('free_trail_expired');
-                        $template = $template->where('id', $temp_id)->first();
-
-                        $mail = new \App\Http\Controllers\Common\PhpMailController();
-                        $mailer = $mail->setMailConfig($settings);
-                        $url = url('my-orders');
-
-                        $email = (new Email())
-                                 ->from($settings->email)
-                                 ->to($user->email)
-                                  ->subject($template->name)
-                                  ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                                      'product' => $product->name,
-                                      'number' => $order->number,
-                                      'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                                      'url' => $url, ]));
-
-                        $mailer->send($email);
-                    }
-                }
+             $status = StatusSetting::value('cloud_mail_status');
+             if($status == 1){
+             $this->deleteCloudDetails();
             }
         } catch(\Exception $ex) {
             \Log::error($ex->getMessage());
@@ -193,15 +88,17 @@ class PhpMailController extends Controller
     public function deleteCloudDetails()
     {
         try {
+            $contact = getContactData();
             $day = ExpiryMailDay::value('cloud_days');
             $today = new Carbon('today');
             $sub = Subscription::whereNotNull('update_ends_at')
-        ->whereIn('product_id', [117, 119])
-        ->where(function ($query) use ($today, $day) {
-            $query->whereDate('update_ends_at', '<', $today)
-                ->orWhereDate('update_ends_at', $today->subDays($day + 1));
-        })
-        ->get();
+            ->whereIn('product_id', [117, 119])
+            ->where(function ($query) use ($today, $day) {
+                $query->whereDate('update_ends_at', '<', $today)
+                    ->orWhereDate('update_ends_at', Carbon::now()->subDays($day)->toDateString());
+            })
+            ->get();
+
 
             foreach ($sub as $data) {
                 $cron = new CronController();
@@ -214,15 +111,15 @@ class PhpMailController extends Controller
                 }
                 $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-                if (is_null($id) || $id == 'billing.faveocloud.com') {
-                    $order->delete();
-                } else {
-                    //Destroy the tenat
-                    $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
+                // if (is_null($id) || $id == 'billing.faveocloud.com') {
+                //     $order->delete();
+                // } else {
+                //     //Destroy the tenat
+                //     $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
 
-                    //Mail Sending
+                //     //Mail Sending
 
-                    if ($destroy->status() == 200) {
+                    // if ($destroy->status() == 200) {
                         //check in the settings
                         $settings = new \App\Model\Common\Setting();
                         $settings = $settings->where('id', 1)->first();
@@ -243,12 +140,14 @@ class PhpMailController extends Controller
                                   ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
                                       'product' => $product->name,
                                       'number' => $order->number,
+                                      'contact' => $contact['contact'],
+                                      'logo' => $contact['logo'],
                                       'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                                   ]));
                         $mailer->send($email);
-                        $order->delete();
-                    }
-                }
+                //         $order->delete();
+                //     }
+                // }
             }
         } catch(\Exception $e) {
             \Log::error($ex->getMessage());
@@ -402,6 +301,12 @@ class PhpMailController extends Controller
         $total = $this->checkElement('total', $templatevariables);
         $exceptionMessage = $this->checkElement('exception', $templatevariables);
         $message = $this->checkElement('message', $templatevariables);
+        $deletionDate = $this->checkElement('deletionDate', $templatevariables);
+        $product_type = $this->checkElement('product_type', $templatevariables);
+        $contact = $this->checkElement('contact', $templatevariables);
+        $logo = $this->checkElement('logo', $templatevariables);
+        $orderHeading = $this->checkElement('orderHeading', $templatevariables);
+
 
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;
@@ -421,6 +326,7 @@ class PhpMailController extends Controller
         $variables['{$manager_skype}'] = $manager_skype;
         $variables['{$contact_us}'] = $contact_us;
 
+
         $variables['{$serialkeyurl}'] = $serialkeyurl;
         $variables['{$downloadurl}'] = $downloadurl;
         $variables['{$invoiceurl}'] = $invoiceurl;
@@ -432,6 +338,11 @@ class PhpMailController extends Controller
         $variables['{$total}'] = $total;
         $variables['{$exception}'] = $exceptionMessage;
         $variables['{$message}'] = $message;
+        $variables['{$deletionDate}'] = $deletionDate;
+        $variables['{$product_type}'] = $product_type;
+        $variables['{$contact}'] = $contact;
+        $variables['{$logo}'] = $logo;
+        $variables['{$orderHeading}'] = $orderHeading;
 
         return $variables;
     }

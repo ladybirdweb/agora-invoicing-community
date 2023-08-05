@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        TemplateType::create(['id' => 12, 'name' => 'autosubscription_going_to_end']);
+        TemplateType::create(['id' => 12, 'name' => 'auto_subscription_going_to_end']);
         TemplateType::create(['id' => 13, 'name' => 'payment_successfull']);
         TemplateType::create(['id' => 14, 'name' => 'payment_failed']);
         TemplateType::create(['id' => 15, 'name' => 'card_failed']);

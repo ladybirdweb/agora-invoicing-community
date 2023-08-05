@@ -12,6 +12,7 @@ use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Crypt;
+use App\Model\Common\TemplateType;
 use Symfony\Component\Mime\Email;
 
 class BaseOrderController extends ExtendedOrderController
@@ -274,17 +275,17 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
+        $contact = getContactData();
         $value = Product::where('name', $product)->value('type');
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);
         $templates = new \App\Model\Common\Template();
-        $temp_id = ($value != '4') ? $setting->order_mail : '16';
+        $temp_id = TemplateType::where('name','order_mail')->value('id');
 
-        $template = $templates->where('id', $temp_id)->first();
+        $template = $templates->where('type', $temp_id)->first();
         $html = $template->data;
 
         try {
-            if ($value == '4') {
                 $knowledgeBaseUrl = $setting->company_url;
                 $type = '';
                 if ($template) {
@@ -292,54 +293,31 @@ class BaseOrderController extends ExtendedOrderController
                     $temp_type = new \App\Model\Common\TemplateType();
                     $type = $temp_type->where('id', $type_id)->first()->name;
                 }
-                $url = url('my-orders');
+                $orderHeading = ($value != '4') ? 'Download' : 'deploy';
+                $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
 
                 $email = (new Email())
                         ->from($setting->email)
                         ->to($user->email)
                         ->subject($template->name)
                         ->html($mail->mailTemplate($template->data, $templatevariables = [
+                            'orderHeading' => $orderHeading,
                             'name' => $user->first_name.' '.$user->last_name,
                             'serialkeyurl' => $myaccounturl,
-                            'url' => $url,
+                            'downloadurl' => $orderUrl,
                             'invoiceurl' => $invoiceurl,
                             'product' => $product,
                             'number' => $order->number,
                             'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
                             'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
                             'knowledge_base' => $knowledgeBaseUrl,
+                            'contact' => $contact['contact'],
+                            'logo' => $contact['logo'],
 
                         ]));
 
                 $mailer->send($email);
-            } else {
-                $knowledgeBaseUrl = $setting->company_url;
-                $type = '';
-                if ($template) {
-                    $type_id = $template->type;
-                    $temp_type = new \App\Model\Common\TemplateType();
-                    $type = $temp_type->where('id', $type_id)->first()->name;
-                }
-
-                $email = (new Email())
-                        ->from($setting->email)
-                        ->to($user->email)
-                        ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = [
-                            'name' => $user->first_name.' '.$user->last_name,
-                            'serialkeyurl' => $myaccounturl,
-                            'downloadurl' => $downloadurl,
-                            'invoiceurl' => $invoiceurl,
-                            'product' => $product,
-                            'number' => $order->number,
-                            'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                            'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                            'knowledge_base' => $knowledgeBaseUrl,
-
-                        ]));
-
-                $mailer->send($email);
-            }
+       
 
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);
 

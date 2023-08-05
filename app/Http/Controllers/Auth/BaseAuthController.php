@@ -147,6 +147,7 @@ class BaseAuthController extends Controller
 
     public function sendActivation($email, $method, $str = '')
     {
+        $contact = getContactData();
         $user = new User();
         $user = $user->where('email', $email)->first();
 
@@ -187,7 +188,8 @@ class BaseAuthController extends Controller
                 ->to($user->email)
                 ->subject($template->name)
                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                    'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
+                    'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, 'contact' => $contact['contact'],
+                    'logo' => $contact['logo'], ]));
             $mailer->send($email);
             $mail->email_log_success($settings->email, $user->email, $template->name, $html);
         } catch (\Exception $ex) {

@@ -35,7 +35,7 @@ Edit Templates
 
                     <div class="col-md-6 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
+                        {!! Form::label('name',Lang::get('Subject'),['class'=>'required']) !!}
                         {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                     </div>

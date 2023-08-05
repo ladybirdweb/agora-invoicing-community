@@ -70,7 +70,8 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('message.expiry_mail_sent')}}</label>
+                <label>{{Lang::get('message.expiry_mail_sent')}}</label> <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them to renew the product. This email is send out only to those who have not enabled auto renewal"></i>
+
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {
@@ -134,7 +135,8 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('Product Auto-renewal due date reminder Email to be sent before..')}}</label>
+                <label>{{Lang::get('Subscription renewal reminder - Auto payment')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them product will be renewed automatically. This email is send out only to those who have enabled auto renewal"></i>
+
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {
@@ -175,7 +177,7 @@ Cron Setting
 
                 <div class="col-md-6">
               <div class="form-group">
-                <label>{{Lang::get('Faveo Cloud automatic delete email interval')}}</label>
+                <label>{{Lang::get('Cloud subscription deletion')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry & on cloud instance deletion. This email is send out to all users using auto renewal or are using manual payment method. For cloud instance only"></i>
                   @if ($cloudStatus == 0)
                     <select id ="days" name="cloud_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('Please Enable the Faveo cloud cron')}}</option>
@@ -196,7 +198,8 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('Product renewal reminder Email to be sent for Expired products after..')}}</label>
+                <label>{{Lang::get('Subscription expired')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry reminding them to renew the product. This email is send out to all users using auto renewal or are using manual payment method. For self hosted and cloud both"></i>
+
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {

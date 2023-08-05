@@ -267,6 +267,34 @@ class CronController extends BaseCronController
         return $users;
     }
 
+
+    public function getSubscriptions($days)
+    {
+        $daysArray = $days;
+        $days = (int)$daysArray[0];
+        $days = intval($daysArray[0]);
+
+        
+        $startDate = Carbon::now()->toDateString();
+
+        $endDate = Carbon::now()->addDays($days + 1)->toDateString();
+        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed','0')->get();
+
+        return $subscriptions;
+    }
+
+    public function getPostSubscriptions($days)
+    {
+        $days = (int)$days;
+
+        $startDate = Carbon::now()->subDays($days + 1)->toDateString();
+        $endDate = Carbon::now()->toDateString();
+
+        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->get();
+
+        return $subscriptions;
+    }
+
     public function eachSubscription()
     {
         $status = StatusSetting::value('expiry_mail');
@@ -293,7 +321,6 @@ class CronController extends BaseCronController
         $status = StatusSetting::value('subs_expirymail');
         if ($status == 1) {
             $Days = ExpiryMailDay::pluck('autorenewal_days')->toArray();
-
             $cron = new AutorenewalCronController();
             $Autosub = $cron->getAutoSubscriptions($Days);
             foreach ($Autosub as $value) {
@@ -317,7 +344,7 @@ class CronController extends BaseCronController
         if ($status == 1) {
             $periods = ExpiryMailDay::pluck('postexpiry_days')->toArray();
             $cron = new AutorenewalCronController();
-            $postSub = $cron->getPostSubscriptions($periods);
+            $postSub = $this->getPostSubscriptions($periods);
             foreach ($postSub as $value) {
                 $userid = $value->user_id;
                 $user = $this->getUserById($userid);
@@ -509,7 +536,7 @@ class CronController extends BaseCronController
                 Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscriptionLink['id'], 'autoRenew_status' => 'Pending']);
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
+            $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
@@ -593,6 +620,7 @@ class CronController extends BaseCronController
 
     public static function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
     {
+        $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -622,6 +650,8 @@ class CronController extends BaseCronController
              'expiry' => date('d-m-Y', strtotime($end)),
              'exception' => $exceptionMessage,
              'url' => $url,
+             'contact' => $contact['contact'],
+             'logo' => $contact['logo'],
          ]));
             $mailer->send($email);
             $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
@@ -632,6 +662,7 @@ class CronController extends BaseCronController
 
     public static function sendPaymentSuccessMail($currency, $total, $user, $product, $number)
     {
+        $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -654,9 +685,10 @@ class CronController extends BaseCronController
          ->html($mail->mailTemplate($template->data, $templatevariables = [
              'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product,
-             'currency' => $currency,
-             'total' => $total,
+             'total' => currencyFormat($total, $code = $currency),
              'number' => $number,
+             'contact' => $contact['contact'],
+             'logo' => $contact['logo'],
          ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
@@ -664,47 +696,6 @@ class CronController extends BaseCronController
             throw new Exception($ex->getMessage());
         }
     }
-
-    public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
-    {
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-
-        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
-
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->card_failed;
-
-        $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
-        // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-        $url = url("autopaynow/$invoice->invoice_id");
-
-        try {
-            $email = (new Email())
-              ->from($setting->email)
-              ->to($user->email)
-              ->subject($template->name)
-              ->html($mail->mailTemplate($template->data, $templatevariables = [
-                  'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                  'product' => $product_details->name,
-                  'total' => currencyFormat($total, $code = $currency),
-                  'number' => $number,
-                  'expiry' => date('d-m-Y', strtotime($end)),
-                  'exception' => $exceptionMessage,
-                  'url' => $url,
-              ]));
-            $mailer->send($email);
-            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-        } catch (\Exception $ex) {
-            throw new Exception($ex->getMessage());
-        }
-    }
-
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {
         try {

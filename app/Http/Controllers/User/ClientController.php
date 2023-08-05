@@ -472,6 +472,7 @@ class ClientController extends AdvanceSearchController
     public function sendWelcomeMail($user)
     {
         try {
+            $contact = getContactData();
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $setting = $settings->where('id', 1)->first();
@@ -498,7 +499,8 @@ class ClientController extends AdvanceSearchController
                 ->to($user['email'])
                 ->subject($template->name)
                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
+                    'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url,'contact' => $contact['contact'],
+                'logo' => $contact['logo'], ]));
                 $mailer->send($email);
             } else {
                 $email = (new Email())

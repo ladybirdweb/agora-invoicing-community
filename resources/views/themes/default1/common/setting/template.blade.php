@@ -184,7 +184,7 @@
 
                         <td><b>{!! Form::label('invoice',Lang::get('Auto Renewal Reminder')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('autosubscription_going_to_end') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('auto_subscription_going_to_end') ? 'has-error' : '' }}">
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',12)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}

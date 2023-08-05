@@ -113,6 +113,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
     {
+        $contact = getContactData();
         //user
         $users = new User();
         $user = $users->find($userid);
@@ -139,7 +140,9 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                     'address' => $user->address,
                     'invoiceurl' => $invoiceurl,
                     'content' => $this->invoiceContent($invoiceid),
-                    'currency' => $this->currency($invoiceid), ]));
+                    'currency' => $this->currency($invoiceid),
+                    'contact' => $contact['contact'],
+                    'logo' => $contact['logo'], ]));
 
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);

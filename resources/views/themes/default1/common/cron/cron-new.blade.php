@@ -90,7 +90,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('email_fetching',Lang::get('message.expiry_mail')) !!}<br>
+                            {!! Form::label('email_fetching', Lang::get('message.expiry_mail') . ' <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them to renew the product. This email is send out only to those who have not enabled auto renewal"></i>', [], false) !!}<br>
                             {!! Form::checkbox('expiry_cron',1,$condition->checkActiveJob()['expiryMail'],['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                         </div>
 
@@ -142,7 +142,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('sub_fetching',Lang::get('Product Auto-renewal due date reminder Email to be sent before')) !!}<br>
+                            {!! Form::label('sub_fetching', Lang::get('Subscription renewal reminder - Auto payment') . ' <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them product will be renewed automatically. This email is send out only to those who have enabled auto renewal"></i>', [], false) !!}<br>
                             {!! Form::checkbox('subs_expirymail',1,$condition->checkActiveJob()['subsExpirymail'],['id'=>'sub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                             <!-- <input type="checkbox" name="subs_expirymail" value="1"> -->
                         </div>
@@ -178,7 +178,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('postsub_fetching',Lang::get('Product renewal reminder Email to be sent for Expired products after')) !!}<br>
+                            {!! Form::label('postsub_fetching', Lang::get('Subscription expired') . ' <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry reminding them to renew the product. This email is send out to all users using auto renewal or are using manual payment method. For self hosted and cloud both"></i>', [], false) !!}<br>
                             {!! Form::checkbox('postsubs_expirymail',1,$condition->checkActiveJob()['postExpirymail'],['id'=>'postsub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                         </div>
 
@@ -206,7 +206,7 @@
 
                         <div class="form-group">
 
-                            {!! Form::label('cloud_fetching',Lang::get('Faveo Cloud version expiry email to be sent before..')) !!}<br>
+                           {!! Form::label('cloud_fetching', Lang::get('Cloud subscription deletion') . ' <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry & on cloud instance deletion. This email is send out to all users using auto renewal or are using manual payment method. For cloud instance only"></i>', [], false) !!}<br>
                             {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
                         </div>
 

@@ -4,7 +4,7 @@ Demo Page Settings
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Demo Page Settings</h1>
+        <h1>Demo page settings</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -24,19 +24,6 @@ Demo Page Settings
     <div class="card-body">
         {!! Form::open(['url' => 'save/demo', 'method' => 'POST']) !!}
         <div class="row">
-         
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="textfield1">Enter Faveo Support URL</label><span class="required"></span>
-                    <input type="text" class="form-control" name="link" id="textfield1" placeholder="Enter the url" value="{{ isset($Demo_page->link) ? $Demo_page->link : '' }}">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="textfield2">Enter Faveo User Email</label><span class="required"></span>
-                    <input type="email" class="form-control" name="email" id="textfield2" placeholder="Enter the email" value="{{ isset($Demo_page->email) ? $Demo_page->email : '' }}">
-                </div>
-            </div>
                        <div class="col-md-4">
                 <div class="form-group">
                     {!! Form::label('Demopage',Lang::get('Enable/Disable')) . ' <span class="required"></span>' !!}

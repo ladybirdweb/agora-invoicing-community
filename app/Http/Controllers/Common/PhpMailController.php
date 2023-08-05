@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
+use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Model\Common\StatusSetting;
 use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
@@ -74,9 +74,9 @@ class PhpMailController extends Controller
     public function NotifyMailing()
     {
         try {
-             $status = StatusSetting::value('cloud_mail_status');
-             if($status == 1){
-             $this->deleteCloudDetails();
+            $status = StatusSetting::value('cloud_mail_status');
+            if ($status == 1) {
+                $this->deleteCloudDetails();
             }
         } catch(\Exception $ex) {
             \Log::error($ex->getMessage());
@@ -97,7 +97,6 @@ class PhpMailController extends Controller
             })
             ->get();
 
-
             foreach ($sub as $data) {
                 $cron = new CronController();
                 $user = \DB::table('users')->find($data->user_id);
@@ -117,32 +116,32 @@ class PhpMailController extends Controller
 
                 //     //Mail Sending
 
-                    // if ($destroy->status() == 200) {
-                        //check in the settings
-                        $settings = new \App\Model\Common\Setting();
-                        $settings = $settings->where('id', 1)->first();
+                // if ($destroy->status() == 200) {
+                //check in the settings
+                $settings = new \App\Model\Common\Setting();
+                $settings = $settings->where('id', 1)->first();
 
-                        //template
-                        $template = new \App\Model\Common\Template();
-                        $temp_id = \DB::table('template_types')->where('name', 'cloud_deleted')->value('id');
-                        $template = $template->where('id', $temp_id)->first();
+                //template
+                $template = new \App\Model\Common\Template();
+                $temp_id = \DB::table('template_types')->where('name', 'cloud_deleted')->value('id');
+                $template = $template->where('id', $temp_id)->first();
 
-                        $mail = new \App\Http\Controllers\Common\PhpMailController();
-                        $mailer = $mail->setMailConfig($settings);
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+                $mailer = $mail->setMailConfig($settings);
 
-                        $email = (new Email())
-                                  ->from($settings->email)
-                                  ->to($user->email)
-                                  ->subject('Faveo cloud deleted')
-                                  ->subject($template->name)
-                                  ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
-                                      'product' => $product->name,
-                                      'number' => $order->number,
-                                      'contact' => $contact['contact'],
-                                      'logo' => $contact['logo'],
-                                      'expiry' => date('j M Y', strtotime($data->update_ends_at)),
-                                  ]));
-                        $mailer->send($email);
+                $email = (new Email())
+                          ->from($settings->email)
+                          ->to($user->email)
+                          ->subject('Faveo cloud deleted')
+                          ->subject($template->name)
+                          ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
+                              'product' => $product->name,
+                              'number' => $order->number,
+                              'contact' => $contact['contact'],
+                              'logo' => $contact['logo'],
+                              'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                          ]));
+                $mailer->send($email);
                 //         $order->delete();
                 //     }
                 // }
@@ -305,7 +304,6 @@ class PhpMailController extends Controller
         $logo = $this->checkElement('logo', $templatevariables);
         $orderHeading = $this->checkElement('orderHeading', $templatevariables);
 
-
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;
         $variables['{$password}'] = $password;
@@ -323,7 +321,6 @@ class PhpMailController extends Controller
         $variables['{$manager_mobile}'] = $manager_mobile;
         $variables['{$manager_skype}'] = $manager_skype;
         $variables['{$contact_us}'] = $contact_us;
-
 
         $variables['{$serialkeyurl}'] = $serialkeyurl;
         $variables['{$downloadurl}'] = $downloadurl;

@@ -267,25 +267,23 @@ class CronController extends BaseCronController
         return $users;
     }
 
-
     public function getSubscriptions($days)
     {
         $daysArray = $days;
-        $days = (int)$daysArray[0];
+        $days = (int) $daysArray[0];
         $days = intval($daysArray[0]);
 
-        
         $startDate = Carbon::now()->toDateString();
 
         $endDate = Carbon::now()->addDays($days + 1)->toDateString();
-        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed','0')->get();
+        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed', '0')->get();
 
         return $subscriptions;
     }
 
     public function getPostSubscriptions($days)
     {
-        $days = (int)$days;
+        $days = (int) $days;
 
         $startDate = Carbon::now()->subDays($days + 1)->toDateString();
         $endDate = Carbon::now()->toDateString();
@@ -696,6 +694,7 @@ class CronController extends BaseCronController
             throw new Exception($ex->getMessage());
         }
     }
+
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {
         try {

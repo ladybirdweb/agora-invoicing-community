@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\TemplateType;
+use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
-use App\Model\Product\Product;
-use App\Model\Mailjob\ExpiryMailDay;
-use App\Model\Common\TemplateType;
 use Symfony\Component\Mime\Email;
 
 class BaseCronController extends Controller
@@ -197,42 +197,42 @@ class BaseCronController extends Controller
 
     public function mail($user, $end, $product, $order, $sub)
     {
-    try{
-        $contact = getContactData();
-        $product_type = Product::where('name',$product)->value('type');
-        $expiryDays = ExpiryMailDay::first()->cloud_days;
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        try {
+            $contact = getContactData();
+            $product_type = Product::where('name', $product)->value('type');
+            $expiryDays = ExpiryMailDay::first()->cloud_days;
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
 
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        $url = url('my-orders');
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->subscription_going_to_end;
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            $url = url('my-orders');
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->subscription_going_to_end;
 
-        $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
-        $date = date_create($end);
-        $end = date_format($date, 'l, F j, Y');
+            $template = $templates->where('id', $temp_id)->first();
+            $data = $template->data;
+            $date = date_create($end);
+            $end = date_format($date, 'l, F j, Y');
 
-        $delDate = strtotime($end . ' +' . $expiryDays . ' days');
-        $deletionDate = date('l, F j, Y', $delDate);
+            $delDate = strtotime($end.' +'.$expiryDays.' days');
+            $deletionDate = date('l, F j, Y', $delDate);
 
-        $email = (new Email())
-        ->from($setting->email)
-        ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'deletionDate' => ($product_type == '4') ? $deletionDate : '',
-             'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
-             'expiry' => $end,
-             'product' => $product,
-             'number' => $order->number,
-             'contact' => $contact['contact'],
-             'logo' => $contact['logo'],
-             'url' => $url, ]));
+            $email = (new Email())
+            ->from($setting->email)
+            ->to($user->email)
+             ->subject($template->name)
+             ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+                 'deletionDate' => ($product_type == '4') ? $deletionDate : '',
+                 'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
+                 'expiry' => $end,
+                 'product' => $product,
+                 'number' => $order->number,
+                 'contact' => $contact['contact'],
+                 'logo' => $contact['logo'],
+                 'url' => $url, ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
@@ -244,7 +244,7 @@ class BaseCronController extends Controller
     public function Auto_renewalMail($user, $end, $product, $order, $sub)
     {
         $contact = getContactData();
-        $product_type = Product::where('name',$product)->value('type');
+        $product_type = Product::where('name', $product)->value('type');
         $expiryDays = ExpiryMailDay::first()->cloud_days;
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -255,13 +255,13 @@ class BaseCronController extends Controller
 
         //template
         $templates = new \App\Model\Common\Template();
-        $temp_id = TemplateType::where('name','auto_subscription_going_to_end')->value('id');
+        $temp_id = TemplateType::where('name', 'auto_subscription_going_to_end')->value('id');
 
         $template = $templates->where('type', $temp_id)->first();
         $data = $template->data;
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y ');
-        $delDate = strtotime($end . ' +' . $expiryDays . ' days');
+        $delDate = strtotime($end.' +'.$expiryDays.' days');
         $deletionDate = date('l, F j, Y', $delDate);
 
         try {
@@ -287,7 +287,7 @@ class BaseCronController extends Controller
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
         $contact = getContactData();
-        $product_type = Product::where('name',$product)->value('type');
+        $product_type = Product::where('name', $product)->value('type');
         $expiryDays = ExpiryMailDay::first()->cloud_days;
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -305,7 +305,7 @@ class BaseCronController extends Controller
         $url = url('my-orders');
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y ');
-        $delDate = strtotime($end . ' +' . $expiryDays . ' days');
+        $delDate = strtotime($end.' +'.$expiryDays.' days');
         $deletionDate = date('l, F j, Y', $delDate);
 
         try {
@@ -314,14 +314,14 @@ class BaseCronController extends Controller
            ->to($user->email)
            ->subject($template->name)
            ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'deletionDate' => ($product_type == '4') ? $deletionDate : '',
-             'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
-             'expiry' => $end,
-             'product' => $product,
-             'number' => $order->number,
-             'contact' => $contact['contact'],
-             'logo' => $contact['logo'],
-             'url' => $url, ]));
+               'deletionDate' => ($product_type == '4') ? $deletionDate : '',
+               'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
+               'expiry' => $end,
+               'product' => $product,
+               'number' => $order->number,
+               'contact' => $contact['contact'],
+               'logo' => $contact['logo'],
+               'url' => $url, ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {

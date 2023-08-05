@@ -288,7 +288,7 @@ class TenantController extends Controller
                         ->from($settings->email)
                         ->to($user)
                         ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,'contact' => $contact['contact'],'logo' => $contact['logo']]));
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name, 'contact' => $contact['contact'], 'logo' => $contact['logo']]));
 
                     $mailer->send($email);
 

@@ -214,10 +214,10 @@ class AutorenewalCronController extends Controller
 
     public function getOneDayPostExpiryInfo()
     {
-        dd("fe");
+        dd('fe');
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
-        dd($yesterday,$today);
+        dd($yesterday, $today);
         $sub = Subscription::whereNotNull('update_ends_at')
                 ->where('is_subscribed', '1')
                 ->whereBetween('update_ends_at', [$yesterday, $today]);

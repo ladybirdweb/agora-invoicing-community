@@ -88,7 +88,7 @@ class ForgotPasswordController extends Controller
                  ->to($user->email)
                  ->subject($template->name)
                  ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us' => $contactUs, 'contact' => $contact['contact'],
-                    'logo' => $contact['logo'],]));
+                     'logo' => $contact['logo'], ]));
 
                 $mailer->send($email);
                 $mail->email_log_success($setting->email, $user->email, $template->name, $html);

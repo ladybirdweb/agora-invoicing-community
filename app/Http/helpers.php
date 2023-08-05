@@ -568,14 +568,14 @@ function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_las
     return trim($url);
 }
 
-
 function getContactData()
 {
     $setting = Setting::first();
-    $countryCode = Country::where('country_code_char2',$setting->country)->value('phonecode');
-    $logo = '<img src="' . asset('common/images/' . $setting->logo) . '" />';
+    $countryCode = Country::where('country_code_char2', $setting->country)->value('phonecode');
+    $logo = '<img src="'.asset('common/images/'.$setting->logo).'" />';
     $billingContact = '
                 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-                    <p style="line-height: 20px;">'.$setting->company.'<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">'.$setting->email.'</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website .'</a><br />Tel:'. ' ' . '+' . '' . $countryCode. ' ' . $setting->phone.'</p>';
-    return ['logo' => $logo,'contact' => $billingContact];
+                    <p style="line-height: 20px;">'.$setting->company.'<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">'.$setting->email.'</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />Tel:'.' '.'+'.''.$countryCode.' '.$setting->phone.'</p>';
+
+    return ['logo' => $logo, 'contact' => $billingContact];
 }

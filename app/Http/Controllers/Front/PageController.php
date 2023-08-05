@@ -534,15 +534,10 @@ class PageController extends Controller
 
     public function saveDemoPage(Request $request)
     {
-        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
         $data = $request->validate([
             'status' => 'required',
-            'link' => 'required|url|regex:'.$regex,
-            'email' => 'required|email',
         ]);
         $data = [
-            'link' => $request->input('link'),
-            'email' => $request->input('email'),
             'status' => $request->input('status') === 'true' ? 1 : 0,
         ];
 

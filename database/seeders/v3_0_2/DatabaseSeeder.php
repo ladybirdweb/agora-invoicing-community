@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'type' => 'LinkedIn',
+                'type' => 'Linkedin',
                 'client_id' => '',
                 'client_secret' => '',
                 'redirect_url' => '',

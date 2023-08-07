@@ -64,27 +64,29 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                         <input type="text" class="form-control" id="pwd"  value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}" name="redirect_url">
                     </div>
 
-                    <label for="email" class="form-label">Activate Login via Google</label>
+                    <label for="email" class="form-label">Activate Login via {{$socialLogins->type}}</label>
+                    <div class="row">
                     @if($socialLogins->status == 1)
-                    <div class="form-check">
+                    <div class="form-check col-1" style="padding-left: 2.25rem;">
                         <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1" name="status" checked>Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check col-1">
                         <input type="radio" class="form-check-input" id="radio2" name="optradio" value="0" name="status">No
                         <label class="form-check-label" for="radio2"></label>
                     </div>
                     @endif
                     @if($socialLogins->status == 0)
-                    <div class="form-check">
+                    <div class="form-check col-1" style="padding-left: 2.25rem;">
                         <input type="radio" class="form-check-input" id="radio1" name="optradio" value="1" name="status">Yes
                         <label class="form-check-label" for="radio1"></label>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check col-1">
                         <input type="radio" class="form-check-input" id="radio2" name="optradio" value="0" name="status" checked>No
                         <label class="form-check-label" for="radio2"></label>
                     </div>
                     @endif
+                    </div>
 
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="fa fa-sync-alt"></i> &nbspUpdate

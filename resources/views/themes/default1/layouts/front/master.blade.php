@@ -1006,6 +1006,9 @@ $days = $pay->where('product','117')->value('days');
     $('.closebutton').on('click',function(){
         location.reload();
     });
+    $('.closebutton').on('click',function(){
+        location.reload();
+    });
 
 const domainInput = document.getElementById("userdomain");
 const validationMessage = document.getElementById("validationMessage");

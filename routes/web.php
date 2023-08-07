@@ -374,6 +374,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-templates', [Common\TemplateController::class, 'getTemplates'])->name('get-templates');
     // Route::get('get-templates', [Common\TemplateController::class, 'GetTemplates']);
     Route::delete('templates-delete', [Common\TemplateController::class, 'destroy'])->name('templates-delete');
+    Route::post('/store_toggle_state', [Common\TemplateController::class, 'toggle']);
 
     /**
      * Queue.

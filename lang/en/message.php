@@ -712,5 +712,7 @@ return [
 
     'toggle_status' => 'Price Frequency',
     'check-this-box_to_toggle_status' => 'Check this box if you want to see the monthly/yearly price in templates',
+    'highlight' => 'Highlight',
+    'tick-to-highlight-product' => 'Check to highlight the product',
 
 ];

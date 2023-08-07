@@ -202,19 +202,18 @@ class TemplateController extends Controller
             $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
 
             $plans = $this->prices($id);
+            $status = Product::find($id);
             if ($plans == []) {
                 return '';
             }
-            if ($plans) {
+            if ($plans && $status->status != 1) {
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
+            } else {
+                $plan_form = \Form::select('subscription', ['Plans' => $plans], null, ['class' => 'planhide']);
             }
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
-            $product = Product::find($id);
-            if ($product->status == '1') {
-                return '';
-            }
 
             return $form;
         } catch (\Exception $ex) {
@@ -302,6 +301,18 @@ class TemplateController extends Controller
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function toggle(Request $request)
+    {
+        $status = $request->toggleState;
+        if ($status == 'selected') {
+            \Session::forget('toggleState');
+            \Session::put('toggleState', 'monthly');
+        } elseif ($status == 'unselected') {
+            \Session::forget('toggleState');
+            \Session::put('toggleState', 'yearly');
         }
     }
 }

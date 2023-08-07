@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Model\Common\TemplateType;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
+use App\Demo_page;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -14,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call([Demo_pageTableSeeder::class]);
+
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
 
@@ -21,6 +24,15 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Template table seeded!');
 
         $this->call(SettingsSeeder::class);
+    }
+}
+
+class Demo_pageTableSeeder extends Seeder
+{
+    public function run()
+    {
+
+        Demo_page::create(['id' => 1, 'status' => 0]);
     }
 }
 

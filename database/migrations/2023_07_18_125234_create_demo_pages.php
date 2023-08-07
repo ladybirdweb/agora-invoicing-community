@@ -16,8 +16,6 @@ return new class extends Migration
         Schema::create('demo_pages', function (Blueprint $table) {
             $table->id();
             $table->boolean('status')->default(0);
-            $table->string('link')->nullable();
-            $table->string('email')->nullable();
             $table->timestamps();
         });
     }

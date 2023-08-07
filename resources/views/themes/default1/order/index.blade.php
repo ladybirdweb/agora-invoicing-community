@@ -128,7 +128,8 @@ Orders
                 <div class="col-md-6">
                       <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                    <a class="btn btn-secondary" href="{!! url('/orders') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    <!-- <a class="btn btn-secondary" href="{!! url('/orders') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a> -->
+                    {!! Form::submit('Reset',['class'=>'btn btn-secondary','id'=>'reset']) !!}
                 </div>
         </div>
     </div>
@@ -251,6 +252,8 @@ Orders
               var hasSearchParams = urlParams.has('order_no') || urlParams.has('product_id') || urlParams.has('expiry') || urlParams.has('expiryTill') || urlParams.has('from') || urlParams.has('till') || urlParams.has('sub_from') || urlParams.has('sub_till') || urlParams.has('ins_not_ins') || urlParams.has('domain') || urlParams.has('p_un') || urlParams.has('act_inst') || urlParams.has('renewal') || urlParams.has('inact_ins') || urlParams.has('version');
               if (hasSearchParams) {
                 $("#advance-search").css('display','block');
+                $('#tip-search').attr('title', 'Collapse');
+                $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
               }
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -338,5 +341,31 @@ Orders
     $('#order_till').datetimepicker({
         format: 'L'
     });
+</script>
+
+<script>
+$(document).ready(function() {
+  const initialProductValue = $('#product_id').val();
+
+  const initialFromDateValue = $('#order_from').val();
+  const initialTillDateValue = $('#order_till').val();
+
+  $('#reset').on('click', function() {
+    // Reset the input fields
+    $('#order_no').val('');
+    $('#from').val('');
+    $('#till').val('');
+    $('#domain').val('');
+    $('#act_inst').val('');
+    $('#renewal').val('');
+
+    $('#product_id').val(initialProductValue);
+
+    $('#version-list').val('');
+
+    $('#order_from').datetimepicker('clear');
+    $('#order_till').datetimepicker('clear');
+  });
+});
 </script>
 @stop

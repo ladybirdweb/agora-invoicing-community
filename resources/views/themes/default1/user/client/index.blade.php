@@ -48,7 +48,7 @@ Users
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('country','Country') !!}<br>
-                            <select style="width:100%;" name="country" value= "Choose"  class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                            <select style="width:100%;" name="country" value= "Choose" id="country"  class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                                 <option value="" style="">Choose</option>
                                 @foreach($countries as $key=> $country)
                                     @if($key == $request->country)
@@ -103,8 +103,8 @@ Users
                             <!-- first name -->
                             {!! Form::label('reg_from','Registered From') !!}
                                <div class="input-group date" id="reservationdate_from" data-target-input="nearest">
-                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker','autocomplete'=>'off']) !!}
-                            <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
+                              <input type="text" name="reg_from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_from !!}" data-target="#reservationdate_from"/>                            
+                              <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             
                             </div>
@@ -159,7 +159,9 @@ Users
                 <!-- /.card-body -->
                     <button name="Search" type="submit" id="search"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
-                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    <!-- <a href="{!! url('clients') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a> -->
+                    {!! Form::submit('Reset',['class'=>'btn btn-secondary','id'=>'reset']) !!}
+
             </div>
             <!-- /.card -->
         </div>
@@ -276,6 +278,8 @@ Users
                   var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry');
                   if (hasSearchParams) {
                     $("#advance-search").css('display','block');
+                    $('#tip-search').attr('title', 'Collapse');
+                    $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
                   } else {
                     $("#advance-search").collapse("hide");
                   }
@@ -351,6 +355,30 @@ Users
 
     });
 </script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#reset').on('click', function () {
+            $('#country').val('');
+            $('#company').val('');
+             const initialFromDateValue = $('#reservationdate_from').val();
+              const initialTillDateValue = $('#reservationdate').val();
+
+            $('#industry').val('').trigger('change');
+            $('#role').val('').trigger('change');
+            $('#position').val('').trigger('change');
+          
+            $('#actmanager').val('').trigger('change');
+            $('#salesmanager').val('').trigger('change');
+
+             $('#reservationdate_from').datetimepicker('clear');
+             $('#reservationdate').datetimepicker('clear');
+        });
+    });
+</script>
+
+
+
 
 
 @stop

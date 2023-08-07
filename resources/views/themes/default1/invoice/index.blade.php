@@ -109,8 +109,7 @@ Invoices
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                     <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search">&nbsp;</i>{!!Lang::get('Search')!!}</button>
                      &nbsp;&nbsp;
-                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                   <a class="btn btn-secondary" href="{!! url('/invoices') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    {!! Form::submit('Reset',['class'=>'btn btn-secondary','id'=>'reset']) !!}
                     </div>
             </div>
 
@@ -225,6 +224,8 @@ Invoices
               var hasSearchParams = urlParams.has('name') || urlParams.has('invoice_no') || urlParams.has('status') || urlParams.has('currency_id') || urlParams.has('from') || urlParams.has('till');
               if (hasSearchParams) {
                 $("#advance-search").css('display','block');
+                $('#tip-search').attr('title', 'Collapse');
+                $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
               }
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -288,6 +289,30 @@ Invoices
         format: 'L'
     });
 </script>
+
+<script>
+$(document).ready(function() {
+  const initialProductValue = $('#product_id').val();
+
+  const initialFromDateValue = $('#invoice_from').val();
+  const initialTillDateValue = $('#invoice_till').val();
+
+  $('#reset').on('click', function() {
+    // Reset the input fields
+    $('#name').val('');
+    $('#invoice_no').val('');
+    $('#status').val('');
+    $('#currency').val('');
+
+    $('#product_id').val(initialProductValue);
+
+    $('#invoice_from').datetimepicker('clear');
+    $('#invoice_till').datetimepicker('clear');
+  });
+});
+</script>
+
+
 @stop
 
 

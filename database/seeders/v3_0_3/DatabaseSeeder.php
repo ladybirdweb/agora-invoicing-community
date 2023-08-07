@@ -8,6 +8,7 @@ use App\Model\Common\Template;
 use App\Demo_page;
 use Illuminate\Support\Facades\DB;
 use App\SocialLogin;
+use App\Model\Common\PricingTemplate;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -25,6 +26,10 @@ class DatabaseSeeder extends Seeder
         $this->call([TemplateTableSeeder::class]);
         $this->command->info('Template table seeded!');
         $this->SocialLoginSeeder();
+
+
+        $this->call([PricingTemplateSeeder::class]);
+        $this->command->info('Pricing Template Table Seeded!');
     }
 
     private function SocialLoginSeeder()
@@ -881,5 +886,104 @@ Template::create(['id' => 20, 'name' => 'New instance created', 'type' => 20, 'u
 
     }
 
+
+
+}
+class PricingTemplateSeeder extends Seeder
+{
+    public function run()
+    {
+        PricingTemplate::where('id',1)->update(['data' => '<div class="col-md-3 col-sm-6">
+                            <div class="plan">
+                                <div class="plan-header">
+                                    <h3>{{name}}</h3>
+                                </div>
+                                <div class="plan-price">
+                       <div class="content-switcher-wrapper">
+                                                <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
+                                                
+                    <span class="price">{{price}}</span>
+
+                     <span class="strike">{{strike-price}}</span>
+                                                                                <label class="price-label">{{price-description}}</label><br><br>
+                     <div class="subscription table-responsive">{{subscription}}</div><br>
+
+                    <div>{{url}} </div>                                                 
+                                                                    </div>
+                                                                    <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
+                                                                        
+                    <span class="price">{{price-year}}</span>
+                     <span class="strike">{{strike-priceyear}}</span>
+                                                                                        <label class="price-label">{{price-description}}</label><br> <br>                                                                                        
+                                                                            
+                     <div class="subscription table-responsive">{{subscription}}</div><br>
+
+                    <div>{{url}} </div>                                                 
+                                                                    </div>
+                                                                </div>
+                    <br>
+
+
+                                                    </div>
+
+                      
+                                                    <div class="plan-features">
+                                                        <ul>
+                                                        <li>{{feature}}</li>
+                                                    </ul>
+                                                         
+                                                    </div>
+                                                    <div class="plan-footer">
+                                          
+                                                  
+                                                    </div>
+                                                    
+                            </div>
+                        </div>']);
+
+        PricingTemplate::create(['id' => 2, 'data' => '<div class="col-md-3 col-sm-6">
+                 <div class="plan plan-featured transform-none">
+                 <div class="plan-header bg-primary">
+                 <h3>{{name}}</h3>
+                 </div>
+                 <div class="plan-price">
+                 <div class="content-switcher-wrapper">
+                                                                <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
+                                                                    
+                                                                        <span class="price">{{price}}</span>
+                 <span class="strike">{{strike-price}}</span>
+                                                                                    <label class="price-label">{{price-description}}</label><br><br>
+                 <div class="subscription">{{subscription}}</div>
+                <br>
+                <div>{{url}} </div>                                                 </div>
+                                                                
+                                                                <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
+                                                                    
+                                                                        <span class="price">{{price-year}}</span>
+
+                 <span class="strike">{{strike-priceyear}}</span>                                                                   <label class="price-label">{{price-description}}</label><br><br>
+                 <div class="subscription">{{subscription}}</div>
+                <br>
+                <div>{{url}} </div>                                                 
+                                                                </div>
+                                                            </div><br>
+
+                 </div>
+
+
+                 <div class="plan-features">
+                 <ul>
+                 <li>{{feature}}</li>
+                 </ul>
+                 
+                 </div>
+                 <div class="plan-footer">
+
+                 
+                 </div>
+                 
+                 </div>
+                 </div>']);
+    }
 }
 

@@ -714,6 +714,4 @@ return [
     'highlight' => 'Highlight',
     'tick-to-highlight-product' => 'Check to highlight the product',
 
-
-
 ];

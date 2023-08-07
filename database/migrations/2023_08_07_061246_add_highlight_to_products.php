@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('highlight', 'status')) {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('highlight')->default(0);
-            $table->string('status')->default(0);
-        });
-    }
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('highlight')->default(0);
+                $table->string('status')->default(0);
+            });
+        }
     }
 
     /**

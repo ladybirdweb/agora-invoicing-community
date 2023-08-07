@@ -372,7 +372,6 @@ Route::middleware('installAgora')->group(function () {
     Route::delete('templates-delete', [Common\TemplateController::class, 'destroy'])->name('templates-delete');
     Route::post('/store_toggle_state', [Common\TemplateController::class, 'toggle']);
 
-
     /**
      * Queue.
      */

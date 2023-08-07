@@ -208,10 +208,8 @@ class TemplateController extends Controller
             }
             if ($plans && $status->status != 1) {
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
-            }
-            else{
+            } else {
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null, ['class' => 'planhide']);
-
             }
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
@@ -306,16 +304,15 @@ class TemplateController extends Controller
         }
     }
 
-     public function toggle(Request $request)
+    public function toggle(Request $request)
     {
-      $status = $request->toggleState;
-      if($status == 'selected'){
-        \Session::forget('toggleState');
-        \Session::put('toggleState', 'monthly');
-
-      }elseif($status == 'unselected'){
-        \Session::forget('toggleState');
-        \Session::put('toggleState', 'yearly');
+        $status = $request->toggleState;
+        if ($status == 'selected') {
+            \Session::forget('toggleState');
+            \Session::put('toggleState', 'monthly');
+        } elseif ($status == 'unselected') {
+            \Session::forget('toggleState');
+            \Session::put('toggleState', 'yearly');
+        }
     }
-}
 }

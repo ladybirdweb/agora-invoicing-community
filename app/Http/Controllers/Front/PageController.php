@@ -419,7 +419,7 @@ class PageController extends Controller
             }
             $isChecked = request()->cookie('isChecked');
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description','status'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -602,6 +602,7 @@ class PageController extends Controller
             $description = $plan ? $plan->planPrice->first() : '';
 
             $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
+
             return  $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

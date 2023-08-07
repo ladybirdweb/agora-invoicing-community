@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('plan_prices', 'offer_price')) {
-        Schema::table('plan_prices', function (Blueprint $table) {
-            $table->string('offer_price')->nullable();
-        });
-    }
+            Schema::table('plan_prices', function (Blueprint $table) {
+                $table->string('offer_price')->nullable();
+            });
+        }
     }
 
     /**

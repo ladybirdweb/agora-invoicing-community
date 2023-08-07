@@ -414,10 +414,12 @@ class PageController extends Controller
             foreach ($productsRelatedToGroup as $product) {
                 $plan = Product::find($product->id)->plan();
                 $description = self::getPriceDescription($product->id);
+
+                $status = Product::find($product->id);
             }
             $isChecked = request()->cookie('isChecked');
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description','status'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -598,8 +600,8 @@ class PageController extends Controller
         try {
             $plan = Product::find($productid)->plan();
             $description = $plan ? $plan->planPrice->first() : '';
-            $priceDescription = $description ? $description->price_description : '';
 
+            $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
             return  $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

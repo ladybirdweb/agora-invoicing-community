@@ -8,6 +8,7 @@ use App\Model\Common\PricingTemplate;
 use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\ProductGroup;
+use App\Model\Product\Product;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -108,9 +109,14 @@ class GroupController extends Controller
         ]);
 
         try {
+            $data = $request->input();
             $this->group->fill($request->input())->save();
-
-            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+            $this->group->refresh();
+            if($data['status'] == 1){
+                $id = ProductGroup::where('name',$data['name'])->value('id');
+               Product::Where('group',$id)->update(['status' => 1]); 
+            }
+           return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -128,7 +134,6 @@ class GroupController extends Controller
             $group = $this->group->where('id', $id)->first();
             $selectedTemplate = $group->pricing_templates_id;
             $template = PricingTemplate::first();
-
             return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'template'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -144,6 +149,10 @@ class GroupController extends Controller
     public function update($id, GroupRequest $request)
     {
         try {
+            if($request->status == 1) 
+            {
+                Product::Where('group',$id)->update(['status' => 1]);
+            }
             $group = $this->group->where('id', $id)->first();
             $group->fill($request->input())->save();
 

@@ -164,7 +164,16 @@ class CartController extends BaseCartController
             foreach ($cartCollection as $item) {
                 $planid = Plan::where('product', $item->id)->value('id');
                 $offerprice = PlanPrice::where('plan_id', $planid)->value('offer_price');
-                if ($offerprice) {
+                if( \Session::get('toggleState') == 'yearly' && $offerprice == null)
+                {
+                    $item->price = $item->price * 12;
+                }
+                elseif( \Session::get('toggleState') == 'yearly' && $offerprice)
+                {
+                    $item->price = $item->price * 12;
+                     $item->price = $item->price - ($offerprice / 100 * $item->price);
+                }
+                if(\Session::get('toggleState') == 'monthly' && $offerprice){
                     $item->price = $item->price - ($offerprice / 100 * $item->price);
                 }
                 $cart_currency = $item->attributes->currency;

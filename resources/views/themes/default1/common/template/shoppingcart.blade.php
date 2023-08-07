@@ -20,6 +20,9 @@ main
 
 @section('content')
 <style>
+    .planhide{
+        display: none;
+    }
       .highlight_batch {
         background: green;
         padding: 0px 5px;
@@ -143,7 +146,7 @@ main
                 <div class="px-2">
                   <label class="switch toggle_event_editing">
 
-                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" class="form-check-input checkbox">
+                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" id="kol" class="form-check-input checkbox">
                     <span class="slider round"></span>
                   </label>
                   
@@ -177,6 +180,60 @@ main
 
 </div>
 
+<!-- Your HTML template -->
+<!-- ... -->
+
+<!-- Your JavaScript code -->
+<!-- Your HTML template -->
+<!-- ... -->
+
+<!-- Your JavaScript code -->
+<script>
+  $(document).ready(function() {
+    $('.toggle_event_editing input').on('change', function() {
+      const toggleValue = $(this).prop('checked');
+      if (toggleValue) {
+        console.log('Toggle switch is selected.');
+        handleSelectedState();
+      } else {
+        console.log('Toggle switch is unselected.');
+        handleUnselectedState();
+      }
+    });
+    function handleSelectedState() {
+      const priceDisplay = $('#priceDisplay');
+      const yearlyPrice = 'Yearly Price';
+      priceDisplay.text(yearlyPrice);
+      $.ajax({
+        type: 'POST',
+        url: '/store_toggle_state', 
+        data: { toggleState: 'selected' },
+        success: function(response) {
+          console.log('Selected state value sent to the controller successfully.');
+        },
+        error: function(error) {
+          console.error('Error sending selected state value to the controller:', error);
+        }
+      });
+    }
+    function handleUnselectedState() {
+      const priceDisplay = $('#priceDisplay');
+      const monthlyPrice = 'Monthly Price';
+      priceDisplay.text(monthlyPrice);
+      $.ajax({
+        type: 'POST',
+        url: '/store_toggle_state', 
+        data: { toggleState: 'unselected' }, 
+        success: function(response) {
+          console.log('Unselected state value sent to the controller successfully.');
+        },
+        error: function(error) {
+          console.error('Error sending unselected state value to the controller:', error);
+        }
+      });
+    }
+  });
+</script>
 @stop
 
 

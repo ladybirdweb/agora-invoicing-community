@@ -7,6 +7,7 @@ use App\Http\Requests\Product\GroupRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
+use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
 
@@ -108,7 +109,13 @@ class GroupController extends Controller
         ]);
 
         try {
+            $data = $request->input();
             $this->group->fill($request->input())->save();
+            $this->group->refresh();
+            if ($data['status'] == 1) {
+                $id = ProductGroup::where('name', $data['name'])->value('id');
+                Product::Where('group', $id)->update(['status' => 1]);
+            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -144,6 +151,9 @@ class GroupController extends Controller
     public function update($id, GroupRequest $request)
     {
         try {
+            if ($request->status == 1) {
+                Product::Where('group', $id)->update(['status' => 1]);
+            }
             $group = $this->group->where('id', $id)->first();
             $group->fill($request->input())->save();
 

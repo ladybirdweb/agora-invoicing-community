@@ -70,7 +70,7 @@ Log-Viewer
                                 <i class="fa fa-download"></i>
                             </a>
                             <a id="delete" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
-                                <i  class="fa fa-trash"></i>
+                                <i  class="fa fa-trash" style="color: white;"></i>
                             </a>
                         </td>
                     </tr>

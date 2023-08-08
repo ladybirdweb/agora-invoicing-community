@@ -38,7 +38,7 @@ Log-Viewer
                         <a href="{{ route('log-viewer::logs.download', [$log->date]) }}" class="btn btn-xs btn-success">
                             <i class="fa fa-download"></i> DOWNLOAD
                         </a>
-                        <a id="delete" class="btn btn-xs btn-danger" data-toggle="modal" data-log-date="{{ $log->date }}">
+                        <a id="delete" class="btn btn-xs btn-danger"  style="color: white;" data-toggle="modal" data-log-date="{{ $log->date }}">
                             <i class="fa fa-trash-o"></i> DELETE
                         </a>
                     </div>
@@ -226,7 +226,6 @@ Log-Viewer
  $(document).ready(function() {
     $('#delete-log-modal').on('show.bs.modal', function(event) {
         var logDate = $('#delete').data('log-date');
-        alert(logDate);
         var modal = $(this); 
 
         modal.find('#delete-log-form input[name="date"]').val(logDate);

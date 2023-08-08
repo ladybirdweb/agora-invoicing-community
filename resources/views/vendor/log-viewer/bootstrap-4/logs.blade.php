@@ -17,6 +17,10 @@ Log-Viewer
 @stop
 
 @section('content')
+<div id="success-message" class="alert alert-success" style="display: none;"></div>
+<div id="fail-message" class="alert alert-fail" style="display: none;"></div>
+
+
 <div class="card card-primary card-outline">
     <div class="card-body">
     <h4 class="card-header">Logs</h4>
@@ -65,8 +69,8 @@ Log-Viewer
                             <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
                                 <i class="fa fa-download"></i>
                             </a>
-                            <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
-                                <i class="fa fa-trash"></i>
+                            <a id="delete" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
+                                <i  class="fa fa-trash"></i>
                             </a>
                         </td>
                     </tr>
@@ -87,86 +91,81 @@ Log-Viewer
     {!! $rows->render() !!}
 @endsection
 
-@section('modals')
+
     {{-- DELETE MODAL --}}
-    <div id="delete-log-modal" class="modal fade">
-        <div class="modal-dialog">
-            <form id="delete-log-form" action="{{ route('log-viewer::logs.delete') }}" method="DELETE">
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="date" value="">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">DELETE LOG FILE</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">DELETE FILE</button>
-                    </div>
-                </div>
-            </form>
+<div id="delete-log-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Delete</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this log file?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
+                <button id="confirmDelete" class="btn btn-sm btn-danger">Delete</button>
+            </div>
         </div>
     </div>
-@endsection
+</div>
 
-@section('scripts')
-    <script>
-        $(function () {
-            var deleteLogModal = $('div#delete-log-modal'),
-                deleteLogForm  = $('form#delete-log-form'),
-                submitBtn      = deleteLogForm.find('button[type=submit]');
 
-            $("a[href=#delete-log-modal]").on('click', function(event) {
-                event.preventDefault();
-                var date = $(this).data('log-date');
-                deleteLogForm.find('input[name=date]').val(date);
-                deleteLogModal.find('.modal-body p').html(
-                    'Are you sure you want to <span class="label label-danger">DELETE</span> this log file <span class="label label-primary">' + date + '</span> ?'
-                );
 
-                deleteLogModal.modal('show');
-            });
 
-            deleteLogForm.on('submit', function(event) {
-                event.preventDefault();
-                submitBtn.button('loading');
 
-                $.ajax({
-                    url:      $(this).attr('action'),
-                    type:     $(this).attr('method'),
-                    dataType: 'json',
-                    data:     $(this).serialize(),
-                    success: function(data) {
-                        submitBtn.button('reset');
-                        if (data.result === 'success') {
-                            deleteLogModal.modal('hide');
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#delete').on('click', function(e) {
+            var logDate = $(this).data('log-date');
+            $('#delete-log-form input[name="date"]').val(logDate);
+            $('#delete-log-modal').modal('show');
+        });
+    });
+</script>
+ <script>
+ $(document).ready(function() {
+    $('#delete-log-modal').on('show.bs.modal', function(event) {
+        var logDate = $('#delete').data('log-date');
+        var modal = $(this); 
+
+        modal.find('#delete-log-form input[name="date"]').val(logDate);
+
+        $('#confirmDelete').on('click', function() {
+            $.ajax({
+                type: 'DELETE', // Use DELETE method
+                url: '{{ route('log-viewer::logs.delete') }}',
+                data: {
+                    date: logDate // Pass the log date as data
+                },
+                  success: function(data) {
+                  
+                        $('#success-message').text('Log file deleted successfully.').show();
+                        $('#delete-log-modal').modal('hide');
+                        setTimeout(function() {
                             location.reload();
-                        }
-                        else {
-                            alert('AJAX ERROR ! Check the console !');
-                            console.error(data);
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('AJAX ERROR ! Check the console !');
-                        console.error(errorThrown);
-                        submitBtn.button('reset');
-                    }
-                });
-
-                return false;
-            });
-
-            deleteLogModal.on('hidden.bs.modal', function() {
-                deleteLogForm.find('input[name=date]').val('');
-                deleteLogModal.find('.modal-body p').html('');
+                        }, 3000);
+                    
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                     $('#fail-message').text('Something went wrong.').show();
+                        $('#delete-log-modal').modal('hide');
+                         setTimeout(function() {
+                            location.reload();
+                        }, 3000);
+                }
             });
         });
-    </script>
-@endsection
+    });
+});
+
+
+</script>
+
+

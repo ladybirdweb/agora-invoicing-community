@@ -24,6 +24,12 @@ class SocialLoginsController extends Controller
 
     public function update(Request $request)
     {
+
+         $request->validate([
+                'client_id' => 'required',
+                'client_secret' => 'required',
+         ]);
+
         try {
             SocialLogin::where('type', $request->type)->update([
                 'client_id' => $request->client_id,
@@ -36,7 +42,6 @@ class SocialLoginsController extends Controller
         } catch (\Exception $e) {
             Session::flash('error', 'An error occurred while updating social login settings');
         }
-
         return redirect()->back();
     }
 }

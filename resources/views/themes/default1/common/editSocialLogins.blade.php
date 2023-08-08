@@ -15,6 +15,13 @@ Social Logins
 </div>
 @stop
 @section('content')
+<style>
+     .required:after {
+  content: "*";
+    color: red;
+    font-weight: 100;
+}
+</style>
 
 <?php
 $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
@@ -23,14 +30,14 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
 ?>
 <div class="row">
     <div class="col-md-12">
-        @if($message = Session::get('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ $message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+    @if($message = Session::get('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error!</strong> {{ $message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
         {!! Session::forget('error') !!}
         @if($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -51,16 +58,26 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                     @csrf
 
                     <div class="mb-3">
-                        <label for="id" class="form-label">Client Id</label>
-                        <input type="text" class="form-control" id="id" required value="{{old('title', $socialLogins->client_id)}}" name="client_id">
+                        @if($socialLogins->type == 'Twitter')
+                            <label for="id" class="form-label required">API Key</label>
+                        <input type="text" class="form-control" id="id"  value="{{old('title', $socialLogins->client_id)}}" name="client_id">
                     </div>
                     <input type="hidden" name="type" value="{{old('title', $socialLogins->type)}}">
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Client Secret</label>
-                        <input type="password" class="form-control" id="pwd" required value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
+                        <label for="pwd" class="form-label required">API Secret</label>
+                        <input type="password" class="form-control" id="pwd"  value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
+                        @else
+                        <label for="id" class="form-label required">Client Id</label>
+                        <input type="text" class="form-control" id="id"  value="{{old('title', $socialLogins->client_id)}}" name="client_id">
+                    </div>
+                    <input type="hidden" name="type" value="{{old('title', $socialLogins->type)}}">
+                    <div class="mb-3">
+                        <label for="pwd" class="form-label required">Client Secret</label>
+                        <input type="password" class="form-control" id="pwd"  value="{{old('title', $socialLogins->client_secret)}}" name="client_secret">
+                        @endif
                     </div>
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Redirect URL</label>
+                        <label for="pwd" class="form-label required">Redirect URL</label>
                         <input type="text" class="form-control" id="pwd"  value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}" name="redirect_url">
                     </div>
 
@@ -88,7 +105,7 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                     @endif
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="btn btn-primary btn-sm mt-3">
                         <i class="fa fa-sync-alt"></i> &nbspUpdate
                     </button>
                 </form>

@@ -176,11 +176,11 @@ class LoginController extends Controller
     {
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
-         \Config::set("services.$provider.client_id", $details->client_id);
-         \Config::set("services.$provider.client_secret", $details->client_secret);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
 
-         $githubUser = Socialite::driver($provider)->user();
-      
+        $githubUser = Socialite::driver($provider)->user();
+
         $user = User::updateOrCreate(
             [
                 'email' => $githubUser->getemail(),
@@ -192,11 +192,11 @@ class LoginController extends Controller
             ]
         );
         if ($user) {
-    if ($user->role == 'admin') {
-        $user->role = 'admin';
-    } else {
-        $user->role = 'user'; // Set to 'user' if not an admin
-    }
+            if ($user->role == 'admin') {
+                $user->role = 'admin';
+            } else {
+                $user->role = 'user'; // Set to 'user' if not an admin
+            }
         }
 
         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification
@@ -204,7 +204,7 @@ class LoginController extends Controller
         }
 
         Auth::login($user);
-        
+
         if (\Auth::user()->is_2fa_enabled == 1) {//check for 2fa
             $userId = \Auth::user()->id;
             Session::put('2fa:user:id', $userId);
@@ -212,10 +212,9 @@ class LoginController extends Controller
 
             return redirect('2fa/validate');
         }
-        if(Auth::check()){
-               return redirect($this->redirectPath());
+        if (Auth::check()) {
+            return redirect($this->redirectPath());
         }
-
     }
 
     //stores basic details for social logins

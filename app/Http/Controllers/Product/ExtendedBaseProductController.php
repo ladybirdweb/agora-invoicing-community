@@ -238,7 +238,7 @@ class ExtendedBaseProductController extends Controller
     public function saveCartValues($input, bool $can_modify_agent, bool $can_modify_quantity, $highlight)
     {
         $this->product->show_agent = $input['show_agent'] == 1; //if Show Agents Selected
-        $this->product->highlight = $highlight;
+        $this->product->highlight = ($highlight == 1) ? 1 : 0;
         $this->product->can_modify_agent = $can_modify_agent;
         $this->product->can_modify_quantity = $can_modify_quantity;
     }

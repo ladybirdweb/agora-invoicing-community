@@ -182,33 +182,33 @@ class LoginController extends Controller
         $githubUser = Socialite::driver($provider)->user();
 
         $existingUser = User::where('email', $githubUser->getEmail())->first();
-    
-    if ($existingUser) {
-        $existingUser->user_name = $githubUser->getName() . substr($githubUser->getId(), -2);
-        $existingUser->first_name = $githubUser->getName();
-        $existingUser->active = '1'; 
-        
-        if ($existingUser->role == 'admin') {
-            $existingUser->role = 'admin';
+
+        if ($existingUser) {
+            $existingUser->user_name = $githubUser->getName().substr($githubUser->getId(), -2);
+            $existingUser->first_name = $githubUser->getName();
+            $existingUser->active = '1';
+
+            if ($existingUser->role == 'admin') {
+                $existingUser->role = 'admin';
+            } else {
+                $existingUser->role = 'user';
+            }
+
+            $existingUser->save();
+            $user = $existingUser;
         } else {
-            $existingUser->role = 'user';
+            $user = User::create([
+                'email' => $githubUser->getEmail(),
+                'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
+                'first_name' => $githubUser->getName(),
+                'active' => '1',
+                'role' => 'user',
+            ]);
         }
-        
-        $existingUser->save();
-        $user = $existingUser;
-    } else {
-        $user = User::create([
-            'email' => $githubUser->getEmail(),
-            'user_name' => $githubUser->getName() . substr($githubUser->getId(), -2),
-            'first_name' => $githubUser->getName(),
-            'active' => '1', 
-            'role' => 'user' 
-        ]);
-    }
         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification
             return redirect('verify')->with('user', $user);
         }
-        
+
         Auth::login($user);
 
         if (\Auth::user()->is_2fa_enabled == 1) {//check for 2fa
@@ -226,20 +226,19 @@ class LoginController extends Controller
     //stores basic details for social logins
     public function storeBasicDetailsss(Request $request)
     {
-        try{
-        $this->validate($request, [
-            'company' => 'required|string',
-            'address' => 'required|string',
-        ]);
+        try {
+            $this->validate($request, [
+                'company' => 'required|string',
+                'address' => 'required|string',
+            ]);
 
-        $user = Auth::user();
-        $user->company = $request->company;
-        $user->address = $request->address;
-        $user->save();
+            $user = Auth::user();
+            $user->company = $request->company;
+            $user->address = $request->address;
+            $user->save();
 
-        return redirect()->back();
-        }
-        catch (\Exception $e) {
+            return redirect()->back();
+        } catch (\Exception $e) {
             Session::flash('error', 'Please Enter the Details');
         }
     }

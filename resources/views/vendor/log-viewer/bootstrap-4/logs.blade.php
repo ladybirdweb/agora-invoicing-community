@@ -69,7 +69,7 @@ Log-Viewer
                             <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
                                 <i class="fa fa-download"></i>
                             </a>
-                            <a id="delete" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
+                            <a class="btn btn-xs btn-danger delete" data-log-date="{{ $date }}">
                                 <i  class="fa fa-trash" style="color: white;"></i>
                             </a>
                         </td>
@@ -122,7 +122,7 @@ Log-Viewer
 
 <script>
     $(document).ready(function() {
-        $('#delete').on('click', function(e) {
+        $('.delete').on('click', function(e) {
             var logDate = $(this).data('log-date');
             $('#delete-log-form input[name="date"]').val(logDate);
             $('#delete-log-modal').modal('show');
@@ -132,7 +132,7 @@ Log-Viewer
  <script>
  $(document).ready(function() {
     $('#delete-log-modal').on('show.bs.modal', function(event) {
-        var logDate = $('#delete').data('log-date');
+        var logDate = $('.delete').data('log-date');
         var modal = $(this); 
 
         modal.find('#delete-log-form input[name="date"]').val(logDate);

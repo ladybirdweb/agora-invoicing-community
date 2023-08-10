@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-         if (! Schema::hasColumn('products', 'add_to_contact')) {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('add_to_contact')->default(0);
-        });
-    }
+        if (! Schema::hasColumn('products', 'add_to_contact')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('add_to_contact')->default(0);
+            });
+        }
     }
 
     /**

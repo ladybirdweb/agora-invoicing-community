@@ -197,6 +197,7 @@ class TemplateController extends Controller
             $plan = new Plan();
             $plan_form = 'Free'; //No Subscription
             $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+            $product = Product::find($id);
             $type = Product::find($id);
             $planid = Plan::where('product', $id)->value('id');
             $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
@@ -214,8 +215,8 @@ class TemplateController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
+            return $product['add_to_contact'] == 1 ? '' : $form;
 
-            return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -233,10 +234,11 @@ class TemplateController extends Controller
         try {
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
-            if ($plans->count() == 0) {
+            $product = Product::find($id);
+            if ($product['add_to_contact'] == 1) {
                 return 'Custom Pricing';
             }
-
+            else{
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
@@ -254,8 +256,8 @@ class TemplateController extends Controller
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-
-            return $cost;
+                         return $cost;
+        }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

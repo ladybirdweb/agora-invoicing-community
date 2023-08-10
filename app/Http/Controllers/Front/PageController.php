@@ -420,6 +420,7 @@ class PageController extends Controller
                 $description = self::getPriceDescription($product->id);
                 $status = Product::find($product->id);
             }
+
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
             dd($ex);
@@ -477,6 +478,7 @@ class PageController extends Controller
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
             }
+
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -501,8 +503,8 @@ class PageController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
-            return $product['add_to_contact'] == 1 ? '' : $form;
 
+            return $product['add_to_contact'] == 1 ? '' : $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -567,27 +569,25 @@ class PageController extends Controller
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
             $product = Product::find($id);
-            if($product['add_to_contact'] == 1){
-             return 'Custom Pricing';   
-            }
-            else{
-
-            $prices = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
+            if ($product['add_to_contact'] == 1) {
+                return 'Custom Pricing';
+            } else {
+                $prices = [];
+                if ($plans->count() > 0) {
+                    foreach ($plans as $plan) {
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
+                    $prices[0] = $prices[0] * 12;
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
-                $prices[0] = $prices[0] * 12;
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-            }
 
-            return $cost;
-        }
+                return $cost;
+            }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -608,15 +608,14 @@ class PageController extends Controller
         try {
             $plan = Product::find($productid)->plan();
             $product = Product::find($productid);
-            if($product['add_to_contact'] == 1)
-            {
+            if ($product['add_to_contact'] == 1) {
                 return '';
+            } elseif ($plan) {
+                $description = $plan ? $plan->planPrice->first() : '';
+                $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
+
+                return  $priceDescription;
             }
-            elseif($plan){
-            $description = $plan ? $plan->planPrice->first() : ''; 
-            $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
-            return  $priceDescription;
-        }   
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

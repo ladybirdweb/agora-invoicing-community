@@ -295,6 +295,8 @@ class ProductController extends BaseProductController
             'show_agent' => 'required',
             // 'version' => 'required',
         ], [
+            'product_sku.unique' => 'Prodduct SKU should be unique',
+            'name.unique' => 'Name should be unique',
             'show_agent.required' => 'Select you Cart Page Preference',
         ]);
 
@@ -320,7 +322,8 @@ class ProductController extends BaseProductController
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');
             $highlight = $request->input('highlight');
-            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity, $highlight);
+            $add_to_contact = $request->input('add_to_contact');
+            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity, $highlight,$add_to_contact);
             $this->product->fill($request->except('image', 'file'))->save();
 
             $taxes = $request->input('tax');
@@ -443,7 +446,8 @@ class ProductController extends BaseProductController
 
             $product->fill($request->except('image', 'file'))->save();
             $highlight = $request->input('highlight');
-            $this->saveCartDetailsWhileUpdating($input, $request, $product, $highlight);
+            $add_to_contact = $request->input('add_to_contact');
+            $this->saveCartDetailsWhileUpdating($input, $request, $product, $highlight,$add_to_contact);
 
             if ($request->input('github_owner') && $request->input('github_repository')) {
                 $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));

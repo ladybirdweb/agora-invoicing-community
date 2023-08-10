@@ -137,7 +137,7 @@ main
 
 
 
-         @if($status->status == "1")
+         @if($status && $status->status == "1")
          
             <div class="row mb-5">
             <div class="col text-center">

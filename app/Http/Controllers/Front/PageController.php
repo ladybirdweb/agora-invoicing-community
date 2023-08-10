@@ -412,16 +412,17 @@ class PageController extends Controller
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
             $products = Product::all();
+            $plan = '';
+            $description = '';
+            $status = null;
             foreach ($productsRelatedToGroup as $product) {
                 $plan = Product::find($product->id)->plan();
                 $description = self::getPriceDescription($product->id);
-
                 $status = Product::find($product->id);
             }
-            $isChecked = request()->cookie('isChecked');
-
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -465,18 +466,17 @@ class PageController extends Controller
                     ->plans($product['shoping_cart_link'], $product['id']);
                     $trasform[$product['id']]['subscription-year'] = $this
                     ->plansYear($product['shoping_cart_link'], $product['id']);
-                    if ($trasform[$product['id']]['price'] !== 'Contact Sales') {
+                    if ($product['add_to_contact'] != 1) {
                         $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
                      value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
                    value='Order Now' class='btn btn-dark btn-modern'></form>";
                     } else {
-                        $trasform[$product['id']]['url'] = "<a class='btn btn-dark btn-modern' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        $trasform[$product['id']]['url'] = "<a class='btn btn-dark btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
                     }
                 }
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
             }
-
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -489,6 +489,7 @@ class PageController extends Controller
             $plan = new Plan();
             $plan_form = 'Free'; //No Subscription
             $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+            $product = Product::find($id);
             $type = Product::find($id);
             $planid = Plan::where('product', $id)->value('id');
             $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
@@ -500,8 +501,8 @@ class PageController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
+            return $product['add_to_contact'] == 1 ? '' : $form;
 
-            return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -565,6 +566,11 @@ class PageController extends Controller
         try {
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
+            $product = Product::find($id);
+            if($product['add_to_contact'] == 1){
+             return 'Custom Pricing';   
+            }
+            else{
 
             $prices = [];
             if ($plans->count() > 0) {
@@ -581,6 +587,7 @@ class PageController extends Controller
             }
 
             return $cost;
+        }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -600,11 +607,16 @@ class PageController extends Controller
     {
         try {
             $plan = Product::find($productid)->plan();
-            $description = $plan ? $plan->planPrice->first() : '';
-
+            $product = Product::find($productid);
+            if($product['add_to_contact'] == 1)
+            {
+                return '';
+            }
+            elseif($plan){
+            $description = $plan ? $plan->planPrice->first() : ''; 
             $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
-
             return  $priceDescription;
+        }   
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

@@ -215,8 +215,8 @@ class TemplateController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
-            return $product['add_to_contact'] == 1 ? '' : $form;
 
+            return $product['add_to_contact'] == 1 ? '' : $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -237,27 +237,27 @@ class TemplateController extends Controller
             $product = Product::find($id);
             if ($product['add_to_contact'] == 1) {
                 return 'Custom Pricing';
-            }
-            else{
-            $prices = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
+            } else {
+                $prices = [];
+                if ($plans->count() > 0) {
+                    foreach ($plans as $plan) {
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
+                    if (! empty($prices[3])) {
+                        $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
+                    } else {
+                        $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    }
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
-                if (! empty($prices[3])) {
-                    $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
-                } else {
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                }
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+
+                return $cost;
             }
-                         return $cost;
-        }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

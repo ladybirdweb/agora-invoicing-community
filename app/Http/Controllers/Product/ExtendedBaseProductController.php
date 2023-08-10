@@ -235,7 +235,7 @@ class ExtendedBaseProductController extends Controller
      * @param  bool  $can_modify_quantity  Whether Product Quantity can be modified by Customers
      * @return
      */
-    public function saveCartValues($input, bool $can_modify_agent, bool $can_modify_quantity, $highlight,$add_to_contact)
+    public function saveCartValues($input, bool $can_modify_agent, bool $can_modify_quantity, $highlight, $add_to_contact)
     {
         $this->product->show_agent = $input['show_agent'] == 1; //if Show Agents Selected
         $this->product->highlight = ($highlight == 1) ? 1 : 0;
@@ -256,7 +256,7 @@ class ExtendedBaseProductController extends Controller
      * @param  array  $product  instance of the Product
      * @return Save The Details
      */
-    public function saveCartDetailsWhileUpdating($input, $request, $product, $highlight,$add_to_contact)
+    public function saveCartDetailsWhileUpdating($input, $request, $product, $highlight, $add_to_contact)
     {
         $product->show_agent = $input['show_agent'] == 1 ? 1 : 0; //if Show Agents Selected
         if ($product->show_agent == 1) {

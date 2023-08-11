@@ -124,7 +124,6 @@ Log-Viewer
     $(document).ready(function() {
         $('.delete').on('click', function(e) {
             var logDate = $(this).data('log-date');
-            alert(logDate);
             $('#delete-log-modal').data('log-date', logDate);
             $('#delete-log-form input[name="date"]').val(logDate);
             $('#delete-log-modal').modal('show');
@@ -132,7 +131,6 @@ Log-Viewer
 
         $('#confirmDelete').on('click', function() {
             var logDate = $('#delete-log-modal').data('log-date');
-            alert(logDate);
             $.ajax({
                 type: 'DELETE', 
                 url: '{{ route('log-viewer::logs.delete') }}',

@@ -132,16 +132,16 @@ class CheckoutController extends InfoController
             foreach (\Cart::getContent() as $item) {
                 $price = $item->price;
                 $quantity = $item->quantity;
-            }
-            if ($price && ! empty(\Session::get('code'))) {
+            if (! empty(\Session::get('code'))) {
+                $price = \Session::get('oldPrice');
                 $value = Promotion::where('code', \Session::get('code'))->value('value');
-                $discountPrice = $quantity * intval($value);
+                $discountPrice = $quantity * ($price * (intval($value) / 100));
                 \Session::put('discountPrice', $discountPrice);
             }
+        }
 
             return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice'));
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

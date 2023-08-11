@@ -272,17 +272,19 @@ class PromotionController extends BasePromotionController
     {
         try {
             $promo = $this->getPromotionDetails($code);
+            if(\Session::get('usage') == 1 && \Session::get('code') == $code)
+            {
+              throw new \Exception('Coupon code has already been applied');
+            }
             $validProductForPromo = $promo->relation->first()->product_id;
             $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
             $productid = '';
             foreach (\Cart::getContent() as $item) {
-                \Session::put('oldprice', $item->price);
                 if ($item->id == $validProductForPromo) {
                     $productid = $item->id;
                 }
             }
             if ($productid) {
-                if (\Session::get('usage') == null || \Session::get('usage') != 1) {
                     \Session::put('usage', 1);
                     \Session::put('code', $promo->code);
                     \Session::put('codevalue', $promo->value);
@@ -298,9 +300,8 @@ class PromotionController extends BasePromotionController
 
                         // new item price, price can also be a string format like so: '98.67'
                     ]);
-                } else {
-                    throw new \Exception('Code already used once');
-                }
+                return redirect()->back()->with('success','Coupon code applied successfully');
+
             } else {
                 throw new \Exception('Invalid promo code');
             }

@@ -119,7 +119,6 @@ class CheckoutController extends InfoController
         $content = Cart::getContent();
         $taxConditions = $this->getAttributes($content);
 
-        $content = Cart::getContent();
         try {
             $domain = $request->input('domain');
             if ($domain) {//Store the Domain  in session when user Logged In
@@ -128,14 +127,21 @@ class CheckoutController extends InfoController
                 }
             }
             $discountPrice = null;
-            if (! empty(\Session::get('code'))) {
+            $price = [];
+            $quantity = [];
+             foreach (\Cart::getContent() as $item) {
+                $price = $item->price;
+                $quantity = $item->quantity;
+            }
+            if ($price && ! empty(\Session::get('code'))) {
                 $value = Promotion::where('code', \Session::get('code'))->value('value');
-                $discountPrice = \Session::get('originalPrice') * (intval($value) / 100);
+                $discountPrice = $quantity * (intval($value));
                 \Session::put('discountPrice', $discountPrice);
             }
 
             return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

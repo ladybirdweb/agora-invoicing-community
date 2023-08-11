@@ -289,7 +289,7 @@ class CartController extends BaseCartController
     {
         try {
             $productid = '';
-            $originalPrice = Session::get('oldprice');
+            $originalPrice = Session::get('oldPrice');
             foreach (\Cart::getContent() as $item) {
                 $productid = $item->id;
             }

@@ -205,7 +205,7 @@ $cartSubtotalWithoutCondition = 0;
                     <form action="{{ url('remove-coupon') }}" method="POST">
                     @csrf
                    <button type="submit" class="remove-coupon-btn" title="Click to remove coupon code">
-                        <i class="fas fa-times-circle" style="left: 115px;bottom: 33px;position: absolute;"></i>
+                        <i class="fas fa-times-circle" style="left: 95px;bottom: 33px;position: absolute;"></i>
                     </button>
                 </form>
                     </td>

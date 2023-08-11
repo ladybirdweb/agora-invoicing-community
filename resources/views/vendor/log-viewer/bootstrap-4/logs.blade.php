@@ -124,48 +124,37 @@ Log-Viewer
     $(document).ready(function() {
         $('.delete').on('click', function(e) {
             var logDate = $(this).data('log-date');
+            alert(logDate);
+            $('#delete-log-modal').data('log-date', logDate);
             $('#delete-log-form input[name="date"]').val(logDate);
             $('#delete-log-modal').modal('show');
         });
-    });
-</script>
- <script>
- $(document).ready(function() {
-    $('#delete-log-modal').on('show.bs.modal', function(event) {
-        var logDate = $('.delete').data('log-date');
-        var modal = $(this); 
-
-        modal.find('#delete-log-form input[name="date"]').val(logDate);
 
         $('#confirmDelete').on('click', function() {
+            var logDate = $('#delete-log-modal').data('log-date');
+            alert(logDate);
             $.ajax({
-                type: 'DELETE', // Use DELETE method
+                type: 'DELETE', 
                 url: '{{ route('log-viewer::logs.delete') }}',
                 data: {
-                    date: logDate // Pass the log date as data
+                    date: logDate 
                 },
-                  success: function(data) {
-                  
-                        $('#success-message').text('Log file deleted successfully.').show();
-                        $('#delete-log-modal').modal('hide');
-                        setTimeout(function() {
-                            location.reload();
-                        }, 3000);
-                    
+                success: function(data) {
+                    $('#success-message').text('Log file deleted successfully.').show();
+                    $('#delete-log-modal').modal('hide');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
                 },
                 error: function(xhr, textStatus, errorThrown) {
-                     $('#fail-message').text('Something went wrong.').show();
-                        $('#delete-log-modal').modal('hide');
-                         setTimeout(function() {
-                            location.reload();
-                        }, 3000);
+                    $('#fail-message').text('Something went wrong.').show();
+                    $('#delete-log-modal').modal('hide');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
                 }
             });
         });
     });
-});
-
-
 </script>
-
 

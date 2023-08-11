@@ -36,7 +36,7 @@ class ProfileRequest extends Request
                 'user_name'              => 'unique:users,user_name,'.$userid,
                 'state'                  => 'required_if:country,IN',
                 'timezone_id'            => 'required',
-                'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png|max:100000',
+                'profile_pic'            => 'sometimes|mimes:jpeg,png,jpg|max:2048',
 
             ];
         }
@@ -54,7 +54,7 @@ class ProfileRequest extends Request
                 'mobile'                 => 'required',
                 'country'                => 'required|exists:countries,country_code_char2',
                 'state'                  => 'required_if:country,IN',
-                'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png|max:100000',
+                'profile_pic'            => 'sometimes|mimes:jpeg,png,jpg|max:2048',
 
             ];
         }

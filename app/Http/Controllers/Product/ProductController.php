@@ -283,11 +283,12 @@ class ProductController extends BaseProductController
     public function store(Request $request)
     {
         $input = $request->all();
+        
         $v = \Validator::make($input, [
             'name' => 'required|unique:products,name',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
+            'image' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
             'product_sku' => 'required|unique:products,product_sku',
             'group' => 'required',
             'show_agent' => 'required',
@@ -411,7 +412,7 @@ class ProductController extends BaseProductController
             'name' => 'required',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
+             'image' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
             'product_sku' => 'required',
             'group' => 'required',
         ]);

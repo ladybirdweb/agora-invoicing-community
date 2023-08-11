@@ -32,9 +32,9 @@ class SettingsRequest extends FormRequest
             'state' => 'required',
             'country' => 'required',
             'default_currency' => 'required',
-            'admin-logo' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
-            'fav-icon' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
-            'logo' => 'sometimes | mimes:jpeg,jpg,png | max:1000',
+            'admin-logo' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
+            'fav-icon' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
+            'logo' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

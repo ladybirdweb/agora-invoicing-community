@@ -74,7 +74,7 @@ class BasePromotionController extends Controller
                 $planid = \Session::get('plan');
             }
             $price = $cart_control->planCost($productid, $userid, $planid = '');
-            \Session::put('oldPrice',$price);
+            \Session::put('oldPrice', $price);
             $updated_price = $this->findCost($promotion->type, $promotion->value, $price, $productid);
 
             return $updated_price;

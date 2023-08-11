@@ -272,9 +272,8 @@ class PromotionController extends BasePromotionController
     {
         try {
             $promo = $this->getPromotionDetails($code);
-            if(\Session::get('usage') == 1 && \Session::get('code') == $code)
-            {
-              throw new \Exception('Coupon code has already been applied');
+            if (\Session::get('usage') == 1 && \Session::get('code') == $code) {
+                throw new \Exception('Coupon code has already been applied');
             }
             $validProductForPromo = $promo->relation->first()->product_id;
             $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
@@ -285,23 +284,23 @@ class PromotionController extends BasePromotionController
                 }
             }
             if ($productid) {
-                    \Session::put('usage', 1);
-                    \Session::put('code', $promo->code);
-                    \Session::put('codevalue', $promo->value);
-                    $coupon101 = new CartCondition([
-                        'name' => $promo->code,
-                        'type' => 'coupon',
-                        'value' => '-'.$promo->value,
-                    ]);
-                    \Cart::update($productid, [
-                        'id' => $productid,
-                        'price' => $value,
-                        'conditions' => $coupon101,
+                \Session::put('usage', 1);
+                \Session::put('code', $promo->code);
+                \Session::put('codevalue', $promo->value);
+                $coupon101 = new CartCondition([
+                    'name' => $promo->code,
+                    'type' => 'coupon',
+                    'value' => '-'.$promo->value,
+                ]);
+                \Cart::update($productid, [
+                    'id' => $productid,
+                    'price' => $value,
+                    'conditions' => $coupon101,
 
-                        // new item price, price can also be a string format like so: '98.67'
-                    ]);
-                return redirect()->back()->with('success','Coupon code applied successfully');
+                    // new item price, price can also be a string format like so: '98.67'
+                ]);
 
+                return redirect()->back()->with('success', 'Coupon code applied successfully');
             } else {
                 throw new \Exception('Invalid promo code');
             }

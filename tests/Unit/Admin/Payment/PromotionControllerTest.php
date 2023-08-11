@@ -194,7 +194,7 @@ class PromotionControllerTest extends DBTestCase
     public function test_checkCode_whenCouponCodeIsEneteredTwiceInSameSession_throwsException()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Code already used once');
+        $this->expectExceptionMessage('Coupon code has already been applied');
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = Product::factory()->create();

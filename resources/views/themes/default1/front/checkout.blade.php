@@ -11,12 +11,28 @@ Checkout
 @section('breadcrumb')
  @if(Auth::check())
  <style>
-.remove-coupon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
+    .remove-coupon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .amount-with-icon {
+        position: relative;
+    }
+    .amount {
+        display: inline-block;
+    }
+    .remove-icon {
+        position: absolute;
+        top: 0;
+        left: 100%; 
+        margin-left: 5px; 
+        font-size: 17px;
+        background: none;
+       border: none;
+
+        }
  </style>
 <li><a href="{{url('my-invoices')}}">Home</a></li>
   @else
@@ -204,8 +220,8 @@ $cartSubtotalWithoutCondition = 0;
                         ?>
                     <form action="{{ url('remove-coupon') }}" method="POST">
                     @csrf
-                   <button type="submit" class="remove-coupon-btn" title="Click to remove coupon code">
-                        <i class="fas fa-times-circle" style="left: 95px;bottom: 33px;position: absolute;"></i>
+                    <button type="submit" class="remove-icon" title="Click to remove">
+                        <i class="fas fa-times-circle"></i>
                     </button>
                 </form>
                     </td>

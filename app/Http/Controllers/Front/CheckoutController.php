@@ -129,13 +129,13 @@ class CheckoutController extends InfoController
             $discountPrice = null;
             $price = [];
             $quantity = [];
-             foreach (\Cart::getContent() as $item) {
+            foreach (\Cart::getContent() as $item) {
                 $price = $item->price;
                 $quantity = $item->quantity;
             }
             if ($price && ! empty(\Session::get('code'))) {
                 $value = Promotion::where('code', \Session::get('code'))->value('value');
-                $discountPrice = $quantity * (intval($value));
+                $discountPrice = $quantity * intval($value);
                 \Session::put('discountPrice', $discountPrice);
             }
 

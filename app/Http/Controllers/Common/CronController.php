@@ -269,6 +269,7 @@ class CronController extends BaseCronController
 
         return $users;
     }
+
     public function getSubscriptions($days)
     {
         $daysArray = $days;

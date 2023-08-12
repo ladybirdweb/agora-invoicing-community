@@ -208,19 +208,20 @@ class BaseCronController extends Controller
         $temp_id = $setting->subscription_going_to_end;
         $template = $templates->where('id', $temp_id)->first();
 
-        ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'expiry'       => $end,
             'product'      => $product,
             'number'       => $order->number,
             'url'          => url('my-orders'),
         ];
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type = '');
+        $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
     }
 
     public function Auto_renewalMail($user, $end, $product, $order, $sub)

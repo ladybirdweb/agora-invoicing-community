@@ -70,9 +70,9 @@ return[
      * This is for forgot password mail content
      */
     'forgot_password_mail' => [
-        'name' => '{$name}',
-        'url' => '{$url}',
-        'contact_us' => '{$contact-us}',
+        'name' => '{{name}}',
+        'url' => '{{url}}',
+        'contact_us' => '{{contact-us}}',
 
     ],
 

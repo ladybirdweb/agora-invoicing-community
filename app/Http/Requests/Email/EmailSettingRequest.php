@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Email;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Validator;
 class EmailSettingRequest extends FormRequest
 {
     /**
@@ -66,8 +66,22 @@ class EmailSettingRequest extends FormRequest
         } else {
             return [
                 'driver' => 'required',
-                'email' => 'required',
+                'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    $emailDomain = explode('@', $value)[1];
+                    $url = \Request::url();
+                    $domain = parse_url($url);
+                    if (strcasecmp($domain['host'], $emailDomain) !== 0) {
+                        return $fail("The email domain does not match the URL domain.");
+                    }
+                },
+            ],
             ];
         }
     }
+    
+    
+
 }

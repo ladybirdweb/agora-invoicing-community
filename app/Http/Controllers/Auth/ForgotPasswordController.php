@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\TemplateType;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-
+use App\Model\Common\TemplateType;
 class ForgotPasswordController extends Controller
 {
     /*
@@ -70,19 +70,18 @@ class ForgotPasswordController extends Controller
             $setting = $settings::find(1);
             //template
             $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->forgot_password;
-            $template = $templates->where('id', $temp_id)->first();
-            $type = '';
+            $temp_id = TemplateType::where('name','forgot_password_mail')->value('id');
+            $template = $templates->where('type', $temp_id)->first();
             $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$setting->website];
-
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            
             if (emailSendingStatus()) {
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
                 $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$user->email.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];

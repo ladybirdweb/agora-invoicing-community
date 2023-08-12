@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\TemplateType;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use App\Model\Common\TemplateType;
+
 class ForgotPasswordController extends Controller
 {
     /*
@@ -83,7 +84,6 @@ class ForgotPasswordController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);

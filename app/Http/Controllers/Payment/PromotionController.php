@@ -272,40 +272,64 @@ class PromotionController extends BasePromotionController
     {
         try {
             $promo = $this->getPromotionDetails($code);
-            if (\Session::get('usage') == 1 && \Session::get('code') == $code) {
+            $codevalue = Promotion::where('code', $code)->first();
+            if (! $codevalue) {
+                throw new \Exception('Invalid promo code');
+            }
+            if (\Session::get('usage') == 1) {
+                if(\Session::get('code') == $code ){
                 throw new \Exception('Coupon code has already been applied');
             }
+            else
+            {
+              $productid = '';
+              $originalPrice = \Session::get('oldPrice');
+            foreach (\Cart::getContent() as $item) {
+                $productid = $item->id;
+            }
+            if ($productid && $originalPrice) {
+                \Cart::update($productid, [
+                    'price' => $originalPrice,
+                ]);
+                \Session::forget('code');
+                \Session::forget('oldprice');
+                \Session::forget('usage');
+            }
+            }
+        }
             $validProductForPromo = $promo->relation->first()->product_id;
             $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
             $productid = '';
             foreach (\Cart::getContent() as $item) {
                 if ($item->id == $validProductForPromo) {
                     $productid = $item->id;
+                    $original = $item->price;
+
                 }
             }
+
             if ($productid) {
                 \Session::put('usage', 1);
                 \Session::put('code', $promo->code);
                 \Session::put('codevalue', $promo->value);
                 $coupon101 = new CartCondition([
-                    'name' => $promo->code,
+                    'name' => $original,
                     'type' => 'coupon',
                     'value' => '-'.$promo->value,
                 ]);
                 \Cart::update($productid, [
                     'id' => $productid,
                     'price' => $value,
+
                     'conditions' => $coupon101,
 
                     // new item price, price can also be a string format like so: '98.67'
                 ]);
 
                 return redirect()->back()->with('success', 'Coupon code applied successfully');
-            } else {
-                throw new \Exception('Invalid promo code');
             }
         } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+           throw new \Exception($ex->getMessage());
         }
     }
 

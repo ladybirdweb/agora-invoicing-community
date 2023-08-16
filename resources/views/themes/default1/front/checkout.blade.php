@@ -85,6 +85,7 @@ $cartSubtotalWithoutCondition = 0;
                         <tbody>
                               {{Cart::removeCartCondition('Processing fee')}}
                             @forelse($content as $item)
+                           
 
                             @php
                             $cartSubtotalWithoutCondition += $item->getPriceSum();
@@ -114,8 +115,21 @@ $cartSubtotalWithoutCondition = 0;
                                 </td>
 
                                 <td class="product-subtotal">
+                                    <?php
+                                    $productId = \DB::table('products')->where('name',$item->name)->value('id');
+                                    $planid = \DB::table('plans')->where('product',$productId)->value('id');
+                                    $price = \DB::table('plan_prices')->where('plan_id',$planid)->where('currency',$item->attributes->currency)->value('add_price');
+                                    ?>
                                     <span class="amount">
-                                     {{currencyFormat($item->price,$code = $item->attributes->currency)}}
+                                           @if ($item->conditions && $item->conditions->getType() === 'coupon')
+                                                {{ $item->quantity * $item->conditions->getName() }}
+
+                                            @else
+
+
+                                               {{currencyFormat($item->quantity * $price,$code = $item->attributes->currency)}}
+                                            @endif
+                                                                 
                                 </td>
                             </tr>
                             @empty

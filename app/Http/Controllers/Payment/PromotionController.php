@@ -277,26 +277,24 @@ class PromotionController extends BasePromotionController
                 throw new \Exception('Invalid promo code');
             }
             if (\Session::get('usage') == 1) {
-                if(\Session::get('code') == $code ){
-                throw new \Exception('Coupon code has already been applied');
+                if (\Session::get('code') == $code) {
+                    throw new \Exception('Coupon code has already been applied');
+                } else {
+                    $productid = '';
+                    $originalPrice = \Session::get('oldPrice');
+                    foreach (\Cart::getContent() as $item) {
+                        $productid = $item->id;
+                    }
+                    if ($productid && $originalPrice) {
+                        \Cart::update($productid, [
+                            'price' => $originalPrice,
+                        ]);
+                        \Session::forget('code');
+                        \Session::forget('oldprice');
+                        \Session::forget('usage');
+                    }
+                }
             }
-            else
-            {
-              $productid = '';
-              $originalPrice = \Session::get('oldPrice');
-            foreach (\Cart::getContent() as $item) {
-                $productid = $item->id;
-            }
-            if ($productid && $originalPrice) {
-                \Cart::update($productid, [
-                    'price' => $originalPrice,
-                ]);
-                \Session::forget('code');
-                \Session::forget('oldprice');
-                \Session::forget('usage');
-            }
-            }
-        }
             $validProductForPromo = $promo->relation->first()->product_id;
             $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
             $productid = '';
@@ -304,7 +302,6 @@ class PromotionController extends BasePromotionController
                 if ($item->id == $validProductForPromo) {
                     $productid = $item->id;
                     $original = $item->price;
-
                 }
             }
 
@@ -329,7 +326,7 @@ class PromotionController extends BasePromotionController
                 return redirect()->back()->with('success', 'Coupon code applied successfully');
             }
         } catch (\Exception $ex) {
-           throw new \Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 

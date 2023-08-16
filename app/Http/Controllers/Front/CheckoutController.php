@@ -135,7 +135,7 @@ class CheckoutController extends InfoController
                 if (! empty(\Session::get('code'))) {
                     $price = \Session::get('oldPrice');
                     $value = Promotion::where('code', \Session::get('code'))->value('value');
-                    $discountPrice = $quantity * ($price * (intval($value) / 100));
+                    $discountPrice = $price * (intval($value) / 100);
                     \Session::put('discountPrice', $discountPrice);
                 }
             }

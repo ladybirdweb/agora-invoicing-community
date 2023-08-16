@@ -188,7 +188,6 @@ class PromotionControllerTest extends DBTestCase
             'attributes' => [],
         ]);
         $promotion = $this->classObject->checkCode('FAVEOCOUPON');
-
     }
 
     /** @group promotion */

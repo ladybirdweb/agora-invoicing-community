@@ -1,7 +1,6 @@
 @extends('themes.default1.layouts.master')
 @section('title')
 Payment Logs
-@stop
 <style>
     .modal-dialog-scrollable {
         max-height: calc(100vh - 200px);
@@ -43,6 +42,8 @@ Payment Logs
         overflow-y: auto;
     }
 </style>
+@stop
+
 
 @section('content-header')
     <div class="col-sm-6">
@@ -297,8 +298,11 @@ Payment Logs
                 else
                 {
                     alert("Please select at least one checkbox");
+                    return false;
                 }
+                
             }  
+            return false;
 
          });
 

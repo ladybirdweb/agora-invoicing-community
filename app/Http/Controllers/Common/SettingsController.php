@@ -625,7 +625,7 @@ class SettingsController extends BaseSettingsController
                     return getDateHtml($date);
                 })
                 ->addColumn('user', function ($model) {
-                    $user = User::where('email', $model->to)->select('first_name', 'last_name', 'id')->first();
+                    $user = User::where('email', $model->from)->select('first_name', 'last_name', 'id')->first();
                     if ($user) {
                         return '<a href='.url('clients/'.$user->id).'>'.ucfirst($user->first_name).' '.ucfirst($user->last_name).'</a>';
                     }

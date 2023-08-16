@@ -456,7 +456,7 @@ class CronController extends BaseCronController
                 }
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->cardfailedMail($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details, $invoice, $payment = 'stripe');
+            $this->sendFailedPayment($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details, $invoice, $payment = 'stripe');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment = 'stripe');
@@ -466,10 +466,7 @@ class CronController extends BaseCronController
 
             return redirect()->route('checkout');
         } catch (\Exception $ex) {
-            // dd($ex);
-            // $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
-
-            // $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($currency);
+            $subscription = $subscription->refresh();
             $this->razorpay_payment($cost, $plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end, $product_details);
         }
     }
@@ -478,7 +475,7 @@ class CronController extends BaseCronController
     {
         try {
             $status = $subscription->rzp_subscription;
-            if ($status == '0') {
+            if ($status == '0' && $subscription->is_subscribed != 1) {
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
                 $amount = $cost;
@@ -515,7 +512,7 @@ class CronController extends BaseCronController
                 Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscriptionLink['id'], 'autoRenew_status' => 'Pending']);
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $stripe = 'razorpay');
+            $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $stripe = 'razorpay');
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment = 'razorpay');
@@ -619,7 +616,7 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url("autopaynow/$invoice->invoice_id");
 
-        try {
+        
             $email = (new Email())
          ->from($setting->email)
          ->to($user->email)
@@ -635,13 +632,12 @@ class CronController extends BaseCronController
          ]));
             $mailer->send($email);
             $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
-        } catch (\Exception $ex) {
-            // $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
-        }
+      
     }
 
     public function sendPaymentSuccessMail($invoice, $total, $user, $product, $number)
     {
+      
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -657,8 +653,7 @@ class CronController extends BaseCronController
         $url = url('my-orders');
 
         $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
-        $invo = Invoice::find($invoiceid);
-
+        $invo = Invoice::find($invoiceid)->first();
         $email = (new Email())
          ->from($setting->email)
          ->to($user->email)
@@ -672,6 +667,7 @@ class CronController extends BaseCronController
          ]));
         $mailer->send($email);
         $this->PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template->name, $number, $payment = 'stripe');
+       
     }
 
     public function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
@@ -693,7 +689,7 @@ class CronController extends BaseCronController
         // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
         $url = url("autopaynow/$invoice->invoice_id");
 
-        try {
+       
             $email = (new Email())
               ->from($setting->email)
               ->to($user->email)
@@ -710,9 +706,7 @@ class CronController extends BaseCronController
             $mailer->send($email);
 
             $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
-        } catch (\Exception $ex) {
-            // $mail->payment_log_fail($setting->email, $user->email, $template->name, $data);
-        }
+       
     }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
@@ -848,25 +842,21 @@ class CronController extends BaseCronController
 
     public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template, $order, $payment)
     {
-        $template == null ? 'Payment Successful' : $template;
-        $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
-        $invoice = Invoice::find($invoiceid);
-        $payment = Payment::where('invoice_id', $invoice->id)->first();
-        $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
-        $order = Order::find($orderid);
+    
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($set);
+        $mail->payment_log($user->email, $payment, 'success', $order);
 
         $email = (new Email())
            ->from($set->email)
            ->to($set->company_email)
            ->subject($template)
            ->replyTo($user->email)
-           ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+           ->html('Payment for'.' '.$product.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         $mailer->send($email);
-        $mail->payment_log_success($set->email, $set->company_email, $template, 'Payment for'.' '.$productName.' '.'of'.' '.$invoice->currency.' '.$invoice->grand_total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email, $payment, 'success', $order);
+      
     }
 
     public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment)
@@ -875,6 +865,8 @@ class CronController extends BaseCronController
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->payment_log($user->email,$payment, 'failed', $order->number, $exceptionMessage);
+
         $mailer = $mail->setMailConfig($set);
         $email = (new Email())
             ->from($set->email)
@@ -883,7 +875,5 @@ class CronController extends BaseCronController
             ->replyTo($user->email)
             ->html('Payment for'.' '.$productName.' '.'of'.' '.$invoice->first()->currency.' '.$total.' '.'Failed by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         $mailer->send($email);
-        dump('kol');
-        $mail->payment_log_fail($set->email, $set->company_email, $template, 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage, $payment, 'failed', $order->number, $exceptionMessage);
     }
 }

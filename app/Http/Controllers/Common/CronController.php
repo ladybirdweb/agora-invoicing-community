@@ -12,7 +12,6 @@ use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
@@ -616,8 +615,7 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url("autopaynow/$invoice->invoice_id");
 
-        
-            $email = (new Email())
+        $email = (new Email())
          ->from($setting->email)
          ->to($user->email)
          ->subject($template->name)
@@ -630,14 +628,12 @@ class CronController extends BaseCronController
              'exception' => $exceptionMessage,
              'url' => $url,
          ]));
-            $mailer->send($email);
-            $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
-      
+        $mailer->send($email);
+        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
     }
 
     public function sendPaymentSuccessMail($invoice, $total, $user, $product, $number)
     {
-      
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -667,7 +663,6 @@ class CronController extends BaseCronController
          ]));
         $mailer->send($email);
         $this->PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template->name, $number, $payment = 'stripe');
-       
     }
 
     public function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
@@ -689,24 +684,22 @@ class CronController extends BaseCronController
         // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
         $url = url("autopaynow/$invoice->invoice_id");
 
-       
-            $email = (new Email())
-              ->from($setting->email)
-              ->to($user->email)
-              ->subject($template->name)
-              ->html($mail->mailTemplate($template->data, $templatevariables = [
-                  'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                  'product' => $product_details->name,
-                  'total' => currencyFormat($total, $code = $currency),
-                  'number' => $number,
-                  'expiry' => date('d-m-Y', strtotime($end)),
-                  'exception' => $exceptionMessage,
-                  'url' => $url,
-              ]));
-            $mailer->send($email);
+        $email = (new Email())
+          ->from($setting->email)
+          ->to($user->email)
+          ->subject($template->name)
+          ->html($mail->mailTemplate($template->data, $templatevariables = [
+              'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+              'product' => $product_details->name,
+              'total' => currencyFormat($total, $code = $currency),
+              'number' => $number,
+              'expiry' => date('d-m-Y', strtotime($end)),
+              'exception' => $exceptionMessage,
+              'url' => $url,
+          ]));
+        $mailer->send($email);
 
-            $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
-       
+        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
     }
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
@@ -842,7 +835,6 @@ class CronController extends BaseCronController
 
     public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template, $order, $payment)
     {
-    
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
@@ -856,7 +848,6 @@ class CronController extends BaseCronController
            ->replyTo($user->email)
            ->html('Payment for'.' '.$product.' '.'of'.' '.$invoice->currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
         $mailer->send($email);
-      
     }
 
     public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment)
@@ -865,7 +856,7 @@ class CronController extends BaseCronController
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->payment_log($user->email,$payment, 'failed', $order->number, $exceptionMessage);
+        $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage);
 
         $mailer = $mail->setMailConfig($set);
         $email = (new Email())

@@ -171,7 +171,7 @@ active
                                 @if($invoice->discount != null)
                                 <tr>
                                     <th>Discount</th>
-                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
+                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 </tr>
                                 @endif
                           

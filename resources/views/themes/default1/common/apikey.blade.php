@@ -253,7 +253,7 @@
                                     <label class="switch toggle_event_editing">
 
                                         <input type="checkbox" value="{{$captchaStatus}}"  name="modules_settings"
-                                               class="checkbox2" id="captcha" @if($v3captchaStatus === 1) disabled @endif>
+                                               class="checkbox2" id="captcha">
                                         <span class="slider round"></span>
                                     </label>
 

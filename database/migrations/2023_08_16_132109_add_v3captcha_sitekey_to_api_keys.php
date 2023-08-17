@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('v3captcha_sitekey', 'v3captcha_secretCheck')) {
-        Schema::table('api_keys', function (Blueprint $table) {
-             $table->string('v3captcha_sitekey', 255)->nullable();
-              $table->string('v3captcha_secretCheck', 255)->nullable();
-        });
-    }
+            Schema::table('api_keys', function (Blueprint $table) {
+                $table->string('v3captcha_sitekey', 255)->nullable();
+                $table->string('v3captcha_secretCheck', 255)->nullable();
+            });
+        }
     }
 
     /**

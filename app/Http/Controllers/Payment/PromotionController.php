@@ -324,9 +324,8 @@ class PromotionController extends BasePromotionController
                 ]);
 
                 return redirect()->back()->with('success', 'Coupon code applied successfully');
-            }
-            else{
-              throw new \Exception('Invalid promo code');  
+            } else {
+                throw new \Exception('Invalid promo code');
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

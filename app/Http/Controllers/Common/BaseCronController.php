@@ -256,10 +256,10 @@ class BaseCronController extends Controller
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
-        try{
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        try {
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
 
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mailer = $mail->setMailConfig($setting);
@@ -268,26 +268,26 @@ class BaseCronController extends Controller
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->subscription_over;
 
-        $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
-        
-         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-            'expiry' => $end,
-            'product' => $product,
-            'number' => $order->number, 
-            'url'   => url('my-orders'),];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-            
+            $template = $templates->where('id', $temp_id)->first();
+            $data = $template->data;
+
+            $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+                'expiry' => $end,
+                'product' => $product,
+                'number' => $order->number,
+                'url'   => url('my-orders'), ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $from = $setting->email;
+            $to = $user->email;
+            $subject = $template->name;
+            $data = $template->data;
+            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
             dd($ex);

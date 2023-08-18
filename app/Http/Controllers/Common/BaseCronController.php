@@ -257,6 +257,7 @@ class BaseCronController extends Controller
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
+        try{
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -270,21 +271,27 @@ class BaseCronController extends Controller
 
         $template = $templates->where('id', $temp_id)->first();
         $data = $template->data;
-        $url = url('my-orders');
-
-        try {
-            $email = (new Email())
-        ->from($setting->email)
-        ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'expiry' => $end,
-             'product' => $product,
-             'number' => $order->number,
-             'url' => $url, ]));
-            $mailer->send($email);
+        
+         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number, 
+            'url'   => url('my-orders'),];
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+            
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
+            dd($ex);
             $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
         }
     }

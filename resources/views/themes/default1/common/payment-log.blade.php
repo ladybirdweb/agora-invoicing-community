@@ -197,7 +197,7 @@ Payment Logs
         $('#payment-table').DataTable({
             processing: true,
             serverSide: true,
-            order: [[1, "asc"]],
+            order: [[0, "asc"]],
             ajax: {
                 "url": '{!! route('get-paymentlog', "from=$from&till=$till") !!}',
                 error: function(xhr) {

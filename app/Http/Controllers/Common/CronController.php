@@ -283,6 +283,18 @@ class CronController extends BaseCronController
 
         return $subscriptions;
     }
+        public function getautoSubscriptions($days)
+    {
+        $daysArray = $days;
+        $days = (int) $daysArray[0];
+        $days = intval($daysArray[0]);
+
+        $startDate = Carbon::now()->toDateString();
+
+        $endDate = Carbon::now()->addDays($days + 1)->toDateString();
+        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed', '1')->get();
+        return $subscriptions;
+    }
 
     public function getSubscriptions($days)
     {
@@ -414,8 +426,12 @@ class CronController extends BaseCronController
                 if (emailSendingStatus()) {
                     $this->Expiredsub_Mail($user, $end, $product, $order, $value->id);
                 }
+           
             }
         }
+      
+        
+        
     }
 
     public function getOnDayExpiryInfoSubs()

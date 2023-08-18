@@ -175,7 +175,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          })
 
                         ->addColumn('date', function ($model) {
-                            return getDateHtmlcopy($model->created_at);
+                            return getDateHtml($model->date);
                         })
                          ->addColumn('grand_total', function ($model) {
                              return currencyFormat($model->grand_total, $code = $model->currency);
@@ -236,9 +236,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $invoice = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
-                ->where('invoices.id', '=', $request->input('invoiceid'))
-                ->first();
+            ->select('invoices.id', 'invoices.user_id', 'invoices.created_at', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
+            ->where('invoices.id', '=', $request->input('invoiceid'))
+            ->first();
             if (User::onlyTrashed()->find($invoice->user_id)) {
                 throw new \Exception('This user is suspended from the system. Restore the user to view invoice details.');
             }

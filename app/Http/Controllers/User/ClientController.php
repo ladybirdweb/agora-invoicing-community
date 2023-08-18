@@ -116,8 +116,8 @@ class ClientController extends AdvanceSearchController
                         ->addColumn('company', function ($model) {
                             return $model->company;
                         })
-                        ->addColumn('created_at', function ($model) {
-                            return getDateHtml($model->created_at);
+                        ->addColumn('date', function ($model) {
+                            return getDateHtml($model->date);
                         })
                         ->addColumn('active', function ($model) {
                             return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);

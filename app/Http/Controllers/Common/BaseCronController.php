@@ -263,9 +263,7 @@ class BaseCronController extends Controller
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
-        $contact = getContactData();
-        $product_type = Product::where('name', $product)->value('type');
-        $expiryDays = ExpiryMailDay::first()->cloud_days;
+        try{
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -277,34 +275,30 @@ class BaseCronController extends Controller
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->subscription_over;
 
-            $template = $templates->where('id', $temp_id)->first();
-            $data = $template->data;
-
-            $date = date_create($end);
-            $end = date_format($date, 'l, F j, Y ');
-            $delDate = strtotime($end.' +'.$expiryDays.' days');
-            $deletionDate = date('l, F j, Y', $delDate);
-
-            $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                'deletionDate' => ($product_type == '4') ? $deletionDate : '',
-                'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
-                'expiry' => $end,
-                'product' => $product,
-                'number' => $order->number,
-                'contact' => $contact['contact'],
-                'logo' => $contact['logo'],
-                'url'   => url('my-orders'), ];
-            $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
-            }
-            $from = $setting->email;
-            $to = $user->email;
-            $subject = $template->name;
-            $data = $template->data;
-            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-
-}
+        $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
+        
+         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number, 
+            'url'   => url('my-orders'),];
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+            
+            $mail->email_log_success($setting->email, $user->email, $template->name, $data);
+        } catch (\Exception $ex) {
+            dd($ex);
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+        }
+    }
 }

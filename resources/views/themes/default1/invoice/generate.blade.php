@@ -33,20 +33,11 @@ Create Invoice
         <div id="successs">
         </div>
         <div id="fails">
-        </div>
- 
-
-       
-         </div>
-
-
-    
+        </div>  
+         </div>  
     <div class="card-body">
 
         <div class="row">
-
-            
-
                 @if($user=='')
                 <?php
                 $users = [];
@@ -71,10 +62,8 @@ Create Invoice
                          <div class="input-group date" id="invoice_date" data-target-input="nearest">
                             {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker','autocomplete'=>'off']) !!}
                             <div class="input-group-append" data-target="#invoice_date" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>                           
                             </div>
-
                         </div>
                     </div>
 
@@ -88,8 +77,6 @@ Create Invoice
                           </select>
                     <h6 id ="productnamecheck"></h6>
                 </div>
-
-          
                 <div id="fields1" class="col-md-4">
                 </div>
 
@@ -114,10 +101,6 @@ Create Invoice
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
                 </div> -->
-
-
-
-
             </div>
             <br>
              <h4> <button name="generate" type="submit" id="generate" class="btn btn-primary pull-right" ><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.generate')!!}</button></h4>
@@ -209,22 +192,14 @@ Create Invoice
                 }
                 
                 }
-                 
-
-               
-
             }
         });
         })
        
-    
-
 </script>
 <script type='text/javascript'>
     /* attach a submit handler to the form */
     $("#formoid").submit(function (event) {
-
-
       //   }
          /* stop form from submitting normally */
         event.preventDefault();
@@ -232,8 +207,6 @@ Create Invoice
           //   inputs.forEach(input => {
           //   input.value = '';
           //     });
-
-
         /* get the action attribute from the <form action=""> element */
         var $form = $(this),
         url = $form.attr('action');
@@ -242,8 +215,14 @@ Create Invoice
         var subscription = 'false';
         var description = "";
         var product=document.getElementById("product").value;  
+        var currentDate = new Date();
+        var currentDate = new Date();
+        var isoTime = currentDate.toISOString().split('T')[1].substring(0, 8);
+        var selectedDate = new Date($("#datepicker").val());
+        var combinedDateTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds());
+        $("#datepicker").val(combinedDateTime.toISOString().split('T')[0] + 'T' + isoTime);
 
-            
+       
         if (product != '') {
             var plan = document.getElementsByName('plan')[0].value;
             subscription = 'true';
@@ -287,10 +266,7 @@ Create Invoice
             success: function (data) {
                  
                $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
-
-                // $('#formoid')[0].reset();
-
-              
+                // $('#formoid')[0].reset();             
                 if(data.success == true) {
                     $('#fails').hide();
                         $('#error').hide();
@@ -302,8 +278,6 @@ Create Invoice
                      $("#users").val("");
                      $("#users").trigger("change");
                 }
-
-
             },
             error: function (response) {
                 $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
@@ -319,13 +293,10 @@ Create Invoice
                     html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
                 }
                  
-                }
-                
+                }                
                  html += '</ul></div>';
                  $('#error').show();
                   document.getElementById('error').innerHTML = html;
-              
-
             }
         });
 
@@ -339,22 +310,15 @@ Create Invoice
 //      });
     });
 </script>
-
-
-
 @stop
-
 @section('datepicker')
 <script>
      $('#invoice_date').datetimepicker({
       format: 'L'
-    })
-   
+    })   
 </script>
 
 <script>
-   
-
         $('#users').select2({
         placeholder: "Search",
         minimumInputLength: 1,
@@ -381,8 +345,7 @@ Create Invoice
                         text:value.first_name+" "+value.last_name,
                         id: value.id,
                         email:value.text
-                    }
-                
+                    }               
                  })
                   }
             },

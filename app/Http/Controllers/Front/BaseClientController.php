@@ -167,6 +167,7 @@ class BaseClientController extends Controller
 
     public function getInvoicesByOrderId($orderid, $userid, $admin = null)
     {
+        dd("jhgfcx");
         try {
             $order = Order::where('id', $orderid)->where('client', $userid)->first();
 
@@ -196,7 +197,7 @@ class BaseClientController extends Controller
                 return ucfirst($model->products);
             })
             ->addColumn('date', function ($model) {
-                return getDateHtml($model->created_at);
+                return getDateHtml($model->date);
             })
             ->addColumn('total', function ($model) {
                 return currencyFormat($model->grand_total, $code = $model->currency);

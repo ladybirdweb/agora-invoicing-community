@@ -2997,6 +2997,7 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'Database\\Seeders\\v3_0_2\\TemplateTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_2/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_2\\TemplateTypeTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_2/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_3\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
+        'Database\\Seeders\\v3_0_3\\PricingTemplateSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_3\\TemplateTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_3\\TemplateTypeTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
         'DebugBar\\Bridge\\CacheCacheCollector' => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',

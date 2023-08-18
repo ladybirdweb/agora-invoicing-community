@@ -1944,6 +1944,7 @@ return array(
     'Database\\Seeders\\v3_0_2\\TemplateTableSeeder' => $baseDir . '/database/seeders/v3_0_2/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_2\\TemplateTypeTableSeeder' => $baseDir . '/database/seeders/v3_0_2/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_3\\DatabaseSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
+    'Database\\Seeders\\v3_0_3\\PricingTemplateSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_3\\TemplateTableSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_3\\TemplateTypeTableSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
     'DebugBar\\Bridge\\CacheCacheCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',

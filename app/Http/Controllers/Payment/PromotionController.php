@@ -273,6 +273,7 @@ class PromotionController extends BasePromotionController
         try {
             $promo = $this->getPromotionDetails($code);
             $codevalue = Promotion::where('code', $code)->first();
+
             if (! $codevalue) {
                 throw new \Exception('Invalid promo code');
             }
@@ -304,7 +305,6 @@ class PromotionController extends BasePromotionController
                     $original = $item->price;
                 }
             }
-
             if ($productid) {
                 \Session::put('usage', 1);
                 \Session::put('code', $promo->code);
@@ -324,6 +324,9 @@ class PromotionController extends BasePromotionController
                 ]);
 
                 return redirect()->back()->with('success', 'Coupon code applied successfully');
+            }
+            else{
+              throw new \Exception('Invalid promo code');  
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

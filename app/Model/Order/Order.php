@@ -4,7 +4,6 @@ namespace App\Model\Order;
 
 use App\BaseModel;
 use DateTime;
-use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;

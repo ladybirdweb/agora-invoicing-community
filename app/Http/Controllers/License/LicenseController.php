@@ -506,8 +506,6 @@ class LicenseController extends Controller
 
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-
-        $this->postCurl($url.'api/admin/installation/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code", $token);
-        $this->postCurl($url.'api/admin/License/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code&old_license_code=$oldLicense", $token);
+        $this->postCurl($url.'api/admin/license/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code&old_license_code=$oldLicense", $token);
     }
 }

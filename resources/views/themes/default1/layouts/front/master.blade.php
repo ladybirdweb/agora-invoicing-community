@@ -146,6 +146,23 @@ $days = $pay->where('product','117')->value('days');
                         <div class="header-row pt-3">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
+                                    @auth
+                                        @php
+                                            $amt = \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->value('amt_to_credit');
+                                            $formattedValue = currencyFormat($amt, \Auth::user()->currency , true);
+
+                                        @endphp
+                                        <button class="btn-credit open-createCreditDialog" style="background-color: white; border: none;">
+                                            <i class="fas fa-credit-card"></i> Credits: {!! $formattedValue !!}
+                                        </button>
+                                    <script>
+                                        $(document).ready(function () {
+                                        $(document).on("click", ".open-createCreditDialog", function () {
+                                        $('#credit').modal('show');
+                                        });
+                                        });
+                                    </script>
+                                    @endauth
 
                                     @if($set->company_email != NULL)
                                         <li class="nav-item nav-item-anim-icon d-none d-md-block">
@@ -591,6 +608,42 @@ $days = $pay->where('product','117')->value('days');
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog-->
         </div><!-- /.modal -->
+
+        <div class="modal fade" id="credit" tabindex="-1" role="dialog" aria-labelledby="creditLabel" aria-hidden="true">
+
+            <div class="modal-dialog credit-dialog">
+                <div class="modal-content credit-content">
+                    <div class="modal-header credit-header">
+                        <h4 class="modal-title credit-title">Credit Balance: {!! $formattedValue !!}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body credit-body">
+                        <ul class="list-group">
+                            <h6 class="modal-title">Credit Balance History</h6>
+                            <br>
+                            @php
+                                $payment_id = \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->value('id');
+                                $payment_activity=\DB::table('credit_activity')->where('payment_id',$payment_id)->where('role','user')->orderBy('created_at', 'desc')->get();
+                            @endphp
+                            @if(!$payment_activity->isEmpty())
+                                @foreach($payment_activity as $activity)
+                                    <li class="list-group-item">
+                                        {!! getDateHtml($activity->created_at) !!}
+                                        <br>
+                                        {!! $activity->text !!}
+                                        <br>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li class="list-group-item" style="text-align: center">No activity has been recorded for this credit so far.</li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endauth
 
 
@@ -1138,6 +1191,54 @@ domainInput.addEventListener("input", function() {
 
 </script>
 @endif
+        <style>
+            .custom-line {
+                border: none;
+                border-top: 1px solid #ccc;
+                margin: 10px 0;
+            }
+            #validationMessage {
+              position: absolute;
+              top: 80px; /* Adjust this value to align the error message properly */
+              margin-left:32px;
+              left: 0;
+              font-size: 12px;
+              color: red;
+}
+
+
+                 /* Custom styles */
+             .btn-credit {
+                 font-size: 14px;
+                 padding: 5px 10px;
+             }
+            .credit-dialog {
+                max-width: 600px;
+            }
+            .credit-content {
+                border: none;
+                border-radius: 10px;
+            }
+            .credit-header {
+                border-bottom: none;
+            }
+            .credit-title {
+                font-size: 18px;
+            }
+            .credit-body {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            .list-group-item {
+                border: none;
+                padding: 8px 15px;
+                margin-bottom: 5px; /* Add margin between list items */
+                background-color: #f8f9fa; /* Light gray background */
+                border-radius: 5px; /* Rounded corners */
+                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            }
+
+        </style>
 </body>
 </html>
 @yield('end')

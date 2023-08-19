@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ApiKey;
+use App\Model\Common\FaveoCloud;
 use App\Model\Common\State;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -10,8 +11,10 @@ use App\Model\Order\Order;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
+use App\User;
 use DateTime;
 use DateTimeZone;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
@@ -62,6 +65,8 @@ class RazorpayController extends Controller
 
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
+                $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
+
                 //After Regular Payment
                 if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
@@ -72,7 +77,36 @@ class RazorpayController extends Controller
                     \Session::forget('items');
                     \Session::forget('code');
                     \Session::forget('codevalue');
-                } else {
+                    $this->doTheDeed($invoice);
+                }
+                elseif ($cloud->checkAgentAlteration()){
+                    $subId=\Session::get('AgentAlteration');// use if needed in future
+                    $newAgents=\Session::get('newAgents');
+                    $orderId=\Session::get('orderId');
+                    $installationPath=\Session::get('installation_path');
+                    $productId=\Session::get('product_id');
+                    $oldLicense=\Session::get('oldLicense');
+                    $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
+                    $status = $view['status'];
+                    $message = $view['message'];
+                    $this->doTheDeed($invoice);
+                    $cloud->doTheAgentAltering($newAgents,$oldLicense,$orderId,$installationPath,$productId);
+
+                }
+                elseif ($cloud->checkUpgradeDowngrade()){
+                    $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+                    $checkout_controller->checkoutAction($invoice);
+                    $oldLicense=\Session::get('upgradeOldLicense');
+                    $installationPath=\Session::get('upgradeInstallationPath');
+                    $productId=\Session::get('upgradeProductId');
+                    $licenseCode = \Session::get('upgradeSerialKey');
+                    $this->doTheDeed($invoice);
+                    $cloud->doTheProductUpgradeDowngrade($licenseCode,$installationPath,$productId,$oldLicense);
+                    $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
+                    $status = $view['status'];
+                    $message = $view['message'];
+                }
+                else {
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
@@ -80,6 +114,7 @@ class RazorpayController extends Controller
                     if ($invoice->grand_total) {
                         SettingsController::sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
+                    $this->doTheDeed($invoice);
 
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
@@ -147,5 +182,28 @@ class RazorpayController extends Controller
             'product', 'invoiceItem', 'state', 'currency'))->render();
 
         return ['status' => $status, 'message' => $message];
+    }
+
+    private function doTheDeed($invoice){
+
+        $amt_to_credit=\DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('amt_to_credit');
+        if($amt_to_credit){
+            $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
+            \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->update(['amt_to_credit'=>$amt_to_credit]);
+            User::where('id',\Auth::user()->id)->update(['billing_pay_balance'=>0]);
+            $payment_id= \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('id');
+            $formattedValue = currencyFormat($invoice->billing_pay, $invoice->currency, true);
+            $messageAdmin = 'The payment balance of ' . $formattedValue . ' has been utilized or adjusted with this invoice.' .
+                ' You can view the details of the invoice ' .
+                '<a href="' . config('app.url') . '/invoices/show?invoiceid=' . $invoice->id . '">' . $invoice->number . '</a>.';
+
+            $messageClient = 'The payment balance of ' . $formattedValue . ' has been utilized or adjusted with this invoice.' .
+                ' You can view the details of the invoice ' .
+                '<a href="' . config('app.url') . '/my-invoice/' . $invoice->id . '">' . $invoice->number . '</a>.';
+
+            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageAdmin,'role'=>'admin','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
+            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
+
+        }
     }
 }

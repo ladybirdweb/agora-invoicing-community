@@ -118,6 +118,34 @@ input:checked + .slider:before {
                                     <b>Status: </b>{{$order->order_status}}
                                 </div>
                             </div>
+                            @if($order->order_status=='Terminated')
+                                <br>
+                                <div class="row">
+                                <div class="col-md-12">
+                                <?php
+                                $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
+                                foreach ($idOrdert as $ordt) {
+                                    $newOrders[] = \App\Model\Order\Order::where('id', $ordt->upgraded_order_id)->get();
+                                }
+                                ?>
+
+                                @foreach($newOrders as $newOrder)
+                                    <div class="termination-message">
+                                        <p class="termination-notice"><b>Important: Termination Notice</b></p>
+                                        <p class="termination-description">
+                                            This order has been terminated. Consequently, the features and licenses associated with this order are no longer valid.
+                                        </p>
+                                        <p class="order-links">
+                                            The terminated order: <b>{{$order->number}}</b>
+                                            has been upgraded to the new order: <a class="order-link" href="{{$newOrder[0]->id}}">{{$newOrder[0]->number}}</a>.
+                                        </p>
+                                    </div>
+
+                                @endforeach
+                                </div>
+                            </div>
+                                @endif
+
                         </div>
                            <div class="row">
 

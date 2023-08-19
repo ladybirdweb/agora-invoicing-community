@@ -285,6 +285,19 @@ class CronController extends BaseCronController
 
         return $subscriptions;
     }
+    
+public function getautoSubscriptions($days)
+    {
+        $daysArray = $days;
+        $days = (int) $daysArray[0];
+        $days = intval($daysArray[0]);
+
+        $startDate = Carbon::now()->toDateString();
+
+        $endDate = Carbon::now()->addDays($days + 1)->toDateString();
+        $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed', '1')->get();
+        return $subscriptions;
+    }
 
     public function getPostSubscriptions($days)
     {
@@ -325,7 +338,7 @@ class CronController extends BaseCronController
         if ($status == 1) {
             $Days = ExpiryMailDay::pluck('autorenewal_days')->toArray();
             $cron = new AutorenewalCronController();
-            $Autosub = $cron->getAutoSubscriptions($Days);
+            $Autosub = $this->getautoSubscriptions($Days);
             foreach ($Autosub as $value) {
                 $userid = $value->user_id;
                 $user = $this->getUserById($userid);
@@ -472,10 +485,10 @@ class CronController extends BaseCronController
                     if ($stripe_subscription['status'] == 'active') {
                         //Afer Renew
                         Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripe_subscription['id'], 'autoRenew_status' => 'Success']);
-                        $this->successRenew($invoice, $subscription, $payment_method = 'stripe', $currency);
+                        $sub = $this->successRenew($invoice, $subscription, $payment_method = 'stripe', $currency);
                         $this->postRazorpayPayment($invoice, $payment_method = 'stripe');
                         if ($cost && emailSendingStatus()) {
-                            $this->sendPaymentSuccessMail($invoice, $cost, $user, $invoice->product_name, $order->number);
+                            $this->sendPaymentSuccessMail($sub,$currency, $cost, $user, $invoice->product_name, $order->number);
                         }
                     }
                 }
@@ -499,8 +512,11 @@ class CronController extends BaseCronController
     public function razorpay_payment($cost, $days, $product_name, $invoice, $currency, $subscription, $user, $order, $end, $product_details)
     {
         try {
+            $subscription = $subscription->refresh();
             $status = $subscription->rzp_subscription;
-            if ($status == '0' && $subscription->is_subscribed != 1) {
+            $today = new DateTime();
+            $subscriptionEndDate = new DateTime($subscription->ends_at);
+            if ($status == '0' && $subscriptionEndDate <= $today) {
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
                 $amount = $cost;
@@ -661,8 +677,9 @@ class CronController extends BaseCronController
         $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
     }
 
-    public function sendPaymentSuccessMail($invoice, $total, $user, $product, $number)
+    public static function sendPaymentSuccessMail($sub,$currency, $total, $user, $product, $number)
     {
+        $future_expiry = Subscription::find($sub);
         $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -677,6 +694,9 @@ class CronController extends BaseCronController
         $template = $templates->where('id', $temp_id)->first();
         $data = $template->data;
         $url = url('my-orders');
+        
+        $date = date_create($future_expiry->update_ends_at);
+        $end = date_format($date, 'l, F j, Y ');
 
         $invoiceid = InvoiceItem::where('invoice_id', $invoice->invoice_id)->first();
         $invo = Invoice::find($invoiceid)->first();
@@ -691,6 +711,8 @@ class CronController extends BaseCronController
              'number' => $number,
              'contact' => $contact['contact'],
              'logo' => $contact['logo'],
+             'future_expiry' => $end,
+             
          ]));
         $mailer->send($email);
         $this->PaymentSuccessMailtoAdmin($invoice, $total, $user, $product, $template->name, $number, $payment = 'stripe');
@@ -726,6 +748,7 @@ class CronController extends BaseCronController
                     $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
                 }
             }
+            return $id;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }

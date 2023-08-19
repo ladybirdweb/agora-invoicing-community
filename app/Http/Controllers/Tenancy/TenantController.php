@@ -275,7 +275,7 @@ class TenantController extends Controller
                     //check in the settings
                     $settings = new \App\Model\Common\Setting();
                     $settings = $settings->where('id', 1)->first();
-
+                    $subject =  'Your ' . $order[0]->product()->value('name') . ' is now ready for use. Get started!';
                     //template
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
@@ -287,8 +287,8 @@ class TenantController extends Controller
                     $email = (new Email())
                         ->from($settings->email)
                         ->to($user)
-                        ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name, 'contact' => $contact['contact'], 'logo' => $contact['logo']]));
+                        ->subject($subject)
+                        ->html($mail->mailTemplate($template->data, $templatevariables = ['message' => $userData, 'product' => $order[0]->product()->value('name'), 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name, 'contact' => $contact['contact'], 'logo' => $contact['logo']]));
 
                     $mailer->send($email);
 

@@ -37,11 +37,27 @@ return $randomString;
 }
  $api = new Api($rzp_key, $rzp_secret);
 $currency = $invoice->currency;
-if ($currency == 'INR'){
+$amt_to_credit = \DB::table('payments')
+    ->where('user_id', \Auth::user()->id)
+    ->where('payment_method','Credit Balance')
+    ->where('payment_status','success')
+    ->where('amt_to_credit','!=',0)
+    ->value('amt_to_credit');
 
+if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+    if ($invoice->grand_total <= $amt_to_credit) {
+        $cartTotal = 0;
+    } else {
+        $cartTotal = $invoice->grand_total - $amt_to_credit;
+    }
+} else {
+    $cartTotal = $invoice->grand_total;
+}
+
+if ($currency == 'INR'){
 $orderData = [
 'receipt'         => 3456,
-'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
+'amount'          => round($cartTotal*100), // 2000 rupees in paise
 
 'currency'        => 'INR',
 'payment_capture' => 0 // auto capture
@@ -53,7 +69,7 @@ $orderData = [
 
  $orderData = [
 'receipt'         => 3456,
-'amount'          =>  round($invoice->grand_total*100), // 2000 rupees in paise
+'amount'          =>  round($cartTotal*100), // 2000 rupees in paise
 
 'currency'        => $currency,
 'payment_capture' => 0 // auto capture
@@ -84,7 +100,7 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
-    "Amount Paid"       => $invoice->grand_total*100,
+    "Amount Paid"       => $cartTotal*100,
 
 
 
@@ -217,6 +233,7 @@ $json = json_encode($data);
                         <span class="amount">{{currencyFormat($cartSubtotalWithoutCondition,$code = $currency)}}</span>
                     </td>
                 </tr>
+
                  @if(Session::has('code'))
                   <tr class="cart-subtotal">
 
@@ -236,7 +253,6 @@ $json = json_encode($data);
                     </td>
                 </tr>
                 @endif
-               
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditionsByType('tax') as $tax)
 
@@ -283,13 +299,50 @@ $json = json_encode($data);
                 
                 @endforeach
                @endif
+                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                    <tr class="cart-subtotal" style="color: indianred">
+                            <?php
+                            $amt_to_credit = \DB::table('payments')
+                                ->where('user_id', \Auth::user()->id)
+                                ->where('payment_method','Credit Balance')
+                                ->where('payment_status','success')
+                                ->where('amt_to_credit','!=',0)
+                                ->value('amt_to_credit');
+                            if (\Cart::getTotal() <= $amt_to_credit) {
+                                $cartBalance = \Cart::getTotal();
+                            } else {
+                                $cartBalance = $amt_to_credit;
+                            }
+                            ?>
+
+                        <th>
+                            <strong>Balance</strong>
+
+                        </th>
+                        <td>
+                            -{{$dd=currencyFormat($cartBalance,$code = $item->attributes->currency)}}
+                        </td>
+                    </tr>
+                @endif
                      
                 <tr class="total">
                     <th>
+                            <?php
+                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                                if (\Cart::getTotal() <= $amt_to_credit) {
+                                    $totalPaid = 0;
+                                } else {
+                                    $totalPaid = \Cart::getTotal()-$amt_to_credit;
+                                }
+                            }
+                            else{
+                                $totalPaid = \Cart::getTotal();
+                            }
+                            ?>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                    <strong><span class="amount">{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </span></strong>
+                    <strong><span class="amount">{{currencyFormat($totalPaid,$code = $item->attributes->currency)}} </span></strong>
 
 
                     </td>
@@ -372,6 +425,25 @@ $json = json_encode($data);
                         <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
+                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                        <?php
+                         $amt_to_credit = \DB::table('payments')
+                        ->where('user_id', \Auth::user()->id)
+                        ->where('payment_method','Credit Balance')
+                        ->where('payment_status','success')
+                        ->where('amt_to_credit','!=',0)
+                        ->value('amt_to_credit');
+
+                        if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                            if (\Cart::getTotal() <= $amt_to_credit) {
+                                $cartBalance = \Cart::getTotal();
+                            } else {
+                                $cartBalance = $amt_to_credit;
+                            }
+                        }
+                        ?>
+
+                @endif
                  @php
                 $taxName = array_unique($taxName);
                 @endphp
@@ -439,12 +511,33 @@ $json = json_encode($data);
                     </td>
                 </tr>
                 @endif
+                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                <tr class="cart-subtotal" style="color: indianred">
+
+                    <th>
+                        <strong>Balance</strong>
+
+                    </th>
+                    <td>
+                        -{{$dd=currencyFormat($cartBalance,$code = $currency)}}
+                    </td>
+                </tr>
+                @endif
                      
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
+                            <?php
+                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                                if (\Cart::getTotal() <= $amt_to_credit) {
+                                    $totalPaid = 0;
+                                } else {
+                                    $totalPaid = \Cart::getTotal()-$amt_to_credit;
+                                }
+                            }
+                            ?>
                     <strong><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></strong>
 
 

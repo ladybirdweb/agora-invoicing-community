@@ -167,6 +167,8 @@ Orders
                             <th>Order No</th>
                             <th>Product</th>
                             <th>Version</th>
+                            <th>Agents</th>
+
 
                              <th>Status</th>
                               <th>Order Date</th>
@@ -233,15 +235,16 @@ Orders
               "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columns: [
-              { data: 'checkbox', name: 'checkbox' },
-              { data: 'client', name: 'client' },
-              { data: 'number', name: 'number' },
-              { data: 'product_name', name: 'product_name' },
-              { data: 'version', name: 'version' },
-              { data: 'order_status', name: 'order_status' },
-              { data: 'order_date', name: 'order_date' },
-              { data: 'update_ends_at', name: 'update_ends_at' },
-              { data: 'action', name: 'action' }
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'client', name: 'client'},
+                {data: 'number', name: 'number'},
+                {data: 'product_name', name: 'product_name'},
+                {data: 'version', name: 'version'},
+                {data: 'agents', name: 'agents'},
+                {data: 'order_status', name: 'order_status'},
+                {data: 'order_date', name: 'order_date'},
+                {data: 'update_ends_at', name: 'update_ends_at'},
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function(oSettings) {
               $('[data-toggle="tooltip"]').tooltip({

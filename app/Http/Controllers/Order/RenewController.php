@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
+use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -14,6 +15,7 @@ use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Session;
 
@@ -60,34 +62,39 @@ class RenewController extends BaseRenewController
     }
 
     //Renew From admin panel
-    public function renewBySubId($id, $planid, $payment_method, $cost, $code)
+    public function renewBySubId($id, $planid, $payment_method, $cost, $code, $isAgentIncrease = true, $agents = null)
     {
         try {
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
             $currency = userCurrencyAndPrice($sub->user_id, $plan)['currency'];
-            $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
-            $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
-            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
-            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $sub, $days);
-            $sub->ends_at = $licenseExpiry;
-            $sub->update_ends_at = $updatesExpiry;
-            $sub->support_ends_at = $supportExpiry;
-            $sub->save();
+            if($isAgentIncrease) {
+                $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
+                $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
+                $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
+                $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $sub, $days);
+                $sub->ends_at = $licenseExpiry;
+                $sub->update_ends_at = $updatesExpiry;
+                $sub->support_ends_at = $supportExpiry;
+                $sub->save();
+            }
 
             if (Order::where('id', $sub->order_id)->value('license_mode') == 'File') {
                 Order::where('id', $sub->order_id)->update(['is_downloadable' => 0]);
             } else {
                 $licenseStatus = StatusSetting::pluck('license_status')->first();
-                if ($licenseStatus == 1) {
+                if ($licenseStatus == 1 && $isAgentIncrease) {
                     $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
                 }
             }
 
-            $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
+            $invoice = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency,$agents);
 
-            return $sub;
+            if($isAgentIncrease){
+                return $sub;
+            }
+            return $invoice;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -244,7 +251,19 @@ class RenewController extends BaseRenewController
             $payment_method = $request->input('payment_method');
             $code = $request->input('code');
             $cost = $request->input('cost');
-            $renew = $this->renewBySubId($id, $planid, $payment_method, $cost, $code = '');
+            if($request->has('agents')){
+                $agents = $request->input('agents');
+                $sub = Subscription::find($id);
+                $order_id = $sub->order_id;
+                $installation_path=InstallationDetail::where('order_id',$order_id)->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
+                if(empty($installation_path)){
+                    return response(['status' => false, 'message' => trans('message.no_installation_found')]);
+                }
+                if ($this->checktheAgent($agents, $installation_path)) {
+                    return response(['status' => false, 'message' => trans('message.agent_reduce')]);
+                }
+            }
+            $renew = $this->renewBySubId($id, $planid, $payment_method, $cost, $code = '',false,$agents = null);
 
             if ($renew) {
                 return redirect()->back()->with('success', 'Renewed Successfully');
@@ -261,7 +280,7 @@ class RenewController extends BaseRenewController
      *
      * @param  int  $id  Subscription id for the order
      */
-    public function renewForm($id)
+    public function renewForm($id,$agents=null)
     {
         try {
             $sub = $this->sub->find($id);
@@ -272,7 +291,7 @@ class RenewController extends BaseRenewController
             $productid = $sub->product_id;
             $plans = $this->plan->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.renew.renew', compact('id', 'productid', 'plans', 'userid'));
+            return view('themes.default1.renew.renew', compact('id', 'productid', 'plans', 'userid', 'agents'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -295,9 +314,25 @@ class RenewController extends BaseRenewController
             $code = $request->input('code');
             $plan = Plan::find($planid);
             $planDetails = userCurrencyAndPrice($request->input('user'), $plan);
-            $cost = $planDetails['plan']->renew_price;
+         //   $cost = $planDetails['plan']->renew_price; we can accept it from request it self
+            $cost = preg_replace("/[^0-9]/", "", $request->get('cost'));
             $currency = $planDetails['currency'];
-            $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
+            $agents = null;
+
+            if($request->has('agents')){
+                $agents = $request->input('agents');
+                $sub = Subscription::find($id);
+                $order_id = $sub->order_id;
+                $installation_path=InstallationDetail::where('order_id',$order_id)->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
+                if(empty($installation_path)){
+                   return response(['status' => false, 'message' => trans('message.no_installation_found')]);
+                }
+                if ($this->checktheAgent($agents, $installation_path)) {
+                   return response(['status' => false, 'message' => trans('message.agent_reduce')]);
+                }
+            }
+
+            $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);
             $invoiceid = $items->invoice_id;
             $this->setSession($id, $planid);
 
@@ -364,5 +399,19 @@ class RenewController extends BaseRenewController
         }
 
         return $expiry_date;
+    }
+    private function checktheAgent($numberOfAgents, $domain)
+    {
+        $client = new Client([]);
+        $data = ['number_of_agents' => $numberOfAgents];
+        $response = $client->request(
+            'POST',
+            'https://'.$domain.'/api/agent-check', ['form_params'=>$data]
+        );
+        $response = explode('{', (string) $response->getBody());
+
+        $response = array_first($response);
+
+        return json_decode($response);
     }
 }

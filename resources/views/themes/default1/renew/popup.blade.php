@@ -4,7 +4,7 @@
         <div class="modal-content">
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
             <div class="modal-header">
-                 <h4 class="modal-title">Renew</h4>
+                 <h4 class="modal-title">Renew your order</h4>
             </div>
             <div class="modal-body">
                 <!-- Form  -->
@@ -28,25 +28,27 @@
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
+                        <p><b>Current Agents: {{$agents}}</b></p>
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                        {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'getPrice(this.value)']) !!}
-                        {!! Form::hidden('user',$userid) !!}
+                    {!! Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, [
+    'class' => 'form-control plan-dropdown',
+    'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')'
+]) !!}
+
+                    {!! Form::hidden('user',$userid) !!}
                     </div>
+                @if(in_array($productid,[117,119]))
+                     <div class="form-group">
+                         {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
+
+                         {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents', 'placeholder' => '']) !!}
+                     </div>
+                @endif
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
 
-                        <!-- last name -->
-                         @if(in_array($productid,[117,119]))
-                             <script>
-                                 $(function() {
-                                     $('[data-toggle="tooltip"]').tooltip();
-                                 });
+                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
 
-                             </script>
-                             {!! Form::label('cost', Lang::get('message.cloud_price'), ['class' => 'required', 'data-toggle' => 'tooltip', 'title' => 'The price shown here is price of one single agent for your plan the total price will be shown at checkout.']) !!}
-                         @else
-                             {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
-                         @endif
                         {!! Form::text('cost',null,['class' => 'form-control price','id'=>'price','readonly'=>'readonly']) !!}
 
                     </div>
@@ -64,19 +66,71 @@
 </div><!-- /.modal -->  
   
 <script>
-    $('.closebutton').on('click',function(){
-        location.reload();
-    });
 
-    function getPrice(val) {
-        var user = document.getElementsByName('user')[0].value;
-        $.ajax({
-            type: "get",
-            url: "{{url('get-renew-cost')}}",
-            data: {'user': user, 'plan': val},
-            success: function (data) {
-                $(".price").val(data);
+
+        $('.closebutton').on('click', function () {
+            location.reload();
+        });
+        var shouldFetchPlanCost = true; // Disable further calls until needed
+
+   function fetchPlanCost(planId,agents=null) {
+       if(!shouldFetchPlanCost){
+           return
+       }
+       var user = document.getElementsByName('user')[0].value;
+       shouldFetchPlanCost = false
+       $.ajax({
+           type: "get",
+           url: "{{ url('get-renew-cost') }}",
+           data: { 'user': user, 'plan': planId },
+           success: function (data) {
+               if(agents==null){
+                   agents = parseInt($('.agents').val() || 0);
+               }
+               console.log(agents);
+               var totalPrice = agents * parseFloat(data);
+               var someprice = totalPrice.toFixed(2);
+               $.ajax({
+                   url: 'processFormat', // Update with the correct URL
+                   method: 'GET',
+                   data: { totalPrice: someprice },
+                   success: function (data) {
+                       $('.price').val(data);
+                       shouldFetchPlanCost = true;
+                   },
+               });
+
+           }
+       });
+   }
+
+        // Call the fetchPlanCost function when the plan dropdown selection changes
+        $('#plan').on('change', function () {
+            var selectedPlanId = $(this).val(); // Get the selected plan ID
+            fetchPlanCost(selectedPlanId); // Call the function to fetch plan cost
+        });
+
+        // Call the fetchPlanCost function initially with the default selected plan
+        $(document).ready(function () {
+            var initialPlanId = $('#plan').val();
+            fetchPlanCost(initialPlanId);
+        });
+
+        // Prevent form submission when Enter key is pressed
+        $('form').on('keypress', function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
             }
         });
-    }
+
+        $(document).ready(function () {
+        $('.agents').on('input', function () {
+            var selectedPlanId = $('#renew{{$id}}').find('.plan-dropdown').val();
+            if (selectedPlanId) {
+                fetchPlanCost(selectedPlanId,$(this).val());
+            }
+        });
+
+    });
+
 </script>

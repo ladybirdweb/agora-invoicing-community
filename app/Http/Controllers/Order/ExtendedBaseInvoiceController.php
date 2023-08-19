@@ -182,7 +182,6 @@ class ExtendedBaseInvoiceController extends Controller
                     ]);
                 }
             }
-
             // return $payment;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());

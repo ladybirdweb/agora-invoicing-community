@@ -124,6 +124,7 @@ class OrderController extends BaseOrderController
             ->orderColumn('client', '-orders.created_at $1')
             ->orderColumn('product_name', 'orders.created_at $1')
             ->orderColumn('version', 'orders.created_at $1')
+            ->orderColumn('agents', 'orders.created_at $1')
             ->orderColumn('number', 'orders.created_at $1')
             ->orderColumn('order_status', 'orders.created_at $1')
             ->orderColumn('order_date', 'orders.created_at $1')
@@ -149,13 +150,26 @@ class OrderController extends BaseOrderController
                     return '--';
                 }
             })
+            ->addColumn('agents', function ($model) {
+                $license = substr($model->serial_key,12,16);
+                if($license=='0000'){
+                    return 'Unlimited';
+                }
+                return intval($license,10);
+            })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
                 $installedPath = InstallationDetail::where('order_id', $model->id)->pluck('Installation_path')->toArray();
                 if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
                     $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($installedPath);
                 }
+                if($model->order_status == 'Terminated'){
+                    $badge='badge';
+                    return  '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has been Terminated">
 
+                         </label>
+            Terminated</span>';
+                }
                 return $orderLink;
             })
             ->addColumn('order_status', function ($model) {
@@ -172,7 +186,15 @@ class OrderController extends BaseOrderController
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);
 
-                return $this->getUrl($model, $status, $model->subscription_id);
+                $license = substr($model->serial_key,12,16);
+
+                if($license=='0000'){
+                    $agents= 'Unlimited';
+                }
+                else{
+                    $agents=intval($license,10);
+                }
+                return $this->getUrl($model, $status, $model->subscription_id, $agents);
             })
 
             ->filterColumn('client', function ($query, $keyword) {
@@ -194,7 +216,7 @@ class OrderController extends BaseOrderController
                 $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
             })
 
-            ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
+            ->rawColumns(['checkbox', 'date', 'client', 'version', 'agents', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);
     }
 

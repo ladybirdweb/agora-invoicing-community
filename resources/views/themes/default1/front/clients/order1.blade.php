@@ -40,6 +40,7 @@ active
                             <th>Date</th>
                             <th>Order No</th>
                             <th>Version</th>
+                            <th>Agents</th>
                             <th>Updates Expiry Date</th>
                             <th>Action</th>
                         </tr></thead>
@@ -82,6 +83,7 @@ active
                  {data: 'date', name: 'date'},
                  {data: 'number', name: 'orders.number'},
                  {data: 'version', name: 'version'},
+                 {data: 'agents', name: 'agents'},
                  {data: 'expiry', name: 'expiry'},
               
                 // {data: 'group', name: 'Group'},

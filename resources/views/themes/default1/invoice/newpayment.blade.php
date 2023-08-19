@@ -55,7 +55,7 @@ Payment
                        <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                            <!-- last name -->
                            {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
-                           {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control','id'=>'payment_method']) !!}
+                           {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay', 'stripe' => 'Stripe','balance adjustment'=> 'Credit Balance'],null,['class' => 'form-control','id'=>'payment_method']) !!}
 
                        </div>
 

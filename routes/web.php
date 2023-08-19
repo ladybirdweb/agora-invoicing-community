@@ -499,7 +499,7 @@ Route::middleware('installAgora')->group(function () {
      /* Renew
      */
 
-    Route::get('renew/{id}', [Order\RenewController::class, 'renewForm']);
+    Route::get('renew/{id}/{agents?}', [Order\RenewController::class, 'renewForm']);
     Route::post('renew/{id}', [Order\RenewController::class, 'renew']);
     Route::get('get-renew-cost', [Order\RenewController::class, 'getCost']);
     Route::post('client/renew/{id}', [Order\RenewController::class, 'renewByClient']);
@@ -564,6 +564,17 @@ Route::middleware('installAgora')->group(function () {
     Route::post('changeAgents', [Tenancy\CloudExtraActivities::class, 'agentAlteration']);
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
+
+    Route::get('format-currency',  [Tenancy\CloudExtraActivities::class,'formatCurrency']);
+
+    Route::get('processFormat',  [Tenancy\CloudExtraActivities::class,'processFormat']);
+
+
+
+
+    // routes/web.php
+    Route::post('/update-session', [Tenancy\CloudExtraActivities::class,'updateSession'])->name('update-session');
+
 
     /*
      * Api

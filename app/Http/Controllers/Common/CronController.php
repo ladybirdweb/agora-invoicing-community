@@ -280,8 +280,8 @@ class CronController extends BaseCronController
 
         return $subscriptions;
     }
-    
-public function getautoSubscriptions($days)
+
+    public function getautoSubscriptions($days)
     {
         $daysArray = $days;
         $days = (int) $daysArray[0];
@@ -291,6 +291,7 @@ public function getautoSubscriptions($days)
 
         $endDate = Carbon::now()->addDays($days + 1)->toDateString();
         $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed', '1')->get();
+
         return $subscriptions;
     }
 
@@ -483,7 +484,7 @@ public function getautoSubscriptions($days)
                         $sub = $this->successRenew($invoice, $subscription, $payment_method = 'stripe', $currency);
                         $this->postRazorpayPayment($invoice, $payment_method = 'stripe');
                         if ($cost && emailSendingStatus()) {
-                            $this->sendPaymentSuccessMail($sub,$currency, $cost, $user, $invoice->product_name, $order->number);
+                            $this->sendPaymentSuccessMail($sub, $currency, $cost, $user, $invoice->product_name, $order->number);
                         }
                     }
                 }
@@ -675,7 +676,7 @@ public function getautoSubscriptions($days)
         }
     }
 
-    public static function sendPaymentSuccessMail($sub,$currency, $total, $user, $product, $number)
+    public static function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
     {
         $future_expiry = Subscription::find($sub);
         $contact = getContactData();
@@ -692,7 +693,7 @@ public function getautoSubscriptions($days)
         $template = $templates->where('id', $temp_id)->first();
         $data = $template->data;
         $url = url('my-orders');
-        
+
         $date = date_create($future_expiry->update_ends_at);
         $end = date_format($date, 'l, F j, Y ');
 
@@ -709,7 +710,7 @@ public function getautoSubscriptions($days)
              'contact' => $contact['contact'],
              'logo' => $contact['logo'],
              'future_expiry' => $end,
-             
+
          ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
@@ -748,6 +749,7 @@ public function getautoSubscriptions($days)
                     $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
                 }
             }
+
             return $id;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

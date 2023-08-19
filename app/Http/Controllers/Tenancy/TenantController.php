@@ -275,7 +275,7 @@ class TenantController extends Controller
                     //check in the settings
                     $settings = new \App\Model\Common\Setting();
                     $settings = $settings->where('id', 1)->first();
-                    $subject =  'Your ' . $order[0]->product()->value('name') . ' is now ready for use. Get started!';
+                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     //template
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');

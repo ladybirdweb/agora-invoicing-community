@@ -228,6 +228,7 @@ class TenantController extends Controller
 
             $response = explode('{', (string) $response->getBody());
 
+
             $response = '{'.$response[1];
 
             $result = json_decode($response);
@@ -235,6 +236,9 @@ class TenantController extends Controller
                 $this->prepareMessages($faveoCloud, $user);
 
                 $this->googleChat($result->message);
+                if($result->message == 'Domain already taken. Please select a different domain'){
+                    return ['status' => 'false', 'message' => $result->message];
+                }
 
                 if ($result->message == 'Domain already taken. Please select a different domain') {
                     return ['status' => 'false', 'message' => $result->message];

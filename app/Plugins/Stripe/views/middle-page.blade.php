@@ -62,6 +62,9 @@ $currency = $invoice->currency;
                                 <th class="product-version">
                                     Version
                                 </th>
+                                <th class="product-agents">
+                                    Agents
+                                </th>
 
                                 <th class="product-quantity">
                                     Quantity
@@ -101,7 +104,11 @@ $currency = $invoice->currency;
                                     Not available
                                     @endif
                                 </td>
-                                 
+                                <th class="product-agents">
+                                    {{$item->attributes->agents}}
+                                </th>
+
+
 
                                 <td class="product-quantity">
                                     {{$item->quantity}}
@@ -227,12 +234,47 @@ $currency = $invoice->currency;
                  </tr>
                  @endforeach
                 @endif
+
+                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                    <tr class="cart-subtotal" style="color: indianred">
+                            <?php
+                            $amt_to_credit = \DB::table('payments')
+                                ->where('user_id', \Auth::user()->id)
+                                ->where('payment_method','Credit Balance')
+                                ->where('payment_status','success')
+                                ->where('amt_to_credit','!=',0)
+                                ->value('amt_to_credit');
+                            if (\Cart::getTotal() <= $amt_to_credit) {
+                                $cartBalance = \Cart::getTotal();
+                            } else {
+                                $cartBalance = $amt_to_credit;
+                            }
+                            ?>
+
+                        <th>
+                            <strong>Balance</strong>
+
+                        </th>
+                        <td>
+                            -{{$dd=currencyFormat($cartBalance,$code = $item->attributes->currency)}}
+                        </td>
+                    </tr>
+                @endif
                  
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
+                            <?php
+                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                                if (\Cart::getTotal() <= $amt_to_credit) {
+                                    $amount = 0;
+                                } else {
+                                    $amount = \Cart::getTotal()-$amt_to_credit;
+                                }
+                            }
+                            ?>
                     <strong><span class="amount">{{currencyFormat($amount,$code = $item->attributes->currency)}} </span></strong>
 
 
@@ -271,6 +313,9 @@ $currency = $invoice->currency;
                             @else 
                             Not available
                             @endif
+                        </td>
+                        <td class="product-agents">
+                            {{$item->agents}}
                         </td>
                          
 
@@ -383,12 +428,47 @@ $currency = $invoice->currency;
                     </td>
                 </tr>
                 @endif
+
+                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                    <tr class="cart-subtotal" style="color: indianred">
+                            <?php
+                            $amt_to_credit = \DB::table('payments')
+                                ->where('user_id', \Auth::user()->id)
+                                ->where('payment_method','Credit Balance')
+                                ->where('payment_status','success')
+                                ->where('amt_to_credit','!=',0)
+                                ->value('amt_to_credit');
+                            if ($amount <= $amt_to_credit) {
+                                $cartBalance = $amount;
+                            } else {
+                                $cartBalance = $amt_to_credit;
+                            }
+                            ?>
+
+                        <th>
+                            <strong>Balance</strong>
+
+                        </th>
+                        <td>
+                            -{{$dd=currencyFormat($cartBalance,$code = $currency)}}
+                        </td>
+                    </tr>
+                @endif
                
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
+                            <?php
+                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                                if ($amount <= $amt_to_credit) {
+                                    $amount = 0;
+                                } else {
+                                    $amount = $amount;
+                                }
+                            }
+                            ?>
                     <strong><span class="amount">{{currencyFormat($amount,$code = $currency)}} </span></strong>
 
 

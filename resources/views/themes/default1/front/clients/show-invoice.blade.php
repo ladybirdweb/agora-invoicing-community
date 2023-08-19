@@ -121,6 +121,7 @@ active
                         <th class="font-weight-semibold">Order No</th>
                         <th class="font-weight-semibold">Product</th>
                         <th class="font-weight-semibold">Price</th>
+                        <th class="font-weight-semibold">Agents</th>
                         <th class="font-weight-semibold">Quantity</th>
                         
                         <th class="font-weight-semibold">Subtotal</th>
@@ -146,14 +147,17 @@ active
                                 <span class='badge badge-warning'>Renewed</span></td>
                                 @else
                                 <td>--</td>
-                               
                             @endif
-                            <td>{{$item->product_name}}
+                            @php
+                              $period_id =\DB::table('plans_periods_relation')->where('plan_id',$item->plan_id)->latest()->value('period_id');
+                              $plan = \DB::table('periods')->where('id',$period_id)->latest()->value('name');
 
-
+                            @endphp
+                            <td>{{$item->product_name}} ({{$plan}})
                             </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
                             <td>{{$item->quantity}}</td>
+                            <td>{{$item->agents}}</td>
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>
                     @endforeach
@@ -168,6 +172,7 @@ active
                                  <th>Subtotal</th>
                                     <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                 </tr>
+
                                 @if($invoice->discount != null)
                                 <tr>
                                     <th>Discount</th>
@@ -220,7 +225,16 @@ active
                                 </tr>
                                 @endif
 
-                                
+                                    <tr class="cart-subtotal" style="color: indianred">
+
+                                        <th>
+                                            <strong>Balance</strong>
+
+                                        </th>
+                                        <td>
+                                            -{{$dd=currencyFormat($invoice->billing_pay,$symbol)}}
+                                        </td>
+                                    </tr>
                                
 
                                 <tr class="h4">

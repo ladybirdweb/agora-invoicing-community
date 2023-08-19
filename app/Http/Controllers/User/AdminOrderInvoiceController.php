@@ -231,7 +231,10 @@ class AdminOrderInvoiceController extends Controller
                          })
 
                          ->addColumn('action', function ($model) {
-                             if (! $model->invoice_id == 0) {
+                             if ($model->invoice_id == 0) {
+                                 if($model->payment_method == 'Credit Balance'){
+                                     return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>   ".$this->creditActivityPopup($model->id);
+                                 }
                                  return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
                              } else {
                                  return '--';
@@ -241,5 +244,9 @@ class AdminOrderInvoiceController extends Controller
                         ->rawColumns(['checkbox', 'invoice_no', 'date', 'payment_method', 'total', 'status', 'action'])
 
                         ->make(true);
+    }
+    public function creditActivityPopup($paymentId)
+    {
+        return view('themes.default1.front.clients.credit-activity-popup', compact('paymentId'));
     }
 }

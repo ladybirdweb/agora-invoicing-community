@@ -42,6 +42,18 @@ Checkout
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
+    <?php
+      $amt_to_credit = 0;
+      $curr ='';
+      if(empty($content)){
+          $curr = '';
+      }
+      else{
+          foreach ($content as $item){
+              $curr = $item->attributes->currency;
+          }
+      }
+    ?>
 @if (!\Cart::isEmpty())
 <?php
 $cartSubtotalWithoutCondition = 0;
@@ -76,6 +88,9 @@ $cartSubtotalWithoutCondition = 0;
 
                                 <th class="product-quantity">
                                     Quantity
+                                </th>
+                                <th class="product-agents">
+                                    Agents
                                 </th>
                                 <th class="product-subtotal">
                                     Total
@@ -112,6 +127,9 @@ $cartSubtotalWithoutCondition = 0;
 
                                 <td class="product-quantity">
                                     {{$item->quantity}}
+                                </td>
+                                <td class="product-agents">
+                                    {{$item->attributes->agents}}
                                 </td>
 
                                 <td class="product-subtotal">
@@ -159,7 +177,15 @@ $cartSubtotalWithoutCondition = 0;
                     </div>
 
                 </div>
-                <h4 class="heading-primary">Payment</h4>
+                @if(Cart::getTotal()>0)
+                <h4 class="heading-primary">Select a payment method</h4>
+
+                <div class="row">
+                <div class="col-md-6 col-md-offset-4">
+                <p class="underline-label"></p>
+                </div>
+                </div>
+                @endif
 
 
                 {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
@@ -168,40 +194,72 @@ $cartSubtotalWithoutCondition = 0;
 
                  <?php
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item->attributes['currency']);
-                
+
                 ?>
                 @if($gateways)
                 <div class="row">
-
+                        <?php $amt_to_credit = \DB::table('payments')
+                        ->where('user_id', \Auth::user()->id)
+                        ->where('payment_method','Credit Balance')
+                        ->where('payment_status','success')
+                        ->where('amt_to_credit','!=',0)
+                        ->value('amt_to_credit');
+                        ?>
                     <div class="col-md-6">
-                        @foreach($gateways as $gateway)
+                        @if($amt_to_credit)
+                        <div class="checkbox-container">
+                            <h5 class="heading-primary">Your available balance</h5>
+                            @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+                            <input type="checkbox" id="billing-pay-balance" class="custom-checkbox" checked>
+                            @else
+                                <input type="checkbox" id="billing-pay-balance" class="custom-checkbox">
+                            @endif
+                            <label for="billing-pay-balance" class="checkbox-label"><b>Use your balance: {{currencyFormat($amt_to_credit,$code = $item->attributes->currency)}}</b></label>
+                        </div>
+                        <p class="underline-label"></p>
+                        <br>
+                        @endif
+                        <h5 class="heading-primary">Payment gateway</h5>
+
+                    @foreach($gateways as $gateway)
                         <?php
                         $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item->attributes['currency'])->value('processing_fee');
                         ?>
-                      
+
                         {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
-                      
+
                          <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}"><br>
-                  
-                          
+
                       <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
                         @endforeach
+                        <p class="underline-label"></p>
+
                     </div>
 
 
               </div>
 
             @endif
-               
+
                 @endif
 
+                @if(Cart::getTotal()>0)
                 <div class="row">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" id="proceed" class="btn btn-primary">
-                            Proceed <i class="fa fa-forward"></i>
+                            Use this payment method <i class="fa fa-forward"></i>
                         </button>
                     </div>
                 </div>
+              @else
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-4">
+                        <button type="submit" id="proceed" class="btn btn-primary">
+                            Place your order <i class="fa fa-forward"></i>
+                        </button>
+                    </div>
+                </div>
+                @endif
                 {!! Form::close() !!}
 
 
@@ -300,20 +358,45 @@ $cartSubtotalWithoutCondition = 0;
                 
                 @endforeach
                @endif
-             
+                    <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
+                        <th><strong>Balance</strong></th>
+                        <td>
+                                <?php
+                                if (\Cart::getTotal() <= $amt_to_credit) {
+                                    $cartTotal = \Cart::getTotal();
+                                } else {
+                                    $cartTotal = $amt_to_credit;
+                                }
+                                ?>
+                            -{{$dd=currencyFormat($cartTotal, $item->attributes->currency)}}
+                        </td>
+                    </tr>
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
                         <strong class="text-dark">
-                            <span class="amount">
-
-                                  <div>{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </div>
-                            </span>
+        <span class="amount">
+            <div id="balance-content">
+                <?php
+                    if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                        if (\Cart::getTotal() <= $amt_to_credit) {
+                            $cartTotal = 0;
+                        } else {
+                            $cartTotal = \Cart::getTotal() - $amt_to_credit;
+                        }
+                    } else {
+                        $cartTotal = \Cart::getTotal();
+                    }
+                    ?>
+                {{ currencyFormat($cartTotal, $code = $item->attributes->currency) }}
+            </div>
+        </span>
                         </strong>
-
                     </td>
+
+
                 </tr>
             </tbody>
         </table>
@@ -391,5 +474,86 @@ $cartSubtotalWithoutCondition = 0;
         $('#fee').show();
     }
   }
+      $(document).ready(function () {
+      $('#billing-pay-balance').on('change', function () {
+          var isChecked = $(this).prop('checked');
+
+          $.ajax({
+              type: "POST",
+              url: "{{ route('update-session') }}",
+              data: { isChecked: isChecked },
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              success: function(response) {
+              }
+          });
+      });
+  });
+      $(document).ready(function () {
+      $('#billing-pay-balance').on('change', function () {
+          var isChecked = $(this).prop('checked');
+          $('#balance-row').toggle(isChecked);
+      });
+  });
+
+  $(document).ready(function () {
+      function updateContent() {
+          var isChecked = $('#billing-pay-balance').prop('checked'); // Get the checkbox status
+          var cartTotal = parseFloat('{{ \Cart::getTotal() }}');
+          // Check if the PHP variable exists and has a value
+          var amountToCredit = parseFloat('{{ $amt_to_credit }}');
+          var currency = '{{$curr}}';
+          var updatedValue = 0;
+
+          // Calculate the updated value based on the checkbox status and PHP values
+          if(isChecked){
+              if(cartTotal<=amountToCredit){
+                  updatedValue = 0;
+              }
+              else{
+                  updatedValue = cartTotal - amountToCredit
+              }
+          }
+          else{
+                  updatedValue = cartTotal;
+          }
+          // Make an AJAX request to the API endpoint
+          $.ajax({
+              type: "GET",
+              url: "{{ url('format-currency') }}",
+              data: {
+                  amount: updatedValue,
+                  currency: currency
+              },
+              success: function (data) {
+                  // Update the content in the HTML element with the formatted value
+                  $('#balance-content').html(data.formatted_value);
+              },
+              error: function (xhr, status, error) {
+                  console.log(error);
+              }
+          });
+      }
+
+      // Initial update on page load
+      updateContent();
+
+      // Update content when the checkbox is clicked
+      $('#billing-pay-balance').on('change', function () {
+          updateContent();
+      });
+  });
+
+
 </script>
+    <style>
+        .underline-label {
+            display: inline-block; /* Ensure the label takes the width of its content */
+            border-bottom: 0.5px solid gray; /* Adjust color and thickness as needed */
+            width: 100%; /* Make the underline span the entire width of the container */
+            padding-bottom: 3px; /* Add some spacing between label and underline */
+        }
+
+    </style>
 @endsection

@@ -305,6 +305,10 @@ class PhpMailController extends Controller
         $contact = $this->checkElement('contact', $templatevariables);
         $logo = $this->checkElement('logo', $templatevariables);
         $orderHeading = $this->checkElement('orderHeading', $templatevariables);
+        $renewPrice = $this->checkElement('renewPrice', $templatevariables);
+        $future_expiry = $this->checkElement('future_expiry', $templatevariables);
+        $title = $this->checkElement('title', $templatevariables);
+        $company_email = $this->checkElement('company_email', $templatevariables);
 
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;
@@ -340,6 +344,10 @@ class PhpMailController extends Controller
         $variables['{$contact}'] = $contact;
         $variables['{$logo}'] = $logo;
         $variables['{$orderHeading}'] = $orderHeading;
+        $variables['{$renewPrice}'] = $renewPrice;
+        $variables['{$future_expiry}'] = $future_expiry;
+        $variables['{$title}'] = $title;
+        $variables['{$company_email}'] = $company_email;
 
         return $variables;
     }

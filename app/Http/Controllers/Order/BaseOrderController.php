@@ -293,9 +293,11 @@ class BaseOrderController extends ExtendedOrderController
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            $orderHeading = ($value != '4') ? 'Download' : 'deploy';
+            $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
             $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
-
+            $end =  app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
+            $date = date_create($end);
+            $end = date_format($date, 'l, F j, Y');
             $email = (new Email())
                     ->from($setting->email)
                     ->to($user->email)
@@ -308,7 +310,7 @@ class BaseOrderController extends ExtendedOrderController
                         'invoiceurl' => $invoiceurl,
                         'product' => $product,
                         'number' => $order->number,
-                        'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                        'expiry' => $end,
                         'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
                         'knowledge_base' => $knowledgeBaseUrl,
                         'contact' => $contact['contact'],

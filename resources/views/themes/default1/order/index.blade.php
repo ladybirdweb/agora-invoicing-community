@@ -166,6 +166,8 @@ Orders
                             <th>Order No</th>
                             <th>Product</th>
                             <th>Version</th>
+                            <th>Agents</th>
+
 
                              <th>Status</th>
                               <th>Order Date</th>
@@ -242,6 +244,7 @@ Orders
                 {data: 'number', name: 'number'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'version', name: 'version'},
+                {data: 'agents', name: 'agents'},
                 {data: 'order_status', name: 'order_status'},
                 {data: 'order_date', name: 'order_date'},
                 {data: 'update_ends_at', name: 'update_ends_at'},

@@ -116,6 +116,7 @@ Invoice
                                         <th>Product</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
+                                        <th>Agents</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
@@ -139,8 +140,15 @@ Invoice
                                             <td>--</td>
                                            
                                         @endif
-                                        <td>{{$item->product_name}}</td>
+                                        @php
+                                            $period_id =\DB::table('plans_periods_relation')->where('plan_id',$item->plan_id)->latest()->value('period_id');
+                                            $plan = \DB::table('periods')->where('id',$period_id)->latest()->value('name');
+
+                                        @endphp
+                                        <td>{{$item->product_name}}
+                                            ({{$plan}})</td>
                                          <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
+                                         <td>{{$item->agents}}</td>
                                         <td>{{$item->quantity}}</td>
                                        
                                        <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
@@ -165,6 +173,7 @@ Invoice
                                          <th>Subtotal:</th>
                                          <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                      </tr>
+
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
@@ -201,6 +210,19 @@ Invoice
                                      
                                        
                                     @endif
+                                     <tr class="cart-subtotal" style="color: indianred">
+
+                                         <th>
+                                             <strong>Balance</strong>
+
+                                         </th>
+                                         <td>
+                                              @php
+                                               $bill=\DB::table('invoices')->where('id',$invoice->id)->value('billing_pay')
+                                              @endphp
+                                             -{{$dd=currencyFormat($bill,$symbol)}}
+                                         </td>
+                                     </tr>
                                     <th>Total:</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
                                

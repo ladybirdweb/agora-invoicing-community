@@ -36,13 +36,13 @@ Renew
                     <div class="col-md-4 form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                          <select name="plan" value= "Choose" onchange="getPrice(this.value)" class="form-control">
+                          <select name="plan" id="plan" value= "Choose" onchange="fetchPlanCost(this.value)" class="form-control">
                              <option value="Choose">Choose</option>
                            @foreach($plans as $key=>$plan)
                               <option value={{$key}}>{{$plan}}</option>
                           @endforeach
                           </select>
-                        <!-- {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'getPrice(this.value)']) !!} -->
+                        <!-- {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'fetchPlanCost(this.value)']) !!} -->
                         {!! Form::hidden('user',$userid) !!}
                     </div>
 
@@ -61,7 +61,14 @@ Renew
 
                     </div>
                 </div>
-
+                @if(in_array($productid,[117,119]))
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('agents', 'Agents', ['class' => 'col-form-label required']) !!}
+                        {!! Form::number('agents', $agents, ['class' => 'form-control', 'id' => 'agents', 'min' => '1', 'placeholder' => '', 'required']) !!}
+                    </div>
+                </div>
+                @endif
 
 
 
@@ -86,20 +93,88 @@ Renew
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'all_order';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
+
+     $('.closebutton').on('click', function () {
+         location.reload();
+     });
+     var shouldFetchPlanCost = true; // Disable further calls until needed
+
+     @if(in_array($productid,[117,119]))
+     function fetchPlanCost(planId) {
+         if(!shouldFetchPlanCost){
+             return
+         }
+         var user = document.getElementsByName('user')[0].value;
+         shouldFetchPlanCost = false
+         $.ajax({
+             type: "get",
+             url: "{{ url('get-renew-cost') }}",
+             data: { 'user': user, 'plan': planId },
+
+
+             success: function (data) {
+                 var agents = parseInt($('#agents').val() || 0);
+                 var totalPrice = agents * parseFloat(data);
+                 $('#price').val(totalPrice.toFixed(2));
+                 shouldFetchPlanCost = true;
+             }
+         });
+     }
+     @else
+     function fetchPlanCost(planId) {
+
+         if(!shouldFetchPlanCost){
+
+             return
+
+         }
+
+         var user = document.getElementsByName('user')[0].value;
+
+         shouldFetchPlanCost = false
+
+         $.ajax({
+
+             type: "get",
+
+             url: "{{ url('get-renew-cost') }}",
+
+             data: { 'user': user, 'plan': planId },
+
+             success: function (data) {
+
+                 $("#price").val(data);
+
+                 shouldFetchPlanCost = true;
+
+             }
+
+         });
+
+     }
+     @endif
+     // Call the fetchPlanCost function when the plan dropdown selection changes
+     $('#plan').on('change', function () {
+         var selectedPlanId = $(this).val(); // Get the selected plan ID
+         fetchPlanCost(selectedPlanId); // Call the function to fetch plan cost
+     });
+
+     // Call the fetchPlanCost function initially with the default selected plan
+     $(document).ready(function () {
+         var initialPlanId = $('#plan').val();
+         fetchPlanCost(initialPlanId);
+     });
+
+     // Prevent form submission when Enter key is pressed
+     $('form').on('keypress', function (e) {
+         if (e.keyCode === 13) {
+             e.preventDefault();
+         }
+     });
+     $('#agents').on('input', function () {
+         var selectedPlanId = document.getElementsByName('plan')[0].value;
+         fetchPlanCost(selectedPlanId);
+     });
+
+ </script>
 @stop
-<script>
-    function getPrice(val) {
-        
-        var user = document.getElementsByName('user')[0].value;
-        $.ajax({
-            type: "get",
-            url: "{{url('get-renew-cost')}}",
-            data: {'user': user, 'plan': val},
-            success: function (data) {
-                var price = data
-                $("#price").val(price);
-            }
-        });
-    }
-</script>

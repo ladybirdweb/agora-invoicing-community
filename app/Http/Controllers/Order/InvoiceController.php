@@ -292,6 +292,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function generateInvoice()
     {
         try {
+            $amt_to_credit = null;
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
@@ -303,11 +304,27 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($rounding) {
                 $grand_total = round($grand_total);
             }
+            if(User::where('id',$user_id)->value('billing_pay_balance')){
+                $amt_to_credit = \DB::table('payments')
+                    ->where('user_id', \Auth::user()->id)
+                    ->where('payment_method','Credit Balance')
+                    ->where('payment_status','success')
+                    ->where('amt_to_credit','!=',0)
+                    ->value('amt_to_credit');
+
+                if($grand_total<= $amt_to_credit){
+                    $amt_to_credit = $grand_total;
+                    $grand_total = 0;
+                }
+                else{
+                    $grand_total = $grand_total - $amt_to_credit;
+                }
+            }
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => $currency, ]);
+                'currency' => $currency, 'billing_pay'=>$amt_to_credit]);
             foreach (\Cart::getContent() as $cart) {
-                $this->createInvoiceItems($invoice->id, $cart);
+                $this->createInvoiceItems($invoice->id, $cart,$amt_to_credit);
             }
             if (emailSendingStatus()) {
                 $this->sendMail($user_id, $invoice->id);
@@ -321,7 +338,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function createInvoiceItems($invoiceid, $cart)
+    public function createInvoiceItems($invoiceid, $cart, $amt_credit = null)
     {
         try {
             $planid = 0;
@@ -351,6 +368,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'domain' => $domain,
                 'plan_id' => $planid,
                 'agents' => $agents,
+                'billing_pay' => $amt_credit
             ]);
 
             return $invoiceItem;

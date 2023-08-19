@@ -7,8 +7,8 @@ use App\Model\Common\TemplateType;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Product\Product;
 use App\Model\Payment\PlanPrice;
+use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
@@ -247,7 +247,7 @@ class BaseCronController extends Controller
         $contact = getContactData();
         $product_type = Product::where('name', $product)->value('type');
         $plan_id = Subscription::find($sub);
-        $renewPrice = PlanPrice::where('plan_id',$plan_id->plan_id)->value('renew_price');
+        $renewPrice = PlanPrice::where('plan_id', $plan_id->plan_id)->value('renew_price');
         $expiryDays = ExpiryMailDay::first()->cloud_days;
         //check in the settings
         $settings = new \App\Model\Common\Setting();

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
-use App\Model\Order\Order;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -63,7 +63,6 @@ class BaseOrderController extends ExtendedOrderController
      */
     public function executeOrder($invoiceid, $order_status = 'executed')
     {
-      
         try {
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
@@ -129,11 +128,12 @@ class BaseOrderController extends ExtendedOrderController
             throw new \Exception($ex->getMessage());
         }
     }
+
     protected function updateInvoiceDate($invoiceId)
-{
-    $invoice = Invoice::find($invoiceId); // Replace Invoice with your actual Invoice model
-    $invoice->update(['date' => Carbon::now()]);
-}
+    {
+        $invoice = Invoice::find($invoiceId); // Replace Invoice with your actual Invoice model
+        $invoice->update(['date' => Carbon::now()]);
+    }
 
     public function addToMailchimp($product, $user_id, $item)
     {
@@ -246,7 +246,6 @@ class BaseOrderController extends ExtendedOrderController
 
     public function addOrderInvoiceRelation($invoiceid, $orderid)
     {
-
         try {
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create(['order_id' => $orderid, 'invoice_id' => $invoiceid]);

@@ -559,16 +559,12 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
 
-    Route::get('format-currency',  [Tenancy\CloudExtraActivities::class,'formatCurrency']);
+    Route::get('format-currency', [Tenancy\CloudExtraActivities::class, 'formatCurrency']);
 
-    Route::get('processFormat',  [Tenancy\CloudExtraActivities::class,'processFormat']);
-
-
-
+    Route::get('processFormat', [Tenancy\CloudExtraActivities::class, 'processFormat']);
 
     // routes/web.php
-    Route::post('/update-session', [Tenancy\CloudExtraActivities::class,'updateSession'])->name('update-session');
-
+    Route::post('/update-session', [Tenancy\CloudExtraActivities::class, 'updateSession'])->name('update-session');
 
     /*
      * Api

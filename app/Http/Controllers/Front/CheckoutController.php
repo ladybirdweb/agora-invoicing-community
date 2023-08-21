@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
+use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -19,6 +20,7 @@ use App\Traits\TaxCalculation;
 use App\User;
 use Cart;
 use Darryldecode\Cart\CartCondition;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class CheckoutController extends InfoController
@@ -264,7 +266,7 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
-
+                    $this->performCloudActions($invoice);
                     return redirect('checkout')->with('success', $url);
                 }
             } else {//When renewal, pending payments
@@ -291,6 +293,7 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
+                    $this->performCloudActions($invoice);
                     return redirect('checkout')->with('success', $url);
                 }
             }
@@ -409,6 +412,29 @@ class CheckoutController extends InfoController
                 \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
 
             }
+        }
+
+        private function performCloudActions($invoice){
+
+        $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
+
+        if($cloud->checkUpgradeDowngrade()) {
+            $oldLicense = \Session::get('upgradeOldLicense');
+            $installationPath = \Session::get('upgradeInstallationPath');
+            $productId = \Session::get('upgradeProductId');
+            $licenseCode = \Session::get('upgradeSerialKey');
+            $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
+        }
+        elseif ($cloud->checkAgentAlteration()){
+            $subId=\Session::get('AgentAlteration');// use if needed in future
+            $newAgents=\Session::get('newAgents');
+            $orderId=\Session::get('orderId');
+            $installationPath=\Session::get('installation_path');
+            $productId=\Session::get('product_id');
+            $oldLicense=\Session::get('oldLicense');
+            $this->doTheDeed($invoice);
+            $cloud->doTheAgentAltering($newAgents,$oldLicense,$orderId,$installationPath,$productId);
+        }
         }
 
 }

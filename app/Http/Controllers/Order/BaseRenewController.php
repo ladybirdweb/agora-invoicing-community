@@ -18,13 +18,13 @@ class BaseRenewController extends Controller
 {
     use TaxCalculation;
 
-    public function invoiceBySubscriptionId($id, $planid, $cost, $currency,$agents=null)
+    public function invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents = null)
     {
         try {
             $sub = Subscription::find($id);
             $order_id = $sub->order_id;
 
-            return $this->getInvoiceByOrderId($order_id, $planid, $cost, $currency,$agents);
+            return $this->getInvoiceByOrderId($order_id, $planid, $cost, $currency, $agents);
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -38,7 +38,7 @@ class BaseRenewController extends Controller
      * @param  int  $cost  The Renew cost for for the Paln
      * @param  string  $currency  Currency of ther plan
      */
-    public function getInvoiceByOrderId(int $orderid, int $planid, $cost, $currency,$agents=null)
+    public function getInvoiceByOrderId(int $orderid, int $planid, $cost, $currency, $agents = null)
     {
         try {
             $order = Order::find($orderid);
@@ -58,7 +58,7 @@ class BaseRenewController extends Controller
                 throw new Exception('Product has removed from database');
             }
 
-            if(is_null($agents)){
+            if (is_null($agents)) {
                 $agents = $item->agents;
             }
 
@@ -88,15 +88,15 @@ class BaseRenewController extends Controller
     {
         try {
             $planid = $request->input('plan');
-            if(!$planid || $planid=='Choose'){
+            if (! $planid || $planid == 'Choose') {
                 return 0;
             }
             $userid = $request->input('user');
             $plan = Plan::find($planid);
             $planDetails = userCurrencyAndPrice($userid, $plan);
             $price = $planDetails['plan']->renew_price;
-            return $price;
 
+            return $price;
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -133,10 +133,10 @@ class BaseRenewController extends Controller
             $renewController = new RenewController();
             $renewController->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $renewalPrice, $currency, $qty = 1, $agents, $planid, $user->id, $tax_name, $tax_rate, $renewalPrice);
-            if(in_array($product->id,[117,119])) {
+            if (in_array($product->id, [117, 119])) {
                 $license_code = Order::where('id', $orderid)->value('serial_key');
-                $installation_path = InstallationDetail::where('order_id',$orderid)->latest()->value('installation_path');
-                \Session::put('AgentAlterationRenew',$user->id);
+                $installation_path = InstallationDetail::where('order_id', $orderid)->latest()->value('installation_path');
+                \Session::put('AgentAlterationRenew', $user->id);
                 \Session::put('newAgentsRenew', $agents);
                 \Session::put('orderIdRenew', $orderid);
                 \Session::put('installation_pathRenew', $installation_path);

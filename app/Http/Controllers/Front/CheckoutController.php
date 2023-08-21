@@ -244,7 +244,7 @@ class CheckoutController extends InfoController
                 $invoice = $invoice_controller->generateInvoice();
 
                 $amount = intval(Cart::getSubTotal());
-                if(\Session::has('nothingLeft')){
+                if (\Session::has('nothingLeft')) {
                     $amount = \Session::get('nothingLeft');
                 }
                 if ($amount) {//If payment is for paid product
@@ -259,19 +259,20 @@ class CheckoutController extends InfoController
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     // }
                     \Cart::clear();
-                    if(\Session::has('nothingLeft')){
+                    if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
                     $this->performCloudActions($invoice);
+
                     return redirect('checkout')->with('success', $url);
                 }
             } else {//When renewal, pending payments
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
                 $amount = intval($invoice->grand_total);
-                if(\Session::has('nothingLeft')){
-                    $check=\Session::get('nothingLeft');
+                if (\Session::has('nothingLeft')) {
+                    $check = \Session::get('nothingLeft');
                 }
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
@@ -286,11 +287,12 @@ class CheckoutController extends InfoController
                     $this->checkoutAction($invoice); //For free product generate invoice without payment
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     \Cart::clear();
-                    if(\Session::has('nothingLeft')){
+                    if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
                     $this->performCloudActions($invoice);
+
                     return redirect('checkout')->with('success', $url);
                 }
             }
@@ -387,51 +389,47 @@ class CheckoutController extends InfoController
         }
     }
 
+    private function doTheDeed($invoice)
+    {
+        $amt_to_credit = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
+        if ($amt_to_credit) {
+            $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
+            \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit'=>$amt_to_credit]);
+            User::where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
+            $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
+            $formattedValue = currencyFormat($invoice->billing_pay, $invoice->currency, true);
+            $messageAdmin = 'The payment balance of '.$formattedValue.' has been utilized or adjusted with this invoice.'.
+                ' You can view the details of the invoice '.
+                '<a href="'.config('app.url').'/invoices/show?invoiceid='.$invoice->id.'">'.$invoice->number.'</a>.';
 
-        private function doTheDeed($invoice){
+            $messageClient = 'The payment balance of '.$formattedValue.' has been utilized or adjusted with this invoice.'.
+                ' You can view the details of the invoice '.
+                '<a href="'.config('app.url').'/my-invoice/'.$invoice->id.'">'.$invoice->number.'</a>.';
 
-            $amt_to_credit=\DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('amt_to_credit');
-            if($amt_to_credit){
-                $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
-                \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->update(['amt_to_credit'=>$amt_to_credit]);
-                User::where('id',\Auth::user()->id)->update(['billing_pay_balance'=>0]);
-                $payment_id= \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('id');
-                $formattedValue = currencyFormat($invoice->billing_pay, $invoice->currency, true);
-                $messageAdmin = 'The payment balance of ' . $formattedValue . ' has been utilized or adjusted with this invoice.' .
-                    ' You can view the details of the invoice ' .
-                    '<a href="' . config('app.url') . '/invoices/show?invoiceid=' . $invoice->id . '">' . $invoice->number . '</a>.';
-
-                $messageClient = 'The payment balance of ' . $formattedValue . ' has been utilized or adjusted with this invoice.' .
-                    ' You can view the details of the invoice ' .
-                    '<a href="' . config('app.url') . '/my-invoice/' . $invoice->id . '">' . $invoice->number . '</a>.';
-
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageAdmin,'role'=>'admin','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-
-            }
+            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
         }
+    }
 
-        private function performCloudActions($invoice){
-
+    private function performCloudActions($invoice)
+    {
         $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
 
-        if($cloud->checkUpgradeDowngrade()) {
+        if ($cloud->checkUpgradeDowngrade()) {
             $oldLicense = \Session::get('upgradeOldLicense');
             $installationPath = \Session::get('upgradeInstallationPath');
             $productId = \Session::get('upgradeProductId');
             $licenseCode = \Session::get('upgradeSerialKey');
             $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
-        }
-        elseif ($cloud->checkAgentAlteration()){
-            $subId=\Session::get('AgentAlteration');// use if needed in future
-            $newAgents=\Session::get('newAgents');
-            $orderId=\Session::get('orderId');
-            $installationPath=\Session::get('installation_path');
-            $productId=\Session::get('product_id');
-            $oldLicense=\Session::get('oldLicense');
+        } elseif ($cloud->checkAgentAlteration()) {
+            $subId = \Session::get('AgentAlteration'); // use if needed in future
+            $newAgents = \Session::get('newAgents');
+            $orderId = \Session::get('orderId');
+            $installationPath = \Session::get('installation_path');
+            $productId = \Session::get('product_id');
+            $oldLicense = \Session::get('oldLicense');
             $this->doTheDeed($invoice);
-            $cloud->doTheAgentAltering($newAgents,$oldLicense,$orderId,$installationPath,$productId);
+            $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
         }
-        }
-
+    }
 }

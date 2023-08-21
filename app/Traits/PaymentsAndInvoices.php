@@ -273,7 +273,7 @@ trait PaymentsAndInvoices
             $paidSum = 0;
             foreach ($amounts as $amount) {
                 if ($amount) {
-                    $paidSum = $paidSum + $amount->amount;
+                    $paidSum = $paidSum + (int)$amount->amount;
                     // $credit = $paidSum + $amount->amt_to_credit;
                 }
             }

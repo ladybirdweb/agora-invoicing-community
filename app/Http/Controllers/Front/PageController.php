@@ -286,32 +286,41 @@ class PageController extends Controller
         }
     }
 
-    public function getstrikePriceYear($id)
+     public function getstrikePriceYear($id)
     {
         $countryCheck = true;
         try {
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
-
+            $product = Product::find($id);
+            if($product['add_to_contact'] == 1){
+                return 'Custom Pricing';
+            }
+            else{
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
-                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
+                    if ($plan->days == 365 || $plan->days == 366) {
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
                 }
-                $prices[0] = $prices[0] * 12;
-                if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                    $prices[0] = $prices[0] - ($offerprice / 100 * $prices[0]);
+                
+                if (!empty($prices)) {
+                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                        $prices[0] = ($offerprice / 100 )* $prices[0];
+                    }
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-
             return $cost;
+           
+        }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -361,24 +370,28 @@ class PageController extends Controller
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
-                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $price = $planDetails['plan']->add_price;
-                    $symbol = $planDetails['symbol'];
-                    $currency = $planDetails['currency'];
+                    if ($plan->days == 30 || $plan->days == 31) {
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $price = $planDetails['plan']->add_price;
+                        $symbol = $planDetails['symbol'];
+                        $currency = $planDetails['currency'];
 
-                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                        $price = $price - ($offerprice / 100 * $price);
+                        if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                            $price = ($offerprice / 100) * $price;
+                        }
+
+                        $prices[] = $price;
+                        $prices[] .= $symbol;
+                        $prices[] .= $currency;
                     }
-
-                    $prices[] = $price;
-                    $prices[] .= $symbol;
-                    $prices[] .= $currency;
                 }
 
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                if (!empty($prices)) {
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
+                }
             }
 
             return $cost;
@@ -459,14 +472,13 @@ class PageController extends Controller
                     $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
                     $trasform[$product['id']]['price-year'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
-                    $trasform[$product['id']]['strike-price'] = $this->getOfferprice($product['id']);
+                    $trasform[$product['id']]['pricemonth-description'] = self::getmonthPriceDescription($product['id']);
+                    $trasform[$product['id']]['strike-price'] = $temp_controller->leastAmount($product['id']);
                     $trasform[$product['id']]['strike-priceyear'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['name'] = $product['name'];
                     $trasform[$product['id']]['feature'] = $product['description'];
                     $trasform[$product['id']]['subscription'] = $temp_controller
                     ->plans($product['shoping_cart_link'], $product['id']);
-                    $trasform[$product['id']]['subscription-year'] = $this
-                    ->plansYear($product['shoping_cart_link'], $product['id']);
                     if ($product['add_to_contact'] != 1) {
                         $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
                      value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
@@ -478,7 +490,6 @@ class PageController extends Controller
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
             }
-
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -569,29 +580,81 @@ class PageController extends Controller
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
             $product = Product::find($id);
+            $offer = $this->getOfferprice($id);
+
+            
             if ($product['add_to_contact'] == 1) {
-                return 'Custom Pricing';
+
+                if($offer == '' && $offer == null){
+                    $return =  'Custom Pricing';
+                }
+                else{
+                    $return =  ' ';
+                }
+                return $return;
+
             } else {
                 $prices = [];
-                if ($plans->count() > 0) {
-                    foreach ($plans as $plan) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 365 || $plan->days == 366) {
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $prices[] = $planDetails['plan']->add_price;
                         $prices[] .= $planDetails['symbol'];
                         $prices[] .= $planDetails['currency'];
                     }
-                    $prices[0] = $prices[0] * 12;
+                }
+                
+                if (!empty($prices)) {
                     $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                     $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
                 }
-
                 return $cost;
             }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+    public function getmonthPriceDescription(int $productid)
+{
+    try {
+        $product = Product::find($productid);
+
+        if ($product['add_to_contact'] == 1) {
+            return '';
+        }
+
+        $priceDescription = ''; // Initialize the price description
+
+        $plans = Plan::where('product',$productid)->get();
+
+        
+        if ($plans) {
+            foreach ($plans as $plan) {
+                if ($plan->days == 30 || $plan->days == 31) {
+                    $description = $plan->planPrice->first();
+
+                    if ($description->price_description == 'Free') {
+                        $priceDescription = 'free';
+                    } else {
+                        $priceDescription = $description->no_of_agents? 'per month for <strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per month';
+                    }
+
+                    // Break the loop if we find a plan with 30 or 31 days
+                    break;
+                }
+            }
+        }
+
+        return $priceDescription;
+    } catch (\Exception $ex) {
+        app('log')->error($ex->getMessage());
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
+}
+
+
 
     /**
      * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
@@ -606,21 +669,37 @@ class PageController extends Controller
     public function getPriceDescription(int $productid)
     {
         try {
-            $plan = Product::find($productid)->plan();
-            $product = Product::find($productid);
-            if ($product['add_to_contact'] == 1) {
-                return '';
-            } elseif ($plan) {
-                $description = $plan ? $plan->planPrice->first() : '';
-                $priceDescription = $description->price_description == 'Free' ? 'free' : 'per month';
-
-                return  $priceDescription;
-            }
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+        $product = Product::find($productid);
+        if ($product['add_to_contact'] == 1) {
+            return '';
         }
+
+        $priceDescription = ''; 
+
+        $plans = Plan::where('product',$productid)->get();
+
+        if ($plans) {
+            foreach ($plans as $plan) {
+                if ($plan->days == 365 || $plan->days == 366) {
+                    $description = $plan->planPrice->first();
+
+                    if ($description->price_description == 'Free') {
+                        $priceDescription = 'free';
+                    } else {
+                        $priceDescription = $description->no_of_agents ? 'per year for<strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per year';
+                    }
+
+                    // Break the loop if we find a plan with 30 or 31 days
+                    break;
+                }
+            }
+        }
+
+        return $priceDescription;
+    } catch (\Exception $ex) {
+        app('log')->error($ex->getMessage());
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
     }
 
     public function checkConfigKey($config, $transform)

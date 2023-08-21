@@ -608,7 +608,7 @@ $price = $order->price_override;
                                                     <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                     <div>
                                                         <h5 class="mb-1">Change Cloud Domain</h5>
-                                                        <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
+                                                        <p class="card-text mb-0" style="text-align: justify">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -625,7 +625,7 @@ $price = $order->price_override;
                                                     <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                     <div>
                                                         <h5 class="mb-1">Increase/Decrease Agents</h5>
-                                                        <p class="card-text mb-0">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
+                                                        <p class="card-text mb-0" style="text-align: justify">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -646,8 +646,15 @@ $price = $order->price_override;
                                             <div class="d-flex align-items-start">
                                                 <i class="fas fa-cloud-upload-alt mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
+                                                    <?php
+                                                    $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
+                                                    $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+                                                    $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                                                    $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                                                    ?>
                                                     <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
-                                                    <p class="card-text mb-0">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
+                                                    <h6 class="mb-1">Current Plan: <strong>{{$planName}}</strong></h6>
+                                                    <p class="card-text mb-0" style="text-align: justify">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -660,55 +667,57 @@ $price = $order->price_override;
 
 
 
-                        <!-- Cloud Domain Modal -->
-                    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="success-domain"></div>
-                                    <div id="failure-domain"></div>
-                                    <div class="form-group">
-                                        <div class="col-12">
-                                            <p id="clouduserdomainfill" class="mb-0"><b></b></p>
-                                            {!! Form::label('clouddomain', 'Cloud Domain:', ['class' => 'col-form-label']) !!}
-                                        </div>
-                                        <div class="col-12">
-                                            {!! Form::text('clouddomain', null, ['class' => 'form-control', 'id' => 'clouduserdomain', 'autocomplete' => 'off', 'placeholder' => 'Domain', 'required']) !!}
-                                        </div>
-                                    </div>
 
-                                    <script>
-                                        $(document).ready(function() {
-                                            var orderId = {{$id}};
-                                            $.ajax({
-                                                data: {'orderId' : orderId},
-                                                url: '{{url("/api/takeCloudDomain")}}',
-                                                method: 'POST',
-                                                dataType: 'json',
-                                                success: function(data) {
-                                                    $('#clouduserdomainfill').html('<b>Current domain: </b><a href="' + data.data + '">' + data.data + '</a>');
-                                                },
-                                                error: function(error) {
-                                                    console.error('Error:', error);
-                                                }
-                                            });
-                                        });
-                                    </script>
 
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change domain</button>
-                                </div>
+        <!-- Cloud Domain Change Modal -->
+        <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="success-domain"></div>
+                        <div id="failure-domain"></div>
+                        <div class="form-group">
+                            <div class="col-12">
+                                <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
+                                <label for="clouddomain" class="col-form-label">Cloud Domain:</label>
+                            </div>
+                            <div class="row" style="margin-left: 14px; margin-right: 2px;">
+                                <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                                <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
                             </div>
                         </div>
+                        <script>
+                            $(document).ready(function() {
+                                var orderId = {{$id}};
+                                $.ajax({
+                                    data: {'orderId' : orderId},
+                                    url: '{{url("/api/takeCloudDomain")}}',
+                                    method: 'POST',
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        $('#clouduserdomainfill').html('<strong>Current domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
+                                    },
+                                    error: function(error) {
+                                        console.error('Error:', error);
+                                    }
+                                });
+                            });
+                        </script>
+
                     </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
                     <!-- Number of Agents Modal -->
                     <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">

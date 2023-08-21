@@ -104,6 +104,9 @@ class CloudExtraActivities extends Controller
             $token = str_random(32);
             $newDomain = $request->get('newDomain');
             $currentDomain = $request->get('currentDomain');
+            if(strpos($inputString, ".faveocloud.com") !== false){
+                return errorResponse(trans('message.cloud_not_allowed'));
+            }
             if ($newDomain === $currentDomain) {
                 return errorResponse(trans('message.nothing_changed'));
             }

@@ -9,7 +9,6 @@ use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
-use App\User;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -213,33 +212,29 @@ class SettingsController extends Controller
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                }
-                elseif ($cloud->checkAgentAlteration()){
-                    $subId=\Session::get('AgentAlteration');// use if needed in future
-                    $newAgents=\Session::get('newAgents');
-                    $orderId=\Session::get('orderId');
-                    $installationPath=\Session::get('installation_path');
-                    $productId=\Session::get('product_id');
-                    $oldLicense=\Session::get('oldLicense');
+                } elseif ($cloud->checkAgentAlteration()) {
+                    $subId = \Session::get('AgentAlteration'); // use if needed in future
+                    $newAgents = \Session::get('newAgents');
+                    $orderId = \Session::get('orderId');
+                    $installationPath = \Session::get('installation_path');
+                    $productId = \Session::get('product_id');
+                    $oldLicense = \Session::get('oldLicense');
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                    $cloud->doTheAgentAltering($newAgents,$oldLicense,$orderId,$installationPath,$productId);
-
-                }
-                elseif ($cloud->checkUpgradeDowngrade()){
+                    $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+                } elseif ($cloud->checkUpgradeDowngrade()) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
-                    $oldLicense=\Session::get('upgradeOldLicense');
-                    $installationPath=\Session::get('upgradeInstallationPath');
-                    $productId=\Session::get('upgradeProductId');
+                    $oldLicense = \Session::get('upgradeOldLicense');
+                    $installationPath = \Session::get('upgradeInstallationPath');
+                    $productId = \Session::get('upgradeProductId');
                     $licenseCode = \Session::get('upgradeSerialKey');
-                    $cloud->doTheProductUpgradeDowngrade($licenseCode,$installationPath,$productId,$oldLicense);
+                    $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                }
-                else {
+                } else {
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
@@ -247,13 +242,13 @@ class SettingsController extends Controller
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
-                    if(\Session::has('AgentAlterationRenew')){
-                        $newAgents=\Session::get('newAgentsRenew');
-                        $orderId=\Session::get('orderIdRenew');
-                        $installationPath=\Session::get('installation_pathRenew');
-                        $productId=\Session::get('product_idRenew');
-                        $oldLicense=\Session::get('oldLicenseRenew');
-                        $cloud->doTheAgentAltering($newAgents,$oldLicense,$orderId,$installationPath,$productId);
+                    if (\Session::has('AgentAlterationRenew')) {
+                        $newAgents = \Session::get('newAgentsRenew');
+                        $orderId = \Session::get('orderIdRenew');
+                        $installationPath = \Session::get('installation_pathRenew');
+                        $productId = \Session::get('product_idRenew');
+                        $oldLicense = \Session::get('oldLicenseRenew');
+                        $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
                     }
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];

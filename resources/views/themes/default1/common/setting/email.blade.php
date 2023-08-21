@@ -154,7 +154,7 @@ Email
 
 
                                 {!! Form::text('from_name',$set->from_name,['class' => 'form-control','id'=>'from_name']) !!}
-                                <p><i> {{Lang::get('Enter Fron Name')}} </i> </p>
+                                <p><i> {{Lang::get('Enter From Name')}} </i> </p>
 
 
                         </td>

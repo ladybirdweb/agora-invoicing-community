@@ -177,7 +177,7 @@ class PlanController extends ExtendedPlanController
         try {
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
-             $offer_prices = $request->offer_price;
+            $offer_prices = $request->offer_price;
             $this->plan->fill($request->input())->save();
             if ($request->input('days') != '') {
                 $period = Period::where('days', $request->input('days'))->first()->id;

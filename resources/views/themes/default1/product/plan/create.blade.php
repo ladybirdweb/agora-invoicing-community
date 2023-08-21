@@ -133,7 +133,8 @@
                         </td>
 
                          <td>
-                            <input type="text" class="form-control" value="" name="offer_price">
+                            <input type="text" class="form-control" value="{{old('offer_price.0')}}" name="offer_price[]">
+
                         </td>
 
                         <td>
@@ -259,7 +260,7 @@ $("#close-plan").click(function() {
             <input type="text" class="form-control" name="add_price[]">
           </td>
            <td>
-            <input type="text" class="form-control" name="offer_price">
+            <input type="text" class="form-control" name="offer_price[]">
           </td>
 
           <td>

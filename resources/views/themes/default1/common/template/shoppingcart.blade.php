@@ -142,16 +142,16 @@ main
             <div class="row mb-5">
             <div class="col text-center">
               <div class="d-flex justify-content-center align-items-center">
-                <div class="text-3 p-relative bottom-7">Yearly</div>
+                <div class="text-3 p-relative bottom-7">Monthly</div>
                 <div class="px-2">
                   <label class="switch toggle_event_editing">
 
-                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" id="kol" class="form-check-input checkbox">
+                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" id="kol" class="form-check-input checkbox" checked>
                     <span class="slider round"></span>
                   </label>
                   
                 </div>
-                <div class="text-3 p-relative bottom-7">Monthly</div>
+                <div class="text-3 p-relative bottom-7">Yearly</div>
               </div>
             </div>
           </div>

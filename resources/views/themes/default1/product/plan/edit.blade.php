@@ -122,7 +122,7 @@
                           <input type="text" class="form-control" name="add_price[{{ $row['id'] }}]" value="{{ $row['add_price'] }}">
 
                           <td>
-                          <input type="text" class="form-control" name="offer_price" value="{{ $row['offer_price'] }}">
+                          <input type="text" class="form-control" name="offer_price[{{ $row['id'] }}]" value="{{ $row['offer_price'] }}">
                         </td>
                         </td>
 

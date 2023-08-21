@@ -69,6 +69,10 @@ class DatabaseSeeder extends Seeder
            SocialLogin::insertOrIgnore($data);
        }
    }
+
+        $this->call([PricingTemplateSeeder::class]);
+        $this->command->info('Pricing Template Table Seeded!');
+    }
 }
 
 class Demo_pageTableSeeder extends Seeder
@@ -979,9 +983,9 @@ class PricingTemplateSeeder extends Seeder
                        <div class="content-switcher-wrapper">
                                                 <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
                                                 
-                    <span class="price">{{price}}</span>
+                    <span class="price">{{price-year}}</span>
 
-                     <span class="strike">{{strike-price}}</span>
+                     <span class="strike">{{strike-priceyear}}</span>
                                                                                 <label class="price-label">{{price-description}}</label><br><br>
                      <div class="subscription table-responsive">{{subscription}}</div><br>
 
@@ -989,9 +993,9 @@ class PricingTemplateSeeder extends Seeder
                                                                     </div>
                                                                     <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
                                                                         
-                    <span class="price">{{price-year}}</span>
-                     <span class="strike">{{strike-priceyear}}</span>
-                                                                                        <label class="price-label">{{price-description}}</label><br> <br>                                                                                        
+                    <span class="price">{{price}}</span>
+                     <span class="strike">{{strike-price}}</span>
+                                                                                        <label class="price-label">{{pricemonth-description}}</label><br> <br>                                                                                        
                                                                             
                      <div class="subscription table-responsive">{{subscription}}</div><br>
 
@@ -1027,8 +1031,8 @@ class PricingTemplateSeeder extends Seeder
                  <div class="content-switcher-wrapper">
                                                                 <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
                                                                     
-                                                                        <span class="price">{{price}}</span>
-                 <span class="strike">{{strike-price}}</span>
+                                                                        <span class="price">{{price-year}}</span>
+                 <span class="strike">{{strike-priceyear}}</span>
                                                                                     <label class="price-label">{{price-description}}</label><br><br>
                  <div class="subscription">{{subscription}}</div>
                 <br>
@@ -1036,9 +1040,9 @@ class PricingTemplateSeeder extends Seeder
                                                                 
                                                                 <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
                                                                     
-                                                                        <span class="price">{{price-year}}</span>
+                                                                        <span class="price">{{price}}</span>
 
-                 <span class="strike">{{strike-priceyear}}</span>                                                                   <label class="price-label">{{price-description}}</label><br><br>
+                 <span class="strike">{{strike-price}}</span>                                                                   <label class="price-label">{{pricemonth-description}}</label><br><br>
                  <div class="subscription">{{subscription}}</div>
                 <br>
                 <div>{{url}} </div>                                                 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
+use App\Facades\ImageUpload;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\Setting;
@@ -213,6 +214,7 @@ class ProductController extends BaseProductController
             $this->product_upload->is_private = $request->input('is_private');
             $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->dependencies = json_encode($request->input('dependencies'));
+
             $this->product_upload->save();
 
             $this->product->where('id', $product_id->id)->update(['version' => $request->input('version')]);
@@ -282,16 +284,19 @@ class ProductController extends BaseProductController
     public function store(Request $request)
     {
         $input = $request->all();
+
         $v = \Validator::make($input, [
             'name' => 'required|unique:products,name',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'image' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
             'product_sku' => 'required|unique:products,product_sku',
             'group' => 'required',
             'show_agent' => 'required',
             // 'version' => 'required',
         ], [
+            'product_sku.unique' => 'Prodduct SKU should be unique',
+            'name.unique' => 'Name should be unique',
             'show_agent.required' => 'Select you Cart Page Preference',
         ]);
 
@@ -311,15 +316,16 @@ class ProductController extends BaseProductController
             $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
             $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
-                $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'common/images';
-                $request->file('image')->move($imagedestinationPath, $image);
+                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
                 $this->product->image = $image;
             }
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');
-            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity);
+            $highlight = $request->input('highlight');
+            $add_to_contact = $request->input('add_to_contact');
+            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity, $highlight, $add_to_contact);
             $this->product->fill($request->except('image', 'file'))->save();
+
             $taxes = $request->input('tax');
             if ($taxes) {
                 foreach ($taxes as $key => $value) {
@@ -412,7 +418,7 @@ class ProductController extends BaseProductController
             'name' => 'required',
             'type' => 'required',
             'description' => 'required',
-            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'image' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
             'product_sku' => 'required',
             'group' => 'required',
         ]);
@@ -428,9 +434,7 @@ class ProductController extends BaseProductController
             }
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
-                $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'common/images';
-                $request->file('image')->move($imagedestinationPath, $image);
+                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
                 $product->image = $image;
             }
             if ($request->hasFile('file')) {
@@ -441,7 +445,9 @@ class ProductController extends BaseProductController
             }
 
             $product->fill($request->except('image', 'file'))->save();
-            $this->saveCartDetailsWhileUpdating($input, $request, $product);
+            $highlight = $request->input('highlight');
+            $add_to_contact = $request->input('add_to_contact');
+            $this->saveCartDetailsWhileUpdating($input, $request, $product, $highlight, $add_to_contact);
 
             if ($request->input('github_owner') && $request->input('github_repository')) {
                 $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));

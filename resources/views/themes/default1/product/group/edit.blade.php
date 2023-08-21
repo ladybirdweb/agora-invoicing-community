@@ -116,7 +116,6 @@ Edit Group
                         <td>
 
                            <div class="form-group">
-                            @foreach($pricingTemplates as $template)
                             <div class="col-md-4">
                              <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
@@ -130,8 +129,31 @@ Edit Group
                              <br/><br/>
                         </div>
                    
-                            @endforeach
+                          
                             </div> 
+                        </td>
+
+                    </tr>
+
+                           <tr>
+
+                        <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
+
+                                                {!! Form::hidden('status', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if($group->status==1){
+                                                 $value = 'true';   
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('status',1,$value) !!}  {{Lang::get('message.check-this-box_to_toggle_status')}}</p>
+
+                               
+
+
+                            </div>
                         </td>
 
                     </tr>

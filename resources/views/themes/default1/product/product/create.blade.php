@@ -204,6 +204,26 @@ Create Product
 
                                             </div>
                                         </li>
+                                         <li>
+                                            <div class="form-group {{ $errors->has('highlight') ? 'has-error' : '' }}">
+                                                <!-- first name -->
+                                               <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
+                                                <label data-toggle="tooltip" data-placement="top" title="">Highlight</label>
+                                               
+                                                <p>{!! Form::checkbox('highlight') !!}  {{Lang::get('message.tick-to-highlight-product')}}</p>
+
+                                            </div>
+                                        </li>
+                                          <li>
+                                            <div class="form-group {{ $errors->has('add_to_contact') ? 'has-error' : '' }}">
+                                                <!-- first name -->
+                                               <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
+                                                <label data-toggle="tooltip" data-placement="top" title="">Contact to sales</label>
+                                               
+                                                <p>{!! Form::checkbox('add_to_contact') !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
+
+                                            </div>
+                                        </li>
                                     </ul>
 
                                 </div>

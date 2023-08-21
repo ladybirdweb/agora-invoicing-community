@@ -70,10 +70,13 @@
                 <table class="table table-responsive table-bordered table-hover" id="dynamic_table">
                   <thead>
                     <tr>
-                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-6" style="width:27%">
+                      <th class="col-sm-6" style="width:10%">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-6" style="width:10%">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-6" style="width:10%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-3" style="width:10%">
+                        {{ Lang::get('Offer Price') }} <span class="text-bold">(%)</span>
+                      </th>
+                      <th class="col-sm-6" style="width:10%">
                         {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
                       </th>
                     </tr>
@@ -117,6 +120,10 @@
 
                         <td>
                           <input type="text" class="form-control" name="add_price[{{ $row['id'] }}]" value="{{ $row['add_price'] }}">
+
+                          <td>
+                          <input type="text" class="form-control" name="offer_price[{{ $row['id'] }}]" value="{{ $row['offer_price'] }}">
+                        </td>
                         </td>
 
                         <td>
@@ -256,6 +263,9 @@
 
           <td>
             <input type="text" class="form-control" name="add_price[]">
+          </td>
+          <td>
+            <input type="text" class="form-control" name="offer_price">
           </td>
 
           <td>

@@ -177,6 +177,7 @@ class PlanController extends ExtendedPlanController
         try {
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
+             $offer_prices = $request->offer_price;
             $this->plan->fill($request->input())->save();
             if ($request->input('days') != '') {
                 $period = Period::where('days', $request->input('days'))->first()->id;
@@ -192,6 +193,7 @@ class PlanController extends ExtendedPlanController
                         'currency' => $request->currency[$key],
                         'add_price' => $value,
                         'renew_price' => $renew_prices[$key],
+                        'offer_price' => $offer_prices[$key],
                         'price_description' => $request->price_description,
                         'product_quantity' => $request->product_quantity,
                         'no_of_agents' => $request->no_of_agents,
@@ -258,6 +260,7 @@ class PlanController extends ExtendedPlanController
     {
         $add_prices = $request->add_price;
         $renew_prices = $request->renew_price;
+        $offer_prices = $request->offer_price;
         $plan->fill($request->input())->save();
         if (count($add_prices) > 0) {
             $dataForCreating = [];
@@ -269,6 +272,7 @@ class PlanController extends ExtendedPlanController
                     'currency' => $request->currency[$key],
                     'add_price' => $value,
                     'renew_price' => $renew_prices[$key],
+                    'offer_price' => $offer_prices[$key],
                     'price_description' => $request->price_description,
                     'product_quantity' => $request->product_quantity,
                     'no_of_agents' => $request->no_of_agents,

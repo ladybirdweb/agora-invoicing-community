@@ -247,6 +247,45 @@ Edit Product
 
                                             </div>
                                         </li>
+                                          <li>
+                                            <div class="row">
+
+                                               <div class="form-group {{ $errors->has('highlight') ? 'has-error' : '' }}">
+                                                <!-- first name -->
+                                                {!! Form::label('highlight',Lang::get('message.highlight')) !!}
+                                                {!! Form::hidden('highlight', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if ($product->highlight==1) {
+                                                    $value = 'true';
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('highlight',1,$value) !!}  {{Lang::get('message.tick-to-highlight-product')}}</p>
+
+                                            </div>
+
+                                            </div>
+                                        </li>
+
+                                            <li>
+                                            <div class="row">
+
+                                               <div class="form-group {{ $errors->has('add_to_contact') ? 'has-error' : '' }}">
+                                                <!-- first name -->
+                                                {!! Form::label('add_to_contact',Lang::get('Contact to sales')) !!}
+                                                {!! Form::hidden('add_to_contact', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if ($product->add_to_contact==1) {
+                                                    $value = 'true';
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('add_to_contact',1,$value) !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
+
+                                            </div>
+
+                                            </div>
+                                        </li>
                                    
                                 </div>
 

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Front;
 
 use App\DefaultPage;
+use App\Demo_page;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
@@ -19,7 +22,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq', 'postContactUs']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -283,6 +286,47 @@ class PageController extends Controller
         }
     }
 
+     public function getstrikePriceYear($id)
+    {
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
+            $product = Product::find($id);
+            if($product['add_to_contact'] == 1){
+                return 'Custom Pricing';
+            }
+            else{
+            $prices = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 365 || $plan->days == 366) {
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
+                }
+                
+                if (!empty($prices)) {
+                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                        $prices[0] = ($offerprice / 100 )* $prices[0];
+                    }
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                }
+            }
+            return $cost;
+           
+        }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
     public function transform($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");
@@ -295,11 +339,68 @@ class PageController extends Controller
         for ($i = 0; $i < $c; $i++) {
             $array1 = $this->keyArray($array[$i]);
             $array2 = $this->valueArray($array[$i]);
+            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
+            $id = Product::where('name', $array2[0])->value('id');
+            $offerprice = $this->getOfferprice($id);
+            $description = self::getPriceDescription($id);
+            if (! isset($offerprice) || $offerprice == $array2[1] || $offerprice == '' || $offerprice == null) {
+                $data = str_replace('<span class="strike">{{strike-price}}</span><br>', '', $data);
+                $data = str_replace('{{strike-priceyear}}', '', $data);
+            } else {
+                $offerprice = $this->getPayingprice($id);
+                $offerpriceYear = $this->getstrikePriceYear($id);
+                $strikePrice = $this->YearlyAmount($id);
+                $data = str_replace('{{price}}', $offerprice, $data);
+                $data = str_replace('{{strike-price}}', $array2[1], $data);
+                $data = str_replace('{{price-year}}', $offerpriceYear, $data);
+                $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
+            }
             $result .= str_replace($array1, $array2, $data);
         }
 
         return $result;
     }
+
+    public function getPayingprice($id)
+    {
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
+
+            $prices = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 30 || $plan->days == 31) {
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $price = $planDetails['plan']->add_price;
+                        $symbol = $planDetails['symbol'];
+                        $currency = $planDetails['currency'];
+
+                        if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                            $price = ($offerprice / 100) * $price;
+                        }
+
+                        $prices[] = $price;
+                        $prices[] .= $symbol;
+                        $prices[] .= $currency;
+                    }
+                }
+
+                if (!empty($prices)) {
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
+                }
+            }
+
+            return $cost;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
 
     /**
      * Get Page Template when Group in Store Dropdown is
@@ -313,19 +414,31 @@ class PageController extends Controller
      * @param  int  $templateid  Id of the Template
      * @return longtext The Template to be displayed
      */
-    public function pageTemplates(int $templateid, int $groupid)
+    public function pageTemplates(int $templateid = null, int $groupid)
     {
         try {
-            $data = PricingTemplate::findorFail($templateid)->data;
+            $productsHightlight = Product::wherehighlight(1)->get();
+
+            // $data = PricingTemplate::findorFail($templateid)->data;
             $headline = ProductGroup::findorFail($groupid)->headline;
             $tagline = ProductGroup::findorFail($groupid)->tagline;
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
-            $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
+            $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
+            $products = Product::all();
+            $plan = '';
+            $description = '';
+            $status = null;
+            foreach ($productsRelatedToGroup as $product) {
+                $plan = Product::find($product->id)->plan();
+                $description = self::getPriceDescription($product->id);
+                $status = Product::find($product->id);
+            }
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -349,31 +462,201 @@ class PageController extends Controller
      * @param  $trasform
      * @return string
      */
-    public function getTemplateOne($helpdesk_products, $data, $trasform)
+    public function getTemplateOne($helpdesk_products, $trasform)
     {
         try {
             $template = '';
             $temp_controller = new TemplateController();
             if (count($helpdesk_products) > 0) {
                 foreach ($helpdesk_products as $product) {
+                    $price = $temp_controller->leastAmount($product['id']);
                     //Store all the values in $trasform variable for shortcodes to read from
                     $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
+                    $trasform[$product['id']]['price-year'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
+                    $trasform[$product['id']]['pricemonth-description'] = self::getmonthPriceDescription($product['id']);
+                    $trasform[$product['id']]['strike-price'] = $temp_controller->leastAmount($product['id']);
+                    $trasform[$product['id']]['strike-priceyear'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['name'] = $product['name'];
                     $trasform[$product['id']]['feature'] = $product['description'];
                     $trasform[$product['id']]['subscription'] = $temp_controller
                     ->plans($product['shoping_cart_link'], $product['id']);
-                    $trasform[$product['id']]['url'] = "<input type='submit' 
-                    value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
+                    if ($product['add_to_contact'] != 1) {
+                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
+                     value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
+                   value='Order Now' class='btn btn-dark btn-modern'></form>";
+                    } else {
+                        $trasform[$product['id']]['url'] = "<a class='btn btn-dark btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                    }
                 }
+                $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
             }
-
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+    public function plansYear($url, $id)
+    {
+        try {
+            $plan = new Plan();
+            $plan_form = 'Free'; //No Subscription
+            $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+            $product = Product::find($id);
+            $type = Product::find($id);
+            $planid = Plan::where('product', $id)->value('id');
+            $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
+
+            $plans = $this->prices($id);
+            if ($plans) {
+                $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
+            }
+            $form = \Form::open(['method' => 'get', 'url' => $url]).
+            $plan_form.
+            \Form::hidden('id', $id);
+
+            return $product['add_to_contact'] == 1 ? '' : $form;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
+    {
+        $cost = $cost * 12;
+        if (isset($offer) && $offer !== '' && $offer !== null) {
+            $cost = $cost - ($offer / 100 * $cost);
+        }
+        $price1 = currencyFormat($cost, $code = $currency);
+        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
+        return $price;
+    }
+
+    public function prices($id)
+    {
+        try {
+            $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
+            $price = [];
+            foreach ($plans as $value) {
+                $offer = PlanPrice::where('plan_id', $value->id)->value('offer_price');
+                $product = Product::find($value->product);
+                $currencyAndSymbol = userCurrencyAndPrice('', $value);
+                $currency = $currencyAndSymbol['currency'];
+                $symbol = $currencyAndSymbol['symbol'];
+                $cost = $currencyAndSymbol['plan']->add_price;
+                $priceDescription = 'Per Year';
+                $cost = rounding($cost);
+                $duration = $value->periods;
+                $months = count($duration) > 0 ? $duration->first()->name : '';
+                if ($product->type != '4') {
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
+                } elseif ($cost != '0' && $product->type == '4') {
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
+                }
+                // $price = currencyFormat($cost, $code = $currency);
+            }
+
+            return $price;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getOfferprice(int $productid)
+    {
+        $plan = Plan::where('product', $productid)->value('id');
+        $offerprice = PlanPrice::where('plan_id', $plan)->value('offer_price');
+
+        return $offerprice;
+    }
+
+    public function YearlyAmount($id)
+    {
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
+            $product = Product::find($id);
+            $offer = $this->getOfferprice($id);
+
+            
+            if ($product['add_to_contact'] == 1) {
+
+                if($offer == '' && $offer == null){
+                    $return =  'Custom Pricing';
+                }
+                else{
+                    $return =  ' ';
+                }
+                return $return;
+
+            } else {
+                $prices = [];
+                foreach ($plans as $plan) {
+                    if ($plan->days == 365 || $plan->days == 366) {
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
+                }
+                
+                if (!empty($prices)) {
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
+                }
+                return $cost;
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getmonthPriceDescription(int $productid)
+{
+    try {
+        $product = Product::find($productid);
+
+        if ($product['add_to_contact'] == 1) {
+            return '';
+        }
+
+        $priceDescription = ''; // Initialize the price description
+
+        $plans = Plan::where('product',$productid)->get();
+
+        
+        if ($plans) {
+            foreach ($plans as $plan) {
+                if ($plan->days == 30 || $plan->days == 31) {
+                    $description = $plan->planPrice->first();
+
+                    if ($description->price_description == 'Free') {
+                        $priceDescription = 'free';
+                    } else {
+                        $priceDescription = $description->no_of_agents? 'per month for <strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per month';
+                    }
+
+                    // Break the loop if we find a plan with 30 or 31 days
+                    break;
+                }
+            }
+        }
+
+        return $priceDescription;
+    } catch (\Exception $ex) {
+        app('log')->error($ex->getMessage());
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
+}
+
+
 
     /**
      * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
@@ -388,16 +671,37 @@ class PageController extends Controller
     public function getPriceDescription(int $productid)
     {
         try {
-            $plan = Product::find($productid)->plan();
-            $description = $plan ? $plan->planPrice->first() : '';
-            $priceDescription = $description ? $description->price_description : '';
-
-            return  $priceDescription;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+        $product = Product::find($productid);
+        if ($product['add_to_contact'] == 1) {
+            return '';
         }
+
+        $priceDescription = ''; 
+
+        $plans = Plan::where('product',$productid)->get();
+
+        if ($plans) {
+            foreach ($plans as $plan) {
+                if ($plan->days == 365 || $plan->days == 366) {
+                    $description = $plan->planPrice->first();
+
+                    if ($description->price_description == 'Free') {
+                        $priceDescription = 'free';
+                    } else {
+                        $priceDescription = $description->no_of_agents ? 'per year for<strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per year';
+                    }
+
+                    // Break the loop if we find a plan with 30 or 31 days
+                    break;
+                }
+            }
+        }
+
+        return $priceDescription;
+    } catch (\Exception $ex) {
+        app('log')->error($ex->getMessage());
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
     }
 
     public function checkConfigKey($config, $transform)
@@ -459,9 +763,6 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->sendEmail($from, $to, $data, $subject);
-
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
@@ -476,5 +777,78 @@ class PageController extends Controller
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function viewDemoReq()
+    {
+        try {
+            return view('themes.default1.front.demoForm');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postDemoReq(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'demoemail' => 'required|email',
+        ]);
+
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($set);
+
+        try {
+            $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
+            $data = '';
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
+            if (emailSendingStatus()) {
+                $email = (new Email())
+                   ->from($set->email)
+                   ->to($set->company_email)
+                   ->subject('Requesting for Demo for'.'  '.$product)
+                    ->replyTo($request->input('demoemail'))
+                   ->html($data);
+
+                $mailer->send($email);
+            }
+
+            return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function VewDemoPage()
+    {
+        try {
+            $Demo_page = Demo_page::first();
+
+            return view('themes.default1.common.setting.demo-page', compact('Demo_page'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function saveDemoPage(Request $request)
+    {
+        $data = $request->validate([
+            'status' => 'required',
+        ]);
+        $data = [
+            'status' => $request->input('status') === 'true' ? 1 : 0,
+        ];
+
+        $existingData = Demo_page::first();
+        $existingData ? $existingData->update($data) : Demo_page::create($data);
+
+        $message = $existingData ? 'Data updated successfully.' : 'Data created successfully.';
+
+        return redirect()->back()->with('success', $message);
     }
 }

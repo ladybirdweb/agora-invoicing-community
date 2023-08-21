@@ -7,7 +7,9 @@ use App\Http\Requests\Product\GroupRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
+use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Payment\Plan;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -85,9 +87,9 @@ class GroupController extends Controller
     public function create()
     {
         try {
-            $pricingTemplates = PricingTemplate::select('image', 'id', 'name')->get();
+            $template = PricingTemplate::select('image', 'id', 'name')->first();
 
-            return view('themes.default1.product.group.create', compact('pricingTemplates'));
+            return view('themes.default1.product.group.create', compact('template'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -108,8 +110,9 @@ class GroupController extends Controller
         ]);
 
         try {
+            $data = $request->input();
             $this->group->fill($request->input())->save();
-
+            $this->group->refresh();
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -127,9 +130,9 @@ class GroupController extends Controller
         try {
             $group = $this->group->where('id', $id)->first();
             $selectedTemplate = $group->pricing_templates_id;
-            $pricingTemplates = PricingTemplate::get();
+            $template = PricingTemplate::first();
 
-            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'pricingTemplates'));
+            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'template'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -141,13 +144,39 @@ class GroupController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update($id, GroupRequest $request)
+       public function update($id, GroupRequest $request)
     {
         try {
             $group = $this->group->where('id', $id)->first();
-            $group->fill($request->input())->save();
+            $products = Product::where('group', $id)->where('hidden','0')->where('add_to_contact','0')->get();
+            
+            // Check if all products have both monthly and yearly plans
+            $allProductsHavePlans = true;
 
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            foreach ($products as $product) {
+                $monthlyPlan = Plan::where('product', $product->id)->where('days', 30)->first();
+                $yearlyPlan = Plan::where('product', $product->id)->where('days', 365)->first();
+
+                if (!$monthlyPlan || !$yearlyPlan) {
+                    $allProductsHavePlans = false;
+                    break; // No need to continue checking
+                }
+            }
+            
+            if ($allProductsHavePlans) {
+                if ($request->status == 1) {
+                    $group->fill($request->input())->save();
+                    Product::where('group', $id)->update(['status' => 1]);
+                    return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                }
+            } elseif ($request->status == 0) {
+                $group->fill($request->input())->save();
+                Product::where('group', $id)->update(['status' => 0]);
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            }
+            
+            return redirect()->back()->with('fails', 'Please ensure that all products under this group have both monthly and yearly plans added in order to enable this feature.');
+
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

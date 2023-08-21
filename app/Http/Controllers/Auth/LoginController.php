@@ -43,7 +43,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except(['logout', 'storeBasicDetailsss']);
+        $this->middleware('guest')->except(['logout', 'store-basic-details']);
     }
 
     public function showLoginForm()

@@ -151,11 +151,12 @@ class OrderController extends BaseOrderController
                 }
             })
             ->addColumn('agents', function ($model) {
-                $license = substr($model->serial_key,12,16);
-                if($license=='0000'){
+                $license = substr($model->serial_key, 12, 16);
+                if ($license == '0000') {
                     return 'Unlimited';
                 }
-                return intval($license,10);
+
+                return intval($license, 10);
             })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
@@ -163,13 +164,15 @@ class OrderController extends BaseOrderController
                 if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
                     $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($installedPath);
                 }
-                if($model->order_status == 'Terminated'){
-                    $badge='badge';
+                if ($model->order_status == 'Terminated') {
+                    $badge = 'badge';
+
                     return  '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has been Terminated">
 
                          </label>
             Terminated</span>';
                 }
+
                 return $orderLink;
             })
             ->addColumn('order_status', function ($model) {
@@ -186,14 +189,14 @@ class OrderController extends BaseOrderController
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);
 
-                $license = substr($model->serial_key,12,16);
+                $license = substr($model->serial_key, 12, 16);
 
-                if($license=='0000'){
-                    $agents= 'Unlimited';
+                if ($license == '0000') {
+                    $agents = 'Unlimited';
+                } else {
+                    $agents = intval($license, 10);
                 }
-                else{
-                    $agents=intval($license,10);
-                }
+
                 return $this->getUrl($model, $status, $model->subscription_id, $agents);
             })
 

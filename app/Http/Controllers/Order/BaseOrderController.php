@@ -6,12 +6,14 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
 use App\Model\Order\Order;
+use App\Model\Order\Invoice;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
+use Carbon\Carbon;
 use Crypt;
 use Symfony\Component\Mime\Email;
 
@@ -62,6 +64,7 @@ class BaseOrderController extends ExtendedOrderController
      */
     public function executeOrder($invoiceid, $order_status = 'executed')
     {
+      
         try {
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
@@ -93,8 +96,8 @@ class BaseOrderController extends ExtendedOrderController
             $serial_key = $this->generateSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             $plan_id = $this->plan($item->id);
-            $order = $this->order->create([
 
+            $order = $this->order->create([
                 'invoice_id' => $invoiceid,
                 'invoice_item_id' => $item->id,
                 'client' => $user_id,
@@ -105,7 +108,9 @@ class BaseOrderController extends ExtendedOrderController
                 'qty' => $item->quantity,
                 'domain' => $domain,
                 'number' => $this->generateNumber(),
+                'created_at' => Carbon::now(),
             ]);
+            $this->updateInvoiceDate($invoiceid);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
@@ -125,6 +130,11 @@ class BaseOrderController extends ExtendedOrderController
             throw new \Exception($ex->getMessage());
         }
     }
+    protected function updateInvoiceDate($invoiceId)
+{
+    $invoice = Invoice::find($invoiceId); // Replace Invoice with your actual Invoice model
+    $invoice->update(['date' => Carbon::now()]);
+}
 
     public function addToMailchimp($product, $user_id, $item)
     {
@@ -237,6 +247,7 @@ class BaseOrderController extends ExtendedOrderController
 
     public function addOrderInvoiceRelation($invoiceid, $orderid)
     {
+
         try {
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create(['order_id' => $orderid, 'invoice_id' => $invoiceid]);

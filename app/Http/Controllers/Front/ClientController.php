@@ -570,40 +570,45 @@ class ClientController extends BaseClientController
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $plan = Plan::where('product', $model->product_id)->value('id');
-                                $price = PlanPrice::where('plan_id', $plan)->where('currency', \Auth::user()->currency)->value('renew_price');
-                                $order_cont = new \App\Http\Controllers\Order\OrderController();
-                                $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
-                                $url = '';
-                                $deleteCloud = '';
-                                $listUrl = '';
-                                if ($status == 'success' && $model->price != '0' && $model->type == '4') {
+                                if($model->order_status=='Terminated') {
+                                    return '<a href=' . url('my-order/' . $model->id) . " 
+                                class='btn  btn-primary btn-xs' style='margin-right:5px;'>
+                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View</a>";
+                                }
+                                    $plan = Plan::where('product', $model->product_id)->value('id');
+                                    $price = PlanPrice::where('plan_id', $plan)->where('currency', \Auth::user()->currency)->value('renew_price');
+                                    $order_cont = new \App\Http\Controllers\Order\OrderController();
+                                    $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
+                                    $url = '';
+                                    $deleteCloud = '';
+                                    $listUrl = '';
+                                    if ($status == 'success' && $model->price != '0' && $model->type == '4') {
+                                        $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
+                                        $listUrl = $this->getPopup($model, $model->product_id);
+                                        $listUrl = $this->getPopup($model, $model->product_id);
+                                    } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
+                                        $listUrl = $this->getPopup($model, $model->product_id);
+                                    }
+                                    if (!in_array($model->product_id, [117, 119])) {
+                                        $listUrl = $this->getPopup($model, $model->product_id);
+                                    }
                                     $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
-                                    $listUrl = $this->getPopup($model, $model->product_id);
-                                    $listUrl = $this->getPopup($model, $model->product_id);
-                                } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
-                                    $listUrl = $this->getPopup($model, $model->product_id);
-                                }
-                                if (! in_array($model->product_id, [117, 119])) {
-                                    $listUrl = $this->getPopup($model, $model->product_id);
-                                }
-                                $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
-                                $agents = substr($model->serial_key,12,16);
-                                if($agents=='0000'){
-                                    $agents = 'Unlimited';
-                                }
-                                else {
-                                    $agents=intval($agents, 10);
-                                }
+                                    $agents = substr($model->serial_key, 12, 16);
+                                    if ($agents == '0000') {
+                                        $agents = 'Unlimited';
+                                    } else {
+                                        $agents = intval($agents, 10);
+                                    }
 
-                                $url = $this->renewPopup($model->sub_id, $model->product_id,$agents);
+                                    $url = $this->renewPopup($model->sub_id, $model->product_id, $agents);
 
-                                $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
+                                    $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 
-                                return '<a href='.url('my-order/'.$model->id)." 
+                                    return '<a href=' . url('my-order/' . $model->id) . " 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";
+
                             })
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';

@@ -115,8 +115,8 @@ Invoice
                                         <th>Order No</th>
                                         <th>Product</th>
                                         <th>Price</th>
-                                        <th>Quantity</th>
                                         <th>Agents</th>
+                                        <th>Quantity</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>

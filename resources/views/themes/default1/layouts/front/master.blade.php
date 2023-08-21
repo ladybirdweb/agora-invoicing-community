@@ -222,8 +222,8 @@ $days = $pay->where('product','117')->value('days');
 
 
 
-                                                    <li class="dropdown">
-                                                   <a class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
+                                                    <li>
+                                                   <a class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">
                                                     <div>
                                                                 <i class="fas fa-cloud"></i>
                                                                 <span style="margin-left: 3px;">START FREE TRAIL</span>

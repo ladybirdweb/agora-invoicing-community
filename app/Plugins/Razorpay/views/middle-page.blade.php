@@ -256,18 +256,14 @@ $json = json_encode($data);
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditionsByType('tax') as $tax)
 
-
-
-                 @if($tax->getName()!= 'null')
+                    @if($tax->getName()!= 'null')
                 <tr class="Taxes">
                     <?php
                     $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                     ?>
                    <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
-
-                    </th>
+                       <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
+                   </th>
                     <td>
                      {!! $bifurcateTax['tax'] !!}
                   </td>
@@ -285,10 +281,9 @@ $json = json_encode($data);
                     $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
                     ?>
                    <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
+                       <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
 
-                    </th>
+                   </th>
                     <td>
                      {!! $bifurcateTax['tax'] !!}
                   </td>
@@ -342,7 +337,7 @@ $json = json_encode($data);
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                    <strong><span class="amount">{{currencyFormat($totalPaid,$code = $item->attributes->currency)}} </span></strong>
+                    <b><span class="amount">{{currencyFormat($totalPaid,$code = $item->attributes->currency)}} </span></b>
 
 
                     </td>
@@ -613,6 +608,11 @@ document.getElementById('rzp-button1').onclick = function(e){
     e.preventDefault();
 }
 </script>
+    <style>
+        strong{
+            margin-left: 20px;
+        }
+    </style>
 
 
 @endsection

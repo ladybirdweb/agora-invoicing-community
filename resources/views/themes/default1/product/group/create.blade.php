@@ -130,7 +130,7 @@ Create Group
 
                     </tr>
 
-                          <tr>
+                   <!--        <tr>
 
                         <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
                         <td>
@@ -144,7 +144,7 @@ Create Group
                             </div>
                         </td>
 
-                    </tr>
+                    </tr> -->
 
 
 

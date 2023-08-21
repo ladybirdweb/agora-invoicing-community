@@ -1,8 +1,8 @@
 @extends('themes.default1.layouts.master')
 @section('title')
 Payment Logs
-
 @stop
+@section('content-header')
 <style>
     .modal-dialog-scrollable {
         max-height: calc(100vh - 200px);
@@ -44,8 +44,6 @@ Payment Logs
         overflow-y: auto;
     }
 </style>
-
-@section('content-header')
     <div class="col-sm-6">
         <h1>Payment Log</h1>
     </div>
@@ -183,7 +181,7 @@ Payment Logs
 
 <script>
     $(document).ready(function() {
-             $(document).on('click', '.show-exception', function(event) {
+        $(document).on('click', '.show-exception', function(event) {
             event.preventDefault();
 
             var exceptionMessage = $(this).data('message');
@@ -193,11 +191,11 @@ Payment Logs
             $('#exception-modal').modal('show');
         });
 
-
         $('#payment-table').DataTable({
             processing: true,
             serverSide: true,
-            order: [[ 1, "asc" ]],
+            order: [[{!! request()->sort_field ?: 1 !!}, 'asc']],
+
             ajax: {
                 "url": '{!! route('get-paymentlog', "from=$from&till=$till") !!}',
                 error: function(xhr) {
@@ -212,7 +210,14 @@ Payment Logs
                 "sSearch": "Search: ",
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
-
+             columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+     
             columns: [
                 { data: 'checkbox', name: 'checkbox' },
                 { data: 'date', name: 'date' },
@@ -246,6 +251,8 @@ Payment Logs
         });
     });
 </script>
+
+
 <!-- <script>
     $(document).on('click','#payment-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');

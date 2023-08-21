@@ -144,7 +144,7 @@ $('#invoice-table').DataTable({
       },
     },
   },
-    }),
+}),
 </script>
 
 <script>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
+use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except(['logout', 'storeBasicDetailsss']);
+        $this->middleware('guest')->except(['logout', 'store-basic-details']);
     }
 
     public function showLoginForm()

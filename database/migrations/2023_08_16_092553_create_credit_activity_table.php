@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('payment_id'); // Foreign key
             $table->longText('text');
-            $table->string('role',255);
+            $table->string('role', 255);
             $table->timestamps();
         });
     }

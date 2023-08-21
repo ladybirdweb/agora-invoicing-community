@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('invoice_items', function (Blueprint $table) {
-            $table->string('billing_pay',255)->nullable();
+            $table->string('billing_pay', 255)->nullable();
         });
     }
 

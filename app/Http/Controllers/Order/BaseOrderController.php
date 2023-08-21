@@ -36,19 +36,18 @@ class BaseOrderController extends ExtendedOrderController
 
     use UpdateDates;
 
-    public function getUrl($model, $status, $subscriptionId,$agents=null)
+    public function getUrl($model, $status, $subscriptionId, $agents = null)
     {
         $url = '';
         if ($status == 'success') {
             if ($subscriptionId) {
-                if(!is_null($agents)){
+                if (! is_null($agents)) {
                     $url = '<a href='.url('renew/'.$subscriptionId.'/'.$agents)." 
                 class='btn btn-sm btn-secondary btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
                  style='color:white;'> </i></a>";
-                }
-                else {
-                    $url = '<a href=' . url('renew/' . $subscriptionId) . " 
-                class='btn btn-sm btn-secondary btn-xs'" . tooltip('Renew') . "<i class='fas fa-credit-card'
+                } else {
+                    $url = '<a href='.url('renew/'.$subscriptionId)." 
+                class='btn btn-sm btn-secondary btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
                  style='color:white;'> </i></a>";
                 }
             }
@@ -98,8 +97,8 @@ class BaseOrderController extends ExtendedOrderController
                 //Get Version from Product Upload Table
                 $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
             }
-            $serial_key = $this->generateSerialKey($product, $item->agents);//Send Product Id and Agents to generate Serial Key
-            \Session::put('upgradeSerialKey',$serial_key);
+            $serial_key = $this->generateSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
+            \Session::put('upgradeSerialKey', $serial_key);
             $domain = $item->domain;
             $plan_id = $this->plan($item->id);
 

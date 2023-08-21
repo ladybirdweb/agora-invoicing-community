@@ -33,6 +33,7 @@ class CloudExtraActivities extends Controller
 
         $this->middleware('auth', ['except' => ['verifyThirdPartyToken']]);
     }
+
     private function checktheAgent($numberOfAgents, $domain)
     {
         $client = new Client([]);
@@ -67,9 +68,10 @@ class CloudExtraActivities extends Controller
     {
         // Output the modified domain value
         $installtion_path = InstallationDetail::where('order_id', $request->orderId)->latest()->value('installation_path');
-        if(!empty($installtion_path)){
+        if (! empty($installtion_path)) {
             return response()->json(['data'=> $installtion_path]);
         }
+
         return response()->json(['data'=> '']);
     }
 
@@ -87,7 +89,8 @@ class CloudExtraActivities extends Controller
             $actualPrice = $planDetails['plan']->add_price * $agents;
 
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-            return $this->getThePaymentCalculationUpgradeDowngradeDisplay($agents, $oldLicense,$orderId,$planId,$actualPrice);
+
+            return $this->getThePaymentCalculationUpgradeDowngradeDisplay($agents, $oldLicense, $orderId, $planId, $actualPrice);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -104,13 +107,13 @@ class CloudExtraActivities extends Controller
             $token = str_random(32);
             $newDomain = $request->get('newDomain');
             $currentDomain = $request->get('currentDomain');
-            if(strpos($inputString, ".faveocloud.com") !== false){
+            if (strpos($inputString, '.faveocloud.com') !== false) {
                 return errorResponse(trans('message.cloud_not_allowed'));
             }
             if ($newDomain === $currentDomain) {
                 return errorResponse(trans('message.nothing_changed'));
             }
-            $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain,'lic_code'=> $request->get('lic_code'),'product_id' => $request->product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
+            $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'lic_code'=> $request->get('lic_code'), 'product_id' => $request->product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
             if (! strpos($newDomain, 'fratergroup.in')) {
                 if (empty($dns_record) || ! in_array('fratergroup.in', array_column($dns_record, 'target'))) {
@@ -120,7 +123,7 @@ class CloudExtraActivities extends Controller
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $client = new Client([]);
-            $response=$client->request(
+            $response = $client->request(
                 'POST',
                 $this->cloud->cloud_central_domain.'/changeDomain', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
             );
@@ -129,7 +132,7 @@ class CloudExtraActivities extends Controller
             $response = '{'.$response[1];
 
             $result = json_decode($response);
-            if($result->status=='fails'){
+            if ($result->status == 'fails') {
                 return response(['status' => true, 'message' => trans('message.change_domain_failed')]);
             }
             $this->jobsForCloudDomain($newDomain, $currentDomain);
@@ -204,7 +207,7 @@ class CloudExtraActivities extends Controller
         try {
             $newAgents = $request->newAgents;
             $orderId = $request->input('orderId');
-            $installation_path = InstallationDetail::where('order_id',$orderId)->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()->value('installation_path');
             $product_id = $request->product_id;
 
             if ($this->checktheAgent($newAgents, $installation_path)) {
@@ -213,23 +216,23 @@ class CloudExtraActivities extends Controller
 
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
 
-            $items=$this->getThePaymentCalculation($newAgents, $oldLicense,$orderId);
+            $items = $this->getThePaymentCalculation($newAgents, $oldLicense, $orderId);
 
-            $invoice = (new RenewController())->renewBySubId($request->subId, $items['planId'], '',$items['price'],'', false,$newAgents);
+            $invoice = (new RenewController())->renewBySubId($request->subId, $items['planId'], '', $items['price'], '', false, $newAgents);
 
-            if($invoice) {
-
-                \Session::put('AgentAlteration',$request->subId);
+            if ($invoice) {
+                \Session::put('AgentAlteration', $request->subId);
                 \Session::put('newAgents', $newAgents);
                 \Session::put('orderId', $orderId);
-                \Session::put('installation_path',$installation_path);
-                \Session::put('product_id',$product_id);
+                \Session::put('installation_path', $installation_path);
+                \Session::put('product_id', $product_id);
                 \Session::put('oldLicense', $oldLicense);
 
-                return url('paynow/' . $invoice->invoice_id);
+                return url('paynow/'.$invoice->invoice_id);
             }
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return errorResponse(trans('message.agent_reduce'));
         }
     }
@@ -237,30 +240,30 @@ class CloudExtraActivities extends Controller
     public function upgradeDowngradeCloud(Request $request)
     {
         try {
-             $planId = $request->id;
-             $agents = $request->agents;
-             $orderId = $request->orderId;
-             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path','!=','billing.faveocloud.com')->latest()
-                ->value('installation_path');
-             $items = $this->getThePaymentCalculationUpgradeDowngrade($agents, $oldLicense,$orderId,$planId);
+            $planId = $request->id;
+            $agents = $request->agents;
+            $orderId = $request->orderId;
+            $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()
+               ->value('installation_path');
+            $items = $this->getThePaymentCalculationUpgradeDowngrade($agents, $oldLicense, $orderId, $planId);
 
-             \Cart::add($items); //Add Items To the Cart Collection
+            \Cart::add($items); //Add Items To the Cart Collection
 
-            \Session::put('upgradeDowngradeProduct',\Auth::user()->id);
-            \Session::put('upgradeOldLicense',$oldLicense);
-            \Session::put('upgradeInstallationPath',$installation_path);
-            \Session::put('upgradeorderId',$orderId);
+            \Session::put('upgradeDowngradeProduct', \Auth::user()->id);
+            \Session::put('upgradeOldLicense', $oldLicense);
+            \Session::put('upgradeInstallationPath', $installation_path);
+            \Session::put('upgradeorderId', $orderId);
 
             return response()->json(['redirectTo' => url('/checkout')]);
-
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
         }
     }
 
-    private function getThePaymentCalculation($newAgents, $oldAgents, $orderId, $planId=null)
+    private function getThePaymentCalculation($newAgents, $oldAgents, $orderId, $planId = null)
     {
         try {
             if (is_null($planId)) {
@@ -275,7 +278,7 @@ class CloudExtraActivities extends Controller
             $currency = userCurrencyAndPrice('', $plan);
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
             $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->value('add_price');
-            $oldAgents=substr($oldAgents,12,16);
+            $oldAgents = substr($oldAgents, 12, 16);
             if ($newAgents > $oldAgents) {
                 if (Carbon::now() == $ends_at) {
                     $price = $base_price * $newAgents;
@@ -292,40 +295,38 @@ class CloudExtraActivities extends Controller
                 if (Carbon::now() == $ends_at) {
                     $price = $base_price * $newAgents;
                 } else {
-
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
-                     $priceForNewAgents = $base_price * $newAgents;
-                     $priceForOldAgents = $base_price * $oldAgents;
+                    $priceForNewAgents = $base_price * $newAgents;
+                    $priceForOldAgents = $base_price * $oldAgents;
 
-                     $pricePerDayForNewAgents = $priceForNewAgents/$planDays;
+                    $pricePerDayForNewAgents = $priceForNewAgents / $planDays;
 
-                     $pricePerDayForOldAgents = $priceForOldAgents/$planDays;
+                    $pricePerDayForOldAgents = $priceForOldAgents / $planDays;
 
-                     $priceRemaining = $pricePerDayForOldAgents * $daysRemain;
-                     $priceToBePaid = $pricePerDayForNewAgents * $daysRemain;
+                    $priceRemaining = $pricePerDayForOldAgents * $daysRemain;
+                    $priceToBePaid = $pricePerDayForNewAgents * $daysRemain;
 
-                     $discount=$priceRemaining - $priceToBePaid;
+                    $discount = $priceRemaining - $priceToBePaid;
 
-                     if($priceToBePaid>$priceRemaining){
-                         $price=$priceToBePaid-$priceRemaining;
-                     }
-                     else{
-                         $price = 0;
-                     }
+                    if ($priceToBePaid > $priceRemaining) {
+                        $price = $priceToBePaid - $priceRemaining;
+                    } else {
+                        $price = 0;
+                    }
 
 //                    (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id,[0=>'Credit Balance'],'Credit Balance',Carbon::now(),$price,null,round($discount),'pending');
-
                 }
             }
             $items = ['id' => $product_id, 'name' => $product->name, 'price' => round($price), 'planId' => $planId,
-                'quantity' => 1, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $newAgents],'associatedModel' => $product];
+                'quantity' => 1, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $newAgents], 'associatedModel' => $product];
+
             return $items;
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
         }
     }
@@ -338,7 +339,7 @@ class CloudExtraActivities extends Controller
             $planIdOld = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
 
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
-            $oldAgents=substr($oldAgents,12,16);
+            $oldAgents = substr($oldAgents, 12, 16);
 
             $product_id_old = Plan::where('id', $planIdOld)->pluck('product')->first();
             $planDaysOld = Plan::where('id', $planIdOld)->pluck('days')->first();
@@ -354,8 +355,7 @@ class CloudExtraActivities extends Controller
             $currencyNew = userCurrencyAndPrice('', $planNew);
             $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->value('add_price') * $newAgents;
 
-            \Session::put('upgradeProductId',$product_id_new);
-
+            \Session::put('upgradeProductId', $product_id_new);
 
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() == $ends_at) {
@@ -367,147 +367,133 @@ class CloudExtraActivities extends Controller
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
-                    if($planDaysNew!==$planDaysOld){
-                        $daysRemainNew=$planDaysOld-$daysRemain;
-                        $daysRemainNewFinal= $planDaysNew-$daysRemainNew;
+                    if ($planDaysNew !== $planDaysOld) {
+                        $daysRemainNew = $planDaysOld - $daysRemain;
+                        $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemainNewFinal;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
-                    }
-                    else {
+                    } else {
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
                     }
-
                 }
             } else {
                 if (Carbon::now() == $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
-
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
-                    $pricePerDayForNewPlan = $base_price_new/$planDaysNew;
+                    $pricePerDayForNewPlan = $base_price_new / $planDaysNew;
 
-                    $pricePerDayForOldPlan = $base_priceOld/$planDaysOld;
+                    $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
-                    if($planDaysOld!==$planDaysNew){
-
-                        $daysRemainNew=$planDaysOld-$daysRemain;
-                        $daysRemainNewFinal= $planDaysNew-$daysRemainNew;
+                    if ($planDaysOld !== $planDaysNew) {
+                        $daysRemainNew = $planDaysOld - $daysRemain;
+                        $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                         $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
-                        $priceRemaining= $pricePerDayForOldPlan * $daysRemain;
-                        if($priceToBePaid> $priceRemaining){
+                        $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                        if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
-                        }
-                        else{
-                            $discount=$priceRemaining - $priceToBePaid;
+                        } else {
+                            $discount = $priceRemaining - $priceToBePaid;
                             $price = 0;
-                            $pay=\DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
+                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
 
                             $formattedValue = currencyFormat(round($discount), \Auth::user()->currency, true);
-                            $payment_id= \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('id');
-                            $orderNumber = Order::where('id',$orderId)->value('number');
+                            $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
+                            $orderNumber = Order::where('id', $orderId)->value('number');
                             $formattedPay = currencyFormat($pay, \Auth::user()->currency, true);
-                            if($pay){
+                            if ($pay) {
                                 $pay = $pay + round($discount);
-                                Payment::where('user_id',\Auth::user()->id)->where('payment_status','success')->update(['amt_to_credit'=>$pay]);
+                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
 
-                                $messageAdmin = 'An amount of ' . $formattedValue . ' has been added to the existing balance due to a product downgrade. You can view the details of the downgraded order here: ' .
-                                    '<a href="' . config('app.url') . '/orders/' . $orderId . '">' . $orderNumber . '</a>.';
+                                $messageAdmin = 'An amount of '.$formattedValue.' has been added to the existing balance due to a product downgrade. You can view the details of the downgraded order here: '.
+                                    '<a href="'.config('app.url').'/orders/'.$orderId.'">'.$orderNumber.'</a>.';
 
+                                $messageClient = 'An amount of '.$formattedValue.' has been added to your existing balance due to a product downgrade. You can view the details of the downgraded order here: '.
+                                    '<a href="'.config('app.url').'/my-order/'.$orderId.'">'.$orderNumber.'</a>.';
 
-                                $messageClient = 'An amount of ' . $formattedValue . ' has been added to your existing balance due to a product downgrade. You can view the details of the downgraded order here: ' .
-                                    '<a href="' . config('app.url') . '/my-order/' . $orderId . '">' . $orderNumber . '</a>.';
-
-
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageAdmin,'role'=>'admin','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                            }
-                            else {
+                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                            } else {
                                 \Session::put('discount', round($discount));
                                 (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id, [0 => 'Credit Balance'], 'Credit Balance', Carbon::now(), $price, null, round($discount), 'pending');
                             }
                         }
-
-                    }
-                    else {
-
+                    } else {
                         $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
                         $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
 
-                        if($priceToBePaid>$priceRemaining){
+                        if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
-                        }
-                        else{
+                        } else {
                             $discount = $priceRemaining - $priceToBePaid;
                             $price = 0;
-                            $pay=\DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
+                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
 
-                            $payment_id= \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('id');
+                            $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                             $formattedValue = currencyFormat(round($discount), \Auth::user()->currency, true);
-                            $orderNumber = Order::where('id',$orderId)->value('number');
+                            $orderNumber = Order::where('id', $orderId)->value('number');
                             $formattedPay = currencyFormat($pay, \Auth::user()->currency, true);
 
-                            if($pay){
+                            if ($pay) {
                                 $pay = $pay + round($discount);
-                                Payment::where('user_id',\Auth::user()->id)->where('payment_status','success')->update(['amt_to_credit'=>$pay]);
+                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
 
-                                $messageAdmin = 'An amount of ' . $formattedValue . ' has been added to the existing balance due to an order downgrade. You can view the details of the downgraded order here: ' .
-                                    '<a href="' . config('app.url') . '/orders/' . $orderId . '">' . $orderNumber . '</a>.';
+                                $messageAdmin = 'An amount of '.$formattedValue.' has been added to the existing balance due to an order downgrade. You can view the details of the downgraded order here: '.
+                                    '<a href="'.config('app.url').'/orders/'.$orderId.'">'.$orderNumber.'</a>.';
 
-                                $messageClient = 'An amount of ' . $formattedValue . ' has been added to your existing balance due to an order downgrade. You can view the details of the downgraded order here: ' .
-                                    '<a href="' . config('app.url') . '/my-order/' . $orderId . '">' . $orderNumber . '</a>.';
+                                $messageClient = 'An amount of '.$formattedValue.' has been added to your existing balance due to an order downgrade. You can view the details of the downgraded order here: '.
+                                    '<a href="'.config('app.url').'/my-order/'.$orderId.'">'.$orderNumber.'</a>.';
 
-
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageAdmin,'role'=>'admin','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                            }
-                            else {
+                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                            } else {
                                 \Session::put('discount', round($discount));
                                 (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id, [0 => 'Credit Balance'], 'Credit Balance', Carbon::now(), $price, null, round($discount), 'pending');
                             }
-
                         }
-
                     }
-
                 }
             }
             $items = ['id' => $product_id_new, 'name' => $productNew->name, 'price' => round($price), 'planId' => $planIdNew,
-                'quantity' => 1, 'attributes' => ['currency' => $currencyNew['currency'], 'symbol' => $currencyNew['symbol'], 'agents' => $newAgents],'associatedModel' => $productNew];
+                'quantity' => 1, 'attributes' => ['currency' => $currencyNew['currency'], 'symbol' => $currencyNew['symbol'], 'agents' => $newAgents], 'associatedModel' => $productNew];
+
             return $items;
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
         }
     }
 
-    public function checkAgentAlteration(){
+    public function checkAgentAlteration()
+    {
         $cloud = false;
-        if(\Session::has('AgentAlteration')){
+        if (\Session::has('AgentAlteration')) {
             return true;
         }
+
         return $cloud;
     }
 
-    public function doTheAgentAltering($newAgents,$oldLicense,$orderId,$installation_path,$product_id){
-
+    public function doTheAgentAltering($newAgents, $oldLicense, $orderId, $installation_path, $product_id)
+    {
         try {
             $len = strlen($newAgents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
                 case '1':
-                    $lastFour = '000' . $newAgents;
+                    $lastFour = '000'.$newAgents;
                     break;
                 case '2':
-                    $lastFour = '00' . $newAgents;
+                    $lastFour = '00'.$newAgents;
                     break;
                 case '3':
-                    $lastFour = '0' . $newAgents;
+                    $lastFour = '0'.$newAgents;
                     break;
                 case '4':
                     $lastFour = $newAgents;
@@ -516,9 +502,9 @@ class CloudExtraActivities extends Controller
                     $lastFour = '0000';
             }
 
-            $license_code = substr($oldLicense, 0, -4) . $lastFour;
+            $license_code = substr($oldLicense, 0, -4).$lastFour;
             (new LicenseController())->updateLicense($license_code, $oldLicense);
-            Order::where('id', $orderId)->update(['serial_key' => \Crypt::encrypt(substr($license_code, 0, 12) . $lastFour)]);
+            Order::where('id', $orderId)->update(['serial_key' => \Crypt::encrypt(substr($license_code, 0, 12).$lastFour)]);
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $data = ['licenseCode' => $license_code, 'installation_path' => $installation_path, 'product_id' => $product_id, 'old_lic_code' => $oldLicense, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
@@ -527,15 +513,14 @@ class CloudExtraActivities extends Controller
             $client = new Client([]);
             $response = $client->request(
                 'POST',
-                $this->cloud->cloud_central_domain . '/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                $this->cloud->cloud_central_domain.'/performAgentUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
             );
 
-            $response = explode('{', (string)$response->getBody());
+            $response = explode('{', (string) $response->getBody());
 
-            $response = '{' . $response[1];
+            $response = '{'.$response[1];
 
             $result = json_decode($response);
-
 
             if ($result->status == 'fails') {
                 return response(['status' => true, 'message' => trans('message.change_agents_failed')]);
@@ -546,17 +531,18 @@ class CloudExtraActivities extends Controller
             \Session::forget('installation_path');
             \Session::forget('product_id');
             \Session::forget('oldLicense');
+
             return response(['status' => true, 'message' => trans('message.agent_updated')]);
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
         }
     }
 
-    public function doTheProductUpgradeDowngrade($licenseCode,$installationPath,$productID,$oldLicenseCode){
-
-        $this->doTheActivity($licenseCode,$oldLicenseCode);
+    public function doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productID, $oldLicenseCode)
+    {
+        $this->doTheActivity($licenseCode, $oldLicenseCode);
 
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
         $token = str_random(32);
@@ -564,7 +550,7 @@ class CloudExtraActivities extends Controller
         $encodedData = http_build_query($data);
         $client = new Client();
         $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
-        $response=$client->request(
+        $response = $client->request(
             'POST',
             $this->cloud->cloud_central_domain.'/performProductUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
         );
@@ -575,38 +561,39 @@ class CloudExtraActivities extends Controller
 
         json_decode($response);
 
-
         $orderId = \Session::get('upgradeorderId');
 
-        Order::where('id',$orderId)->update(['status'=>'Terminated']);
+        Order::where('id', $orderId)->update(['status'=>'Terminated']);
 
         $orderIdNew = Order::where('serial_key', \Crypt::encrypt($licenseCode))->value('id');
 
-        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId,'upgraded_order_id'=> $orderIdNew]);
+        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId, 'upgraded_order_id'=> $orderIdNew]);
 
         \Session::forget('upgradeDowngradeProduct');
         \Session::forget('upgradeOldLicense');
         \Session::forget('upgradeInstallationPath');
         \Session::forget('upgradeorderId');
         \Session::forget('upgradeProductId');
-
     }
 
-    public function checkUpgradeDowngrade(){
+    public function checkUpgradeDowngrade()
+    {
         $cloud = false;
-        if(\Session::has('upgradeDowngradeProduct')){
+        if (\Session::has('upgradeDowngradeProduct')) {
             return true;
         }
+
         return $cloud;
     }
 
     public function updateSession(Request $request)
     {
         if ($request->has('isChecked')) {
-            ($request->input('isChecked') == 'true')?
-                \DB::table('users')->where('id',\Auth::user()->id)->update(['billing_pay_balance'=>1]):
-                \DB::table('users')->where('id',\Auth::user()->id)->update(['billing_pay_balance'=>0]);
+            ($request->input('isChecked') == 'true') ?
+                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>1]) :
+                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
         }
+
         return response()->json(['message' => 'Pay check updated']);
     }
 
@@ -615,56 +602,51 @@ class CloudExtraActivities extends Controller
         $amount = $request->input('amount');
         $currency = $request->input('currency');
         \Session::forget('nothingLeft');
-        if(!$amount && User::where('id',\Auth::user()->id)->value('billing_pay_balance')){
-            \Session::put('nothingLeft',$amount);
+        if (! $amount && User::where('id', \Auth::user()->id)->value('billing_pay_balance')) {
+            \Session::put('nothingLeft', $amount);
         }
         if ($request->has('invoiceId') && $request->has('alter')) {
-            if($request->get('alter')) {
+            if ($request->get('alter')) {
                 Invoice::where('id', $request->input('invoiceId'))->update(['billing_pay' => $request->get('billing_pay')]);
                 Invoice::where('id', $request->input('invoiceId'))->update(['billing_pay' => $request->get('billing_pay')]);
                 Invoice::where('id', $request->input('invoiceId'))->update(['grand_total' => $amount]);
             }
-
         }
         // Call the currencyFormat function or perform necessary formatting
         $formattedValue = currencyFormat($amount, $currency, true);
+
         return response()->json(['formatted_value' => $formattedValue]);
     }
 
-    private function doTheActivity($licenseCode,$oldLicenseCode){
-
-        if(\Session::has('discount')){
+    private function doTheActivity($licenseCode, $oldLicenseCode)
+    {
+        if (\Session::has('discount')) {
             $discount = \Session::get('discount');
-            if($discount){
-
-                Payment::where('user_id',\Auth::user()->id)
-                    ->where('payment_status','pending')->where('amt_to_crdit',$discount)
-                    ->where('payment_method','Credit Balance')
+            if ($discount) {
+                Payment::where('user_id', \Auth::user()->id)
+                    ->where('payment_status', 'pending')->where('amt_to_crdit', $discount)
+                    ->where('payment_method', 'Credit Balance')
                     ->latest()->update(['payment_status'=>'success']);
 
-                $payment_id= \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_status','success')->where('payment_method','Credit Balance')->value('id');
+                $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                 $formattedValue = currencyFormat($discount, \Auth::user()->currency, true);
-                $oldOrderId = Order::where('serial_key',$oldLicenseCode)->value('id');
-                $oldOrderNumber = Order::where('id',$oldOrderId)->value('number');
-                $newOrderId = Order::where('serial_key',$licenseCode)->value('id');
-                $newOrderNumber = Order::where('id',$newOrderId)->value('number');
+                $oldOrderId = Order::where('serial_key', $oldLicenseCode)->value('id');
+                $oldOrderNumber = Order::where('id', $oldOrderId)->value('number');
+                $newOrderId = Order::where('serial_key', $licenseCode)->value('id');
+                $newOrderNumber = Order::where('id', $newOrderId)->value('number');
 
-                $messageAdmin = 'A credit of ' . $formattedValue . ' has been added to the balance due to a plan downgrade. Details of the terminated order can be found here: ' .
-                    '<a href="' . config('app.url') . '/orders/' . $oldOrderId . '">' . $oldOrderNumber . '</a>.' . ' You can also view details of the downgraded order here: ' .
-                    '<a href="' . config('app.url') . '/orders/' . $newOrderId . '">' . $newOrderNumber . '</a>.';
+                $messageAdmin = 'A credit of '.$formattedValue.' has been added to the balance due to a plan downgrade. Details of the terminated order can be found here: '.
+                    '<a href="'.config('app.url').'/orders/'.$oldOrderId.'">'.$oldOrderNumber.'</a>.'.' You can also view details of the downgraded order here: '.
+                    '<a href="'.config('app.url').'/orders/'.$newOrderId.'">'.$newOrderNumber.'</a>.';
 
+                $messageClient = 'A credit of '.$formattedValue.' has been added to your balance due to a product downgrade. Details of the terminated order can be found here: '.
+                    '<a href="'.config('app.url').'/my-order/'.$oldOrderId.'">'.$oldOrderNumber.'</a>.'.' You can also view details of the downgraded order here: '.
+                    '<a href="'.config('app.url').'/my-order/'.$newOrderId.'">'.$newOrderNumber.'</a>.';
 
-                $messageClient = 'A credit of ' . $formattedValue . ' has been added to your balance due to a product downgrade. Details of the terminated order can be found here: ' .
-                    '<a href="' . config('app.url') . '/my-order/' . $oldOrderId . '">' . $oldOrderNumber . '</a>.' . ' You can also view details of the downgraded order here: ' .
-                    '<a href="' . config('app.url') . '/my-order/' . $newOrderId . '">' . $newOrderNumber . '</a>.';
-
-
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageAdmin,'role'=>'admin','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id,'text'=>$messageClient,'role'=>'user','created_at'=>\Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]);
+                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
 
                 \Session::forget('discount');
-
-
             }
         }
     }
@@ -678,7 +660,7 @@ class CloudExtraActivities extends Controller
             $planIdOld = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
 
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
-            $oldAgents=substr($oldAgents,12,16);
+            $oldAgents = substr($oldAgents, 12, 16);
 
             $product_id_old = Plan::where('id', $planIdOld)->pluck('product')->first();
             $planDaysOld = Plan::where('id', $planIdOld)->pluck('days')->first();
@@ -704,74 +686,66 @@ class CloudExtraActivities extends Controller
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
-                    if($planDaysNew!==$planDaysOld){
-                        $daysRemainNew=$planDaysOld-$daysRemain;
-                        $daysRemainNewFinal= $planDaysNew-$daysRemainNew;
+                    if ($planDaysNew !== $planDaysOld) {
+                        $daysRemainNew = $planDaysOld - $daysRemain;
+                        $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemainNewFinal;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
-                    }
-                    else {
+                    } else {
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
                     }
-
                 }
             } else {
                 if (Carbon::now() == $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
-
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
-                    $pricePerDayForNewPlan = $base_price_new/$planDaysNew;
+                    $pricePerDayForNewPlan = $base_price_new / $planDaysNew;
 
-                    $pricePerDayForOldPlan = $base_priceOld/$planDaysOld;
+                    $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
-                    if($planDaysOld!==$planDaysNew){
-
-                        $daysRemainNew=$planDaysOld-$daysRemain;
-                        $daysRemainNewFinal= $planDaysNew-$daysRemainNew;
+                    if ($planDaysOld !== $planDaysNew) {
+                        $daysRemainNew = $planDaysOld - $daysRemain;
+                        $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                         $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
-                        $priceRemaining= $pricePerDayForOldPlan * $daysRemain;
-                        if($priceToBePaid> $priceRemaining){
-                            $price = $priceToBePaid - $priceRemaining;
-                        }
-                        else{
-                            $discount=$priceRemaining - $priceToBePaid;
-                            $price = 0;
-                        }
-
-                    }
-                    else {
-                        $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
                         $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-
-                        if($priceToBePaid>$priceRemaining){
+                        if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
-                        }
-                        else{
+                        } else {
                             $discount = $priceRemaining - $priceToBePaid;
                             $price = 0;
                         }
+                    } else {
+                        $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
+                        $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
 
+                        if ($priceToBePaid > $priceRemaining) {
+                            $price = $priceToBePaid - $priceRemaining;
+                        } else {
+                            $discount = $priceRemaining - $priceToBePaid;
+                            $price = 0;
+                        }
                     }
-
                 }
             }
-            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true),'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true)];
+            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true)];
+
             return $items;
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return ['price_to_be_paid' => 'NaN', 'discount' => 'NaN', 'currency' => 'NaN'];
         }
     }
 
-    public function processFormat(Request $request){
-        return currencyFormat($request->get('totalPrice'),\Auth::user()->currency,true);
+    public function processFormat(Request $request)
+    {
+        return currencyFormat($request->get('totalPrice'), \Auth::user()->currency, true);
     }
 }

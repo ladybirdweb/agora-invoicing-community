@@ -123,7 +123,8 @@ active
                         <th class="font-weight-semibold">Price</th>
                         <th class="font-weight-semibold">Agents</th>
                         <th class="font-weight-semibold">Quantity</th>
-                        
+
+
                         <th class="font-weight-semibold">Subtotal</th>
                     </tr>
                     </thead>
@@ -156,8 +157,8 @@ active
                             <td>{{$item->product_name}} ({{$plan}})
                             </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
-                            <td>{{$item->quantity}}</td>
                             <td>{{$item->agents}}</td>
+                            <td>{{$item->quantity}}</td>
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>
                     @endforeach

@@ -183,10 +183,10 @@ $currency = $invoice->currency;
                     $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                     ?>
                    <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
 
-                    </th>
+                       <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
+
+                   </th>
                     <td>
                      {!! $bifurcateTax['tax'] !!}
                   </td>
@@ -204,10 +204,11 @@ $currency = $invoice->currency;
                     $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
                     ?>
                    <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
 
-                    </th>
+                       <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
+
+
+                   </th>
                     <td>
                      {!! $bifurcateTax['tax'] !!}
                   </td>
@@ -275,7 +276,7 @@ $currency = $invoice->currency;
                                 }
                             }
                             ?>
-                    <strong><span class="amount">{{currencyFormat($amount,$code = $item->attributes->currency)}} </span></strong>
+                    <b><span class="amount">{{currencyFormat($amount,$code = $item->attributes->currency)}} </span></b>
 
 
                     </td>
@@ -662,6 +663,11 @@ $(function() {
   
 });
 </script>
+    <style>
+        strong{
+            margin-left: 20px;
+        }
+    </style>
 
 
 

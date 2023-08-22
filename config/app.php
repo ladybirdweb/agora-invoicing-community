@@ -218,7 +218,7 @@ return [
         // Symfony\Component\Mailer\MailerInterface::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         App\Providers\ImageUploadHelperServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
     ],
 
@@ -250,7 +250,7 @@ return [
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ])->toArray(),
 

@@ -286,7 +286,7 @@ class PageController extends Controller
         }
     }
 
-     public function getstrikePriceYear($id)
+    public function getstrikePriceYear($id)
     {
         $countryCheck = true;
         try {
@@ -304,82 +304,79 @@ class PageController extends Controller
                         $prices[] .= $planDetails['currency'];
                     }
                 }
-                
-                if (!empty($prices)) {
+
+                if (! empty($prices)) {
                     if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                        $prices[0] = ($offerprice / 100 )* $prices[0];
+                        $prices[0] = ($offerprice / 100) * $prices[0];
                     }
                     $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                     $finalPrice = str_replace($prices[1], '', $format);
                     $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
             }
+
             return $cost;
-           
-        
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-
-        public function transform($type, $data, $trasform = [])
-        {
-            $config = \Config::get("transform.$type");
-            $result = '';
-            $array = [];
-            foreach ($trasform as $trans) {
-                $array[] = $this->checkConfigKey($config, $trans);
-            }
-            $c = count($array);
-            for ($i = 0; $i < $c; $i++) {
-                $array1 = $this->keyArray($array[$i]);
-                $array2 = $this->valueArray($array[$i]);
-                $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
-                $id = Product::where('name', $array2[0])->value('id');
-                $offerprice = $this->getOfferprice($id);
-                $description = self::getPriceDescription($id);
-                $month_offer_price = $offerprice['30_days'] ?? null;
-                $year_offer_price = $offerprice['365_days'] ?? null;
-
-                if(Product::find($id)->add_to_contact == 1){
-                     $data = str_replace('{{strike-price}}', '', $data);
-                     $data = str_replace('{{strike-priceyear}}', '', $data);
-                     $data = str_replace('{{price}}', 'Custom Pricing', $data);
-                     $data = str_replace('{{price-year}}', 'Custom Pricing', $data);
-
-                }
-
-                if ($month_offer_price === '' || $month_offer_price === null) {
-                    $data = str_replace('{{strike-price}}', '', $data);
-                }
-
-                if ($year_offer_price === '' || $year_offer_price === null) {
-                    $data = str_replace('{{strike-priceyear}}', '', $data);
-                }
-
-                if (($month_offer_price !== '' && $month_offer_price !== null) || ($year_offer_price !== '' && $year_offer_price !== null)) {
-                    $offerprice = $this->getPayingprice($id);
-                    $offerpriceYear = $this->getstrikePriceYear($id);
-                    $strikePrice = $this->YearlyAmount($id);
-                    $data = str_replace('{{price}}', $offerprice, $data);
-
-                    if ($month_offer_price !== '' && $month_offer_price !== null) {
-                        $data = str_replace('{{strike-price}}', $array2[1], $data);
-                    }
-
-                    $data = str_replace('{{price-year}}', $offerpriceYear, $data);
-
-                    if ($year_offer_price !== '' && $year_offer_price !== null) {
-                        $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
-                    }
-                }
-
-                $result .= str_replace($array1, $array2, $data);
-            }
-
-            return $result;
+    public function transform($type, $data, $trasform = [])
+    {
+        $config = \Config::get("transform.$type");
+        $result = '';
+        $array = [];
+        foreach ($trasform as $trans) {
+            $array[] = $this->checkConfigKey($config, $trans);
         }
+        $c = count($array);
+        for ($i = 0; $i < $c; $i++) {
+            $array1 = $this->keyArray($array[$i]);
+            $array2 = $this->valueArray($array[$i]);
+            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
+            $id = Product::where('name', $array2[0])->value('id');
+            $offerprice = $this->getOfferprice($id);
+            $description = self::getPriceDescription($id);
+            $month_offer_price = $offerprice['30_days'] ?? null;
+            $year_offer_price = $offerprice['365_days'] ?? null;
+
+            if (Product::find($id)->add_to_contact == 1) {
+                $data = str_replace('{{strike-price}}', '', $data);
+                $data = str_replace('{{strike-priceyear}}', '', $data);
+                $data = str_replace('{{price}}', 'Custom Pricing', $data);
+                $data = str_replace('{{price-year}}', 'Custom Pricing', $data);
+            }
+
+            if ($month_offer_price === '' || $month_offer_price === null) {
+                $data = str_replace('{{strike-price}}', '', $data);
+            }
+
+            if ($year_offer_price === '' || $year_offer_price === null) {
+                $data = str_replace('{{strike-priceyear}}', '', $data);
+            }
+
+            if (($month_offer_price !== '' && $month_offer_price !== null) || ($year_offer_price !== '' && $year_offer_price !== null)) {
+                $offerprice = $this->getPayingprice($id);
+                $offerpriceYear = $this->getstrikePriceYear($id);
+                $strikePrice = $this->YearlyAmount($id);
+                $data = str_replace('{{price}}', $offerprice, $data);
+
+                if ($month_offer_price !== '' && $month_offer_price !== null) {
+                    $data = str_replace('{{strike-price}}', $array2[1], $data);
+                }
+
+                $data = str_replace('{{price-year}}', $offerpriceYear, $data);
+
+                if ($year_offer_price !== '' && $year_offer_price !== null) {
+                    $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
+                }
+            }
+
+            $result .= str_replace($array1, $array2, $data);
+        }
+
+        return $result;
+    }
 
     public function getPayingprice($id)
     {
@@ -407,12 +404,13 @@ class PageController extends Controller
                     }
                 }
 
-                if (!empty($prices)) {
+                if (! empty($prices)) {
                     $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                     $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
             }
+
             return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -503,12 +501,13 @@ class PageController extends Controller
                      value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
                    value='Order Now' class='btn btn-dark btn-modern'></form>";
                     } else {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" :  "<a class='btn btn-dark btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
                     }
                 }
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
             }
+
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -584,26 +583,26 @@ class PageController extends Controller
         }
     }
 
-        public function getOfferprice(int $productid)
-        {
-            $plans = Plan::where('product', $productid)->get();
+    public function getOfferprice(int $productid)
+    {
+        $plans = Plan::where('product', $productid)->get();
 
-            $offerprices = [
-                '30_days' => null,
-                '365_days' => null,
-            ];
+        $offerprices = [
+            '30_days' => null,
+            '365_days' => null,
+        ];
 
-            foreach ($plans as $plan) {
-                $offer_price = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                
-                if ($plan->days == '30' || $plan->days == '31') {
-                    $offerprices['30_days'] = $offer_price;
-                } elseif ($plan->days == '365' || $plan->days == '366') {
-                    $offerprices['365_days'] = $offer_price;
-                }
+        foreach ($plans as $plan) {
+            $offer_price = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+
+            if ($plan->days == '30' || $plan->days == '31') {
+                $offerprices['30_days'] = $offer_price;
+            } elseif ($plan->days == '365' || $plan->days == '366') {
+                $offerprices['365_days'] = $offer_price;
             }
-            
-            return $offerprices;
+        }
+
+        return $offerprices;
     }
 
     public function YearlyAmount($id)
@@ -615,68 +614,65 @@ class PageController extends Controller
             $product = Product::find($id);
             $offer = $this->getOfferprice($id);
 
-         
-                $prices = [];
-                foreach ($plans as $plan) {
-                    if ($plan->days == 365 || $plan->days == 366) {
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
-                    }
+            $prices = [];
+            foreach ($plans as $plan) {
+                if ($plan->days == 365 || $plan->days == 366) {
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
                 }
-                
-                if (!empty($prices)) {
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
-                }
-                return $cost;
-            
+            }
+
+            if (! empty($prices)) {
+                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+            }
+
+            return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function getmonthPriceDescription(int $productid)
-{
-    try {
-        $product = Product::find($productid);
+    {
+        try {
+            $product = Product::find($productid);
 
-        if ($product['add_to_contact'] == 1) {
-            return '';
-        }
+            if ($product['add_to_contact'] == 1) {
+                return '';
+            }
 
-        $priceDescription = ''; // Initialize the price description
+            $priceDescription = ''; // Initialize the price description
 
-        $plans = Plan::where('product',$productid)->get();
+            $plans = Plan::where('product', $productid)->get();
 
-        
-        if ($plans) {
-            foreach ($plans as $plan) {
-                if ($plan->days == 30 || $plan->days == 31) {
-                    $description = $plan->planPrice->first();
+            if ($plans) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 30 || $plan->days == 31) {
+                        $description = $plan->planPrice->first();
 
-                    if ($description->price_description == 'Free') {
-                        $priceDescription = 'free';
-                    } else {
-                        $priceDescription = $description->no_of_agents? 'per month for <strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per month';
+                        if ($description->price_description == 'Free') {
+                            $priceDescription = 'free';
+                        } else {
+                            $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per month';
+                        }
+
+                        // Break the loop if we find a plan with 30 or 31 days
+                        break;
                     }
-
-                    // Break the loop if we find a plan with 30 or 31 days
-                    break;
                 }
             }
+
+            return $priceDescription;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-
-        return $priceDescription;
-    } catch (\Exception $ex) {
-        app('log')->error($ex->getMessage());
-        return redirect()->back()->with('fails', $ex->getMessage());
     }
-}
-
-
 
     /**
      * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
@@ -691,37 +687,38 @@ class PageController extends Controller
     public function getPriceDescription(int $productid)
     {
         try {
-        $product = Product::find($productid);
-        if ($product['add_to_contact'] == 1) {
-            return '';
-        }
+            $product = Product::find($productid);
+            if ($product['add_to_contact'] == 1) {
+                return '';
+            }
 
-        $priceDescription = ''; 
+            $priceDescription = '';
 
-        $plans = Plan::where('product',$productid)->get();
+            $plans = Plan::where('product', $productid)->get();
 
-        if ($plans) {
-            foreach ($plans as $plan) {
-                if ($plan->days == 365 || $plan->days == 366) {
-                    $description = $plan->planPrice->first();
+            if ($plans) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 365 || $plan->days == 366) {
+                        $description = $plan->planPrice->first();
 
-                    if ($description->price_description == 'Free') {
-                        $priceDescription = 'free';
-                    } else {
-                        $priceDescription = $description->no_of_agents ? 'per year for<strong>' . ' ' . $description->no_of_agents . ' ' . 'agents</strong>' : 'per year';
+                        if ($description->price_description == 'Free') {
+                            $priceDescription = 'free';
+                        } else {
+                            $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
+                        }
+
+                        // Break the loop if we find a plan with 30 or 31 days
+                        break;
                     }
-
-                    // Break the loop if we find a plan with 30 or 31 days
-                    break;
                 }
             }
-        }
 
-        return $priceDescription;
-    } catch (\Exception $ex) {
-        app('log')->error($ex->getMessage());
-        return redirect()->back()->with('fails', $ex->getMessage());
-    }
+            return $priceDescription;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function checkConfigKey($config, $transform)

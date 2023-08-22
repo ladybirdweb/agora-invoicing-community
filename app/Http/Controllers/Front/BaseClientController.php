@@ -167,7 +167,6 @@ class BaseClientController extends Controller
 
     public function getInvoicesByOrderId($orderid, $userid, $admin = null)
     {
-        dd('jhgfcx');
         try {
             $order = Order::where('id', $orderid)->where('client', $userid)->first();
 

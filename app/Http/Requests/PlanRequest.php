@@ -50,7 +50,6 @@ class PlanRequest extends FormRequest
             'add_price.array_size_equals' => trans('message.add_price_array_equals'),
             'currency.*.required_with' => trans('message.currency_missing'),
 
-
         ];
     }
 }

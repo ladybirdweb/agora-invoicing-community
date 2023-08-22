@@ -28,7 +28,6 @@ use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 use Stripe\Stripe;
 use Validator;
-use Auth;
 
 class ClientController extends BaseClientController
 {
@@ -206,11 +205,8 @@ class ClientController extends BaseClientController
     public function invoices()
     {
         try {
-            $passwordcheck = User::where('id', Auth::id())->value('password');
-    
-            return view('themes.default1.front.clients.invoice', compact('passwordcheck'));
-        }
-         catch (Exception $ex) {
+            return view('themes.default1.front.clients.invoice');
+        } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

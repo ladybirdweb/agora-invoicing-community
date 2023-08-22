@@ -100,7 +100,7 @@ active
     $(window).on('load', function () {
         const isFirstLogin = !localStorage.getItem('isLoggedIn');
         const isModalFilled = localStorage.getItem('isModalFilled');
-       
+
         if (isFirstLogin && !isModalFilled && !passwordcheck) {
             $('#myModal').modal({
                 backdrop: 'static',

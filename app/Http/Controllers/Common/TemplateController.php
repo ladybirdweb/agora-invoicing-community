@@ -235,31 +235,29 @@ class TemplateController extends Controller
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
             $product = Product::find($id);
-            
-        
-                $prices = [];
-                foreach ($plans as $plan) {
-                    if ($plan->days == 30 || $plan->days == 31) {
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
-                    }
+
+            $prices = [];
+            foreach ($plans as $plan) {
+                if ($plan->days == 30 || $plan->days == 31) {
+                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
                 }
-                
-                if (!empty($prices)) {
-                    $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
-                }
-                return $cost;
-            
+            }
+
+            if (! empty($prices)) {
+                $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+            }
+
+            return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {

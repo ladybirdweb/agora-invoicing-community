@@ -164,8 +164,7 @@ class FreeTrailController extends Controller
                     'subtotal' => 0,
                     'domain' => '',
                     'plan_id' => 0,
-                    'agents' => planPrice::whereIn('plan_id', $plan_id)
-                        ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
+                    'agents' => 3,
                 ]);
 
                 return $invoiceItem;

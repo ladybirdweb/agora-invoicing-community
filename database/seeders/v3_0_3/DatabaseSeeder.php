@@ -70,10 +70,8 @@ class DatabaseSeeder extends Seeder
        }
    }
 
-        $this->call([PricingTemplateSeeder::class]);
-        $this->command->info('Pricing Template Table Seeded!');
     }
-}
+
 
 class Demo_pageTableSeeder extends Seeder
 {

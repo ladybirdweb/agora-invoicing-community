@@ -7,9 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
+use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use Session;
 
 class LoginController extends Controller
 {
@@ -67,10 +71,24 @@ class LoginController extends Controller
     {
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-            'g-recaptcha-response' => $captchaRule.'captcha',
+            'g-recaptcha-response' => [
+                $captchaRule.'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                        'secret' => config('services.recaptcha.secret_key'),
+                        'response' => $value,
+                        'remoteip' => $request->ip(),
+                    ]);
+
+                    if (! $response->json('success')) {
+                        $fail("The {$attribute} is invalid.");
+                    }
+                },
+            ],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',
@@ -140,6 +158,88 @@ class LoginController extends Controller
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
+        }
+    }
+
+    public function redirectToGithub($provider)//redirect to twitter ,github,google and linkedin
+    {
+        $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function handler($provider)
+    {
+        $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+
+        $githubUser = Socialite::driver($provider)->user();
+
+        $existingUser = User::where('email', $githubUser->getEmail())->first();
+
+        if ($existingUser) {
+            $existingUser->user_name = $githubUser->getName().substr($githubUser->getId(), -2);
+            $existingUser->first_name = $githubUser->getName();
+            $existingUser->active = '1';
+
+            if ($existingUser->role == 'admin') {
+                $existingUser->role = 'admin';
+            } else {
+                $existingUser->role = 'user';
+            }
+
+            $existingUser->save();
+            $user = $existingUser;
+        } else {
+            $user = User::create([
+                'email' => $githubUser->getEmail(),
+                'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
+                'first_name' => $githubUser->getName(),
+                'active' => '1',
+                'role' => 'user',
+            ]);
+        }
+        if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification
+            return redirect('verify')->with('user', $user);
+        }
+
+        Auth::login($user);
+
+        if (\Auth::user()->is_2fa_enabled == 1) {//check for 2fa
+            $userId = \Auth::user()->id;
+            Session::put('2fa:user:id', $userId);
+            \Auth::logout();
+
+            return redirect('2fa/validate');
+        }
+        if (Auth::check()) {
+            return redirect($this->redirectPath());
+           //return redirect()->route('get-my-invoices');
+        }
+    }
+
+    //stores basic details for social logins
+    public function storeBasicDetailsss(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'company' => 'required|string',
+                'address' => 'required|string',
+            ]);
+
+            $user = Auth::user();
+            $user->company = $request->company;
+            $user->address = $request->address;
+            $user->save();
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Session::flash('error', 'Please Enter the Details');
         }
     }
 }

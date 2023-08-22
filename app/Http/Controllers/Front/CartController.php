@@ -273,24 +273,20 @@ class CartController extends BaseCartController
 
                 $currencyQuery = Plan::where('product',$productid);
                 
-                    
 
                 if (\Session::get('toggleState') == 'yearly') {
                     $id = $currencyQuery->where('days', 365)->value('id');
-                    $daysQuery = PlanPrice::where('plan_id',$id)->where('currency',\Auth::user()->currency);
+                    $daysQuery = PlanPrice::where('plan_id',$id)->where('currency',\Auth::user()->currency)->first();
+                    $cost = $daysQuery->offer_price ? ($daysQuery->offer_price / 100) * $daysQuery->add_price : $daysQuery->add_price;
+
                 } elseif (\Session::get('toggleState') == 'monthly') {
-
                     $id = $currencyQuery->where('days', 30)->value('id');
-                    $daysQuery = PlanPrice::where('plan_id',$id)->where('currency',\Auth::user()->currency);                }
+                    $daysQuery = PlanPrice::where('plan_id',$id)->where('currency',\Auth::user()->currency)->first();                
+                    $cost = $daysQuery->offer_price ? ($daysQuery->offer_price / 100) * $daysQuery->add_price : $daysQuery->add_price;
 
-                $price = $daysQuery->value('add_price');
-
-                if ($offerprice) {
-                    $cost = ($offerprice / 100) * $price;
-                } else {
-                    $cost = $price;
                 }
             }
+
             return $cost;
         }
             else{

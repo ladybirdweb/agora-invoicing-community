@@ -7,6 +7,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Demo_page;
 use App\Model\Common\PricingTemplate;
+use App\Model\Payment\Period;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -16,6 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call([PeriodTypeTableSeeder::class]);
+        $this->command->info('Period table seeded!');
+
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
 
@@ -25,6 +29,15 @@ class DatabaseSeeder extends Seeder
 
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
+    }
+}
+
+class PeriodTypeTableSeeder extends Seeder
+{
+    public function run()
+    {
+
+        Period::where('id',1)->update(['days' => '365']);
     }
 }
 

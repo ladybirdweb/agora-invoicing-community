@@ -144,43 +144,48 @@ class GroupController extends Controller
      * @param  int  $id
      * @return Response
      */
-       public function update($id, GroupRequest $request)
-    {
-        try {
-            $group = $this->group->where('id', $id)->first();
-            $products = Product::where('group', $id)->where('hidden','0')->where('add_to_contact','0')->get();
-            
-            // Check if all products have both monthly and yearly plans
-            $allProductsHavePlans = true;
+        public function update($id, GroupRequest $request)
+        {
+            try {
+                $group = $this->group->where('id', $id)->first();
+                $products = Product::where('group', $id)->where('hidden','0')->where('add_to_contact','0')->get();
+                    
+                // Check if all products have both monthly and yearly plans
+                $allProductsHavePlans = true;
 
-            foreach ($products as $product) {
-                $monthlyPlan = Plan::where('product', $product->id)->where('days', 30)->first();
-                $yearlyPlan = Plan::where('product', $product->id)->where('days', 365)->first();
+                foreach ($products as $product) {
+                    $monthlyPlan = Plan::where('product', $product->id)->where('days', 30)->first();
+                    $yearlyPlan = Plan::where('product', $product->id)->where('days', 365)->orWhere('days', 366)->first();
 
-                if (!$monthlyPlan || !$yearlyPlan) {
-                    $allProductsHavePlans = false;
-                    break; // No need to continue checking
+                    if (!$monthlyPlan || !$yearlyPlan) {
+                        $allProductsHavePlans = false;
+                        break; // No need to continue checking
+                    }
                 }
-            }
-            
-            if ($allProductsHavePlans) {
-                if ($request->status == 1) {
+                   
+                if ($allProductsHavePlans) {
+                    if ($request->status == 1) {
+                        $group->fill($request->input())->save();
+                        Product::where('group', $id)->update(['status' => 1]);
+                        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                    } elseif ($request->status == 0) {
+                        $group->fill($request->input())->save();
+                        Product::where('group', $id)->update(['status' => 0]);
+                        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                    }
+                } elseif ($request->status == 0) {
                     $group->fill($request->input())->save();
-                    Product::where('group', $id)->update(['status' => 1]);
+                    Product::where('group', $id)->update(['status' => 0]);
                     return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
                 }
-            } elseif ($request->status == 0) {
-                $group->fill($request->input())->save();
-                Product::where('group', $id)->update(['status' => 0]);
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            }
-            
-            return redirect()->back()->with('fails', 'Please ensure that all products under this group have both monthly and yearly plans added in order to enable this feature.');
+                    
+                return redirect()->back()->with('fails', 'Please ensure that all products under this group have both monthly and yearly plans added in order to enable this feature.');
 
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            } catch (\Exception $ex) {
+                return redirect()->back()->with('fails', $ex->getMessage());
+            }
         }
-    }
+
 
     /**
      * Remove the specified resource from storage.

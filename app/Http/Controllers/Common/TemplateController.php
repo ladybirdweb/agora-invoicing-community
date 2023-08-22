@@ -236,9 +236,7 @@ class TemplateController extends Controller
             $plans = Plan::where('product', $id)->get();
             $product = Product::find($id);
             
-            if ($product['add_to_contact'] == 1) {
-                return 'Custom Pricing';
-            } else {
+        
                 $prices = [];
                 foreach ($plans as $plan) {
                     if ($plan->days == 30 || $plan->days == 31) {
@@ -255,9 +253,8 @@ class TemplateController extends Controller
                     $finalPrice = str_replace($prices[1], '', $format);
                     $cost = '<span class="price-unit">' . $prices[1] . '</span>' . $finalPrice;
                 }
-                
                 return $cost;
-            }
+            
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

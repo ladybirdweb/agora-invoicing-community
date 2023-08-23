@@ -112,6 +112,7 @@ class BaseOrderController extends ExtendedOrderController
                 'domain' => $domain,
                 'number' => $this->generateNumber(),
             ]);
+            \Session::put('upgradeNewActiveOrder',$order->id);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
@@ -302,21 +303,21 @@ class BaseOrderController extends ExtendedOrderController
                 $url = url('my-orders');
 
                 $email = (new Email())
-                        ->from($setting->email)
-                        ->to($user->email)
-                        ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = [
-                            'name' => $user->first_name.' '.$user->last_name,
-                            'serialkeyurl' => $myaccounturl,
-                            'url' => $url,
-                            'invoiceurl' => $invoiceurl,
-                            'product' => $product,
-                            'number' => $order->number,
-                            'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                            'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                            'knowledge_base' => $knowledgeBaseUrl,
+                    ->from($setting->email)
+                    ->to($user->email)
+                    ->subject($template->name)
+                    ->html($mail->mailTemplate($template->data, $templatevariables = [
+                        'name' => $user->first_name.' '.$user->last_name,
+                        'serialkeyurl' => $myaccounturl,
+                        'url' => $url,
+                        'invoiceurl' => $invoiceurl,
+                        'product' => $product,
+                        'number' => $order->number,
+                        'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                        'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                        'knowledge_base' => $knowledgeBaseUrl,
 
-                        ]));
+                    ]));
 
                 $mailer->send($email);
             } else {
@@ -329,21 +330,21 @@ class BaseOrderController extends ExtendedOrderController
                 }
 
                 $email = (new Email())
-                        ->from($setting->email)
-                        ->to($user->email)
-                        ->subject($template->name)
-                        ->html($mail->mailTemplate($template->data, $templatevariables = [
-                            'name' => $user->first_name.' '.$user->last_name,
-                            'serialkeyurl' => $myaccounturl,
-                            'downloadurl' => $downloadurl,
-                            'invoiceurl' => $invoiceurl,
-                            'product' => $product,
-                            'number' => $order->number,
-                            'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                            'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                            'knowledge_base' => $knowledgeBaseUrl,
+                    ->from($setting->email)
+                    ->to($user->email)
+                    ->subject($template->name)
+                    ->html($mail->mailTemplate($template->data, $templatevariables = [
+                        'name' => $user->first_name.' '.$user->last_name,
+                        'serialkeyurl' => $myaccounturl,
+                        'downloadurl' => $downloadurl,
+                        'invoiceurl' => $invoiceurl,
+                        'product' => $product,
+                        'number' => $order->number,
+                        'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                        'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                        'knowledge_base' => $knowledgeBaseUrl,
 
-                        ]));
+                    ]));
 
                 $mailer->send($email);
             }

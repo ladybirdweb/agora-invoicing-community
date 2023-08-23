@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call([TemplateTableSeeder::class]);
         $this->command->info('Template table seeded!');
-
-        $this->call(SettingsSeeder::class);
     }
 }
 

@@ -173,12 +173,18 @@ class LoginController extends Controller
 
     public function handler($provider)
     {
+        
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
 
         $githubUser = Socialite::driver($provider)->user();
+       $location = getLocation();
+
+            $state_code = $location['iso_code'].'-'.$location['state'];
+
+            $state = getStateByCode($state_code);
 
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
@@ -202,6 +208,10 @@ class LoginController extends Controller
                 'first_name' => $githubUser->getName(),
                 'active' => '1',
                 'role' => 'user',
+                'ip' => $location['ip'],
+                'timezone_id' => getTimezoneByName($location['timezone']),
+                'state' => $state['id'],
+                'town' => $location['city'],
             ]);
         }
         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification
@@ -219,7 +229,6 @@ class LoginController extends Controller
         }
         if (Auth::check()) {
             return redirect($this->redirectPath());
-            //return redirect()->route('get-my-invoices');
         }
     }
 

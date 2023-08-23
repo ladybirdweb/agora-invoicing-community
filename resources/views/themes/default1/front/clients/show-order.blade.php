@@ -256,33 +256,33 @@ $price = $order->price_override;
             <div id="alertMessage-2"></div>
 
             @php
-            if($order->order_status!='Terminated'){
-                $navigations = [
-                     ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
-                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                     ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                ];
+                if($order->order_status!='Terminated'){
+                    $navigations = [
+                         ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
+                    }
+                else{
+                     $navigations = [
+                         ['id'=>'license-details', 'name'=>'Order Terminated','active'=>1, 'slot'=>'license','icon'=>'fas fa-warning'],
+                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
                 }
-            else{
-                 $navigations = [
-                     ['id'=>'license-details', 'name'=>'Order Terminated','active'=>1, 'slot'=>'license','icon'=>'fas fa-warning'],
-                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                     ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                ];
-            }
-                if($product->type == '4' && $order->order_status!='Terminated'){
-                    $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
-                }
+                    if($product->type == '4' && $order->order_status!='Terminated'){
+                        $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
+                    }
 
-                if ($price == '0' && $product->type != '4') {
-                    $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                }
-                elseif($price != '0')
-                {
-                  $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                }
+                    if ($price == '0' && $product->type != '4') {
+                        $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
+                    elseif($price != '0')
+                    {
+                      $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
             @endphp
 
             @component('mini_views.navigational_view', [
@@ -290,153 +290,153 @@ $price = $order->price_override;
             ])
 
 
-@if($order->order_status != 'Terminated')
-                @slot('license')
+                @if($order->order_status != 'Terminated')
+                    @slot('license')
 
-                    <table class="table">
-                        <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                        <tbody>
-                        <tr>
-                            <td><b>License Code:</b></td>
-                            <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
-
-                            <td><span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span></td>
-                        </tr>
-                        @if ($licenseStatus == 1)
+                        <table class="table">
+                            <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
+                            <tbody>
                             <tr>
-                                <td><b>Licensed Domain/IP:</b></td>
-                                <td>{{$order->domain}} </td>
-                                <td>
-                                    @if($product->type != '4' && $price == '0')
+                                <td><b>License Code:</b></td>
+                                <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
+
+                                <td><span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span></td>
+                            </tr>
+                            @if ($licenseStatus == 1)
+                                <tr>
+                                    <td><b>Licensed Domain/IP:</b></td>
+                                    <td>{{$order->domain}} </td>
+                                    <td>
+                                        @if($product->type != '4' && $price == '0')
+                                            <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                Reissue License</button></td>
+                                    @elseif($product->type == '4' && $price != '0')
                                         <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                             Reissue License</button></td>
-                                @elseif($product->type == '4' && $price != '0')
-                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                        Reissue License</button></td>
-                                @endif
-                            </tr>
-                        @endif
-
-                        <tr>
-                            <td><b>License Expiry Date:</b></td>
-                            <td>{!! $licdate !!}</td>
-                            <td></td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Update Expiry Date:</b></td>
-                            <td>{!! $date !!}</td>
-                            <td></td>
-                        </tr>
-
-                        @if($order->license_mode=='File')
-                            <tr>
-                                <td><b>Localized License:</b></td>
-                                <td>
-                                    <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
-                                </td>
-                                <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
-                                    <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
-                                </td>
-                            </tr>
-                        @endif
-
-                        </tbody>
-
-                    </table>
-                    <script src="{{asset('common/js/licCode.js')}}"></script>
-
-
-                    <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-
-                        <thead>
-                        <tr>
-
-                            <th>Installation Path</th>
-                            @if($product->type != '4')
-                                <th>Installation IP</th>
+                                    @endif
+                                </tr>
                             @endif
-                            <th>Current Version </th>
-                            <th>  Last Active</th>
 
-                        </tr></thead>
-                        <tbody>
-                        @foreach($installationDetails['installed_path'] as $key => $ins)
-                                <?php
-                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
-
-                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
-
-                                if($productversion) {
-
-                                    $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
-                                }
-
-                                $active = !empty($ins)?true:false;
-
-
-
-                                ?>
                             <tr>
-                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                <td><b>License Expiry Date:</b></td>
+                                <td>{!! $licdate !!}</td>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td><b>Update Expiry Date:</b></td>
+                                <td>{!! $date !!}</td>
+                                <td></td>
+                            </tr>
+
+                            @if($order->license_mode=='File')
+                                <tr>
+                                    <td><b>Localized License:</b></td>
+                                    <td>
+                                        <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
+                                    </td>
+                                    <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
+                                        <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
+                                    </td>
+                                </tr>
+                            @endif
+
+                            </tbody>
+
+                        </table>
+                        <script src="{{asset('common/js/licCode.js')}}"></script>
+
+
+                        <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+
+                            <thead>
+                            <tr>
+
+                                <th>Installation Path</th>
                                 @if($product->type != '4')
-                                    <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                    <th>Installation IP</th>
                                 @endif
-                                @if($productversion)
-                                    @if($productversion < $Latestversion)
-                                        <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                                            </label>{{$productversion->version}}</span></td>
+                                <th>Current Version </th>
+                                <th>  Last Active</th>
+
+                            </tr></thead>
+                            <tbody>
+                            @foreach($installationDetails['installed_path'] as $key => $ins)
+                                    <?php
+                                    $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
+
+                                    $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+
+                                    if($productversion) {
+
+                                        $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                                        $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                                    }
+
+                                    $active = !empty($ins)?true:false;
+
+
+
+                                    ?>
+                                <tr>
+                                    <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                    @if($product->type != '4')
+                                        <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                    @endif
+                                    @if($productversion)
+                                        @if($productversion < $Latestversion)
+                                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                                                </label>{{$productversion->version}}</span></td>
+                                        @else
+                                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                                                </label>{{$productversion->version}}</span></td>
+                                        @endif
+
+                                    @endif
+                                    @if($productversion)
+                                        <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
+                                    @endif
+                                    @if($active == true)
+                                        <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                                            </label>Active</span></td>
                                     @else
-                                        <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                                            </label>{{$productversion->version}}</span></td>
+                                        <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                                            </label>Inactive</span></td>
                                     @endif
 
-                                @endif
-                                @if($productversion)
-                                    <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
-                                @endif
-                                @if($active == true)
-                                    <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                                        </label>Active</span></td>
-                                @else
-                                    <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                                        </label>Inactive</span></td>
-                                @endif
 
+                                </tr>
+                            @endforeach
 
-                            </tr>
-                        @endforeach
+                            </tbody>
+                        </table>
 
-                        </tbody>
-                    </table>
+                        <script>
+                            $('ul.nav-sidebar a').filter(function() {
+                                return this.id == 'all_order';
+                            }).addClass('active');
 
-                    <script>
-                        $('ul.nav-sidebar a').filter(function() {
-                            return this.id == 'all_order';
-                        }).addClass('active');
+                            // for treeview
+                            $('ul.nav-treeview a').filter(function() {
+                                return this.id == 'all_order';
+                            }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+                        </script>
+                        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-                        // for treeview
-                        $('ul.nav-treeview a').filter(function() {
-                            return this.id == 'all_order';
-                        }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-                    </script>
-                    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+                        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-                    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-                @endslot
+                    @endslot
                 @else
-                @slot('license')
-                    <?php
-                        $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
-                        foreach ($idOrdert as $ordt) {
-                            $newOrders[] = \App\Model\Order\Order::where('id', $ordt->upgraded_order_id)->get();
-                        }
-                        ?>
+                    @slot('license')
+                            <?php
+                            $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
+                            foreach ($idOrdert as $ordt) {
+                                $newOrders[] = \App\Model\Order\Order::where('id', $ordt->upgraded_order_id)->get();
+                            }
+                            ?>
 
-                    @foreach($newOrders as $newOrder)
+                        @foreach($newOrders as $newOrder)
                             <div class="termination-message">
                                 <p class="termination-notice"><b>Important: Termination Notice</b></p>
                                 <p class="termination-description">
@@ -451,7 +451,7 @@ $price = $order->price_override;
                         @endforeach
 
 
-                @endslot
+                    @endslot
                 @endif
                 @slot('user')
                     <table class="table">
@@ -597,127 +597,127 @@ $price = $order->price_override;
 
                 @slot('cloud')
                     <br>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <!-- Change Cloud Domain Card -->
-                                <div class="col-lg-6 mb-6">
-                                    <div class="card border-0">
-                                        <div class="card-body">
-                                            <a href="#" data-toggle="modal" data-target="#cloudDomainModal" class="stretched-link clickable-link">
-                                                <div class="d-flex align-items-start">
-                                                    <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
-                                                    <div>
-                                                        <h5 class="mb-1">Change Cloud Domain</h5>
-                                                        <p class="card-text mb-0" style="text-align: justify">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Increase or Decrease Agents Card -->
-                                <div class="col-lg-6 mb-6">
-                                    <div class="card border-0">
-                                        <div class="card-body">
-                                            <a href="#" data-toggle="modal" data-target="#numberOfAgentsModal" class="stretched-link clickable-link">
-                                                <div class="d-flex align-items-start">
-                                                    <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
-                                                    <div>
-                                                        <h5 class="mb-1">Increase/Decrease Agents</h5>
-                                                        <p class="card-text mb-0" style="text-align: justify">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Upgrade or Downgrade Cloud Plan Card -->
-
-                            </div>
-
-                        </div>
+                    <div class="container-fluid">
                         <div class="row">
+                            <!-- Change Cloud Domain Card -->
                             <div class="col-lg-6 mb-6">
-                                <div class="card o-0 border-0">
+                                <div class="card border-0">
                                     <div class="card-body">
-                                        <a href="#" data-toggle="modal" data-target="#cloudPlanModal" class="stretched-link clickable-link">
+                                        <a href="#" data-toggle="modal" data-target="#cloudDomainModal" class="stretched-link clickable-link">
                                             <div class="d-flex align-items-start">
-                                                <i class="fas fa-cloud-upload-alt mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                                <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
-                                                    <?php
-                                                    $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
-                                                    $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-                                                    $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
-                                                    $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
-                                                    ?>
-                                                    <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
-                                                    <h6 class="mb-1">Current Plan: <strong>{{$planName}}</strong></h6>
-                                                    <p class="card-text mb-0" style="text-align: justify">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
+                                                    <h5 class="mb-1">Change Cloud Domain</h5>
+                                                    <p class="card-text mb-0" style="text-align: justify">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Increase or Decrease Agents Card -->
+                            <div class="col-lg-6 mb-6">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <a href="#" data-toggle="modal" data-target="#numberOfAgentsModal" class="stretched-link clickable-link">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                                <div>
+                                                    <h5 class="mb-1">Increase/Decrease Agents</h5>
+                                                    <p class="card-text mb-0" style="text-align: justify">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upgrade or Downgrade Cloud Plan Card -->
+
                         </div>
 
-
-
-
-
-
-
-        <!-- Cloud Domain Change Modal -->
-        <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                     </div>
-                    <div class="modal-body">
-                        <div id="success-domain"></div>
-                        <div id="failure-domain"></div>
-                        <div class="form-group">
-                            <div class="col-12">
-                                <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
-                                <label for="clouddomain" class="col-form-label">Cloud Domain:</label>
-                            </div>
-                            <div class="row" style="margin-left: 14px; margin-right: 2px;">
-                                <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
-                                <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
+                    <div class="row">
+                        <div class="col-lg-6 mb-6">
+                            <div class="card o-0 border-0">
+                                <div class="card-body">
+                                    <a href="#" data-toggle="modal" data-target="#cloudPlanModal" class="stretched-link clickable-link">
+                                        <div class="d-flex align-items-start">
+                                            <i class="fas fa-cloud-upload-alt mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                            <div>
+                                                <?php
+                                                $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
+                                                $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+                                                $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                                                $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                                                ?>
+                                                <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
+                                                <h6 class="mb-1">Current Plan: <strong>{{$planName}}</strong></h6>
+                                                <p class="card-text mb-0" style="text-align: justify">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <script>
-                            $(document).ready(function() {
-                                var orderId = {{$id}};
-                                $.ajax({
-                                    data: {'orderId' : orderId},
-                                    url: '{{url("/api/takeCloudDomain")}}',
-                                    method: 'POST',
-                                    dataType: 'json',
-                                    success: function(data) {
-                                        $('#clouduserdomainfill').html('<strong>Current domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
-                                    },
-                                    error: function(error) {
-                                        console.error('Error:', error);
-                                    }
-                                });
-                            });
-                        </script>
-
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
+
+
+
+
+
+
+                    <!-- Cloud Domain Change Modal -->
+                    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="success-domain"></div>
+                                    <div id="failure-domain"></div>
+                                    <div class="form-group">
+                                        <div class="col-12">
+                                            <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
+                                            <label for="clouddomain" class="col-form-label">Cloud Domain:</label>
+                                        </div>
+                                        <div class="row" style="margin-left: 14px; margin-right: 2px;">
+                                            <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $(document).ready(function() {
+                                            var orderId = {{$id}};
+                                            $.ajax({
+                                                data: {'orderId' : orderId},
+                                                url: '{{url("/api/takeCloudDomain")}}',
+                                                method: 'POST',
+                                                dataType: 'json',
+                                                success: function(data) {
+                                                    $('#clouduserdomainfill').html('<strong>Current domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
+                                                },
+                                                error: function(error) {
+                                                    console.error('Error:', error);
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
                     <!-- Number of Agents Modal -->
                     <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
@@ -732,8 +732,7 @@ $price = $order->price_override;
                                 <div class="modal-body">
                                     <div id="response-agent"></div>
                                     <div id="failure-agent"></div>
-                                    <?php
-                                    $latestAgents = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->latest()->value('agents');
+                                    <?php                       $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
                                     ?>
                                     <div class="form-group">
                                         <div class="col-12">
@@ -1652,13 +1651,13 @@ $price = $order->price_override;
                         }
 
                     }, error: function(data) {
-                            if(data.responseJSON.success==false) {
-                                var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                                $('#failure-domain').html(result);
-                                $('#failure-domain').css('color', 'red');
-                                $('#changeDomain').attr('disabled', false);
-                                $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
-                            }
+                        if(data.responseJSON.success==false) {
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            $('#failure-domain').html(result);
+                            $('#failure-domain').css('color', 'red');
+                            $('#changeDomain').attr('disabled', false);
+                            $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+                        }
 
                     }
                 });
@@ -1715,7 +1714,7 @@ $price = $order->price_override;
                     },
                     url: "{{ url('upgradeDowngradeCloud') }}",
                     success: function (data) {
-                            window.location.href = data.redirectTo;
+                        window.location.href = data.redirectTo;
                         if (data.success ==true){
                             window.location = data.redirectTo;
                             var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';

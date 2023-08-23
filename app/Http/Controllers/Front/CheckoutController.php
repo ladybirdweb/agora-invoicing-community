@@ -284,14 +284,14 @@ class CheckoutController extends InfoController
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
-                    $this->checkoutAction($invoice); //For free product generate invoice without payment
+                    $this->checkoutAction($invoice,\Session::has('AgentAlteration')); //For free product generate invoice without payment
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
-                    \Cart::clear();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
                     $this->performCloudActions($invoice);
+                    \Cart::clear();
 
                     return redirect('checkout')->with('success', $url);
                 }
@@ -342,7 +342,7 @@ class CheckoutController extends InfoController
         return $paynow;
     }
 
-    public function checkoutAction($invoice)
+    public function checkoutAction($invoice,$agent=false)
     {
         try {
             //get elements from invoice
@@ -363,8 +363,10 @@ class CheckoutController extends InfoController
             $payment = new \App\Http\Controllers\Order\InvoiceController();
             $payment->postRazorpayPayment($invoice);
             //execute the order
-            $order = new \App\Http\Controllers\Order\OrderController();
-            $order->executeOrder($invoice->id, $order_status = 'executed');
+            if(!$agent){
+                $order = new \App\Http\Controllers\Order\OrderController();
+                $order->executeOrder($invoice->id, $order_status = 'executed');
+            }
 
             return 'success';
         } catch (\Exception $ex) {
@@ -389,10 +391,12 @@ class CheckoutController extends InfoController
         }
     }
 
-    private function doTheDeed($invoice)
+    private function doTheDeed($invoice,$do=true)
     {
+        \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->latest()->update(['payment_status' => 'success']);
+
         $amt_to_credit = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
-        if ($amt_to_credit) {
+        if ($amt_to_credit && $do) {
             $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
             \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit'=>$amt_to_credit]);
             User::where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
@@ -420,6 +424,7 @@ class CheckoutController extends InfoController
             $installationPath = \Session::get('upgradeInstallationPath');
             $productId = \Session::get('upgradeProductId');
             $licenseCode = \Session::get('upgradeSerialKey');
+            $this->doTheDeed($invoice,false);
             $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
         } elseif ($cloud->checkAgentAlteration()) {
             $subId = \Session::get('AgentAlteration'); // use if needed in future
@@ -428,7 +433,6 @@ class CheckoutController extends InfoController
             $installationPath = \Session::get('installation_path');
             $productId = \Session::get('product_id');
             $oldLicense = \Session::get('oldLicense');
-            $this->doTheDeed($invoice);
             $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
         }
     }

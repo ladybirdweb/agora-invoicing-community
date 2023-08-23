@@ -107,7 +107,7 @@ class CloudExtraActivities extends Controller
             $token = str_random(32);
             $newDomain = $request->get('newDomain');
             $currentDomain = $request->get('currentDomain');
-            if (strpos($inputString, '.faveocloud.com') !== false) {
+            if (strpos($newDomain, '.faveocloud.com') !== false) {
                 return errorResponse(trans('message.cloud_not_allowed'));
             }
             if ($newDomain === $currentDomain) {
@@ -132,9 +132,7 @@ class CloudExtraActivities extends Controller
             $response = '{'.$response[1];
 
             $result = json_decode($response);
-            if ($result->status == 'fails') {
-                return response(['status' => true, 'message' => trans('message.change_domain_failed')]);
-            }
+
             $this->jobsForCloudDomain($newDomain, $currentDomain);
 
             return successResponse(trans('message.cloud_domain_change'));
@@ -148,58 +146,15 @@ class CloudExtraActivities extends Controller
     private function jobsForCloudDomain($newDomain, $currentDomain)
     {
         $client = new Client([]);
-        if (! strpos($currentDomain, 'fratergroup.in')) {
-            if (! strpos($newDomain, 'fratergroup.in')) {
-                $client->request('GET', env('CLOUD_JOB_URL'), [
-                    'auth' => ['clouduser', env('CLOUD_AUTH')],
-                    'query' => [
-                        'token' => env('CLOUD_OAUTH_TOKEN'),
-                        'domain' => $newDomain,
-                    ],
-                ]);
-            } else {
-                $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
-                    'auth' => ['clouduser', env('CLOUD_AUTH')],
-                    'query' => [
-                        'token' => env('CLOUD_OAUTH_TOKEN'),
-                        'domain' => $newDomain,
-                    ],
-                ]);
-            }
-//            $client->request('GET', env('CLOUD__DELETE_JOB_URL_CUSTOM'), [
-//                'auth' => ['clouduser', env('CLOUD_AUTH')],
-//                'query' => [
-//                    'token' => env('CLOUD_OAUTH_TOKEN'),
-//                    'domain' => $currentDomain,
-//                ],
-//            ]);
-        } else {
-            //normal
-            if (! strpos($newDomain, 'fratergroup.in')) {
-                $client->request('GET', env('CLOUD_JOB_URL'), [
-                    'auth' => ['clouduser', env('CLOUD_AUTH')],
-                    'query' => [
-                        'token' => env('CLOUD_OAUTH_TOKEN'),
-                        'domain' => $newDomain,
-                    ],
-                ]);
-            } else {
-                $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
-                    'auth' => ['clouduser', env('CLOUD_AUTH')],
-                    'query' => [
-                        'token' => env('CLOUD_OAUTH_TOKEN'),
-                        'domain' => $newDomain,
-                    ],
-                ]);
-            }
-//            $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
-//                'auth' => ['clouduser', env('CLOUD_AUTH')],
-//                'query' => [
-//                    'token' => env('CLOUD_OAUTH_TOKEN'),
-//                    'domain' => $currentDomain,
-//                ],
-//            ]);
-        }
+
+        $client->request('GET', env('CLOUD_JOB_URL'), [
+            'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
+            'query' => [
+                'token' => env('CLOUD_OAUTH_TOKEN'),
+                'domain' => $newDomain,
+            ],
+        ]);
+
     }
 
     public function agentAlteration(Request $request)
@@ -207,8 +162,10 @@ class CloudExtraActivities extends Controller
         try {
             $newAgents = $request->newAgents;
             $orderId = $request->input('orderId');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
+
             $product_id = $request->product_id;
+
 
             if ($this->checktheAgent($newAgents, $installation_path)) {
                 return errorResponse(trans('message.agent_reduce'));
@@ -217,7 +174,6 @@ class CloudExtraActivities extends Controller
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
 
             $items = $this->getThePaymentCalculation($newAgents, $oldLicense, $orderId);
-
             $invoice = (new RenewController())->renewBySubId($request->subId, $items['planId'], '', $items['price'], '', false, $newAgents);
 
             if ($invoice) {
@@ -244,28 +200,37 @@ class CloudExtraActivities extends Controller
             $agents = $request->agents;
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()
-               ->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
+            if(empty($installation_path)){
+                return errorResponse(trans('message.installation_path_not_found'));
+            }
+            \Session::put('upgradeInstallationPath', $installation_path);
+
             $items = $this->getThePaymentCalculationUpgradeDowngrade($agents, $oldLicense, $orderId, $planId);
 
             \Cart::add($items); //Add Items To the Cart Collection
 
             \Session::put('upgradeDowngradeProduct', \Auth::user()->id);
             \Session::put('upgradeOldLicense', $oldLicense);
-            \Session::put('upgradeInstallationPath', $installation_path);
             \Session::put('upgradeorderId', $orderId);
 
             return response()->json(['redirectTo' => url('/checkout')]);
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
-
-            return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
+            return errorResponse(trans('message.wrong_upgrade'));
         }
     }
 
     private function getThePaymentCalculation($newAgents, $oldAgents, $orderId, $planId = null)
     {
         try {
+            \Session::forget('upgradeDowngradeProduct');
+            \Session::forget('upgradeOldLicense');
+            \Session::forget('upgradeInstallationPath');
+            \Session::forget('upgradeorderId');
+            \Session::forget('upgradeProductId');
+            \Session::forget('upgradeNewActiveOrder');
+
             if (is_null($planId)) {
                 $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
                 $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
@@ -333,7 +298,15 @@ class CloudExtraActivities extends Controller
 
     private function getThePaymentCalculationUpgradeDowngrade($newAgents, $oldAgents, $orderId, $planIdNew)
     {
-        try {
+        try
+        {
+            \Session::forget('AgentAlteration');
+            \Session::forget('newAgents');
+            \Session::forget('orderId');
+            \Session::forget('installation_path');
+            \Session::forget('product_id');
+            \Session::forget('oldLicense');
+
             $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
             $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
             $planIdOld = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
@@ -550,6 +523,7 @@ class CloudExtraActivities extends Controller
         $encodedData = http_build_query($data);
         $client = new Client();
         $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+        \Log::debug('sas',[$data,$hashedSignature]);
         $response = $client->request(
             'POST',
             $this->cloud->cloud_central_domain.'/performProductUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
@@ -559,21 +533,28 @@ class CloudExtraActivities extends Controller
 
         $response = '{'.$response[1];
 
+        \Log::debug('sandesh',(array)$response);
+
         json_decode($response);
 
         $orderId = \Session::get('upgradeorderId');
 
-        Order::where('id', $orderId)->update(['status'=>'Terminated']);
+        Order::where('id', $orderId)->update(['order_status'=>'Terminated']);
 
-        $orderIdNew = Order::where('serial_key', \Crypt::encrypt($licenseCode))->value('id');
 
-        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId, 'upgraded_order_id'=> $orderIdNew]);
+        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId, 'upgraded_order_id' => \Session::get('upgradeNewActiveOrder')]);
+
 
         \Session::forget('upgradeDowngradeProduct');
         \Session::forget('upgradeOldLicense');
         \Session::forget('upgradeInstallationPath');
         \Session::forget('upgradeorderId');
         \Session::forget('upgradeProductId');
+        \Session::forget('upgradeNewActiveOrder');
+
+        \Cart::clear();
+
+
     }
 
     public function checkUpgradeDowngrade()
@@ -624,15 +605,15 @@ class CloudExtraActivities extends Controller
             $discount = \Session::get('discount');
             if ($discount) {
                 Payment::where('user_id', \Auth::user()->id)
-                    ->where('payment_status', 'pending')->where('amt_to_crdit', $discount)
+                    ->where('payment_status', 'pending')->where('amt_to_credit', $discount)
                     ->where('payment_method', 'Credit Balance')
                     ->latest()->update(['payment_status'=>'success']);
 
                 $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                 $formattedValue = currencyFormat($discount, \Auth::user()->currency, true);
-                $oldOrderId = Order::where('serial_key', $oldLicenseCode)->value('id');
+                $oldOrderId = \Session::get('upgradeorderId');
                 $oldOrderNumber = Order::where('id', $oldOrderId)->value('number');
-                $newOrderId = Order::where('serial_key', $licenseCode)->value('id');
+                $newOrderId = \Session::get('upgradeNewActiveOrder');
                 $newOrderNumber = Order::where('id', $newOrderId)->value('number');
 
                 $messageAdmin = 'A credit of '.$formattedValue.' has been added to the balance due to a plan downgrade. Details of the terminated order can be found here: '.

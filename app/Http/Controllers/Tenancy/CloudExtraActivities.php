@@ -154,7 +154,6 @@ class CloudExtraActivities extends Controller
                 'domain' => $newDomain,
             ],
         ]);
-
     }
 
     public function agentAlteration(Request $request)
@@ -165,7 +164,6 @@ class CloudExtraActivities extends Controller
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
 
             $product_id = $request->product_id;
-
 
             if ($this->checktheAgent($newAgents, $installation_path)) {
                 return errorResponse(trans('message.agent_reduce'));
@@ -201,7 +199,7 @@ class CloudExtraActivities extends Controller
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
-            if(empty($installation_path)){
+            if (empty($installation_path)) {
                 return errorResponse(trans('message.installation_path_not_found'));
             }
             \Session::put('upgradeInstallationPath', $installation_path);
@@ -217,6 +215,7 @@ class CloudExtraActivities extends Controller
             return response()->json(['redirectTo' => url('/checkout')]);
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+
             return errorResponse(trans('message.wrong_upgrade'));
         }
     }
@@ -298,8 +297,7 @@ class CloudExtraActivities extends Controller
 
     private function getThePaymentCalculationUpgradeDowngrade($newAgents, $oldAgents, $orderId, $planIdNew)
     {
-        try
-        {
+        try {
             \Session::forget('AgentAlteration');
             \Session::forget('newAgents');
             \Session::forget('orderId');
@@ -523,7 +521,7 @@ class CloudExtraActivities extends Controller
         $encodedData = http_build_query($data);
         $client = new Client();
         $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
-        \Log::debug('sas',[$data,$hashedSignature]);
+        \Log::debug('sas', [$data, $hashedSignature]);
         $response = $client->request(
             'POST',
             $this->cloud->cloud_central_domain.'/performProductUpgradeOrDowngrade', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
@@ -533,7 +531,7 @@ class CloudExtraActivities extends Controller
 
         $response = '{'.$response[1];
 
-        \Log::debug('sandesh',(array)$response);
+        \Log::debug('sandesh', (array) $response);
 
         json_decode($response);
 
@@ -541,9 +539,7 @@ class CloudExtraActivities extends Controller
 
         Order::where('id', $orderId)->update(['order_status'=>'Terminated']);
 
-
         \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId, 'upgraded_order_id' => \Session::get('upgradeNewActiveOrder')]);
-
 
         \Session::forget('upgradeDowngradeProduct');
         \Session::forget('upgradeOldLicense');
@@ -553,8 +549,6 @@ class CloudExtraActivities extends Controller
         \Session::forget('upgradeNewActiveOrder');
 
         \Cart::clear();
-
-
     }
 
     public function checkUpgradeDowngrade()

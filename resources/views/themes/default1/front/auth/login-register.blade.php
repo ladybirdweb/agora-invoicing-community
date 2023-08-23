@@ -207,9 +207,11 @@ Sign in or Register
                                                     <div class="row">
                                                         <div class="form-group col">
                                                             <button type="submit" class="btn btn-primary  btn-modern w-100 text-uppercase rounded-2 font-weight-bold text-3 py-2" id="submitbtn" data-loading-text="Loading...">Login</button>
+                                                            @if($google_status == 1 || $twitter_status == 1 || $github_status == 1 ||$linkedin_status == 1)
                                                             <div class="divider">
                                                                 <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">or</span>
                                                             </div>
+                                                            @endif
                                                             @if($google_status == 1)
                                                             <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary-scale-2 m-1  btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-google text-5 me-2"></i>&nbsp Login With Google</a>
                                                             @endif

@@ -6,6 +6,8 @@ use App\Model\Common\TemplateType;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Demo_page;
+use Illuminate\Support\Facades\DB;
+use App\SocialLogin;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -24,7 +26,46 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Template table seeded!');
 
         $this->call(SettingsSeeder::class);
+        $this->SocialLoginSeeder();
     }
+
+    private function SocialLoginSeeder()
+    {
+        DB::table('social_logins')->truncate();
+        $social_logins = [
+           [
+               'type' => 'Google',
+               'client_id' => '',
+               'client_secret' => '',
+               'redirect_url' => '',
+               'status' => 0,
+           ],
+           [
+               'type' => 'Github',
+               'client_id' => '',
+               'client_secret' => '',
+               'redirect_url' => '',
+               'status' => 0,
+           ],
+           [
+               'type' => 'Twitter',
+               'client_id' => '',
+               'client_secret' => '',
+               'redirect_url' => '',
+               'status' => 0,
+           ],
+           [
+               'type' => 'Linkedin',
+               'client_id' => '',
+               'client_secret' => '',
+               'redirect_url' => '',
+               'status' => 0,
+           ],
+       ];
+      foreach ($social_logins as $data) {
+           SocialLogin::insertOrIgnore($data);
+       }
+   }
 }
 
 class Demo_pageTableSeeder extends Seeder

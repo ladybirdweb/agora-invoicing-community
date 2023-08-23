@@ -574,8 +574,12 @@ function getContactData()
     $countryCode = Country::where('country_code_char2', $setting->country)->value('phonecode');
     $logo = '<img src="'.asset('common/images/'.$setting->logo).'" />';
     $billingContact = '
-                <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-                    <p style="line-height: 20px;">'.$setting->company.'<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">'.$setting->email.'</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />Tel:'.' '.'+'.''.$countryCode.' '.$setting->phone.'</p>';
+    <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
+        <p style="line-height: 20px;">' . $setting->company . '<br />
+        <a class="moz-txt-link-abbreviated" href="mailto:' . $setting->company_email . '">' . $setting->company_email . '</a><br />
+        <a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">' . $setting->website . '</a><br />
+        Tel: ' . $countryCode . ' ' . $setting->phone . '</p>
+    </td>';
 
     return ['logo' => $logo, 'contact' => $billingContact];
 }

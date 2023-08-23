@@ -1054,7 +1054,7 @@ domainInput.addEventListener("input", function() {
 
 
 </script>
-@if(request()->path() !== 'my-profile')
+@if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
        
         <script type="text/javascript">
     

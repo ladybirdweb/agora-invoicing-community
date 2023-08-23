@@ -575,10 +575,10 @@ function getContactData()
     $logo = '<img src="'.asset('common/images/'.$setting->logo).'" />';
     $billingContact = '
     <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-        <p style="line-height: 20px;">' . $setting->company . '<br />
-        <a class="moz-txt-link-abbreviated" href="mailto:' . $setting->company_email . '">' . $setting->company_email . '</a><br />
-        <a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">' . $setting->website . '</a><br />
-        Tel: ' . $countryCode . ' ' . $setting->phone . '</p>
+        <p style="line-height: 20px;">'.$setting->company.'<br />
+        <a class="moz-txt-link-abbreviated" href="mailto:'.$setting->company_email.'">'.$setting->company_email.'</a><br />
+        <a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />
+        Tel: '.$countryCode.' '.$setting->phone.'</p>
     </td>';
 
     return ['logo' => $logo, 'contact' => $billingContact];

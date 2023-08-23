@@ -116,6 +116,7 @@ class BaseOrderController extends ExtendedOrderController
                 'created_at' => Carbon::now(),
             ]);
             $this->updateInvoiceDate($invoiceid);
+            \Session::put('upgradeNewActiveOrder',$order->id);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);

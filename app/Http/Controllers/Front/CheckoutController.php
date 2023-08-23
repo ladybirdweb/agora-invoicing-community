@@ -271,7 +271,7 @@ class CheckoutController extends InfoController
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
-                    $this->checkoutAction($invoice,\Session::has('AgentAlteration')); //For free product generate invoice without payment
+                    $this->checkoutAction($invoice, \Session::has('AgentAlteration')); //For free product generate invoice without payment
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
@@ -329,7 +329,7 @@ class CheckoutController extends InfoController
         return $paynow;
     }
 
-    public function checkoutAction($invoice,$agent=false)
+    public function checkoutAction($invoice, $agent = false)
     {
         try {
             //get elements from invoice
@@ -350,7 +350,7 @@ class CheckoutController extends InfoController
             $payment = new \App\Http\Controllers\Order\InvoiceController();
             $payment->postRazorpayPayment($invoice);
             //execute the order
-            if(!$agent){
+            if (! $agent) {
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
             }
@@ -378,7 +378,7 @@ class CheckoutController extends InfoController
         }
     }
 
-    private function doTheDeed($invoice,$do=true)
+    private function doTheDeed($invoice, $do = true)
     {
         \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->latest()->update(['payment_status' => 'success']);
 
@@ -411,7 +411,7 @@ class CheckoutController extends InfoController
             $installationPath = \Session::get('upgradeInstallationPath');
             $productId = \Session::get('upgradeProductId');
             $licenseCode = \Session::get('upgradeSerialKey');
-            $this->doTheDeed($invoice,false);
+            $this->doTheDeed($invoice, false);
             $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
         } elseif ($cloud->checkAgentAlteration()) {
             $subId = \Session::get('AgentAlteration'); // use if needed in future

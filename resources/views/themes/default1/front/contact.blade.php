@@ -116,7 +116,7 @@ $set = $set->findOrFail(1);
                 });
             },
             initialCountry: "auto",
-            separateDialCode: true,
+            separateDialCode: false,
             utilsScript: "{{asset('js/intl/js/utils.js')}}"
         });
         var reset = function() {

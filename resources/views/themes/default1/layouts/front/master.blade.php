@@ -39,7 +39,24 @@ foreach($scripts as $script)
     background-color: blue;
     color: white;
 }
+
+            .custom-line {
+                border: none;
+                border-top: 1px solid #ccc;
+                margin: 10px 0;
+            }
+            #validationMessage {
+              position: absolute;
+              top: 80px; /* Adjust this value to align the error message properly */
+              margin-left:32px;
+              left: 0;
+              font-size: 12px;
+              color: red;
+}
 </style>
+       
+
+
 <head>
     <!-- Basic -->
     <meta charset="utf-8">
@@ -1037,7 +1054,7 @@ domainInput.addEventListener("input", function() {
 
 
 </script>
-@if(request()->path() !== 'contact-us')
+@if(request()->path() !== 'my-profile')
        
         <script type="text/javascript">
     
@@ -1120,28 +1137,6 @@ domainInput.addEventListener("input", function() {
 
 </script>
 @endif
-        <style>
-            .custom-line {
-                border: none;
-                border-top: 1px solid #ccc;
-                margin: 10px 0;
-            }
-            #validationMessage {
-              position: absolute;
-              top: 80px; /* Adjust this value to align the error message properly */
-              margin-left:32px;
-              left: 0;
-              font-size: 12px;
-              color: red;
-}
-        </style>
-
-
-
-
-
-
-
 </body>
 </html>
 @yield('end')

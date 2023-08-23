@@ -25,7 +25,7 @@ active
 [type=search] {
         padding-right: 20px;
 }
-.socialmodal {
+#myModal {
    position: absolute;
    top: 65%;
    left: 50%;
@@ -52,7 +52,7 @@ active
   </table>
 </div>
 
-<div class="socialmodal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

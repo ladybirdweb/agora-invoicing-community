@@ -173,19 +173,18 @@ class LoginController extends Controller
 
     public function handler($provider)
     {
-        
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
 
         $githubUser = Socialite::driver($provider)->user();
-       $location = getLocation();
+        $location = getLocation();
 
-            $state_code = $location['iso_code'].'-'.$location['state'];
+        $state_code = $location['iso_code'].'-'.$location['state'];
 
-            $state = getStateByCode($state_code);
-           // dd( $location );
+        $state = getStateByCode($state_code);
+        // dd( $location );
 
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 

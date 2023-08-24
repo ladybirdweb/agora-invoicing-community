@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Email_log;
 use App\Facades\ImageUpload;
-use App\Http\Controllers\Order\OrderSearchController;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;

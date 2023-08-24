@@ -28,17 +28,24 @@
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
-                        <p><b>Current Agents: {{$agents}}</b></p>
+                        <p><b>Current Agents:</b> {{$agents}}</b></p>
+                        <p><b>Current Plan:</b> {{$planName}}</p>
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
                     {!! Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, [
     'class' => 'form-control plan-dropdown',
-    'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')'
+    'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',
 ]) !!}
 
                     {!! Form::hidden('user',$userid) !!}
                     </div>
                 @if(in_array($productid,[117,119]))
+                    <div class="form-group">
+                        {!! Form::label('cost', 'Price per agent:', ['class' => 'col-form-label']) !!}
+
+                        {!! Form::text('cost', null, ['class' => 'form-control priceperagent', 'id' => 'priceperagent', 'readonly'=>'readonly']) !!}
+                    </div>
+
                      <div class="form-group">
                          {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
 
@@ -57,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit"  class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
+                 <button type="submit"  class="btn btn-primary" id="saveRenew" disabled><i class="fa fa-check" >&nbsp;&nbsp;</i>Save</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->
@@ -74,6 +81,7 @@
         var shouldFetchPlanCost = true; // Disable further calls until needed
 
    function fetchPlanCost(planId,agents=null) {
+       $('#saveRenew').attr('disabled',true);
        if(!shouldFetchPlanCost){
            return
        }
@@ -87,7 +95,6 @@
                if(agents==null){
                    agents = parseInt($('.agents').val() || 0);
                }
-               console.log(agents);
                var totalPrice = agents * parseFloat(data);
                var someprice = totalPrice.toFixed(2);
                $.ajax({
@@ -99,7 +106,16 @@
                        shouldFetchPlanCost = true;
                    },
                });
-
+               $.ajax({
+                   url: 'processFormat', // Update with the correct URL
+                   method: 'GET',
+                   data: { totalPrice: parseFloat(data)},
+                   success: function (data) {
+                       $('.priceperagent').val(data);
+                       shouldFetchPlanCost = true;
+                   },
+               });
+               $('#saveRenew').attr('disabled',false);
            }
        });
    }

@@ -62,9 +62,9 @@ class BaseClientController extends Controller
             compact('clientid', 'invoiceid', 'productid'));
     }
 
-    public function renewPopup($id, $productid, $agents)
+    public function renewPopup($id, $productid, $agents, $planName)
     {
-        return view('themes.default1.renew.popup', compact('id', 'productid', 'agents'));
+        return view('themes.default1.renew.popup', compact('id', 'productid', 'agents', 'planName'));
     }
 
     public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)

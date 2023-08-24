@@ -37,16 +37,18 @@ class BaseOrderController extends ExtendedOrderController
     public function getUrl($model, $status, $subscriptionId, $agents = null)
     {
         $url = '';
-        if ($status == 'success') {
-            if ($subscriptionId) {
-                if (! is_null($agents)) {
-                    $url = '<a href='.url('renew/'.$subscriptionId.'/'.$agents)." 
-                class='btn btn-sm btn-secondary btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
+        if($model->order_status !='Terminated') {
+            if ($status == 'success') {
+                if ($subscriptionId) {
+                    if (!is_null($agents)) {
+                        $url = '<a href=' . url('renew/' . $subscriptionId . '/' . $agents) . " 
+                class='btn btn-sm btn-secondary btn-xs'" . tooltip('Renew') . "<i class='fas fa-credit-card'
                  style='color:white;'> </i></a>";
-                } else {
-                    $url = '<a href='.url('renew/'.$subscriptionId)." 
-                class='btn btn-sm btn-secondary btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
+                    } else {
+                        $url = '<a href=' . url('renew/' . $subscriptionId) . " 
+                class='btn btn-sm btn-secondary btn-xs'" . tooltip('Renew') . "<i class='fas fa-credit-card'
                  style='color:white;'> </i></a>";
+                    }
                 }
             }
         }

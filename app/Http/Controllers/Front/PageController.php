@@ -446,10 +446,6 @@ class PageController extends Controller
         $set = $set->findOrFail(1);
 
         try {
-            $from = $set->email;
-            $fromname = $set->company;
-            $toname = '';
-            $to = $set->company_email;
             $data = '';
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
@@ -500,7 +496,8 @@ class PageController extends Controller
             }
 
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
+            }
+        catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

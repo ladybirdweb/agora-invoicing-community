@@ -567,6 +567,12 @@ Route::middleware('installAgora')->group(function () {
 
     Route::get('processFormat', [Tenancy\CloudExtraActivities::class, 'processFormat']);
 
+    Route::post('get-agent-inc-dec-cost',[Tenancy\CloudExtraActivities::class,'getThePaymentCalculationDisplay']);
+
+
+
+
+
     // routes/web.php
     Route::post('/update-session', [Tenancy\CloudExtraActivities::class, 'updateSession'])->name('update-session');
 

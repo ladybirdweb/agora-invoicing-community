@@ -596,8 +596,8 @@ $price = $order->price_override;
                 @endslot
 
                 @slot('cloud')
-                    <br>
-                    <div class="container-fluid">
+                        <p style="margin-left: 530px;"><b>Plan Expiry:</b> {!! getDateHtml($subscription->ends_at) !!}</p>
+                        <div class="container-fluid">
                         <div class="row">
                             <!-- Change Cloud Domain Card -->
                             <div class="col-lg-6 mb-6">
@@ -653,7 +653,7 @@ $price = $order->price_override;
                                                 $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
                                                 ?>
                                                 <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
-                                                <h6 class="mb-1">Current Plan: <strong>{{$planName}}</strong></h6>
+                                                <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
                                                 <p class="card-text mb-0" style="text-align: justify">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
                                             </div>
                                         </div>
@@ -669,164 +669,203 @@ $price = $order->price_override;
 
 
 
-                    <!-- Cloud Domain Change Modal -->
-                    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="success-domain"></div>
-                                    <div id="failure-domain"></div>
-                                    <div class="form-group">
-                                        <div class="col-12">
-                                            <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
-                                            <label for="clouddomain" class="col-form-label">Cloud Domain:</label>
-                                        </div>
-                                        <div class="row" style="margin-left: 14px; margin-right: 2px;">
-                                            <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
-                                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
-                                        </div>
-                                    </div>
-                                    <script>
-                                        $(document).ready(function() {
-                                            var orderId = {{$id}};
-                                            $.ajax({
-                                                data: {'orderId' : orderId},
-                                                url: '{{url("/api/takeCloudDomain")}}',
-                                                method: 'POST',
-                                                dataType: 'json',
-                                                success: function(data) {
-                                                    $('#clouduserdomainfill').html('<strong>Current domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
-                                                },
-                                                error: function(error) {
-                                                    console.error('Error:', error);
-                                                }
-                                            });
-                                        });
-                                    </script>
 
-                                </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Number of Agents Modal -->
-                    <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="response-agent"></div>
-                                    <div id="failure-agent"></div>
-                                    <?php                       $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
-                                    ?>
-                                    <div class="form-group">
-                                        <div class="col-12">
-                                            <p id="numberAg" class="mb-0">
-                                                <b>Current Agents: {{$latestAgents}}</b>
-                                            </p>
-                                            {!! Form::label('number', 'Number of Agents:', ['class' => 'col-form-label']) !!}
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="quantity">
-                                                {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'number', 'min' => '1', 'placeholder' => '']) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="agentNumber"><i class="fa fa-users">&nbsp;&nbsp;</i>  Update Agents
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cloud Plan Modal -->
-                    <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="cloudPlanModalLabel">Upgrade or Downgrade Cloud Plan</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="response-upgrade"></div>
-                                    <div id="failure-upgrade"></div>
-                                    <?php
-                                    // Retrieve the plans data as before
-                                    $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
-                                        ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
-                                        ->where('plans.product','!=',$product->id)
-                                        ->where('products.type',4)
-                                        ->where('products.can_modify_agent',1)
-                                        ->where('plan_prices.renew_price','!=','0')
-                                        ->pluck('plans.name', 'plans.id')
-                                        ->toArray();
-
-                                    // Add more cloud IDs until we have a generic way to differentiate
-                                    if(in_array($product->id,[117,119])){
-                                        $plans = array_filter($plans, function ($value) {
-                                            return stripos($value, 'free') === false;
-                                        });
-                                    }
-                                    ?>
-                                    <div class="form-group">
-                                        {!! Form::label('plan', 'Select Plan:', ['class' => 'col-12']) !!}
-                                        <div class="col-12">
-                                            {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::label('cost', 'Plan Price:', ['class' => 'col-6']) !!}
-                                        <div class="col-12">
-                                            {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::label('cost', 'Amount to be credited:', ['class' => 'col-6']) !!}
-                                        <div class="col-12">
-                                            {!! Form::text('cost', null, ['class' => 'form-control discount', 'id' =>'discount', 'readonly' => 'readonly']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::label('cost', 'Price to be paid:', ['class' => 'col-6']) !!}
-                                        <div class="col-12">
-                                            {!! Form::text('cost', null, ['class' => 'form-control priceToPay', 'id' =>'priceToPay', 'readonly' => 'readonly']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="upgradedowngrade">
-                                        <i class="fas fa-cloud-upload-alt">&nbsp;&nbsp;</i>Change Plan
-
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                 @endslot
 
 
             @endcomponent
+        </div>
+    </div>
+
+
+
+    <!-- Cloud Domain Change Modal -->
+    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="success-domain"></div>
+                    <div id="failure-domain"></div>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
+                            <label for="clouddomain" class="col-form-label">Customise your cloud domain:</label>
+                        </div>
+                        <div class="row" style="margin-left: 14px; margin-right: 2px;">
+                            <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function() {
+                            var orderId = {{$id}};
+                            $.ajax({
+                                data: {'orderId' : orderId},
+                                url: '{{url("/api/takeCloudDomain")}}',
+                                method: 'POST',
+                                dataType: 'json',
+                                success: function(data) {
+                                    $('#clouduserdomainfill').html('<strong>Current cloud domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
+                                },
+                                error: function(error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        });
+                    </script>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number of Agents Modal -->
+    <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
+        <?php $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
+        ?>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="response-agent"></div>
+                    <div id="failure-agent"></div>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <p id="numberAg" class="mb-0">
+                                <b>Current number of agents:</b> {{$latestAgents}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-12">
+                            {!! Form::label('number', 'Choose your desired number of agents:', ['class' => 'col-form-label']) !!}
+                            <div class="quantity">
+                                {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'numberAGt', 'min' => '1', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-12">
+                            {!! Form::label('cost', 'Price per agent', ['class' => 'col-form-label']) !!}
+                            <div class="quantity">
+                                {!! Form::text('cost', null, ['class' => 'form-control priceagent', 'id' => 'priceagent', 'readonly'=>'readonly']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-12">
+                            {!! Form::label('cost', 'Total price', ['class' => 'col-form-label']) !!}
+                            <div class="quantity">
+                                {!! Form::text('cost', null, ['class' => 'form-control Totalprice', 'id' => 'Totalprice', 'readonly'=>'readonly']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-12">
+                            {!! Form::label('cost', 'Price to be paid', ['class' => 'col-form-label']) !!}
+                            <div class="quantity">
+                                {!! Form::text('cost', null, ['class' => 'form-control pricetopay', 'id' => 'pricetopay', 'readonly'=>'readonly']) !!}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="agentNumber" disabled><i class="fa fa-users">&nbsp;&nbsp;</i>  Update Agents
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Plan Modal -->
+    <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cloudPlanModalLabel">Upgrade or Downgrade Cloud Plan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="response-upgrade"></div>
+                    <div id="failure-upgrade"></div>
+                    <?php
+                    // Retrieve the plans data as before
+                    $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                        ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                        ->where('plans.product','!=',$product->id)
+                        ->where('products.type',4)
+                        ->where('products.can_modify_agent',1)
+                        ->where('plan_prices.renew_price','!=','0')
+                        ->pluck('plans.name', 'plans.id')
+                        ->toArray();
+                    // Add more cloud IDs until we have a generic way to differentiate
+                    if(in_array($product->id,[117,119])){
+                        $plans = array_filter($plans, function ($value) {
+                            return stripos($value, 'free') === false;
+                        });
+                    }
+                    ?>
+                    <div class="form-group">
+                        {!! Form::label('plan', 'Select Plan:', ['class' => 'col-12']) !!}
+                        <div class="col-12">
+                            {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('cost', 'Price per agent:', ['class' => 'col-6']) !!}
+                        <div class="col-12">
+                            {!! Form::text('cost', null, ['class' => 'form-control priceperagent', 'id' => 'priceperagent', 'readonly' => 'readonly']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('cost', 'Plan Price:', ['class' => 'col-6']) !!}
+                        <div class="col-12">
+                            {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('cost', 'Credits remaining on your current plan:', ['class' => 'col-6']) !!}
+                        <div class="col-12">
+                            {!! Form::text('cost', null, ['class' => 'form-control discount', 'id' =>'discount', 'readonly' => 'readonly']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('cost', 'Price to be paid:', ['class' => 'col-6']) !!}
+                        <div class="col-12">
+                            {!! Form::text('cost', null, ['class' => 'form-control priceToPay', 'id' =>'priceToPay', 'readonly' => 'readonly']) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="upgradedowngrade">
+                        <i class="fas fa-cloud-upload-alt">&nbsp;&nbsp;</i>Change Plan
+
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1750,6 +1789,7 @@ $price = $order->price_override;
                 url: "{{url('get-cloud-upgrade-cost')}}",
                 data: {'plan': val, 'agents': '{{$latestAgents}}', 'orderId': '{{$id}}'},
                 success: function (data) {
+                    $(".priceperagent").val(data.priceperagent);
                     $(".price").val(data.actual_price);
                     $(".discount").val(data.discount);
                     $(".priceToPay").val(data.price_to_be_paid);
@@ -1758,6 +1798,31 @@ $price = $order->price_override;
         }
 
 
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $('#numberAGt').on('input', function () {
+                $('#agentNumber').attr('disabled',true);
+                var selectedNumber = $(this).val();
+                var oldAgents = '{{$latestAgents}}';
+                var orderId = '{{$id}}';
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{url('get-agent-inc-dec-cost')}}",
+                    data: { 'number': selectedNumber, 'oldAgents':  oldAgents, 'orderId' : orderId},
+                    success: function (data) {
+                        // Update the other fields based on the API response
+                        $('#priceagent').val(data.pricePerAgent);
+                        $('#Totalprice').val(data.totalPrice);
+                        $('#pricetopay').val(data.priceToPay);
+                        $('#agentNumber').attr('disabled',false);
+
+                    },
+                });
+            });
+        });
     </script>
     <style>
         .modal {

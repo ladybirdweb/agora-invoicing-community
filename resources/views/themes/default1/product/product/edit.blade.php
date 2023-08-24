@@ -934,7 +934,7 @@ function resrictedRelease()
 
 
  $("#uploadVersion").on('click',function(){
-      $("#uploadVersion").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+      $("#uploadVersion").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
      var filename = $('#file_ids').val();
     var productname = $('#productname').val();
     var producttitle = $('#producttitle').val();

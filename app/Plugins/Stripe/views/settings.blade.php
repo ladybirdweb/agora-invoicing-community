@@ -93,7 +93,7 @@ Stripe
 
                //Validate and pass value through ajax
         $("#key_update").on('click',function (){ //When Submit button is checked
-        $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+        $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         $("#key_update").attr('disabled',true);  
              var rzpstatus = 1;
            if ($('#stripe_key').val() == "") { //if value is not entered
@@ -122,7 +122,7 @@ Stripe
         $("#key_update").attr('disabled',false); 
         $('#stripe_keycheck').hide();
          $('#stripe_secret').css("border-color","");
-           $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Update");
+           $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Update");
              
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.message.message+'.</div>';
@@ -133,7 +133,7 @@ Stripe
             }, 1000);
           }, error: function(data) {
             $("#key_update").attr('disabled',false);  
-            $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Update");
+            $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Update");
               
                 $('#stripe_keycheck').show();
                 $('#stripe_keycheck').html(data.responseJSON.message);

@@ -463,6 +463,43 @@ class PageController extends Controller
         }
     }
 
+    public function viewDemoReq()
+    {
+        try {
+            return view('themes.default1.front.demoForm');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postDemoReq(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'demoemail' => 'required|email',
+        ]);
+
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+
+        try {
+            $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
+            $data = '';
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
+            if (emailSendingStatus()) {
+                $mail->SendEmail($set->email, $set->company_email, $data, 'Requesting for Demo for'.'  '.$product);
+            }
+
+            return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function VewDemoPage()
     {
         try {

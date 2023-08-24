@@ -492,12 +492,10 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             if (emailSendingStatus()) {
                 $mail->SendEmail($set->email, $set->company_email, $data, 'Requesting for Demo for'.'  '.$product);
-
             }
 
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
-            }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

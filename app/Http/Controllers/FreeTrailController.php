@@ -161,7 +161,7 @@ class FreeTrailController extends Controller
                     'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
                     'subtotal' => 0,
                     'domain' => '',
-                    'plan_id' => 0,
+                    'plan_id' => $plan_id,
                     'agents' => 3,
                 ]);
 

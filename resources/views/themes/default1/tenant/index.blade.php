@@ -124,8 +124,6 @@ Tenants
     </div>
 </div>
 
-
-
 <div class="card card-secondary card-outline">
 
     <div class="card-header">

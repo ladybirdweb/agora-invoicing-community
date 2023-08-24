@@ -709,7 +709,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true),'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true),];
+            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
 
             return $items;
         } catch(\Exception $e) {
@@ -724,13 +724,12 @@ class CloudExtraActivities extends Controller
         return currencyFormat($request->get('totalPrice'), \Auth::user()->currency, true);
     }
 
-
     public function getThePaymentCalculationDisplay(Request $request)
     {
         try {
             $newAgents = $request->get('newAgents');
             $oldAgents = $request->get('oldAgents');
-            $orderId   = $request->get('orderId');
+            $orderId = $request->get('orderId');
             $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
             $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
             $planId = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
@@ -779,10 +778,10 @@ class CloudExtraActivities extends Controller
                     } else {
                         $price = 0;
                     }
-
                 }
             }
-            return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat(($base_price * $newAgents), $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
+
+            return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 

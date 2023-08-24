@@ -148,7 +148,7 @@ class FreeTrailController extends Controller
             }
 
             if ($product) {
-                $plan_id = $product->planRelation()->pluck('id');
+                $plan_id = $product->planRelation()->where('days','<',30)->value('id');
                 $cart = \Cart::getContent();
                 $userId = \Auth::user()->id;
                 $invoice = $this->invoice->where('user_id', $userId)->latest()->first();
@@ -156,11 +156,11 @@ class FreeTrailController extends Controller
                 $invoiceItem = $this->invoiceItem->create([
                     'invoice_id' => $invoiceid,
                     'product_name' => $product->name,
-                    'regular_price' => planPrice::whereIn('plan_id', $plan_id)
+                    'regular_price' => planPrice::where('plan_id', $plan_id)
                         ->where('currency', \Auth::user()->currency)->pluck('add_price'),
                     'quantity' => 1,
                     'tax_name' => 'null',
-                    'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
+                    'tax_percentage' => $product->planRelation()->where('days','<',30)->value('allow_tax'),
                     'subtotal' => 0,
                     'domain' => '',
                     'plan_id' => $plan_id,
@@ -212,7 +212,7 @@ class FreeTrailController extends Controller
         try {
             $product = Product::where('name', $item->product_name)->value('id');
             $version = Product::where('name', $item->product_name)->first()->version;
-            $serial_key = $this->generateFreetrailSerialKey($product, 1); //Send Product Id and Agents to generate Serial Key
+            $serial_key = $this->generateFreetrailSerialKey($product, 3); //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             //$plan_id = $this->plan($item->id);
             $plan_id = Plan::where('product', $product)->where('name', 'LIKE', '%free%')

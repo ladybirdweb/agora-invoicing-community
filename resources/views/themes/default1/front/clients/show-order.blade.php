@@ -1269,7 +1269,7 @@ $price = $order->price_override;
             var order = {!! $order !!};
 
             $('#kok  ').click(function() {
-                // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+                // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
                 var status = ($('#is_subscribed').prop("checked"));
                 alert(status);
                 var id = $('#renew').val();

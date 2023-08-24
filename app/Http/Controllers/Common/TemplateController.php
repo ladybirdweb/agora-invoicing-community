@@ -235,26 +235,23 @@ class TemplateController extends Controller
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
             $product = Product::find($id);
-            if ($product['add_to_contact'] == 1) {
-                return 'Custom Pricing';
-            } else {
-                $prices = [];
-                if ($plans->count() > 0) {
-                    foreach ($plans as $plan) {
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
-                    }
-                    if (! empty($prices[3])) {
-                        $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
-                    } else {
-                        $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    }
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+
+            $prices = [];
+            foreach ($plans as $plan) {
+                if ($plan->days == 30 || $plan->days == 31) {
+                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
                 }
+            }
+
+            if (! empty($prices)) {
+                $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+            }
 
                 return $cost;
             }
@@ -266,7 +263,7 @@ class TemplateController extends Controller
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
         if (isset($offer) && $offer !== '' && $offer !== null) {
-            $cost = $cost - ($offer / 100 * $cost);
+            $cost = ($offer / 100) * $cost;
         }
         $price1 = currencyFormat($cost, $code = $currency);
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
@@ -311,10 +308,10 @@ class TemplateController extends Controller
         $status = $request->toggleState;
         if ($status == 'selected') {
             \Session::forget('toggleState');
-            \Session::put('toggleState', 'monthly');
+            \Session::put('toggleState', 'yearly');
         } elseif ($status == 'unselected') {
             \Session::forget('toggleState');
-            \Session::put('toggleState', 'yearly');
+            \Session::put('toggleState', 'monthly');
         }
     }
 }

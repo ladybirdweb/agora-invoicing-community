@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\GroupRequest;
 use App\Model\Common\PricingTemplate;
+use App\Model\Payment\Plan;
 use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\Product;
@@ -112,10 +113,6 @@ class GroupController extends Controller
             $data = $request->input();
             $this->group->fill($request->input())->save();
             $this->group->refresh();
-            if ($data['status'] == 1) {
-                $id = ProductGroup::where('name', $data['name'])->value('id');
-                Product::Where('group', $id)->update(['status' => 1]);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -155,9 +152,41 @@ class GroupController extends Controller
                 Product::Where('group', $id)->update(['status' => 1]);
             }
             $group = $this->group->where('id', $id)->first();
-            $group->fill($request->input())->save();
+            $products = Product::where('group', $id)->where('hidden', '0')->where('add_to_contact', '0')->get();
 
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            // Check if all products have both monthly and yearly plans
+            $allProductsHavePlans = true;
+
+            foreach ($products as $product) {
+                $monthlyPlan = Plan::where('product', $product->id)->where('days', 30)->first();
+                $yearlyPlan = Plan::where('product', $product->id)->where('days', 365)->orWhere('days', 366)->first();
+
+                if (! $monthlyPlan || ! $yearlyPlan) {
+                    $allProductsHavePlans = false;
+                    break; // No need to continue checking
+                }
+            }
+
+            if ($allProductsHavePlans) {
+                if ($request->status == 1) {
+                    $group->fill($request->input())->save();
+                    Product::where('group', $id)->update(['status' => 1]);
+
+                    return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                } elseif ($request->status == 0) {
+                    $group->fill($request->input())->save();
+                    Product::where('group', $id)->update(['status' => 0]);
+
+                    return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                }
+            } elseif ($request->status == 0) {
+                $group->fill($request->input())->save();
+                Product::where('group', $id)->update(['status' => 0]);
+
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            }
+
+            return redirect()->back()->with('fails', 'Please ensure that all products under this group have both monthly and yearly plans added in order to enable this feature.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

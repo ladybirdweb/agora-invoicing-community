@@ -114,7 +114,6 @@ class CartController extends BaseCartController
             }
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
-
             if ($plan) { //If Plan For a Product exists
                 $quantity = $plan->planPrice->first()->product_quantity;
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
@@ -157,6 +156,35 @@ class CartController extends BaseCartController
      * Show the cart with all the Cart Attributes and Cart Collections
      * Link: https://github.com/darryldecode/laravelshoppingcart
      */
+    // public function showCart()
+    // {
+    //     try {
+    //         $cartCollection = Cart::getContent();
+    //         foreach ($cartCollection as $item) {
+    //             $planid = Plan::where('product', $item->id)->value('id');
+    //             $offerprice = PlanPrice::where('plan_id', $planid)->value('offer_price');
+    //             if (\Session::get('toggleState') == 'yearly' && $offerprice == null) {
+    //                 $plan = Plan::where('product',$item->associatedModel->id)->where('days','365')->first();
+    //                 $item->price = PlanPrice::where('plan_id',$plan->id)->where('currency',\Auth::user()->currency)->value('add_price');
+    //                 } elseif (\Session::get('toggleState') == 'yearly' && $offerprice) {
+    //                 $item->price = $item->price * 12;
+    //                 $item->price = $item->price - ($offerprice / 100 * $item->price);
+    //             }
+    //             elseif(\Session::get('toggleState') == 'monthly' && $offerprice) {
+    //                 $item->price = $item->price - ($offerprice / 100 * $item->price);
+    //             }
+    //             $cart_currency = $item->attributes->currency;
+    //             \Session::put('currency', $cart_currency);
+    //         }
+
+    //         return view('themes.default1.front.cart', compact('cartCollection'));
+    //     } catch (\Exception $ex) {
+    //         app('log')->error($ex->getMessage());
+
+    //         return redirect()->back()->with('fails', $ex->getMessage());
+    //     }
+    // }
+
     public function showCart()
     {
         try {
@@ -248,30 +276,57 @@ class CartController extends BaseCartController
     public function planCost($productid, $userid = '', $planid = '')
     {
         try {
-            $cost = 0;
-            $months = 0;
-            if (! $planid) {//When Product Is Added from Cart
-                $planid = Plan::where('product', $productid)->pluck('id')->first();
-            } elseif (checkPlanSession() && ! $planid) {
-                $planid = Session::get('plan_id');
-            }
-            $plan = Plan::where('id', $planid)->where('product', $productid)->first();
-            if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
-                $currency = userCurrencyAndPrice($userid, $plan);
-                $months = 1;
-                $product = Product::find($productid);
-                $days = $plan->periods->pluck('days')->first();
-                $price = $currency['plan']->add_price;
-                if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
-                    $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
-                }
-                $finalPrice = str_replace(',', '', $price);
-                $cost = round($months) * $finalPrice;
-            } else {
-                throw new \Exception('Product cannot be added to cart. No plan exists.');
-            }
+            $product = Product::find($productid);
+            if ($product->status == 1) {
+                $plans = Plan::where('product', $productid)->get();
+                foreach ($plans as $plan) {
+                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
 
-            return $cost;
+                    $currencyQuery = Plan::where('product', $productid);
+
+                    if (\Session::get('toggleState') == 'yearly') {
+                        $id = $currencyQuery->where('days', 365)->value('id');
+                        $daysQuery = PlanPrice::where('plan_id', $id)->where('currency', \Auth::user()->currency)->first();
+                        $cost = $daysQuery->offer_price ? ($daysQuery->offer_price / 100) * $daysQuery->add_price : $daysQuery->add_price;
+                    } elseif (\Session::get('toggleState') == 'monthly') {
+                        $id = $currencyQuery->where('days', 30)->value('id');
+                        $daysQuery = PlanPrice::where('plan_id', $id)->where('currency', \Auth::user()->currency)->first();
+                        $cost = $daysQuery->offer_price ? ($daysQuery->offer_price / 100) * $daysQuery->add_price : $daysQuery->add_price;
+                    }
+                }
+
+                return $cost;
+            } else {
+                $cost = 0;
+                $months = 0;
+                if (! $planid) {//When Product Is Added from Cart
+                    $planid = Plan::where('product', $productid)->pluck('id')->first();
+                } elseif (checkPlanSession() && ! $planid) {
+                    $planid = Session::get('plan_id');
+                }
+                $plan = Plan::where('id', $planid)->where('product', $productid)->first();
+                if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
+                    $currency = userCurrencyAndPrice($userid, $plan);
+                    $months = 1;
+                    $product = Product::find($productid);
+                    $days = $plan->periods->pluck('days')->first();
+                    $price = $currency['plan']->add_price;
+                    if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
+                        $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
+                    }
+                    $finalPrice = str_replace(',', '', $price);
+                    $cost = round($months) * $finalPrice;
+                    if ($currency['plan']['offer_price'] != '' && $currency['plan']['offer_price'] != null) {
+                        $cost = $cost * ($currency['plan']['offer_price'] / 100);
+                    }
+
+                    return $cost;
+                } else {
+                    throw new \Exception('Product cannot be added to cart. No plan exists.');
+                }
+
+                return $cost;
+            }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

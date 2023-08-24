@@ -13,11 +13,11 @@ class PlanPrice extends Model
 
     protected $table = 'plan_prices';
 
-    protected $fillable = ['plan_id', 'currency', 'add_price', 'renew_price', 'price_description', 'product_quantity', 'no_of_agents', 'country_id'];
+    protected $fillable = ['plan_id', 'currency', 'add_price', 'renew_price', 'price_description', 'product_quantity', 'no_of_agents', 'country_id', 'offer_price'];
 
     protected static $logName = 'Plan Price';
 
-    protected static $logAttributes = ['plan_id', 'currency', 'add_price', 'renew_price', 'price_description', 'product_quantity', 'no_of_agents'];
+    protected static $logAttributes = ['plan_id', 'currency', 'add_price', 'renew_price', 'price_description', 'product_quantity', 'no_of_agents', 'offer_price'];
 
     protected static $logOnlyDirty = true;
 

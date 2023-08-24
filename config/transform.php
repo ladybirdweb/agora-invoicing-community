@@ -10,6 +10,7 @@ return[
         'price' => '{{price}}',
         'price-year' => '{{price-year}}',
         'price-description' => '{{price-description}}',
+        'pricemonth-description' => '{{pricemonth-description}}',
         'strike-price' => '{{strike-price}}',
         'strike-priceyear' => '{{strike-priceyear}}',
         'feature' => '<li>{{feature}}</li>',

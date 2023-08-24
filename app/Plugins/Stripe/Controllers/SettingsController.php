@@ -266,6 +266,8 @@ class SettingsController extends Controller
     public static function sendFailedPaymenttoAdmin($amount, $exceptionMessage)
     {
         try {
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+
             $email = (new Email())
                ->from($set->email)
                ->to($set->company_email)

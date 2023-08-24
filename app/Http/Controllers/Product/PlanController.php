@@ -177,6 +177,7 @@ class PlanController extends ExtendedPlanController
         try {
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
+            $offer_prices = $request->offer_price;
             $this->plan->fill($request->input())->save();
             if ($request->input('days') != '') {
                 $period = Period::where('days', $request->input('days'))->first()->id;
@@ -192,6 +193,7 @@ class PlanController extends ExtendedPlanController
                         'currency' => $request->currency[$key],
                         'add_price' => $value,
                         'renew_price' => $renew_prices[$key],
+                        'offer_price' => $offer_prices[$key],
                         'price_description' => $request->price_description,
                         'product_quantity' => $request->product_quantity,
                         'no_of_agents' => $request->no_of_agents,
@@ -259,10 +261,14 @@ class PlanController extends ExtendedPlanController
     {
         $add_prices = $request->add_price;
         $renew_prices = $request->renew_price;
+        $offer_prices = $request->input('offer_price');
+
         $plan->fill($request->input())->save();
+
         if (count($add_prices) > 0) {
             $dataForCreating = [];
             $plan->planPrice()->delete();
+
             foreach ($add_prices as $key => $value) {
                 $dataForCreating[] = [
                     'plan_id' => $plan->id,
@@ -270,12 +276,14 @@ class PlanController extends ExtendedPlanController
                     'currency' => $request->currency[$key],
                     'add_price' => $value,
                     'renew_price' => $renew_prices[$key],
+                    'offer_price' => isset($request->offer_price[$key]) ? $request->offer_price[$key] : null,
                     'price_description' => $request->price_description,
                     'product_quantity' => $request->product_quantity,
                     'no_of_agents' => $request->no_of_agents,
                     'offer_price' => $request->offer_price,
                 ];
             }
+
             $plan->planPrice()->insert($dataForCreating);
         }
 

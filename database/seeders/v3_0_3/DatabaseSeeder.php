@@ -7,6 +7,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Demo_page;
 use App\Model\Common\PricingTemplate;
+use App\Model\Payment\Period;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([Demo_pageTableSeeder::class]);
+        $this->call([PeriodTypeTableSeeder::class]);
+        $this->command->info('Period table seeded!');
 
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
@@ -27,6 +29,15 @@ class DatabaseSeeder extends Seeder
 
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
+    }
+}
+
+class PeriodTypeTableSeeder extends Seeder
+{
+    public function run()
+    {
+
+        Period::where('id',1)->update(['days' => '365']);
     }
 }
 
@@ -141,9 +152,9 @@ class PricingTemplateSeeder extends Seeder
                        <div class="content-switcher-wrapper">
                                                 <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
                                                 
-                    <span class="price">{{price}}</span>
+                    <span class="price">{{price-year}}</span>
 
-                     <span class="strike">{{strike-price}}</span>
+                     <span class="strike">{{strike-priceyear}}</span>
                                                                                 <label class="price-label">{{price-description}}</label><br><br>
                      <div class="subscription table-responsive">{{subscription}}</div><br>
 
@@ -151,9 +162,9 @@ class PricingTemplateSeeder extends Seeder
                                                                     </div>
                                                                     <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
                                                                         
-                    <span class="price">{{price-year}}</span>
-                     <span class="strike">{{strike-priceyear}}</span>
-                                                                                        <label class="price-label">{{price-description}}</label><br> <br>                                                                                        
+                    <span class="price">{{price}}</span>
+                     <span class="strike">{{strike-price}}</span>
+                                                                                        <label class="price-label">{{pricemonth-description}}</label><br> <br>                                                                                        
                                                                             
                      <div class="subscription table-responsive">{{subscription}}</div><br>
 
@@ -189,8 +200,8 @@ class PricingTemplateSeeder extends Seeder
                  <div class="content-switcher-wrapper">
                                                                 <div class="content-switcher left-50pct transform3dx-n50 active" data-content-switcher-id="pricingTable1" data-content-switcher-rel="1">
                                                                     
-                                                                        <span class="price">{{price}}</span>
-                 <span class="strike">{{strike-price}}</span>
+                                                                        <span class="price">{{price-year}}</span>
+                 <span class="strike">{{strike-priceyear}}</span>
                                                                                     <label class="price-label">{{price-description}}</label><br><br>
                  <div class="subscription">{{subscription}}</div>
                 <br>
@@ -198,9 +209,9 @@ class PricingTemplateSeeder extends Seeder
                                                                 
                                                                 <div class="content-switcher left-50pct transform3dx-n50" data-content-switcher-id="pricingTable1" data-content-switcher-rel="2">
                                                                     
-                                                                        <span class="price">{{price-year}}</span>
+                                                                        <span class="price">{{price}}</span>
 
-                 <span class="strike">{{strike-priceyear}}</span>                                                                   <label class="price-label">{{price-description}}</label><br><br>
+                 <span class="strike">{{strike-price}}</span>                                                                   <label class="price-label">{{pricemonth-description}}</label><br><br>
                  <div class="subscription">{{subscription}}</div>
                 <br>
                 <div>{{url}} </div>                                                 

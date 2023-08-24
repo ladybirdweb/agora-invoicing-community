@@ -262,7 +262,7 @@ Edit Payment
     }); 
     
     function multiplePayment(){
-     $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+     $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
     var invoice = [];
     var invoiceAmount = [];
     $(":checked").each(function() {

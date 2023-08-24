@@ -257,7 +257,7 @@ Create Invoice
         }
         console.log(data);
         data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
-        $("#generate").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        $("#generate").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
 
         $.ajax({
             type: "POST",

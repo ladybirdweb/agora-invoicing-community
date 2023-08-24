@@ -819,7 +819,7 @@ User
     })
     $('#turnoff2fa').on('click',function(){
                 $("#turnoff2fa").attr('disabled',true);
-                $("#turnoff2fa").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait..");
+                $("#turnoff2fa").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait..");
                 var user = $('#disable2fa').val();
                 $.ajax({
 

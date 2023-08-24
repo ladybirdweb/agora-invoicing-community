@@ -206,7 +206,7 @@ main
       priceDisplay.text(yearlyPrice);
       $.ajax({
         type: 'POST',
-        url: '/store_toggle_state', 
+        url: "{{ url('store_toggle_state') }}", 
         data: { toggleState: 'selected' },
         success: function(response) {
           console.log('Selected state value sent to the controller successfully.');
@@ -222,7 +222,7 @@ main
       priceDisplay.text(monthlyPrice);
       $.ajax({
         type: 'POST',
-        url: '/store_toggle_state', 
+        url: "{{ url('store_toggle_state') }}", 
         data: { toggleState: 'unselected' }, 
         success: function(response) {
           console.log('Unselected state value sent to the controller successfully.');

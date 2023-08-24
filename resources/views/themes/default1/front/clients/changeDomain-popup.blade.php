@@ -56,7 +56,7 @@
 
     function changeTenantDomain(){
         $('#createTenant').attr('disabled',true)
-        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         var domain = $('#userdomain').val();
         console.log(domain);
         var domainNew = $('#usernewdomain').val();

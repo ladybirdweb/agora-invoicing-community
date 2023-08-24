@@ -287,7 +287,7 @@ Email
 
 
 
-            $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $("#emailSetting").attr('disabled',true);
             $.ajax({
 

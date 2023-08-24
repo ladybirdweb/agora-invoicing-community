@@ -968,7 +968,7 @@ input:checked + .slider:before {
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#updatesSave").on('click',function(){
       $('#updatesSave').attr('disabled',true);
-      $('#updatesSave').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+      $('#updatesSave').html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         var newdate = $("#newDate").val();
         var orderId = $("#order").val();
         $.ajax({
@@ -1021,7 +1021,7 @@ input:checked + .slider:before {
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#licenseExpSave").on('click',function(){
        $('#licenseExpSave').attr('disabled',true);
-      $('#licenseExpSave').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+      $('#licenseExpSave').html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         var newdate = $("#newDate2").val();
         var orderId = $("#order2").val();
         $.ajax({
@@ -1074,7 +1074,7 @@ input:checked + .slider:before {
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#supportExpSave").on('click',function(){
        $('#supportExpSave').attr('disabled',true);
-       $('#supportExpSave').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+       $('#supportExpSave').html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         var newdate = $("#newDate3").val();
         var orderId = $("#order3").val();
         $.ajax({
@@ -1191,7 +1191,7 @@ input:checked + .slider:before {
 
    function saveStatus($id)
           {
-              // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+              // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
               var status = ($('#is_subscribed').prop("checked"));
               var id = $id;
 

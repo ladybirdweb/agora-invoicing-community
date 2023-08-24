@@ -620,7 +620,7 @@
             else{
                 var checkboxvalue = 0;
             }
-            $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax({
 
                 url : '{{url("licenseDetails")}}',
@@ -706,7 +706,7 @@
             else{
                 var checkboxvalue = 0;
             }
-            $("#submitudpate").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submitudpate").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax({
 
                 url : '{{url("updateDetails")}}',
@@ -793,7 +793,7 @@
             else{
                 var checkboxvalue = 0;
             }
-            $("#submit2").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit2").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax({
 
                 url : '{{url("captchaDetails")}}',
@@ -874,7 +874,7 @@
             else{
                 var checkboxvalue = 0;
             }
-            // $("#submitv3").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            // $("#submitv3").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax({
 
                 url : '{{url("v3captchaDetails")}}',
@@ -962,7 +962,7 @@
                 var mobilestatus = 0;
 
             }
-            $("#submit3").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit3").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updatemobileDetails")}}',
                 type : 'post',
@@ -1005,7 +1005,7 @@
             } else {
                 var emailstatus = 0;
             }
-            $("#submit4").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit4").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updateemailDetails")}}',
                 type : 'post',
@@ -1116,7 +1116,7 @@
                 $('#token_secret').css("border-color","");
                 var twitterstatus = 0;
             }
-            $("#submit5").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit5").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updatetwitterDetails")}}',
                 type : 'post',
@@ -1185,7 +1185,7 @@
                 var zohostatus = 0;
 
             }
-            $("#submit7").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit7").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updatezohoDetails")}}',
                 type : 'post',
@@ -1249,7 +1249,7 @@
                 var chimpstatus = 0;
 
             }
-            $("#submit9").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit9").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updateMailchimpDetails")}}',
                 type : 'post',
@@ -1314,7 +1314,7 @@
                 var termsstatus = 0;
 
             }
-            $("#submit10").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit10").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updateTermsDetails")}}',
                 type : 'post',
@@ -1379,7 +1379,7 @@
                 var pipedrivestatus = 0;
 
             }
-            $("#submit13").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit13").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updatepipedriveDetails")}}',
                 type : 'post',
@@ -1419,7 +1419,7 @@
             } else {
                 var domainstatus = 0;
             }
-            $("#submit14").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+            $("#submit14").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
             $.ajax ({
                 url: '{{url("updatedomainCheckDetails")}}',
                 type : 'post',

@@ -238,7 +238,7 @@ $(document).ready(function (){
        $('#git_secret').css("border-color","");
          var githubstatus = 0;
   }
-    $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+    $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
     $.ajax ({
       url: '{{url("github-setting")}}',
       type : 'post',

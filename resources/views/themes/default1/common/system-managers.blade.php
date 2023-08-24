@@ -199,7 +199,7 @@ System Managers
       var existingManagerId = $('#existingManager').val();
       var newManagerId = $('#users').val();
       $("#replace").attr('disabled',true);
-      $("#replace").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+      $("#replace").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
       $.ajax ({
                 type: 'post',
                 url : "{{url('replace-acc-manager')}}",
@@ -246,7 +246,7 @@ System Managers
       var existingManagerId = $('#existingSalesManager').val();
       var newManagerId = $('#sales').val();
       $("#replaceSales").attr('disabled',true);
-      $("#replaceSales").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+      $("#replaceSales").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
       $.ajax ({
                 type: 'post',
                 url : "{{url('replace-sales-manager')}}",

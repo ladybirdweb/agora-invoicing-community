@@ -114,7 +114,7 @@ Razorpay
 
                //Validate and pass value through ajax
         $("#key_update").on('click',function (){ //When Submit button is checked
-        $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
         $("#key_update").attr('disabled',true);  
              var rzpstatus = 1;
            if ($('#rzp_key').val() == "") { //if value is not entered
@@ -150,7 +150,7 @@ Razorpay
         $("#key_update").attr('disabled',false); 
         $('#rzp_keycheck').hide();
          $('#rzp_secret').css("border-color","");
-           $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>Update");
+           $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Update");
              
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.message.message+'.</div>';
@@ -161,7 +161,7 @@ Razorpay
             }, 1000);
           }, error: function(data) {
             $("#key_update").attr('disabled',false);  
-            $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>Update");
+            $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Update");
                 $('#errorMessage').show();
                 var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i> Failed! </strong>'+data.responseJSON.message+'.</div>';
                 $('#errorMessage').html(data.responseJSON.message);

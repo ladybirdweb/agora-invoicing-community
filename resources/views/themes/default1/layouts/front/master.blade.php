@@ -964,7 +964,7 @@ $days = $pay->where('product','117')->value('days');
     function firstlogin(id)
     {
         $('#createTenant').attr('disabled',true)
-        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
         var domain = $('#userdomain').val();
         var password = $('#password').val();
         var product = $('input[name="option"]:checked').val();

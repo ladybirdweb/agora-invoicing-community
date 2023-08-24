@@ -259,7 +259,7 @@ $price = $order->price_override;
                 if($order->order_status!='Terminated'){
                     $navigations = [
                          ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
-                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         //['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
                          ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
                          ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
                     ];
@@ -874,13 +874,13 @@ $price = $order->price_override;
                         </div>
                     </div>
                     <div class="form-group">
-                        {!! Form::label('cost', 'Plan Price:', ['class' => 'col-6']) !!}
+                        {!! Form::label('cost', 'Total Price for the plan:', ['class' => 'col-6']) !!}
                         <div class="col-12">
                             {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
                         </div>
                     </div>
                     <div class="form-group">
-                        {!! Form::label('cost', 'Credits remaining on your current plan:', ['class' => 'col-6']) !!}
+                        {!! Form::label('cost', 'Credits remaining on your current plan:', ['class' => 'col-12']) !!}
                         <div class="col-12">
                             {!! Form::text('cost', null, ['class' => 'form-control discount', 'id' =>'discount', 'readonly' => 'readonly']) !!}
                         </div>

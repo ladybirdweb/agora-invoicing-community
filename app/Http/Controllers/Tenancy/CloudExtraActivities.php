@@ -90,7 +90,7 @@ class CloudExtraActivities extends Controller
 
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
 
-            return $this->getThePaymentCalculationUpgradeDowngradeDisplay($agents, $oldLicense, $orderId, $planId, $actualPrice);
+            return $this->getThePaymentCalculationUpgradeDowngradeDisplay($agents, $oldLicense, $orderId, $planId, $actualPrice, $planDetails['plan']->add_price);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -626,7 +626,7 @@ class CloudExtraActivities extends Controller
         }
     }
 
-    private function getThePaymentCalculationUpgradeDowngradeDisplay($newAgents, $oldAgents, $orderId, $planIdNew, $actualPrice)
+    private function getThePaymentCalculationUpgradeDowngradeDisplay($newAgents, $oldAgents, $orderId, $planIdNew, $actualPrice, $pricePerAgent)
     {
         try {
             $discount = 0;
@@ -709,7 +709,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true)];
+            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true),'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true),];
 
             return $items;
         } catch(\Exception $e) {
@@ -722,5 +722,71 @@ class CloudExtraActivities extends Controller
     public function processFormat(Request $request)
     {
         return currencyFormat($request->get('totalPrice'), \Auth::user()->currency, true);
+    }
+
+
+    public function getThePaymentCalculationDisplay(Request $request)
+    {
+        try {
+            $newAgents = $request->get('newAgents');
+            $oldAgents = $request->get('oldAgents');
+            $orderId   = $request->get('orderId');
+            $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
+            $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+            $planId = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+
+            $product_id = Plan::where('id', $planId)->pluck('product')->first();
+            $planDays = Plan::where('id', $planId)->pluck('days')->first();
+            $product = Product::find($product_id);
+            $plan = $product->planRelation->find($planId);
+            $currency = userCurrencyAndPrice('', $plan);
+            $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
+            $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->value('add_price');
+            if ($newAgents > $oldAgents) {
+                if (Carbon::now() == $ends_at) {
+                    $price = $base_price * $newAgents;
+                } else {
+                    $agentsAdded = $newAgents - $oldAgents;
+                    $pricePerDay = $base_price / $planDays;
+                    $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
+                    $currentDateTime = Carbon::now();
+                    $daysRemain = $futureDateTime->diffInDays($currentDateTime);
+                    $pricePerThatAgent = $pricePerDay * $daysRemain;
+                    $price = $agentsAdded * $pricePerThatAgent;
+                }
+            } else {
+                if (Carbon::now() == $ends_at) {
+                    $price = $base_price * $newAgents;
+                } else {
+                    $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
+                    $currentDateTime = Carbon::now();
+                    $daysRemain = $futureDateTime->diffInDays($currentDateTime);
+
+                    $priceForNewAgents = $base_price * $newAgents;
+                    $priceForOldAgents = $base_price * $oldAgents;
+
+                    $pricePerDayForNewAgents = $priceForNewAgents / $planDays;
+
+                    $pricePerDayForOldAgents = $priceForOldAgents / $planDays;
+
+                    $priceRemaining = $pricePerDayForOldAgents * $daysRemain;
+                    $priceToBePaid = $pricePerDayForNewAgents * $daysRemain;
+
+                    $discount = $priceRemaining - $priceToBePaid;
+
+                    if ($priceToBePaid > $priceRemaining) {
+                        $price = $priceToBePaid - $priceRemaining;
+                    } else {
+                        $price = 0;
+                    }
+
+                }
+            }
+            return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat(($base_price * $newAgents), $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
+        } catch(\Exception $e) {
+            app('log')->error($e->getMessage());
+
+            return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
+        }
     }
 }

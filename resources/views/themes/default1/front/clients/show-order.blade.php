@@ -91,56 +91,56 @@
 $cartSubtotalWithoutCondition = 0;
 
 use Razorpay\Api\Api;
- $merchant_orderid= generateMerchantRandomString();
+$merchant_orderid= generateMerchantRandomString();
 
 function generateMerchantRandomString($length = 10) {
-$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-$charactersLength = strlen($characters);
-$randomString = '';
-for ($i = 0; $i < $length; $i++) {
-    $randomString .= $characters[rand(0, $charactersLength - 1)];
-}
-return $randomString;
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
 }
 $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
 $apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
- $api = new Api($rzp_key, $rzp_secret);
+$api = new Api($rzp_key, $rzp_secret);
 $displayCurrency = \Auth::user()->currency;
 $symbol = \Auth::user()->currency;
 if ($symbol == 'INR'){
 
 
-$exchangeRate= '';
+    $exchangeRate= '';
 
 
-$orderData = [
-'receipt'         => 3456,
-'amount'          => round(1.00*100), // 2000 rupees in paise
+    $orderData = [
+        'receipt'         => 3456,
+        'amount'          => round(1.00*100), // 2000 rupees in paise
 
-'currency'        => \Auth::user()->currency,
-'payment_capture' => 0 // auto capture
+        'currency'        => \Auth::user()->currency,
+        'payment_capture' => 0 // auto capture
 
-];
+    ];
 
 
 } else {
 
- $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
- $exchange = json_decode(file_get_contents($url));
+    $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
+    $exchange = json_decode(file_get_contents($url));
 
- $exchangeRate = $exchange->quotes->USDINR;
- $displayAmount =$exchangeRate * round(1.00*100) ;
+    $exchangeRate = $exchange->quotes->USDINR;
+    $displayAmount =$exchangeRate * round(1.00*100) ;
 
 
- $orderData = [
-'receipt'         => 3456,
-'amount'          =>  round(1.00*100), // 2000 rupees in paise
+    $orderData = [
+        'receipt'         => 3456,
+        'amount'          =>  round(1.00*100), // 2000 rupees in paise
 
-'currency'        => \Auth::user()->currency,
-'payment_capture' => 0 // auto capture
+        'currency'        => \Auth::user()->currency,
+        'payment_capture' => 0 // auto capture
 
-];
+    ];
 }
 $razorpayOrder = $api->order->create($orderData);
 $razorpayOrderId = $razorpayOrder['id'];
@@ -155,31 +155,31 @@ $data = [
     "key"               => $rzp_key,
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
-     "prefill"=> [
+    "prefill"=> [
         "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
         "email"=>      \Auth::user()->email,
     ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
     "notes"             => [
-    "First Name"         => \Auth::user()->first_name,
-    "Last Name"         =>  \Auth::user()->last_name,
-    "Company Name"      => \Auth::user()->company,
-    "Address"           =>  \Auth::user()->address,
-    "Email"             =>  \Auth::user()->email,
-    "Country"           =>  \Auth::user()->country,
-    "State"             => \Auth::user()->state,
-    "City"              => \Auth::user()->town,
-    "Zip"               => \Auth::user()->zip,
-    "Currency"          => \Auth::user()->currency,
-    "Amount Paid"   => '1',
-    "Exchange Rate"   =>  $exchangeRate,
+        "First Name"         => \Auth::user()->first_name,
+        "Last Name"         =>  \Auth::user()->last_name,
+        "Company Name"      => \Auth::user()->company,
+        "Address"           =>  \Auth::user()->address,
+        "Email"             =>  \Auth::user()->email,
+        "Country"           =>  \Auth::user()->country,
+        "State"             => \Auth::user()->state,
+        "City"              => \Auth::user()->town,
+        "Zip"               => \Auth::user()->zip,
+        "Currency"          => \Auth::user()->currency,
+        "Amount Paid"   => '1',
+        "Exchange Rate"   =>  $exchangeRate,
 
 
 
-    "merchant_order_id" =>  $merchant_orderid,
+        "merchant_order_id" =>  $merchant_orderid,
     ],
     "theme"             => [
-    "color"             => "#F37254"
+        "color"             => "#F37254"
     ],
     "order_id"          => $razorpayOrderId,
 ];
@@ -193,15 +193,15 @@ if ($displayCurrency !== 'INR')
 $json = json_encode($data);
 
 
- $currency = \Auth::user()->currency;
+$currency = \Auth::user()->currency;
 
 
 
- $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(\Auth::user()->currency);
+$gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(\Auth::user()->currency);
 // $processingFee = \DB::table(strtolower($gateways))->where('currencies',\Auth::user()->currency)->value('processing_fee');
 
- $planid = \App\Model\Payment\Plan::where('product',$product->id)->value('id');
- $price = $order->price_override;
+$planid = \App\Model\Payment\Plan::where('product',$product->id)->value('id');
+$price = $order->price_override;
 
 
 
@@ -357,22 +357,22 @@ $json = json_encode($data);
                         </tr></thead>
                         <tbody>
                         @foreach($installationDetails['installed_path'] as $key => $ins)
-                            <?php
-                            $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
+                                <?php
+                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
 
-                            $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
 
-                            if($productversion) {
+                                if($productversion) {
 
-                                $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                                $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
-                            }
+                                    $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                                }
 
-                            $active = !empty($ins)?true:false;
+                                $active = !empty($ins)?true:false;
 
 
 
-                            ?>
+                                ?>
                             <tr>
                                 <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
                                 @if($product->type != '4')

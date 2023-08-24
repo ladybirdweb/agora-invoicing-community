@@ -573,6 +573,7 @@ class ClientController extends BaseClientController
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View</a>";
                                 }
                                 $plan = Plan::where('product', $model->product_id)->value('id');
+                                $planName = Plan::where('product', $model->product_id)->value('name');
                                 $price = PlanPrice::where('plan_id', $plan)->where('currency', \Auth::user()->currency)->value('renew_price');
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
@@ -598,7 +599,7 @@ class ClientController extends BaseClientController
                                     $agents = intval($agents, 10);
                                 }
 
-                                $url = $this->renewPopup($model->sub_id, $model->product_id, $agents);
+                                $url = $this->renewPopup($model->sub_id, $model->product_id, $agents,$planName);
 
                                 $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 

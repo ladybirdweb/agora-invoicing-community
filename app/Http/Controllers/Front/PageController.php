@@ -486,7 +486,6 @@ class PageController extends Controller
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($set);
 
         try {
             $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
@@ -496,14 +495,8 @@ class PageController extends Controller
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             if (emailSendingStatus()) {
-                $email = (new Email())
-                   ->from($set->email)
-                   ->to($set->company_email)
-                   ->subject('Requesting for Demo for'.'  '.$product)
-                    ->replyTo($request->input('demoemail'))
-                   ->html($data);
+                $mail->SendEmail($set->email, $set->company_email, $data, 'Requesting for Demo for'.'  '.$product);
 
-                $mailer->send($email);
             }
 
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
@@ -539,31 +532,4 @@ class PageController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
-       {
-           $this->validate($request, [
-               'name'    => 'required',
-               'email'   => 'required|email',
-               'message' => 'required',
-           ]);
-
-           $set = new \App\Model\Common\Setting();
-           $set = $set->findOrFail(1);
-
-           try {
-               $data = '';
-               $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
-               $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
-               $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-               $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-               if (emailSendingStatus()) {
-                   $mail = new \App\Http\Controllers\Common\PhpMailController();
-                   $mail->SendEmail($set->email, $to, $data,'Faveo billing enquiry');
-               }
-
-               //$this->templateController->SendEmail($from, $to, $data, $subject);
-               return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
-           } catch (\Exception $ex) {
-               return redirect()->back()->with('fails', $ex->getMessage());
-           }
-       }
 }

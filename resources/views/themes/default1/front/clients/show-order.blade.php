@@ -608,7 +608,7 @@ $price = $order->price_override;
                                                 <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
-                                                    <p class="card-text mb-0" style="text-align: justify">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
+                                                    <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -625,7 +625,7 @@ $price = $order->price_override;
                                                 <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
                                                     <h5 class="mb-1">Increase/Decrease Agents</h5>
-                                                    <p class="card-text mb-0" style="text-align: justify">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
+                                                    <p class="card-text mb-0">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -654,7 +654,7 @@ $price = $order->price_override;
                                                 ?>
                                                 <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
                                                 <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
-                                                <p class="card-text mb-0" style="text-align: justify">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
+                                                <p class="card-text mb-0">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
                                             </div>
                                         </div>
                                     </a>

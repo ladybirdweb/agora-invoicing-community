@@ -104,7 +104,7 @@
 
     function createtenancy(){
         $('#createtenancy').attr('disabled',true)
-        $("#createtenancy").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        $("#createtenancy").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
         var domain = $('#userdomain').val();
         var password = $('#password').val();
         var order = $('#orderId').val();

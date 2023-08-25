@@ -10,7 +10,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;

@@ -27,7 +27,6 @@ return new class extends Migration
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->string('coupon_code')->change();
-
         });
     }
 };

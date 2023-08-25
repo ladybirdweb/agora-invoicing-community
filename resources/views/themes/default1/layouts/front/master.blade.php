@@ -40,19 +40,23 @@ foreach($scripts as $script)
     color: white;
 }
 
-            .custom-line {
-                border: none;
-                border-top: 1px solid #ccc;
-                margin: 10px 0;
-            }
-            #validationMessage {
-              position: absolute;
-              top: 80px; /* Adjust this value to align the error message properly */
-              margin-left:32px;
-              left: 0;
-              font-size: 12px;
-              color: red;
+.custom-line {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
 }
+#validationMessage {
+  position: absolute;
+  top: 80px; /* Adjust this value to align the error message properly */
+  margin-left:32px;
+  left: 0;
+  font-size: 12px;
+  color: red;
+}
+
+  .breadcrumb > li + li:before {
+        content: "\3e" !important;
+    }
 </style>
        
 
@@ -196,14 +200,13 @@ $days = $pay->where('product','117')->value('days');
 
 
 
-                                                    <li class="dropdown">
-                                                   <a class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
+                                                   <a class="nav-link open-createTenantDialog" style=" text-decoration: none;cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
                                                     <div>
                                                                 <i class="fas fa-cloud"></i>
                                                                 <span style="margin-left: 3px;">START FREE TRAIL</span>
                                                             </div>
                                                         </a>
-                                                    </li>
+                                                  
 
                                                 @endif
                                             @endauth

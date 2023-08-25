@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('status_settings', 'v3recaptcha_status')) {
-            Schema::table('status_settings', function (Blueprint $table) {
-                $table->boolean('v3recaptcha_status')->default(0);
-            });
-        }
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->string('coupon_code')->nullable()->change();
+        });
     }
 
     /**
@@ -27,8 +25,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->dropColumn('v3recaptcha_status');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->string('coupon_code')->change();
+
         });
     }
 };

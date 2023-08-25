@@ -1679,23 +1679,36 @@ $price = $order->price_override;
                     url: "{{ url('change/domain') }}",
                     success: function (data) {
                         if (data.success ==true){
-                            var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+'</div>';
                             $('#success-domain').html(result);
                             $('#success-domain').css('color', 'green');
                             $('#changeDomain').attr('disabled',false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
-                            setTimeout(function(){
-                                window.location.reload();
-                            },3000);
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#success-domain').fadeOut('slow', function() {
+                                    $(this).html('');
+                                    window.location.reload();
+                                });
+                            }, 3000);
                         }
 
                     }, error: function(data) {
                         if(data.responseJSON.success==false) {
-                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
                             $('#failure-domain').html(result);
                             $('#failure-domain').css('color', 'red');
                             $('#changeDomain').attr('disabled', false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-domain').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+                            window.location.reload();
+
                         }
 
                     }
@@ -1726,13 +1739,23 @@ $price = $order->price_override;
                     },
                     error: function(data) {
                         if (data.responseJSON.success == false) {
-                            $('#agentNumber').attr('disbaled',false);
+                            $('#agentNumber').attr('disabled', false);
                             $('#agentNumber').html("<i class='fa fa-users'>&nbsp;&nbsp;</i>  Update Agents");
-                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
                             $('#failure-agent').html(result);
                             $('#failure-agent').css('color', 'red');
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-agent').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+                            window.location.reload();
+
                         }
                     }
+
                 });
             });
         });
@@ -1761,18 +1784,23 @@ $price = $order->price_override;
                             $('#response-upgrade').css('color', 'green');
                             $('#upgradedowngrade').attr('disabled',false);
                             $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
-                            setTimeout(function(){
-                                window.location.reload();
-                            },3000);
                         }
 
                     },  error: function(data) {
                         if (data.responseJSON.success == false) {
-                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + '</div>';
                             $('#failure-upgrade').html(result);
                             $('#failure-upgrade').css('color', 'red');
                             $('#upgradedowngrade').attr('disabled',false);
                             $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-upgrade').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+                            window.location.reload();
                         }
                     }
 

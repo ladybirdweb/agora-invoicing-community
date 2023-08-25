@@ -276,7 +276,7 @@ class SettingsController extends Controller
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
     {
         $setting = Setting::find(1);
-        $paymentSuccessdata = 'Payment for ' . $productName . ' of ' . \Auth::user()->currency . ' ' . $total . ' successful by ' . $user->first_name . ' ' . $user->last_name . ' Email: ' . $user->email;
+        $paymentSuccessdata = 'Payment for '.$productName.' of '.\Auth::user()->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');

@@ -778,6 +778,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
+
             return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());

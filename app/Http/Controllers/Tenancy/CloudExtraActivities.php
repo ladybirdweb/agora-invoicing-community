@@ -187,7 +187,7 @@ class CloudExtraActivities extends Controller
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return errorResponse(trans('message.agent_reduce'));
+            return errorResponse(trans('message.something_went_wrong'));
         }
     }
 
@@ -531,8 +531,6 @@ class CloudExtraActivities extends Controller
 
         $response = '{'.$response[1];
 
-        \Log::debug('sandesh', (array) $response);
-
         json_decode($response);
 
         $orderId = \Session::get('upgradeorderId');
@@ -780,12 +778,11 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-
             return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
+            return errorResponse(trans('message.something_went_wrong'));
         }
     }
 }

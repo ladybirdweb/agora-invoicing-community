@@ -694,7 +694,8 @@ return [
     'something_bad'    =>'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact our <a href="https://support.faveohelpdesk.com">Support Center</a>',
     'cloud_info' => 'Welcome to Faveo! You can deploy your free trial cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
     'cloud_live_info'=> 'Welcome to Faveo! You can deploy your cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
-    'cname' => 'Your domain\'s DNS CNAME record is not pointing to our cloud. Please ensure that the CNAME record is correctly set to proceed with the desired action. Please <a href="https://docs.faveohelpdesk.com/docs/helper/cname">Click here!</a> to know more.',
+
+    'cname' => 'Uh-oh! It seems your domain\'s DNS CNAME record isn\'t pointing to our cloud. To continue with your intended action, kindly double-check and make sure the CNAME record is set up correctly. If you need more guidance, you can check out our <a href="https://docs.faveohelpdesk.com/docs/helper/cname">helpful guide here</a>.',
     'cloud_heading' => 'Let\'s create your Faveo cloud instance together!',
     'cloud_field_label' => 'Enter your desired cloud domain name',
     'cloud_price' =>'Price per agent',
@@ -703,8 +704,7 @@ return [
     'confirm' => 'Are you sure you want to delete this?',
 
     //Delete message
-    'confirm' => 'Are you sure you want to delete this?',
-    'cloud_domain_change'=>'Domain changed please reissue your license and use the license code in your domain',
+    'cloud_domain_change' => 'Great news! Your Cloud Domain has been successfully changed. Please be aware that there will be a brief downtime of approximately 5 minutes to apply these changes. Thank you for your patience!',
     'limit_is_up' => 'It has come to our notice that you have crossed the free trial limit, please delete your existing instances to proceed further.',
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
     'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
@@ -715,5 +715,13 @@ return [
     'err_msg' => 'OOPS! Something went wrong.',
     'mail_verify' => 'Number of Email Verification Attempts',
     'mobile_verify' => 'Number of Mobile Verification Attempts',
-
+    'without_installation_found' => 'Oops! It looks like you can\'t make changes to the agents if we can\'t locate your cloud domain. Kindly renew your subscription first, make the necessary agent alterations later. You can adjust the agents in your cloud settings under your order. Thank you!',
+    'nothing_changed' => 'No worries! It looks like there hasn\'t been any changes – your current and new domains appear to be the same. Feel free to reach out if you have any questions or need further assistance',
+    'cloud_not_allowed' => 'Just a heads up! You\'re not allowed to update the subdomain that\'s associated with faveocloud.com. If you\'d like to change your domain, please use your very own custom domain instead. If you need help or have questions, feel free to ask!',
+    'installation_path_not_found' => 'Oops! It looks like you can\'t make changes to this order if we can\'t locate your cloud domain. Thank you!',
+    'wrong_agents' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with altering your agents. Thanks for your patience!',
+    'wrong_upgrade' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with upgrading or downgrading your current plan. Thanks for your patience!',
+    'wrong_domain' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with customizing your domain. Thanks for your patience!',
+    'agent_updated' => 'Woohoo! We\'ve successfully updated the agents in your current plan. All set and good to go!',
+    'change_agents_failed' => 'Oopsie daisy! While you were tweaking your agents, it looks like something got tangled up in the cloud server. No worries though – our awesome team is already on the case to fix things up!'
 ];

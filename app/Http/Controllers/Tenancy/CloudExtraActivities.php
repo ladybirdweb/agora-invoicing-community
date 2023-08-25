@@ -92,7 +92,9 @@ class CloudExtraActivities extends Controller
 
             return $this->getThePaymentCalculationUpgradeDowngradeDisplay($agents, $oldLicense, $orderId, $planId, $actualPrice, $planDetails['plan']->add_price);
         } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+            app('log')->error($ex->getMessage());
+
+            return ['price_to_be_paid' => 'NaN', 'discount' => 'NaN', 'currency' => 'NaN'];
         }
     }
 
@@ -117,7 +119,7 @@ class CloudExtraActivities extends Controller
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
             if (! strpos($newDomain, 'fratergroup.in')) {
                 if (empty($dns_record) || ! in_array('fratergroup.in', array_column($dns_record, 'target'))) {
-                    throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+                    return errorResponse(trans('message.cname'));
                 }
             }
             $encodedData = http_build_query($data);
@@ -137,7 +139,9 @@ class CloudExtraActivities extends Controller
 
             return successResponse(trans('message.cloud_domain_change'));
         } catch(\Exception $e) {
-            return errorResponse($e->getMessage());
+            app('log')->error($e->getMessage());
+
+            return errorResponse(trans('message.wrong_domain'));
         }
     }
 
@@ -162,7 +166,9 @@ class CloudExtraActivities extends Controller
             $newAgents = $request->newAgents;
             $orderId = $request->input('orderId');
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
-
+            if (empty($installation_path)) {
+                return errorResponse(trans('message.installation_path_not_found'));
+            }
             $product_id = $request->product_id;
 
             if ($this->checktheAgent($newAgents, $installation_path)) {
@@ -187,7 +193,7 @@ class CloudExtraActivities extends Controller
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return errorResponse(trans('message.something_went_wrong'));
+            return errorResponse(trans('message.wrong_agents'));
         }
     }
 
@@ -291,7 +297,7 @@ class CloudExtraActivities extends Controller
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
+            return response(['status' => false, 'message' => trans('message.wrong_agents')]);
         }
     }
 
@@ -438,7 +444,7 @@ class CloudExtraActivities extends Controller
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return response(['status' => false, 'message' => trans('message.something_went_wrong')]);
+            return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
         }
     }
 
@@ -494,7 +500,7 @@ class CloudExtraActivities extends Controller
             $result = json_decode($response);
 
             if ($result->status == 'fails') {
-                return response(['status' => true, 'message' => trans('message.change_agents_failed')]);
+                return errorResponse(trans('message.change_agents_failed'));
             }
             \Session::forget('AgentAlteration');
             \Session::forget('newAgents');
@@ -503,17 +509,17 @@ class CloudExtraActivities extends Controller
             \Session::forget('product_id');
             \Session::forget('oldLicense');
 
-            return response(['status' => true, 'message' => trans('message.agent_updated')]);
+            return successResponse(trans('message.agent_updated'));
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
+            return errorResponse(trans('message.wrong_agents'));
         }
     }
 
     public function doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productID, $oldLicenseCode)
     {
-        $this->doTheActivity($licenseCode, $oldLicenseCode);
+        $this->doTheActivity();
 
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
         $token = str_random(32);
@@ -567,7 +573,7 @@ class CloudExtraActivities extends Controller
                 \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
         }
 
-        return response()->json(['message' => 'Pay check updated']);
+        return response()->json(['message' => 'Your a developer that\'s why you\'re checking this']);
     }
 
     public function formatCurrency(Request $request)
@@ -591,7 +597,7 @@ class CloudExtraActivities extends Controller
         return response()->json(['formatted_value' => $formattedValue]);
     }
 
-    private function doTheActivity($licenseCode, $oldLicenseCode)
+    private function doTheActivity()
     {
         if (\Session::has('discount')) {
             $discount = \Session::get('discount');
@@ -782,8 +788,8 @@ class CloudExtraActivities extends Controller
             return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
+            return ['pricePerAgent' => 'NaN', 'totalPrice'=> 'NaN', 'priceToPay'=>'NaN'];
 
-            return errorResponse(trans('message.something_went_wrong'));
         }
     }
 }

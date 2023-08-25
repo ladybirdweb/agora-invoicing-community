@@ -146,7 +146,7 @@ class FreeTrailController extends Controller
             }
 
             if ($product) {
-                $plan_id = $product->planRelation()->where('days','<',30)->value('id');
+                $plan_id = $product->planRelation()->where('days', '<', 30)->value('id');
                 $cart = \Cart::getContent();
                 $userId = \Auth::user()->id;
                 $invoice = $this->invoice->where('user_id', $userId)->latest()->first();
@@ -158,7 +158,7 @@ class FreeTrailController extends Controller
                         ->where('currency', \Auth::user()->currency)->pluck('add_price'),
                     'quantity' => 1,
                     'tax_name' => 'null',
-                    'tax_percentage' => $product->planRelation()->where('days','<',30)->value('allow_tax'),
+                    'tax_percentage' => $product->planRelation()->where('days', '<', 30)->value('allow_tax'),
                     'subtotal' => 0,
                     'domain' => '',
                     'plan_id' => $plan_id,

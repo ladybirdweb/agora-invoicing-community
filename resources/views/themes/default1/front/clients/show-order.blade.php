@@ -1707,7 +1707,7 @@ $price = $order->price_override;
             $('#agentNumber').on('click', function() {
                 $('#agentNumber').attr('disbaled',true);
                 $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
-                var newAgents = $('#number').val();
+                var newAgents = $('#numberAGt').val();
                 var orderId = {!! $id !!};
                 var productId ={!! $product->id !!};
                 var subId = {!! $subscription->id !!};

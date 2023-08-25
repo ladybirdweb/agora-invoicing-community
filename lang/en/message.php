@@ -730,5 +730,5 @@ return [
     'wrong_upgrade' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with upgrading or downgrading your current plan. Thanks for your patience!',
     'wrong_domain' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with customizing your domain. Thanks for your patience!',
     'agent_updated' => 'Woohoo! We\'ve successfully updated the agents in your current plan. All set and good to go!',
-    'change_agents_failed' => 'Oopsie daisy! While you were tweaking your agents, it looks like something got tangled up in the cloud server. No worries though – our awesome team is already on the case to fix things up!'
+    'change_agents_failed' => 'Oopsie daisy! While you were tweaking your agents, it looks like something got tangled up in the cloud server. No worries though – our awesome team is already on the case to fix things up!',
 ];

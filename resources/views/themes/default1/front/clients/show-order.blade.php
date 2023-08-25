@@ -1552,7 +1552,7 @@ $price = $order->price_override;
         $(document).ready(function() {
             $('#agentNumber').on('click', function() {
                 $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
-                var newAgents = $('#numberAGt').val();
+                var newAgents = $('#number').val();
                 var orderId = {!! $id !!};
                 var productId ={!! $product->id !!};
 

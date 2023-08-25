@@ -9,7 +9,6 @@ use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use App\User;

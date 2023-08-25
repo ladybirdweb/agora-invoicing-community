@@ -20,7 +20,6 @@ use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
 use App\User;
 use Carbon\Carbon;
-use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -788,8 +787,8 @@ class CloudExtraActivities extends Controller
             return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
-            return ['pricePerAgent' => 'NaN', 'totalPrice'=> 'NaN', 'priceToPay'=>'NaN'];
 
+            return ['pricePerAgent' => 'NaN', 'totalPrice'=> 'NaN', 'priceToPay'=>'NaN'];
         }
     }
 }

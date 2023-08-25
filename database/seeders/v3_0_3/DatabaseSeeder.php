@@ -669,6 +669,87 @@ class TemplateTableSeeder extends Seeder
     </tbody>
     </table>
     <p>&nbsp;</p>']); 
+    
+    
+         Template::where('id',14)->update(['name' => 'Auto payment failed', 'type' => 14, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+          <tr>
+          <td style="width: 30px;">&nbsp;</td>
+          <td style="width: 640px; padding-top: 30px;">
+          <h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;">{logo}</h2>
+          </td>
+          <td style="width: 30px;">&nbsp;</td>
+          </tr>
+          <tr>
+          <td style="width: 30px;">&nbsp;</td>
+          <td style="width: 640px; padding-top: 30px;">
+          <table style="width: 640px; border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+          <tr>
+          <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {{name}},<br /><br />
+          <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Oh no, your payment failed.</h1>
+          </td>
+          <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          </tr>
+          <tr>
+          <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          <td style="background: #fff; padding: 0; width: 560px;" align="left">
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Your Payment failed for your subscription. Dont worry, Well try again over the next few days.</p>
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">To keep your product active you may need to update your payment, Please use the below link to renew your order.&nbsp;&nbsp;</p>
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;"><strong>Reason for Failure:</strong></p>
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">{{exception}}.</p>
+          <table style="margin: 25px 0 30px 0; width: 560px; border: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+          <tr style="background-color: #f8f8f8;">
+          <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 139.516px;" align="left" valign="top">Order No</th>
+          <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 138.031px;" align="left" valign="top">Product</th>
+          <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 83.6016px;" align="left" valign="top">Expiry Date</th>
+          <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 35.8281px;">Total</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+          <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 139.516px;" valign="top">{{number}}</td>
+          <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 138.031px;" valign="top">{{product}}</td>
+          <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 83.6016px;" valign="top">{{expiry}}</td>
+          <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 35.8281px;">{{total}}</td>
+          </tr>
+          </tbody>
+          </table>
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Click the button below to login to your Control Panel and renew your orders.</p>
+          </td>
+          <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          </tr>
+          <tr>
+          <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          <td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{{url}}" target="_blank" rel="noopener"> Make Payment </a></td>
+          <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          <td style="width: 30px;">&nbsp;</td>
+        </tr>
+        <tr>
+        <td style="width: 30px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+        <td style="padding: 20px 0 10px 0; width: 640px;" align="left">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+        <tr>
+        <td style="color: #333; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; padding-bottom: 0; padding-left: 25px;">BILLING CONTACT</td>
+        </tr>
+        <tr>
+          {$contact}
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        <td style="width: 30px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+        </tr>
+        </tbody>
+        </table>
+        <p>&nbsp;</p>']); 
        Template::where('id',15)->delete();
        Template::where('id',16)->delete();
        Template::where('id',17)->delete();
@@ -818,7 +899,7 @@ class TemplateTableSeeder extends Seeder
 
 
 
-        Template::create(['id' => 20, 'name' => '[Faveo Cloud] New instance created', 'type' => 20, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 20, 'name' => 'New instance created', 'type' => 20, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
           <tbody>
           <tr>
           <td style="width: 30px;">&nbsp;</td>

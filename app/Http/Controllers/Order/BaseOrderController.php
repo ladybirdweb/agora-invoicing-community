@@ -132,7 +132,7 @@ class BaseOrderController extends ExtendedOrderController
 
     protected function updateInvoiceDate($invoiceId)
     {
-        $invoice = Invoice::find($invoiceId); // Replace Invoice with your actual Invoice model
+        $invoice = Invoice::find($invoiceId); 
         $invoice->update(['date' => Carbon::now()]);
     }
 

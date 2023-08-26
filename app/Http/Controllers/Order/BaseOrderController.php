@@ -274,32 +274,30 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-       
-            $contact = getContactData();
-            $value = Product::where('name', $product)->value('type');
+        $contact = getContactData();
+        $value = Product::where('name', $product)->value('type');
 
-            $templates = new \App\Model\Common\Template();
-            $temp_id = TemplateType::where('name', 'order_mail')->value('id');
+        $templates = new \App\Model\Common\Template();
+        $temp_id = TemplateType::where('name', 'order_mail')->value('id');
 
-            $template = $templates->where('type', $temp_id)->first();
+        $template = $templates->where('type', $temp_id)->first();
 
-         
-            $knowledgeBaseUrl = $setting->company_url;
-            $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
-            }
+        $knowledgeBaseUrl = $setting->company_url;
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
 
-            $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
-            $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
-            $end = app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
-            $date = date_create($end);
-            $end = date_format($date, 'l, F j, Y');
+        $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
+        $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
+        $end = app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
+        $date = date_create($end);
+        $end = date_format($date, 'l, F j, Y');
 
-            $type = '';
-            $replace = [
+        $type = '';
+        $replace = [
             'orderHeading' => $orderHeading,
             'name' => $user->first_name.' '.$user->last_name,
             'serialkeyurl' => $myaccounturl,
@@ -313,14 +311,12 @@ class BaseOrderController extends ExtendedOrderController
             'contact' => $contact['contact'],
             'logo' => $contact['logo'], ];
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-        
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
 
-            if ($order->invoice->grand_total) {
-                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice, $order->invoice->grand_total, $user, $product);
-            }
-      
+        if ($order->invoice->grand_total) {
+            SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice, $order->invoice->grand_total, $user, $product);
+        }
     }
 
     public function invoiceUrl($orderid)

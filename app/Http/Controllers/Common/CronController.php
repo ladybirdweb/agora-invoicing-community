@@ -298,7 +298,6 @@ class CronController extends BaseCronController
         return $subscriptions;
     }
 
-
     public function getPostSubscriptions($days)
     {
         $days = (int) $days;
@@ -658,15 +657,15 @@ class CronController extends BaseCronController
         $url = url("autopaynow/$invoice->invoice_id");
         $type = '';
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'product' => $product_details->name,
-             'total' => currencyFormat($total, $code = $currency),
-             'number' => $number,
-             'expiry' => date('d-m-Y', strtotime($end)),
-             'exception' => $exceptionMessage,
-             'url' => $url,
-             'contact' => $contact['contact'],
-            'logo' => $contact['logo'],];
-             $type = '';
+            'product' => $product_details->name,
+            'total' => currencyFormat($total, $code = $currency),
+            'number' => $number,
+            'expiry' => date('d-m-Y', strtotime($end)),
+            'exception' => $exceptionMessage,
+            'url' => $url,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'], ];
+        $type = '';
 
         if ($template) {
             $type_id = $template->type;
@@ -694,17 +693,17 @@ class CronController extends BaseCronController
         $date = date_create($future_expiry->update_ends_at);
         $end = date_format($date, 'l, F j, Y ');
 
-        $replace =   [
-             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-             'product' => $product,
-             'total' => currencyFormat($total, $code = $currency),
-             'number' => $number,
-             'contact' => $contact['contact'],
-             'logo' => $contact['logo'],
-             'future_expiry' => $end,
-            ];
+        $replace = [
+            'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'product' => $product,
+            'total' => currencyFormat($total, $code = $currency),
+            'number' => $number,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
+            'future_expiry' => $end,
+        ];
 
-             $type = '';
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
@@ -712,8 +711,6 @@ class CronController extends BaseCronController
         }
         $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
     }
-
-  
 
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {

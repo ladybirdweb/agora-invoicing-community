@@ -12,7 +12,7 @@ return[
         'feature' => '<li>{{feature}}</li>',
         'subscription' => '{{subscription}}',
         'url' => '{{url}}',
-       
+
     ],
     /*
      * This is for welcome mail content
@@ -63,7 +63,6 @@ return[
         'serialkeyurl' => '{{serialkeyur}}',
         'knowledge_base' => '{{knowledge_base}}',
     ],
-
 
     /*
      * This is for invoice mail content

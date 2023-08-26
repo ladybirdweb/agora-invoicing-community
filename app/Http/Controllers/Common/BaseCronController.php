@@ -213,6 +213,9 @@ class BaseCronController extends Controller
             'product'      => $product,
             'number'       => $order->number,
             'url'          => url('my-orders'),
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
+
         ];
         $type = '';
         if ($template) {
@@ -245,9 +248,14 @@ class BaseCronController extends Controller
         $data = $template->data;
 
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'renewPrice' => currencyFormat($renewPrice, $code = $user->currency),
+            'deletionDate' => ($product_type == '4') ? $deletionDate : '',
+            'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
             'expiry' => $end,
             'product' => $product,
-            'number' => $order->number, ];
+            'number' => $order->number, 'contact' => $contact['contact'],
+            'logo' => $contact['logo']];
+
         $type = '';
         if ($template) {
             $type_id = $template->type;
@@ -268,37 +276,40 @@ class BaseCronController extends Controller
             $settings = new \App\Model\Common\Setting();
             $setting = $settings->where('id', 1)->first();
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
 
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->subscription_over;
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->subscription_over;
 
-            $template = $templates->where('id', $temp_id)->first();
-            $data = $template->data;
+        $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
 
-            $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                'expiry' => $end,
-                'product' => $product,
-                'number' => $order->number,
-                'url'   => url('my-orders'), ];
-            $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
-            }
-            $from = $setting->email;
-            $to = $user->email;
-            $subject = $template->name;
-            $data = $template->data;
-            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+        $date = date_create($end);
+        $end = date_format($date, 'l, F j, Y ');
+        $delDate = strtotime($end.' +'.$expiryDays.' days');
+        $deletionDate = date('l, F j, Y', $delDate);
 
-            $mail->email_log_success($setting->email, $user->email, $template->name, $data);
-        } catch (\Exception $ex) {
-            dd($ex);
-            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'deletionDate' => ($product_type == '4') ? $deletionDate : '',
+            'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
+            'url'   => url('my-orders'), ];
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
         }
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
     }
 }

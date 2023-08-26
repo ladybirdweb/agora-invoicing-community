@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Model\Common\TemplateType;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 
@@ -70,9 +69,19 @@ class ForgotPasswordController extends Controller
             $setting = $settings::find(1);
             //template
             $templates = new \App\Model\Common\Template();
-            $temp_id = TemplateType::where('name', 'forgot_password_mail')->value('id');
-            $template = $templates->where('type', $temp_id)->first();
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$setting->website];
+            $temp_id = $setting->forgot_password;
+            $template = $templates->where('id', $temp_id)->first();
+
+            $contact = getContactData();
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs, 'contact' => $contact['contact'],
+                'logo' => $contact['logo']];
+            $from = $setting->email;
+            $to = $user->email;
+            $contactUs = $setting->website;
+            $subject = $template->name;
+            $data = $template->data;
+            $type = '';
+
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();

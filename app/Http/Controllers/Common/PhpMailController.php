@@ -189,6 +189,7 @@ class PhpMailController extends Controller
     public function deleteCloudDetails()
     {
         try {
+            $contact = getContactData();
             $day = ExpiryMailDay::value('cloud_days');
             $today = new Carbon('today');
             $sub = Subscription::whereNotNull('update_ends_at')
@@ -234,6 +235,8 @@ class PhpMailController extends Controller
                             'product' => $product->name,
                             'number' => $order->number,
                             'expiry' => date('j M Y', strtotime($data->update_ends_at)),
+                            'contact' => $contact['contact'],
+                            'logo' => $contact['logo'],
                         ];
                         if ($template) {
                             $type_id = $template->type;

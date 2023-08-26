@@ -12,7 +12,7 @@ return[
         'feature' => '<li>{{feature}}</li>',
         'subscription' => '{{subscription}}',
         'url' => '{{url}}',
-       
+
     ],
     /*
      * This is for welcome mail content
@@ -46,7 +46,6 @@ return[
         'orderHeading' => '{{orderHeading}}',
 
     ],
-
 
     /*
      * This is for invoice mail content
@@ -107,7 +106,7 @@ return[
         'manager_code' => '{{manager_code}}',
         'manager_mobile' => '{{manager_mobile}}',
         'manager_skype' => '{{manager_skype}}',
-     ],
+    ],
 
     'account_manager_email' => [
         'name' => '{$name}',
@@ -117,7 +116,7 @@ return[
         'manager_code' => '{{manager_code}}',
         'manager_mobile' => '{{manager_mobile}}',
         'manager_skype' => '{{manager_skype}}',
-        ],
+    ],
 
     'autosubscription_going_to_end' => [
         'name' => '{{name}}',

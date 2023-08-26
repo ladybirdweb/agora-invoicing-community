@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Tenancy;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\FaveoCloud;
-use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
@@ -280,8 +279,8 @@ class TenantController extends Controller
                     $contact = getContactData();
 
                     $replace = [
-                        'message' => $userData, 
-                        'product' => $order[0]->product()->value('name'), 
+                        'message' => $userData,
+                        'product' => $order[0]->product()->value('name'),
                         'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
                         'contact' => $contact['contact'],
                         'logo' => $contact['logo'],

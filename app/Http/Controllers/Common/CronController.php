@@ -691,12 +691,19 @@ class CronController extends BaseCronController
         $temp_id = $setting->payment_successfull;
 
         $template = $templates->where('id', $temp_id)->first();
-        $url = url('my-orders');
-        $replace =   ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+        $date = date_create($future_expiry->update_ends_at);
+        $end = date_format($date, 'l, F j, Y ');
+
+        $replace =   [
+             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product,
-             'currency' => $invo->currency,
-             'total' => $total,
-             'number' => $number,'logo' => $contact['logo'],'contact' => $contact['contact']];
+             'total' => currencyFormat($total, $code = $currency),
+             'number' => $number,
+             'contact' => $contact['contact'],
+             'logo' => $contact['logo'],
+             'future_expiry' => $end,
+            ];
+
              $type = '';
         if ($template) {
             $type_id = $template->type;

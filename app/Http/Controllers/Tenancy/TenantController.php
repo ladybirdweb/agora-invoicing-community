@@ -277,9 +277,16 @@ class TenantController extends Controller
                     $template = new \App\Model\Common\Template();
                     $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
                     $template = $template->where('type', $temp_type_id)->first();
+                    $contact = getContactData();
+
                     $replace = [
-                        'message' => $userData,
+                        'message' => $userData, 
+                        'product' => $order[0]->product()->value('name'), 
                         'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+                        'contact' => $contact['contact'],
+                        'logo' => $contact['logo'],
+                        'title' => $settings->title,
+                        'company_email' => $settings->company_email,
                     ];
                     $type = '';
                     if ($template) {
@@ -287,11 +294,11 @@ class TenantController extends Controller
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
                     }
+                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
                     $this->prepareMessages($faveoCloud, $user, true);
-                    $contact = getContactData();
-                    $mail->SendEmail($settings->email, $user, $userData, 'New instance created');
+                    $mail->SendEmail($settings->email, $user, $template->data, $template->name, $replace, $type);
 
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }

@@ -175,6 +175,7 @@ class PlanController extends ExtendedPlanController
     public function store(PlanRequest $request)
     {
         try {
+  
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
             $offer_prices = $request->offer_price;
@@ -184,24 +185,23 @@ class PlanController extends ExtendedPlanController
                 $this->plan->periods()->attach($period);
             }
 
-            if (count($add_prices) > 0) {
-                $dataForCreating = [];
-                foreach ($add_prices as $key => $value) {
-                    $dataForCreating[] = [
-                        'plan_id' => $this->plan->id,
-                        'country_id' => $request->country_id[$key],
-                        'currency' => $request->currency[$key],
-                        'add_price' => $value,
-                        'renew_price' => $renew_prices[$key],
-                        'offer_price' => $offer_prices[$key],
-                        'price_description' => $request->price_description,
-                        'product_quantity' => $request->product_quantity,
-                        'no_of_agents' => $request->no_of_agents,
-                        'offer_price' => $request->offer_price,
-                    ];
-                }
-                $this->plan->planPrice()->insert($dataForCreating);
+             if (count($add_prices) > 0) {
+            $dataForCreating = [];
+            foreach ($add_prices as $key => $value) {
+                $dataForCreating[] = [
+                    'plan_id' => $this->plan->id,
+                    'country_id' => $request->input('country_id')[$key],
+                    'currency' => $request->input('currency')[$key],
+                    'add_price' => $value,
+                    'renew_price' => $renew_prices[$key],
+                    'offer_price' => $offer_prices[$key] !== '' ? $offer_prices[$key] : null,
+                    'price_description' => $request->input('price_description'),
+                    'product_quantity' => $request->input('product_quantity'),
+                    // Rest of the fields...
+                ];
             }
+            $this->plan->planPrice()->insert($dataForCreating);
+        }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (Exception $ex) {

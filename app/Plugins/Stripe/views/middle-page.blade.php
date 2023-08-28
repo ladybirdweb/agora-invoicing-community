@@ -345,7 +345,7 @@ $currency = $invoice->currency;
         <div class="card card-default">
             <div class="card-header" style="height: 50px;">
          
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
     </div>
         <table class="cart-totals">
             <tbody>

@@ -2,11 +2,15 @@
 <div class="modal fade" id="renew{{$id}}" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
+
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
             <div class="modal-header">
                  <h4 class="modal-title">Renew your order</h4>
             </div>
             <div class="modal-body">
+
+                <label>Current number of agents: {{$agents}}</label>
+                <label>Current Plan: {{$planName}}</label>
                 <!-- Form  -->
                 
                 <?php
@@ -18,6 +22,23 @@
                       ->pluck('plans.name', 'plans.id')
                        ->toArray();
 
+                $planIds = array_keys($plans);
+
+                $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',\Auth::user()->currency)
+                    ->latest()
+                    ->pluck('renew_price', 'plan_id')
+                    ->toArray();
+
+                foreach ($plans as $planId => $planName) {
+                    if (isset($renewalPrices[$planId])) {
+                        if(in_array($productid,[117,119])) {
+                            $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                        }
+                        else{
+                            $plans[$planId] .= " (Renewal price: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                        }
+                    }
+                }
               //add more cloud ids until we have a generic way to differentiate
               if(in_array($productid,[117,119])){
                   $plans = array_filter($plans, function ($value) {
@@ -28,8 +49,6 @@
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
-                        <p><b>Current Agents:</b> {{$agents}}</b></p>
-                        <p><b>Current Plan:</b> {{$planName}}</p>
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
                     {!! Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, [
@@ -40,29 +59,31 @@
                     {!! Form::hidden('user',$userid) !!}
                     </div>
                 @if(in_array($productid,[117,119]))
-                    <div class="form-group">
-                        {!! Form::label('cost', 'Price per agent:', ['class' => 'col-form-label']) !!}
-
-                        {!! Form::text('cost', null, ['class' => 'form-control priceperagent', 'id' => 'priceperagent', 'readonly'=>'readonly']) !!}
-                    </div>
-
                      <div class="form-group">
                          {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
 
                          {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents', 'placeholder' => '']) !!}
                      </div>
                 @endif
-                     <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
-
-                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
-
-                        {!! Form::text('cost',null,['class' => 'form-control price','id'=>'price','readonly'=>'readonly']) !!}
-
+                <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label style="display: inline-block;">Price to be paid:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="price" class="price" style="display: inline-block; margin-left: -141px;"></span>
+                        </div>
                     </div>
+                </div>
+                <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
+                <div class="loader-wrapper" style="display: none; background: white;" >
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
+                </div>
 
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="margin-top: -23px;">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                  <button type="submit"  class="btn btn-primary" id="saveRenew" disabled><i class="fa fa-check" >&nbsp;&nbsp;</i>Save</button>
                 {!! Form::close()  !!}
@@ -82,6 +103,12 @@
 
    function fetchPlanCost(planId,agents=null) {
        $('#saveRenew').attr('disabled',true);
+       // Show the loader and disable modal body
+       // Show the loader and disable modal body
+       $('.loader-wrapper').show();
+       $('.overlay').show(); // Show the overlay
+       $('.modal-body').css('pointer-events', 'none');
+
        if(!shouldFetchPlanCost){
            return
        }
@@ -102,20 +129,15 @@
                    method: 'GET',
                    data: { totalPrice: someprice },
                    success: function (data) {
-                       $('.price').val(data);
+                       $('.price').text(data);
                        shouldFetchPlanCost = true;
                    },
                });
-               $.ajax({
-                   url: 'processFormat', // Update with the correct URL
-                   method: 'GET',
-                   data: { totalPrice: parseFloat(data)},
-                   success: function (data) {
-                       $('.priceperagent').val(data);
-                       shouldFetchPlanCost = true;
-                   },
-               });
-               $('#saveRenew').attr('disabled',false);
+               $('.loader-wrapper').hide();
+               $('.overlay').hide(); // Hide the overlay
+               $('.modal-body').css('pointer-events', 'auto');
+               $('#saveRenew').attr('disabled', false);
+
            }
        });
    }
@@ -150,3 +172,32 @@
     });
 
 </script>
+<style>
+    .loader-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 300px;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        z-index: 9998; /* Below the loader */
+    }
+
+
+</style>

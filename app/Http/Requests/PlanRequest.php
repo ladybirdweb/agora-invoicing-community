@@ -21,13 +21,15 @@ class PlanRequest extends FormRequest
             'add_price' => 'required|array|array_size_equals:country_id',
             'country_id.*' => 'required_with:country_id|numeric|duplicate_country:currency',
             'currency.*' => 'required_with:currency',
-            'add_price.*' => 'required_with_all:country_id,currency|integer|min:0',
-            'renew_price.*' => 'required_with_all:country_id,currency|integer|min:0',
+            'add_price.*' => 'required_with_all:country_id,currency|integer|min:0|max:10000000',
+            'renew_price.*' => 'required_with_all:country_id,currency|integer|min:0|max:1000000',
             'product' => 'required',
             'days' => 'nullable|numeric',
             'product_quantity' => 'required_without:no_of_agents|integer|min:0',
             'no_of_agents' => 'required_without:product_quantity|integer|min:0',
-            'offer_price' => 'min:1|max:100',
+            'offer_price.*' => ['nullable', 'numeric', 'between:0,100'],
+
+
 
         ];
     }
@@ -40,7 +42,7 @@ class PlanRequest extends FormRequest
             'no_of_agents.required_without' => 'The no of agents field is required when product quantity is not present.',
             'product.required' => 'the product field is required',
             'country_id.*.required' => trans('message.country_missing'),
-            'add_price.*.numeric' => trans('message.regular_price_numeric'),
+            'add_price.*.max' => trans('message.regular_price_numeric'),
             'add_price.*.required_with_all' => trans('message.add_price_required'),
             'renew_price.*.required_with_all' => trans('message.renew_price_required'),
             'renew_price.*.numeric' => trans('message.renew_price_numeric'),
@@ -49,6 +51,10 @@ class PlanRequest extends FormRequest
             'renew_price.array_size_equals' => trans('message.renew_price_array_equals'),
             'add_price.array_size_equals' => trans('message.add_price_array_equals'),
             'currency.*.required_with' => trans('message.currency_missing'),
+            'offer_price.*.between' => 'Offer prices must not be must not be greater than 100',
+            'offer_price.*.numeric' => 'Offer prices must not be must not be greater than 100',
+
+
 
         ];
     }

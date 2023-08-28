@@ -333,7 +333,7 @@ class RenewController extends BaseRenewController
                         return errorResponse(trans('message.agent_reduce'));
                     }
                 }
-                $cost = (int)$cost * (int)$agents;
+                $cost = (int) $cost * (int) $agents;
             }
 
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);

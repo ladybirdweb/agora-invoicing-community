@@ -265,7 +265,7 @@
             <input type="text" class="form-control" name="add_price[]">
           </td>
           <td>
-            <input type="text" class="form-control" name="offer_price">
+            <input type="text" class="form-control" name="offer_price[]">
           </td>
 
           <td>

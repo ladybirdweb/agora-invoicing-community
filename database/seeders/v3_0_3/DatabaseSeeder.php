@@ -77,6 +77,7 @@ class Demo_pageTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('demo_pages')->truncate();
 
         Demo_page::create(['id' => 1, 'status' => 0]);
     }
@@ -87,6 +88,7 @@ class TemplateTypeTableSeeder extends Seeder
     public function run()
     {
 
+        DB::table('template_types')->where('id',20)->delete();
         TemplateType::where('id',12)->update(['name' => 'auto_subscription_going_to_end']);
         TemplateType::create(['id' => 20, 'name' => 'cloud_created']);
     }
@@ -905,7 +907,7 @@ class TemplateTableSeeder extends Seeder
 
 
 
-
+         DB::table('templates')->where('id',20)->delete();
         Template::create(['id' => 20, 'name' => 'New instance created', 'type' => 20, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
           <tbody>
           <tr>
@@ -1019,6 +1021,7 @@ class PricingTemplateSeeder extends Seeder
                                                     
                             </div>
                         </div>']);
+         DB::table('pricing_templates')->where('id',2)->delete();
 
         PricingTemplate::create(['id' => 2, 'data' => '<div class="col-md-3 col-sm-6">
                  <div class="plan plan-featured transform-none">

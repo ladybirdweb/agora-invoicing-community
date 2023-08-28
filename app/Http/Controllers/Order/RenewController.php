@@ -306,7 +306,6 @@ class RenewController extends BaseRenewController
         }
         $this->validate($request, [
             'plan' => 'required',
-            'cost' => 'required',
             'code' => 'exists:promotions,code',
         ]);
 
@@ -315,8 +314,8 @@ class RenewController extends BaseRenewController
             $code = $request->input('code');
             $plan = Plan::find($planid);
             $planDetails = userCurrencyAndPrice($request->input('user'), $plan);
-            //   $cost = $planDetails['plan']->renew_price; we can accept it from request it self
-            $cost = preg_replace('/[^0-9]/', '', $request->get('cost'));
+            $cost = $planDetails['plan']->renew_price;
+            $cost = preg_replace('/[^0-9]/', '', $cost);
             $currency = $planDetails['currency'];
             $agents = null;
 
@@ -331,9 +330,10 @@ class RenewController extends BaseRenewController
                         return errorResponse(trans('message.without_installation_found'));
                     }
                     if ($this->checktheAgent($agents, $installation_path)) {
-                        return response(['status' => false, 'message' => trans('message.agent_reduce')]);
+                        return errorResponse(trans('message.agent_reduce'));
                     }
                 }
+                $cost = (int)$cost * (int)$agents;
             }
 
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);

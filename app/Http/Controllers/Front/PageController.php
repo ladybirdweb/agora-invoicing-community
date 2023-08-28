@@ -307,7 +307,7 @@ class PageController extends Controller
 
                 if (! empty($prices)) {
                     if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                        $prices[0] = ($offerprice / 100) * $prices[0];
+                        $prices[0] = $prices[0] - (($offerprice / 100) * $prices[0]);
                     }
                     $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                     $finalPrice = str_replace($prices[1], '', $format);
@@ -389,13 +389,14 @@ class PageController extends Controller
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     if ($plan->days == 30 || $plan->days == 31) {
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency',\Auth::user()->currency)->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $price = $planDetails['plan']->add_price;
                         $symbol = $planDetails['symbol'];
                         $currency = $planDetails['currency'];
                         if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                            $price = ($offerprice / 100) * $price;
+                            $price = $price - (($offerprice / 100) * $price);
+                            
                         }
 
                         $prices[] = $price;

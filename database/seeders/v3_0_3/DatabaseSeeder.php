@@ -942,6 +942,7 @@ class PricingTemplateSeeder extends Seeder
                                                     
                             </div>
                         </div>']);
+         DB::table('pricing_templates')->where('id',2)->delete();
 
         PricingTemplate::create(['id' => 2, 'data' => '<div class="col-md-3 col-sm-6">
                  <div class="plan plan-featured transform-none">

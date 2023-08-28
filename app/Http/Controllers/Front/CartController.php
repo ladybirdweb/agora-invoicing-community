@@ -185,7 +185,7 @@ class CartController extends BaseCartController
     //     }
     // }
 
-        public function showCart()
+    public function showCart()
     {
         try {
             $cartCollection = Cart::getContent();

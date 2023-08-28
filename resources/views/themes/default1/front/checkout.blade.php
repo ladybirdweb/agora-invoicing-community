@@ -115,19 +115,36 @@ $cartSubtotalWithoutCondition = 0;
                                 </td>
 
                                 <td class="product-subtotal">
-                                    <?php
-                                    $productId = \DB::table('products')->where('name',$item->name)->value('id');
-                                    $planid = \DB::table('plans')->where('product',$productId)->value('id');
-                                    $price = \DB::table('plan_prices')->where('plan_id',$planid)->where('currency',$item->attributes->currency)->value('add_price');
+                                   <?php
+                                    $productId = \DB::table('products')->where('name', $item->name)->value('id');
+                                    $planid = null; // Initialize $planid to null
+                                    
+                                    if (\Session::has('toggleState')) {
+                                        $toggleState = \Session::get('toggleState');
+                                        
+                                        if ($toggleState == 'monthly') {
+                                            // Retrieve plan id with 30 days
+                                            $planid = \DB::table('plans')->where('product', $productId)->whereIn('days', [30])->value('id');
+                                        } elseif ($toggleState == 'yearly') {
+                                            // Retrieve plan id with 365 days
+                                            $planid = \DB::table('plans')->where('product', $productId)->whereIn('days', [365])->value('id');
+                                        }
+                                    }
+                                    
+                                    // If $planid is still null, retrieve it normally
+                                    if ($planid === null) {
+                                        $planid = \DB::table('plans')->where('product', $productId)->value('id');
+                                    }
+                                    
+                                    $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
                                     ?>
+
                                     <span class="amount">
                                            @if ($item->conditions && $item->conditions->getType() === 'coupon')
                                                 {{ $item->quantity * $item->conditions->getName() }}
 
                                             @else
-
-
-                                               {{currencyFormat($item->quantity * $price,$code = $item->attributes->currency)}}
+                                                {{currencyFormat($item->quantity * $price,$code = $item->attributes->currency)}}
                                             @endif
                                                                  
                                 </td>

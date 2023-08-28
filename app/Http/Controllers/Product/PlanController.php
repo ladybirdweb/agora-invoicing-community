@@ -196,7 +196,7 @@ class PlanController extends ExtendedPlanController
                         'offer_price' => $offer_prices[$key] !== '' ? $offer_prices[$key] : null,
                         'price_description' => $request->input('price_description'),
                         'product_quantity' => $request->input('product_quantity'),
-                        // Rest of the fields...
+                        'no_of_agents' => $request->no_of_agents,
                     ];
                 }
                 $this->plan->planPrice()->insert($dataForCreating);

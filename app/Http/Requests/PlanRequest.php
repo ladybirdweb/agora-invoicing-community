@@ -29,8 +29,6 @@ class PlanRequest extends FormRequest
             'no_of_agents' => 'required_without:product_quantity|integer|min:0',
             'offer_price.*' => ['nullable', 'numeric', 'between:0,100'],
 
-
-
         ];
     }
 
@@ -53,8 +51,6 @@ class PlanRequest extends FormRequest
             'currency.*.required_with' => trans('message.currency_missing'),
             'offer_price.*.between' => 'Offer prices must not be must not be greater than 100',
             'offer_price.*.numeric' => 'Offer prices must not be must not be greater than 100',
-
-
 
         ];
     }

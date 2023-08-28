@@ -157,11 +157,21 @@ class BaseOrderController extends ExtendedOrderController
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)
     {
         try {
+            
             $permissions = LicensePermissionsController::getPermissionsForProduct($product);
             if ($version == null) {
                 $version = '';
             }
-            $days = $this->plan->where('id', $planid)->first()->days;
+                  $days = null; 
+            if (\Session::get('toggleState') == 'monthly') {
+                $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->value('days');
+            } elseif (\Session::get('toggleState') == 'yearly') {
+                $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->value('days');
+            }
+            
+            if ($days === null) {
+                $days = $this->plan->where('id', $planid)->first()->value('days');
+            }
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);

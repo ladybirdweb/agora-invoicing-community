@@ -678,7 +678,7 @@ return [
      */
     'country_missing' => 'Country cannot be empty.',
     'currency_missing' => 'Currency cannot be empty',
-    'regular_price_numeric' => 'Regular prices must be numerical values',
+    'regular_price_numeric' => 'Regular prices must not be must not be greater than 10000000',
     'renew_price_numeric' => 'Renewal prices must be numerical values',
     'add_price_for_country' => 'Add Price For Another Country',
     'renew_price_required' => 'Renewal price cannot be empty.',

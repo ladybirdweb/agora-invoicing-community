@@ -278,15 +278,6 @@ class TenantController extends Controller
                     $template = $template->where('type', $temp_type_id)->first();
                     $contact = getContactData();
 
-                    $replace = [
-                        'message' => $userData,
-                        'product' => $order[0]->product()->value('name'),
-                        'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                        'contact' => $contact['contact'],
-                        'logo' => $contact['logo'],
-                        'title' => $settings->title,
-                        'company_email' => $settings->company_email,
-                    ];
                     $type = '';
                     if ($template) {
                         $type_id = $template->type;
@@ -296,6 +287,17 @@ class TenantController extends Controller
                     $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
+
+                    $replace = [
+                        'message' => $userData,
+                        'product' => $order[0]->product()->value('name'),
+                        'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+                        'contact' => $contact['contact'],
+                        'logo' => $contact['logo'],
+                        'title' => $settings->title,
+                        'company_email' => $settings->company_email,
+                    ];
+
                     $this->prepareMessages($faveoCloud, $user, true);
                     $mail->SendEmail($settings->email, $user, $template->data, $template->name, $replace, $type);
 

@@ -138,7 +138,7 @@
                         </td>
 
                         <td>
-                            <input type="text" class="form-control" value="{{old('renew_price.0')}}" name="renew_price[]">
+                            <input type="text" class="form-control" value="{{old('renew_price.1')}}" name="renew_price[]">
                         </td>
 
                        

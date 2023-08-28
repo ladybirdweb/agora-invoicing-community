@@ -122,21 +122,12 @@ $cartSubtotalWithoutCondition = 0;
                                     if (\Session::has('toggleState')) {
                                         $toggleState = \Session::get('toggleState');
                                         
-                                        if ($toggleState == 'monthly') {
-                                            // Retrieve plan id with 30 days
-                                            $planid = \DB::table('plans')->where('product', $productId)->whereIn('days', [30])->value('id');
-                                        } elseif ($toggleState == 'yearly') {
-                                            // Retrieve plan id with 365 days
-                                            $planid = \DB::table('plans')->where('product', $productId)->whereIn('days', [365])->value('id');
-                                        }
+                                       $price = $item->price;
                                     }
-                                    
-                                    // If $planid is still null, retrieve it normally
-                                    if ($planid === null) {
-                                        $planid = \DB::table('plans')->where('product', $productId)->value('id');
-                                    }
-                                    
-                                    $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
+                                    else{
+             
+                               $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
+                           }     
                                     ?>
 
                                     <span class="amount">

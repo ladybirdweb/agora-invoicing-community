@@ -192,7 +192,7 @@
 
 
                                 <div class="box-content">
-                                    <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
+                                    <h4 class="heading-primary text-uppercase mb-md">Cart Total</h4>
                                     <table class="cart-totals">
                                         <tbody>
 

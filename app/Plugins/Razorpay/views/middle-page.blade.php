@@ -220,7 +220,7 @@ $json = json_encode($data);
     <div class="card card-default" style="margin-bottom: 40px;">
         <div class="card-header" style="height: 50px;">
          
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
     </div>
         <table class="cart-totals">
             <tbody>
@@ -403,7 +403,7 @@ $json = json_encode($data);
     <div class="card card-default" style="margin-bottom: 40px;">
         <div class="card-header" style="height: 50px;">
          
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
     </div>
         <table class="cart-totals">
             <tbody>

@@ -257,7 +257,7 @@ $cartSubtotalWithoutCondition = 0;
     </div>
 
     <div class="col-lg-4">
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">

@@ -686,7 +686,7 @@ $price = $order->price_override;
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
+                    <h4 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -694,14 +694,14 @@ $price = $order->price_override;
                 <div class="modal-body">
                     <div id="success-domain"></div>
                     <div id="failure-domain"></div>
+                    <label id="clouduserdomainfill" style="margin-left: 14px;"><strong></strong></label>
                     <div class="form-group">
                         <div class="col-12">
-                            <p id="clouduserdomainfill" class="mb-0"><strong></strong></p>
-                            <label for="clouddomain" class="col-form-label">Customise your cloud domain:</label>
+                            <label for="clouddomain" class="col-form-label">Enter your new domain name:</label>
                         </div>
                         <div class="row" style="margin-left: 14px; margin-right: 2px;">
-                            <input type="text" class="form-control col col-2 rounded-0" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
-                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="Enter Domain" required>
+                            <input type="text" class="form-control col col-2 rounded-1" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="billing.custom.com" required>
                         </div>
                     </div>
                     <script>
@@ -713,7 +713,7 @@ $price = $order->price_override;
                                 method: 'POST',
                                 dataType: 'json',
                                 success: function(data) {
-                                    $('#clouduserdomainfill').html('<strong>Current cloud domain: </strong><a href="' + data.data + '">' + data.data + '</a>');
+                                    $('#clouduserdomainfill').html('Current cloud domain: <a href="' + data.data + '">' + data.data + '</a>');
                                 },
                                 error: function(error) {
                                     console.error('Error:', error);
@@ -721,6 +721,13 @@ $price = $order->price_override;
                             });
                         });
                     </script>
+
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+
+                    <div class="loader-wrapper" style="display: none; background: white; height: 100%;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
+                    </div>
 
                 </div>
 
@@ -738,7 +745,7 @@ $price = $order->price_override;
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h5>
+                    <h4 class="modal-title" id="numberOfAgentsModalLabel" style="text-transform: none">Change Number of Agents</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -746,14 +753,7 @@ $price = $order->price_override;
                 <div class="modal-body">
                     <div id="response-agent"></div>
                     <div id="failure-agent"></div>
-                    <div class="form-group">
-                        <div class="col-12">
-                            <p id="numberAg" class="mb-0">
-                                <b>Current number of agents:</b> {{$latestAgents}}
-                            </p>
-                        </div>
-                    </div>
-
+                    <label class="mb-1" style="margin-left: 14px;">Current number of agents: {{$latestAgents}}</label>
                     <div class="form-group">
                         <div class="col-12">
                             {!! Form::label('number', 'Choose your desired number of agents:', ['class' => 'col-form-label']) !!}
@@ -762,34 +762,22 @@ $price = $order->price_override;
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <div class="col-12">
-                            {!! Form::label('cost', 'Price per agent', ['class' => 'col-form-label']) !!}
-                            <div class="quantity">
-                                {!! Form::text('cost', null, ['class' => 'form-control priceagent', 'id' => 'priceagent', 'readonly'=>'readonly']) !!}
-                            </div>
+                            <p>Price per agent: <span id="priceagent" class="priceagent"></span></p>
+                        </div>
+                        <div class="col-12" style="margin-top: -13px;">
+                            <p>Price to be paid: <span id="pricetopay" class="pricetopay"></span></p>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-12">
-                            {!! Form::label('cost', 'Total price', ['class' => 'col-form-label']) !!}
-                            <div class="quantity">
-                                {!! Form::text('cost', null, ['class' => 'form-control Totalprice', 'id' => 'Totalprice', 'readonly'=>'readonly']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-12">
-                            {!! Form::label('cost', 'Price to be paid', ['class' => 'col-form-label']) !!}
-                            <div class="quantity">
-                                {!! Form::text('cost', null, ['class' => 'form-control pricetopay', 'id' => 'pricetopay', 'readonly'=>'readonly']) !!}
-                            </div>
-                        </div>
-                    </div>
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
+                    <div class="loader-wrapper" style="display: none; background: white;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
 
+                    </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="margin-top: -23px;">
                     <button type="button" class="btn btn-primary" id="agentNumber" disabled><i class="fa fa-users">&nbsp;&nbsp;</i>  Update Agents
                     </button>
                 </div>
@@ -802,7 +790,7 @@ $price = $order->price_override;
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="cloudPlanModalLabel">Upgrade or Downgrade Cloud Plan</h5>
+                    <h4 class="modal-title" id="cloudPlanModalLabel" style="text-transform: none;">Upgrade or downgrade your cloud plan</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -820,6 +808,20 @@ $price = $order->price_override;
                         ->where('plan_prices.renew_price','!=','0')
                         ->pluck('plans.name', 'plans.id')
                         ->toArray();
+                    $planIds = array_keys($plans);
+
+                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',\Auth::user()->currency)
+                        ->latest()
+                        ->pluck('renew_price', 'plan_id')
+                        ->toArray();
+
+                    foreach ($plans as $planId => $planName) {
+                        if (isset($renewalPrices[$planId])) {
+                            if(in_array($product->id,[117,119])) {
+                                $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                            }
+                        }
+                    }
                     // Add more cloud IDs until we have a generic way to differentiate
                     if(in_array($product->id,[117,119])){
                         $plans = array_filter($plans, function ($value) {
@@ -827,47 +829,37 @@ $price = $order->price_override;
                         });
                     }
                     ?>
-                    <div class="form-group">
-                        {!! Form::label('plan', 'Select Plan:', ['class' => 'col-12']) !!}
+                    <label class="mb-1" style="margin-left: 14px;">Current Plan: {{$planName}}</label>
+                    <div class="form-group mb-3">
+                        {!! Form::label('plan', 'Select a new plan:', ['class' => 'col-12']) !!}
                         <div class="col-12">
                             {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
                         </div>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('cost', 'Price per agent:', ['class' => 'col-6']) !!}
+                    <div class="form-group mb-2">
                         <div class="col-12">
-                            {!! Form::text('cost', null, ['class' => 'form-control priceperagent', 'id' => 'priceperagent', 'readonly' => 'readonly']) !!}
+                            <p>Credits remaining on your current plan: <span id="discount" class="discount"></span></p>
+                        </div>
+                        <div class="col-12" style="margin-top: -13px;">
+                            <p>Price to be paid: <span id="priceToPay" class="priceToPay"></span></p>
                         </div>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('cost', 'Total Price for the plan:', ['class' => 'col-6']) !!}
-                        <div class="col-12">
-                            {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('cost', 'Credits remaining on your current plan:', ['class' => 'col-12']) !!}
-                        <div class="col-12">
-                            {!! Form::text('cost', null, ['class' => 'form-control discount', 'id' =>'discount', 'readonly' => 'readonly']) !!}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('cost', 'Price to be paid:', ['class' => 'col-6']) !!}
-                        <div class="col-12">
-                            {!! Form::text('cost', null, ['class' => 'form-control priceToPay', 'id' =>'priceToPay', 'readonly' => 'readonly']) !!}
-                        </div>
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+
+                    <div class="loader-wrapper" style="display: none; background: white;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="margin-top: -23px;">
                     <button type="button" class="btn btn-primary" id="upgradedowngrade">
                         <i class="fas fa-cloud-upload-alt">&nbsp;&nbsp;</i>Change Plan
-
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
+
 
 
     <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false">
@@ -1665,6 +1657,9 @@ $price = $order->price_override;
             $('#changeDomain').on('click', function() {
                 $('#changeDomain').attr('disabled',true);
                 $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
                 var newDomain = $('#clouduserdomain').val();
                 var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->latest()->value('installation_path') !!}";
                 var license_code = "{!!$order->serial_key!!}";
@@ -1684,11 +1679,13 @@ $price = $order->price_override;
                             $('#success-domain').css('color', 'green');
                             $('#changeDomain').attr('disabled',false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
                                 $('#success-domain').fadeOut('slow', function() {
                                     $(this).html('');
-                                    window.location.reload();
                                 });
                             }, 3000);
                         }
@@ -1700,6 +1697,9 @@ $price = $order->price_override;
                             $('#failure-domain').css('color', 'red');
                             $('#changeDomain').attr('disabled', false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
 
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
@@ -1707,7 +1707,6 @@ $price = $order->price_override;
                                     $(this).html('');
                                 });
                             }, 5000);
-                            window.location.reload();
 
                         }
 
@@ -1720,6 +1719,9 @@ $price = $order->price_override;
             $('#agentNumber').on('click', function() {
                 $('#agentNumber').attr('disbaled',true);
                 $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
                 var newAgents = $('#numberAGt').val();
                 var orderId = {!! $id !!};
                 var productId ={!! $product->id !!};
@@ -1735,6 +1737,9 @@ $price = $order->price_override;
                     success: function(response) {
                         $('#agentNumber').attr('disbaled',false);
                         $('#agentNumber').html("<i class='fa fa-users'>&nbsp;&nbsp;</i>  Update Agents");
+                        $('.loader-wrapper').hide();
+                        $('.overlay').hide(); // Hide the overlay
+                        $('.modal-body').css('pointer-events', 'auto');
                         window.location.href = response;
                     },
                     error: function(data) {
@@ -1744,6 +1749,9 @@ $price = $order->price_override;
                             var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
                             $('#failure-agent').html(result);
                             $('#failure-agent').css('color', 'red');
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
 
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
@@ -1751,7 +1759,6 @@ $price = $order->price_override;
                                     $(this).html('');
                                 });
                             }, 5000);
-                            window.location.reload();
 
                         }
                     }
@@ -1764,6 +1771,9 @@ $price = $order->price_override;
             $('#upgradedowngrade').on('click', function() {
                 $('#upgradedowngrade').attr('disabled',true);
                 $('#upgradedowngrade').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
                 var planId = $('select[name="plan"]').val();
                 var user = $('input[name="user"]').val();
                 var agents = {{$latestAgents}};
@@ -1784,6 +1794,9 @@ $price = $order->price_override;
                             $('#response-upgrade').css('color', 'green');
                             $('#upgradedowngrade').attr('disabled',false);
                             $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
                         }
 
                     },  error: function(data) {
@@ -1793,6 +1806,9 @@ $price = $order->price_override;
                             $('#failure-upgrade').css('color', 'red');
                             $('#upgradedowngrade').attr('disabled',false);
                             $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
 
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
@@ -1800,7 +1816,6 @@ $price = $order->price_override;
                                     $(this).html('');
                                 });
                             }, 5000);
-                            window.location.reload();
                         }
                     }
 
@@ -1812,6 +1827,9 @@ $price = $order->price_override;
     </script>
     <script>
         function getPrice(val) {
+            $('.loader-wrapper').show();
+            $('.overlay').show(); // Show the overlay
+            $('.modal-body').css('pointer-events', 'none');
             $.ajax({
                 type: "POST",
                 url: "{{url('get-cloud-upgrade-cost')}}",
@@ -1819,8 +1837,12 @@ $price = $order->price_override;
                 success: function (data) {
                     $(".priceperagent").val(data.priceperagent);
                     $(".price").val(data.actual_price);
-                    $(".discount").val(data.discount);
-                    $(".priceToPay").val(data.price_to_be_paid);
+                    $(".discount").text(data.discount);
+                    $(".priceToPay").text(data.price_to_be_paid);
+                    $('.loader-wrapper').hide();
+                    $('.overlay').hide(); // Hide the overlay
+                    $('.modal-body').css('pointer-events', 'auto');
+
                 }
             });
         }
@@ -1835,6 +1857,9 @@ $price = $order->price_override;
                 var selectedNumber = $(this).val();
                 var oldAgents = '{{$latestAgents}}';
                 var orderId = '{{$id}}';
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
 
                 $.ajax({
                     type: 'POST',
@@ -1842,10 +1867,13 @@ $price = $order->price_override;
                     data: { 'number': selectedNumber, 'oldAgents':  oldAgents, 'orderId' : orderId},
                     success: function (data) {
                         // Update the other fields based on the API response
-                        $('#priceagent').val(data.pricePerAgent);
+                        $('#priceagent').text(data.pricePerAgent);
                         $('#Totalprice').val(data.totalPrice);
-                        $('#pricetopay').val(data.priceToPay);
+                        $('#pricetopay').text(data.priceToPay);
                         $('#agentNumber').attr('disabled',false);
+                        $('.loader-wrapper').hide();
+                        $('.overlay').hide(); // Hide the overlay
+                        $('.modal-body').css('pointer-events', 'auto');
 
                     },
                 });
@@ -1862,6 +1890,35 @@ $price = $order->price_override;
         .clickable-link.stretched-link {
             text-decoration: none !important;
         }
+    </style>
+    <style>
+        .loader-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 9998; /* Below the loader */
+        }
+
+
     </style>
 
 

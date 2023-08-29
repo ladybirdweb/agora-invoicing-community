@@ -254,7 +254,7 @@ class BaseCronController extends Controller
 
         $template = $templates->where('type', $temp_id)->first();
         $data = $template->data;
-        
+
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y ');
         $delDate = strtotime($end.' +'.$expiryDays.' days');

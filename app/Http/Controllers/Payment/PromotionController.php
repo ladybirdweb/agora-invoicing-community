@@ -326,9 +326,8 @@ class PromotionController extends BasePromotionController
 
                     // new item price, price can also be a string format like so: '98.67'
                 ]);
-                \Session::put('togglePrice',$coupon101->getName());
-                \Session::put('productid',$productid);
-
+                \Session::put('togglePrice', $coupon101->getName());
+                \Session::put('productid', $productid);
 
                 return redirect()->back()->with('success', 'Coupon code applied successfully');
             } else {

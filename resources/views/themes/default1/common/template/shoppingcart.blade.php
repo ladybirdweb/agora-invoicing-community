@@ -121,11 +121,11 @@ main
         {
             margin-top: -20px !important;
         }
+
         .buttonsale{
-        display: block;
-        width: 100%;
-        text-align: center; 
-        line-height: 2;
+            display: block;
+            width: 100%;
+          
         }
 
 </style>

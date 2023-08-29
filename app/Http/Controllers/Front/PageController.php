@@ -702,11 +702,16 @@ class PageController extends Controller
                 foreach ($plans as $plan) {
                     if ($plan->days == 365 || $plan->days == 366) {
                         $description = $plan->planPrice->first();
-
                         if ($description->price_description == 'Free') {
                             $priceDescription = 'free';
-                        } else {
+                        } 
+                      else {
+                        if($product->status){
                             $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
+                        }
+                        else{
+                            $priceDescription = $description->price_description;
+                        }
                         }
 
                         // Break the loop if we find a plan with 30 or 31 days

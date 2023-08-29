@@ -297,7 +297,9 @@ class PageController extends Controller
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     if ($plan->days == 365 || $plan->days == 366) {
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+
+                        $currency =  ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency',$currency )->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $prices[] = $planDetails['plan']->add_price;
                         $prices[] .= $planDetails['symbol'];
@@ -389,7 +391,9 @@ class PageController extends Controller
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     if ($plan->days == 30 || $plan->days == 31) {
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', \Auth::user()->currency)->value('offer_price');
+
+                        $currency =  ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency',$currency )->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $price = $planDetails['plan']->add_price;
                         $symbol = $planDetails['symbol'];

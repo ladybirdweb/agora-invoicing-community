@@ -9,6 +9,7 @@ use App\Model\Common\TemplateType;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
+use App\Model\Payment\Period;
 use Illuminate\Http\Request;
 
 class TemplateController extends Controller
@@ -262,7 +263,7 @@ class TemplateController extends Controller
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
         if (isset($offer) && $offer !== '' && $offer !== null) {
-            $cost = ($offer / 100) * $cost;
+            $cost = $cost - ($offer / 100) * $cost;
         }
         $price1 = currencyFormat($cost, $code = $currency);
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
@@ -284,8 +285,9 @@ class TemplateController extends Controller
                 $cost = $currencyAndSymbol['plan']->add_price;
                 $priceDescription = $currencyAndSymbol['plan']->price_description;
                 $cost = rounding($cost);
-                $duration = $value->periods;
-                $months = count($duration) > 0 ? $duration->first()->name : '';
+                // $duration = $value->periods;
+                $duration = Period::where('days',$value->days)->first();
+                $months = $duration ? $duration->name : '';
                 if ($product->type != '4') {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
                 } elseif ($cost != '0' && $product->type == '4') {

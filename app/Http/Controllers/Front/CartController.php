@@ -152,38 +152,6 @@ class CartController extends BaseCartController
         }
     }
 
-    /*
-     * Show the cart with all the Cart Attributes and Cart Collections
-     * Link: https://github.com/darryldecode/laravelshoppingcart
-     */
-    // public function showCart()
-    // {
-    //     try {
-    //         $cartCollection = Cart::getContent();
-    //         foreach ($cartCollection as $item) {
-    //             $planid = Plan::where('product', $item->id)->value('id');
-    //             $offerprice = PlanPrice::where('plan_id', $planid)->value('offer_price');
-    //             if (\Session::get('toggleState') == 'yearly' && $offerprice == null) {
-    //                 $plan = Plan::where('product',$item->associatedModel->id)->where('days','365')->first();
-    //                 $item->price = PlanPrice::where('plan_id',$plan->id)->where('currency',\Auth::user()->currency)->value('add_price');
-    //                 } elseif (\Session::get('toggleState') == 'yearly' && $offerprice) {
-    //                 $item->price = $item->price * 12;
-    //                 $item->price = $item->price - ($offerprice / 100 * $item->price);
-    //             }
-    //             elseif(\Session::get('toggleState') == 'monthly' && $offerprice) {
-    //                 $item->price = $item->price - ($offerprice / 100 * $item->price);
-    //             }
-    //             $cart_currency = $item->attributes->currency;
-    //             \Session::put('currency', $cart_currency);
-    //         }
-
-    //         return view('themes.default1.front.cart', compact('cartCollection'));
-    //     } catch (\Exception $ex) {
-    //         app('log')->error($ex->getMessage());
-
-    //         return redirect()->back()->with('fails', $ex->getMessage());
-    //     }
-    // }
 
     public function showCart()
     {
@@ -307,7 +275,7 @@ class CartController extends BaseCartController
                     $finalPrice = str_replace(',', '', $price);
                     $cost = round($months) * $finalPrice;
                     if ($currency['plan']['offer_price'] != '' && $currency['plan']['offer_price'] != null) {
-                        $cost = $cost * ($currency['plan']['offer_price'] / 100);
+                        $cost = $cost - ($cost * ($currency['plan']['offer_price'] / 100));
                     }
 
                     return $cost;

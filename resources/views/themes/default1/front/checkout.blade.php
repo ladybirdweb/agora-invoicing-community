@@ -121,18 +121,24 @@ $cartSubtotalWithoutCondition = 0;
                                     
                                     if (\Session::has('toggleState')) {
                                         $toggleState = \Session::get('toggleState');
-                                        
-                                       $price = $item->price;
+                                        $price = $item->price;
                                     }
                                     else{
-             
-                               $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
-                           }     
+                                      $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
+                                         }    
+
                                     ?>
 
                                     <span class="amount">
+
                                            @if ($item->conditions && $item->conditions->getType() === 'coupon')
+                                           <?php
+                                           \Session::put('togglePrice',$item->conditions->getName())
+                                           ?>
+
                                                 {{ $item->quantity * $item->conditions->getName() }}
+                                           
+                                           
 
                                             @else
                                                 {{currencyFormat($item->quantity * $price,$code = $item->attributes->currency)}}

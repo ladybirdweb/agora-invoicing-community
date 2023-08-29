@@ -254,6 +254,11 @@ class BaseCronController extends Controller
 
         $template = $templates->where('type', $temp_id)->first();
         $data = $template->data;
+        
+        $date = date_create($end);
+        $end = date_format($date, 'l, F j, Y ');
+        $delDate = strtotime($end.' +'.$expiryDays.' days');
+        $deletionDate = date('l, F j, Y', $delDate);
 
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'renewPrice' => currencyFormat($renewPrice, $code = $user->currency),
@@ -287,7 +292,6 @@ class BaseCronController extends Controller
         $setting = $settings->where('id', 1)->first();
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
 
         //template
         $templates = new \App\Model\Common\Template();

@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
-use App\Model\Payment\Period;
 use Illuminate\Http\Request;
 
 class TemplateController extends Controller
@@ -286,7 +286,7 @@ class TemplateController extends Controller
                 $priceDescription = $currencyAndSymbol['plan']->price_description;
                 $cost = rounding($cost);
                 // $duration = $value->periods;
-                $duration = Period::where('days',$value->days)->first();
+                $duration = Period::where('days', $value->days)->first();
                 $months = $duration ? $duration->name : '';
                 if ($product->type != '4') {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);

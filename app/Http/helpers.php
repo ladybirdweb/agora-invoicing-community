@@ -580,7 +580,7 @@ function getContactData()
         <p style="line-height: 20px;">'.$setting->company.'<br />
         <a class="moz-txt-link-abbreviated" href="mailto:'.$setting->company_email.'">'.$setting->company_email.'</a><br />
         <a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />
-        Tel: ' . '+' . $countryCode . ' ' . $setting->phone . '</p>
+        Tel: '.'+'.$countryCode.' '.$setting->phone.'</p>
     </td>';
 
     return ['logo' => $logo, 'contact' => $billingContact];

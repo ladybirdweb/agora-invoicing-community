@@ -182,8 +182,13 @@ $json = json_encode($data);
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
-                                <td class="product-total">
+                                  <td class="product-total">
+                                    @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
+                                    <span class="amount">{{currencyFormat($item->quantity * \Session::get('togglePrice'),$code = $item->attributes->currency)}}</span>
+                                    @else
                                     <span class="amount">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
+
+                                    @endif
                                 </td>
                             </tr>
                             @empty 

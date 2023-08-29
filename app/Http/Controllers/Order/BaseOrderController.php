@@ -293,12 +293,7 @@ class BaseOrderController extends ExtendedOrderController
         $template = $templates->where('type', $temp_id)->first();
 
         $knowledgeBaseUrl = $setting->company_url;
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
+        
 
         $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
         $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
@@ -306,7 +301,6 @@ class BaseOrderController extends ExtendedOrderController
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y');
 
-        $type = '';
         $replace = [
             'orderHeading' => $orderHeading,
             'name' => $user->first_name.' '.$user->last_name,
@@ -320,9 +314,15 @@ class BaseOrderController extends ExtendedOrderController
             'knowledge_base' => $knowledgeBaseUrl,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'], ];
-
+            
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
+        $mail->SendEmail($setting->email, $user->email,$template->data,$template->name, $replace, $type);
 
         if ($order->invoice->grand_total) {
             SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice, $order->invoice->grand_total, $user, $product);

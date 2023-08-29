@@ -23,6 +23,9 @@ return[
         'username' => '{{username}}',
         'password' => '{{password}}',
         'url' => '{{url}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+
     ],
 
     /*
@@ -104,7 +107,7 @@ return[
     ],
 
     'sales_manager_email' => [
-        'name' => '{$name}',
+        'name' => '{{name}}',
         'manager_first_name' => '{{manager_first_name}}',
         'manager_last_name' => '{{manager_last_name}}',
         'manager_email' => '{{manager_email}}',
@@ -114,8 +117,8 @@ return[
     ],
 
     'account_manager_email' => [
-        'name' => '{$name}',
-        'manager_first_name' => '{$manager_first_name}}',
+        'name' => '{{name}}',
+        'manager_first_name' => '{{manager_first_name}}',
         'manager_last_name' => '{{manager_last_name}}',
         'manager_email' => '{{manager_email}}',
         'manager_code' => '{{manager_code}}',
@@ -123,11 +126,16 @@ return[
         'manager_skype' => '{{manager_skype}}',
     ],
 
-    'autosubscription_going_to_end' => [
+    'auto_subscription_going_to_end' => [
         'name' => '{{name}}',
         'number' => '{{number}}',
         'product' => '{{product}}',
         'expiry' => '{{expiry}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'renewPrice' => '{{renewPrice}}',
+        'product_type' => '{{product_type}}',
+        'deletionDate' => '{{deletionDate}}',
     ],
 
     'payment_failed' => [

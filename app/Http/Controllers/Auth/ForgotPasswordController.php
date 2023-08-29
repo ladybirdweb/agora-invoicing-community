@@ -73,7 +73,7 @@ class ForgotPasswordController extends Controller
             $template = $templates->where('id', $temp_id)->first();
 
             $contact = getContactData();
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs, 'contact' => $contact['contact'],
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$setting->website, 'contact' => $contact['contact'],
                 'logo' => $contact['logo']];
             $from = $setting->email;
             $to = $user->email;

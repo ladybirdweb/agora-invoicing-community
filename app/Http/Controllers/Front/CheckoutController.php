@@ -17,6 +17,7 @@ use App\Model\Product\Subscription;
 use App\Traits\TaxCalculation;
 use App\User;
 use Cart;
+use App\Model\Payment\PromotionType;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
@@ -135,7 +136,9 @@ class CheckoutController extends InfoController
                 if (! empty(\Session::get('code'))) {
                     $price = \Session::get('oldPrice');
                     $value = Promotion::where('code', \Session::get('code'))->value('value');
-                    $discountPrice = $price * (intval($value) / 100);
+                    $typeid = Promotion::where('code', \Session::get('code'))->value('type');
+                    $type = PromotionType::find($typeid);
+                    $discountPrice = $type->name == 'Percentage' ? $price * (intval($value) / 100) : $value;
                     \Session::put('discountPrice', $discountPrice);
                 }
             }

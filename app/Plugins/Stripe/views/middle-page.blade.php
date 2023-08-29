@@ -107,7 +107,12 @@ $currency = $invoice->currency;
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-total">
+                                    @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
+                                    <span class="amount">{{currencyFormat($item->quantity * \Session::get('togglePrice'),$code = $item->attributes->currency)}}</span>
+                                    @else
                                     <span class="amount">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
+
+                                    @endif
                                 </td>
                             </tr>
                             @empty 

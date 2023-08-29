@@ -500,10 +500,10 @@ class PageController extends Controller
                     ->plans($product['shoping_cart_link'], $product['id']);
                     if ($product['add_to_contact'] != 1) {
                         $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
-                     value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
-                   value='Order Now' class='btn btn-dark btn-modern'></form>";
+                     value='Order Now' class='btn btn-primary btn-modern buttonsale'></form>" : "<input type='submit' 
+                   value='Order Now' class='btn btn-dark btn-modern buttonsale' style='display: block;'></form>";
                     } else {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
                     }
                 }
                 $data = PricingTemplate::findorFail(1)->data;

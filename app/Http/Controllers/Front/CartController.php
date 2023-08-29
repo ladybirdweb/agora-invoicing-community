@@ -152,7 +152,6 @@ class CartController extends BaseCartController
         }
     }
 
-
     public function showCart()
     {
         try {

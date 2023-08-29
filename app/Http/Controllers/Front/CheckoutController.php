@@ -11,13 +11,13 @@ use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
+use App\Model\Payment\PromotionType;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Traits\TaxCalculation;
 use App\User;
 use Cart;
-use App\Model\Payment\PromotionType;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 

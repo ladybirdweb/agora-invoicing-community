@@ -280,6 +280,7 @@ class CronController extends BaseCronController
 
         $endDate = Carbon::now()->addDays($days + 1)->toDateString();
         $subscriptions = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])->where('is_subscribed', '0')->get();
+
         return $subscriptions;
     }
 

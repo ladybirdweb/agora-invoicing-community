@@ -641,7 +641,13 @@ $price = $order->price_override;
                                             <div class="d-flex align-items-start">
                                                 <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
+                                                    <?php
+                                                        $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
+                                                            ->where('installation_path','!=','billing.faveocloud.com')->value('installation_path');
+                                                        ?>
+
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
+                                                    <h6 class="mb-1"><i>Current domain: {{$installation_path}}</i></h6>
                                                     <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
                                                 </div>
                                             </div>
@@ -658,7 +664,10 @@ $price = $order->price_override;
                                             <div class="d-flex align-items-start">
                                                 <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
                                                 <div>
+                                                    <?php $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
+                                                    ?>
                                                     <h5 class="mb-1">Increase/Decrease Agents</h5>
+                                                    <h6 class="mb-1"><i>Current number of agents: {{$latestAgents}}</i></h6>
                                                     <p class="card-text mb-0">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
                                                 </div>
                                             </div>
@@ -685,7 +694,10 @@ $price = $order->price_override;
                                                 $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
                                                 $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
                                                 $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
                                                 ?>
+
+
                                                 <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
                                                 <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
                                                 <p class="card-text mb-0">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
@@ -790,6 +802,12 @@ $price = $order->price_override;
                     <label class="mb-1" style="margin-left: 14px;">Current number of agents: {{$latestAgents}}</label>
                     <div class="form-group">
                         <div class="col-12">
+                            <?php
+                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
+?>
+                            <p>Price per agent: <span id="ll" class="ll">{!! currencyFormat($ExistingPlanPirce,\Auth::user()->currency,true) !!}</span></p>
+                        </div>
+                        <div class="col-12"  style="margin-top: -14px;">
                             {!! Form::label('number', 'Choose your desired number of agents:', ['class' => 'col-form-label']) !!}
                             <div class="quantity">
                                 {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'numberAGt', 'min' => '1', 'placeholder' => '']) !!}
@@ -797,10 +815,8 @@ $price = $order->price_override;
                         </div>
                     </div>
                     <div class="form-group mb-2">
+
                         <div class="col-12">
-                            <p>Price per agent: <span id="priceagent" class="priceagent"></span></p>
-                        </div>
-                        <div class="col-12" style="margin-top: -13px;">
                             <p>Price to be paid: <span id="pricetopay" class="pricetopay"></span></p>
                         </div>
                     </div>

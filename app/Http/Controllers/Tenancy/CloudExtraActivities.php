@@ -730,7 +730,7 @@ class CloudExtraActivities extends Controller
     public function getThePaymentCalculationDisplay(Request $request)
     {
         try {
-            $newAgents = $request->get('newAgents');
+            $newAgents = $request->get('number');
             $oldAgents = $request->get('oldAgents');
             $orderId = $request->get('orderId');
             $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
@@ -738,6 +738,7 @@ class CloudExtraActivities extends Controller
             $planId = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
 
             $product_id = Plan::where('id', $planId)->pluck('product')->first();
+
             $planDays = Plan::where('id', $planId)->pluck('days')->first();
             $product = Product::find($product_id);
             $plan = $product->planRelation->find($planId);

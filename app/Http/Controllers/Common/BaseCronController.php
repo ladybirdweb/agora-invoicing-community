@@ -207,8 +207,16 @@ class BaseCronController extends Controller
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->subscription_going_to_end;
         $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
+        $date = date_create($end);
+        $end = date_format($date, 'l, F j, Y');
+
+        $delDate = strtotime($end.' +'.$expiryDays.' days');
+        $deletionDate = date('l, F j, Y', $delDate);
 
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'deletionDate' => ($product_type == '4') ? $deletionDate : '',
+            'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
             'expiry'       => $end,
             'product'      => $product,
             'number'       => $order->number,

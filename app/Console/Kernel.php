@@ -167,6 +167,7 @@ class Kernel extends ConsoleKernel
     public function cloudEmail()
     {
         try {
+            $contact = getContactData();
             $setting = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $clouds = cloudemailsend::cursor();

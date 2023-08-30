@@ -41,6 +41,10 @@ return[
         'url' => '{{url}}',
         'serialkeyurl' => '{{serialkeyurl}}',
         'knowledge_base' => '{{knowledge_base}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'orderHeading' => '{{orderHeading}}',
+
     ],
 
     'cloud_order' => [
@@ -78,6 +82,8 @@ return[
         'total' => '{{total}}',
         'content' => '{{content}}',
         'currency' => '{{currency}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
     ],
 
     /*
@@ -87,6 +93,8 @@ return[
         'name' => '{{name}}',
         'url' => '{{url}}',
         'contact_us' => '{{contact-us}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
 
     ],
 
@@ -96,6 +104,10 @@ return[
         'product' => '{{product}}',
         'expiry' => '{{expiry}}',
         'url' => '{{url}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'product_type' => '{{product_type}}',
+        'deletionDate' => '{{deletionDate}}',
     ],
 
     'subscription_over_mail' => [
@@ -104,6 +116,10 @@ return[
         'product' => '{{product}}',
         'expiry' => '{{expiry}}',
         'url' => '{{url}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'product_type' => '{{product_type}}',
+        'deletionDate' => '{{deletionDate}}',
     ],
 
     'sales_manager_email' => [
@@ -146,38 +162,17 @@ return[
         'expiry' => '{{expiry}}',
         'exception' => '{{exception}}',
         'url' => '{{url}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
     ],
     'payment_successfull' => [
         'name' => '{{name}}',
         'product' => '{{product}}',
-        'currency' => '{currency}}',
         'total' =>'{{total}}',
         'number' => '{{number}}',
-    ],
-
-    'card_failed' => [
-        'name' => '{$name}',
-        'product' => '{$product}',
-        'total' => '{$total}',
-        'number' => '{$number}',
-        'expiry' => '{$expiry}',
-        'exception' => '{$exception}',
-        'url' => '{$url}',
-    ],
-
-    'Free_trail_gonna_expired' => [
-        ' name' => '{$name}',
-        'product' => '{$product}',
-        'number' => '{$number}',
-        'expiry' => '{$expiry}',
-        'url' => '{$url}',
-    ],
-    'free_trail_expired' => [
-        'name' => '{$name}',
-        'product' => '{$product}',
-        'number' => '{$number}',
-        'expiry' => '{$expiry}',
-        'url' => '{$url}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'future_expiry' => '{{future_expiry}}',
     ],
 
     'cloud_deleted' => [
@@ -185,11 +180,17 @@ return[
         'product' => '{{product}}',
         'number' => '{{number}}',
         'expiry' => '{{expiry}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
     ],
 
     'cloud_created' => [
         'name' => '{{name}}',
         'message' => '{{message}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'title' => '{{title}}',
+        'company_email' => '{{company_email}}',
     ],
 
 ];

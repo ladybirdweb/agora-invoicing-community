@@ -131,6 +131,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             'invoiceurl' => $invoiceurl,
             'content'    => $this->invoiceContent($invoiceid),
             'currency'   => $this->currency($invoiceid),
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
         ];
         if ($template) {
             $type_id = $template->type;

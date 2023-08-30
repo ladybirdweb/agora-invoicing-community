@@ -282,6 +282,7 @@ class AuthController extends BaseAuthController
 
     public function salesManagerMail($user, $bcc = [])
     {
+        $contact = getContactData();
         $manager = $user->manager()
 
             ->where('position', 'manager')
@@ -308,14 +309,16 @@ class AuthController extends BaseAuthController
             'manager_code'       => '+'.$manager->mobile_code,
             'manager_mobile'     => $manager->mobile,
             'manager_skype'      => $manager->skype,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
-        $mail->email_log_success($setting->email, $user->email, $template->name, $template_data);
     }
 
     public function accountManagerMail($user, $bcc = [])
     {
+        $contact = getContactData();
         $manager = $user->accountManager()
 
             ->where('position', 'account_manager')
@@ -342,6 +345,8 @@ class AuthController extends BaseAuthController
             'manager_code'       => '+'.$manager->mobile_code,
             'manager_mobile'     =>  $manager->mobile,
             'manager_skype'      => $manager->skype,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);

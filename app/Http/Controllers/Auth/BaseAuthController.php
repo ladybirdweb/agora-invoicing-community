@@ -153,7 +153,7 @@ class BaseAuthController extends Controller
     public function sendActivation($email, $method)
     {
         $user = User::where('email', $email)->first();
-
+        $contact = getContactData();
         if (! $user) {
             throw new \Exception('User with this email does not exist');
         }
@@ -182,6 +182,8 @@ class BaseAuthController extends Controller
                 'username' => $user->email,
                 'url' => $url,
                 'website_url' => $website_url,
+                'contact' => $contact['contact'],
+                'logo' => $contact['logo'],
             ];
 
             $type = '';

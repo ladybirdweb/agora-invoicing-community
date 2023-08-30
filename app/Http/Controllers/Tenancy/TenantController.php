@@ -190,7 +190,6 @@ class TenantController extends Controller
                 'domain.regex' => 'Special characters are not allowed in domain name',
             ]);
 
-        $settings = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
 
@@ -281,6 +280,7 @@ class TenantController extends Controller
                         $temp_type = new \App\Model\Common\TemplateType();
                         $type = $temp_type->where('id', $type_id)->first()->name;
                     }
+                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 

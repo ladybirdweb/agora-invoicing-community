@@ -1,6 +1,6 @@
 
 <form action="{{url('delete/domain/'.$orderNumber.'/1')}}" method="GET" onsubmit="return ConfirmDelete()">
-    <button class="btn  btn-primary btn-xs open-deleteTenantDialog" data-toggle="modal"><i class="fa fa-edit"></i>&nbsp;Delete Cloud</button>
+    <button class="btn  btn-primary btn-xs open-deleteTenantDialog" data-toggle="modal"><i class="fa fa-trash"></i>&nbsp;Delete Cloud</button>
 </form>
 <script type="text/javascript">
     function ConfirmDelete() {

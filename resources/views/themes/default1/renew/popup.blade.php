@@ -51,10 +51,7 @@
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                    {!! Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, [
-    'class' => 'form-control plan-dropdown',
-    'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',
-]) !!}
+                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',]) !!}
 
                     {!! Form::hidden('user',$userid) !!}
                     </div>
@@ -85,7 +82,7 @@
             </div>
             <div class="modal-footer" style="margin-top: -23px;">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit"  class="btn btn-primary" id="saveRenew" disabled><i class="fa fa-check" >&nbsp;&nbsp;</i>Save</button>
+                 <button type="submit"  class="btn btn-primary" id="saveRenew" disabled><i class="fa fa-check" >&nbsp;&nbsp;</i>Renew</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->

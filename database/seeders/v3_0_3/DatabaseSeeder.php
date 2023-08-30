@@ -841,7 +841,7 @@ Template::create(['id' => 20, 'name' => 'New instance created', 'type' => 20, 'u
           <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
           <p>Dear {{name}},&nbsp;<br /><br /></p>
           <p><strong>Welcome to {{title}}!</strong> We are delighted to have you on board. You are joining thousands of businesses that use {{title}} to engage with their customers meaningfully.</p>
-          <p>{{{message}}</p>
+          <p>{{message}}</p>
           <p>We are delighted to offer you a trial period to explore our product.</p>
           <p>Please write to our team of product specialists at {{company_email}} for any questions or assistance during your trial period.</p>
           <p>Thank you for choosing us!</p>

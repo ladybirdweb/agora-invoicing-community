@@ -474,7 +474,7 @@ $json = json_encode($data);
                         ?>
                         <th>
 
-                            <strong>{!! $bifurcateTax['html'] !!}</strong>
+                            <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
 
 
                         </th>
@@ -538,7 +538,7 @@ $json = json_encode($data);
                                 }
                             }
                             ?>
-                    <strong><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></strong>
+                    <b><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></b>
 
 
                     </td>

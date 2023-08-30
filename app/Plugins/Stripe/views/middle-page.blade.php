@@ -392,7 +392,8 @@ $currency = $invoice->currency;
                         ?>
                         <th>
 
-                            <strong>{!! $bifurcateTax['html'] !!}</strong>
+                            <span style="display: inline-block; margin-left: 20px;"><b>{!! $bifurcateTax['html'] !!}</b></span><br/>
+
 
 
                         </th>
@@ -470,7 +471,7 @@ $currency = $invoice->currency;
                                 }
                             }
                             ?>
-                    <strong><span class="amount">{{currencyFormat($amount,$code = $currency)}} </span></strong>
+                    <b><span class="amount">{{currencyFormat($amount,$code = $currency)}} </span></b>
 
 
                     </td>

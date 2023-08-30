@@ -3,6 +3,8 @@
 <head>
     <!-- Meta Information -->
     <meta charset="utf-8">
+    <base href="{{url('/horizon/')}}">
+    <meta name="api-base-url" content="{{ url('/') }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('/vendor/horizon/img/favicon.png') }}">

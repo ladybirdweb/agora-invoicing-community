@@ -1,0 +1,6 @@
+Authors ordered by first contribution.
+
+Bryan Davis <bd808@bd808.com>
+Chris Galli <mcgalli@yahoo.com>
+Vovan-VE <https://github.com/Vovan-VE>
+Tarwin Stroh-Spijer <https://github.com/tarwin>

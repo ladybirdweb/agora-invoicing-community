@@ -465,10 +465,8 @@ $days = $pay->where('product','117')->value('days');
 
             @if(Session::has('success'))
 
-                <div class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-
+                <div class="container">
+                    
                     {!!Session::get('success')!!}
                 </div>
 

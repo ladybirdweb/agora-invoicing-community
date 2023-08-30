@@ -574,7 +574,7 @@ function getContactData()
 {
     $setting = Setting::first();
     $countryCode = Country::where('country_code_char2', $setting->country)->value('phonecode');
-    $logo = '<img src="'.asset('common/images/'.$setting->logo).'" />';
+    $logo = '<img src="'.asset('storage/common/images/'.$setting->logo).'" />';
     $billingContact = '
     <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
         <p style="line-height: 20px;">'.$setting->company.'<br />

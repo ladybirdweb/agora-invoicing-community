@@ -262,13 +262,13 @@ class TemplateController extends Controller
 
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
-
         if (isset($offer) && $offer !== '' && $offer !== null) {
             $cost = $cost - ($offer / 100) * $cost;
         }
         $price1 = currencyFormat($cost, $code = $currency);
         $months = $cost == 0 ? '' : $months;
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
         return $price;
     }
 

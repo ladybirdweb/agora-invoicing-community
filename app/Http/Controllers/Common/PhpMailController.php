@@ -6,7 +6,6 @@ use App\Email_log;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
-use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;

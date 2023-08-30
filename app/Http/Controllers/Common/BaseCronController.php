@@ -284,7 +284,7 @@ class BaseCronController extends Controller
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
-        try {
+       
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $setting = $settings->where('id', 1)->first();
@@ -323,5 +323,6 @@ class BaseCronController extends Controller
         $subject = $template->name;
         $data = $template->data;
         $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-    }
+    
+}
 }

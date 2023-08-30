@@ -51,7 +51,6 @@ Route::post('update-social-login', [SocialLoginsController::class, 'update'])->n
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
 Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
 
-
 // !social logins rotes end
 /*
 * Installer Routes
@@ -76,7 +75,7 @@ Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->g
 });
 
 Route::middleware('installAgora')->group(function () {
-    Route::post('store_toggle_state', [Common\TemplateController::class, 'toggle'])->withoutMiddleware(['auth','admin']);;
+    Route::post('store_toggle_state', [Common\TemplateController::class, 'toggle'])->withoutMiddleware(['auth', 'admin']);
     Route::get('pricing', [Front\CartController::class, 'cart'])->name('pricing');
     Route::get('group/{templateid}/{groupid}/', [Front\PageController::class, 'pageTemplates']);
     Route::post('cart/remove', [Front\CartController::class, 'cartRemove']);
@@ -105,8 +104,6 @@ Route::middleware('installAgora')->group(function () {
 
     Route::get('demo-request', [Front\PageController::class, 'viewDemoReq'])->withoutMiddleware(['auth']);
     Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
-
-
 
     /*
      * Front Client Pages

@@ -596,7 +596,9 @@ class PageController extends Controller
         ];
 
         foreach ($plans as $plan) {
-            $offer_price = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
+            
+            $currency = ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+            $offer_price = PlanPrice::where('plan_id', $plan->id)->where('currency',$currency)->value('offer_price');
 
             if ($plan->days == '30' || $plan->days == '31') {
                 $offerprices['30_days'] = $offer_price;

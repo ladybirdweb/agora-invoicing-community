@@ -8,7 +8,6 @@ use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
-use App\Model\Common\Setting;
 use App\Model\Front\FrontendPage;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
@@ -633,6 +632,7 @@ class PageController extends Controller
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
+
             return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

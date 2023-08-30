@@ -14,6 +14,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use App\Model\Common\Setting;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -704,12 +705,14 @@ class PageController extends Controller
                         $description = $plan->planPrice->first();
                         if ($description->price_description == 'Free') {
                             $priceDescription = 'free';
-                        } else {
-                            if ($product->status) {
-                                $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
-                            } else {
-                                $priceDescription = $description->price_description;
-                            }
+                        } 
+                      else {
+                        if($product->status){
+                            $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
+                        }
+                        else{
+                            $priceDescription = $description->price_description;
+                        }
                         }
 
                         // Break the loop if we find a plan with 30 or 31 days

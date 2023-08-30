@@ -14,7 +14,6 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
 {

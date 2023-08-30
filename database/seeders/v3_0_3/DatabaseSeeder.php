@@ -770,7 +770,7 @@ Template::where('id',19)->update(['name' => 'URGENT: Order has been deleted', 't
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {{name}},<br /><br />
-<h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud - has been Deleted</h1>
+<h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud has been Deleted</h1>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
@@ -791,7 +791,7 @@ Template::where('id',19)->update(['name' => 'URGENT: Order has been deleted', 't
 <tr>
 <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">{{number}}</td>
 <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">{{product}}</td>
-<td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">{{expiry}x`}</td>
+<td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">{{expiry}}</td>
 </tr>
 </tbody>
 </table>
@@ -839,7 +839,7 @@ Template::create(['id' => 20, 'name' => 'New instance created', 'type' => 20, 'u
           <tr>
           <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 0px; padding-bottom: 0px;">&nbsp;</td>
           <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-          <p>Dear {$name},&nbsp;<br /><br /></p>
+          <p>Dear {{name}},&nbsp;<br /><br /></p>
           <p><strong>Welcome to {{title}}!</strong> We are delighted to have you on board. You are joining thousands of businesses that use {{title}} to engage with their customers meaningfully.</p>
           <p>{{{message}}</p>
           <p>We are delighted to offer you a trial period to explore our product.</p>

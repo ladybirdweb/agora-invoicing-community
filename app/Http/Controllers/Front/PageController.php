@@ -298,7 +298,7 @@ class PageController extends Controller
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     if ($plan->days == 365 || $plan->days == 366) {
-                        $currency = ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+                        $currency = userCurrencyAndPrice('', $plan);
                         $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $prices[] = $planDetails['plan']->add_price;
@@ -391,7 +391,7 @@ class PageController extends Controller
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     if ($plan->days == 30 || $plan->days == 31) {
-                        $currency = ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+                        $currency = userCurrencyAndPrice('', $plan);
                         $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
                         $price = $planDetails['plan']->add_price;
@@ -596,7 +596,7 @@ class PageController extends Controller
         ];
 
         foreach ($plans as $plan) {
-            $currency = ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+            $currency = userCurrencyAndPrice('', $plan);
             $offer_price = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
 
             if ($plan->days == '30' || $plan->days == '31') {
@@ -633,7 +633,6 @@ class PageController extends Controller
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-
             return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

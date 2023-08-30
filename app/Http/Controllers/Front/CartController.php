@@ -237,7 +237,7 @@ class CartController extends BaseCartController
                 $plans = Plan::where('product', $productid)->get();
                 foreach ($plans as $plan) {
                     $currencyQuery = Plan::where('product', $productid);
-                    $currency = ! \Auth::user() ? Setting::first()->default_currency : \Auth::user()->currency;
+                    $currency = userCurrencyAndPrice('', $plan);
                     $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
 
                     if (\Session::get('toggleState') == 'yearly') {

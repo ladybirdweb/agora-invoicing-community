@@ -115,8 +115,8 @@ class ClientController extends AdvanceSearchController
                         ->addColumn('company', function ($model) {
                             return $model->company;
                         })
-                        ->addColumn('date', function ($model) {
-                            return getDateHtml($model->date);
+                        ->addColumn('created_at', function ($model) {
+                            return getDateHtml($model->created_at);
                         })
                         ->addColumn('active', function ($model) {
                             return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);
@@ -537,6 +537,7 @@ class ClientController extends AdvanceSearchController
             })->when($request->salesmanager, function ($query) use ($request) {
                 $query->where('manager', $request->salesmanager);
             });
+            
 
         $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
 

@@ -18,28 +18,104 @@
     <li class="active">Cart</li>
 @stop
 @section('main-class') "main shop" @stop
+
+
+
 @section('content')
+<style>
+    /* Add CSS styles here for cart page */
+
+    /* Style the cart table */
+    .shop_table.cart {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .shop_table.cart th,
+    .shop_table.cart td {
+        border: none; /* Remove borders between columns */
+        padding: 10px;
+        text-align: left;
+    }
+
+    .shop_table.cart th {
+        background-color: #eee;;
+    }
+
+    /* Style the cart item rows */
+    .cart_table_item {
+    border-bottom: 1px solid #ddd; /* Keep borders around each product */
+    background-color: #f9f9f9; /* Add a light shade to the product cells */
+}
+
+/* Style the "Remove" icon */
+
+
+
+/* Rest of your existing styles... */
+
+
+
+
+
+    /* Style the cart totals table */
+    .cart-totals {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .cart-totals th,
+    .cart-totals td {
+        border: none; /* Remove borders between columns */
+        padding: 10px;
+        text-align: left;
+    }
+
+  
+
+    /* Style the buttons */
+    .cart-buttons {
+        margin-top: 20px;
+    }
+
+    .cart-buttons a.btn {
+        white-space: nowrap;
+        margin-right: 10px;
+    }
+
+    /* Style the remove (cross) icon */
+    
+    .cart_table_item .remove-icon {
+    border-bottom: none;
+    padding-bottom: 0; /* Optionally, remove padding if needed */
+}
+/* Style the "Remove" icon */
+
+
+
+    
+ 
+</style>
+
+
 
     <?php
     $cartTotal = 0;
     ?>
     <div class="row">
         <div class="col-md-12">
-
-
-
             @if(!Cart::isEmpty())
                 <div class="featured-boxes">
                     <div class="row">
 
                         <div class="col-md-8">
-
-
                             <div class="featured-box featured-box-primary align-left mt-sm">
-
                                 <div class="box-content">
                                     <table class="shop_table cart">
                                         @forelse($cartCollection as $item)
+                                        <div class="product-row">
                                             @php
                                                 if(\Auth::check()) {
                                                 Cart::clearItemConditions($item->id);
@@ -102,13 +178,15 @@
                                             <tbody>
 
 
-                                            <tr class="cart_table_item">
-
-                                                <td class="product-remove">
-                                                    <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                                                        <i class="fa fa-times"></i>
-                                                    </a>
-                                                </td>
+                                                
+                                                <tr class="cart_table_item">
+                                                <td class="float-left">
+        <div class="remove-icon">
+            <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+    </td>
                                                 <td class="product-thumbnail">
                                                     <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
                                                 </td>
@@ -174,7 +252,7 @@
 
                                             </tr>
 
-
+                                                </div>
                                             @endforeach
                                             </tbody>
 
@@ -196,16 +274,11 @@
                                     <h4 class="heading-primary text-uppercase mb-md">Cart Total</h4>
                                     <table class="cart-totals">
                                         <tbody>
-
-
-
                                         <tr class="total">
                                             <th>
                                                 <strong>Order Total</strong>
                                             </th>
                                             <td>
-
-
                                                 <strong><span class="amount"><small>&nbsp;</small>
                                                 {{currencyFormat($cartTotal, $item->attributes->currency)}}
                                            </span></strong>
@@ -386,7 +459,6 @@
                 }
             });
         });
-
         /*
          * Reduce Procut Quantity
          */
@@ -413,10 +485,6 @@
                 }
             });
         });
-
-
-
-
         function Addon(id){
             $.ajax({
                 type: "GET",

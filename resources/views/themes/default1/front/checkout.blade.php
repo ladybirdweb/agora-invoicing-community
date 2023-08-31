@@ -330,30 +330,7 @@ $cartSubtotalWithoutCondition = 0;
 </div>
 </div>
 @elseif (\Cart::isEmpty())
-    <div class="featured-boxes">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="featured-box featured-box-primary align-left mt-sm">
-                    <div class="box-content">
-
-                        <div class="col-md-offset-5">
-                         @php       
-                         $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
-                         @endphp  
-
-                            @if(Auth::check())
-
-                                <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn btn-primary">CONTINUE SHOPPING
-                                    @else
-                                        <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
-                                            @endif
-                                        </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>

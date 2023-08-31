@@ -525,7 +525,7 @@ $currency = $invoice->currency;
     })
 
         $('#submit_total').submit(function(){
-     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
+     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...")
     $("#pay_now").prop('disabled', true);
 
   });

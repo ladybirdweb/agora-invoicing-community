@@ -29,9 +29,7 @@ Templates
 
             <div class="col-md-12">
                 <table id="templates-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Subject</th>
                           <th>Type</th>
                            <th>Action</th>
@@ -72,7 +70,7 @@ Templates
             ordering: true,
             searching:true,
             select: true,
-            order: [[ 1, "desc" ]],
+            order: [[ 0, "desc" ]],
             ajax: {
             "url":  '{!! route('get-templates') !!}',
                error: function(xhr) {
@@ -97,7 +95,6 @@ Templates
             ],
           
             columns: [
-                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
                 {data: 'action', name: 'action'}

@@ -44,6 +44,7 @@ class TemplateController extends Controller
         return \DataTables::of($this->template->select('id', 'name', 'type'))
                         ->orderColumn('name', '-id $1')
                         ->orderColumn('type', '-created_at $1')
+                        ->orderColumn('action', '-created_at $1')
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='template_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -68,7 +69,7 @@ class TemplateController extends Controller
                              $sql = 'type like ?';
                              $query->whereRaw($sql, ["%{$keyword}%"]);
                          })
-                        ->rawColumns(['checkbox', 'name', 'type', 'action'])
+                        ->rawColumns(['name', 'type', 'action'])
                         ->make(true);
     }
 
@@ -262,12 +263,14 @@ class TemplateController extends Controller
 
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
+
         if (isset($offer) && $offer !== '' && $offer !== null) {
             $cost = $cost - ($offer / 100) * $cost;
         }
         $price1 = currencyFormat($cost, $code = $currency);
-        $months = $cost == 0 ? '' : $months;
-        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+        $months = $cost == 0 ? $priceDescription : $months;
+        $priceDescription = $priceDescription == '' ? $months : $priceDescription;
+        $price[$value->id] = $price1.' '.$priceDescription;
 
         return $price;
     }
@@ -315,5 +318,6 @@ class TemplateController extends Controller
             \Session::forget('toggleState');
             \Session::put('toggleState', 'monthly');
         }
+
     }
 }

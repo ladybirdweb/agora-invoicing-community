@@ -321,7 +321,7 @@ class PageController extends Controller
         }
     }
 
-    public function transform($type, $data, $trasform = [])
+    public function transformTemplate($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");
         $result = '';
@@ -333,8 +333,8 @@ class PageController extends Controller
         for ($i = 0; $i < $c; $i++) {
             $array1 = $this->keyArray($array[$i]);
             $array2 = $this->valueArray($array[$i]);
-            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
             $id = Product::where('name', $array2[0])->value('id');
+            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
             $offerprice = $this->getOfferprice($id);
             $description = self::getPriceDescription($id);
             $month_offer_price = $offerprice['30_days'] ?? null;
@@ -371,7 +371,25 @@ class PageController extends Controller
                     $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
                 }
             }
+        
 
+            $result .= str_replace($array1, $array2, $data);
+        }
+        return $result;
+    }
+
+    public function transform($type, $data, $trasform = [])
+    {
+        $config = \Config::get("transform.$type");
+        $result = '';
+        $array = [];
+        foreach ($trasform as $trans) {
+            $array[] = $this->checkConfigKey($config, $trans);
+        }
+        $c = count($array);
+        for ($i = 0; $i < $c; $i++) {
+            $array1 = $this->keyArray($array[$i]);
+            $array2 = $this->valueArray($array[$i]);
             $result .= str_replace($array1, $array2, $data);
         }
 
@@ -454,7 +472,6 @@ class PageController extends Controller
 
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -506,7 +523,7 @@ class PageController extends Controller
                     }
                 }
                 $data = PricingTemplate::findorFail(1)->data;
-                $template = $this->transform('cart', $data, $trasform);
+                $template = $this->transformTemplate('cart', $data, $trasform);
             }
 
             return $template;

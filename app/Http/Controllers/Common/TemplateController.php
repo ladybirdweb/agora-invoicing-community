@@ -263,7 +263,6 @@ class TemplateController extends Controller
 
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
-
         if (isset($offer) && $offer !== '' && $offer !== null) {
             $cost = $cost - ($offer / 100) * $cost;
         }
@@ -318,6 +317,5 @@ class TemplateController extends Controller
             \Session::forget('toggleState');
             \Session::put('toggleState', 'monthly');
         }
-
     }
 }

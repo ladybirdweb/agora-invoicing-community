@@ -371,10 +371,10 @@ class PageController extends Controller
                     $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
                 }
             }
-        
 
             $result .= str_replace($array1, $array2, $data);
         }
+
         return $result;
     }
 

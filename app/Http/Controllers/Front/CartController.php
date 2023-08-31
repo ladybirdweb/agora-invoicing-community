@@ -250,6 +250,7 @@ class CartController extends BaseCartController
                     }
                 }
                 Session::forget('toggleState');
+
                 return $cost;
             } else {
                 $cost = 0;

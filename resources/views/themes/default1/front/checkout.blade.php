@@ -117,15 +117,15 @@ $cartSubtotalWithoutCondition = 0;
                                 <td class="product-subtotal">
                                    <?php
                                     $productId = \DB::table('products')->where('name', $item->name)->value('id');
-                                    $planid = null; // Initialize $planid to null
-                                    
-                                    if (\Session::has('toggleState')) {
+                                    $planid = null;
+                                    if (\Session::has('toggleState') || \Session::get('toggleState') == null) {
                                         $toggleState = \Session::get('toggleState');
                                         $price = $item->price;
                                     }
                                     else{
+                                      $planid = \DB::table('plans')->where('product',$item->id)->value('id');
                                       $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
-                                         }    
+                                    }    
 
                                     ?>
 

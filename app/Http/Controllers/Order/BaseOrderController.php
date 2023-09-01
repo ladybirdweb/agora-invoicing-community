@@ -171,21 +171,24 @@ class BaseOrderController extends ExtendedOrderController
                 $version = '';
             }
             $days = null;
-            if (\Session::get('toggleState') == 'monthly') {
-                $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->value('days');
-            } elseif (\Session::get('toggleState') == 'yearly') {
-                $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->value('days');
-            }
+            $status = Product::find($product);
+            if($status->status){
+
+            if (\Session::get('planDays') == 'monthly') {
+                $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
+            } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
+                $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
+            }}  
 
             if ($days === null) {
-                $days = $this->plan->where('id', $planid)->first()->value('days');
+                $days = $this->plan->where('id', $planid)->first();
             }
-            $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
-            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
-            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
+            $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
+            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
+            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);
             $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '1']);
+                'plan_id' => $days->id, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '1']);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {

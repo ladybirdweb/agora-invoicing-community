@@ -249,6 +249,7 @@ class CartController extends BaseCartController
                         $cost = $daysQuery->offer_price ? $daysQuery->add_price - (($daysQuery->offer_price / 100) * $daysQuery->add_price) : $daysQuery->add_price;
                     }
                 }
+                Session::put('planDays',Session::get('toggleState'));
                 Session::forget('toggleState');
 
                 return $cost;

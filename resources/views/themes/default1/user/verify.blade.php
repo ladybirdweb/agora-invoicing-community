@@ -567,7 +567,6 @@ main
         }
 
         function verifyBySendOtp() {
-            alert('hi');
             $('#confirmotp').hide();
             if (verify_otp1_check()) {
                 $("#verifyOtp").attr('disabled', true);
@@ -579,7 +578,7 @@ main
                     'id': $('#u_id').val()
                 };
                 $.ajax({
-                    url: '{{url('otp / verify ')}}',
+                    url: '{{url('otp/verify ')}}',
                     type: 'post',
                     data: data,
                     success: function(response) {

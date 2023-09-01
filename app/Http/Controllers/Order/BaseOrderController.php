@@ -172,13 +172,13 @@ class BaseOrderController extends ExtendedOrderController
             }
             $days = null;
             $status = Product::find($product);
-            if($status->status){
-
-            if (\Session::get('planDays') == 'monthly') {
-                $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
-            } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
-                $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
-            }}  
+            if ($status->status) {
+                if (\Session::get('planDays') == 'monthly') {
+                    $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
+                } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
+                    $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
+                }
+            }
 
             if ($days === null) {
                 $days = $this->plan->where('id', $planid)->first();

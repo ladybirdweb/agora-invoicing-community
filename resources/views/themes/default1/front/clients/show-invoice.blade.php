@@ -32,7 +32,7 @@ active
 
         <div>
             @if($set->logo)
-                <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}" style="margin-top: -2px">
+                <img alt="Logo" width="100" height="50" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
             @endif
              <h4 class="float-right" >Date: {!! $date !!}</h4>
             <div class="invoice">

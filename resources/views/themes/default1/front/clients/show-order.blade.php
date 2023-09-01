@@ -298,7 +298,10 @@ $json = json_encode($data);
                                 <td><b>Licensed Domain/IP:</b></td>
                                 <td>{{$order->domain}} </td>
                                 <td>  
-                                @if($product->type != '4' && $price == '0')                               
+                                @if($product->type != '4' && $price != '0')                               
+                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                        Reissue License</button></td>
+                                @elseif($product->type != '4' && $price == '0')                               
                                     <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                         Reissue License</button></td>
                                         @elseif($product->type == '4' && $price != '0')

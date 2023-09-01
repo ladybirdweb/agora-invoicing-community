@@ -12,6 +12,7 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\Mime\Email;
 use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel
@@ -167,15 +168,28 @@ class Kernel extends ConsoleKernel
     public function cloudEmail()
     {
         try {
-            $contact = getContactData();
-            $setting = Setting::find(1);
+            $settings = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $clouds = cloudemailsend::cursor();
+            $mailer = $mail->setMailConfig($settings);
+            $clouds = cloudemailsend::all();
 
             foreach ($clouds as $cloud) {
                 if ($this->checkTheAvailabilityOfCustomDomain($cloud->domain, $cloud->counter, $cloud->user)) {
                     $userData = $cloud->result_message.'.<br> Email:'.' '.$cloud->user.'<br>'.'Password:'.' '.$cloud->result_password;
-                    $mail->SendEmail($setting->email, $cloud->user, $userData, 'New instance created');
+                    $email = (new Email())
+                        ->from($settings->email)
+                        ->to($cloud->user)
+                        ->subject('New instance created')
+                        ->html($cloud->result_message.'.<br> Email:'.' '.$cloud->user.'<br>'.'Password:'.' '.$cloud->result_password);
+
+                    $mailer->send($email);
+
+                    $mail->email_log_success($settings->email, $cloud->user, 'New instance created', $cloud->result_message.'.<br> Email:'.' '.$cloud->user.'<br>'.'Password:'.' '.$cloud->result_password);
+
+//                    $mail = new \App\Http\Controllers\Common\PhpMailController();
+//
+//                    $mail->sendEmail($settings->email, $cloud->user, $userData, 'New instance created');
+
                     cloudemailsend::where('domain', $cloud->domain)->delete();
                 }
             }

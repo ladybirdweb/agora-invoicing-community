@@ -320,7 +320,7 @@ $json = json_encode($data);
 
                         </th>
                         <td>
-                            -{{$dd=currencyFormat($cartBalance,$code = $item->attributes->currency)}}
+                            -{{$balance=currencyFormat($cartBalance,$code = $item->attributes->currency)}}
                         </td>
                     </tr>
                 @endif
@@ -519,7 +519,7 @@ $json = json_encode($data);
 
                     </th>
                     <td>
-                        -{{$dd=currencyFormat($cartBalance,$code = $currency)}}
+                        -{{$balance=currencyFormat($cartBalance,$code = $currency)}}
                     </td>
                 </tr>
                 @endif

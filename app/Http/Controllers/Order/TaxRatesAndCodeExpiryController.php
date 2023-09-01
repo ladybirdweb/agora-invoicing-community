@@ -112,6 +112,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
     {
+        $contact = getContactData();
         //user
         $users = new User();
         $user = $users->find($userid);

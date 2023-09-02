@@ -918,7 +918,7 @@ $days = $pay->where('product','117')->value('days');
 
     function removeItem(id) {
         $.ajax({
-            type: "POST",
+            type: "post",
             data:{
                 "id": id,
                 "_token": "{!! csrf_token() !!}",

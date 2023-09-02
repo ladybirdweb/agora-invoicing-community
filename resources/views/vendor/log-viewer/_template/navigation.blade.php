@@ -19,7 +19,7 @@
                     <span class="logo-lg"><b>{{$set->title}} </b></span>
                     @else
                     <span class="logo-lg">
-                        <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
+                        <img src='{{ asset("storage/admin/images/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
 
 
                     </span>

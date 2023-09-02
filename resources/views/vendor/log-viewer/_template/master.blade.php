@@ -9,7 +9,7 @@ $set = $set->findOrFail(1);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link rel="shortcut icon" href='{{asset("common/images/$set->fav_icon")}}' type="image/x-icon" />
+    <link rel="shortcut icon" href='{{asset("storage/common/images/$set->fav_icon")}}' type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
@@ -86,7 +86,7 @@ $set = $set->findOrFail(1);
             <!-- Messages Dropdown Menu -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="{{Auth::user()->profile_pic}}" style="width:30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                    <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                     <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -118,30 +118,30 @@ $set = $set->findOrFail(1);
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-    @if ($set->title != '')
+    @if ($set->title == '')
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
                             <span style="margin-left: 50px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
-                        </a>
+                        </a><br />
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 50px;" class="brand-text font-weight-light"><img src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8;"></span>
+                <span  class="brand-text font-weight-light"><img src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                     style="opacity: .8;margin-left: 90px;height: 30px;width : 40px;"></span><br />
                         </a>
                 @endif
 
     <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="image">
-                    <img src="{{Auth::user()->profile_pic}}" class="img-circle elevation-2" alt="User Image">
-                </div>
-                <div class="info">
-                    <a href="{{url('/clients/'.Auth::user()->id)}}" class="d-block">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</a>
-                </div>
-            </div>
+            <!--<div class="user-panel mt-3 pb-3 mb-3 d-flex">-->
+            <!--    <div class="image">-->
+            <!--        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" class="img-circle elevation-2" alt="User Image">-->
+            <!--    </div>-->
+            <!--    <div class="info">-->
+            <!--        <a href="{{url('/clients/'.Auth::user()->id)}}" style="height: 40px !important;" class="d-block">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</a>-->
+            <!--    </div>-->
+            <!--</div>-->
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">

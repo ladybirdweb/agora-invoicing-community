@@ -16,10 +16,10 @@ use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\Payment_log;
 use App\User;
+use File;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
-use File;
 
 class SettingsController extends BaseSettingsController
 {

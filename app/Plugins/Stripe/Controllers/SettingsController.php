@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
@@ -16,7 +17,6 @@ use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
 use Validator;
-use App\Model\Order\OrderInvoiceRelation;
 
 class SettingsController extends Controller
 {
@@ -275,7 +275,7 @@ class SettingsController extends Controller
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);    
+        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)

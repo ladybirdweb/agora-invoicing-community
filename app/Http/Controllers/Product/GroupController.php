@@ -164,7 +164,7 @@ class GroupController extends Controller
                 }
             }
 
-            if ($allProductsHavePlans) {
+            if (! $products->isEmpty() && $allProductsHavePlans) {
                 if ($request->status == 1) {
                     $group->fill($request->input())->save();
                     Product::where('group', $id)->update(['status' => 1]);

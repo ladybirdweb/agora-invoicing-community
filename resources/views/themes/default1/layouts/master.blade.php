@@ -160,7 +160,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width: 40px;height: 35px;margin-left: 5.5rem;" src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8;"></span>
                         </a>
                 @endif

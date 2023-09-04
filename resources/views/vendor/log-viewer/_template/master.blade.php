@@ -127,7 +127,7 @@ $set = $set->findOrFail(1);
                 @else
                         <a href="{{url('/')}}" class="brand-link">
                 <span  class="brand-text font-weight-light"><img src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8;margin-left: 90px;height: 30px;width : 40px;"></span><br />
+                     style="opacity: .8;margin-left: 90px;height: 40px !important;width : 30px;"></span><br />
                         </a>
                 @endif
 

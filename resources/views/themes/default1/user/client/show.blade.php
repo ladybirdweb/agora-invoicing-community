@@ -3,18 +3,6 @@
 User
 @stop
 @section('content-header')
-    <div class="col-sm-6">
-        <h1>User Details</h1>
-    </div>
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('clients')}}"> All Users</a></li>
-            <li class="breadcrumb-item active">View User</li>
-        </ol>
-    </div><!-- /.col -->
-
-@stop
 <style type="text/css">
     .read-more-show{
       cursor:pointer;
@@ -33,6 +21,19 @@ User
  
 }
 </style>
+    <div class="col-sm-6">
+        <h1>User Details</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients')}}"> All Users</a></li>
+            <li class="breadcrumb-item active">View User</li>
+        </ol>
+    </div><!-- /.col -->
+
+@stop
+
 @section('content')
 
     <!-- Widget: user widget style 1 -->

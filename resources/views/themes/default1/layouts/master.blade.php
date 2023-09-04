@@ -119,14 +119,26 @@
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
+                        <?php
+                        $user = \DB::table('users')->find(\Auth::user()->id);
+                        ?>
+                        @if($user->profile_pic == null)
+                        <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        @else
                         <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        @endif
                         <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <div class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}"  class="img-size-50 mr-3 img-circle" alt="User Image" / style="height: 50px;">
+
+                        @if($user->profile_pic == null)
+                        <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        @else
+                        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        @endif
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
@@ -293,7 +305,7 @@
                                 @endif
 
                                  <li class="nav-item">
-                                    <a href="{{url('demo/page')}}" class="nav-link" id="all_new_page">
+                                    <a href="{{url('demo/page')}}" class="nav-link" id="demo_page">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-demo')}}</p>
                                     </a>

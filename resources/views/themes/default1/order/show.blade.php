@@ -3,7 +3,6 @@
 Order
 @stop
 @section('content-header')
-
 <style>
     .col-2, .col-lg-2, .col-lg-4, .col-md-2, .col-md-4,.col-sm-2 {
         width: 0px;
@@ -63,22 +62,7 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-</style>
-    <div class="col-sm-6">
-        <h1>Order Details</h1>
-    </div>
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('orders')}}"><i class="fa fa-dashboard"></i> All Orders</a></li>
-            <li class="breadcrumb-item active">View Order</li>
-        </ol>
-    </div><!-- /.col -->
-
-
-@stop
-<style>
-    .scrollit {
+  .scrollit {
         overflow:scroll;
         height:300px;
         
@@ -87,6 +71,21 @@ input:checked + .slider:before {
         padding:.300rem!important;
     }
 </style>
+
+
+<div class="col-sm-6">
+    <h1>Order Details</h1>
+</div>
+<div class="col-sm-6">
+    <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{{url('orders')}}"><i class="fa fa-dashboard"></i> All Orders</a></li>
+        <li class="breadcrumb-item active">View Order</li>
+    </ol>
+</div><!-- /.col -->
+
+
+@stop
 @section('content')
     <div class="card card-secondary card-outline">
 <div class="row">

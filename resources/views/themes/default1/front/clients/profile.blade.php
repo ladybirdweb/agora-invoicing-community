@@ -305,9 +305,14 @@ input:checked + .slider:before {
                     <label for"profile_pic" class="">Profile Picture</label>
                     {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
                     <br>
-                     @if($user->profile_pic) 
-                    <img src='{{ asset("storage/common/images/user/$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
-                    @endif
+                     <?php
+                        $user = \DB::table('users')->find(\Auth::user()->id);
+                        ?>
+                        @if($user->profile_pic == null)
+                        <img src="{{ Auth::user()->profile_pic }}" class="img-thumbnail" style="height: 50px;">
+                        @else
+                        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" class="img-thumbnail" style="height: 50px;" />
+                        @endif
                     <h6 id="profilePicCheck"></h6>
 
                 </div>

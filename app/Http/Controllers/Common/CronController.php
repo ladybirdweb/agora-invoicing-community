@@ -6,6 +6,7 @@ use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\Order\BaseRenewController;
+use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -19,9 +20,8 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Carbon\Carbon;
-use Razorpay\Api\Api;
 use DateTime;
-use App\Model\Common\Setting;
+use Razorpay\Api\Api;
 
 class CronController extends BaseCronController
 {
@@ -491,7 +491,6 @@ class CronController extends BaseCronController
                         if ($cost && emailSendingStatus()) {
                             $this->sendPaymentSuccessMail($sub, $currency, $cost, $user, $invoice->product_name, $order->number);
                             $this->PaymentSuccessMailtoAdmin($invoice, $cost, $user, $invoice->product_name, $template = null, $order, $payment = 'stripe');
-
                         }
                     }
                 }
@@ -857,16 +856,15 @@ class CronController extends BaseCronController
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
-        $mail->payment_log($user->email, $payment,'success', $order->number);
+        $mail->payment_log($user->email, $payment, 'success', $order->number);
     }
 
     public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment)
     {
-
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        $mail->payment_log($user->email, $payment,'failed', $order->number, $exceptionMessage);   
+        $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage);
     }
 }

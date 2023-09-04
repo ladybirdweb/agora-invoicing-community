@@ -410,7 +410,11 @@ class TenantController extends Controller
             $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
             $response = $this->client->request(
                 'GET',
-                $this->cloud->cloud_central_domain.'/tenants'
+                $this->cloud->cloud_central_domain.'/tenants', [
+                    'query' => [
+                        'key' => $keys->app_key,
+                    ],
+                ]
             );
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);

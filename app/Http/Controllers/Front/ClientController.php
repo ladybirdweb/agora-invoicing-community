@@ -771,7 +771,8 @@ class ClientController extends BaseClientController
                                 return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';
                             })
                               ->addColumn('total', function ($payments) {
-                                  return $payments->amount;
+                                  // return $payments->amount;
+                                  return currencyFormat($payments->amount, $code = $payments->currency);
                               })
                                ->addColumn('payment_method', function ($payments) {
                                    return $payments->payment_method;

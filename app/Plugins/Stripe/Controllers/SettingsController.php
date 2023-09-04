@@ -16,6 +16,7 @@ use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
 use Validator;
+use App\Model\Order\OrderInvoiceRelation;
 
 class SettingsController extends Controller
 {
@@ -267,18 +268,26 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
+        $payment = Payment::where('invoice_id', $invoice->id)->first();
+        $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
+        $order = Order::find($orderid);
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
+        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);    
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
     {
+        $payment = Payment::where('invoice_id', $invoice->id)->first();
+        $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
+        $order = Order::find($orderid);
         $setting = Setting::find(1);
         $paymentSuccessdata = 'Payment for '.$productName.' of '.\Auth::user()->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
+        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number);
     }
 }

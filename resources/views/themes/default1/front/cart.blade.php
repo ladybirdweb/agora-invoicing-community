@@ -271,7 +271,7 @@
 
 
                                 <div class="box-content">
-                                    <h4 class="heading-primary text-uppercase mb-md">Cart Total</h4>
+                                    <h4 class="heading-primary text-uppercase mb-md p-2" style=" background-color: #eee;">Cart Total</h4>
                                     <table class="cart-totals">
                                         <tbody>
                                         <tr class="total">

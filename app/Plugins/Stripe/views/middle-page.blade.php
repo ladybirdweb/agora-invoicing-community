@@ -21,6 +21,13 @@
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
+<style>
+ .fa-1x {
+            font-size: 17px;
+            margin-right: 5px;
+            margin-top: 2px;
+        }
+</style>
 <?php
  $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
@@ -131,7 +138,7 @@ $currency = $invoice->currency;
     </div>
     <div class="col-md-4">
          <div class="card card-default">
-         <div class="card-header" style="height: 50px;"> 
+         <div class="card-header" style="height: 50px; padding-left: 8px"> 
         <h4 class="heading-primary" >Cart Total</h4>
     </div>
         <table class="cart-totals m-2">
@@ -299,7 +306,7 @@ $currency = $invoice->currency;
         <div class="card card-default">
             <div class="card-header" style="height: 50px;">
          
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
     </div>
         <table class="cart-totals">
             <tbody>
@@ -525,7 +532,7 @@ $currency = $invoice->currency;
     })
 
         $('#submit_total').submit(function(){
-     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...")
+     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x ' ></i>Processing ...")
     $("#pay_now").prop('disabled', true);
 
   });

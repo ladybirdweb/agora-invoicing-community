@@ -24,7 +24,7 @@ $date = getDateHtml($invoiceItem->created_at);
 
 
 <li class="woocommerce-order-overview__date date">
-<strong> Date:</strong> {!! $date !!}
+    <strong> Date:</strong> <span class="p-0 m-0">{!! $date !!}</span>
 </li>
 
 
@@ -35,8 +35,8 @@ $date = getDateHtml($invoiceItem->created_at);
 <?php
 $total = $invoiceItem->subtotal;
 ?>
-<strong> Total: </strong>  <strong><span class="amount">{{currencyFormat($total,$code = $currency)}}
-</span></strong>
+<strong> Total: </strong>  <span class="amount">{{currencyFormat($total,$code = $currency)}}
+</span>
 </li>
 
 

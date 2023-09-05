@@ -33,6 +33,10 @@ Checkout
        border: none;
 
         }
+        .fa-1x {
+            font-size: 15px;
+            margin-right: 3.4px;
+        }
  </style>
 <li><a href="{{url('my-invoices')}}">Home</a></li>
   @else
@@ -343,7 +347,7 @@ $cartSubtotalWithoutCondition = 0;
 <script>
 
   $('#checkoutsubmitform').submit(function(){
-     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...")
+     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x ''></i>Please Wait ...")
     $("#proceed").prop('disabled', true);
 
   });

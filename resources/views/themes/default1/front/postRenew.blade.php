@@ -227,7 +227,7 @@ $json = json_encode($data);
     </div>
     <div class="col-md-4">
          
-        <h4 class="heading-primary">Cart Totals</h4>
+        <h4 class="heading-primary">Cart Total</h4>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">

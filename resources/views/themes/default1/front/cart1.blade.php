@@ -156,7 +156,7 @@ if (count($attributes) > 0) {
                 <div class="col-sm-4">
                     <div class="featured-box featured-box-primary align-left mt-sm">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
+                            <h4 class="heading-primary text-uppercase mb-md">Cart Total</h4>
                             <table class="cart-totals">
                                 <tbody>
 

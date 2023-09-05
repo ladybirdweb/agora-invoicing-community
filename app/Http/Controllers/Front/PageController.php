@@ -748,14 +748,14 @@ class PageController extends Controller
 
                         // Break the loop if we find a plan with 30 or 31 days
                         break;
-                    }elseif(! $product->status){
-                         $plan = Product::find($productid)->plan();
+                    } elseif (! $product->status) {
+                        $plan = Product::find($productid)->plan();
                         $description = $plan ? $plan->planPrice->first() : '';
                         $priceDescription = $description ? $description->price_description : '';
-
                     }
                 }
             }
+
             return $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

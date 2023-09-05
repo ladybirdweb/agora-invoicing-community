@@ -295,8 +295,16 @@ class PageController extends Controller
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
-                    if($product->status){
-                    if ($plan->days == 365 || $plan->days == 366) {
+                    if ($product->status) {
+                        if ($plan->days == 365 || $plan->days == 366) {
+                            $currency = userCurrencyAndPrice('', $plan);
+                            $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
+                            $planDetails = userCurrencyAndPrice('', $plan);
+                            $prices[] = $planDetails['plan']->add_price;
+                            $prices[] .= $planDetails['symbol'];
+                            $prices[] .= $planDetails['currency'];
+                        }
+                    } else {
                         $currency = userCurrencyAndPrice('', $plan);
                         $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
                         $planDetails = userCurrencyAndPrice('', $plan);
@@ -304,14 +312,6 @@ class PageController extends Controller
                         $prices[] .= $planDetails['symbol'];
                         $prices[] .= $planDetails['currency'];
                     }
-                }else{
-                   $currency = userCurrencyAndPrice('', $plan);
-                    $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency']; 
-                }
                 }
 
                 if (! empty($prices)) {
@@ -358,15 +358,15 @@ class PageController extends Controller
             if ($month_offer_price === '' || $month_offer_price === null) {
                 $data = str_replace('{{strike-price}}', '', $data);
             }
-                $product = Product::find($id);
+            $product = Product::find($id);
 
-                if (!$product->status) {
-                    if (empty($month_offer_price) && empty($year_offer_price)) {
-                        $data = str_replace('{{strike-priceyear}}', '', $data);
-                    }
-                } elseif (empty($year_offer_price)) {
+            if (! $product->status) {
+                if (empty($month_offer_price) && empty($year_offer_price)) {
                     $data = str_replace('{{strike-priceyear}}', '', $data);
                 }
+            } elseif (empty($year_offer_price)) {
+                $data = str_replace('{{strike-priceyear}}', '', $data);
+            }
             if (($month_offer_price !== '' && $month_offer_price !== null) || ($year_offer_price !== '' && $year_offer_price !== null)) {
                 $offerprice = $this->getPayingprice($id);
                 $offerpriceYear = $this->getstrikePriceYear($id);
@@ -384,6 +384,7 @@ class PageController extends Controller
 
             $result .= str_replace($array1, $array2, $data);
         }
+
         return $result;
     }
 
@@ -644,19 +645,19 @@ class PageController extends Controller
 
             $prices = [];
             foreach ($plans as $plan) {
-                if($product->status){
-                if ($plan->days == 365 || $plan->days == 366) {
+                if ($product->status) {
+                    if ($plan->days == 365 || $plan->days == 366) {
+                        $planDetails = userCurrencyAndPrice('', $plan);
+                        $prices[] = $planDetails['plan']->add_price;
+                        $prices[] .= $planDetails['symbol'];
+                        $prices[] .= $planDetails['currency'];
+                    }
+                } else {
                     $planDetails = userCurrencyAndPrice('', $plan);
                     $prices[] = $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 }
-            }else{
-               $planDetails = userCurrencyAndPrice('', $plan);
-                $prices[] = $planDetails['plan']->add_price;
-                $prices[] .= $planDetails['symbol'];
-                $prices[] .= $planDetails['currency']; 
-            }
             }
 
             if (! empty($prices)) {

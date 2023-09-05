@@ -17,7 +17,8 @@ class ImageUploadHelper
      */
     public static function saveImageToStorage(UploadedFile $image, $directory, $disk = 'public')
     {
-        $originalName = urlencode(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME));
+        $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+        $originalName = str_replace(' ', '_', $originalName);
         $extension = $image->getClientOriginalExtension();
         $fileName = $originalName.'_'.now()->format('Ymd').'.'.$extension;
 

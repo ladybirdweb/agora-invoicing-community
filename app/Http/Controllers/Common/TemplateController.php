@@ -281,7 +281,7 @@ class TemplateController extends Controller
             $price = [];
             foreach ($plans as $value) {
                 $currency = userCurrencyAndPrice('', $value);
-                $offer = PlanPrice::where('plan_id', $value->id)->where('currency',$currency)->value('offer_price');
+                $offer = PlanPrice::where('plan_id', $value->id)->where('currency', $currency)->value('offer_price');
                 $product = Product::find($value->product);
                 $currencyAndSymbol = userCurrencyAndPrice('', $value);
                 $currency = $currencyAndSymbol['currency'];

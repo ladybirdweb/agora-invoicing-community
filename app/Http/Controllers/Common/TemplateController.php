@@ -280,7 +280,8 @@ class TemplateController extends Controller
             $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
             $price = [];
             foreach ($plans as $value) {
-                $offer = PlanPrice::where('plan_id', $value->id)->value('offer_price');
+                $currency = userCurrencyAndPrice('', $value);
+                $offer = PlanPrice::where('plan_id', $value->id)->where('currency',$currency)->value('offer_price');
                 $product = Product::find($value->product);
                 $currencyAndSymbol = userCurrencyAndPrice('', $value);
                 $currency = $currencyAndSymbol['currency'];

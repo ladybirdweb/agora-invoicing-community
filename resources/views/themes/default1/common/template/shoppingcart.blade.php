@@ -20,9 +20,9 @@ main
 
 @section('content')
 <style>
-    .planhide{
-        display: none;
-    }
+        .planhide{
+            display: none;
+        }
       .highlight_batch {
         background: green;
         padding: 0px 5px;
@@ -45,11 +45,7 @@ main
         justify-content: center;
         align-items: flex-start;
     }
-        .subscription {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        }
+
         .switch {
         position: relative;
         display: inline-block;
@@ -109,9 +105,7 @@ main
             overflow:scroll;
             height:600px;
         }
-        .pricing-table .plan .plan-price .price-label {
-            text-transform: lowercase;
-        }
+
 
         .cantact
         {
@@ -122,11 +116,12 @@ main
             margin-top: -20px !important;
         }
 
-        .buttonsale{
+        .stylePlan{
             display: block;
             width: 100%;
-          
+            text-align: center;
         }
+
 
 </style>
       <?php

@@ -388,11 +388,9 @@ $days = $pay->where('product','117')->value('days');
                                                 @endif
 
                                             @if(!Auth::user())
-                                                <li class="dropdown">
-                                                <a class="nav-link highlight-button" href="{{url('login')}} ">
+                                                <a class="nav-link" style="font-size: 12px;text-decoration: none;cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;" href="{{url('login')}} ">
                                                         SIGNUP FOR FREE
                                                     </a>
-                                                </li>
 
 
 

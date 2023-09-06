@@ -247,15 +247,14 @@ class TemplateController extends Controller
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 }
-            }
+            
 
-            if (! empty($prices[3])) {
+             if (! empty($prices)) {
                 $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
-            } else {
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-            $finalPrice = str_replace($prices[1], '', $format);
-            $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+            }
 
             return $cost;
         } catch (\Exception $ex) {

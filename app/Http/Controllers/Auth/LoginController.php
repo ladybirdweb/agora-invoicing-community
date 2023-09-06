@@ -188,10 +188,7 @@ class LoginController extends Controller
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
         if ($existingUser) {
-            $existingUser->user_name = $githubUser->getEmail();
-            $fullNameParts = explode(' ', $githubUser->getName());
-            $existingUser->first_name = $fullNameParts[0];
-            $existingUser->last_name = end($fullNameParts);
+            $existingUser->user_name =  $githubUser->getEmail();
             $existingUser->active = '1';
 
             if ($existingUser->role == 'admin') {
@@ -209,7 +206,6 @@ class LoginController extends Controller
                 $fullNameParts = explode(' ', $githubUser->getName()),
                 'first_name' => $fullNameParts[0],
                 'last_name'=> end($fullNameParts),
-
                 'active' => '1',
                 'role' => 'user',
                 'ip' => $location['ip'],

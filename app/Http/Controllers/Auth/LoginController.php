@@ -188,8 +188,6 @@ class LoginController extends Controller
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
         if ($existingUser) {
-//            $existingUser->user_name = $githubUser->getName().substr($githubUser->getId(), -2);
-//            $existingUser->first_name = $githubUser->getName();
             $existingUser->active = '1';
 
             if ($existingUser->role == 'admin') {
@@ -203,8 +201,9 @@ class LoginController extends Controller
         } else {
             $user = User::create([
                 'email' => $githubUser->getEmail(),
-                'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
-                'first_name' => $githubUser->getName(),
+                'user_name' => $githubUser->getEmail(),
+                'first_name' => $githubUser->user['given_name'],
+                'last_name' => $githubUser->user['family_name'],    
                 'active' => '1',
                 'role' => 'user',
                 'ip' => $location['ip'],

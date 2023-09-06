@@ -203,7 +203,7 @@ class LoginController extends Controller
                 'email' => $githubUser->getEmail(),
                 'user_name' => $githubUser->getEmail(),
                 'first_name' => $githubUser->user['given_name'],
-                'last_name' => $githubUser->user['family_name'],    
+                'last_name' => $githubUser->user['family_name'],
                 'active' => '1',
                 'role' => 'user',
                 'ip' => $location['ip'],

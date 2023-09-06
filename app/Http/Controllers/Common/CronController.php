@@ -517,7 +517,6 @@ class CronController extends BaseCronController
             $subscription = $subscription->refresh();
             $status = $subscription->rzp_subscription;
             $today = new DateTime();
-           
 
             $subscriptionEndDate = new DateTime($subscription->ends_at);
             if ($status == '0') {

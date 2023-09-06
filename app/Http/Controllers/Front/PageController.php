@@ -367,7 +367,7 @@ class PageController extends Controller
             } elseif (empty($year_offer_price)) {
                 $data = str_replace('{{strike-priceyear}}', '', $data);
             }
-            if (($year_offer_price !== '' && $year_offer_price !== null)) {
+            if ($year_offer_price !== '' && $year_offer_price !== null) {
                 $offerprice = $this->getPayingprice($id);
                 $offerpriceYear = $this->getstrikePriceYear($id);
                 $strikePrice = $this->YearlyAmount($id);
@@ -645,26 +645,23 @@ class PageController extends Controller
 
             $prices = [];
             foreach ($plans as $plan) {
-             
-                    if ($plan->days == 365 || $plan->days == 366) {
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
-                    }
-                    elseif(!$product->status && $product->type != '4'){
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
-                    }
-              
-            
+                if ($plan->days == 365 || $plan->days == 366) {
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
+                } elseif (! $product->status && $product->type != '4') {
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
+                }
+
                 if (! empty($prices)) {
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-            }
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                }
             }
 
             return $cost;

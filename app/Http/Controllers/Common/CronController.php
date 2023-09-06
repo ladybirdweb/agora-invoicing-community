@@ -517,8 +517,10 @@ class CronController extends BaseCronController
             $subscription = $subscription->refresh();
             $status = $subscription->rzp_subscription;
             $today = new DateTime();
+           
+
             $subscriptionEndDate = new DateTime($subscription->ends_at);
-            if ($status == '0' && $subscriptionEndDate <= $today) {
+            if ($status == '0') {
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
                 $amount = $cost;
@@ -557,6 +559,7 @@ class CronController extends BaseCronController
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
             $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $stripe = 'razorpay');
         } catch (\Exception $e) {
+            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment = 'razorpay');
             }

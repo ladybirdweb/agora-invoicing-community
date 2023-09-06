@@ -202,8 +202,7 @@ class LoginController extends Controller
             $user = User::create([
                 'email' => $githubUser->getEmail(),
                 'user_name' => $githubUser->getEmail(),
-                'first_name' => $githubUser->user['given_name'],
-                'last_name' => $githubUser->user['family_name'],
+                'first_name' => $githubUser->getName(),
                 'active' => '1',
                 'role' => 'user',
                 'ip' => $location['ip'],

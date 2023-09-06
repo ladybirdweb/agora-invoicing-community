@@ -188,7 +188,7 @@ class LoginController extends Controller
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
         if ($existingUser) {
-            $existingUser->user_name =  $githubUser->getEmail();
+            $existingUser->user_name = $githubUser->getEmail();
             $existingUser->active = '1';
 
             if ($existingUser->role == 'admin') {

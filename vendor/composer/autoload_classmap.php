@@ -45,6 +45,7 @@ return array(
     'App\\Console\\Commands\\RenewalCron' => $baseDir . '/app/Console/Commands/RenewalCron.php',
     'App\\Console\\Commands\\SetupTestEnv' => $baseDir . '/app/Console/Commands/SetupTestEnv.php',
     'App\\Console\\Commands\\SyncDatabaseToLatestVersion' => $baseDir . '/app/Console/Commands/SyncDatabaseToLatestVersion.php',
+    'App\\Console\\Commands\\moveImages' => $baseDir . '/app/Console/Commands/moveImages.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\DefaultPage' => $baseDir . '/app/DefaultPage.php',
     'App\\Demo_page' => $baseDir . '/app/Demo_page.php',

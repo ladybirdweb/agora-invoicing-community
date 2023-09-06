@@ -1097,6 +1097,7 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'App\\Console\\Commands\\RenewalCron' => __DIR__ . '/../..' . '/app/Console/Commands/RenewalCron.php',
         'App\\Console\\Commands\\SetupTestEnv' => __DIR__ . '/../..' . '/app/Console/Commands/SetupTestEnv.php',
         'App\\Console\\Commands\\SyncDatabaseToLatestVersion' => __DIR__ . '/../..' . '/app/Console/Commands/SyncDatabaseToLatestVersion.php',
+        'App\\Console\\Commands\\moveImages' => __DIR__ . '/../..' . '/app/Console/Commands/moveImages.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\DefaultPage' => __DIR__ . '/../..' . '/app/DefaultPage.php',
         'App\\Demo_page' => __DIR__ . '/../..' . '/app/Demo_page.php',

@@ -209,8 +209,8 @@ class CloudExtraActivities extends Controller
             }
             $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
-            if (! strpos($newDomain, 'fratergroup.in')) {
-                if (empty($dns_record) || ! in_array('fratergroup.in', array_column($dns_record, 'target'))) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
+                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                     throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
                 }
             }
@@ -234,8 +234,8 @@ class CloudExtraActivities extends Controller
     private function jobsForCloudDomain($newDomain, $currentDomain)
     {
         $client = new Client([]);
-        if (! strpos($currentDomain, 'fratergroup.in')) {
-            if (! strpos($newDomain, 'fratergroup.in')) {
+        if (! strpos($currentDomain, 'faveocloud.com')) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
                 $client->request('GET', env('CLOUD_JOB_URL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [
@@ -261,7 +261,7 @@ class CloudExtraActivities extends Controller
             ]);
         } else {
             //normal
-            if (! strpos($newDomain, 'fratergroup.in')) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
                 $client->request('GET', env('CLOUD_JOB_URL'), [
                     'auth' => ['clouduser', env('CLOUD_AUTH')],
                     'query' => [

@@ -106,7 +106,6 @@ main
             height:600px;
         }
 
-
         .cantact
         {
             font-size: 2.7 rem !important;
@@ -115,12 +114,21 @@ main
         {
             margin-top: -20px !important;
         }
-
-        .stylePlan{
-            display: block;
+        .subscription
+        {
+           display: block;
             width: 100%;
+            text-align: center; 
+        }
+        .stylePlan {
+           width: 100%;
+           text-align: center;
+          }
+
+        .buttonsale{
             text-align: center;
         }
+       
 
 
 </style>

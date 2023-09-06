@@ -527,7 +527,7 @@ class PageController extends Controller
                     if ($product['add_to_contact'] != 1) {
                         $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
                      value='Order Now' class='btn btn-primary btn-modern buttonsale'></form>" : "<input type='submit' 
-                   value='Order Now' class='btn btn-dark btn-modern buttonsale' style='display: block;'></form>";
+                   value='Order Now' class='btn btn-dark btn-modern buttonsale'></form>";
                     } else {
                         $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
                     }

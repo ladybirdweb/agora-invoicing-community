@@ -217,6 +217,7 @@ class TemplateController extends Controller
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
+
             return $product['add_to_contact'] == 1 ? '' : $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -246,13 +247,12 @@ class TemplateController extends Controller
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 }
-            
 
-             if (! empty($prices)) {
-                $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-            }
+                if (! empty($prices)) {
+                    $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
+                    $finalPrice = str_replace($prices[1], '', $format);
+                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                }
             }
 
             return $cost;

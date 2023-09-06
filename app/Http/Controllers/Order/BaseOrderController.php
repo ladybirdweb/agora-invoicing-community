@@ -181,8 +181,8 @@ class BaseOrderController extends ExtendedOrderController
             }
 
             if ($days === null) {
-                if(\Session::has('plan_id')){
-                $planid = \Session::get('plan_id');
+                if (\Session::has('plan_id')) {
+                    $planid = \Session::get('plan_id');
                 }
                 $days = $this->plan->where('id', $planid)->first();
             }

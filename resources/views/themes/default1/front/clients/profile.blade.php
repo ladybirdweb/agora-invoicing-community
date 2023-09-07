@@ -311,7 +311,7 @@ input:checked + .slider:before {
                         @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" class="img-thumbnail" style="height: 50px;">
                         @else
-                        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" class="img-thumbnail" style="height: 50px;" />
+                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" class="img-thumbnail" style="height: 50px;" />
                         @endif
                     <h6 id="profilePicCheck"></h6>
 

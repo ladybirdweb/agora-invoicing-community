@@ -75,20 +75,7 @@ class LoginController extends Controller
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-            'g-recaptcha-response' => [
-                $captchaRule.'required',
-                function ($attribute, $value, $fail) use ($request) {
-                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                        'secret' => config('services.recaptcha.secret_key'),
-                        'response' => $value,
-                        'remoteip' => $request->ip(),
-                    ]);
-
-                    if (! $response->json('success')) {
-                        $fail("The {$attribute} is invalid.");
-                    }
-                },
-            ],
+            'g-recaptcha-response' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',

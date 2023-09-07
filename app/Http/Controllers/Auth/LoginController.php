@@ -197,7 +197,7 @@ class LoginController extends Controller
                 'timezone_id' => getTimezoneByName($location['timezone']),
                 'state' => $state['id'],
                 'town' => $location['city'],
-                'country' => Country::where('country_name',strtoupper($location['country']))->value('country_code_char2'),
+                'country' => Country::where('country_name', strtoupper($location['country']))->value('country_code_char2'),
             ]);
         }
         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification

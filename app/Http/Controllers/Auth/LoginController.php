@@ -6,6 +6,7 @@ use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
+use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\SocialLogin;
 use App\User;
@@ -175,10 +176,6 @@ class LoginController extends Controller
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
         if ($existingUser) {
-            $existingUser->user_name = $githubUser->getEmail();
-            $fullNameParts = explode(' ', $githubUser->getName());
-            $existingUser->first_name = $fullNameParts[0];
-            $existingUser->last_name = end($fullNameParts);
             $existingUser->active = '1';
 
             if ($existingUser->role == 'admin') {
@@ -192,17 +189,15 @@ class LoginController extends Controller
         } else {
             $user = User::create([
                 'email' => $githubUser->getEmail(),
-                'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
-                $fullNameParts = explode(' ', $githubUser->getName()),
-                'first_name' => $fullNameParts[0],
-                'last_name'=> end($fullNameParts),
-
+                'user_name' => $githubUser->getEmail(),
+                'first_name' => $githubUser->getName(),
                 'active' => '1',
                 'role' => 'user',
                 'ip' => $location['ip'],
                 'timezone_id' => getTimezoneByName($location['timezone']),
                 'state' => $state['id'],
                 'town' => $location['city'],
+                'country' => Country::where('country_name',strtoupper($location['country']))->value('country_code_char2'),
             ]);
         }
         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification

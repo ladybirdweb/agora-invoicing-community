@@ -439,7 +439,7 @@ $currency = $invoice->currency;
             <div class="modal-body">
             <div class="card">
                 <div class="card-header">Stripe
-                 <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
+                 <img class="img-responsive pull-right">
              </div>
 
                 <div class="card-body">

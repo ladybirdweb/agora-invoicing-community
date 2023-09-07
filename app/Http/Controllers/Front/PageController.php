@@ -813,6 +813,7 @@ class PageController extends Controller
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
+            $data .= 'IP Address: '.strip_tags( $request->ip()).'<br/>';
 
             $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
             $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';
@@ -855,7 +856,9 @@ class PageController extends Controller
             $data = '';
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'IP Address: '.strip_tags( $request->ip()).'<br/>';
 
             $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
             $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';

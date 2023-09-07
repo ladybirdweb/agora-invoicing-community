@@ -41,7 +41,7 @@ Invoice
                         <div class="col-12">
                             <h4>
                                 @if($set->logo)
-                                    <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}" style="margin-top: -2px">
+                                    <img alt="Logo" width="100" height="50" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
                                     @else
                                     {{ucfirst($set->company)}}
                                 @endif

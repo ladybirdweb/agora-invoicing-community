@@ -34,10 +34,16 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        \Log::channel('daily')->error($exception->getMessage());
+        // Check if the exception is an UnauthenticatedException
+        if (!$exception instanceof AuthenticationException) {
+            // Send unhandled exceptions to Bugsnag
+            $this->reportToBugsnag($exception);
+
+            // Log the exception
+            \Log::channel('daily')->error($exception);
+        }
+
         parent::report($exception);
-        // Send unhandled exceptions to bugsnag
-        $this->reportToBugsnag($exception);
     }
 
     /**

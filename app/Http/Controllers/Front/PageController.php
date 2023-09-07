@@ -808,19 +808,19 @@ class PageController extends Controller
         $set = $set->findOrFail(1);
 
         try {
-            $data = "";
+            $data = '';
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
 
-            $emailContent = "Dear " . $set->title .  "  "  . "Team,<br/><br/>";
-            $emailContent .= "Below form was submitted on the website " . request()->fullUrl() . "<br/><br/>";
+            $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
+            $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';
             $emailContent .= $data; // Include the form data here
-            $emailContent .= "<br/>Thank You<br/>" . $set->title;
+            $emailContent .= '<br/>Thank You<br/>'.$set->title;
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($set->email,$set->company_email, $emailContent, $set->title ." Contact");
+                $mail->SendEmail($set->email, $set->company_email, $emailContent, $set->title.' Contact');
             }
 
             //$this->templateController->SendEmail($from, $to, $data, $subject);
@@ -857,10 +857,10 @@ class PageController extends Controller
             $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
 
-            $emailContent = "Dear " . $set->title .  "  "  . "Team,<br/><br/>";
-            $emailContent .= "Below form was submitted on the website " . request()->fullUrl() . "<br/><br/>";
+            $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
+            $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';
             $emailContent .= $data; // Include the form data here
-            $emailContent .= "<br/>Thank You<br/>" . $set->title;
+            $emailContent .= '<br/>Thank You<br/>'.$set->title;
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             if (emailSendingStatus()) {
                 $mail->SendEmail($set->email, $set->company_email, $emailContent, 'Requesting for Demo for'.'  '.$product);

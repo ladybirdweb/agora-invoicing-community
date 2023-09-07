@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('settings', 'phone_code')) {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('phone_code')->nullable();
-        });
-    }
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('phone_code')->nullable();
+            });
+        }
     }
 
     /**

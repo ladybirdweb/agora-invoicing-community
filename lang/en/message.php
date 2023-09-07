@@ -77,7 +77,7 @@ return [
     'mobile' => 'Mobile',
     'address' => 'Address',
     'town' => 'Town/City',
-    'state' => 'State/Country',
+    'state' => 'State/County',
     'zip' => 'Zip/Postal code',
     'profile-picture' => 'Profile Picture',
     'change-password' => 'Change Password',

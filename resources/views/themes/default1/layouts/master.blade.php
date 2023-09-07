@@ -125,7 +125,7 @@
                         @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                         @else
-                        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                         @endif
                         <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                     </a>
@@ -137,7 +137,7 @@
                         @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                         @else
-                        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                         @endif
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">

@@ -381,7 +381,7 @@ $days = $pay->where('product','117')->value('days');
 
                                              @if($Demo_page->status)
                                                 <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req">
+                                                    <a  class="nav-link highlight" id="demo-req" style="cursor: pointer;">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>&nbsp&nbsp&nbsp

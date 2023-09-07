@@ -110,7 +110,7 @@ class BaseClientController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
-                $fileName = ImageUpload::saveImageToStorage($request->file('profile_pic'), 'common/images/user');
+                $fileName = ImageUpload::saveImageToStorage($request->file('profile_pic'), 'common/images/users');
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));

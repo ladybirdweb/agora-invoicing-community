@@ -128,7 +128,8 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',6)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
-                                
+                                <p><i> {{Lang::get('Choose invoice Mail Template')}}</i> </p>
+
 
 
                             </div>
@@ -143,6 +144,7 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',7)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                 <p><i> {{Lang::get('Choose Purchase Confirmation Mail Template')}}</i> </p>
                                 
 
 
@@ -158,6 +160,7 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',9)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose New Sales Manager Mail Template')}}</i> </p>
                                 
 
 
@@ -173,6 +176,7 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',10)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose New Account Manager Mail Template')}}</i> </p>
                                 
 
 
@@ -188,6 +192,8 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',12)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Auto Renewal Reminder Mail Template')}}</i> </p>
+
                                 
 
 
@@ -203,6 +209,8 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',13)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Auto Payment Successfull Mail Template')}}</i> </p>
+
                                 
 
 
@@ -218,6 +226,8 @@
 
 
                                 {!! Form::select('invoice',['Templates'=>$template->where('type',14)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Auto Payment Failed Mail Template')}}</i> </p>
+
                                 
 
 
@@ -225,14 +235,15 @@
                         </td>
 
                     </tr>
-                     <tr>
+                        <tr>
 
-                        <td><b>{!! Form::label('invoice',Lang::get('Credit Card Failed')) !!}</b></td>
+                        <td><b>{!! Form::label('invoice',Lang::get('URGENT: Order has been deleted')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('card_failed') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('cloud_deleted') ? 'has-error' : '' }}">
 
 
-                                {!! Form::select('invoice',['Templates'=>$template->where('type',15)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',19)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Cloud order delete Mail Template')}}</i> </p>
                                 
 
 
@@ -240,7 +251,22 @@
                         </td>
 
                     </tr>
+                        <tr>
 
+                        <td><b>{!! Form::label('invoice',Lang::get('New instance created')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('cloud_created') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',20)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Cloud order create Mail Template')}}</i> </p>
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
                 <br>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}

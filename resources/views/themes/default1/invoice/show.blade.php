@@ -65,8 +65,8 @@ Invoice
                                 @endif
                                 {{$set->zip}}<br/>
                                 Country : {{getCountryByCode($set->country)}}<br/>
-                                Mobile: {{$set->phone}}<br/>
-                                Email: {{$set->email}}
+                                Mobile: <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
+                                Email: {{$set->company_email}}
                             </address>
                              @if($set->gstin)
                             <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
@@ -91,7 +91,7 @@ Invoice
                                 {{$user->zip}}<br/>
                                 Country : {{getCountryByCode($user->country)}}<br/>
 
-                                Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
+                                Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}} @endif{{$user->mobile}}<br/>
                                 Email : {{$user->email}}
                             </address>
                              @if($user->gstin)

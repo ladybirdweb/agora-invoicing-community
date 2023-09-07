@@ -86,7 +86,7 @@ $set = $set->findOrFail(1);
             <!-- Messages Dropdown Menu -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                    <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                     <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -118,7 +118,7 @@ $set = $set->findOrFail(1);
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-    @if ($set->title == '')
+          @if ($set->admin_logo == '')
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
@@ -136,7 +136,7 @@ $set = $set->findOrFail(1);
             <!-- Sidebar user panel (optional) -->
             <!--<div class="user-panel mt-3 pb-3 mb-3 d-flex">-->
             <!--    <div class="image">-->
-            <!--        <img src="{{ asset('storage/common/images/user/' . Auth::user()->profile_pic) }}" class="img-circle elevation-2" alt="User Image">-->
+            <!--        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" class="img-circle elevation-2" alt="User Image">-->
             <!--    </div>-->
             <!--    <div class="info">-->
             <!--        <a href="{{url('/clients/'.Auth::user()->id)}}" style="height: 40px !important;" class="d-block">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</a>-->

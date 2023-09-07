@@ -136,12 +136,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         // dd($value);
         $image = \Gravatar::get($this->attributes['email']);
         if ($value) {
-            $file = storage_path('common/images/users/'.$value);
+            $file = storage_path('common/images/userss/'.$value);
             if (is_file($file)) {
                 $mime = \File::mimeType($file);
                 $extension = \File::extension($file);
                 if (mime($mime) == 'image' && mime($extension) == 'image') {
-                    $image = asset('common/images/users/'.$value);
+                    $image = asset('common/images/userss/'.$value);
                 } else {
                     unlink($file);
                 }

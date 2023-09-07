@@ -82,7 +82,7 @@ $set = $set->findOrFail(1);
         <h4 class="heading-primary">Our Office</h4>
        <ul class="list list-icons list-icons-style-3 mt-4">
                                 <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}}</li>
-                                <li><i class="fas fa-phone"></i> <strong>Phone:</strong> {{$set->phone}}</li>
+                                <li><i class="fas fa-phone"></i> <strong>Phone:</strong><b>+</b>{{$set->phone_code}} {{$set->phone}}</li>
                                 <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
                             </ul>
         <hr>

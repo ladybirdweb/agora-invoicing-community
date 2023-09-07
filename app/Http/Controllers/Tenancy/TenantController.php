@@ -236,6 +236,10 @@ class TenantController extends Controller
 
                 $this->googleChat($result->message);
 
+                if($result->message=='Domain already taken. Please select a different domain'){
+                    return ['status' => 'false', 'message' => $result->message];
+                }
+
                 return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
                 $this->prepareMessages($faveoCloud, $user);
@@ -284,6 +288,7 @@ class TenantController extends Controller
                     }
                     $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
+                    $result->message = str_replace('You will receive password on your registered email','',$result->message);
                     $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 
                     $replace = [

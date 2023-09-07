@@ -86,14 +86,25 @@ $set = $set->findOrFail(1);
             <!-- Messages Dropdown Menu -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                    <?php
+                    $user = \DB::table('users')->find(\Auth::user()->id);
+                    ?>
+                    @if($user->profile_pic == null)
+                    <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                    @else
+                    <img src="{{ asset('storage/common/images/users/' . $user->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                    @endif
                     <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <div class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="{{Auth::user()->profile_pic}}"  style="width:auto;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                             @if($user->profile_pic == '')
+                            <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                            @else
+                            <img src="{{ asset('storage/common/images/users/' . $user->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                            @endif
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}

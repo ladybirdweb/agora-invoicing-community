@@ -68,6 +68,7 @@ class RegisterController extends Controller
                 'mobile_verified' => 0,
                 'mobile' => ltrim($request->input('mobile'), '0'),
                 'mobile_code' =>  $request->input('mobile_code'),
+                'country' => $request->input('country'),
                 'role' => 'user',
                 'company' => strip_tags($request->input('company')),
                 'address' =>  strip_tags($request->input('address')),

@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-    
 });
 //Route::get('orders/{number}', [LicenseBillOrders::class, 'orderid'])->name('orders/{number}');
 // !social logins rotes end

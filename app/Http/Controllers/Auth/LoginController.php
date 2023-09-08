@@ -189,12 +189,12 @@ class LoginController extends Controller
         $existingUser = User::where('email', $githubUser->getEmail())->first();
 
         if ($existingUser) {
-            $existingUser->user_name =  $githubUser->getEmail();
+            $existingUser->user_name = $githubUser->getEmail();
             //$existingUser->first_name = $githubUser->getName();
-           // $fullNameParts = explode(' ', $githubUser->getName());
-// Assuming the first element is the first name, and the last element is the last name
-//$existingUser->first_name  = $fullNameParts[0];
-//$existingUser->last_name = end($fullNameParts);
+            // $fullNameParts = explode(' ', $githubUser->getName());
+            // Assuming the first element is the first name, and the last element is the last name
+            //$existingUser->first_name  = $fullNameParts[0];
+            //$existingUser->last_name = end($fullNameParts);
             $existingUser->active = '1';
 
             if ($existingUser->role == 'admin') {
@@ -211,11 +211,9 @@ class LoginController extends Controller
                 'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
                 //'first_name' => $githubUser->getName(),
                 $fullNameParts = explode(' ', $githubUser->getName()),
-// Assuming the first element is the first name, and the last element is the last name
-'first_name' => $fullNameParts[0],
-'last_name'=> end($fullNameParts),
-                
-            
+                // Assuming the first element is the first name, and the last element is the last name
+                'first_name' => $fullNameParts[0],
+                'last_name'=> end($fullNameParts),
 
                 'active' => '1',
                 'role' => 'user',

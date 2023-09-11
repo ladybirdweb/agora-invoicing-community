@@ -203,7 +203,7 @@ $days = $pay->where('product','117')->value('days');
                                                    <a class="nav-link open-createTenantDialog" style=" text-decoration: none;cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
                                                     <div>
                                                                 <i class="fas fa-cloud"></i>
-                                                                <span style="margin-left: 3px;">START FREE TRAIL</span>
+                                                                <span style="margin-left: 3px;">START FREE TRIAL</span>
                                                             </div>
                                                         </a>
                                                   

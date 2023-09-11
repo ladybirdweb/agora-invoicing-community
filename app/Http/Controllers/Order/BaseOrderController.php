@@ -175,7 +175,11 @@ class BaseOrderController extends ExtendedOrderController
             if ($status->status) {
                 if (\Session::get('planDays') == 'monthly') {
                     $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
-                } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
+                }
+                elseif(\Session::get('planDays')=='free-trial'){
+                    $days = $this->plan->where('product', $product)->where('days', '<', 30)->first();
+                }
+                elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
                     $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
                 }
             }
@@ -191,7 +195,7 @@ class BaseOrderController extends ExtendedOrderController
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);
             $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $days->id, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '1']);
+                'plan_id' => $days->id, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '0']);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {

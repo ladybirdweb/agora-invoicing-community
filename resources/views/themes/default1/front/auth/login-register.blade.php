@@ -190,7 +190,7 @@ Sign in or Register
 
                                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                                     {!! NoCaptcha::renderJs() !!}
-                                                    {!! NoCaptcha::display() !!}
+                                                    {!! NoCaptcha::display(['id' => 'recaptcha1']) !!}
                                                     <div class="loginrobot-verification"></div>
                                                 @endif
                                                 <div class="form-row">
@@ -365,16 +365,16 @@ Sign in or Register
 
                                                 <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
                                                     <div class="form-row">
-                                                        <div class="form-group col-lg-6">
-                                                            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-
-                                                                {!! NoCaptcha::display() !!}
-
-                                                                <div class="robot-verification" id="captcha"></div>
-                                                                <span id="captchacheck"></span>
-                                                            @endif
-                                                        </div>
+                                                    <div class="form-group col-lg-6">
+                                                        @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                                                            {!! NoCaptcha::display(['id' => 'g-recaptcha-1', 'data-callback' => 'onRecaptcha']) !!}
+                                                            <input type="hidden" id="g-recaptcha-response-1" name="g-recaptcha-response-1">
+                                                            <div class="robot-verification" id="captcha"></div>
+                                                            <span id="captchacheck"></span>
+                                                        @endif
                                                     </div>
+                                                </div>
+
                                                     <div class="form-row">
                                                         @if ($status->terms ==0)
                                                             <div class="form-group col-lg-6">
@@ -570,6 +570,8 @@ Sign in or Register
 @stop
 @section('script')
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
     <script>
         ///////////////////////////////////////////////////////////////////////////////
@@ -967,7 +969,7 @@ Sign in or Register
 
         //robot validation for Login Form
         function validateform() {
-            var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
+            var input = $("#recaptcha1 :input[name='g-recaptcha-response']");
             console.log(input.val());
             if(input.val() == null || input.val()==""){
                 $('.loginrobot-verification').empty()
@@ -1308,25 +1310,24 @@ Sign in or Register
                 return true;
             }
         }
+        var recaptchaValid = false;
 
-        function gcaptcha(){
-            var captcha_val = $('#g-recaptcha-response-1').val();
-            if(captcha_val == ''){
+        function onRecaptcha(response) {
+            if (response === '') {
                 $('#captchacheck').show();
-                $('#captchacheck').html("Robot Verification Failed, please try again");
+                $('#captchacheck').html("Failed, please try again");
                 $('#captchacheck').focus();
-                $('#captcha').css("border-color","red");
-                $('#captchacheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                return false;;
-            }
-
-            else{
+                $('#captcha').css("border-color", "red");
+                $('#captchacheck').css({"color": "red", "margin-top": "5px"});
+                recaptchaValid = false; // reCAPTCHA validation failed
+            } else {
                 $('#captchacheck').hide();
-                $('#captcha').css("border-color","");
-                return true;
+                $('#captcha').css("border-color", "");
+                recaptchaValid = true; // reCAPTCHA validation succeeded
+                $('#g-recaptcha-response-1').val(response);
             }
         }
+
 
 
         ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
@@ -1377,7 +1378,7 @@ Sign in or Register
             var termsErr = true;
             // con_password_check();
 
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && recaptchaValid)
             {
                
                  var tag = "<?php echo $analyticsTag; ?>";

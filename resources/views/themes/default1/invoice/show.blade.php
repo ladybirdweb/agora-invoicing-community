@@ -64,7 +64,7 @@ Invoice
                                 {{getStateByCode($set->state)['name']}}
                                 @endif
                                 {{$set->zip}}<br/>
-                                Country : {{getCountryByCode($set->country)}}<br/>
+                                Country: {{getCountryByCode($set->country)}}<br/>
                                 Mobile: <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
                                 Email: {{$set->company_email}}
                             </address>
@@ -89,10 +89,10 @@ Invoice
                                 {{getStateByCode($user->state)['name']}}
                                 @endif
                                 {{$user->zip}}<br/>
-                                Country : {{getCountryByCode($user->country)}}<br/>
+                                Country: {{getCountryByCode($user->country)}}<br/>
 
                                 Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}} @endif{{$user->mobile}}<br/>
-                                Email : {{$user->email}}
+                                Email: {{$user->email}}
                             </address>
                              @if($user->gstin)
                             <b>GSTIN:</b>  &nbsp; #{{$user->gstin}}

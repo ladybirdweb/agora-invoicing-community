@@ -85,6 +85,8 @@ class FreeTrailController extends Controller
                         'product_id' => ($request->get('product') == 'Helpdesk' ? 117 : 119),
                         'domain' => $request->domain.'.faveocloud.com',
                     ]);
+                                        \Session::forget('planDays');
+
                     DB::commit(); // Commit the transaction
 
                     return $isSuccess;
@@ -235,6 +237,7 @@ class FreeTrailController extends Controller
             $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
 
             if ($plan_id) {
+                \Session::put('planDays','free-trial');
                 $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             }
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();

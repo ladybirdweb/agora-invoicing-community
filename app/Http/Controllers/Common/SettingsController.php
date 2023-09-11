@@ -1,160 +1,127 @@
 <?php
 
-namespace App\Http\Controllers\Front;
+namespace App\Http\Controllers\Common;
 
-use App\DefaultPage;
-use App\Demo_page;
-use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Front\PageRequest;
-use App\Model\Common\PricingTemplate;
-use App\Model\Front\FrontendPage;
-use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
-use App\Model\Product\ProductGroup;
-use App\Model\Common\StatusSetting;
 use App\ApiKey;
+use App\Email_log;
+use App\Facades\ImageUpload;
+use App\Http\Requests\Common\SettingsRequest;
+use App\Model\Common\Mailchimp\MailchimpSetting;
+use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
+use App\Model\Common\Template;
+use App\Model\Mailjob\QueueService;
+use App\Model\Order\Order;
+use App\Model\Payment\Currency;
+use App\Model\Plugin;
+use App\Payment_log;
+use App\User;
+use File;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
+use Yajra\DataTables\DataTables;
 
-class PageController extends Controller
+class SettingsController extends BaseSettingsController
 {
-    public $page;
+    public $apikey;
+
+    public $statusSetting;
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq', 'postContactUs']]);
+        $this->middleware('auth', ['except' => 'checkPaymentGateway']);
+        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
 
-        $page = new FrontendPage();
-        $this->page = $page;
+        $apikey = new ApiKey();
+        $this->apikey = $apikey;
+
+        $status = new StatusSetting();
+        $this->statusSetting = $status;
     }
 
-    public function index()
+    public function settings(Setting $settings)
+    {
+        if (! $settings->where('id', '1')->first()) {
+            $settings->create(['company' => '']);
+        }
+        $isRedisConfigured = QueueService::where('short_name', 'redis')->value('status');
+
+        return view('themes.default1.common.admin-settings', compact('isRedisConfigured'));
+        //return view('themes.default1.common.settings', compact('setting', 'template'));
+    }
+
+    public function plugins()
+    {
+        $a = [];
+        $payment = new PaymentSettingsController();
+        $pay = $payment->fetchConfig();
+
+        $status = Plugin::all();
+
+        // $demo = json_decode(json_encode($plug));
+        // $status = collect($demo)->all();
+
+        return view('themes.default1.common.plugins', compact('pay', 'status'));
+    }
+
+    /**
+     * Get the Status and Api Keys for Settings Module.
+     *
+     * @param  ApiKey  $apikeys
+     */
+    public function getKeys(ApiKey $apikeys)
     {
         try {
-            $pages_count = count($this->page->all());
+            $licenseClientId = ApiKey::pluck('license_client_id')->first();
+            $licenseClientSecret = ApiKey::pluck('license_client_secret')->first();
+            $licenseGrantType = ApiKey::pluck('license_grant_type')->first();
+            $licenseSecret = $apikeys->pluck('license_api_secret')->first();
+            $licenseUrl = $apikeys->pluck('license_api_url')->first();
+            $licenseClientId = $apikeys->pluck('license_client_id')->first();
+            $licenseClientSecret = $apikeys->pluck('license_client_secret')->first();
+            $licenseGrantType = $apikeys->pluck('license_grant_type')->first();
+            $status = StatusSetting::pluck('license_status')->first();
+            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $updateStatus = StatusSetting::pluck('update_settings')->first();
+            $mobileStatus = StatusSetting::pluck('msg91_status')->first();
+            $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
+            $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
+            $updateSecret = $apikeys->pluck('update_api_secret')->first();
+            $mobileauthkey = $apikeys->pluck('msg91_auth_key')->first();
+            $msg91Sender = $apikeys->pluck('msg91_sender')->first();
+            $updateUrl = $apikeys->pluck('update_api_url')->first();
+            $emailStatus = StatusSetting::pluck('emailverification_status')->first();
+            $twitterKeys = $apikeys->select('twitter_consumer_key', 'twitter_consumer_secret',
+                'twitter_access_token', 'access_tooken_secret')->first();
+            $twitterStatus = $this->statusSetting->pluck('twitter_status')->first();
+            $zohoStatus = $this->statusSetting->pluck('zoho_status')->first();
+            $zohoKey = $apikeys->pluck('zoho_api_key')->first();
+            $rzpStatus = $this->statusSetting->pluck('rzp_status')->first();
+            $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
+            $mailchimpSetting = StatusSetting::pluck('mailchimp_status')->first();
+            $mailchimpKey = MailchimpSetting::pluck('api_key')->first();
+            $termsStatus = StatusSetting::pluck('terms')->first();
+            $termsUrl = $apikeys->pluck('terms_url')->first();
+            $pipedriveKey = $apikeys->pluck('pipedrive_api_key')->first();
+            $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
+            $domainCheckStatus = StatusSetting::pluck('domain_check')->first();
+            $mailSendingStatus = Setting::value('sending_status');
+            $model = $apikeys->find(1);
+            // $v3captchaStatus = StatusSetting::pluck('v3recaptcha_status')->first();
+            // $v3siteKey = $apikeys->pluck('v3captcha_sitekey')->first();
+            // $v3secretKey = $apikeys->pluck('v3captcha_secretCheck')->first();
 
-            return view('themes.default1.front.page.index', compact('pages_count'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus', 'licenseClientId', 'licenseClientSecret', 'licenseGrantType'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect('/')->with('fails', $ex->getMessage());
         }
     }
 
-    public function getPages()
-    {
-        return \DataTables::of($this->page->select('id', 'name', 'url', 'created_at'))
-                        ->orderColumn('name', '-id $1')
-                        ->orderColumn('url', '-id $1')
-                        ->orderColumn('created_at', '-id $1')
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='page_checkbox' 
-                            value=".$model->id.' name=select[] id=check>';
-                        })
-                        ->addColumn('name', function ($model) {
-                            return ucfirst($model->name);
-                        })
-                        ->addColumn('url', function ($model) {
-                            return $model->url;
-                        })
-                        ->addColumn('created_at', function ($model) {
-                            return getDateHtml($model->created_at);
-                        })
-
-                        ->addColumn('action', function ($model) {
-                            return '<a href='.url('pages/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
-                                 style='color:white;'> </i></a>";
-                        })
-                          ->filterColumn('name', function ($query, $keyword) {
-                              $sql = 'name like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-                            ->filterColumn('url', function ($query, $keyword) {
-                                $sql = 'url like ?';
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-
-                          ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])
-                        ->make(true);
-        // ->searchColumns('name', 'content')
-        // ->orderColumns('name')
-        // ->make();
-    }
-
-    public function create()
+    public function postKeys(ApiKey $apikeys, Request $request)
     {
         try {
-            $parents = $this->page->pluck('name', 'id')->toArray();
-
-            return view('themes.default1.front.page.create', compact('parents'));
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function edit($id)
-    {
-        try {
-            $page = $this->page->where('id', $id)->first();
-            $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
-            $selectedDefault = DefaultPage::value('page_id');
-            $date = $this->page->where('id', $id)->pluck('created_at')->first();
-            $publishingDate = date('m/d/Y', strtotime($date));
-            $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
-            $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
-
-            return view('themes.default1.front.page.edit', compact('parents', 'page', 'selectedDefault', 'publishingDate', 'selectedParent',
-                'parentName'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function store(PageRequest $request)
-    {
-        try {
-            $pages_count = count($this->page->all());
-            $url = $request->input('url');
-            if ($request->input('type') == 'contactus') {
-                $url = url('/contact-us');
-            }
-            $this->page->name = $request->input('name');
-            $this->page->publish = $request->input('publish');
-            $this->page->slug = $request->input('slug');
-            $this->page->url = $url;
-            $this->page->parent_page_id = $request->input('parent_page_id');
-            $this->page->type = $request->input('type');
-            $this->page->content = $request->input('content');
-            if ($pages_count <= 2) {
-                $this->page->save();
-
-                return redirect()->back()->with('success', trans('message.saved-successfully'));
-            } else {
-                return redirect()->back()->with('fails', trans('message.limit_exceed'));
-            }
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function update($id, PageRequest $request)
-    {
-        try {
-            if ($request->input('default_page_id') != '') {
-                $page = $this->page->where('id', $id)->first();
-                $page->fill($request->except('created_at'))->save();
-                $date = \DateTime::createFromFormat('m/d/Y', $request->input('created_at'));
-                $page->created_at = $date->format('Y-m-d H:i:s');
-                $page->save();
-                $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
-                DefaultPage::find(1)->update(['page_id' => $request->input('default_page_id'), 'page_url' => $defaultUrl]);
-            } else {
-                DefaultPage::find(1)->update(['page_id' => 1, 'page_url' => url('my-invoices')]);
-            }
+            $keys = $apikeys->find(1);
+            $keys->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -162,760 +129,634 @@ class PageController extends Controller
         }
     }
 
-    public function getPageUrl($slug)
-    {
-        $productController = new \App\Http\Controllers\Product\ProductController();
-        //  $url = url('/');
-        //  $segment = $this->addSegment(['public/pages']);
-        $url = url('/');
-
-        $slug = str_slug($slug, '-');
-        echo $url.'/pages'.'/'.$slug;
-    }
-
-    public function getSlug($slug)
-    {
-        $slug = str_slug($slug, '-');
-        echo $slug;
-    }
-
-    public function addSegment($segments = [])
-    {
-        $segment = '';
-        foreach ($segments as $seg) {
-            $segment .= '/'.$seg;
-        }
-
-        return $segment;
-    }
-
-    public function generate(Request $request)
-    {
-        // dd($request->all());
-        if ($request->has('slug')) {
-            $slug = $request->input('slug');
-
-            return $this->getSlug($slug);
-        }
-        if ($request->has('url')) {
-            $slug = $request->input('url');
-
-            return $this->getPageUrl($slug);
-        }
-    }
-
-    public function show($slug)
+    /**
+     * PAyment Gateway that is shown on the basis of currency.
+     *
+     * @param  string  $currency  The currency of the Product Selected
+     * @return string Name of the Payment Gateway
+     */
+    public static function checkPaymentGateway($currency)
     {
         try {
-            $page = $this->page->where('slug', $slug)->where('publish', 1)->first();
-            if ($page && $page->type == 'cart') {
-                return $this->cart();
+            $plugins = new Plugin();
+            $models = [];
+            $gateways = '';
+            $name = '';
+            $allAcivePluginName = [];
+            $active_plugins = $plugins->where('status', 1)->get(); //get the plugins that are active
+            if ($active_plugins) {
+                foreach ($active_plugins as $plugin) {
+                    $models[] = \DB::table(strtolower($plugin->name))->first(); //get the table of the active plugin
+                    $allCurrencies[] = \DB::table(strtolower($plugin->name))->pluck('currencies')->toArray(); //get the table of the active plugin
+                    $pluginName[] = $plugin->name; //get the name of active plugin
+                }
+                if ($models) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
+                    for ($i = 0; $i < count($pluginName); $i++) {
+                        $curr = implode(',', $allCurrencies[$i]);
+                        $currencies = explode(',', $curr);
+                        if (in_array($currency, $currencies)) {
+                            $name = $pluginName[$i];
+                            $allAcivePluginName[] = $name;
+                        }
+                    }
+                }
             }
 
-            return view('themes.default1.front.page.show', compact('page'));
+            return $allAcivePluginName;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsSystem(Setting $settings)
+    {
+        try {
+            $set = $settings->find(1);
+            $state = getStateByCode($set->state);
+            $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
+                ->pluck('nicename', 'country_code_char2')->toArray();
+            $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
+                ->pluck('name', 'symbol')->toArray();
+            $states = findStateByRegionId($set->country);
+
+            return view(
+                'themes.default1.common.setting.system',
+                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency')
+            );
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postSettingsSystem(Setting $settings, SettingsRequest $request)
+    {
+        try {
+            $setting = $settings->find(1);
+
+            if ($request->hasFile('logo')) {
+                $path = ImageUpload::saveImageToStorage($request->file('logo'), 'images');
+                $setting->logo = $path;
+            }
+
+            if ($request->hasFile('admin-logo')) {
+                $path = ImageUpload::saveImageToStorage($request->file('admin-logo'), 'admin/images');
+                $setting->admin_logo = $path;
+            }
+
+            if ($request->hasFile('fav-icon')) {
+                $path = ImageUpload::saveImageToStorage($request->file('fav-icon'), 'common/images');
+                $setting->fav_icon = $path;
+            }
+
+            $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
+                            ->pluck('symbol')->first();
+
+            $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Get the id and value of the column.
      *
-     * @param  int  $id
-     * @return \Response
+     * Remove the logo from the DB and local storage.
      */
+    public function delete(Request $request)
+    {
+        try {
+            if (isset($request->id)) {
+                $todo = Setting::findOrFail($request->id);
+                if ($request->column == 'logo') {
+                    $logoPath = $todo->logo;
+                    ImageUpload::deleteImage($logoPath);
+                    $todo->logo = null;
+                }
+                if ($request->column == 'admin') {
+                    $adminLogoPath = $todo->admin_logo;
+                    ImageUpload::deleteImage($adminLogoPath);
+                    $todo->admin_logo = null;
+                }
+                if ($request->column == 'fav') {
+                    $favIconPath = $todo->fav_icon;
+                    ImageUpload::deleteImage($favIconPath);
+                    $todo->fav_icon = null;
+                }
+                $todo->save();
+                $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
+
+                return response()->json($response);
+            }
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
+        }
+    }
+
+    public function settingsEmail(Setting $settings)
+    {
+        try {
+            $set = $settings->find(1);
+
+            return view('themes.default1.common.setting.email', compact('set'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsTemplate(Setting $settings)
+    {
+        try {
+            $set = $settings->find(1);
+            $template = new Template();
+            //$templates = $template->lists('name', 'id')->toArray();
+            return view('themes.default1.common.setting.template', compact('set', 'template'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postSettingsTemplate(Setting $settings, Request $request)
+    {
+        try {
+            $setting = $settings->find(1);
+            $setting->fill($request->input())->save();
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsError(Setting $settings)
+    {
+        try {
+            $set = $settings->find(1);
+
+            return view('themes.default1.common.setting.error-log', compact('set'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsActivity(Request $request, Activity $activities)
+    {
+        $validator = \Validator::make($request->all(), [
+            'from' => 'nullable',
+            'till' => 'nullable|after:from',
+            'delFrom' => 'nullable',
+            'delTill' => 'nullable|after:delFrom',
+        ]);
+        if ($validator->fails()) {
+            $request->from = '';
+            $request->till = '';
+            $request->delFrom = '';
+            $request->delTill = '';
+
+            return redirect('settings/activitylog')->with('fails', 'Start date should be before end date');
+        }
+        try {
+            $activity = $activities->all();
+            $from = $request->input('from');
+            $till = $request->input('till');
+            $delFrom = $request->input('delFrom');
+            $delTill = $request->input('delTill');
+
+            return view('themes.default1.common.Activity-Log', compact('activity', 'from', 'till', 'delFrom', 'delTill'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsMail(Request $request)
+    {
+        try {
+            $from = $request->input('mailfrom');
+            $till = $request->input('mailtill');
+
+            return view('themes.default1.common.email-log', compact('from', 'till'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getActivity(Request $request)
+    {
+        try {
+            $from = $request->input('log_from');
+            $till = $request->input('log_till');
+            $delFrom = $request->input('delFrom');
+            $delTill = $request->input('delTill');
+            $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
+
+            return \DataTables::of($query->take(50))
+             ->setTotalRecords($query->count())
+              ->orderColumn('name', '-created_at $1')
+              ->orderColumn('description', '-created_at $1')
+              ->orderColumn('role', '-created_at $1')
+              ->orderColumn('new', '-created_at $1')
+              ->orderColumn('old', '-created_at $1')
+              ->orderColumn('created_at', '-created_at $1')
+
+             ->addColumn('checkbox', function ($model) {
+                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+             })
+                           ->addColumn('name', function ($model) {
+                               return ucfirst($model->log_name);
+                           })
+                             ->addColumn('description', function ($model) {
+                                 return ucfirst($model->description);
+                             })
+                          ->addColumn('username', function ($model) {
+                              $causer_id = $model->causer_id;
+                              $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
+                              foreach ($names as $key => $value) {
+                                  $fullName = $key.' '.$value;
+
+                                  return $fullName;
+                              }
+                          })
+                              ->addColumn('role', function ($model) {
+                                  $causer_id = $model->causer_id;
+                                  $role = User::where('id', $causer_id)->pluck('role');
+
+                                  return json_decode($role);
+                              })
+                               ->addColumn('new', function ($model) {
+                                   $properties = $model->properties;
+                                   $newEntry = $this->getNewEntry($properties, $model);
+
+                                   return $newEntry;
+                               })
+                                ->addColumn('old', function ($model) {
+                                    $data = $model->properties;
+                                    $oldEntry = $this->getOldEntry($data, $model);
+
+                                    return $oldEntry;
+                                })
+                                ->addColumn('created_at', function ($model) {
+                                    return getDateHtml($model->created_at);
+                                })
+
+                                    ->filterColumn('log_name', function ($query, $keyword) {
+                                        $sql = 'log_name like ?';
+                                        $query->whereRaw($sql, ["%{$keyword}%"]);
+                                    })
+
+                                ->filterColumn('description', function ($query, $keyword) {
+                                    $sql = 'description like ?';
+                                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                                })
+
+                            ->filterColumn('causer_id', function ($query, $keyword) {
+                                $sql = 'first_name like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+
+                            ->rawColumns(['checkbox', 'name', 'description',
+                                'username', 'role', 'new', 'old', 'created_at', ])
+                            ->make(true);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+    public function getMails(Request $request)
+    {
+        try {
+            $from = $request->input('from');
+            $till = $request->input('till');
+
+            $email_log = $this->mailSearch($from, $till);
+
+            return Datatables::of($email_log)
+            ->orderColumn('date', '-date $1')
+            ->orderColumn('from', '-date $1')
+             ->orderColumn('to', '-date $1')
+            ->orderColumn('subject', '-date $1')
+
+                ->addColumn('checkbox', function ($model) {
+                    return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
+                })
+
+                ->addColumn('date', function ($model) {
+                    $date = $model->date;
+
+                    return getDateHtml($date);
+                })
+                ->addColumn('from', function ($model) {
+                    return $model->from;
+                })
+                ->addColumn('to', function ($model) {
+                    $id = User::where('email', $model->to)->value('id');
+
+                    return '<a href='.url('clients/'.$id).'>'.ucfirst($model->to).'<a>';
+                })
+
+                ->addColumn('subject', function ($model) {
+                    return ucfirst($model->subject);
+                })
+                ->rawColumns(['checkbox', 'date', 'from', 'to',
+                    'bcc', 'subject',  'status', ])
+                ->filterColumn('from', function ($query, $keyword) {
+                    $sql = '`from` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('to', function ($query, $keyword) {
+                    $sql = '`to` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('subject', function ($query, $keyword) {
+                    $sql = '`subject` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('status', function ($query, $keyword) {
+                    $sql = '`status` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->rawColumns(['checkbox', 'date', 'from', 'to',
+                    'bcc', 'subject',  'status', ])
+                ->make(true);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+    public function mailSearch($from = '', $till = '')
+    {
+        $join = Email_log::select('id', 'from', 'to', 'date', 'subject', 'status');
+
+        if ($from) {
+            $from = $this->DateFormat($from);
+            $tillDate = $this->DateFormat($till ?: $this->DateFormat()); // Use $till if provided, otherwise, use current date
+            $join = $join->whereBetween('date', [$from, $tillDate]);
+        }
+
+        if ($till) {
+            $till = $this->DateFormat($till);
+            $fromDate = Email_log::first()->date;
+            $fromDate = $this->DateFormat($from ?: $fromDate); // Use $from if provided, otherwise, use the first email log date
+            $join = $join->whereBetween('date', [$fromDate, $till]);
+        }
+
+        return $join;
+    }
+
     public function destroy(Request $request)
     {
         try {
             $ids = $request->input('select');
-            $defaultPageId = DefaultPage::pluck('page_id')->first();
             if (! empty($ids)) {
                 foreach ($ids as $id) {
-                    if ($id != $defaultPageId) {
-                        $page = $this->page->where('id', $id)->first();
-                        if ($page) {
-                            $page->delete();
-                        } else {
-                            echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
-                </div>';
-                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                        }
-                        echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
-
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
+                    $activity = Activity::where('id', $id)->first();
+                    if ($activity) {
+                        $activity->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default-page').'
-                </div>';
+                        <i class='fa fa-ban'></i>
+
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                            /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                    </div>';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
+                echo "<div class='alert alert-success alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
+                    ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
+                    </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
+                    '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
+                    </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.\Lang::get('message.err_msg.').'
+                    </div>';
         }
     }
 
-    public function getstrikePriceYear($id)
+    public function postSettingsError(Setting $settings, Request $request)
     {
-        $countryCheck = true;
         try {
-            $cost = 'Free';
-            $plans = Plan::where('product', $id)->get();
-            $product = Product::find($id);
-            $prices = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    if ($product->status) {
-                        if ($plan->days == 365 || $plan->days == 366) {
-                            $currency = userCurrencyAndPrice('', $plan);
-                            $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
-                            $planDetails = userCurrencyAndPrice('', $plan);
-                            $prices[] = $planDetails['plan']->add_price;
-                            $prices[] .= $planDetails['symbol'];
-                            $prices[] .= $planDetails['currency'];
-                        }
+            $setting = $settings->find(1);
+            $setting->fill($request->input())->save();
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', \Lang::get('message.err_msg'));
+        }
+    }
+
+    public function debugSettings()
+    {
+        return view('themes.default1.common.setting.debugging');
+    }
+
+    public function postdebugSettings(Request $request)
+    {
+        $request = $request->get('debug');
+        if ($request == 'true') {
+            $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
+            $datacontent = File::get($debug_new);
+            $datacontent = str_replace('APP_DEBUG=false', 'APP_DEBUG=true', $datacontent);
+            File::put($debug_new, $datacontent);
+        } elseif ($request == 'false') {
+            $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
+            $datacontent = File::get($debug_new);
+            $datacontent = str_replace('APP_DEBUG=true', 'APP_DEBUG=false', $datacontent);
+            File::put($debug_new, $datacontent);
+        }
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }
+
+    public function settingsPayment(Setting $settings, Request $request)
+    {
+        try {
+            $from = $request->input('from');
+            $till = $request->input('till');
+
+            return view('themes.default1.common.payment-log', compact('from', 'till'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', \Lang::get('message.err_msg'));
+        }
+    }
+
+    public function getPaymentlog(Request $request)
+    {
+        try {
+            $from = $request->input('from');
+            $till = $request->input('till');
+            $query = $this->paymentSearch($from, $till);
+
+            return Datatables::of($query)
+            ->orderColumn('date', '-date $1')
+            ->orderColumn('user', '-date $1')
+             ->orderColumn('ordernumber', '-date $1')
+            ->orderColumn('paymentmethod', '-date $1')
+            ->orderColumn('status', '-date $1')
+
+                ->addColumn('checkbox', function ($model) {
+                    return "<input type='checkbox' class='email' value=".$model->count.' name=select[] id=check>';
+                })
+
+                ->addColumn('date', function ($model) {
+                    $date = $model->date;
+
+                    return getDateHtml($date);
+                })
+                ->addColumn('user', function ($model) {
+                    $user = User::where('email', $model->from)->select('first_name', 'last_name', 'id')->first();
+                    if ($user) {
+                        return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
+                    }
+
+                    return '';
+                })
+
+                ->addColumn('paymentmethod', function ($model) {
+                    return ucfirst($model->payment_method);
+                })
+                ->addColumn('ordernumber', function ($model) {
+                    $id = Order::where('number', $model->order)->select('id')->value('id');
+                    $orderLink = '<a href='.url('orders/'.$id).'>'.$model->order.'</a>';
+
+                    return $orderLink;
+                })
+                ->addColumn('status', function ($model) {
+                    if ($model->status === 'failed') {
+                        $exceptionMessage = $model->exception;
+
+                        return '<a href="#" class="show-exception" data-message="'.$exceptionMessage.'">Failed</a>';
+                    }
+
+                    return ucfirst($model->status);
+                })
+                ->rawColumns(['checkbox', 'date', 'user',
+                    'bcc', 'status', 'paymentmethod', 'ordernumber'])
+
+                ->filterColumn('user', function ($model, $keyword) {
+                    $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
+                })
+
+                ->filterColumn('status', function ($query, $keyword) {
+                    $sql = '`status` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                 ->filterColumn('paymentmethod', function ($query, $keyword) {
+                     $sql = '`payment_method` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
+                 ->filterColumn('ordernumber', function ($query, $keyword) {
+                     $sql = '`order` like ?';
+                     $query->whereRaw($sql, ["%{$keyword}%"]);
+                 })
+
+                ->make(true);
+        } catch (\Exception $e) {
+            dd($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+    public function paymentSearch($from = '', $till = '')
+    {
+        $join = Payment_log::query()->leftJoin('users', 'payment_logs.from', '=', 'users.email')
+            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'email', \DB::raw("CONCAT(first_name, ' ', last_name) as name"), 'users.id', 'payment_logs.id as count');
+
+        if ($from) {
+            $from = $this->DateFormat($from);
+            $tillDate = $this->DateFormat($till ?: date('Y-m-d H:i:s'));
+            $join->whereBetween('date', [$from, $tillDate]);
+        }
+
+        if ($till) {
+            $till = $this->DateFormat($till);
+            $fromDate = Payment_log::oldest('date')->value('date');
+            $fromDate = $this->DateFormat($from ?: $fromDate);
+            $join->whereBetween('date', [$fromDate, $till]);
+        }
+
+        return $join;
+    }
+
+    private function DateFormat($date = null)
+    {
+        if ($date === null) {
+            return date('Y-m-d H:i:s');
+        }
+
+        return date('Y-m-d H:i:s', strtotime($date));
+    }
+
+    public function destroyPayment(Request $request)
+    {
+        try {
+            $ids = $request->input('select');
+            if (! empty($ids)) {
+                foreach ($ids as $id) {
+                    $email = \DB::table('payment_logs')->where('id', $id)->delete();
+                    if ($email) {
+                        // $email->delete();
                     } else {
-                        $currency = userCurrencyAndPrice('', $plan);
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $prices[] = $planDetails['plan']->add_price;
-                        $prices[] .= $planDetails['symbol'];
-                        $prices[] .= $planDetails['currency'];
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                    </div>';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
-
-                if (! empty($prices)) {
-                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                        $prices[0] = $prices[0] - (($offerprice / 100) * $prices[0]);
-                    }
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-                }
+                echo "<div class='alert alert-success alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
+                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
+                    </div>';
+            } else {
+                echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
+                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
+                    </div>';
+                //echo \Lang::get('message.select-a-row');
             }
-
-            return $cost;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+        } catch (\Exception $e) {
+            echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.$e->getMessage().'
+                    </div>';
         }
-    }
-
-    public function transformTemplate($type, $data, $trasform = [])
-    {
-        $config = \Config::get("transform.$type");
-        $result = '';
-        $array = [];
-        foreach ($trasform as $trans) {
-            $array[] = $this->checkConfigKey($config, $trans);
-        }
-        $c = count($array);
-        for ($i = 0; $i < $c; $i++) {
-            $array1 = $this->keyArray($array[$i]);
-            $array2 = $this->valueArray($array[$i]);
-            $id = Product::where('name', $array2[0])->value('id');
-            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
-            $offerprice = $this->getOfferprice($id);
-            $description = self::getPriceDescription($id);
-            $month_offer_price = $offerprice['30_days'] ?? null;
-            $year_offer_price = $offerprice['365_days'] ?? null;
-
-            if (Product::find($id)->add_to_contact == 1) {
-                $data = str_replace('{{strike-price}}', '', $data);
-                $data = str_replace('{{strike-priceyear}}', '', $data);
-                $data = str_replace('{{price}}', 'Custom Pricing', $data);
-                $data = str_replace('{{price-year}}', 'Custom Pricing', $data);
-            }
-            if ($month_offer_price === '' || $month_offer_price === null) {
-                $data = str_replace('{{strike-price}}', '', $data);
-            }
-            $product = Product::find($id);
-
-            if (! $product->status) {
-                if (empty($month_offer_price) && empty($year_offer_price)) {
-                    $data = str_replace('{{strike-priceyear}}', '', $data);
-                }
-            } elseif (empty($year_offer_price)) {
-                $data = str_replace('{{strike-priceyear}}', '', $data);
-            }
-            if ($year_offer_price !== '' && $year_offer_price !== null) {
-                $offerprice = $this->getPayingprice($id);
-                $offerpriceYear = $this->getstrikePriceYear($id);
-                $strikePrice = $this->YearlyAmount($id);
-                $data = str_replace('{{price}}', $offerprice, $data);
-                if ($month_offer_price !== '' && $month_offer_price !== null) {
-                    $data = str_replace('{{strike-price}}', $array2[1], $data);
-                }
-                $data = str_replace('{{price-year}}', $offerpriceYear, $data);
-
-                if ($year_offer_price !== '' && $year_offer_price !== null) {
-                    $data = str_replace('{{strike-priceyear}}', $strikePrice, $data);
-                }
-            }
-
-            $result .= str_replace($array1, $array2, $data);
-        }
-
-        return $result;
-    }
-
-    public function transform($type, $data, $trasform = [])
-    {
-        $config = \Config::get("transform.$type");
-        $result = '';
-        $array = [];
-        foreach ($trasform as $trans) {
-            $array[] = $this->checkConfigKey($config, $trans);
-        }
-        $c = count($array);
-        for ($i = 0; $i < $c; $i++) {
-            $array1 = $this->keyArray($array[$i]);
-            $array2 = $this->valueArray($array[$i]);
-            $result .= str_replace($array1, $array2, $data);
-        }
-
-        return $result;
-    }
-
-    public function getPayingprice($id)
-    {
-        $countryCheck = true;
-        try {
-            $cost = 'Free';
-            $plans = Plan::where('product', $id)->get();
-
-            $prices = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    if ($plan->days == 30 || $plan->days == 31) {
-                        $currency = userCurrencyAndPrice('', $plan);
-                        $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
-                        $planDetails = userCurrencyAndPrice('', $plan);
-                        $price = $planDetails['plan']->add_price;
-                        $symbol = $planDetails['symbol'];
-                        $currency = $planDetails['currency'];
-                        if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                            $price = $price - (($offerprice / 100) * $price);
-                        }
-
-                        $prices[] = $price;
-                        $prices[] .= $symbol;
-                        $prices[] .= $currency;
-                    }
-                }
-
-                if (! empty($prices)) {
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-                }
-            }
-
-            return $cost;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get Page Template when Group in Store Dropdown is
-     * selected on the basis of Group id.
-     *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     * @date   2019-01-10T01:20:52+0530
-     *
-     * @param  int  $groupid  Group id
-     * @param  int  $templateid  Id of the Template
-     * @return longtext The Template to be displayed
-     */
-    public function pageTemplates(int $templateid = null, int $groupid)
-    {
-        try {
-            $productsHightlight = Product::wherehighlight(1)->get();
-
-            // $data = PricingTemplate::findorFail($templateid)->data;
-            $headline = ProductGroup::findorFail($groupid)->headline;
-            $tagline = ProductGroup::findorFail($groupid)->tagline;
-            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
-            ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
-            $trasform = [];
-            $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
-            $products = Product::all();
-            $plan = '';
-            $description = '';
-            $status = null;
-            foreach ($productsRelatedToGroup as $product) {
-                $plan = Product::find($product->id)->plan();
-                $description = self::getPriceDescription($product->id);
-                $status = Product::find($product->id);
-            }
-
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function contactUs()
-    {
-        try {
-            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-            return view('themes.default1.front.contact',compact('status','apiKeys'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get  Template For Products.
-     *
-     * @param  $helpdesk_products
-     * @param  $data
-     * @param  $trasform
-     * @return string
-     */
-    public function getTemplateOne($helpdesk_products, $trasform)
-    {
-        try {
-            $template = '';
-            $temp_controller = new TemplateController();
-            if (count($helpdesk_products) > 0) {
-                foreach ($helpdesk_products as $product) {
-                    $price = $temp_controller->leastAmount($product['id']);
-                    //Store all the values in $trasform variable for shortcodes to read from
-                    $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
-                    $trasform[$product['id']]['price-year'] = $this->YearlyAmount($product['id']);
-                    $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
-                    $trasform[$product['id']]['pricemonth-description'] = self::getmonthPriceDescription($product['id']);
-                    $trasform[$product['id']]['strike-price'] = $temp_controller->leastAmount($product['id']);
-                    $trasform[$product['id']]['strike-priceyear'] = $this->YearlyAmount($product['id']);
-                    $trasform[$product['id']]['name'] = $product['name'];
-                    $trasform[$product['id']]['feature'] = $product['description'];
-                    $trasform[$product['id']]['subscription'] = $temp_controller
-                    ->plans($product['shoping_cart_link'], $product['id']);
-                    if ($product['add_to_contact'] != 1) {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
-                     value='Order Now' class='btn btn-primary btn-modern buttonsale'></form>" : "<input type='submit' 
-                   value='Order Now' class='btn btn-dark btn-modern buttonsale'></form>";
-                    } else {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
-                    }
-                }
-                $data = PricingTemplate::findorFail(1)->data;
-                $template = $this->transformTemplate('cart', $data, $trasform);
-            }
-
-            return $template;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function plansYear($url, $id)
-    {
-        try {
-            $plan = new Plan();
-            $plan_form = 'Free'; //No Subscription
-            $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
-            $product = Product::find($id);
-            $type = Product::find($id);
-            $planid = Plan::where('product', $id)->value('id');
-            $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
-
-            $plans = $this->prices($id);
-            if ($plans) {
-                $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
-            }
-            $form = \Form::open(['method' => 'get', 'url' => $url]).
-            $plan_form.
-            \Form::hidden('id', $id);
-
-            return $product['add_to_contact'] == 1 ? '' : $form;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
-    {
-        $cost = $cost * 12;
-        if (isset($offer) && $offer !== '' && $offer !== null) {
-            $cost = $cost - ($offer / 100 * $cost);
-        }
-        $price1 = currencyFormat($cost, $code = $currency);
-        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
-
-        return $price;
-    }
-
-    public function prices($id)
-    {
-        try {
-            $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
-            $price = [];
-            foreach ($plans as $value) {
-                $offer = PlanPrice::where('plan_id', $value->id)->value('offer_price');
-                $product = Product::find($value->product);
-                $currencyAndSymbol = userCurrencyAndPrice('', $value);
-                $currency = $currencyAndSymbol['currency'];
-                $symbol = $currencyAndSymbol['symbol'];
-                $cost = $currencyAndSymbol['plan']->add_price;
-                $priceDescription = 'Per Year';
-                $cost = rounding($cost);
-                $duration = $value->periods;
-                $months = count($duration) > 0 ? $duration->first()->name : '';
-                if ($product->type != '4') {
-                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
-                } elseif ($cost != '0' && $product->type == '4') {
-                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
-                }
-                // $price = currencyFormat($cost, $code = $currency);
-            }
-
-            return $price;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function getOfferprice(int $productid)
-    {
-        $plans = Plan::where('product', $productid)->get();
-
-        $offerprices = [
-            '30_days' => null,
-            '365_days' => null,
-        ];
-
-        foreach ($plans as $plan) {
-            $currency = userCurrencyAndPrice('', $plan);
-            $offer_price = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
-
-            if ($plan->days == '30' || $plan->days == '31') {
-                $offerprices['30_days'] = $offer_price;
-            } elseif ($plan->days == '365' || $plan->days == '366') {
-                $offerprices['365_days'] = $offer_price;
-            }
-        }
-
-        return $offerprices;
-    }
-
-    public function YearlyAmount($id)
-    {
-        $countryCheck = true;
-        try {
-            $cost = 'Free';
-            $plans = Plan::where('product', $id)->get();
-            $product = Product::find($id);
-            $offer = $this->getOfferprice($id);
-
-            $prices = [];
-            foreach ($plans as $plan) {
-                if ($plan->days == 365 || $plan->days == 366) {
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
-                } elseif (! $product->status && $product->type != '4') {
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
-                }
-
-                if (! empty($prices)) {
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-                }
-            }
-
-            return $cost;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function getmonthPriceDescription(int $productid)
-    {
-        try {
-            $product = Product::find($productid);
-
-            if ($product['add_to_contact'] == 1) {
-                return '';
-            }
-
-            $priceDescription = ''; // Initialize the price description
-
-            $plans = Plan::where('product', $productid)->get();
-
-            if ($plans) {
-                foreach ($plans as $plan) {
-                    if ($plan->days == 30 || $plan->days == 31) {
-                        $description = $plan->planPrice->first();
-
-                        if ($description->price_description == 'Free') {
-                            $priceDescription = 'free';
-                        } else {
-                            $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per month';
-                        }
-
-                        // Break the loop if we find a plan with 30 or 31 days
-                        break;
-                    }
-                }
-            }
-
-            return $priceDescription;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
-     *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     * @date   2019-01-09T00:20:09+0530
-     *
-     * @param  int  $productid  Id of the Product
-     * @return string $priceDescription        The Description of the Price
-     */
-    public function getPriceDescription(int $productid)
-    {
-        try {
-            $product = Product::find($productid);
-            if ($product['add_to_contact'] == 1) {
-                return '';
-            }
-
-            $priceDescription = '';
-
-            $plans = Plan::where('product', $productid)->get();
-
-            if ($plans) {
-                foreach ($plans as $plan) {
-                    if ($plan->days == 365 || $plan->days == 366) {
-                        $description = $plan->planPrice->first();
-                        if ($description->price_description == 'Free') {
-                            $priceDescription = 'free';
-                        } else {
-                            if ($product->status) {
-                                $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
-                            } else {
-                                $priceDescription = $description->price_description;
-                            }
-                        }
-
-                        // Break the loop if we find a plan with 30 or 31 days
-                        break;
-                    } elseif (! $product->status) {
-                        $plan = Product::find($productid)->plan();
-                        $description = $plan ? $plan->planPrice->first() : '';
-                        $priceDescription = $description ? $description->price_description : '';
-                    }
-                }
-            }
-
-            return $priceDescription;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function checkConfigKey($config, $transform)
-    {
-        $result = [];
-        if ($config) {
-            foreach ($config as $key => $value) {
-                if (array_key_exists($key, $transform)) {
-                    $result[$value] = $transform[$key];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    public function keyArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $key;
-        }
-
-        return $result;
-    }
-
-    public function valueArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $value;
-        }
-
-        return $result;
-    }
-
-    public function postContactUs(Request $request)
-    {
-        
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required',
-            'g-recaptcha-response' => $captchaRule.'captcha',
-        ],
-        [
-            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-        ]);
-
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-
-        try {
-            $data = '';
-            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
-            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
-            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-            $data .= 'IP Address: '.strip_tags($request->ip()).'<br/>';
-
-            $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
-            $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';
-            $emailContent .= $data; // Include the form data here
-            $emailContent .= '<br/>Thank You<br/>'.$set->title;
-            if (emailSendingStatus()) {
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($set->email, $set->company_email, $emailContent, $set->title.' Contact');
-            }
-
-            //$this->templateController->SendEmail($from, $to, $data, $subject);
-            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function viewDemoReq()
-    {
-        try {
-          $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-          $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-          return view('themes.default1.front.demoForm',compact('status','apiKeys'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function postDemoReq(Request $request)
-    {
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $this->validate($request, [
-            'name' => 'required',
-            'demoemail' => 'required|email',
-            'g-recaptcha-response' => $captchaRule.'captcha',
-        ]);
-
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-
-        try {
-            $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
-            $data = '';
-            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
-            $data .= 'Email: '.strip_tags($request->input('demoemail')).'<br/>';
-            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'IP Address: '.strip_tags($request->ip()).'<br/>';
-
-            $emailContent = 'Dear '.$set->title.'  '.'Team,<br/><br/>';
-            $emailContent .= 'Below form was submitted on the website '.request()->fullUrl().'<br/><br/>';
-            $emailContent .= $data; // Include the form data here
-            $emailContent .= '<br/>Thank You<br/>'.$set->title;
-            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
-            if (emailSendingStatus()) {
-                $mail->SendEmail($set->email, $set->company_email, $emailContent, 'Requesting for Demo for'.'  '.$product);
-            }
-
-            return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function VewDemoPage()
-    {
-        try {
-            $Demo_page = Demo_page::first();
-
-            return view('themes.default1.common.setting.demo-page', compact('Demo_page'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function saveDemoPage(Request $request)
-    {
-        $data = $request->validate([
-            'status' => 'required',
-        ]);
-        $data = [
-            'status' => $request->input('status') === 'true' ? 1 : 0,
-        ];
-
-        $existingData = Demo_page::first();
-        $existingData ? $existingData->update($data) : Demo_page::create($data);
-
-        $message = $existingData ? 'Data updated successfully.' : 'Data created successfully.';
-
-        return redirect()->back()->with('success', $message);
     }
 }

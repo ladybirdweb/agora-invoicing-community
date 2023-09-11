@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Email_log;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
@@ -76,7 +75,7 @@ class PhpMailController extends Controller
         try {
             $status = StatusSetting::value('cloud_mail_status');
             if ($status == 1) {
-            $this->deleteCloudDetails();
+                $this->deleteCloudDetails();
             }
         } catch(\Exception $ex) {
             \Log::error($ex->getMessage());
@@ -195,6 +194,7 @@ class PhpMailController extends Controller
                 'body' => $data,
                 'status' => 'success',
             ]);
+
             return 'success';
         } catch (\Exception $ex) {
             \DB::table('email_log')->insert([

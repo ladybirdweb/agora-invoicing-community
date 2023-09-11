@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\ApiKey;
 use App\DefaultPage;
 use App\Demo_page;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
+use App\Model\Common\StatusSetting;
 use App\Model\Front\FrontendPage;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
-use App\Model\Common\StatusSetting;
-use App\ApiKey;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -495,7 +495,8 @@ class PageController extends Controller
         try {
             $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-            return view('themes.default1.front.contact',compact('status','apiKeys'));
+
+            return view('themes.default1.front.contact', compact('status', 'apiKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -802,7 +803,6 @@ class PageController extends Controller
 
     public function postContactUs(Request $request)
     {
-        
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
@@ -811,9 +811,9 @@ class PageController extends Controller
             'message' => 'required',
             'g-recaptcha-response' => $captchaRule.'captcha',
         ],
-        [
-            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-        ]);
+            [
+                'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+            ]);
 
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
@@ -845,9 +845,10 @@ class PageController extends Controller
     public function viewDemoReq()
     {
         try {
-          $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-          $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-          return view('themes.default1.front.demoForm',compact('status','apiKeys'));
+            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+
+            return view('themes.default1.front.demoForm', compact('status', 'apiKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

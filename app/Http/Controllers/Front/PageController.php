@@ -13,6 +13,8 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -491,7 +493,9 @@ class PageController extends Controller
     public function contactUs()
     {
         try {
-            return view('themes.default1.front.contact');
+            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            return view('themes.default1.front.contact',compact('status','apiKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -798,10 +802,17 @@ class PageController extends Controller
 
     public function postContactUs(Request $request)
     {
+        
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
             'name'    => 'required',
             'email'   => 'required|email',
             'message' => 'required',
+            'g-recaptcha-response' => $captchaRule.'captcha',
+        ],
+        [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
 
         $set = new \App\Model\Common\Setting();
@@ -834,7 +845,9 @@ class PageController extends Controller
     public function viewDemoReq()
     {
         try {
-            return view('themes.default1.front.demoForm');
+          $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+          $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+          return view('themes.default1.front.demoForm',compact('status','apiKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -842,9 +855,12 @@ class PageController extends Controller
 
     public function postDemoReq(Request $request)
     {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
             'name' => 'required',
             'demoemail' => 'required|email',
+            'g-recaptcha-response' => $captchaRule.'captcha',
         ]);
 
         $set = new \App\Model\Common\Setting();

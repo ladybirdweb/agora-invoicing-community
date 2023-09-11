@@ -47,6 +47,12 @@ main
                                 </div>
                                
                             </div>
+                            @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+
+                                {!! NoCaptcha::renderJs() !!}
+                                {!! NoCaptcha::display(['id' => 'Passwordrecaptcha']) !!}
+                                 <div class="passverification"></div>
+                            @endif
                             <div class="clear"></div>
                                 <div class="form-row">
                          <div class="form-group col">
@@ -70,8 +76,22 @@ main
 @stop 
 @section('script')
 <script>
+
+     function Recaptcha() {
+        var input = $("#Passwordrecaptcha :input[name='g-recaptcha-response']");
+        if (input.val() == null || input.val() == "") {
+            $('.passverification').empty();
+            $('.passverification').append("<p style='color:red'>Robot verification failed, please try again.</p>");
+            return false;
+        } else {
+            $('.passverification').hide();
+            $('.passverification').css("border-color", "");
+            return true;
+        }
+    }
    $('#email').keyup(function(){
                  verify_mail_check();
+                 
             });
            function verify_mail_check(){
               var pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -117,7 +137,7 @@ main
                            var mobile_error = true;
                            $('#resetpasswordcheck').hide();
                                                         
-                          if(verify_mail_check()){
+                           if (verify_mail_check() && Recaptcha()) {
                           $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                     var data = {
                                         "email":   $('#email').val(),

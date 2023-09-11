@@ -34,7 +34,11 @@ $set = $set->findOrFail(1);
     <div class="col-md-6">
 
        <h2 class="mb-3 mt-2"><strong>Contact</strong> Us</h2>
-        {!! Form::open(['url'=>'contact-us']) !!}
+        @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                        {!! Form::open(['url'=>'contact-us','method' => 'post','onsubmit'=>'return Recaptcha()']) !!}
+                        @else
+                        {!! Form::open(['url'=>'contact-us','method' => 'post']) !!}
+                        @endif
             <div class="form-row">
                 <div class="form-group col-lg-6">
                   
@@ -68,11 +72,20 @@ $set = $set->findOrFail(1);
                     </div>
                 
             </div>
+            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+            {!! NoCaptcha::renderJs() !!}
+            {!! NoCaptcha::display(['id' => 'Contactrecaptcha']) !!}
+            <div class="verification"></div>
+            @endif
+            <br />
+            <div class="loginrobot-verification"></div>
               <div class="form-row">
                 <div class="form-group col">
                     <input type="submit" value="Send Message" class="btn btn-primary btn-lg mb-xlg" data-loading-text="Loading...">
                 </div>
             </div>
+            
+        
         {!! Form::close() !!}
     </div>
     <div class="col-md-6">
@@ -98,6 +111,22 @@ $set = $set->findOrFail(1);
 </div>
 @stop
 @section('script')
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+      function Recaptcha() {
+    var input = $("#Contactrecaptcha :input[name='g-recaptcha-response']");
+            console.log(input.val());
+            if(input.val() == null || input.val()==""){
+                $('.verification').empty()
+                $('.verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+                return false;
+            }
+            else{
+                return true;
+            }
+}
+
+    </script>
 @if(request()->path() === 'contact-us')
 <script type="text/javascript">
     

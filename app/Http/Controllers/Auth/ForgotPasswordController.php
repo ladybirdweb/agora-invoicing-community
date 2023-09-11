@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 
 class ForgotPasswordController extends Controller
 {
@@ -33,7 +35,9 @@ class ForgotPasswordController extends Controller
 
     public function showLinkRequestForm()
     {
-        return view('themes.default1.front.auth.password');
+        $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+        $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+        return view('themes.default1.front.auth.password',compact('status','apiKeys'));
     }
 
     /**

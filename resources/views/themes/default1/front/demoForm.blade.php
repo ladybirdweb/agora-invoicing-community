@@ -15,13 +15,13 @@
      
                         <div class="box-content">
 
-                           
+                        @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                        {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return validateRecaptcha()']) !!}
+                        @else
                         {!! Form::open(['url'=>'demo-request','method' => 'post']) !!}
+                        @endif
 
-                            
-
-                         
-                              <div class="form-row">
+                <div class="form-row">
                 <div class="form-group col-lg-6">
                   
                         <label class="required">Name</label>
@@ -64,6 +64,12 @@
                     </div>
                 
             </div>
+            @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                {!! NoCaptcha::display() !!}
+                <div class="demo-verification"></div>
+            @endif
+
+            <br />
                   <div class="form-row">
                     <div class="form-group col">
                         <input type="submit" style="width: 100%;" value="Book a Demo" class="btn btn-primary btn-lg mb-xlg" data-loading-text="Loading...">
@@ -78,6 +84,25 @@
                 </div>
             </div>
         </div>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+      function validateRecaptcha() {
+    var response = grecaptcha.getResponse(); // Get the reCAPTCHA response
+    if (response.length == 0) {
+        $('.demo-verification').html("<p style='color:red'>Robot verification failed, please try again.</p>");
+        return false;
+    } else {
+        $('.demo-verification').hide();
+        $('.demo-verification').css("border-color", "");
+        // reCAPTCHA validation succeeded
+        return true;
+    }
+}
+
+    </script>
+
+     
+
 
 
  

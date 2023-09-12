@@ -118,7 +118,7 @@ class BaseOrderController extends ExtendedOrderController
                 'created_at' => Carbon::now(),
             ]);
             $this->updateInvoiceDate($invoiceid);
-            \Session::put('upgradeNewActiveOrder',$order->id);
+            \Session::put('upgradeNewActiveOrder', $order->id);
 
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
@@ -186,10 +186,9 @@ class BaseOrderController extends ExtendedOrderController
             if ($status->status) {
                 if (\Session::get('planDays') == 'monthly') {
                     $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
-                } elseif(\Session::get('planDays') == 'freeTrial'){
+                } elseif (\Session::get('planDays') == 'freeTrial') {
                     $days = $this->plan->where('product', $product)->whereIn('days', '<', 30)->first();
-                }
-                elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
+                } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
                     $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
                 }
             }

@@ -234,7 +234,7 @@ class FreeTrailController extends Controller
             $this->orderNo = $order->number;
             $baseorder = new BaseOrderController();
             $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
-            \Session::put('planDays','freeTrial');
+            \Session::put('planDays', 'freeTrial');
 
             if ($plan_id) {
                 \Session::put('planDays', 'free-trial');
@@ -245,6 +245,7 @@ class FreeTrailController extends Controller
                 $baseorder->addtoMailchimp($product, $user_id, $item);
             }
             \Session::forget('planDays');
+
             return $serial_key;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

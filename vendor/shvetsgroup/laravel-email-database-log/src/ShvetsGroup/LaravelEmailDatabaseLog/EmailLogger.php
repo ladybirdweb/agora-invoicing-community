@@ -20,17 +20,17 @@ class EmailLogger
 	{
 		$message = $event->message;
 
-		// DB::table('email_log')->insert([
-		// 	'date' => Carbon::now()->format('Y-m-d H:i:s'),
-		// 	'from' => $this->formatAddressField($message, 'From'),
-		// 	'to' => $this->formatAddressField($message, 'To'),
-		// 	'cc' => $this->formatAddressField($message, 'Cc'),
-		// 	'bcc' => $this->formatAddressField($message, 'Bcc'),
-		// 	'subject' => $message->getSubject(),
-		// 	'body' => $message->getBody()->bodyToString(),
-		// 	'headers' => $message->getHeaders()->toString(),
-		// 	'attachments' => $this->saveAttachments($message),
-		// ]);
+		DB::table('email_log')->insert([
+			'date' => Carbon::now()->format('Y-m-d H:i:s'),
+			'from' => $this->formatAddressField($message, 'From'),
+			'to' => $this->formatAddressField($message, 'To'),
+			'cc' => $this->formatAddressField($message, 'Cc'),
+			'bcc' => $this->formatAddressField($message, 'Bcc'),
+			'subject' => $message->getSubject(),
+			'body' => $message->getBody()->bodyToString(),
+			'headers' => $message->getHeaders()->toString(),
+			'attachments' => $this->saveAttachments($message),
+		]);
 	}
 
 	/**

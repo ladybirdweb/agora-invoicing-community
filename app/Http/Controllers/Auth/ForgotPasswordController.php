@@ -52,10 +52,10 @@ class ForgotPasswordController extends Controller
         try {
             $apiKeys = StatusSetting::value('recaptcha_status');
             $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-            $this->validate($request, 
-            ['email' => 'required|email|exists:users,email', 
-            'pass-recaptcha-response-1' => $captchaRule.'captcha',
-            ]
+            $this->validate($request,
+                ['email' => 'required|email|exists:users,email',
+                    'pass-recaptcha-response-1' => $captchaRule.'captcha',
+                ]
             );
             $email = $request->email;
             $token = str_random(40);

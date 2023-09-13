@@ -1310,24 +1310,33 @@ Sign in or Register
                 return true;
             }
         }
+        
+        
         var recaptchaValid = false;
-
         function onRecaptcha(response) {
-            if (response === '') {
-                $('#captchacheck').show();
-                $('#captchacheck').html("Failed, please try again");
-                $('#captchacheck').focus();
-                $('#captcha').css("border-color", "red");
-                $('#captchacheck').css({"color": "red", "margin-top": "5px"});
-                recaptchaValid = false; // reCAPTCHA validation failed
-            } else {
-                $('#captchacheck').hide();
-                $('#captcha').css("border-color", "");
-                recaptchaValid = true; // reCAPTCHA validation succeeded
-                $('#g-recaptcha-response-1').val(response);
-            }
+        if (response === '') {
+            recaptchaValid = false; // reCAPTCHA validation failed
+        } else {
+            recaptchaValid = true; // reCAPTCHA validation succeeded
+            $('#g-recaptcha-response-1').val(response);
         }
+        }
+    
+         function validateRecaptcha() {
+                 var recaptchaResponse = $('#g-recaptcha-response-1').val();
 
+                if (recaptchaResponse === '') {
+                    $('#captchacheck').show();
+                    $('#captchacheck').html("Robot verification failed, please try again.");
+                    $('#captchacheck').focus();
+                    $('#captcha').css("border-color", "red");
+                    $('#captchacheck').css({"color": "red", "margin-top": "5px"});
+                    return false;
+                } else {
+                    $('#captchacheck').hide();
+                    return true;
+                }
+         }
 
 
         ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
@@ -1351,7 +1360,7 @@ Sign in or Register
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         function registerUser() {
-            
+
             $('#first_namecheck').hide();
             $('#last_namecheck').hide();
             $('#emailcheck').hide();
@@ -1377,9 +1386,13 @@ Sign in or Register
             var conPassErr = true;
             var termsErr = true;
             // con_password_check();
-
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && recaptchaValid)
+            
+            
+      
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() &&
+        validateRecaptcha())
             {
+
                
                  var tag = "<?php echo $analyticsTag; ?>";
                  if (tag !== "" ){

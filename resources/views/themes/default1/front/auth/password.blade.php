@@ -48,10 +48,10 @@ main
                                
                             </div>
                             @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-
-                                {!! NoCaptcha::renderJs() !!}
-                                {!! NoCaptcha::display(['id' => 'Passwordrecaptcha']) !!}
-                                 <div class="passverification"></div>
+                                {!! NoCaptcha::display(['id' => 'pass-recaptcha-1', 'data-callback' => 'PassonRecaptcha']) !!}
+                                <input type="hidden" id="pass-recaptcha-response-1" name="pass-recaptcha-response-1">
+                                <div class="pass-verification" id="passcaptcha"></div>
+                                <span id="passcaptchacheck"></span>
                             @endif
                             <div class="clear"></div>
                                 <div class="form-row">
@@ -77,18 +77,31 @@ main
 @section('script')
 <script>
 
-     function Recaptcha() {
-        var input = $("#Passwordrecaptcha :input[name='g-recaptcha-response']");
-        if (input.val() == null || input.val() == "") {
-            $('.passverification').empty();
-            $('.passverification').append("<p style='color:red'>Robot verification failed, please try again.</p>");
-            return false;
+   var recaptchaValid = false;
+        function PassonRecaptcha(response) {
+        if (response === '') {
+            recaptchaValid = false; // reCAPTCHA validation failed
         } else {
-            $('.passverification').hide();
-            $('.passverification').css("border-color", "");
-            return true;
+            recaptchaValid = true; // reCAPTCHA validation succeeded
+            $('#pass-recaptcha-response-1').val(response);
         }
-    }
+        }
+    
+         function PassvalidateRecaptcha() {
+                 var recaptchaResponse = $('#pass-recaptcha-response-1').val();
+
+                if (recaptchaResponse === '') {
+                    $('#passcaptchacheck').show();
+                    $('#passcaptchacheck').html("Robot verification failed, please try again.");
+                    $('#passcaptchacheck').focus();
+                    $('#passcaptcha').css("border-color", "red");
+                    $('#passcaptchacheck').css({"color": "red", "margin-top": "5px"});
+                    return false;
+                } else {
+                    $('#passcaptchacheck').hide();
+                    return true;
+                }
+         }
    $('#email').keyup(function(){
                  verify_mail_check();
                  
@@ -137,10 +150,11 @@ main
                            var mobile_error = true;
                            $('#resetpasswordcheck').hide();
                                                         
-                           if (verify_mail_check() && Recaptcha()) {
+                           if (verify_mail_check() && PassvalidateRecaptcha()) {
                           $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                     var data = {
                                         "email":   $('#email').val(),
+                                        "pass-recaptcha-response-1":$('#pass-recaptcha-response-1').val(),
                                       
                                     };
                                     $.ajax({

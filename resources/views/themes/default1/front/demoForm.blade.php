@@ -16,7 +16,7 @@
                         <div class="box-content">
 
                         @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                        {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return validateRecaptcha()']) !!}
+                        {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return DemovalidateRecaptcha()']) !!}
                         @else
                         {!! Form::open(['url'=>'demo-request','method' => 'post']) !!}
                         @endif
@@ -86,7 +86,7 @@
         </div>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script>
-      function validateRecaptcha() {
+      function DemovalidateRecaptcha() {
     var response = grecaptcha.getResponse(); // Get the reCAPTCHA response
     if (response.length == 0) {
         $('.demo-verification').html("<p style='color:red'>Robot verification failed, please try again.</p>");

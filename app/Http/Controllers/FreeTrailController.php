@@ -211,7 +211,7 @@ class FreeTrailController extends Controller
     {
         try {
             $product = Product::where('name', $item->product_name)->value('id');
-            $version = Product::where('name', $item->product_name)->first()->version;//Send Product Id and Agents to generate Serial Key
+            $version = Product::where('name', $item->product_name)->first()->version; //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             $plan_id = Plan::where('product', $product)->where('name', 'LIKE', '%free%')
                 ->value('id');

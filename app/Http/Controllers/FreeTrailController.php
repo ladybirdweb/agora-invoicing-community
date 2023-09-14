@@ -164,7 +164,7 @@ class FreeTrailController extends Controller
                     'subtotal' => 0,
                     'domain' => '',
                     'plan_id' => $plan_id,
-                    'agents' => 3,
+                    'agents' => planPrice::where('plan_id', $plan_id)->pluck('no_of_agents'),
                 ]);
 
                 return $invoiceItem;
@@ -211,12 +211,11 @@ class FreeTrailController extends Controller
     {
         try {
             $product = Product::where('name', $item->product_name)->value('id');
-            $version = Product::where('name', $item->product_name)->first()->version;
-            $serial_key = $this->generateFreetrailSerialKey($product, 3); //Send Product Id and Agents to generate Serial Key
+            $version = Product::where('name', $item->product_name)->first()->version;//Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
-            //$plan_id = $this->plan($item->id);
             $plan_id = Plan::where('product', $product)->where('name', 'LIKE', '%free%')
                 ->value('id');
+            $serial_key = $this->generateFreetrailSerialKey($product, planPrice::where('plan_id', $plan_id)->pluck('no_of_agents'));
 
             $order = $this->order->create([
 

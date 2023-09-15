@@ -347,7 +347,7 @@ $cartSubtotalWithoutCondition = 0;
 <script>
 
   $('#checkoutsubmitform').submit(function(){
-     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x ''></i>Please Wait ...")
+     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x ''></i>Processing ...")
     $("#proceed").prop('disabled', true);
 
   });

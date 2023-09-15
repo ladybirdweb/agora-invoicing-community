@@ -28,7 +28,7 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 <thead class="thead-light">
 <tr>
 <th>Order Details</th>
-<th>Total</th>
+<th></th>
 </tr>
 </thead>
 <tbody>

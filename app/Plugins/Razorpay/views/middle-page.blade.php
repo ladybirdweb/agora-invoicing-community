@@ -358,11 +358,11 @@ $json = json_encode($data);
     </div>
     <div class="col-md-4">
     <div class="card card-default" style="margin-bottom: 40px;">
-        <div class="card-header" style="height: 50px;">
+        <div class="card-header" style="height: 50px; margin-left: -5px">
          
         <h4 class="heading-primary">Cart Total</h4>
     </div>
-        <table class="cart-totals">
+        <table class="cart-totals" style="margin: 10px">
             <tbody>
                 <tr class="cart-subtotal">
                     <?php 

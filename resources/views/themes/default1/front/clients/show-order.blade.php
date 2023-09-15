@@ -309,7 +309,6 @@ $price = $order->price_override;
                                         Reissue License</button></td>
                                 @endif
                             </tr>
-                        @endif
 
                         <tr>
                             <td><b>License Expiry Date:</b></td>

@@ -4,8 +4,10 @@
 <div id="content" role="main">
 <div class="page-content ">
 <div>
-
+<div class="row" style="margin-left:0px">
+    
 <strong>Thank you. Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a> 
+</div>
 </strong><br>
 @foreach($invoiceItems as $invoiceItem)
 <?php
@@ -27,32 +29,20 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 <table class="table table-bordered table-hover ">
 <thead class="thead-light">
 <tr>
-<th>Order Details</th>
-<th></th>
+<th colspan="4">Order Details</th>
+
 </tr>
 </thead>
-<tbody>
-<tr>
 
-
-<td>
-<strong>{{$product->name}} × {{$order->qty}} </strong>
-</td>
-
-
-<td class="woocommerce-table__product-total product-total">
-<?php
-$invoiceTotal = $invoiceItem->regular_price;
-?>
-<span class="amount">{{currencyFormat($invoiceTotal,$code = $currency)}}</span>
-</td>
-
-
-</tr>
-
-
-</tbody>
 <tfoot>
+    <tr>
+<th scope="row">Product Name:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$product->name}}</span></td>
+</tr>
+    <tr>
+<th scope="row">Quantity:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$order->qty}} </span></td>
+</tr>
 <tr>
 <th scope="row">Order No:</th>
 <td><span class="woocommerce-Price-amount amount"> {{$order->number}}</span></td>

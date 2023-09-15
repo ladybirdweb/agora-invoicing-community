@@ -52,7 +52,7 @@ Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->m
 Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
 Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
-Route::get('orders/{number}', [LicenseBillOrders::class, 'orderid'])->name('orders/{number}');
+Route::get('orders-number/{number}', [LicenseBillOrders::class, 'orderid'])->name('orders/{number}');
 // !social logins rotes end
 /*
 * Installer Routes

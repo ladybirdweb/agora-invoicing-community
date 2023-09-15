@@ -23,6 +23,7 @@ use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\LicenseBillOrders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,7 @@ Route::post('refresh-csrf', function () {
         'token' => csrf_token(), ],
         200);
 });
+
 // social logins routes
 Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
 Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
@@ -50,7 +52,7 @@ Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->m
 Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
 Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
-
+Route::get('orders/{number}', [LicenseBillOrders::class, 'orderid'])->name('orders/{number}');
 // !social logins rotes end
 /*
 * Installer Routes

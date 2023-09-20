@@ -164,7 +164,7 @@ class SettingsController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-                    if(!empty($invoice->cloud_domain)){
+                    if (! empty($invoice->cloud_domain)) {
                         $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
                         (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
                     }

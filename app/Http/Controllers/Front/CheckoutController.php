@@ -400,7 +400,7 @@ class CheckoutController extends InfoController
 
         $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
         if ($amt_to_credit && $do) {
-            $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
+            $amt_to_credit = (int)$amt_to_credit - (int)$invoice->billing_pay;
             Payment::where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit'=>$amt_to_credit]);
             User::where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');

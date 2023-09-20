@@ -80,12 +80,12 @@ class CartController extends BaseCartController
             }
             $id = $request->input('id');
 
-            if($request->has('domain')){
+            if ($request->has('domain')) {
                 $domain = $request->input('domain').'.faveocloud.com';
             }
 
             if (! property_exists($id, Cart::getContent())) {
-                $items = $this->addProduct($id,$domain);
+                $items = $this->addProduct($id, $domain);
                 \Cart::add($items); //Add Items To the Cart Collection
             }
 
@@ -107,7 +107,7 @@ class CartController extends BaseCartController
      * @param  int  $id  Product Id
      * @return array $items  Array of items and Tax conditions to the cart
      */
-    public function addProduct(int $id, $domain=null)
+    public function addProduct(int $id, $domain = null)
     {
         try {
             $qty = 1;
@@ -132,8 +132,9 @@ class CartController extends BaseCartController
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
             $actualPrice = $this->cost($product->id, $planid);
-            $items = ['id' => $id,'name' => $product->name, 'price' => $actualPrice,
-                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents,'domain'=> $domain], 'associatedModel' => $product];
+            $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
+                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents, 'domain'=> $domain], 'associatedModel' => $product];
+
             return $items;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());

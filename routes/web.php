@@ -556,7 +556,6 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
 
-
     /*
      * Api
      */

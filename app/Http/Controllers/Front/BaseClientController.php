@@ -36,6 +36,7 @@ class BaseClientController extends Controller
                 $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
         }
+
         return $listUrl;
     }
 

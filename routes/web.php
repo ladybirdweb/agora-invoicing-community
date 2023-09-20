@@ -574,7 +574,6 @@ Route::middleware('installAgora')->group(function () {
 
     // routes/web.php
     Route::post('/update-session', [Tenancy\CloudExtraActivities::class, 'updateSession'])->name('update-session');
-
     /*
      * Api
      */

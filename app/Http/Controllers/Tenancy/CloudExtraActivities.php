@@ -31,7 +31,7 @@ class CloudExtraActivities extends Controller
         $this->client = $client;
         $this->cloud = $cloud->first();
 
-        $this->middleware('auth', ['except' => ['verifyThirdPartyToken','storeTenantTillPurchase']]);
+        $this->middleware('auth', ['except' => ['verifyThirdPartyToken', 'storeTenantTillPurchase']]);
     }
 
     private function checktheAgent($numberOfAgents, $domain)
@@ -891,14 +891,15 @@ class CloudExtraActivities extends Controller
         }
     }
 
-    public function storeTenantTillPurchase(Request $request){
-         if(!$this->checkDomain($request->input('domain'))){
-             return response(['status' => false, 'message' => trans('message.domain_taken')]);
-         }
-         (new CartController())->cart($request);
-
-         return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
+    public function storeTenantTillPurchase(Request $request)
+    {
+        if (! $this->checkDomain($request->input('domain'))) {
+            return response(['status' => false, 'message' => trans('message.domain_taken')]);
         }
+        (new CartController())->cart($request);
+
+        return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
+    }
 
     public function checkDomain($domain)
     {
@@ -914,5 +915,4 @@ class CloudExtraActivities extends Controller
 
         return json_decode($response);
     }
-
 }

@@ -321,7 +321,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
 
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
-            $cloud_domain = \Session::has('cloud_domain')? \Session::get('cloud_domain'): '';
+            $cloud_domain = \Session::has('cloud_domain') ? \Session::get('cloud_domain') : '';
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
                 'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'billing_pay'=>$amt_to_credit, 'cloud_domain' => $cloud_domain]);
@@ -394,9 +394,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($user_id == '') {
                 $user_id = $request->input('user');
             }
-            if($request->has('cloud_domain')){
+            if ($request->has('cloud_domain')) {
                 $cloud_domain = $request->input('cloud_domain');
-                if(!(new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)){
+                if (! (new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)) {
                     return errorResponse([trans('message.domain_taken')]);
                 }
             }

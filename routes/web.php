@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('create/tenant/purchase', [Tenancy\CloudExtraActivities::class, 'storeTenantTillPurchase']);
 
 // VisitStats::routes();
 Route::post('refresh-csrf', function () {
@@ -554,6 +555,7 @@ Route::middleware('installAgora')->group(function () {
     Route::post('changeAgents', [Tenancy\CloudExtraActivities::class, 'agentAlteration']);
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
+
 
     /*
      * Api

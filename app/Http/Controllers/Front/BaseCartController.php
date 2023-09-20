@@ -51,7 +51,7 @@ class BaseCartController extends Controller
                 $cartValues = $this->getCartValues($id);
                 Cart::update($id, [
                     'price' => $cartValues['price'],
-                    'attributes' => ['agents' => $cartValues['agtqty'], 'currency' => $cartValues['currency'], 'symbol' => $cartValues['symbol']],
+                    'attributes' => ['agents' => $cartValues['agtqty'], 'currency' => $cartValues['currency'], 'symbol' => $cartValues['symbol'], 'domain' => $cartValues['domain']],
                 ]);
             }
 
@@ -85,7 +85,7 @@ class BaseCartController extends Controller
             $price = $price * $agtqty;
         }
 
-        return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol];
+        return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol, 'domain' => $cart->attributes->domain];
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Order\InstallationDetail;
@@ -24,7 +25,7 @@ class CloudExtraActivities extends Controller
         $this->client = $client;
         $this->cloud = $cloud->first();
 
-        $this->middleware('auth', ['except' => ['verifyThirdPartyToken']]);
+        $this->middleware('auth', ['except' => ['verifyThirdPartyToken','storeTenantTillPurchase']]);
     }
 //    public function upgradePlan(Request $request)
 //    {
@@ -366,4 +367,29 @@ class CloudExtraActivities extends Controller
             return response(['status' => false, 'message' => trans('message.wrong_upgrade')]);
         }
     }
+
+    public function storeTenantTillPurchase(Request $request){
+         if(!$this->checkDomain($request->input('domain'))){
+             return response(['status' => false, 'message' => trans('message.domain_taken')]);
+         }
+         (new CartController())->cart($request);
+
+         return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);
+        }
+
+    public function checkDomain($domain)
+    {
+        $client = new Client([]);
+        $data = ['domain' => $domain];
+        $response = $client->request(
+            'POST',
+            'https://'.$this->cloud->cloud_central_domain.'/checkDomain', ['form_params'=>$data]
+        );
+        $response = explode('{', (string) $response->getBody());
+
+        $response = array_first($response);
+
+        return json_decode($response);
+    }
+
 }

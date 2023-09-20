@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\Http\Requests\InvoiceRequest;
+use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -22,6 +24,7 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
@@ -305,9 +308,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = round($grand_total);
             }
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
+            $cloud_domain = \Session::has('cloud_domain')? \Session::get('cloud_domain'): '';
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon']);
+                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'cloud_domain' => $cloud_domain]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
@@ -369,11 +373,18 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceGenerateByForm(InvoiceRequest $request, $user_id = '')
     {
         try {
+            $cloud_domain = '';
             $agents = $request->input('agents');
             $status = 'pending';
             $qty = $request->input('quantity');
             if ($user_id == '') {
                 $user_id = $request->input('user');
+            }
+            if($request->has('cloud_domain')){
+                $cloud_domain = $request->input('cloud_domain');
+                if(!(new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)){
+                    return errorResponse([trans('message.domain_taken')]);
+                }
             }
             $productid = $request->input('product');
 
@@ -407,7 +418,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $coupon = rounding($grand_total * (intval($couponTotal['value']) / 100));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-                'coupon_code' => $couponTotal['code'], 'discount' => $coupon, 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
+                'coupon_code' => $couponTotal['code'], 'discount' => $coupon, 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, 'cloud_domain' => $cloud_domain]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
                 $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);

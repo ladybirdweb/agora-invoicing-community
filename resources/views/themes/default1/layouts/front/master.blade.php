@@ -189,27 +189,23 @@ $days = $pay->where('product','117')->value('days');
                                     <nav class="collapse">
                                         <ul class="nav nav-pills" id="mainNav">
 
-                                            @auth
                                                 <?php
-                                                $id = \Auth::user()->id;
                                                 $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
                                                 ?>
 
 
-                                                @if(Auth::check() && $cloud == 1)
+                                                @if($cloud == 1)
+                                                    <!-- Button to Start Free Trial -->
+                                                    <a class="nav-link open-createTenantDialog" id="startFreeTrialBtn" style="text-decoration: none; cursor: pointer; background-color: #0088CC; color: white !important; font-weight: bold;">
+                                                        <div>
+                                                            <i class="fas fa-cloud"></i>
+                                                            <span style="margin-left: 3px;">START FREE TRIAL</span>
+                                                        </div>
+                                                    </a>
 
-
-
-                                                   <a class="nav-link open-createTenantDialog" style=" text-decoration: none;cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">                                                            
-                                                    <div>
-                                                                <i class="fas fa-cloud"></i>
-                                                                <span style="margin-left: 3px;">START FREE TRIAL</span>
-                                                            </div>
-                                                        </a>
-                                                  
+                                                    
 
                                                 @endif
-                                            @endauth
 
 
                                             <?php
@@ -456,6 +452,14 @@ $days = $pay->where('product','117')->value('days');
         </section>
 
         <div class="container">
+            @if(request()->has('message'))
+                <div class="alert alert-info alert-dismissible fade show alert-cloud" role="alert">
+                {{ urldecode(request('message')) }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             @if(Session::has('warning'))
 
                 <div class="alert alert-warning alert-dismissable">
@@ -562,6 +566,7 @@ $days = $pay->where('product','117')->value('days');
                         </div>
                     </div>
                     <script>
+
                         $(document).ready(function() {
                             $.ajax({
                                 url: '{{url("/api/domain")}}',
@@ -590,6 +595,82 @@ $days = $pay->where('product','117')->value('days');
             </div><!-- /.modal-dialog-->
         </div><!-- /.modal -->
     @endauth
+
+    <div class="modal fade" id="tenancy" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {!! Form::open() !!}
+                <div class="modal-header">
+                    <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div id="success">
+                    </div>
+                    <div id="error">
+                    </div>
+                    <!-- Form  -->
+
+                    <div class="container">
+                        <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
+                            <input type="hidden" id="orderNo" name="order" value="117">
+                            <div class="form-group">
+                                <label><b>{{trans('message.cloud_field_label')}}</b></label>
+                                <div class="row" style="margin-left: 2px; margin-right: 2px;">
+                                    <input type="hidden"  name="order" id="orderId"/>
+                                    <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>
+                                    <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                    <p id="validationMessagePurchase"></p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="row data-center">
+                                    <div class="col col-12">
+                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        $('#tenancy').on('show.bs.modal', function (event) {
+                            var button = $(event.relatedTarget); // Button that triggered the modal
+                            var myData = button.data('mydata'); // Extract info from data-* attributes
+
+                            // Update the modal content with the data
+                            $('#orderId').val(myData);
+                        });
+                    });
+                </script>
+                <script>
+                    $(document).ready(function() {
+                        $.ajax({
+                            url: '{{url("/api/domain")}}',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function(data) {
+                                if(data.data.length !== 0){
+                                    $('.createtenancy').attr('disabled', false);
+                                }
+                                $('#userdomainPurchase').val(data.data);
+                            },
+                            error: function(error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                    });
+                </script>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                    <button type="submit"  class="btn btn-primary createtenancy" id="createtenancy" onclick="createtenancy()"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                    {!! Form::close()  !!}
+                </div>
+                <!-- /Form -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 
     <footer id="footer">
@@ -1040,8 +1121,6 @@ domainInput.addEventListener("input", function() {
     validationMessage.style.color = "";
   }
 });
-
-
 </script>
 @yield('script')
 
@@ -1131,10 +1210,145 @@ domainInput.addEventListener("input", function() {
             $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
         });
 
+            $(document).ready(function() {
+                $('#tenancy').on('shown.bs.modal', function () {
+                    $('#userdomainPurchase').focus();
+                });
+            });
+
+            const domainInputPurchase = document.getElementById("userdomainPurchase");
+            const validationMessagePurchase = document.getElementById("validationMessagePurchase");
+
+            domainInputPurchase.addEventListener("input", function() {
+                const domainName = domainInputPurchase.value;
+
+                if (domainName.length > 28) {
+                    validationMessagePurchase.textContent = "Domain must be 28 characters or less.";
+                    validationMessagePurchase.style.color = "red";
+                } else {
+                    validationMessagePurchase.textContent = "";
+                    validationMessagePurchase.style.color = "";
+                }
+            });
+            $(document).ready(function(){
+                $('.createtenancy').attr('disabled',true);
+                $('#userdomainPurchase').keyup(function(){
+                    if($(this).val().length ==0 || $(this).val().length>28)
+                        $('.createtenancy').attr('disabled', true);
+                    else
+                        $('.createtenancy').attr('disabled',false);
+                })
+            });
+
+            function createtenancy(){
+                $('#createtenancy').attr('disabled',true)
+                $("#createtenancy").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+                var domain = $('#userdomainPurchase').val();
+                var order = $('#orderId').val();
+                $.ajax({
+                    url: "{{url('create/tenant/purchase')}}",
+                    type: "POST",
+                    data: {'domain': domain, 'id': order},
+                    success: function (data) {
+                        $('#createtenancy').attr('disabled',false)
+                        $("#createtenancy").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                        if(data.status == 'validationFailure') {
+
+                            var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                            for (var key in data.message)
+                            {
+                                html += '<li>' + data.message[key][0] + '</li>'
+                            }
+                            html += '</ul></div>';
+                            $('#error').show();
+                            $('#success').hide();
+                            document.getElementById('error').innerHTML = html;
+                        } else if(data.status == 'false') {
+                            $('#error').show();
+                            $('#success').hide();
+                            var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong!!<br><ul><li>'+data.message+'</li></ul></div>';
+                            $('#error').html(result);
+                        } else if(data.status == 'success_with_warning') {
+                            console.log('here');
+                            $('#error').show();
+                            $('#success').hide();
+                            var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong><br><ul><li>'+data.message+'</li></ul></div>';
+                            $('#error').html(result);
+                        } else {
+                            window.location.href = data.redirectTo;
+                        }
+                    },error: function (response) {
+                        $('#createtenancy').attr('disabled',false)
+                        $("#createtenancy").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                        $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                        if(response.status == 422) {
+
+                            var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                            for (var key in response.responseJSON.errors)
+                            {
+                                html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
+                            }
+
+                        } else {
+                            var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                            html += '<li>' + response.responseJSON.message + '</li>'
+                        }
+
+                        html += '</ul></div>';
+                        $('#error').show();
+                        $('#success').hide();
+                        document.getElementById('error').innerHTML = html;
+
+                    }
+
+                })
+            }
+            $(document).ready(function () {
+
+                // Check if the user is authenticated
+                @auth
+                // If authenticated, check if localStorage indicates a click
+                var freeTrialClicked = localStorage.getItem('freeTrialClicked');
+                if (freeTrialClicked === 'true') {
+                    // If localStorage indicates a click, open the free trial dialog
+                    openFreeTrialDialog();
+                    localStorage.removeItem('freeTrialClicked');
+                }
+
+                // Attach a click event handler to the "START FREE TRIAL" button
+                $('#startFreeTrialBtn').on('click', function () {
+                    // If the button is clicked, open the free trial dialog
+                    openFreeTrialDialog();
+                });
+                @else
+                // If not authenticated, redirect to the login/register page only if localStorage indicates a click
+                var freeTrialClicked = localStorage.getItem('freeTrialClicked');
+                // Attach a click event handler to the "START FREE TRIAL" button
+                $('#startFreeTrialBtn').on('click', function () {
+                    // If not authenticated, remember that the button was clicked
+                    localStorage.setItem('freeTrialClicked', 'true');
+                    var message = "Please log in to start your free trial. If you don't have an account, you can register here!";
+
+                    // Redirect to the login/register page
+                    window.location.href = '/agora-invoicing-community/public/login?message=' + encodeURIComponent(message);
+
+                });
+                @endauth
+
+                // Function to open the free trial dialog
+                function openFreeTrialDialog() {
+                    // Check if the modal is already open (to prevent multiple opens)
+                    if (!$('#tenant').hasClass('show')) {
+                        $('#tenant').modal('show');
+                    }
+                }
+            });
 
 
-
-</script>
+            setTimeout(function () {
+                $(".alert-cloud").alert('close');
+            }, 10000);
+        </script>
 @endif
 </body>
 </html>

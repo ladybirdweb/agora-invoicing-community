@@ -136,6 +136,7 @@ class CheckoutController extends InfoController
             foreach (\Cart::getContent() as $item) {
                 $price = $item->price;
                 $quantity = $item->quantity;
+                $domain = $item->attributes->domain;
                 if (! empty(\Session::get('code'))) {
                     $price = \Session::get('oldPrice');
                     $value = Promotion::where('code', \Session::get('code'))->value('value');
@@ -144,9 +145,10 @@ class CheckoutController extends InfoController
                     $discountPrice = $type->name == 'Percentage' ? $price * (intval($value) / 100) : $value;
                     \Session::put('discountPrice', $discountPrice);
                 }
+                \Session::put('cloud_domain',$domain);
             }
 
-            return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice'));
+            return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice','domain'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -183,7 +185,7 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity' => $item->quantity, 'attributes' => ['currency' => $cart_currency, 'symbol' => $item->attributes->symbol, 'agents' => $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
+                        'quantity' => $item->quantity, 'attributes' => ['currency' => $cart_currency, 'symbol' => $item->attributes->symbol, 'agents' => $item->attributes->agents, 'domain' => optional($item->attributes)->domain], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
                 }
                 Cart::add($items);
 

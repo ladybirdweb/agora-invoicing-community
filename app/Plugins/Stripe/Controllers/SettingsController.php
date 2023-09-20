@@ -6,6 +6,7 @@ use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
+use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
@@ -204,6 +205,10 @@ class SettingsController extends Controller
                     $this->doTheDeed($invoice);
                     $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+                    if(!empty($invoice->cloud_domain)){
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
+                    }
                     $status = $view['status'];
                     $message = $view['message'];
                 } else {

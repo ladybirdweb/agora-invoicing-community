@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Tenancy\TenantController;
+use App\Model\Common\FaveoCloud;
 use App\Model\Common\StatusSetting;
+use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
@@ -20,6 +24,14 @@ class ExtendedOrderController extends Controller
         try {
             $invoiceid = $request->input('invoiceid');
             $execute = $this->executeOrder($invoiceid);
+
+            //only for cloud
+            $cloud_domain = Invoice::where('id', $invoiceid)->value('cloud_domain');
+            if(!empty($cloud_domain)){
+                $orderNumber = Order::where('invoice_id', $invoiceid)->value('number');
+                (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $cloud_domain]));
+            }
+
             if ($execute == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } else {

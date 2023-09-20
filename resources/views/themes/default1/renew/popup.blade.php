@@ -134,7 +134,7 @@
                $('.overlay').hide(); // Hide the overlay
                $('.modal-body').css('pointer-events', 'auto');
                $('#saveRenew').attr('disabled', false);
-
+               $("#agents").prop("disabled", false);
            }
        });
    }
@@ -160,9 +160,12 @@
 
         $(document).ready(function () {
         $('.agents').on('input', function () {
+            $("#agents").prop("disabled", true);
             var selectedPlanId = $('#renew{{$id}}').find('.plan-dropdown').val();
             if (selectedPlanId) {
                 fetchPlanCost(selectedPlanId,$(this).val());
+                $("#agents").prop("disabled", false);
+
             }
         });
 

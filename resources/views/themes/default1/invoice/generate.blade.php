@@ -90,12 +90,18 @@ Create Invoice
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
 
+                    <div id="agents" class="col-md-4">
+                    </div>
+
+
+
+                    <div id="fields" class="col-md-4">
+                    </div>
+
                  <div id="qty" class="col-md-4">
                 </div>
-                 <div id="agents" class="col-md-4">
-                </div>
-                <div id="fields" class="col-md-4">
-                </div>
+
+
 
                 <!-- <div class="col-md-6 form-group">
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
@@ -126,6 +132,7 @@ Create Invoice
 <script>
     function getPrice(val) {
          var user = document.getElementsByName('user')[0].value;
+
         var plan = "";
         var product = "";
         if ($('#plan').length > 0) {
@@ -249,7 +256,8 @@ Create Invoice
             }
             else if(document.getElementsByName('agents')[0]){
                 var agents = document.getElementsByName('agents')[0].value;
-                var data = $("#formoid").serialize() + '&agents=' + agents + '&user=' + user;
+                var cloud_domain = document.getElementsByName('cloud_domain')[0].value;
+                var data = $("#formoid").serialize() + '&agents=' + agents + '&user=' + user + '&cloud_domain=' +cloud_domain;
             }
             else {
                 var data = $("#formoid").serialize() + '&user=' + user;

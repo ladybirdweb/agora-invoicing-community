@@ -173,6 +173,7 @@ $cartSubtotalWithoutCondition = 0;
                                                                  
                                 </td>
                             </tr>
+                            </tr>
                             @empty
                         <p>Your Cart is empty</p>
                         @endforelse

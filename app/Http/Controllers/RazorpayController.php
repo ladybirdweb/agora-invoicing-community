@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ApiKey;
+use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\State;
 use App\Model\Order\Invoice;
@@ -74,6 +75,10 @@ class RazorpayController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
+                    if(!empty($invoice->cloud_domain)){
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
+                    }
                     $status = $view['status'];
                     $message = $view['message'];
                     \Session::forget('items');

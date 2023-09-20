@@ -721,6 +721,7 @@ return [
     'highlight' => 'Highlight',
     'tick-to-highlight-product' => 'Check to highlight the product',
     'tick-to-add_to_contact-product' => 'Check if you want to add Contact Sales button',
+    'cloud_domain' => 'Enter cloud domain',
 
     'without_installation_found' => 'Oops! It looks like you can\'t make changes to the agents if we can\'t locate your cloud domain. Kindly renew your subscription first, make the necessary agent alterations later. You can adjust the agents in your cloud settings under your order. Thank you!',
     'nothing_changed' => 'No worries! It looks like there hasn\'t been any changes – your current and new domains appear to be the same. Feel free to reach out if you have any questions or need further assistance',

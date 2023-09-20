@@ -15,6 +15,7 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Product\ProductType;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -481,7 +482,6 @@ class PageController extends Controller
                 $description = self::getPriceDescription($product->id);
                 $status = Product::find($product->id);
             }
-
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description', 'status'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -527,20 +527,35 @@ class PageController extends Controller
                     $trasform[$product['id']]['strike-priceyear'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['name'] = $product['name'];
                     $trasform[$product['id']]['feature'] = $product['description'];
-                    $trasform[$product['id']]['subscription'] = $temp_controller
-                    ->plans($product['shoping_cart_link'], $product['id']);
-                    if ($product['add_to_contact'] != 1) {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
+
+                    if($product['type']==4){
+                        $trasform[$product['id']]['subscription'] ='';
+                        if ($product['add_to_contact'] != 1) {
+                            $prod_id = $product['id'];
+                            $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? '<button class="btn btn-primary btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="' . $prod_id . '">
+  <span style="white-space: nowrap;">Order Now</span>
+</button>' : '<button class="btn btn-dark btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="' . $prod_id . '">
+  <span style="white-space: nowrap;">Order Now</span>
+</button>';
+                        } else {
+                            $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        }
+                    }
+                    else {
+                        $trasform[$product['id']]['subscription'] = $temp_controller
+                            ->plans($product['shoping_cart_link'], $product['id']);
+                        if ($product['add_to_contact'] != 1) {
+                            $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
                      value='Order Now' class='btn btn-primary btn-modern buttonsale'></form>" : "<input type='submit' 
                    value='Order Now' class='btn btn-dark btn-modern buttonsale'></form>";
-                    } else {
-                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        } else {
+                            $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                        }
                     }
                 }
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transformTemplate('cart', $data, $trasform);
             }
-
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

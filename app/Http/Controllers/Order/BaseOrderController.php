@@ -309,8 +309,8 @@ class BaseOrderController extends ExtendedOrderController
 
         $knowledgeBaseUrl = $setting->company_url;
 
-        $orderHeading = ($value != '4') ? 'Download' : 'Deploy';
-        $orderUrl = ($value != '4') ? $downloadurl : url('my-orders');
+        $orderHeading = ($value != '4') ? 'Download' : '';
+        $orderUrl = ($value != '4') ? $downloadurl : '';
         $end = app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y');

@@ -80,6 +80,7 @@
                                                     Product
                                                 </th>
 
+
                                                 <th class="product-price">
                                                     Price
                                                 </th>
@@ -114,7 +115,10 @@
                                                 </td>
                                                 <td class="product-name">
                                                     {{$item->name}}
+                                                    <br>
                                                 </td>
+
+
                                                 <td class="product-price">
                                                          <span class="amount">
                                                             {{currencyFormat($item->price,$code = $item->attributes->currency)}}
@@ -173,10 +177,11 @@
                                                 </td>
 
                                             </tr>
-
+                                            <p><i>{{$item->attributes->domain}}</i></p>
 
                                             @endforeach
                                             </tbody>
+
 
                                     </table>
 

@@ -721,5 +721,6 @@ return [
     'highlight' => 'Highlight',
     'tick-to-highlight-product' => 'Check to highlight the product',
     'tick-to-add_to_contact-product' => 'Check if you want to add Contact Sales button',
+    'cloud_domain' => 'Enter cloud domain',
 
 ];

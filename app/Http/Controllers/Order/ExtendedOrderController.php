@@ -27,7 +27,7 @@ class ExtendedOrderController extends Controller
 
             //only for cloud
             $cloud_domain = Invoice::where('id', $invoiceid)->value('cloud_domain');
-            if(!empty($cloud_domain)){
+            if (! empty($cloud_domain)) {
                 $orderNumber = Order::where('invoice_id', $invoiceid)->value('number');
                 (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $cloud_domain]));
             }

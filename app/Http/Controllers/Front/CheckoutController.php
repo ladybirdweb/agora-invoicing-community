@@ -142,10 +142,10 @@ class CheckoutController extends InfoController
                     $discountPrice = $type->name == 'Percentage' ? $price * (intval($value) / 100) : $value;
                     \Session::put('discountPrice', $discountPrice);
                 }
-                \Session::put('cloud_domain',$domain);
+                \Session::put('cloud_domain', $domain);
             }
 
-            return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice','domain'));
+            return view('themes.default1.front.checkout', compact('content', 'taxConditions', 'discountPrice', 'domain'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

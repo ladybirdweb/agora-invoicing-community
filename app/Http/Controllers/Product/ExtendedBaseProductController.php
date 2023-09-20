@@ -147,8 +147,7 @@ class ExtendedBaseProductController extends Controller
                         id='domain' placeholder='domain.com or sub.domain.com'>
                 </div>";
             }
-            if(in_array($product->id,[117,119])){
-
+            if (in_array($product->id, [117, 119])) {
                 $field .= '<div class="col col-4">
     <div class="form-group">
         <label>'./* @scrutinizer ignore-type */ \Lang::get('message.cloud_domain').'</label>
@@ -159,6 +158,7 @@ class ExtendedBaseProductController extends Controller
     </div>
 </div>';
             }
+
             return $field;
         } catch (\Exception $ex) {
             return $ex->getMessage();

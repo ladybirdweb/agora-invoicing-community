@@ -256,24 +256,33 @@ $price = $order->price_override;
             <div id="alertMessage-2"></div>
 
             @php
-                $navigations = [
-                     ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
-                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                     ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                ];
+                if($order->order_status!='Terminated'){
+                    $navigations = [
+                         ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                         //['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
+                    }
+                else{
+                     $navigations = [
+                         ['id'=>'license-details', 'name'=>'Order Terminated','active'=>1, 'slot'=>'license','icon'=>'fas fa-warning'],
+                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
+                }
+                    if($product->type == '4' && $order->order_status!='Terminated'){
+                        $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
+                    }
 
-                if($product->type == '4'){
-                   // $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
-                }
-
-                if ($price == '0' && $product->type != '4') {
-                    $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                }
-                elseif($price != '0')
-                {
-                  $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                }
+                    if ($price == '0' && $product->type != '4') {
+                        $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
+                    elseif($price != '0')
+                    {
+                      $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
             @endphp
 
             @component('mini_views.navigational_view', [
@@ -281,82 +290,83 @@ $price = $order->price_override;
             ])
 
 
+                @if($order->order_status != 'Terminated')
 
-                @slot('license')
+                    @slot('license')
 
-                    <table class="table">
-                        <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                        <tbody>
-                        <tr>
-                            <td><b>License Code:</b></td>
-                            <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
-
-                            <td><span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span></td>
-                        </tr>
-                        @if ($licenseStatus == 1)
+                        <table class="table">
+                            <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
+                            <tbody>
                             <tr>
-                                <td><b>Licensed Domain/IP:</b></td>
-                                <td>{{$order->domain}} </td>
-                                <td>
-                                    @if($product->type != '4' && $price != '0')
+                                <td><b>License Code:</b></td>
+                                <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
+
+                                <td><span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span></td>
+                            </tr>
+                            @if ($licenseStatus == 1)
+                                <tr>
+                                    <td><b>Licensed Domain/IP:</b></td>
+                                    <td>{{$order->domain}} </td>
+                                    <td>
+                                        @if($product->type != '4' && $price != '0')
+                                            <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                Reissue License</button></td>
+                                    @elseif($product->type != '4' && $price == '0')
                                         <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                             Reissue License</button></td>
-                                @elseif($product->type != '4' && $price == '0')
-                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                        Reissue License</button></td>
-                                @elseif($product->type == '4' && $price != '0')
-                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                        Reissue License</button></td>
-                                @endif
-                            </tr>
-                        @endif
-
-                        <tr>
-                            <td><b>License Expiry Date:</b></td>
-                            <td>{!! $licdate !!}</td>
-                            <td></td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Update Expiry Date:</b></td>
-                            <td>{!! $date !!}</td>
-                            <td></td>
-                        </tr>
-
-                        @if($order->license_mode=='File')
-                            <tr>
-                                <td><b>Localized License:</b></td>
-                                <td>
-                                    <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
-                                </td>
-                                <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
-                                    <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
-                                </td>
-                            </tr>
-                        @endif
-
-                        </tbody>
-
-                    </table>
-                    <script src="{{asset('common/js/licCode.js')}}"></script>
-
-
-                    <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-
-                        <thead>
-                        <tr>
-
-                            <th>Installation Path</th>
-                            @if($product->type != '4')
-                                <th>Installation IP</th>
+                                    @elseif($product->type == '4' && $price != '0')
+                                        <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                            Reissue License</button></td>
+                                    @endif
+                                </tr>
                             @endif
-                            <th>Current Version </th>
-                            <th>  Last Active</th>
 
-                        </tr></thead>
-                        <tbody>
-                        @foreach($installationDetails['installed_path'] as $key => $ins)
+                            <tr>
+                                <td><b>License Expiry Date:</b></td>
+                                <td>{!! $licdate !!}</td>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td><b>Update Expiry Date:</b></td>
+                                <td>{!! $date !!}</td>
+                                <td></td>
+                            </tr>
+
+                            @if($order->license_mode=='File')
+                                <tr>
+                                    <td><b>Localized License:</b></td>
+                                    <td>
+                                        <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
+                                    </td>
+                                    <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
+                                        <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
+                                    </td>
+                                </tr>
+                            @endif
+
+                            </tbody>
+
+                        </table>
+                        <script src="{{asset('common/js/licCode.js')}}"></script>
+
+
+                        <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+
+                            <thead>
+                            <tr>
+
+                                <th>Installation Path</th>
+                                @if($product->type != '4')
+                                    <th>Installation IP</th>
+                                @endif
+                                <th>Current Version </th>
+                                <th>  Last Active</th>
+
+                            </tr></thead>
+                            <tbody>
+                            @foreach($installationDetails['installed_path'] as $key => $ins)
                                 <?php
                                 $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
 
@@ -373,54 +383,80 @@ $price = $order->price_override;
 
 
                                 ?>
-                            <tr>
-                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                @if($product->type != '4')
-                                    <td>{{$installationDetails['installed_ip'][$key]}}</td>
-                                @endif
-                                @if($productversion)
-                                    @if($productversion < $Latestversion)
-                                        <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                                            </label>{{$productversion->version}}</span></td>
+                                <tr>
+                                    <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                    @if($product->type != '4')
+                                        <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                    @endif
+                                    @if($productversion)
+                                        @if($productversion < $Latestversion)
+                                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                                                </label>{{$productversion->version}}</span></td>
+                                        @else
+                                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                                                </label>{{$productversion->version}}</span></td>
+                                        @endif
+
+                                    @endif
+                                    @if($productversion)
+                                        <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
+                                    @endif
+                                    @if($active == true)
+                                        <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                                            </label>Active</span></td>
                                     @else
-                                        <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                                            </label>{{$productversion->version}}</span></td>
+                                        <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                                            </label>Inactive</span></td>
                                     @endif
 
-                                @endif
-                                @if($productversion)
-                                    <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
-                                @endif
-                                @if($active == true)
-                                    <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                                        </label>Active</span></td>
-                                @else
-                                    <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                                        </label>Inactive</span></td>
-                                @endif
 
+                                </tr>
+                            @endforeach
 
-                            </tr>
+                            </tbody>
+                        </table>
+
+                        <script>
+                            $('ul.nav-sidebar a').filter(function() {
+                                return this.id == 'all_order';
+                            }).addClass('active');
+
+                            // for treeview
+                            $('ul.nav-treeview a').filter(function() {
+                                return this.id == 'all_order';
+                            }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+                        </script>
+                        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+                        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+                    @endslot
+                @else
+                    @slot('license')
+                        <?php
+                        $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
+                        foreach ($idOrdert as $ordt) {
+                            $newOrders[] = \App\Model\Order\Order::where('id', $ordt->upgraded_order_id)->get();
+                        }
+                        ?>
+
+                        @foreach($newOrders as $newOrder)
+                            <div class="termination-message">
+                                <p class="termination-notice"><b>Important: Termination Notice</b></p>
+                                <p class="termination-description">
+                                    The order you had placed has been terminated. Consequently, the features and licenses associated with this order are no longer accessible.
+                                </p>
+                                <p class="order-links">
+                                    The terminated order: <b>{{$order->number}}</b>
+                                    has been upgraded to the new order: <a class="order-link" href="{{$newOrder[0]->id}}">{{$newOrder[0]->number}}</a>.
+                                </p>
+                            </div>
+
                         @endforeach
 
-                        </tbody>
-                    </table>
 
-                    <script>
-                        $('ul.nav-sidebar a').filter(function() {
-                            return this.id == 'all_order';
-                        }).addClass('active');
-
-                        // for treeview
-                        $('ul.nav-treeview a').filter(function() {
-                            return this.id == 'all_order';
-                        }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-                    </script>
-                    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-
-                    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-                @endslot
+                    @endslot
+                @endif
                 @slot('user')
                     <table class="table">
                         <div class="col-md-6">
@@ -564,176 +600,286 @@ $price = $order->price_override;
                 @endslot
 
                 @slot('cloud')
-                    <br>
-                    <div class="row">
-                        <div class="col col-6">
-                            <div class="card" data-toggle="modal" data-target="#cloudDomainModal">
-                                <div class="card-body">
-                                    <h5 class="card-title">Change your cloud domain here</h5>
-                                    <p class="card-text">Click to update your cloud domain.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-6">
-                            <div class="card" data-toggle="modal" data-target="#numberOfAgentsModal">
-                                <div class="card-body">
-                                    <h5 class="card-title">Increase or decrease your agents</h5>
-                                    <p class="card-text">Click to update the number of agents.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-6">
-                            <div class="card" data-toggle="modal" data-target="#cloudPlanModal">
-                                <div class="card-body">
-                                    <h5 class="card-title">Upgrade or downgrade your cloud plan</h5>
-                                    <p class="card-text">Click to upgrade or downgrade your cloud plan.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Cloud Domain Modal -->
-                    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <script>
-                                            $(document).ready(function() {
-                                                var orderId = {{$id}};
-                                                $.ajax({
-                                                    data:{'orderId' : orderId},
-                                                    url: '{{url("/api/takeCloudDomain")}}',
-                                                    method: 'POST',
-                                                    dataType: 'json',
-                                                    success: function(data) {
-                                                        $('#clouduserdomain').val(data.data);
-                                                    },
-                                                    error: function(error) {
-                                                        console.error('Error:', error);
-                                                    }
-                                                });
-                                            });
-                                        </script>
-                                        {!! Form::label('clouddomain', 'Cloud Domain:', ['class' => 'col-12']) !!}
-                                        <div class="col-12">
-                                            {!! Form::text('clouddomain', null, ['class' => 'form-control', 'id' => 'clouduserdomain', 'autocomplete' => 'off', 'placeholder' => 'Domain', 'required']) !!}
-                                        </div>
+                    <p style="margin-left: 530px;"><b>Plan Expiry:</b> {!! getDateHtml($subscription->ends_at) !!}</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Change Cloud Domain Card -->
+                            <div class="col-lg-6 mb-6">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <a href="#" data-toggle="modal" data-target="#cloudDomainModal" class="stretched-link clickable-link">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-globe mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                                <div>
+                                                    <?php
+                                                    $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
+                                                        ->where('installation_path','!=','billing.faveocloud.com')->value('installation_path');
+                                                    ?>
+
+                                                    <h5 class="mb-1">Change Cloud Domain</h5>
+                                                    <h6 class="mb-1"><i>Current domain: {{$installation_path}}</i></h6>
+                                                    <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                            <!-- Increase or Decrease Agents Card -->
+                            <div class="col-lg-6 mb-6">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <a href="#" data-toggle="modal" data-target="#numberOfAgentsModal" class="stretched-link clickable-link">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-users mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                                <div>
+                                                    <?php $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
+                                                    ?>
+                                                    <h5 class="mb-1">Increase/Decrease Agents</h5>
+                                                    <h6 class="mb-1"><i>Current number of agents: {{$latestAgents}}</i></h6>
+                                                    <p class="card-text mb-0">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Number of Agents Modal -->
-                    <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <?php
-                                    $latestAgents = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->latest()->value('agents');
-                                    ?>
-                                    <div class="form-group">
-                                        {!! Form::label('number', 'Number of Agents:', ['class' => 'col-12']) !!}
-                                        <div class="col-12">
-                                            <script>
-                                                $(document).ready(function() {
-                                                    var numberOfagents = {{$latestAgents}};
-                                                    $('#number').val(numberOfagents);
-                                                });
-                                            </script>
-                                            <div class="quantity">
-                                                {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'number', 'min' => '1', 'placeholder' => '']) !!}
+                            <!-- Upgrade or Downgrade Cloud Plan Card -->
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 mb-6">
+                            <div class="card o-0 border-0">
+                                <div class="card-body">
+                                    <a href="#" data-toggle="modal" data-target="#cloudPlanModal" class="stretched-link clickable-link">
+                                        <div class="d-flex align-items-start">
+                                            <i class="fas fa-cloud-upload-alt mr-2" style="color: black; margin-top: 0.1em;"></i>
+                                            <div>
+                                                <?php
+                                                $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
+                                                $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+                                                $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                                                $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
+                                                ?>
+
+
+                                                <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
+                                                <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
+                                                <p class="card-text mb-0">Click here to change your cloud plan. Upgrades may cost extra. Downgrades auto-credited based on billing balance for future use in credits.</p>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="agentNumber"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Cloud Plan Modal -->
-                    <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="cloudPlanModalLabel">Upgrade or Downgrade Cloud Plan</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <?php
-                                    // Retrieve the plans data as before
-                                    $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
-                                        ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
-                                        ->where('plans.product','!=',$product->id)
-                                        ->where('products.type',4)
-                                        ->where('products.can_modify_agent',1)
-                                        ->where('plan_prices.renew_price','!=','0')
-                                        ->pluck('plans.name', 'plans.id')
-                                        ->toArray();
 
-                                    // Add more cloud IDs until we have a generic way to differentiate
-                                    if(in_array($product->id,[117,119])){
-                                        $plans = array_filter($plans, function ($value) {
-                                            return stripos($value, 'free') === false;
-                                        });
-                                    }
-                                    ?>
-                                    <div class="form-group">
-                                        {!! Form::label('plan', 'Select Plan:', ['class' => 'col-12']) !!}
-                                        <div class="col-12">
-                                            {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-12">
-                                            {!! Form::hidden('user', \Auth::user()->id) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::label('cost', 'Cost:', ['class' => 'col-12']) !!}
-                                        <div class="col-12">
-                                            {!! Form::text('cost', null, ['class' => 'form-control price', 'id' => 'price', 'readonly' => 'readonly']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="upgradedowngrade">
-                                        <i class="fa fa-check"></i> Submit
-                                    </button>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
+
+
+
+
+
+
+
                 @endslot
 
 
             @endcomponent
         </div>
     </div>
+
+
+
+    <!-- Cloud Domain Change Modal -->
+    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="success-domain"></div>
+                    <div id="failure-domain"></div>
+                    <label id="clouduserdomainfill" style="margin-left: 14px;"><strong></strong></label>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <label for="clouddomain" class="col-form-label">Enter your new domain name:</label>
+                        </div>
+                        <div class="row" style="margin-left: 14px; margin-right: 2px;">
+                            <input type="text" class="form-control col col-2 rounded-1" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                            <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="billing.custom.com" required>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function() {
+                            var orderId = {{$id}};
+                            $.ajax({
+                                data: {'orderId' : orderId},
+                                url: '{{url("/api/takeCloudDomain")}}',
+                                method: 'POST',
+                                dataType: 'json',
+                                success: function(data) {
+                                    $('#clouduserdomainfill').html('Current cloud domain: <a href="' + data.data + '">' + data.data + '</a>');
+                                },
+                                error: function(error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        });
+                    </script>
+
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+
+                    <div class="loader-wrapper" style="display: none; background: white; height: 100%;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="changeDomain"><i class="fa fa-globe">&nbsp;&nbsp;</i>Change Domain</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number of Agents Modal -->
+    <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
+        <?php $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
+        ?>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="numberOfAgentsModalLabel" style="text-transform: none">Change Number of Agents</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="response-agent"></div>
+                    <div id="failure-agent"></div>
+                    <label class="mb-1" style="margin-left: 14px;">Current number of agents: {{$latestAgents}}</label>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <?php
+                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
+                            ?>
+                            <p>Price per agent: <span id="ll" class="ll">{!! currencyFormat($ExistingPlanPirce,\Auth::user()->currency,true) !!}</span></p>
+                        </div>
+                        <div class="col-12"  style="margin-top: -14px;">
+                            {!! Form::label('number', 'Choose your desired number of agents:', ['class' => 'col-form-label']) !!}
+                            <div class="quantity">
+                                {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'numberAGt', 'min' => '1', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-2">
+
+                        <div class="col-12">
+                            <p>Price to be paid: <span id="pricetopay" class="pricetopay"></span></p>
+                        </div>
+                    </div>
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+
+                    <div class="loader-wrapper" style="display: none; background: white;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin-top: -23px;">
+                    <button type="button" class="btn btn-primary" id="agentNumber" disabled><i class="fa fa-users">&nbsp;&nbsp;</i>  Update Agents
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Plan Modal -->
+    <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="cloudPlanModalLabel" style="text-transform: none;">Upgrade or downgrade your cloud plan</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="response-upgrade"></div>
+                    <div id="failure-upgrade"></div>
+                    <?php
+                    // Retrieve the plans data as before
+                    $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                        ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                        ->where('plans.product','!=',$product->id)
+                        ->where('products.type',4)
+                        ->where('products.can_modify_agent',1)
+                        ->where('plan_prices.renew_price','!=','0')
+                        ->pluck('plans.name', 'plans.id')
+                        ->toArray();
+                    $planIds = array_keys($plans);
+
+                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',\Auth::user()->currency)
+                        ->latest()
+                        ->pluck('renew_price', 'plan_id')
+                        ->toArray();
+
+                    foreach ($plans as $planId => $planName) {
+                        if (isset($renewalPrices[$planId])) {
+                            if(in_array($product->id,[117,119])) {
+                                $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                            }
+                        }
+                    }
+                    // Add more cloud IDs until we have a generic way to differentiate
+                    if(in_array($product->id,[117,119])){
+                        $plans = array_filter($plans, function ($value) {
+                            return stripos($value, 'free') === false;
+                        });
+                    }
+                    ?>
+                    <label class="mb-1" style="margin-left: 14px;">Current Plan: {{$planName}}</label>
+                    <div class="form-group mb-3">
+                        {!! Form::label('plan', 'Select a new plan:', ['class' => 'col-12']) !!}
+                        <div class="col-12">
+                            {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <div class="col-12">
+                            <p>Credits remaining on your current plan: <span id="discount" class="discount"></span></p>
+                        </div>
+                        <div class="col-12" style="margin-top: -13px;">
+                            <p>Price to be paid: <span id="priceToPay" class="priceToPay"></span></p>
+                        </div>
+                    </div>
+                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+
+                    <div class="loader-wrapper" style="display: none; background: white;" >
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin-top: -23px;">
+                    <button type="button" class="btn btn-primary" id="upgradedowngrade">
+                        <i class="fas fa-cloud-upload-alt">&nbsp;&nbsp;</i>Change Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false">
@@ -1267,9 +1413,10 @@ $price = $order->price_override;
             var plan_value=$('#plan_upgrade_agents').val();
             var numberAgents = $('#number_agents').val();
             var order = {!! $order !!};
+            var subId = {!! $subscription->id !!};
 
             $('#kok  ').click(function() {
-                // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+                // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
                 var status = ($('#is_subscribed').prop("checked"));
                 alert(status);
                 var id = $('#renew').val();
@@ -1336,7 +1483,7 @@ $price = $order->price_override;
         })
 
         $('#submit_total').submit(function(){
-            $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...")
+            $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
             $("#pay_now").prop('disabled', true);
 
         });
@@ -1526,24 +1673,63 @@ $price = $order->price_override;
             });
         }
 
-
-
-
         $(document).ready(function() {
             $('#changeDomain').on('click', function() {
+                $('#changeDomain').attr('disabled',true);
                 $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
                 var newDomain = $('#clouduserdomain').val();
-                var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->value('installation_path') !!}";
+                var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->latest()->value('installation_path') !!}";
+                var license_code = "{!!$order->serial_key!!}";
+                var productId = "{!! $order->product !!}";
 
                 $.ajax({
                     type: "POST",
-                    data: { 'newDomain': newDomain, 'currentDomain': currentDomain },
+                    data: { 'newDomain': newDomain, 'currentDomain': currentDomain,'lic_code':license_code,'product_id':productId},
                     beforeSend: function() {
                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                     },
                     url: "{{ url('change/domain') }}",
-                    success: function() {
-                        location.reload();
+                    success: function (data) {
+                        if (data.success ==true){
+                            var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+'</div>';
+                            $('#success-domain').html(result);
+                            $('#success-domain').css('color', 'green');
+                            $('#changeDomain').attr('disabled',false);
+                            $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#success-domain').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 3000);
+                        }
+
+                    }, error: function(data) {
+                        if(data.responseJSON.success==false) {
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
+                            $('#failure-domain').html(result);
+                            $('#failure-domain').css('color', 'red');
+                            $('#changeDomain').attr('disabled', false);
+                            $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-domain').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+
+                        }
+
                     }
                 });
             });
@@ -1551,52 +1737,106 @@ $price = $order->price_override;
 
         $(document).ready(function() {
             $('#agentNumber').on('click', function() {
+                $('#agentNumber').attr('disbaled',true);
                 $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
-                var newAgents = $('#number').val();
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
+                var newAgents = $('#numberAGt').val();
                 var orderId = {!! $id !!};
                 var productId ={!! $product->id !!};
+                var subId = {!! $subscription->id !!};
 
                 $.ajax({
                     type: "POST",
-                    data: { 'newAgents': newAgents, 'orderId': orderId, 'product_id':productId },
+                    data: { 'newAgents': newAgents, 'orderId': orderId, 'product_id':productId, 'subId': subId},
                     beforeSend: function() {
                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                     },
                     url: "{{ url('changeAgents') }}",
-                    success: function() {
-                        location.reload();
+                    success: function(response) {
+                        $('#agentNumber').attr('disbaled',false);
+                        $('#agentNumber').html("<i class='fa fa-users'>&nbsp;&nbsp;</i>  Update Agents");
+                        $('.loader-wrapper').hide();
+                        $('.overlay').hide(); // Hide the overlay
+                        $('.modal-body').css('pointer-events', 'auto');
+                        window.location.href = response;
+                    },
+                    error: function(data) {
+                        if (data.responseJSON.success == false) {
+                            $('#agentNumber').attr('disabled', false);
+                            $('#agentNumber').html("<i class='fa fa-users'>&nbsp;&nbsp;</i>  Update Agents");
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
+                            $('#failure-agent').html(result);
+                            $('#failure-agent').css('color', 'red');
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-agent').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+
+                        }
                     }
+
                 });
             });
         });
 
         $(document).ready(function() {
             $('#upgradedowngrade').on('click', function() {
+                $('#upgradedowngrade').attr('disabled',true);
                 $('#upgradedowngrade').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
                 var planId = $('select[name="plan"]').val();
                 var user = $('input[name="user"]').val();
-                var Price = $('input[name="cost"]').val();
                 var agents = {{$latestAgents}};
+                var orderId = {!! $id !!};
                 $.ajax({
                     type: "POST",
-                    data: { 'id': planId, 'price': Price, 'agents': agents,'userId': user },
+                    data: { 'id': planId,'agents': agents,'userId': user, 'orderId':orderId},
                     beforeSend: function() {
                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height: 50px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                     },
                     url: "{{ url('upgradeDowngradeCloud') }}",
                     success: function (data) {
                         window.location.href = data.redirectTo;
-                        if (data.message =='success'){
+                        if (data.success ==true){
                             window.location = data.redirectTo;
-                            var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                            $('#response').html(result);
-                            $('#response').css('color', 'green');
-                            setTimeout(function(){
-                                window.location.reload();
-                            },3000);
+                            var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            $('#response-upgrade').html(result);
+                            $('#response-upgrade').css('color', 'green');
+                            $('#upgradedowngrade').attr('disabled',false);
+                            $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
                         }
 
-                    }, error: function(err) {
+                    },  error: function(data) {
+                        if (data.responseJSON.success == false) {
+                            var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + '</div>';
+                            $('#failure-upgrade').html(result);
+                            $('#failure-upgrade').css('color', 'red');
+                            $('#upgradedowngrade').attr('disabled',false);
+                            $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
+                            $('.loader-wrapper').hide();
+                            $('.overlay').hide(); // Hide the overlay
+                            $('.modal-body').css('pointer-events', 'auto');
+
+                            // Auto-disappear after 5 seconds (5000 milliseconds)
+                            setTimeout(function() {
+                                $('#failure-upgrade').fadeOut('slow', function() {
+                                    $(this).html('');
+                                });
+                            }, 5000);
+                        }
                     }
 
                 });
@@ -1607,13 +1847,22 @@ $price = $order->price_override;
     </script>
     <script>
         function getPrice(val) {
-            var user = document.getElementsByName('user')[0].value;
+            $('.loader-wrapper').show();
+            $('.overlay').show(); // Show the overlay
+            $('.modal-body').css('pointer-events', 'none');
             $.ajax({
                 type: "POST",
                 url: "{{url('get-cloud-upgrade-cost')}}",
-                data: {'user': user, 'plan': val, 'agents': {{$latestAgents}}},
+                data: {'plan': val, 'agents': '{{$latestAgents}}', 'orderId': '{{$id}}'},
                 success: function (data) {
-                    $(".price").val(data);
+                    $(".priceperagent").val(data.priceperagent);
+                    $(".price").val(data.actual_price);
+                    $(".discount").text(data.discount);
+                    $(".priceToPay").text(data.price_to_be_paid);
+                    $('.loader-wrapper').hide();
+                    $('.overlay').hide(); // Hide the overlay
+                    $('.modal-body').css('pointer-events', 'auto');
+
                 }
             });
         }
@@ -1654,25 +1903,46 @@ $price = $order->price_override;
         });
     </script>
     <style>
-        .card {
-            transition: box-shadow 0.3s ease;
-            margin-bottom: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .card:hover {
-            box-shadow: 0 0 10px rgba(0, 136, 204, 0.8);
-        }
         .modal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .card-title{
-            color: #0088CC;
+        .clickable-link.stretched-link {
+            text-decoration: none !important;
         }
     </style>
+    <style>
+        .loader-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 9998; /* Below the loader */
+        }
+
+
+    </style>
+
 
 
 

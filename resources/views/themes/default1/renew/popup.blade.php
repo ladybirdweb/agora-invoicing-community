@@ -111,6 +111,7 @@
        }
        var user = document.getElementsByName('user')[0].value;
        shouldFetchPlanCost = false
+       agents=$('.agents').val();
        $.ajax({
            type: "get",
            url: "{{ url('get-renew-cost') }}",
@@ -142,13 +143,15 @@
         // Call the fetchPlanCost function when the plan dropdown selection changes
         $('#plan').on('change', function () {
             var selectedPlanId = $(this).val(); // Get the selected plan ID
-            fetchPlanCost(selectedPlanId); // Call the function to fetch plan cost
+            var agts = $('.agents').val();
+            fetchPlanCost(selectedPlanId,agts); // Call the function to fetch plan cost
         });
 
         // Call the fetchPlanCost function initially with the default selected plan
         $(document).ready(function () {
             var initialPlanId = $('#plan').val();
-            fetchPlanCost(initialPlanId);
+            var agt = $('.agents').val();
+            fetchPlanCost(initialPlanId,agt);
         });
 
         // Prevent form submission when Enter key is pressed
@@ -167,6 +170,7 @@
                 $("#agents").prop("disabled", false);
 
             }
+            $("#agents").prop("disabled", false);
         });
 
     });

@@ -724,11 +724,12 @@ return [
 
     'without_installation_found' => 'Oops! It looks like you can\'t make changes to the agents if we can\'t locate your cloud domain. Kindly renew your subscription first, make the necessary agent alterations later. You can adjust the agents in your cloud settings under your order. Thank you!',
     'nothing_changed' => 'No worries! It looks like there hasn\'t been any changes – your current and new domains appear to be the same. Feel free to reach out if you have any questions or need further assistance',
-    'cloud_not_allowed' => 'Just a heads up! You\'re not allowed to update the subdomain that\'s associated with faveocloud.com. If you\'d like to change your domain, please use your very own custom domain instead. If you need help or have questions, feel free to ask!',
+    'cloud_not_allowed' => 'Just a heads up! You\'re not allowed to update the subdomain that\'s associated with fratergroup.in. If you\'d like to change your domain, please use your very own custom domain instead. If you need help or have questions, feel free to ask!',
     'installation_path_not_found' => 'It looks like you can\'t make changes to this order if we can\'t locate your cloud domain. Thank you!',
     'wrong_agents' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with altering your agents. Thanks for your patience!',
     'wrong_upgrade' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with upgrading or downgrading your current plan. Thanks for your patience!',
     'wrong_domain' => 'Oh no, looks like a little hiccup happened! Our team\'s on the case and working to fix it pronto. Once it\'s sorted out, you\'ll be good to go with customizing your domain. Thanks for your patience!',
     'agent_updated' => 'Woohoo! We\'ve successfully updated the agents in your current plan. All set and good to go!',
     'change_agents_failed' => 'Oopsie daisy! While you were tweaking your agents, it looks like something got tangled up in the cloud server. No worries though – our awesome team is already on the case to fix things up!',
+    'agent_reduce' => "Oops! You can't reduce the number of agents on this plan at the moment. It looks like you have some active agents in your account. We recommend deactivating any extra agents before trying to adjust your agent count in the plan.",
 ];

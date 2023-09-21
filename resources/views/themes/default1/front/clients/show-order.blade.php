@@ -613,7 +613,7 @@ $price = $order->price_override;
                                                 <div>
                                                     <?php
                                                     $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
-                                                        ->where('installation_path','!=','billing.faveocloud.com')->value('installation_path');
+                                                        ->where('installation_path','!=','cloud.fratergroup.in')->value('installation_path');
                                                     ?>
 
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
@@ -1707,7 +1707,7 @@ $price = $order->price_override;
                                 $('#success-domain').fadeOut('slow', function() {
                                     $(this).html('');
                                 });
-                            }, 3000);
+                            }, 30000);
                         }
 
                     }, error: function(data) {
@@ -1726,7 +1726,7 @@ $price = $order->price_override;
                                 $('#failure-domain').fadeOut('slow', function() {
                                     $(this).html('');
                                 });
-                            }, 5000);
+                            }, 30000);
 
                         }
 
@@ -1778,7 +1778,7 @@ $price = $order->price_override;
                                 $('#failure-agent').fadeOut('slow', function() {
                                     $(this).html('');
                                 });
-                            }, 5000);
+                            }, 30000);
 
                         }
                     }
@@ -1835,7 +1835,7 @@ $price = $order->price_override;
                                 $('#failure-upgrade').fadeOut('slow', function() {
                                     $(this).html('');
                                 });
-                            }, 5000);
+                            }, 30000);
                         }
                     }
 

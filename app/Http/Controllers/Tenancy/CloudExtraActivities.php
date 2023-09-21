@@ -381,10 +381,11 @@ class CloudExtraActivities extends Controller
     public function checkDomain($domain)
     {
         $client = new Client([]);
-        $data = ['domain' => $domain];
+        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+        $data = ['domain' => $domain, 'key' => $keys->app_key ];
         $response = $client->request(
             'POST',
-            'https://'.$this->cloud->cloud_central_domain.'/checkDomain', ['form_params'=>$data]
+            $this->cloud->cloud_central_domain.'/checkDomain', ['form_params'=>$data]
         );
         $response = explode('{', (string) $response->getBody());
 

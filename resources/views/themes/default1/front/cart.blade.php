@@ -177,7 +177,9 @@
                                                 </td>
 
                                             </tr>
-                                            <p><i>{{$item->attributes->domain}}</i></p>
+                                            <tr>
+                                                <td colspan="6"><i>{{$item->attributes->domain}}</i></td>
+                                            </tr>
 
                                             @endforeach
                                             </tbody>

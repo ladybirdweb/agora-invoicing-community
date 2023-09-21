@@ -661,7 +661,7 @@ class SettingsController extends BaseSettingsController
                     return ucfirst($model->status);
                 })
                 ->rawColumns(['checkbox', 'date', 'user',
-                    'bcc', 'status', 'paymentmethod', 'ordernumber','amount','paymenttype'])
+                    'bcc', 'status', 'paymentmethod', 'ordernumber', 'amount', 'paymenttype'])
 
                 ->filterColumn('user', function ($model, $keyword) {
                     $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
@@ -699,7 +699,7 @@ class SettingsController extends BaseSettingsController
     public function paymentSearch($from = '', $till = '')
     {
         $join = Payment_log::query()->leftJoin('users', 'payment_logs.from', '=', 'users.email')
-            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'email', \DB::raw("CONCAT(first_name, ' ', last_name) as name"), 'users.id', 'payment_logs.id as count','amount','payment_type');
+            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'email', \DB::raw("CONCAT(first_name, ' ', last_name) as name"), 'users.id', 'payment_logs.id as count', 'amount', 'payment_type');
 
         if ($from) {
             $from = $this->DateFormat($from);

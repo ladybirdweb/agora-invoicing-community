@@ -311,7 +311,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $cloud_domain = \Session::has('cloud_domain') ? \Session::get('cloud_domain') : '';
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'cloud_domain' => str_replace('.faveolcoud.com','',$cloud_domain)]);
+                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'cloud_domain' => str_replace('.faveolcoud.com', '', $cloud_domain)]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }

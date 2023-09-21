@@ -255,9 +255,11 @@
                                                 </td>
 
                                             </tr>
+                                            <tr>
+                                                <td colspan="6"><i>{{$item->attributes->domain}}</i></td>
+                                            </tr>
+                                        </div>
 
-                                            <p><i>{{$item->attributes->domain}}</i></p>
-                                </div>
 
                                             @endforeach
                                             </tbody>

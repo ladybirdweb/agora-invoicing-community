@@ -203,7 +203,7 @@ $days = $pay->where('product','117')->value('days');
                                                         </div>
                                                     </a>
 
-                                                    
+
 
                                                 @endif
 

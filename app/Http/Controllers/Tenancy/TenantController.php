@@ -197,6 +197,7 @@ class TenantController extends Controller
 
         try {
             $company = (string) $request->input('domain');
+            dd($company);
 
             // Convert spaces to underscores
             $company = str_replace(' ', '', $company);

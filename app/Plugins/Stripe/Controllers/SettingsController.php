@@ -141,12 +141,6 @@ class SettingsController extends Controller
             $strCharge = $this->stripePay($request);
             if ($strCharge['charge']['status'] == 'succeeded') {
                 $stripeCustomerId = $strCharge['customer']['id'];
-                $customer_details = [
-                    'user_id' => $invoice->user_id,
-                    'invoice_number' => $invoice->number,
-                    'customer_id' => $stripeCustomerId,
-                ];
-                Auto_renewal::create($customer_details);
                 $user = User::find($invoice->user_id);
 
                 //Change order Status as Success if payment is Successful
@@ -220,9 +214,6 @@ class SettingsController extends Controller
                     $amount = rounding(\Session::get('totalToBePaid'));
                 }
                 $currency = strtolower($invoice->currency);
-            } else {
-                $amount = 1;
-                $currency = \Auth::user()->currency;
             }
 
             $token = $stripe->tokens()->create([
@@ -268,6 +259,7 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
+        $amount = currencyFormat($total,\Auth::user()->currency);
         $payment = Payment::where('invoice_id', $invoice->id)->first();
         $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
         $order = Order::find($orderid);
@@ -275,11 +267,14 @@ class SettingsController extends Controller
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);
+        if($payment){
+        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,$amount,'Product purchase payment',$exceptionMessage);
+         }
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
     {
+        $amount = currencyFormat($total,\Auth::user()->currency);
         $payment = Payment::where('invoice_id', $invoice->id)->first();
         $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
         $order = Order::find($orderid);
@@ -287,7 +282,9 @@ class SettingsController extends Controller
         $paymentSuccessdata = 'Payment for '.$productName.' of '.\Auth::user()->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
-        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number);
+        $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
+        if($payment){
+        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,$amount,'Product purchase payment');
+        }
     }
 }

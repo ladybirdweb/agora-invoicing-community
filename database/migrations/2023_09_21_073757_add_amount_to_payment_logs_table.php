@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-      if (! Schema::hasColumn('amount', 'payment_type')) {
-       Schema::table('payment_logs', function (Blueprint $table) {
-            $table->string('amount')->nullable();
-            $table->string('payment_type')->nullable();
-        });
-     }
+        if (! Schema::hasColumn('amount', 'payment_type')) {
+            Schema::table('payment_logs', function (Blueprint $table) {
+                $table->string('amount')->nullable();
+                $table->string('payment_type')->nullable();
+            });
+        }
     }
 
     /**

@@ -613,7 +613,7 @@ $price = $order->price_override;
                                                 <div>
                                                     <?php
                                                     $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
-                                                        ->where('installation_path','!=','cloud.fratergroup.in')->value('installation_path');
+                                                        ->where('installation_path','!=','cloud.fratergroup.in')->latest()->value('installation_path');
                                                     ?>
 
                                                     <h5 class="mb-1">Change Cloud Domain</h5>

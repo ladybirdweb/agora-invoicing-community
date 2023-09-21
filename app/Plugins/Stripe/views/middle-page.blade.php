@@ -9,6 +9,35 @@
  Checkout
 @stop
 @section('breadcrumb')
+ <style>
+        .horizontal-images {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .horizontal-images img {
+            height: auto;
+            width: 12%;
+            margin-right: 5px;
+        }
+        .custom-close {
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 30px;
+        height: 30px;
+        background-color: red;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+    </style>
 <script src="https://js.stripe.com/v3/"></script>
 
  @if(Auth::check())
@@ -494,33 +523,25 @@ $currency = $invoice->currency;
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal fade" id="stripeModal" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="stripeModal" data-keyboard="false">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="padding: 16px;">
              <div class="modal-header">
-                <h4 class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 style="white-space: nowrap;" class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
+
+         <div class="horizontal-images">
+        <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
+        <img class="img-responsive" src="https://pngimg.com/d/mastercard_PNG23.png">
+        <img class="img-responsive" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2lfp0fkZmeGd6aCOzuIBC1QDTvcyGcM6OGQ&usqp=CAU">
+    </div>
+
+
+               
             </div>
             <div class="col-md-12 ">
             <div class="modal-body">
-            <div class="card">
-                <div class="card-header">Stripe
-                 <img class="img-responsive pull-right">
-             </div>
-
-                <div class="card-body">
+     
                     <form method="POST" class="require-validation" id="submit_total" action="{{ url('stripe') }}" >
                         <div id="payment-element">
                         @csrf
@@ -544,7 +565,7 @@ $currency = $invoice->currency;
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(2020)" autofocus>
+                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(20)" autofocus>
                                 @error('exp_year')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -582,14 +603,89 @@ $currency = $invoice->currency;
                         </div>
                     </div>
                     </form>
-                </div>
-            </div>
+   
         </div>
         </div>
-            <!-- /Form -->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->  
+        </div>
+    </div>
+</div> 
+
+<script>
+$(document).ready(function() {
+    $("#submit_total").validate({
+        rules: {
+            card_no: {
+                required: true,
+                digits: true,
+                minlength: 15,
+                maxlength: 16
+            },
+            exp_month: {
+                required: true,
+                digits: true,
+                minlength: 2,
+                maxlength: 2
+            },
+            exp_year: {
+                required: true,
+                digits: true,
+                minlength: 2,
+                maxlength: 2,
+                notPastYear: true
+            },
+            cvv: {
+                required: true,
+                digits: true,
+                rangelength: [3, 4] 
+            }
+        },
+        messages: {
+            card_no: {
+                required: "Card number is required",
+                digits: "Please enter digits only",
+                minlength: "Card number must be at least 15 digits",
+                maxlength: "Card number cannot exceed 16 digits"
+            },
+            exp_month: {
+                required: "Expiration month is required",
+                digits: "Please enter digits only",
+                minlength: "Expiration month must be 2 digits",
+                maxlength: "Expiration month must be 2 digits"
+            },
+            exp_year: {
+                required: "Expiration year is required",
+                digits: "Please enter digits only",
+                minlength: "Expiration year must be 2 digits",
+                maxlength: "Expiration year must be 2 digits",
+                notPastYear: "Expiration year cannot be in the past"
+            },
+             cvv: {
+                required: "CVV is required",
+                digits: "Please enter digits only",
+                rangelength: "CVV must be either 3 or 4 digits"
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function(error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass("is-invalid").removeClass("is-valid");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass("is-invalid").addClass("is-valid");
+        }
+    });
+
+    $.validator.addMethod("notPastYear", function(value, element) {
+        var currentYear = new Date().getFullYear() % 100;
+        var enteredYear = parseInt(value, 10);
+        return enteredYear >= currentYear;
+    }, "Expiration year cannot be in the past");
+});
+</script>
+
 
 
 

@@ -253,7 +253,7 @@ class PhpMailController extends Controller
         }
     }
 
-    public function payment_log($from, $method, $status, $order, $exception = null)
+    public function payment_log($from, $method, $status, $order,$amount,$payment_type,$exception = null)
     {
         $data = [
             'date' => date('Y-m-d H:i:s'),
@@ -261,6 +261,8 @@ class PhpMailController extends Controller
             'status' => $status,
             'payment_method' => $method,
             'order' => $order,
+            'amount' => $amount,
+            'payment_type' => $payment_type,
         ];
 
         if ($exception !== null) {

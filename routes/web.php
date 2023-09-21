@@ -13,6 +13,7 @@ use App\Http\Controllers\Installer;
 use App\Http\Controllers\Jobs;
 use App\Http\Controllers\License;
 use App\Http\Controllers\License\LocalizedLicenseController;
+use App\Http\Controllers\LicenseBillOrders;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\Payment;
 use App\Http\Controllers\PhoneVerificationController;
@@ -23,7 +24,6 @@ use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\LicenseBillOrders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -649,44 +649,36 @@ input:checked + .slider:before {
                     </h4>
                   </div>
                 </a>
-                       <div class="card-body">
+                      
                        <div class="col-md-12">
                         
                          <div class="row">
+                            <table class="table table-hover">
+
+                                <tbody>
+                                    <tr><td><b>Auto Renewal for Future Subscription</b></td><td>    
+                                  <label class="switch toggle_event_editing">
+                                             <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
+                                              class="renewcheckbox" id="renew">
+                                              <span class="slider round"></span>
+                                              <input type="hidden" name="" id="autoorder" value="{{$order->id}}">
 
 
-              <div class="col-8">
-              
+                                        </label></td></tr>
+                                    @if($subscription->is_subscribed && $payment_details)
+                                    <tr><td><b>{{$payment_details == 'stripe' ? 'Customer id' : 'Payment id'}}:</b></td><td>{{$payment_details->customer_id}}</td></tr>
+                                    <tr><td><b>Payment Method:</b></td><td>{{ucfirst($payment_details->payment_method)}}</td></tr>
+  
+                                    <tr><td><b>Payment updated date:</b></td><td>{{$payment_details->created_at->format('M j, Y')}}</td></tr>
+                                    @endif
 
-                     <h6 style="margin-top: 8px;">Auto Renewal for Future Subscription</h6>
-
-                 
+                                </tbody>
+                              </table>
+                       
           </div>
-              <div class="col-4">
-                 <label class="switch toggle_event_editing">
+        </div>
 
-              <label class="switch toggle_event_editing">
-                         <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
-                          class="renewcheckbox" id="renew">
-                          <span class="slider round"></span>
-                          <input type="hidden" name="" id="autoorder" value="{{$order->id}}">
-
-
-                    </label>
-                    
-
-
-            </div>
-            </div>
-           
-
-                          </div>
-      
-
-                          </div>
-                    </div>
-
-            </div>
+        
           </div>
         </div>
         </div>
@@ -734,6 +726,7 @@ input:checked + .slider:before {
                     setInterval(function(){
                         $('#alertMessage').slideUp(3000);
                     }, 1000);
+                    location.reload();
                     },
                 })
          }

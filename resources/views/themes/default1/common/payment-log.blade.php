@@ -161,6 +161,8 @@ Payment Logs
                             <th>Date</th>
                              <th>User</th>   
                                <th>Order No</th> 
+                               <th>Amount</th>
+                               <th>Payment type</th>
                                <th>Payment Method</th>   
                                <th>Status</th>
                                </tr></thead>
@@ -223,6 +225,8 @@ Payment Logs
                 { data: 'date', name: 'date' },
                 { data: 'user', name: 'user' },
                 { data: 'ordernumber', name: 'ordernumber' },
+                { data: 'amount', name: 'amount' },
+                { data: 'paymenttype', name: 'paymenttype' },
                 { data: 'paymentmethod', name: 'paymentmethod' },
                 {
                     data: 'status',

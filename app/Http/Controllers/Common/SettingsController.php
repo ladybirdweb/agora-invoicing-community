@@ -612,7 +612,9 @@ class SettingsController extends BaseSettingsController
             return Datatables::of($query)
             ->orderColumn('date', '-date $1')
             ->orderColumn('user', '-date $1')
-             ->orderColumn('ordernumber', '-date $1')
+            ->orderColumn('ordernumber', '-date $1')
+            ->orderColumn('amount', '-date $1')
+            ->orderColumn('paymenttype', '-date $1')
             ->orderColumn('paymentmethod', '-date $1')
             ->orderColumn('status', '-date $1')
 
@@ -643,6 +645,12 @@ class SettingsController extends BaseSettingsController
 
                     return $orderLink;
                 })
+                ->addColumn('amount', function ($model) {
+                    return ucfirst($model->amount);
+                })
+                ->addColumn('paymenttype', function ($model) {
+                    return ucfirst($model->payment_type);
+                })
                 ->addColumn('status', function ($model) {
                     if ($model->status === 'failed') {
                         $exceptionMessage = $model->exception;
@@ -653,7 +661,7 @@ class SettingsController extends BaseSettingsController
                     return ucfirst($model->status);
                 })
                 ->rawColumns(['checkbox', 'date', 'user',
-                    'bcc', 'status', 'paymentmethod', 'ordernumber'])
+                    'bcc', 'status', 'paymentmethod', 'ordernumber','amount','paymenttype'])
 
                 ->filterColumn('user', function ($model, $keyword) {
                     $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
@@ -661,6 +669,14 @@ class SettingsController extends BaseSettingsController
 
                 ->filterColumn('status', function ($query, $keyword) {
                     $sql = '`status` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('paymenttype', function ($query, $keyword) {
+                    $sql = '`payment_type` like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('amount', function ($query, $keyword) {
+                    $sql = '`amount` like ?';
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                  ->filterColumn('paymentmethod', function ($query, $keyword) {
@@ -683,7 +699,7 @@ class SettingsController extends BaseSettingsController
     public function paymentSearch($from = '', $till = '')
     {
         $join = Payment_log::query()->leftJoin('users', 'payment_logs.from', '=', 'users.email')
-            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'email', \DB::raw("CONCAT(first_name, ' ', last_name) as name"), 'users.id', 'payment_logs.id as count');
+            ->select('payment_logs.id', 'from', 'to', 'date', 'subject', 'status', 'payment_logs.created_at', 'payment_method', 'order', 'exception', 'email', \DB::raw("CONCAT(first_name, ' ', last_name) as name"), 'users.id', 'payment_logs.id as count','amount','payment_type');
 
         if ($from) {
             $from = $this->DateFormat($from);

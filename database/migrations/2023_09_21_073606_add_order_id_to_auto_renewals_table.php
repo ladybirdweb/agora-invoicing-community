@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('order_id', 'payment_method')) {
-        Schema::table('auto_renewals', function (Blueprint $table) {
-            $table->string('order_id')->nullable();
-            $table->string('payment_method')->nullable();
-        });
-    }
+            Schema::table('auto_renewals', function (Blueprint $table) {
+                $table->string('order_id')->nullable();
+                $table->string('payment_method')->nullable();
+            });
+        }
     }
 
     /**

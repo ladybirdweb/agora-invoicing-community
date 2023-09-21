@@ -22,12 +22,11 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
+use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use App\Plugins\Stripe\Model\StripePayment;
 use Validator;
 
 class ClientController extends BaseClientController
@@ -94,7 +93,6 @@ class ClientController extends BaseClientController
             $payment = $this->stripePay($request);
 
             if ($payment['charge']['status']) {
-
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
                 $customer_details = [
@@ -105,8 +103,8 @@ class ClientController extends BaseClientController
                 ];
                 Auto_renewal::create($customer_details);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
-                
-                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id',$orderid)->value('number'),$request->amount,'Payment method updated');
+
+                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), $request->amount, 'Payment method updated');
 
                 $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
 
@@ -114,21 +112,19 @@ class ClientController extends BaseClientController
             }
         } catch(\Exception $ex) {
             $result = [$ex->getMessage()];
-            $mail->payment_log(\Auth::user()->email, 'stripe','failed', Order::where('id',$orderid)->value('number'),$request->amount,'Payment method updated',$result);
-            
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $request->amount, 'Payment method updated', $result);
+
             return response()->json(compact('result'), 500);
         }
     }
 
     public function stripePay($request)
     {
-
         try {
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
-                $amount = 1;
-                $currency = \Auth::user()->currency;
-            
+            $amount = 1;
+            $currency = \Auth::user()->currency;
 
             $token = $stripe->tokens()->create([
                 'card' => [
@@ -164,11 +160,11 @@ class ClientController extends BaseClientController
                 'amount' => $amount,
                 'description' => 'Add in wallet',
             ]);
+
             return ['charge' => $charge, 'customer' => $customer];
         } catch(\Exception $e) {
             return errorResponse($e->getMessage());
         }
-
     }
 
     public function disableAutorenewalStatus(Request $request)
@@ -201,7 +197,7 @@ class ClientController extends BaseClientController
     public function enableRzpStatus(Request $request)
     {
         try {
-            $amount = currencyFormat('1',\Auth::user()->currency);
+            $amount = currencyFormat('1', \Auth::user()->currency);
             $orderid = $request->route('orderid');
             $subscription = Subscription::where('order_id', $orderid)->first();
             $input = $request->all();
@@ -235,12 +231,12 @@ class ClientController extends BaseClientController
                 // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id',$orderid)->value('number'),$amount,'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated');
 
                 return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
             }
         } catch(\Exception $ex) {
-            $mail->payment_log(\Auth::user()->email, 'stripe','failed', Order::where('id',$orderid)->value('number'),$amount,'Payment method updated',$result);
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated', $result);
 
             return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
         }

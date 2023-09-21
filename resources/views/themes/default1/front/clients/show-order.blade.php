@@ -70,21 +70,50 @@
             border-radius: 34px;
         }
 
-        .slider.round:before {
-            border-radius: 50%;
+.slider.round:before {
+  border-radius: 50%;
+}
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
+
+    .horizontal-images {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
-        .scrollit {
-            overflow:scroll;
-            height:600px;
+        .horizontal-images img {
+            height: auto;
+            width: 12%;
+            margin-right: 5px;
         }
-    </style>
-    @if(Auth::check())
-        <li><a href="{{url('my-invoices')}}">Home</a></li>
-    @else
-        <li><a href="{{url('login')}}">Home</a></li>
-    @endif
-    <li><a href= "{{url('my-orders')}}">My Orders</a></li>
-    <li class="active">View Order</li>
+        .custom-close {
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 30px;
+        height: 30px;
+        background-color: red;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+
+</style>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
+<li><a href= "{{url('my-orders')}}">My Orders</a></li>
+<li class="active">View Order</li>
 @stop
 <?php
 
@@ -559,9 +588,10 @@ $price = $order->price_override;
                                 <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
 
 
-                            </div>
-                            <div class="col-4">
-                                <label class="switch toggle_event_editing">
+                    </label>
+                    @else
+                    <h6 style="margin-top: 8px;">Please enable the payment gateways</h6>
+                    @endif
 
 
                                     <label class="switch toggle_event_editing">
@@ -595,9 +625,9 @@ $price = $order->price_override;
                     @if($statusAutorenewal == 1)
                         <div class="row">
 
-                            <div class="col-8" id="updateButton">
-                                <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
-                                <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
+              <div class="col-8" id="updateButton"> 
+              <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
+              <h6 style="margin-top: 8px;">Click here to update your card details</h6>
 
                                 <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
 
@@ -713,6 +743,38 @@ $price = $order->price_override;
         </div>
     </div>
 
+    <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false" style="position: relative;bottom: 300px;">
+<div class="modal-dialog">
+  <div class="modal-content" style="width:400px;">
+    <div class="modal-header">
+      <h4 class="modal-title">Select the payment</h4>
+    </div>
+    <div class="modal-body">
+                <div id="alertMessage-1"></div>
+      <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+          {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
+           
+
+           <select name=""  id="sel-payment" class="form-control" >
+                <option value="" disabled selected>Choose your option</option>
+                 @foreach($gateways as $key =>  $gateway)
+                <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                    @endforeach
+                <!-- <option value="razorpay">Razorpay</option> -->
+               </select>
+           
+           </div>
+      <span id="payerr"></span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left closeandrefresh" id="srclose" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+      <button type="button" id="payment" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
+    </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 
 
     <!-- Cloud Domain Change Modal -->
@@ -961,95 +1023,97 @@ $price = $order->price_override;
 
 
 
-    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
-
-        <div class="modal-dialog">
-
-            <div class="modal-content">
-                <div class="modal-header">
-
-                    <h4 class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
-                    <button type="button" id="strclose" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static" style="position: relative;bottom: 200px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">Stripe payment</h4>
+                <div class="horizontal-images">
+                    <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
+                    <img class="img-responsive" src="https://pngimg.com/d/mastercard_PNG23.png">
+                    <img class="img-responsive" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2lfp0fkZmeGd6aCOzuIBC1QDTvcyGcM6OGQ&usqp=CAU">
                 </div>
-                <div id="alertMessage-2"></div>
-                <div id="error-1"></div>
-                <div class="col-md-12 ">
-                    <div class="modal-body">
-                        <div class="card">
-                            <div class="card-header">Stripe
-                                <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
+            </div>
+            <div id="alertMessage-2"></div>
+            <div id="error-1"></div>
+            <div class="col-md-12 ">
+                <div class="modal-body">
+                    <form id="valid-modal">
+                        <div id="payment-element">
+                            <!-- Information or instructions -->
+                            <div class="form-group row">
+                                <div class="col-md-12 alert alert-info">
+                                   Your card information is secure.We are performing a verification check of {{currencyFormat(1,Auth::user()->currency)}} , which will be automatically reversed within a week.
+                                </div>
                             </div>
-
-                            <div class="card-body">
-                                <form>
-                                    <div id="payment-element">
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
-                                                @error('card_no')
-                                                <span class="invalid-feedback" role="alert">
+                            <!-- Card No. input -->
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
+                                    @error('card_no')
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-6">
-                                                <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
-                                                @error('exp_month')
-                                                <span class="invalid-feedback" role="alert">
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Exp. Month and Exp. Year inputs -->
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
+                                    @error('exp_month')
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                                @enderror
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(2020)" autofocus>
-                                                @error('exp_year')
-                                                <span class="invalid-feedback" role="alert">
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(20)" autofocus>
+                                    @error('exp_year')
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
-                                                @error('cvv')
-                                                <span class="invalid-feedback" role="alert">
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- CVV input -->
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
+                                    @error('cvv')
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
-                                                @error('amount')
-                                                <span class="invalid-feedback" role="alert">
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Amount input -->
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                    @error('amount')
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <!-- <input type="hidden" value="{{$id}}" name="orderid"> -->
-
-                                        <div class="form-group row mb-0">
-                                            <div class="col-md-12">
-                                                <button type="button" id="pay" class="btn btn-primary btn-block">
-                                                    {{ __('PAY NOW') }}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Pay button -->
+                            <div class="form-group row mb-0">
+                                <div class="col-md-12">
+                                    <button type="button" id="pay" class="btn btn-primary btn-block">
+                                        {{ __('PAY NOW') }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-                <!-- /Form -->
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -1068,17 +1132,94 @@ $price = $order->price_override;
 
 
 
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("#valid-modal").validate({
+        rules: {
+            card_no: {
+                required: true,
+                digits: true,
+                minlength: 15,
+                maxlength: 16
+            },
+            exp_month: {
+                required: true,
+                digits: true,
+                minlength: 2,
+                maxlength: 2
+            },
+            exp_year: {
+                required: true,
+                digits: true,
+                minlength: 2,
+                maxlength: 2,
+                notPastYear: true
+            },
+            cvv: {
+                required: true,
+                digits: true,
+                rangelength: [3, 4] 
+            }
+        },
+        messages: {
+            card_no: {
+                required: "Card number is required",
+                digits: "Please enter digits only",
+                minlength: "Card number must be at least 15 digits",
+                maxlength: "Card number cannot exceed 16 digits"
+            },
+            exp_month: {
+                required: "Expiration month is required",
+                digits: "Please enter digits only",
+                minlength: "Expiration month must be 2 digits",
+                maxlength: "Expiration month must be 2 digits"
+            },
+            exp_year: {
+                required: "Expiration year is required",
+                digits: "Please enter digits only",
+                minlength: "Expiration year must be 2 digits",
+                maxlength: "Expiration year must be 2 digits",
+                notPastYear: "Expiration year cannot be in the past"
+            },
+             cvv: {
+                required: "CVV is required",
+                digits: "Please enter digits only",
+                rangelength: "CVV must be either 3 or 4 digits"
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function(error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass("is-invalid").removeClass("is-valid");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass("is-invalid").addClass("is-valid");
+        }
+    });
 
-        // $('#srclose').click(function()
-        //          {
-        //          location.reload();
-        //          });
-        // $('#strclose').click(function()
-        //          {
-        //          location.reload();
-        //          });
+    $.validator.addMethod("notPastYear", function(value, element) {
+        var currentYear = new Date().getFullYear() % 100;
+        var enteredYear = parseInt(value, 10);
+        return enteredYear >= currentYear;
+    }, "Expiration year cannot be in the past");
+});
+</script>
+
+
+<script type="text/javascript">
+
+      $('#srclose').click(function() 
+               {
+               location.reload();
+               });
+      // $('#strclose').click(function() 
+      //          {
+      //          location.reload();
+      //          });
 
         // Checkout details as a json
         var options = <?php echo $json; ?>
@@ -1168,55 +1309,52 @@ $price = $order->price_override;
                     return false;
                 }
                 if(pay == 'stripe'){
-                    $('#renewal-modal').modal('hide');
-                    $('#stripe-Modal').modal('show');
+                 $('#renewal-modal').modal('hide');
+                 $('#stripe-Modal').modal('show');
 
-                    $('#pay').on('click',function(){
-                        $.ajax({
-
-                            url : '{{url("strRenewal-enable")}}',
-                            type : 'POST',
-                            data: {
-                                "order_id" : id,
-                                "card_no": $('#card_no').val(),
-                                "exp_month": $('#exp_month').val(),
-                                "exp_year": $('#exp_year').val(),
-                                "cvv": $('#password').val(),
-                                "amount": $('#amount').val(),
-                                "_token": "{!! csrf_token() !!}",
-                            },
-
-                            success: function (response) {
-                                $('#stripe-Modal').modal('hide');
-                                $('#alertMessage-2').show();
-                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
-                                $('#alertMessage-2').html(result+ ".");
-                                $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                                setInterval(function(){
-                                    $('#alertMessage-2').slideUp(3000);
-                                }, 1000);
-                                $('#updateButton').show();
-                            },
-                            error: function (data) {
-                                $('#stripe-Modal').modal('hide');
-                                $("#pay").attr('disabled',false);
-                                $("#pay").html("Register");
-                                $('html, body').animate({scrollTop:0}, 500);
+                 $('#pay').on('click',function(){
+                      $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
+                     $.ajax({
 
 
-                                var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                                for (var key in data.responseJSON.errors)
-                                {
-                                    html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
-                                }
-                                html += '</ul></div>';
+                url : '{{url("strRenewal-enable")}}',
+                type : 'POST',
+                    data: { 
+                         "order_id" : id,
+                         "card_no": $('#card_no').val(),
+                         "exp_month": $('#exp_month').val(),
+                         "exp_year": $('#exp_year').val(),
+                         "cvv": $('#password').val(),
+                         "amount": $('#amount').val(),
+                         "_token": "{!! csrf_token() !!}",
+                          },
 
-                                $('#error-1').show();
-                                document.getElementById('error-1').innerHTML = html;
-                                setInterval(function(){
-                                    $('#error-1').slideUp(3000);
-                                }, 8000);
-                            }
+                success: function (response) {
+                    $('#stripe-Modal').modal('hide');
+                    $('#alertMessage-2').show();
+                    $('#updateButton').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+                    $('#alertMessage-2').html(result+ ".");
+                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage-2').slideUp(3000);
+                    }, 3000);
+                    location.reload();
+                    
+                },
+                  error: function (data) {
+                     $('#stripe-Modal').modal('show');
+                        $("#pay").attr('disabled',false);
+                        $("#pay").html("Pay now");
+                        $('html, body').animate({scrollTop:0}, 500);
+
+
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        for (var key in data.responseJSON.errors)
+                        {
+                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
 
 
                         });
@@ -1526,81 +1664,205 @@ $price = $order->price_override;
             $('#stripeModal').modal('show');
         })
 
-        $('#submit_total').submit(function(){
-            $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
-            $("#pay_now").prop('disabled', true);
+        $('#valid-modal').submit(function(){
+     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
+    $("#pay_now").prop('disabled', true);
 
-        });
-        $(function() {
-            var $form         = $(".require-validation");
-            $('form.require-validation').bind('submit', function(e) {
-                var $form         = $(".require-validation"),
-                    inputSelector = ['input[type=email]', 'input[type=password]',
-                        'input[type=text]', 'input[type=file]',
-                        'textarea'].join(', '),
-                    $inputs       = $form.find('.required').find(inputSelector),
-                    $errorMessage = $form.find('div.error'),
-                    valid         = true;
-                $errorMessage.addClass('hide');
+  });
+$(function() {
+    var $form         = $(".require-validation");
+  $('form.require-validation').bind('submit', function(e) {
+    var $form         = $(".require-validation"),
+        inputSelector = ['input[type=email]', 'input[type=password]',
+                         'input[type=text]', 'input[type=file]',
+                         'textarea'].join(', '),
+        $inputs       = $form.find('.required').find(inputSelector),
+        $errorMessage = $form.find('div.error'),
+        valid         = true;
+        $errorMessage.addClass('hide');
+ 
+        $('.has-error').removeClass('has-error');
+    $inputs.each(function(i, el) {
+      var $input = $(el);
+      if ($input.val() === '') {
+        $input.parent().addClass('has-error');
+        $errorMessage.removeClass('hide');
+        e.preventDefault();
+      }
+    });
+  
+    // if (!$form.data('cc-on-file')) {
+    //   e.preventDefault();
+    //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+    //   Stripe.createToken({
+    //     number: $('.card-number').val(),
+    //     cvc: $('.card-cvc').val(),
+    //     exp_month: $('.card-expiry-month').val(),
+    //     exp_year: $('.card-expiry-year').val()
+    //   }, stripeResponseHandler);
+    // }
+  
+  });
+  
+  function stripeResponseHandler(status, response) {
+        if (response.error) {
+            $('.error')
+                .removeClass('hide')
+                .find('.alert')
+                .text(response.error.message);
+        } else {
+            // token contains id, last4, and card type
+            var token = response['id'];
+            // insert the token into the form so it gets submitted to the server
+            $form.find('input[type=text]').empty();
+            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+            $form.get(0).submit();
+        }
+    }
+  
+});
+     /*
+      * Increase No. Of Agents
+      */
+     $('#agentplus').on('click',function(){
+         var $agtqty=$(this).parents('.quantity').find('.qty');
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var $agentprice = $(this).parents('.quantity').find('.agentprice');
+         var $currency = $(this).parents('.quantity').find('.currency');
+         var $symbol  = $(this).parents('.quantity').find('.symbol');
+         var currency = $currency.val();//Get the Currency for the Product
+         var symbol = $symbol.val();//Get the Symbol for the Currency
+         var productid = parseInt($productid.val()); //get Product Id
+         var currentAgtQty = parseInt($agtqty.val()); //Get Current Quantity of Prduct
+         var actualAgentPrice = parseInt($agentprice.val());//Get Initial Price of Prduct
+         // console.log(productid,currentVal,actualprice);
 
-                $('.has-error').removeClass('has-error');
-                $inputs.each(function(i, el) {
-                    var $input = $(el);
-                    if ($input.val() === '') {
-                        $input.parent().addClass('has-error');
-                        $errorMessage.removeClass('hide');
-                        e.preventDefault();
-                    }
-                });
+         var finalAgtqty = $('#agtqty').val(currentAgtQty + 1).val();
+         var finalAgtprice = $('#agentprice').val(actualAgentPrice * finalAgtqty).val();
 
-                // if (!$form.data('cc-on-file')) {
-                //   e.preventDefault();
-                //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-                //   Stripe.createToken({
-                //     number: $('.card-number').val(),
-                //     cvc: $('.card-cvc').val(),
-                //     exp_month: $('.card-expiry-month').val(),
-                //     exp_year: $('.card-expiry-year').val()
-                //   }, stripeResponseHandler);
-                // }
+         $.ajax({
+             type: "POST",
+             data:{'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
 
-            });
+             },
+             url: "{{url('update-agent-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+     /*
+     *Decrease No. of Agents
+      */
+     $(document).ready(function(){
+         var currentagtQty = $('#agtqty').val();
+         if(currentagtQty>1) {
+             $('#agentminus').on('click', function () {
 
-            function stripeResponseHandler(status, response) {
-                if (response.error) {
-                    $('.error')
-                        .removeClass('hide')
-                        .find('.alert')
-                        .text(response.error.message);
-                } else {
-                    // token contains id, last4, and card type
-                    var token = response['id'];
-                    // insert the token into the form so it gets submitted to the server
-                    $form.find('input[type=text]').empty();
-                    $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-                    $form.get(0).submit();
-                }
-            }
+                 var $agtqty = $(this).parents('.quantity').find('.qty');
+                 var $productid = $(this).parents('.quantity').find('.productid');
+                 var $agentprice = $(this).parents('.quantity').find('.agentprice');
+                 var $currency = $(this).parents('.quantity').find('.currency');
+                 var $symbol = $(this).parents('.quantity').find('.symbol');
+                 var currency = $currency.val();//Get the Currency for the Product
+                 var symbol = $symbol.val();//Get the Symbol for the Currency
+                 var productid = parseInt($productid.val()); //get Product Id
+                 var currentAgtQty = parseInt($agtqty.val()); //Get Current Agent of Prduct
+                 var actualAgentPrice = parseInt($agentprice.val()); //Get Initial Price of Prduct
+                 // console.log(productid,currentVal,actualprice);
+                 console.log(actualAgentPrice);
+                 if (!isNaN(currentAgtQty)) {
+                     var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val(); //Quantity After decreasinf
+                     var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val(); //Final Price aftr decresing  qty
+                 }
+                 $.ajax({
+                     type: "POST",
+                     data: {'productid': productid},
+                     beforeSend: function () {
+                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                     },
+                     url: "{{url('reduce-agent-qty')}}",
+                     success: function () {
+                         location.reload();
+                     }
+                 });
 
-        });
-        /*
-         * Increase No. Of Agents
-         */
-        $('#agentplus').on('click',function(){
-            var $agtqty=$(this).parents('.quantity').find('.qty');
-            var $productid = $(this).parents('.quantity').find('.productid');
-            var $agentprice = $(this).parents('.quantity').find('.agentprice');
-            var $currency = $(this).parents('.quantity').find('.currency');
-            var $symbol  = $(this).parents('.quantity').find('.symbol');
-            var currency = $currency.val();//Get the Currency for the Product
-            var symbol = $symbol.val();//Get the Symbol for the Currency
-            var productid = parseInt($productid.val()); //get Product Id
-            var currentAgtQty = parseInt($agtqty.val()); //Get Current Quantity of Prduct
-            var actualAgentPrice = parseInt($agentprice.val());//Get Initial Price of Prduct
-            // console.log(productid,currentVal,actualprice);
+             });
+         }
 
-            var finalAgtqty = $('#agtqty').val(currentAgtQty + 1).val();
-            var finalAgtprice = $('#agentprice').val(actualAgentPrice * finalAgtqty).val();
+     });
+
+
+
+
+     /*
+     *Increse Product Quantity
+      */
+     $('#quantityplus').on('click',function(){
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var productid = parseInt($productid.val()); //get Product Id
+         // console.log(productid,currentVal,actualprice);
+         $.ajax({
+             type: "POST",
+             data: {'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+             },
+             url: "{{url('update-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+
+     /*
+      * Reduce Procut Quantity
+      */
+     $('#quantityminus').on('click',function(){
+         var $qty=$(this).parents('.quantity').find('.qty');
+         var $productid = $(this).parents('.quantity').find('.productid');
+         var $price = $(this).parents('.quantity').find('.quatprice');
+         var productid = parseInt($productid.val()); //get Product Id
+         var currentQty = parseInt($qty.val()); //Get Current Quantity of Prduct
+         var incraesePrice = parseInt($price.val()); //Get Initial Price of Prduct
+         if (!isNaN(currentQty)) {
+             var finalqty = $('#qty').val(currentQty -1 ).val() ; //Quantity After Increasing
+             var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
+         }
+         $.ajax({
+             type: "POST",
+             data: {'productid':productid},
+             beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+             },
+             url: "{{url('reduce-product-qty')}}",
+             success: function () {
+                 location.reload();
+             }
+         });
+     });
+
+     function Addon(id){
+         $.ajax({
+             type: "GET",
+             data:{"id": id, "category": "addon"},
+             url: "{{url('cart')}}",
+             success: function (data) {
+                 location.reload();
+             }
+         });
+     }
+
+
+
+
+    $(document).ready(function() {
+        $('#changeDomain').on('click', function() {
+            $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+            var newDomain = $('#clouduserdomain').val();
+            var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->value('installation_path') !!}";
 
             $.ajax({
                 type: "POST",

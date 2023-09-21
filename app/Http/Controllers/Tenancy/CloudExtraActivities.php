@@ -108,6 +108,9 @@ class CloudExtraActivities extends Controller
             $token = str_random(32);
             $newDomain = $request->get('newDomain');
             $currentDomain = $request->get('currentDomain');
+            if(!filter_var($newDomain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)){
+                return errorResponse(trans('message.not_allowed_domain'));
+            }
             if (strpos($newDomain, '.fratergroup.in') !== false) {
                 return errorResponse(trans('message.cloud_not_allowed'));
             }

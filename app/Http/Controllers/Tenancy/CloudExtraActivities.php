@@ -905,7 +905,7 @@ class CloudExtraActivities extends Controller
     {
         $client = new Client([]);
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-        $data = ['domain' => $domain, 'key' => $keys->app_key ];
+        $data = ['domain' => $domain, 'key' => $keys->app_key];
         $response = $client->request(
             'POST',
             $this->cloud->cloud_central_domain.'/checkDomain', ['form_params'=>$data]

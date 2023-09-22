@@ -1328,10 +1328,10 @@ domainInput.addEventListener("input", function() {
                     // If not authenticated, remember that the button was clicked
                     localStorage.setItem('freeTrialClicked', 'true');
                     var message = "Please log in to start your free trial. If you don't have an account, you can register here!";
+                    var baseUrl = "{{ env('APP_URL') }}";
 
                     // Redirect to the login/register page
-                    window.location.href = '/agora-invoicing-community/public/login?message=' + encodeURIComponent(message);
-
+                    window.location.href =  `${baseUrl}/login?message=${encodeURIComponent(message)}`;
                 });
                 @endauth
 

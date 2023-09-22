@@ -162,7 +162,7 @@ Payment Logs
                              <th>User</th>   
                                <th>Order No</th> 
                                <th>Amount</th>
-                               <th>Payment type</th>
+                               <th>Description</th>
                                <th>Payment Method</th>   
                                <th>Status</th>
                                </tr></thead>

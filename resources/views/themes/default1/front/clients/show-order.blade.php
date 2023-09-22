@@ -822,7 +822,7 @@ $json = json_encode($data);
                             <!-- Information or instructions -->
                             <div class="form-group row">
                                 <div class="col-md-12 alert alert-info">
-                                   Your card information is secure with us. We are performing a verification check of ₹1, which will be automatically reversed within a week.
+                                Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,Auth::user()->currency)}}, which will be automatically reversed within a week.
                                 </div>
                             </div>
                             <!-- Card No. input -->

@@ -173,7 +173,7 @@
                                      <?php
                                     $invoice = \DB::table('invoices')->where('id',$item->invoice_id)->first();
                                     ?>
-                                    @if($invoice->discount != null)
+                                    @if($invoice->discount)
                                 <tr>
                                     <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>

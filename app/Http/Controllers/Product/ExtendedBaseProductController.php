@@ -150,7 +150,7 @@ class ExtendedBaseProductController extends Controller
             if (in_array($product->id, [117, 119])) {
                 $field .= '<div class="col col-4">
     <div class="form-group">
-        <label>'./* @scrutinizer ignore-type */ \Lang::get('message.cloud_domain').'</label>
+        <label class="required">'./* @scrutinizer ignore-type */ \Lang::get('message.cloud_domain').'</label>
         <div class="input-group">
             <input type="text" name="cloud_domain" class="form-control" id="cloud_domain" placeholder="Domain" required >
             <input type="text" class="form-control" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">

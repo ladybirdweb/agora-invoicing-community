@@ -3,7 +3,6 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\ApiKey;
-use App\Auto_renewal;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
@@ -259,7 +258,7 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
-        $amount = currencyFormat($total,\Auth::user()->currency);
+        $amount = currencyFormat($total, \Auth::user()->currency);
         $payment = Payment::where('invoice_id', $invoice->id)->first();
         $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
         $order = Order::find($orderid);
@@ -267,14 +266,14 @@ class SettingsController extends Controller
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        if($payment){
-        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,$amount,'Product purchase',$exceptionMessage);
-         }
+        if ($payment) {
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $amount, 'Product purchase', $exceptionMessage);
+        }
     }
 
     public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
     {
-        $amount = currencyFormat($total,\Auth::user()->currency);
+        $amount = currencyFormat($total, \Auth::user()->currency);
         $payment = Payment::where('invoice_id', $invoice->id)->first();
         $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
         $order = Order::find($orderid);
@@ -283,8 +282,8 @@ class SettingsController extends Controller
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
-        if($payment){
-        $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,$amount,'Product purchase');
+        if ($payment) {
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $amount, 'Product purchase');
         }
     }
 }

@@ -852,22 +852,22 @@ class CronController extends BaseCronController
 
     public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $productName, $template, $order, $payment)
     {
-        $amount = currencyFormat($total,$user->currency);
+        $amount = currencyFormat($total, $user->currency);
         $setting = Setting::find(1);
         $paymentSuccessdata = 'Payment for '.$productName.' of '.$user->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
-        $mail->payment_log($user->email, $payment, 'success', $order->number,$amount,'Product renew');
+        $mail->payment_log($user->email, $payment, 'success', $order->number, $amount, 'Product renew');
     }
 
     public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment)
     {
-        $amount = currencyFormat($total,$user->currency);
+        $amount = currencyFormat($total, $user->currency);
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        $mail->payment_log($user->email, $payment, 'failed', $order->number,$amount,'Product renew',$exceptionMessage);
+        $mail->payment_log($user->email, $payment, 'failed', $order->number, $amount, 'Product renew', $exceptionMessage);
     }
 }

@@ -148,7 +148,7 @@
                                             <p class="lead">Amount</p>
                                             <div class="table-responsive">
                                                 <table class="table">
-                                                     @if($invoice->discount != null)
+                                                     @if($invoice->discount)
                                                     <tr>
                                                           
                                                     <th>Discount</th>

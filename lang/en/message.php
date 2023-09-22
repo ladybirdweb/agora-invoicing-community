@@ -723,7 +723,6 @@ return [
     'tick-to-add_to_contact-product' => 'Check if you want to add Contact Sales button',
     'cloud_domain' => 'Enter cloud domain',
     'cloud_domain_empty' => "Oops! You can't generate an invoice for this plan without providing a domain.",
-    'domain_taken' => "Oops! It seems like this domain is already in use by another user. Please try with a different domain.",
-
+    'domain_taken' => 'Oops! It seems like this domain is already in use by another user. Please try with a different domain.',
 
 ];

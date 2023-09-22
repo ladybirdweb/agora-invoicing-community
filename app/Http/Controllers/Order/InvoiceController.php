@@ -396,10 +396,18 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             if ($request->has('cloud_domain')) {
                 $cloud_domain = $request->input('cloud_domain');
-                if (! (new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)) {
+
+                if (empty($cloud_domain)) {
+                    return errorResponse([trans('message.cloud_domain_empty')]);
+                }
+
+                $cloud_domain = $cloud_domain . '.faveocloud.com';
+
+                if (!(new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)) {
                     return errorResponse([trans('message.domain_taken')]);
                 }
             }
+
             $productid = $request->input('product');
 
             $plan = $request->input('plan');

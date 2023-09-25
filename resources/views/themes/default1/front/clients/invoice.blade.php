@@ -38,7 +38,7 @@
     @auth
         @php
             $amt = \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->value('amt_to_credit');
-            $formattedValue = currencyFormat($amt, \Auth::user()->currency , true);
+            $formattedValue = currencyFormat($amt, getCurrencyForClient(\Auth::user()->country) , true);
 
         @endphp
         <button class="btn-credit open-createCreditDialog" style="background-color: white; border: none; margin-left: 960px; margin-bottom: 10px;">

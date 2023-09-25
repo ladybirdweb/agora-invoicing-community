@@ -52,6 +52,7 @@ class BaseAuthController extends Controller
      */
     public function sendOtp($mobile, $code)
     {
+        
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
@@ -67,7 +68,6 @@ class BaseAuthController extends Controller
         if ($array['type'] == 'error') {
             throw new \Exception($array['message']);
         }
-
         return $array['type'];
     }
 
@@ -132,7 +132,7 @@ class BaseAuthController extends Controller
                 $this->sendActivation($email, $method, $pass);
                 $msg2 = 'Activation link has been sent to '.$email;
             }
-            $user = User::where('email', $email)->first();
+            $user = User::where('email',$email)->first();
             $emailAttempt = ($user->active == 1) ? 1 : 0;
             $mobileAttempt = ($user->mobile_verified == 1) ? 1 : 0;
 
@@ -274,7 +274,7 @@ class BaseAuthController extends Controller
         }
     }
 
-    public function emailverificationAttempt($user)
+   public function emailverificationAttempt($user)
     {
         $attempt = $user->verificationAttempts->first();
 
@@ -282,19 +282,22 @@ class BaseAuthController extends Controller
             $attempt->email_attempt = $attempt->email_attempt + 1;
             $attempt->save();
         } else {
-            verificationAttempt::where('user_id', $user->id)->update(['email_attempt' => 1]);
+            verificationAttempt::where('user_id',$user->id)->update(['email_attempt' => 1]);
+
         }
     }
 
-    public function mobileVerificationAttempt($user)
+      public function mobileVerificationAttempt($user)
     {
-        $mobileAttempt = $user->verificationAttempts->first();
+       $mobileAttempt = $user->verificationAttempts->first();
 
         if ($mobileAttempt->mobile_attempt) {
             $mobileAttempt->mobile_attempt = $mobileAttempt->mobile_attempt + 1;
             $mobileAttempt->save();
         } else {
-            verificationAttempt::where('user_id', $user->id)->update(['mobile_attempt' => 1]);
+            verificationAttempt::where('user_id',$user->id)->update(['mobile_attempt' => 1]);
         }
     }
+
+
 }

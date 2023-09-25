@@ -537,7 +537,8 @@ User
                                 $("#orderdetail").on('click',function(){
                                     $('#payment-table').DataTable().clear().destroy();
                                     $('#invoice-table').DataTable().clear().destroy();
-
+                                    var table = $('#orderdetail-table').DataTable();
+                                    table.destroy();
                                     $('#orderdetail-table').DataTable({
 
                                         processing: true,
@@ -594,6 +595,8 @@ User
                             </script>
                             <script>
                                 function checkingorder(e){
+                                    var table = $('#orderdetail-table').DataTable();
+                                    table.destroy();
 
                                     $('#orderdetail-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
                                 }

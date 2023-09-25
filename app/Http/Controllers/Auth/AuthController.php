@@ -60,6 +60,7 @@ class AuthController extends BaseAuthController
             if ($user) {
                 if ($user->active == 0) {
                     $user->active = 1;
+                    $this->emailverificationAttempt($user);
                     $user->save();
                     $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
                     $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
@@ -207,6 +208,7 @@ class AuthController extends BaseAuthController
                 $user->save();
             }
             $check = $this->checkVerify($user);
+            $this->mobileVerificationAttempt($user);
             $response = ['type' => 'success', 'proceed' => $check,
                 'user_id' => $userid, 'message' => 'Mobile verified..Please login to access your account', ];
 

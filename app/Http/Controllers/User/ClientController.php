@@ -304,8 +304,8 @@ class ClientController extends AdvanceSearchController
             $currency = getCurrencyForClient($client->country);
             $orders = $order->where('client', $id)->get();
             $comments = Comment::where('user_id', $client->id)->get();
-            $mobile = $client->verificationAttempts()->where('type', 'mobile')->value('attempt_count');
-            $email = $client->verificationAttempts()->where('type', 'email')->value('attempt_count');
+            $mobile = $client->verificationAttempts()->value('mobile_attempt');
+            $email = $client->verificationAttempts()->value('email_attempt');
 
             return view(
                 'themes.default1.user.client.show',

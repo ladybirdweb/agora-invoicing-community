@@ -243,22 +243,16 @@ class CartController extends BaseCartController
                         $id = $currencyQuery->whereIn('days', [365, 366])->value('id');
                         $daysQuery = PlanPrice::where('plan_id', $id)->where('currency', $currency['currency'])->first();
                         $cost = $daysQuery->offer_price ? $daysQuery->add_price - (($daysQuery->offer_price / 100) * $daysQuery->add_price) : $daysQuery->add_price;
-                        Session::put('planDays', Session::get('toggleState'));
-                        Session::forget('toggleState');
-
-                        return $cost;
                     } elseif (\Session::get('toggleState') == 'monthly') {
                         $id = $currencyQuery->whereIn('days', [30, 31])->value('id');
-                        $daysQuery = PlanPrice::where('plan_id', $id)->where('currency', $currency['currency'])->first();
+                        $daysQuery = PlanPrice::where('plan_id', $id)->where('currency', $currency['currency'])->latest();
                         $cost = $daysQuery->offer_price ? $daysQuery->add_price - (($daysQuery->offer_price / 100) * $daysQuery->add_price) : $daysQuery->add_price;
-                        Session::put('planDays', Session::get('toggleState'));
-                        Session::forget('toggleState');
-
-                        return $cost;
                     }
                 }
                 Session::put('planDays', Session::get('toggleState'));
                 Session::forget('toggleState');
+                return $cost;
+
             } else {
                 $cost = 0;
                 $months = 0;

@@ -848,8 +848,13 @@ $price = $order->price_override;
                             return stripos($value, 'free') === false;
                         });
                     }
+
+                    $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
+                    $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+                    $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                    $planNameReal = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
                     ?>
-                    <label class="mb-1" style="margin-left: 14px;">Current Plan: {{$planName}}</label>
+                    <label class="mb-1" style="margin-left: 14px;">Current Plan: {{$planNameReal}}</label>
                     <div class="form-group mb-3">
                         {!! Form::label('plan', 'Select a new plan:', ['class' => 'col-12']) !!}
                         <div class="col-12">
@@ -1695,8 +1700,7 @@ $price = $order->price_override;
                     success: function (data) {
                         if (data.success ==true){
                             var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.message+'</div>';
-                            $('#success-domain').html(result);
-                            $('#success-domain').css('color', 'green');
+                            $('#success-domain').html(result).css('color', 'green').show();
                             $('#changeDomain').attr('disabled',false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
                             $('.loader-wrapper').hide();
@@ -1705,16 +1709,15 @@ $price = $order->price_override;
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
                                 $('#success-domain').fadeOut('slow', function() {
-                                    $(this).html('');
+                                    $(this).empty().hide(); // Clear and hide the error message after fading out
                                 });
                             }, 30000);
                         }
 
                     }, error: function(data) {
-                        if(data.responseJSON.success==false) {
+                        if (data.responseJSON.success === false) {
                             var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
-                            $('#failure-domain').html(result);
-                            $('#failure-domain').css('color', 'red');
+                            $('#failure-domain').html(result).css('color', 'red').show(); // Show the error message
                             $('#changeDomain').attr('disabled', false);
                             $('#changeDomain').html("<i class='fa fa-globe'>&nbsp;&nbsp;</i>Change domain");
                             $('.loader-wrapper').hide();
@@ -1724,13 +1727,12 @@ $price = $order->price_override;
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
                                 $('#failure-domain').fadeOut('slow', function() {
-                                    $(this).html('');
+                                    $(this).empty().hide(); // Clear and hide the error message after fading out
                                 });
-                            }, 30000);
-
+                            }, 10000); // Change this timeout to your desired duration
                         }
-
                     }
+
                 });
             });
         });
@@ -1767,8 +1769,7 @@ $price = $order->price_override;
                             $('#agentNumber').attr('disabled', false);
                             $('#agentNumber').html("<i class='fa fa-users'>&nbsp;&nbsp;</i>  Update Agents");
                             var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + ' </div>';
-                            $('#failure-agent').html(result);
-                            $('#failure-agent').css('color', 'red');
+                            $('#failure-agent').html(result).css('color', 'red').show();
                             $('.loader-wrapper').hide();
                             $('.overlay').hide(); // Hide the overlay
                             $('.modal-body').css('pointer-events', 'auto');
@@ -1776,9 +1777,9 @@ $price = $order->price_override;
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
                                 $('#failure-agent').fadeOut('slow', function() {
-                                    $(this).html('');
+                                    $(this).empty().hide();
                                 });
-                            }, 30000);
+                            }, 10000);
 
                         }
                     }
@@ -1822,8 +1823,7 @@ $price = $order->price_override;
                     },  error: function(data) {
                         if (data.responseJSON.success == false) {
                             var result = '<div class="alert alert-danger alert-dismissable"><strong><i class="far fa-thumbs-down"></i> Oops! </strong> ' + data.responseJSON.message + '</div>';
-                            $('#failure-upgrade').html(result);
-                            $('#failure-upgrade').css('color', 'red');
+                            $('#failure-upgrade').html(result).css('color', 'red').show();
                             $('#upgradedowngrade').attr('disabled',false);
                             $('#upgradedowngrade').html("<i class='fas fa-cloud-upload-alt'>&nbsp;&nbsp;</i>Change Plan");
                             $('.loader-wrapper').hide();
@@ -1833,9 +1833,9 @@ $price = $order->price_override;
                             // Auto-disappear after 5 seconds (5000 milliseconds)
                             setTimeout(function() {
                                 $('#failure-upgrade').fadeOut('slow', function() {
-                                    $(this).html('');
+                                    $(this).empty().hide();
                                 });
-                            }, 30000);
+                            }, 10000);
                         }
                     }
 

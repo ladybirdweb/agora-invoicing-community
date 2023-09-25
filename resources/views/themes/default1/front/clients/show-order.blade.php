@@ -279,7 +279,7 @@ $price = $order->price_override;
                     if ($price == '0' && $product->type != '4' && $order->order_status!='Terminated') {
                         $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
                     }
-                    elseif($price != '0')
+                    elseif($price != '0' && $order->order_status!='Terminated')
                     {
                       $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
                     }

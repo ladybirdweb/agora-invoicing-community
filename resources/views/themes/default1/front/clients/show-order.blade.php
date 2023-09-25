@@ -664,7 +664,7 @@ $price = $order->price_override;
                                                 $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
                                                 $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
                                                 $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
-                                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
+                                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
                                                 ?>
 
 
@@ -773,9 +773,9 @@ $price = $order->price_override;
                     <div class="form-group">
                         <div class="col-12">
                             <?php
-                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',\Auth::user()->currency)->latest()->value('add_price');
+                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
                             ?>
-                            <p>Price per agent: <span id="ll" class="ll">{!! currencyFormat($ExistingPlanPirce,\Auth::user()->currency,true) !!}</span></p>
+                            <p>Price per agent: <span id="ll" class="ll">{!! currencyFormat($ExistingPlanPirce,getCurrencyForClient(\Auth::user()->country),true) !!}</span></p>
                         </div>
                         <div class="col-12"  style="margin-top: -14px;">
                             {!! Form::label('number', 'Choose your desired number of agents:', ['class' => 'col-form-label']) !!}
@@ -830,7 +830,7 @@ $price = $order->price_override;
                         ->toArray();
                     $planIds = array_keys($plans);
 
-                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',\Auth::user()->currency)
+                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',getCurrencyForClient(\Auth::user()->country))
                         ->latest()
                         ->pluck('renew_price', 'plan_id')
                         ->toArray();
@@ -838,7 +838,7 @@ $price = $order->price_override;
                     foreach ($plans as $planId => $planName) {
                         if (isset($renewalPrices[$planId])) {
                             if(in_array($product->id,[117,119])) {
-                                $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                                $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                             }
                         }
                     }

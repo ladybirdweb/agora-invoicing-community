@@ -382,10 +382,10 @@ class CloudExtraActivities extends Controller
                             $price = 0;
                             $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
 
-                            $formattedValue = currencyFormat(round($discount), \Auth::user()->currency, true);
+                            $formattedValue = currencyFormat(round($discount), getCurrencyForClient(\Auth::user()->country), true);
                             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                             $orderNumber = Order::where('id', $orderId)->value('number');
-                            $formattedPay = currencyFormat($pay, \Auth::user()->currency, true);
+                            $formattedPay = currencyFormat($pay, getCurrencyForClient(\Auth::user()->country), true);
                             if ($pay) {
                                 $pay = $pay + round($discount);
                                 Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
@@ -415,9 +415,9 @@ class CloudExtraActivities extends Controller
                             $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
 
                             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
-                            $formattedValue = currencyFormat(round($discount), \Auth::user()->currency, true);
+                            $formattedValue = currencyFormat(round($discount), getCurrencyForClient(\Auth::user()->country), true);
                             $orderNumber = Order::where('id', $orderId)->value('number');
-                            $formattedPay = currencyFormat($pay, \Auth::user()->currency, true);
+                            $formattedPay = currencyFormat($pay, getCurrencyForClient(\Auth::user()->country), true);
 
                             if ($pay) {
                                 $pay = $pay + round($discount);
@@ -610,7 +610,7 @@ class CloudExtraActivities extends Controller
                     ->latest()->update(['payment_status'=>'success']);
 
                 $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
-                $formattedValue = currencyFormat($discount, \Auth::user()->currency, true);
+                $formattedValue = currencyFormat($discount, getCurrencyForClient(\Auth::user()->country), true);
                 $oldOrderId = \Session::get('upgradeorderId');
                 $oldOrderNumber = Order::where('id', $oldOrderId)->value('number');
                 $newOrderId = \Session::get('upgradeNewActiveOrder');
@@ -727,7 +727,7 @@ class CloudExtraActivities extends Controller
 
     public function processFormat(Request $request)
     {
-        return currencyFormat($request->get('totalPrice'), \Auth::user()->currency, true);
+        return currencyFormat($request->get('totalPrice'), getCurrencyForClient(\Auth::user()->country), true);
     }
 
     public function getThePaymentCalculationDisplay(Request $request)

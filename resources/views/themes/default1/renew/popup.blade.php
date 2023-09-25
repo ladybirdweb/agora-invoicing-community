@@ -24,7 +24,7 @@
 
                 $planIds = array_keys($plans);
 
-                $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',\Auth::user()->currency)
+                $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)->where('currency',getCurrencyForClient(\Auth::user()->country))
                     ->latest()
                     ->pluck('renew_price', 'plan_id')
                     ->toArray();
@@ -32,10 +32,10 @@
                 foreach ($plans as $planId => $planName) {
                     if (isset($renewalPrices[$planId])) {
                         if(in_array($productid,[117,119])) {
-                            $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                            $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                         }
                         else{
-                            $plans[$planId] .= " (Renewal price: " . currencyFormat($renewalPrices[$planId], \Auth::user()->currency, true) . ")";
+                            $plans[$planId] .= " (Renewal price: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                         }
                     }
                 }

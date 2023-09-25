@@ -233,7 +233,7 @@ class ClientController extends BaseClientController
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated');
 
-                return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
+                return redirect()->back()->with('Success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
             }
         } catch(\Exception $ex) {
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated', $result);

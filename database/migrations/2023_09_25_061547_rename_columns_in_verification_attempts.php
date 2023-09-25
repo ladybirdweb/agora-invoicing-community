@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('verification_attempts', function (Blueprint $table) {
-             $table->renameColumn('type', 'mobile_attempt')->nullabe();
+            $table->renameColumn('type', 'mobile_attempt')->nullabe();
             $table->renameColumn('attempt_count', 'email_attempt')->nullable();
         });
     }

@@ -13,7 +13,7 @@ class VerificationAttempt extends Model
 
     protected $primaryKey = 'user_id';
 
-    protected $fillable = ['user_id', 'mobile_attempt', 'email_attempt'];
+    protected $fillable = ['user_id','mobile_attempt','email_attempt'];
 
     public function user()
     {

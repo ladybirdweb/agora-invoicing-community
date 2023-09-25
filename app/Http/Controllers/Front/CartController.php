@@ -251,6 +251,7 @@ class CartController extends BaseCartController
                 }
                 Session::put('planDays', Session::get('toggleState'));
                 Session::forget('toggleState');
+
                 return $cost;
             } else {
                 $cost = 0;

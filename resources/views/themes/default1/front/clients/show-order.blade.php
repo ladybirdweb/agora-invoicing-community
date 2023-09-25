@@ -1027,7 +1027,7 @@ $price = $order->price_override;
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true" onclick="refreshPage()">&times;</button>
                 <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">Stripe payment</h4>
                 <div class="horizontal-images">
                     <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
@@ -1133,7 +1133,12 @@ $price = $order->price_override;
 
 
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
 <script>
+   function refreshPage() {
+            location.reload(); 
+        }
+        
 $(document).ready(function() {
     $("#valid-modal").validate({
         rules: {

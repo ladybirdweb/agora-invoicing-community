@@ -203,7 +203,7 @@
                                                         <div class="product-name-wrapper">
                                                             {{$item->name}}
                                                             <br>
-                                                            <i>{{$item->attributes->domain}}</i>
+                                                            <i style="font-size: 12px;">{{$item->attributes->domain}}</i>
                                                         </div>
                                                     </td>
 

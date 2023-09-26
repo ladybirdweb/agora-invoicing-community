@@ -47,7 +47,15 @@
     .cart_table_item {
     border-bottom: 1px solid #ddd; /* Keep borders around each product */
     background-color: #f9f9f9; /* Add a light shade to the product cells */
+
 }
+
+    .product-name-wrapper {
+        max-width: 200px; /* Adjust the max width as needed */
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 
 /* Style the "Remove" icon */
 
@@ -191,10 +199,13 @@
                                                 <td class="product-thumbnail">
                                                     <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
                                                 </td>
-                                                <td class="product-name">
-                                                    {{$item->name}}
-                                                    <br>
-                                                </td>
+                                                    <td class="product-name">
+                                                        <div class="product-name-wrapper">
+                                                            {{$item->name}}
+                                                            <br>
+                                                            <i>{{$item->attributes->domain}}</i>
+                                                        </div>
+                                                    </td>
 
 
                                                 <td class="product-price">
@@ -255,9 +266,7 @@
                                                 </td>
 
                                             </tr>
-                                            <tr>
-                                                <td colspan="6"><i>{{$item->attributes->domain}}</i></td>
-                                            </tr>
+
                                         </div>
 
 

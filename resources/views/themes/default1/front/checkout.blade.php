@@ -486,18 +486,28 @@ $cartSubtotalWithoutCondition = 0;
           var amountToCredit = parseFloat('{{ $amt_to_credit }}');
           var currency = '{{$curr}}';
           var updatedValue = 0;
+          var $gateways = $('input:radio[name = payment_gateway]');
 
           // Calculate the updated value based on the checkbox status and PHP values
           if(isChecked){
               if(cartTotal<=amountToCredit){
                   updatedValue = 0;
+                  $gateways.filter('[value=Razorpay]').attr('checked', false);
+                  $gateways.filter('[value=Stripe]').attr('checked', false);
+                  $gateways.filter('[value=Razorpay]').attr('disabled', true);
+                  $gateways.filter('[value=Stripe]').attr('disabled', true);
               }
               else{
                   updatedValue = cartTotal - amountToCredit
+                  $gateways.filter('[value=Razorpay]').attr('disabled', false);
+                  $gateways.filter('[value=Stripe]').attr('disabled', false);
+
               }
           }
           else{
-                  updatedValue = cartTotal;
+              updatedValue = cartTotal;
+              $gateways.filter('[value=Razorpay]').attr('disabled', false);
+              $gateways.filter('[value=Stripe]').attr('disabled', false);
           }
           // Make an AJAX request to the API endpoint
           $.ajax({

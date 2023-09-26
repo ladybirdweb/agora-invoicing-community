@@ -227,14 +227,14 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $isTrue=1;
+        $isTrue = 1;
         $cost = $request->input('cost');
 
         if (\Session::has('nothingLeft')) {
             $isTrue = \Session::get('nothingLeft');
         }
 
-        if($isTrue!=0) {
+        if ($isTrue != 0) {
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 $this->validate($request, [
                     'payment_gateway' => 'required',
@@ -246,7 +246,7 @@ class CheckoutController extends InfoController
         try {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
-            $payment_method = ($isTrue)?$request->input('payment_gateway'):'Credit Balance';
+            $payment_method = ($isTrue) ? $request->input('payment_gateway') : 'Credit Balance';
             \Session::put('payment_method', $payment_method);
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
             $cost = $request->input('cost');

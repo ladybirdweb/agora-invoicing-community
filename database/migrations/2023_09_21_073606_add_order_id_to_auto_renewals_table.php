@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::table('auto_renewals', function (Blueprint $table) {
-            if (!Schema::hasColumn('auto_renewals', 'order_id')) {
+            if (! Schema::hasColumn('auto_renewals', 'order_id')) {
                 $table->unsignedBigInteger('order_id')->nullable();
                 $table->foreign('order_id')->references('id')->on('orders');
             }
-            if (!Schema::hasColumn('auto_renewals', 'payment_method')) {
+            if (! Schema::hasColumn('auto_renewals', 'payment_method')) {
                 $table->string('payment_method')->nullable();
             }
         });

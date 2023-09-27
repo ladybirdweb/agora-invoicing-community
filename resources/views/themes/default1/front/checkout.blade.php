@@ -61,6 +61,7 @@ Checkout
 @if (!\Cart::isEmpty())
 <?php
 $cartSubtotalWithoutCondition = 0;
+\DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
 ?>
 <div class="container">
 <div class="row">
@@ -499,6 +500,8 @@ $cartSubtotalWithoutCondition = 0;
               }
               else{
                   updatedValue = cartTotal - amountToCredit
+                  $gateways.filter('[value=Razorpay]').attr('checked', true);
+                  $gateways.filter('[value=Stripe]').attr('checked', true);
                   $gateways.filter('[value=Razorpay]').attr('disabled', false);
                   $gateways.filter('[value=Stripe]').attr('disabled', false);
 
@@ -506,6 +509,8 @@ $cartSubtotalWithoutCondition = 0;
           }
           else{
               updatedValue = cartTotal;
+              $gateways.filter('[value=Razorpay]').attr('checked', true);
+              $gateways.filter('[value=Stripe]').attr('checked', true);
               $gateways.filter('[value=Razorpay]').attr('disabled', false);
               $gateways.filter('[value=Stripe]').attr('disabled', false);
           }

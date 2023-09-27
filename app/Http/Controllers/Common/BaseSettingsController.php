@@ -196,7 +196,7 @@ class BaseSettingsController extends PaymentSettingsController
         $post_expiry = [
             '30' => '30 days',
             '15' => '15 days',
-            '5' => '5 days',
+            '7' => '7 days',
             '1' => '1 day',
         ];
         $cloudDays = [
@@ -206,19 +206,14 @@ class BaseSettingsController extends PaymentSettingsController
             '1' => '1 day',
         ];
 
-        $selectedDays = [];
-        $daysLists = ExpiryMailDay::get();
-        if (count($daysLists) > 0) {
-            foreach ($daysLists as $daysList) {
-                $selectedDays[] = $daysList;
-            }
-        }
         $delLogDays = ['720' => '720 Days', '365' => '365 days', '180' => '180 Days',
             '150' => '150 Days', '60' => '60 Days', '30' => '30 Days', '15' => '15 Days', '5' => '5 Days', '2' => '2 Days', '0' => 'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
-        $Auto_expiryday[] = ExpiryMailDay::first()->autorenewal_days;
-        $post_expiryday[] = ExpiryMailDay::first()->postexpiry_days;
+        $selectedDays = json_decode(ExpiryMailDay::first()->days,true);
+        $Auto_expiryday[] = json_decode(ExpiryMailDay::first()->autorenewal_days,true);
+        $post_expiryday[] = json_decode(ExpiryMailDay::first()->postexpiry_days,true);
         $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
+
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -274,32 +269,23 @@ class BaseSettingsController extends PaymentSettingsController
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)
     {
-        $daysList = new \App\Model\Mailjob\ExpiryMailDay();
-        $lists = $daysList->get();
+        ExpiryMailDay::truncate();
 
-        if ($lists->count() > 0) {
-            foreach ($lists as $list) {
-                $list->delete();
-            }
-        }
+        ExpiryMailDay::create([
+            'days' => json_encode($request->input('expiryday')),
+            'autorenewal_days' => json_encode($request->input('subexpiryday')),
+            'postexpiry_days' => json_encode($request->input('postsubexpiry_days')),
+        ]);
 
-        ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'), 'postexpiry_days' => $request->input('postsubexpiry_days')]);
-
-        if ($request['expiryday'] != null) {
-            if (is_array($request['expiryday'])) {
-                foreach ($request['expiryday'] as $key => $value) {
-                    $daysList->create([
-                        'days' => $value,
-                    ]);
-                }
-            }
-        }
+        // $cloudDays = is_array($request->input('cloud_days')) ? $request->input('cloud_days') : [$request->input('cloud_days')];
 
         \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
-        ActivityLogDay::findOrFail(1)->update(['days' => $request->logdelday]);
+
+        ActivityLogDay::findOrFail(1)->update(['days' => $request->input('logdelday')]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
+
 
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)

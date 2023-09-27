@@ -296,10 +296,10 @@ class CronController extends BaseCronController
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }
 
-        $uniqueSubscriptions = array_map("unserialize", array_unique(array_map("serialize", $subscriptions)));
+        $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+
         return $uniqueSubscriptions;
     }
-
 
     public function getautoSubscriptions($days)
     {
@@ -325,7 +325,8 @@ class CronController extends BaseCronController
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }
 
-        $uniqueSubscriptions = array_map("unserialize", array_unique(array_map("serialize", $subscriptions)));
+        $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+
         return $uniqueSubscriptions;
     }
 
@@ -355,10 +356,10 @@ class CronController extends BaseCronController
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }
 
-        $uniqueSubscriptions = array_map("unserialize", array_unique(array_map("serialize", $subscriptions)));
+        $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+
         return $uniqueSubscriptions;
     }
-
 
     public function eachSubscription()
     {
@@ -367,7 +368,7 @@ class CronController extends BaseCronController
             $allDays = ExpiryMailDay::pluck('days')->toArray();
             $sub = $this->getSubscriptions($allDays);
             foreach ($sub as $value) {
-                $value = (object)$value;
+                $value = (object) $value;
                 $userid = $value->user_id;
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;
@@ -382,9 +383,6 @@ class CronController extends BaseCronController
         }
     }
 
-
-
-
     public function autoRenewalExpiryNotify()
     {
         $status = StatusSetting::value('subs_expirymail');
@@ -393,7 +391,7 @@ class CronController extends BaseCronController
             $cron = new AutorenewalCronController();
             $Autosub = $this->getautoSubscriptions($Days);
             foreach ($Autosub as $value) {
-                $value = (object)$value;
+                $value = (object) $value;
                 $userid = $value->user_id;
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;
@@ -416,7 +414,7 @@ class CronController extends BaseCronController
             $cron = new AutorenewalCronController();
             $postSub = $this->getPostSubscriptions($periods);
             foreach ($postSub as $value) {
-                $value = (object)$value;
+                $value = (object) $value;
                 $userid = $value->user_id;
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;

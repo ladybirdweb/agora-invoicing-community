@@ -1,9 +1,8 @@
 @extends('themes.default1.layouts.master')
 @section('title')
 Edit User
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-
 @stop
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
     @section('content-header')
         <div class="col-sm-6">

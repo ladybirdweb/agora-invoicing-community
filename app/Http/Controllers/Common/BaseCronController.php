@@ -284,6 +284,10 @@ class BaseCronController extends Controller
 
     public function Expiredsub_Mail($user, $end, $product, $order, $sub)
     {
+        $contact = getContactData();
+        $product_type = Product::where('name', $product)->value('type');
+        $expiryDays = ExpiryMailDay::first()->cloud_days;
+
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();

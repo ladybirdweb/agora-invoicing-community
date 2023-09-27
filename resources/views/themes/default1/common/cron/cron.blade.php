@@ -3,6 +3,24 @@
 Cron Setting
 @stop
 @section('content-header')
+<style>
+    /* Style selected options */
+    select[multiple] option[selected] {
+        position: relative;
+    }
+
+    /* Style the tick icon */
+    select[multiple] option[selected]::after {
+        content: '\2713'; 
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 2px;
+        color: black; 
+        font-weight: bold;
+        font-size: 18px;
+    }
+</style>
     <div class="col-sm-6">
         <h1>{!! Lang::get('message.cron-setting') !!}</h1>
     </div>
@@ -71,36 +89,19 @@ Cron Setting
               <!-- /.form-group -->
               <div class="form-group select2">
                 <label>{{Lang::get('message.expiry_mail_sent')}}</label> <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them to renew the product. This email is send out only to those who have not enabled auto renewal"></i>
-
-                <?php 
-                 if (count($selectedDays) > 0) {
-                foreach ($selectedDays as $selectedDay) {
-                    $saved[$selectedDay->days] = 'true';
-                }
-               }  else {
-                    $saved=[];
-                }
-                 if (count($saved) > 0) {
-                   foreach ($saved as $key => $value) {
-                     $savedkey[]=$key;
-                   }
-                   $saved1=$savedkey?$savedkey:[''];
-                       }
-                       else{
-                        $saved1=[];
-                       }
-                 ?>
                   
                    @if ($mailStatus == 0)
-                    <select id ="days" name="expiryday" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                    <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
                     </select>
                       @else
-                <select id ="days" name="expiryday" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+                <select id ="days" name="expiryday[]" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
 
-                    
                     @foreach ($expiryDays as $key=>$value)
-                  <option value="{{$key}}" <?php echo (in_array($key, $saved1)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+
+                  <option value="{{$key}}" <?php echo (in_array($key, $selectedDays)) ?  "selected" : "" ;  ?>>
+                  {{$value}}
+                </option>
                    @endforeach
                    
                 </select>
@@ -130,56 +131,32 @@ Cron Setting
             </div>
             <!-- /.col -->
 
-                <!-- /.col -->
-            <div class="col-md-6">
-             
-              <!-- /.form-group -->
-              <div class="form-group select2">
-                <label>{{Lang::get('Subscription renewal reminder - Auto payment')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them product will be renewed automatically. This email is send out only to those who have enabled auto renewal"></i>
+           <div class="col-md-6">
+          <div class="form-group select2">
+              <label>{{ Lang::get('Subscription renewal reminder - Auto payment') }}</label>
+              <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them product will be renewed automatically. This email is send out only to those who have enabled auto renewal"></i>
 
-                <?php 
-                 if (count($selectedDays) > 0) {
-                foreach ($selectedDays as $selectedDay) {
-                    $saved[$selectedDay->days] = 'true';
-                }
-               }  else {
-                    $saved=[];
-                }
-                 if (count($saved) > 0) {
-                   foreach ($saved as $key => $value) {
-                     $savedkey[]=$key;
-                   }
-                   $saved1=$savedkey?$savedkey:[''];
-                       }
-                       else{
-                        $saved1=[];
-                       }
-                 ?>
-                  
-                   @if ($mailStatus == 0)
-                    <select id ="days" name="subexpiryday" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
-                      <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
-                    </select>
-                      @else
-                <select id ="days" name="subexpiryday" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
-
-                    
-                    @foreach ($Subs_expiry as $key=>$value)
-                  <option value="{{$key}}" <?php echo (in_array($key, $Auto_expiryday)) ?  "selected" : "" ;  ?>>{{$value}}</option>
-                   @endforeach
-                   
-          
-                </select>
-                @endif
-              </div>
-              <!-- /.form-group -->
-            </div>
+              @if ($mailStatus == 0)
+                  <select id="subdays" name="subexpiryday[]" class="form-control selectpicker" style="width: 100%; color: black;" disabled>
+                      <option value="">{{ Lang::get('message.enable_mail_cron') }}</option>
+                  </select>
+              @else
+                  <select id="subdays" name="subexpiryday[]" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color: black;">
+                      @foreach ($Subs_expiry as $key => $value)
+                          <option value="{{ $key }}" {{ in_array($key, $Auto_expiryday[0]) ? 'selected' : '' }}>{{ $value }}</option>
+                      @endforeach
+                  </select>
+              @endif
+          </div>
+          <!-- /.form-group -->
+      </div>
+  
 
                 <div class="col-md-6">
               <div class="form-group">
                 <label>{{Lang::get('Cloud subscription deletion')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry & on cloud instance deletion. This email is send out to all users using auto renewal or are using manual payment method. For cloud instance only"></i>
                   @if ($cloudStatus == 0)
-                    <select id ="days" name="cloud_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                    <select id ="days" name="cloud_days" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('Please Enable the Faveo cloud cron')}}</option>
                     </select>
                       @else
@@ -192,51 +169,30 @@ Cron Setting
               </div>
             </div>
 
+    <div class="col-md-6">
+        <div class="form-group select2">
+            <label>{{ Lang::get('Subscription expired') }}</label>
+            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry reminding them to renew the product. This email is send out to all users using auto renewal or are using manual payment method. For self-hosted and cloud both"></i>
 
-                  <!-- /.col -->
-            <div class="col-md-6">
-             
-              <!-- /.form-group -->
-              <div class="form-group select2">
-                <label>{{Lang::get('Subscription expired')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry reminding them to renew the product. This email is send out to all users using auto renewal or are using manual payment method. For self hosted and cloud both"></i>
-
-                <?php 
-                 if (count($selectedDays) > 0) {
-                foreach ($selectedDays as $selectedDay) {
-                    $saved[$selectedDay->days] = 'true';
-                }
-               }  else {
-                    $saved=[];
-                }
-                 if (count($saved) > 0) {
-                   foreach ($saved as $key => $value) {
-                     $savedkey[]=$key;
-                   }
-                   $saved1=$savedkey?$savedkey:[''];
-                       }
-                       else{
-                        $saved1=[];
-                       }
-                 ?>
-                  
-                   @if ($mailStatus == 0)
-                    <select id ="days" name="postsubexpiry_days" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
-                      <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
-                    </select>
-                      @else
-                <select id ="days" name="postsubexpiry_days" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
-
-                    
-                    @foreach ($post_expiry as $key=>$value)
-                  <option value="{{$key}}" <?php echo (in_array($key, $post_expiryday)) ?  "selected" : "" ;  ?>>{{$value}}</option>
-                   @endforeach
-                   
+            @if ($mailStatus == 0)
+                <select id="postdays" name="postsubexpiry_days[]" class="form-control selectpicker" style="width: 100%; color: black;" disabled>
+                    <option value="">{{ Lang::get('message.enable_mail_cron') }}</option>
                 </select>
-                @endif
-              </div>
+            @else
+                <select id="postdays" name="postsubexpiry_days[]" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color: black;">
+                    @foreach ($post_expiry as $key => $value)
+                        <option value="{{ $key }}" {{ in_array($key, $post_expiryday[0]) ? 'selected' : '' }}>{{ $value }}</option>
+                    @endforeach
+                </select>
+            @endif
+        </div>
+        <!-- /.form-group -->
+    </div>
 
-              <!-- /.form-group -->
-            </div>
+
+
+
+
           </div>
           <!-- /.row -->
           @if ( $mailStatus || $activityStatus || $cloudStatus ==1)
@@ -269,6 +225,9 @@ Cron Setting
         return this.id == 'setting';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
+
+
+
 @stop
 
 

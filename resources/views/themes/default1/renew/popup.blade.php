@@ -59,7 +59,7 @@
                      <div class="form-group">
                          {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
 
-                         {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents', 'placeholder' => '']) !!}
+                         {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents','min' => '1', 'placeholder' => '']) !!}
                      </div>
                 @endif
                 <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">

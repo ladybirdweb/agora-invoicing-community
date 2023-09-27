@@ -651,6 +651,16 @@ $price = $order->price_override;
                         </div>
 
                     </div>
+                        <?php
+                        $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
+                        $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
+                        $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                        $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                        $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
+                        ?>
+
+                    @if(strpos($planName,'free')==false)
+
                     <div class="row">
                         <div class="col-lg-6 mb-6">
                             <div class="card o-0 border-0">
@@ -659,13 +669,7 @@ $price = $order->price_override;
                                         <div class="d-flex align-items-start">
                                             <i class="fas fa-cloud-upload-alt mr-2" style="color: black; margin-top: 0.1em;"></i>
                                             <div>
-                                                <?php
-                                                $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
-                                                $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-                                                $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
-                                                $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
-                                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
-                                                ?>
+
 
 
                                                 <h5 class="mb-1">Upgrade/Downgrade Cloud Plan</h5>
@@ -678,6 +682,7 @@ $price = $order->price_override;
                             </div>
                         </div>
                     </div>
+                        @endif
 
 
 

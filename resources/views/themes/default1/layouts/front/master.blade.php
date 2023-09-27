@@ -464,14 +464,25 @@ $days = $pay->where('product','117')->value('days');
                 </div>
             @endif
 
-            @if(Session::has('success'))
+            @if(Session::has('Success'))
 
-            <div class="container">
+<div class="container">
 
-                  {!!Session::get('success')!!}
-            </div>
+      {!!Session::get('Success')!!}
+</div>
 
-            @endif
+@endif
+@if(!Session::has('Success'))
+@if(Session::has('success')) 
+
+<div class="alert alert-success">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+
+{!!Session::get('success')!!}
+</div>
+@endif
+@endif
 
             <!--fail message -->
             @if(Session::has('fails') )

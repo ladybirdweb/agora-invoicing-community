@@ -87,16 +87,21 @@ class BaseRenewController extends Controller
     public function getCost(Request $request)
     {
         try {
+            $isAgents=false;
             $planid = $request->input('plan');
             if (! $planid || $planid == 'Choose') {
                 return 0;
             }
             $userid = $request->input('user');
             $plan = Plan::find($planid);
+            if(in_array($plan->product,[117,119])){
+                $isAgents = true;
+            }
             $planDetails = userCurrencyAndPrice($userid, $plan);
             $price = $planDetails['plan']->renew_price;
 
-            return $price;
+
+            return [$price,$isAgents];
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

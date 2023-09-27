@@ -381,6 +381,8 @@ Checkout
           var amountToCredit = parseFloat('{{ $amt_to_credit }}');
           var currency = '{{$currency}}';
           var updatedValue = 0;
+          var $gateways = $('input:radio[name = payment_gateway]');
+
 
           // Calculate the updated value based on the checkbox status and PHP values
           if(isChecked){

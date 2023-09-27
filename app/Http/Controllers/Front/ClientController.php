@@ -104,7 +104,7 @@ class ClientController extends BaseClientController
                 Auto_renewal::create($customer_details);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
 
-                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'),null, $request->amount, 'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
 
                 $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
 
@@ -112,7 +112,7 @@ class ClientController extends BaseClientController
             }
         } catch(\Exception $ex) {
             $result = [$ex->getMessage()];
-            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'),$result,$request->amount, 'Payment method updated');
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
 
             return response()->json(compact('result'), 500);
         }

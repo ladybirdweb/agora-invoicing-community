@@ -209,11 +209,10 @@ class BaseSettingsController extends PaymentSettingsController
         $delLogDays = ['720' => '720 Days', '365' => '365 days', '180' => '180 Days',
             '150' => '150 Days', '60' => '60 Days', '30' => '30 Days', '15' => '15 Days', '5' => '5 Days', '2' => '2 Days', '0' => 'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
-        $selectedDays = json_decode(ExpiryMailDay::first()->days,true);
-        $Auto_expiryday[] = json_decode(ExpiryMailDay::first()->autorenewal_days,true);
-        $post_expiryday[] = json_decode(ExpiryMailDay::first()->postexpiry_days,true);
+        $selectedDays = json_decode(ExpiryMailDay::first()->days, true);
+        $Auto_expiryday[] = json_decode(ExpiryMailDay::first()->autorenewal_days, true);
+        $post_expiryday[] = json_decode(ExpiryMailDay::first()->postexpiry_days, true);
         $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
-
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -285,7 +284,6 @@ class BaseSettingsController extends PaymentSettingsController
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
-
 
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)

@@ -325,7 +325,7 @@ class SettingsController extends Controller
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
         if ($payment) {
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $amount, 'Product purchase', $exceptionMessage);
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,$exceptionMessage,$amount,'Product purchase');
         }
     }
 
@@ -341,7 +341,7 @@ class SettingsController extends Controller
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
         if ($payment) {
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $amount, 'Product purchase');
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number,null,$amount,'Product purchase');
         }
     }
 

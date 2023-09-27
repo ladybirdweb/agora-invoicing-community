@@ -113,7 +113,8 @@
            return
        }
        var user = document.getElementsByName('user')[0].value;
-       shouldFetchPlanCost = false
+       shouldFetchPlanCost = false;
+       agents=$('.agents').val();
 
        $.ajax({
            type: "get",

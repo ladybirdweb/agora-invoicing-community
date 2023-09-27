@@ -94,7 +94,7 @@ class BaseRenewController extends Controller
             }
             $userid = $request->input('user');
             $plan = Plan::find($planid);
-            if (in_array($plan->product, [117, 119])) {
+            if (Product::where('id', $plan->product)->value('can_modify_agent')) {
                 $isAgents = true;
             }
             $planDetails = userCurrencyAndPrice($userid, $plan);

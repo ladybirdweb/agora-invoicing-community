@@ -51,8 +51,12 @@
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',]) !!}
 
+                    @if($agents == 'Unlimited')
+                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value)',]) !!}
+                    @else
+                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',]) !!}
+                    @endif
                     {!! Form::hidden('user',$userid) !!}
                     </div>
                 @if(in_array($productid,[117,119]))

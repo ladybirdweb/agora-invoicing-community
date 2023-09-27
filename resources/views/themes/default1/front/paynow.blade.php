@@ -27,6 +27,9 @@ Checkout
     ->where('payment_status','success')
     ->where('amt_to_credit','!=',0)
     ->value('amt_to_credit');
+
+\DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
+
 ?>
 <div class="container">
 <div class="row">
@@ -384,16 +387,28 @@ Checkout
               if(cartTotal<=amountToCredit){
                   updatedValue = 0;
                   billing_pay = cartTotal;
+                  $gateways.filter('[value=Razorpay]').attr('checked', false);
+                  $gateways.filter('[value=Stripe]').attr('checked', false);
+                  $gateways.filter('[value=Razorpay]').attr('disabled', true);
+                  $gateways.filter('[value=Stripe]').attr('disabled', true);
               }
               else{
                   updatedValue = cartTotal - amountToCredit;
                   billing_pay = amountToCredit;
+                  $gateways.filter('[value=Razorpay]').attr('checked', true);
+                  $gateways.filter('[value=Stripe]').attr('checked', true);
+                  $gateways.filter('[value=Razorpay]').attr('disabled', false);
+                  $gateways.filter('[value=Stripe]').attr('disabled', false);
 
               }
           }
           else{
               updatedValue = cartTotal;
               billing_pay = null;
+              $gateways.filter('[value=Razorpay]').attr('checked', true);
+              $gateways.filter('[value=Stripe]').attr('checked', true);
+              $gateways.filter('[value=Razorpay]').attr('disabled', false);
+              $gateways.filter('[value=Stripe]').attr('disabled', false);
           }
           // Make an AJAX request to the API endpoint
           $.ajax({

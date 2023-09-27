@@ -372,7 +372,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'agents' => $agents,
                 'billing_pay' => $amt_credit,
             ]);
-
+            \Session::forget('plan');
             return $invoiceItem;
         } catch (\Exception $ex) {
             throw new \Exception('Can not create Invoice Items');

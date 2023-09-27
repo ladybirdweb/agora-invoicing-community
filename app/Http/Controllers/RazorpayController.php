@@ -86,7 +86,7 @@ class RazorpayController extends Controller
                     $installationPath = \Session::get('installation_path');
                     $productId = \Session::get('product_id');
                     $oldLicense = \Session::get('oldLicense');
-                    $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
+                    $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
                     $this->doTheDeed($invoice);

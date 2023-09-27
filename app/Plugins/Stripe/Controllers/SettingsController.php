@@ -177,7 +177,7 @@ class SettingsController extends Controller
                     $productId = \Session::get('product_id');
                     $oldLicense = \Session::get('oldLicense');
                     $this->doTheDeed($invoice);
-                    $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+                    $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
                     $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);

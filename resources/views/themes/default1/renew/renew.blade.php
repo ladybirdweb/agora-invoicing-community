@@ -143,7 +143,7 @@ Renew
 
              success: function (data) {
 
-                 $("#price").val(data);
+                 $("#price").val(data[0]);
 
                  shouldFetchPlanCost = true;
 

@@ -111,16 +111,18 @@
        }
        var user = document.getElementsByName('user')[0].value;
        shouldFetchPlanCost = false
-       agents=$('.agents').val();
+
        $.ajax({
            type: "get",
            url: "{{ url('get-renew-cost') }}",
            data: { 'user': user, 'plan': planId },
            success: function (data) {
-               if(agents==null){
-                   agents = parseInt($('.agents').val() || 0);
+               if(data[1]) {
+                   var totalPrice = agents * parseFloat(data[0]);
                }
-               var totalPrice = agents * parseFloat(data);
+               else{
+                   var totalPrice = parseFloat(data[0])
+               }
                var someprice = totalPrice.toFixed(2);
                $.ajax({
                    url: 'processFormat', // Update with the correct URL

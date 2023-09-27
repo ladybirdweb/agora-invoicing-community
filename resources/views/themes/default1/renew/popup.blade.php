@@ -86,7 +86,7 @@
             </div>
             <div class="modal-footer" style="margin-top: -23px;">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit"  class="btn btn-primary" id="saveRenew" disabled><i class="fa fa-check" >&nbsp;&nbsp;</i>Renew</button>
+                 <button type="submit"  class="btn btn-primary" id="saveRenew"><i class="fa fa-check" >&nbsp;&nbsp;</i>Renew</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->
@@ -103,7 +103,6 @@
         var shouldFetchPlanCost = true; // Disable further calls until needed
 
    function fetchPlanCost(planId,agents=null) {
-       $('#saveRenew').attr('disabled',true);
        // Show the loader and disable modal body
        // Show the loader and disable modal body
        $('.loader-wrapper').show();

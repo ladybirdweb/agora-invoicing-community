@@ -236,7 +236,6 @@ class FreeTrailController extends Controller
             \Session::put('planDays', 'freeTrial');
 
             if ($plan_id) {
-                \Session::put('planDays', 'free-trial');
                 $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             }
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();

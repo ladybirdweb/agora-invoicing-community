@@ -682,6 +682,8 @@ $price = $order->price_override;
                             </div>
                         </div>
                     </div>
+                        @else
+                            <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
                         @endif
 
 

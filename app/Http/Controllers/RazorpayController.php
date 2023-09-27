@@ -45,6 +45,7 @@ class RazorpayController extends Controller
      */
     public function payment($invoice, Request $request)
     {
+        dd("1");
         $userId = Invoice::find($invoice)->user_id;
         if (\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
             return errorResponse('Payment cannot be initiated. Invalid modification of data');
@@ -166,7 +167,7 @@ class RazorpayController extends Controller
         $invoiceItems = InvoiceItem::where('invoice_id', $invoice->id)->get();
 
         \Cart::clear();
-        $status = 'success';
+        $status = 'Success';
         $message = view('themes.default1.front.postPaymentTemplate', compact('invoice', 'orders',
             'invoiceItems', 'state', 'currency'))->render();
 

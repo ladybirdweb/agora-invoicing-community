@@ -35,8 +35,16 @@ class CurrencyController extends Controller
     public function getCurrency()
     {
         $defaultCurrency = Setting::pluck('default_currency')->first();
-        $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
-        select('id', 'name', 'code', 'symbol', 'status');
+        $model = Currency::where('name', '!=', null)
+            ->where('code', '!=', $defaultCurrency)
+            ->select('id', 'name', 'code', 'symbol', 'status')
+            ->whereIn('id', function ($query) use ($defaultCurrency) {
+                $query->selectRaw('MIN(id)')
+                    ->from('currencies')
+                    ->whereNotNull('name')
+                    ->where('code', '!=', $defaultCurrency)
+                    ->groupBy('name', 'code');
+            });
 
         return \DataTables::of($model)
                         ->orderColumn('name', '-id $1')

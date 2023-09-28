@@ -165,23 +165,8 @@ input:checked + .slider:before {
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'setting';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'setting';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
-@stop
-
-@section('icheck')
-<script>
-    
-     function bindChangeStatusEvent() {
+             function bindChangeStatusEvent() {
         $('.toggle_event_editing').change(function(){
             var current_id = $(this).children('.module_id');
             var current_status = $(this).children('.modules_settings_value');
@@ -206,9 +191,19 @@ input:checked + .slider:before {
             });
         });
     }
+    </script>
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'setting';
+    }).addClass('active');
 
-  
-
-
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'setting';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
+@stop
+
+@section('icheck')
+
 @stop

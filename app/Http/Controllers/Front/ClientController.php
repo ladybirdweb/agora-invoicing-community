@@ -282,6 +282,10 @@ class ClientController extends BaseClientController
                          }
                          $pendingAmount = $model->grand_total - $sum;
 
+                         if($pendingAmount<0){
+                             $pendingAmount=0;
+                         }
+
                          return currencyFormat($pendingAmount, $code = $model->currency);
                      })
                      ->addColumn('status', function ($model) {

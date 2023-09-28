@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
+        if (! Schema::hasColumn('amount', 'payment_type')) {
         Schema::table('auto_renewals', function (Blueprint $table) {
-            if (! Schema::hasColumn('auto_renewals', 'order_id')) {
-                $table->unsignedBigInteger('order_id')->nullable();
-                $table->foreign('order_id')->references('id')->on('orders');
-            }
-            if (! Schema::hasColumn('auto_renewals', 'payment_method')) {
-                $table->string('payment_method')->nullable();
-            }
+           $table->integer('order_id')->unsigned()->index('auto_renewals_order_id_foreign');
+           $table->string('payment_method')->nullable();
+            
         });
+    }
     }
 
     /**

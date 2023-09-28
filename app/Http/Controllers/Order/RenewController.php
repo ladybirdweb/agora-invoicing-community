@@ -111,7 +111,7 @@ class RenewController extends BaseRenewController
                 $invoice->save();
             }
             $orderid = \DB::table('order_invoice_relations')->where('invoice_id', $invoice->id)->value('order_id');
-            if(Session::has('plan_id')){
+            if (Session::has('plan_id')) {
                 Subscription::where('order_id', $orderid)->update(['plan_id'=>Session::get('plan_id')]);
             }
             // $id = Session::get('subscription_id');

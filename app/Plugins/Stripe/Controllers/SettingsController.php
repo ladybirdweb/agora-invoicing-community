@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
+use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
@@ -178,6 +179,7 @@ class SettingsController extends Controller
                     $oldLicense = \Session::get('oldLicense');
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
+                    Invoice::where('id',$invoice->id)->update(['status'=> 'success']);
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }

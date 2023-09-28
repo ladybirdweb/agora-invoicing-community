@@ -102,12 +102,14 @@ class RenewController extends BaseRenewController
     }
 
     //Renewal from ClienT Panel
-    public function successRenew($invoice)
+    public function successRenew($invoice,$isCloud=false)
     {
         try {
-            $invoice->processing_fee = $invoice->processing_fee;
-            $invoice->status = 'success';
-            $invoice->save();
+            if(!$isCloud) {
+                $invoice->processing_fee = $invoice->processing_fee;
+                $invoice->status = 'success';
+                $invoice->save();
+            }
             $orderid = \DB::table('order_invoice_relations')->where('invoice_id', $invoice->id)->value('order_id');
             // $id = Session::get('subscription_id');
             // $planid = Session::get('plan_id');

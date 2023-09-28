@@ -102,10 +102,10 @@ class RenewController extends BaseRenewController
     }
 
     //Renewal from ClienT Panel
-    public function successRenew($invoice,$isCloud=false)
+    public function successRenew($invoice, $isCloud = false)
     {
         try {
-            if(!$isCloud) {
+            if (! $isCloud) {
                 $invoice->processing_fee = $invoice->processing_fee;
                 $invoice->status = 'success';
                 $invoice->save();

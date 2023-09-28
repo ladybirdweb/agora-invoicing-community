@@ -301,9 +301,9 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
-                    if(\Session::has('agentIncreaseDate')) {
+                    if (\Session::has('agentIncreaseDate')) {
                         $control = new \App\Http\Controllers\Order\RenewController();
-                        $control->successRenew($invoice,true);
+                        $control->successRenew($invoice, true);
                     }
                     $this->performCloudActions($invoice);
                     \Cart::clear();

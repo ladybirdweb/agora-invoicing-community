@@ -254,7 +254,7 @@ class CloudExtraActivities extends Controller
             if ($newAgents > $oldAgents) {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
-                    \Session::put('agentIncreaseDate','do-it');
+                    \Session::put('agentIncreaseDate', 'do-it');
                 } else {
                     $agentsAdded = $newAgents - $oldAgents;
                     $pricePerDay = $base_price / $planDays;
@@ -267,7 +267,7 @@ class CloudExtraActivities extends Controller
             } else {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
-                    \Session::put('agentIncreaseDate','do-it');
+                    \Session::put('agentIncreaseDate', 'do-it');
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();

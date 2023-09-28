@@ -447,8 +447,8 @@ $currency = $invoice->currency;
                                 ->where('payment_status','success')
                                 ->where('amt_to_credit','!=',0)
                                 ->value('amt_to_credit');
-                            if ($amount <= $amt_to_credit) {
-                                $cartBalance = $amount;
+                            if ($subtotal <= $amt_to_credit) {
+                                $cartBalance = $subtotal;
                             } else {
                                 $cartBalance = $amt_to_credit;
                             }

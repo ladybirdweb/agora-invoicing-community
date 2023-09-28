@@ -171,8 +171,7 @@ class SettingsController extends Controller
                     $status = $view['status'];
                     $message = $view['message'];
                 } elseif ($cloud->checkAgentAlteration()) {
-
-                    if(\Session::has('agentIncreaseDate')) {
+                    if (\Session::has('agentIncreaseDate')) {
                         $control->successRenew($invoice);
                         \Session::forget('agentIncreaseDate');
                     }
@@ -327,7 +326,7 @@ class SettingsController extends Controller
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        if($payment) {
+        if ($payment) {
             $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage);
         }
     }
@@ -342,7 +341,7 @@ class SettingsController extends Controller
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
-        if($payment) {
+        if ($payment) {
             $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number);
         }
     }

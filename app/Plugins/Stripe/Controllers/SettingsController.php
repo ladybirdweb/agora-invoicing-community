@@ -179,7 +179,7 @@ class SettingsController extends Controller
                     $oldLicense = \Session::get('oldLicense');
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
-                    Invoice::where('id',$invoice->id)->update(['status'=> 'success']);
+                    Invoice::where('id', $invoice->id)->update(['status'=> 'success']);
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }

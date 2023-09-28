@@ -219,7 +219,6 @@ Cron Setting
 </script>
 
 <script>
-  // Define a reusable function for Select2 configuration
   function configureSelect2(selector) {
     $(selector).select2({
       templateSelection: function(selected, total) {
@@ -228,7 +227,6 @@ Cron Setting
     });
   }
 
-  // Call the configureSelect2 function for each Select2 dropdown
   $(document).ready(function() {
     configureSelect2('#days');
     configureSelect2('#subdays');

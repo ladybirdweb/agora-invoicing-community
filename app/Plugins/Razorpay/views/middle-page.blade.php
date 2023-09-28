@@ -435,8 +435,8 @@ $json = json_encode($data);
                         ->value('amt_to_credit');
 
                         if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                            if (\Cart::getTotal() <= $amt_to_credit) {
-                                $cartBalance = \Cart::getTotal();
+                            if ($totalPaid <= $amt_to_credit) {
+                                $cartBalance = $totalPaid;
                             } else {
                                 $cartBalance = $amt_to_credit;
                             }
@@ -531,10 +531,10 @@ $json = json_encode($data);
                     <td>
                             <?php
                             if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                                if (\Cart::getTotal() <= $amt_to_credit) {
+                                if ($totalPaid <= $amt_to_credit) {
                                     $totalPaid = 0;
                                 } else {
-                                    $totalPaid = \Cart::getTotal()-$amt_to_credit;
+                                    $totalPaid = $totalPaid-$amt_to_credit;
                                 }
                             }
                             ?>

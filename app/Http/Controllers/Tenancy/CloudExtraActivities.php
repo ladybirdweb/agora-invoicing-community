@@ -252,7 +252,7 @@ class CloudExtraActivities extends Controller
             $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->value('add_price');
             $oldAgents = substr($oldAgents, 12, 16);
             if ($newAgents > $oldAgents) {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                 } else {
                     $agentsAdded = $newAgents - $oldAgents;
@@ -264,7 +264,7 @@ class CloudExtraActivities extends Controller
                     $price = $agentsAdded * $pricePerThatAgent;
                 }
             } else {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -337,7 +337,7 @@ class CloudExtraActivities extends Controller
             \Session::put('upgradeProductId', $product_id_new);
 
             if ($base_price_new > $base_priceOld) {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
@@ -359,7 +359,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             } else {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -658,7 +658,7 @@ class CloudExtraActivities extends Controller
             $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->value('add_price') * $newAgents;
 
             if ($base_price_new > $base_priceOld) {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
@@ -680,7 +680,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             } else {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -749,7 +749,7 @@ class CloudExtraActivities extends Controller
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
             $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->value('add_price');
             if ($newAgents > $oldAgents) {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                 } else {
                     $agentsAdded = $newAgents - $oldAgents;
@@ -761,7 +761,7 @@ class CloudExtraActivities extends Controller
                     $price = $agentsAdded * $pricePerThatAgent;
                 }
             } else {
-                if (Carbon::now() == $ends_at) {
+                if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);

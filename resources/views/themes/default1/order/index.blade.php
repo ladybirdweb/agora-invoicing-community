@@ -228,6 +228,13 @@ Orders
                 }
               }
             },
+            columnDefs: [
+              {
+                targets: 'no-sort',
+                orderable: false,
+                order: []
+              }
+            ],
 
             "oLanguage": {
               "sLengthMenu": "_MENU_ Records per page",

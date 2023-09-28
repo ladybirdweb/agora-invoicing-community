@@ -76,8 +76,8 @@ Edit Coupon
                         <td>
                             <div class="form-group {{ $errors->has('value') ? 'has-error' : '' }}">
 
-
-                                {!! Form::text('value',null,['class' => 'form-control']) !!}
+                                 <?php $valueWithoutPercentage = rtrim($promotion->value, '%'); ?>
+                                {!! Form::text('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
 
 
                             </div>

@@ -176,6 +176,11 @@ class SettingsController extends Controller
                     $installationPath = \Session::get('installation_path');
                     $productId = \Session::get('product_id');
                     $oldLicense = \Session::get('oldLicense');
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice);
+                    if ($invoice->grand_total && emailSendingStatus()) {
+                        $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
+                    }
                     $this->doTheDeed($invoice);
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];

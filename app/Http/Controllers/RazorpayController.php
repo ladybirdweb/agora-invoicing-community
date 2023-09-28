@@ -86,6 +86,11 @@ class RazorpayController extends Controller
                     $installationPath = \Session::get('installation_path');
                     $productId = \Session::get('product_id');
                     $oldLicense = \Session::get('oldLicense');
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice);
+                    if ($invoice->grand_total) {
+                        SettingsController::sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
+                    }
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];

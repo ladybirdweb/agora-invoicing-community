@@ -4,21 +4,13 @@ Cron Setting
 @stop
 @section('content-header')
 <style>
-    /* Style selected options */
-    select[multiple] option[selected] {
-        position: relative;
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: lightgray;
+        color: black;
+        border: none;
     }
-
-    /* Style the tick icon */
-    select[multiple] option[selected]::after {
-        content: '\2713'; 
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 2px;
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
         color: black; 
-        font-weight: bold;
-        font-size: 18px;
     }
 </style>
     <div class="col-sm-6">
@@ -226,7 +218,23 @@ Cron Setting
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
 
+<script>
+  // Define a reusable function for Select2 configuration
+  function configureSelect2(selector) {
+    $(selector).select2({
+      templateSelection: function(selected, total) {
+        return selected.text;
+      }
+    });
+  }
 
+  // Call the configureSelect2 function for each Select2 dropdown
+  $(document).ready(function() {
+    configureSelect2('#days');
+    configureSelect2('#subdays');
+    configureSelect2('#postdays');
+  });
+</script>
 
 @stop
 

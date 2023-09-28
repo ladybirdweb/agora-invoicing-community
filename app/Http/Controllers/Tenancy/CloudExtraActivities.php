@@ -373,16 +373,15 @@ class CloudExtraActivities extends Controller
                     $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
                     if ($planDaysOld !== $planDaysNew) {
-                            if($daysRemain <= $planDaysNew){
-                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
-                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                            }
-                            else{
-                                $daysRemainNew = $planDaysOld - $daysRemain;
-                                $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
-                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                            }
+                        if ($daysRemain <= $planDaysNew) {
+                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
+                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                        } else {
+                            $daysRemainNew = $planDaysOld - $daysRemain;
+                            $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
+                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
+                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                        }
                         if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
                         } else {
@@ -700,11 +699,10 @@ class CloudExtraActivities extends Controller
                     $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
                     if ($planDaysOld !== $planDaysNew) {
-                        if($daysRemain <= $planDaysNew){
+                        if ($daysRemain <= $planDaysNew) {
                             $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
                             $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                        }
-                        else{
+                        } else {
                             $daysRemainNew = $planDaysOld - $daysRemain;
                             $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                             $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;

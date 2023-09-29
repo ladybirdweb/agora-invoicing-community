@@ -205,7 +205,17 @@ class BaseOrderController extends ExtendedOrderController
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $increaseDate);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $increaseDate);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $increaseDate);
-            } else {
+                \Session::forget('increase-decrease-days');
+            }
+            elseif(\Session::has('increase-decrease-days-dont-cloud')){
+                $oldCloudOrderId = \Session::get('increase-decrease-days-dont-cloud');
+                $expiryDate = Subscription::where('order_id', $oldCloudOrderId)->value('ends_at');
+                $licenseExpiry = $expiryDate;
+                $updatesExpiry = $expiryDate;
+                $supportExpiry = $expiryDate;
+                \Session::forget('increase-decrease-days-dont-cloud');
+            }
+            else{
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);

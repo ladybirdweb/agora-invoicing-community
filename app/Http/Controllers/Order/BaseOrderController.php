@@ -178,25 +178,25 @@ class BaseOrderController extends ExtendedOrderController
     {
         try {
             $permissions = LicensePermissionsController::getPermissionsForProduct($product);
-            if ($version == null) {
-                $version = '';
-            }
+            $version = $version ?? '';
+
             $days = null;
             $status = Product::find($product);
+
             if ($status->status) {
-                if (\Session::get('planDays') == 'monthly') {
+                $planDays = \Session::get('planDays');
+
+                if ($planDays == 'monthly') {
                     $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
-                } elseif (\Session::get('planDays') == 'freeTrial') {
+                } elseif ($planDays == 'freeTrial') {
                     $days = $this->plan->where('product', $product)->where('days', '<', 30)->first();
-                } elseif (\Session::get('planDays') == 'yearly' || \Session::get('planDays') == null) {
+                } elseif ($planDays == 'yearly' || $planDays == null) {
                     $days = $this->plan->where('product', $product)->whereIn('days', [365, 366])->first();
                 }
             }
 
-            if ($days === null) {
-                if (\Session::has('plan_id')) {
-                    $planid = \Session::get('plan_id');
-                }
+            if ($days === null && \Session::has('plan_id')) {
+                $planid = \Session::get('plan_id');
                 $days = $this->plan->where('id', $planid)->first();
             }
 
@@ -209,33 +209,46 @@ class BaseOrderController extends ExtendedOrderController
             }
             elseif(\Session::has('increase-decrease-days-dont-cloud')){
                 $oldCloudOrderId = \Session::get('increase-decrease-days-dont-cloud');
-                $expiryDate = Subscription::where('order_id', $oldCloudOrderId)->value('ends_at');
-                $licenseExpiry = $expiryDate;
-                $updatesExpiry = $expiryDate;
-                $supportExpiry = $expiryDate;
+                $increaseDate = Subscription::where('order_id', $oldCloudOrderId)->value('ends_at');
                 \Session::forget('increase-decrease-days-dont-cloud');
+            } else {
+                $increaseDate = $days->days;
             }
-            else{
-                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
-                $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
-                $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);
-            }
+
+            $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $increaseDate);
+            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $increaseDate);
+            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $increaseDate);
 
             $user_id = $this->order->find($orderid)->client;
-            $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $days->id, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '0']);
+
+            $this->subscription->create([
+                'user_id' => $user_id,
+                'plan_id' => $days->id,
+                'order_id' => $orderid,
+                'update_ends_at' => $updatesExpiry,
+                'ends_at' => $licenseExpiry,
+                'support_ends_at' => $supportExpiry,
+                'version' => $version,
+                'product_id' => $product,
+                'is_subscribed' => '0'
+            ]);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
+
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
             }
+            \Session::forget('increase-decrease-days-dont-cloud');
+            \Session::forget('increase-decrease-days');
+
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Cannot generate Subscription'.'.'.$ex->getMessage());
+            throw new \Exception('Cannot generate Subscription' . '.' . $ex->getMessage());
         }
     }
+
 
     /**
      *  Get the Expiry Date for License.

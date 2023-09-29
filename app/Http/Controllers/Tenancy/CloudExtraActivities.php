@@ -237,6 +237,8 @@ class CloudExtraActivities extends Controller
             \Session::forget('upgradeorderId');
             \Session::forget('upgradeProductId');
             \Session::forget('upgradeNewActiveOrder');
+            \Session::forget('increase-decrease-days-dont-cloud');
+            \Session::forget('increase-decrease-days');
 
             if (is_null($planId)) {
                 $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();

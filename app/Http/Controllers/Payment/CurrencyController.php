@@ -56,17 +56,18 @@ class CurrencyController extends Controller
                         })
 
                           ->addColumn('code', function ($model) {
-                              return '<div class="text-center">' . $model->code . '</div>';
+                              return '<div class="text-center">'.$model->code.'</div>';
                           })
 
                           ->addColumn('symbol', function ($model) {
-                              return '<div class="text-center">' . $model->symbol . '</div>';
+                              return '<div class="text-center">'.$model->symbol.'</div>';
                           })
 
                           ->addColumn('dashboard', function ($model) {
                               if ($model->status == 1) {
                                   $showButton = $this->getButtonColor($model->id);
-                                return '<div class="dashboard-center">' . $showButton . '</div>';
+
+                                  return '<div class="dashboard-center">'.$showButton.'</div>';
                               } else {
                                   return  '<div class="dashboard-center"><a class="btn btn-sm btn-secondary btn-xs disabled align-items-center" style="margin-right: 100px;"><i class="fa fa-eye "
                                 style="color:white;"> </i>&nbsp;&nbsp;Show on Dashboard</a></div>';

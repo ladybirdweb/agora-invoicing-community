@@ -45,7 +45,7 @@ Create Coupon
                                         {!! Form::text('code',null,['class' => 'form-control','id'=>'code','title'=>'Generate Coupon Code']) !!}
                                        <!--   <input id="code" name="code" type="text" class="form-control" title="Generate Coupon Code"/> -->
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <a href="#" class="btn btn-primary" id="get-code"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
                                     </div>
                                 </div>
@@ -57,9 +57,10 @@ Create Coupon
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
+                        <td ><b>{!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
+
                         <td>
-                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                            <div class="form-group col-lg-6 {{ $errors->has('type') ? 'has-error' : '' }}">
 
 
                                 {!! Form::select('type',[''=>'Select','Types'=>$type],null,['class' => 'form-control',  'title'=>"Type Of Coupon"]) !!}
@@ -71,9 +72,9 @@ Create Coupon
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!} &nbsp;&nbsp;<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter the discount amount here"></i></b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('value') ? 'has-error' : '' }}">
+                            <div class="form-group col-lg-6 {{ $errors->has('value') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('value',null,['class' => 'form-control','title'=>'Value of the Coupon']) !!}
@@ -85,9 +86,9 @@ Create Coupon
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!} &nbsp;&nbsp;<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter here how many times that coupon can be used"></i></b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('uses') ? 'has-error' : '' }}">
+                            <div class="form-group col-lg-6 {{ $errors->has('uses') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('uses',null,['class' => 'form-control','title'=>'No. Of times the coupon can be Used']) !!}
@@ -101,10 +102,10 @@ Create Coupon
 
                         <td><b>{!! Form::label('applied',Lang::get('message.applied'),['class'=>'required']) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
                                 
 
-                                {!! Form::select('applied',[''=>'Choose','Products'=>$product],null,['class' => 'form-control select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
+                                {!! Form::select('applied',[''=>'Choose','Products'=>$product],null,['class' => 'form-control select2 col-lg-18','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
 
 
 
@@ -117,7 +118,7 @@ Create Coupon
                         <td><b>{!! Form::label('start',Lang::get('message.start'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
-                                <div class="input-group date" id="startDate" data-target-input="nearest">
+                                <div class="input-group date" id="startDate" data-target-input="nearest" style="width: 50%;">
 
                                      {!! Form::text('start',null,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
 
@@ -139,7 +140,7 @@ Create Coupon
                         <td><b>{!! Form::label('expiry',Lang::get('message.expiry'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
-                                <div class="input-group date" id="endDate" data-target-input="nearest">
+                                <div class="input-group date" id="endDate" data-target-input="nearest" style="width: 50%;">
 
                                     {!! Form::text('expiry',null,['class' => 'form-control datetimepicker-input','title'=>'Date on which Coupon Expires','data-target'=>'#endDate']) !!}
 

@@ -56,27 +56,26 @@ class CurrencyController extends Controller
                         })
 
                           ->addColumn('code', function ($model) {
-                              return $model->code;
+                              return '<div class="text-center">' . $model->code . '</div>';
                           })
 
                           ->addColumn('symbol', function ($model) {
-                              return $model->symbol;
+                              return '<div class="text-center">' . $model->symbol . '</div>';
                           })
 
                           ->addColumn('dashboard', function ($model) {
                               if ($model->status == 1) {
                                   $showButton = $this->getButtonColor($model->id);
-
-                                  return $showButton;
+                                return '<div class="dashboard-center">' . $showButton . '</div>';
                               } else {
-                                  return  '<a class="btn btn-sm btn-secondary btn-xs disabled"><i class="fa fa-eye"
-                                style="color:white;"> </i>&nbsp;&nbsp;Show on Dashboard</a>';
+                                  return  '<div class="dashboard-center"><a class="btn btn-sm btn-secondary btn-xs disabled align-items-center" style="margin-right: 100px;"><i class="fa fa-eye "
+                                style="color:white;"> </i>&nbsp;&nbsp;Show on Dashboard</a></div>';
                               }
                           })
 
                         ->addColumn('status', function ($model) {
                             if ($model->status == 1) {
-                                return'<label class="switch toggle_event_editing">
+                                return'<label class="switch toggle_event_editing ">
                             <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
                          <input type="checkbox" name="modules_settings" 
                          checked value="'.$model->status.'"  class="modules_settings_value">

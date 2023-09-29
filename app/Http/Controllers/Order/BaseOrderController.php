@@ -200,20 +200,18 @@ class BaseOrderController extends ExtendedOrderController
                 $days = $this->plan->where('id', $planid)->first();
             }
 
-            if(\Session::has('increase-decrease-days')){
+            if (\Session::has('increase-decrease-days')) {
                 $increaseDate = \Session::get('increase-decrease-days');
-                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'],$increaseDate);
+                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $increaseDate);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $increaseDate);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $increaseDate);
-            }
-            elseif(\Session::has('increase-decrease-days-dont-cloud')){
+            } elseif (\Session::has('increase-decrease-days-dont-cloud')) {
                 $oldCloudOrderId = \Session::get('increase-decrease-days-dont-cloud');
                 $expiryDate = Subscription::where('order_id', $oldCloudOrderId)->value('ends_at');
                 $licenseExpiry = $expiryDate;
                 $updatesExpiry = $expiryDate;
                 $supportExpiry = $expiryDate;
-            }
-            else{
+            } else {
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);
@@ -230,7 +228,6 @@ class BaseOrderController extends ExtendedOrderController
             }
             \Session::forget('increase-decrease-days');
             \Session::forget('increase-decrease-days-dont-cloud');
-
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

@@ -360,6 +360,7 @@ class CloudExtraActivities extends Controller
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
+                        \Session::put('increase-decrease-days-dont-cloud',$orderId);
                     }
                 }
             } else {
@@ -376,16 +377,18 @@ class CloudExtraActivities extends Controller
                     $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
                     if ($planDaysOld !== $planDaysNew) {
-                        if ($daysRemain <= $planDaysNew) {
-                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
-                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                        } else {
-                            $daysRemainNew = $planDaysOld - $daysRemain;
-                            $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
-                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                            \Session::put('increase-decrease-days', $daysRemainNewFinal);
-                        }
+                            if($daysRemain <= $planDaysNew){
+                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
+                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                                \Session::put('increase-decrease-days-dont-cloud',$orderId);
+                            }
+                            else{
+                                $daysRemainNew = $planDaysOld - $daysRemain;
+                                $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
+                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
+                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                                \Session::put('increase-decrease-days',$daysRemainNewFinal);
+                            }
                         if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
                         } else {
@@ -417,6 +420,8 @@ class CloudExtraActivities extends Controller
                     } else {
                         $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
                         $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                        \Session::put('increase-decrease-days-dont-cloud',$orderId);
+
 
                         if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;

@@ -60,6 +60,13 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.text-center{
+    margin-right: 100px;
+}
+.dashboard-center{
+    margin-left: 20px;
+}
 </style>
 <div class="col-sm-6">
     <h1>All Currencies</h1>

@@ -341,7 +341,7 @@ class CloudExtraActivities extends Controller
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
-                    \Session::put('increase-decrease-days',$planDaysNew);
+                    \Session::put('increase-decrease-days', $planDaysNew);
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
                     $pricePerDayOld = $base_priceOld / $planDaysOld; //1600
@@ -355,7 +355,7 @@ class CloudExtraActivities extends Controller
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemainNewFinal;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
-                        \Session::put('increase-decrease-days',$daysRemainNewFinal);
+                        \Session::put('increase-decrease-days', $daysRemainNewFinal);
                     } else {
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
@@ -365,7 +365,7 @@ class CloudExtraActivities extends Controller
             } else {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
-                    \Session::put('increase-decrease-days',$planDaysNew);
+                    \Session::put('increase-decrease-days', $planDaysNew);
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
@@ -376,17 +376,16 @@ class CloudExtraActivities extends Controller
                     $pricePerDayForOldPlan = $base_priceOld / $planDaysOld;
 
                     if ($planDaysOld !== $planDaysNew) {
-                            if($daysRemain <= $planDaysNew){
-                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
-                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                            }
-                            else{
-                                $daysRemainNew = $planDaysOld - $daysRemain;
-                                $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-                                $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
-                                $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
-                                \Session::put('increase-decrease-days',$daysRemainNewFinal);
-                            }
+                        if ($daysRemain <= $planDaysNew) {
+                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
+                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                        } else {
+                            $daysRemainNew = $planDaysOld - $daysRemain;
+                            $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
+                            $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
+                            $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+                            \Session::put('increase-decrease-days', $daysRemainNewFinal);
+                        }
                         if ($priceToBePaid > $priceRemaining) {
                             $price = $priceToBePaid - $priceRemaining;
                         } else {

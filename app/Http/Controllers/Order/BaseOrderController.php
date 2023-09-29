@@ -200,13 +200,12 @@ class BaseOrderController extends ExtendedOrderController
                 $days = $this->plan->where('id', $planid)->first();
             }
 
-            if(\Session::has('increase-decrease-days')){
+            if (\Session::has('increase-decrease-days')) {
                 $increaseDate = \Session::get('increase-decrease-days');
-                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'],$increaseDate);
+                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $increaseDate);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $increaseDate);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $increaseDate);
-            }
-            else{
+            } else {
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);

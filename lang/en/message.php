@@ -362,7 +362,7 @@ return [
     'promotion' => 'Promotion',
     'promotions' => 'Promotions',
     'coupons' => 'Coupons',
-    'uses' => 'Uses',
+    'uses' => 'Number of uses',
     'applied' => 'Applied for',
     'start' => 'Start',
     'lifetime' => 'Life Time',
@@ -420,7 +420,7 @@ return [
     'configurable-options' => 'Configurable Options',
     'title' => 'Title',
     'options' => 'Options',
-    'value' => 'Value',
+    'value' => 'Discount value',
     /*
      * Templates
      */

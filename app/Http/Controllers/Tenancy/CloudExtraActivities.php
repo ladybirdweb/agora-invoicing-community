@@ -597,7 +597,6 @@ class CloudExtraActivities extends Controller
         \Session::forget('upgradeNewActiveOrder');
         \Session::forget('plan');
 
-
         \Cart::clear();
     }
 

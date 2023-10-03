@@ -382,7 +382,7 @@ class CloudExtraActivities extends Controller
                         }
                         if ($planDaysOld > $planDaysNew) {
                             if ($daysRemain <= $planDaysNew) {
-                                \Session::put('increase-decrease-days', $daysRemain);
+                                \Session::put('increase-decrease-days-dont-cloud', $orderId);
                             } else {
                                 $daysRemainNew = $planDaysOld - $daysRemain;
                                 $daysRemainNewFinal = $planDaysNew - $daysRemainNew;

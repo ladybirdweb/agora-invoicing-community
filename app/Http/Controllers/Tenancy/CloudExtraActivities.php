@@ -375,12 +375,7 @@ class CloudExtraActivities extends Controller
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
                     if ($planDaysNew !== $planDaysOld) {
-                        if ($planDaysOld < $planDaysNew) {
-                            $daysRemainNew = $planDaysOld - $daysRemain;
-                            $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-                            \Session::put('increase-decrease-days', $daysRemainNewFinal);
-                        }
-                        if ($planDaysOld > $planDaysNew) {
+                        if ($planDaysOld > $planDaysNew || $planDaysOld < $planDaysNew) {
                             if ($daysRemain <= $planDaysNew) {
                                 \Session::put('increase-decrease-days-dont-cloud', $orderId);
                             } else {

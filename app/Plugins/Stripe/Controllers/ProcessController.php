@@ -71,13 +71,14 @@ class ProcessController extends Controller
                 $invoice->processing_fee = $processingFee;
                 $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
                 $amount = rounding($invoice->grand_total);
+                $creditBalance = $invoice->billing_pay;
                 if (count($invoice->payment()->get())) {//If partial payment is made
                     $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                     $amount = rounding($invoice->grand_total - $paid);
                 }
                 \Session::put('totalToBePaid', $amount);
                 \View::addNamespace('plugins', $path);
-                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid'));
+                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'creditBalance'));
             } else {
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];

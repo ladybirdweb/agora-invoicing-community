@@ -440,26 +440,12 @@ $currency = $invoice->currency;
 
                 @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
                     <tr class="cart-subtotal" style="color: indianred">
-                            <?php
-                            $amt_to_credit = \DB::table('payments')
-                                ->where('user_id', \Auth::user()->id)
-                                ->where('payment_method','Credit Balance')
-                                ->where('payment_status','success')
-                                ->where('amt_to_credit','!=',0)
-                                ->value('amt_to_credit');
-                            if ($subtotal <= $amt_to_credit) {
-                                $cartBalance = $subtotal;
-                            } else {
-                                $cartBalance = $amt_to_credit;
-                            }
-                            ?>
-
                         <th>
                             <strong>Balance</strong>
 
                         </th>
                         <td>
-                            -{{$dd=currencyFormat($cartBalance,$code = $currency)}}
+                            -{{$dd=currencyFormat($creditBalance,$code = $currency)}}
                         </td>
                     </tr>
                 @endif
@@ -469,15 +455,6 @@ $currency = $invoice->currency;
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                            <?php
-                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                                if ($amount <= $amt_to_credit) {
-                                    $amount = 0;
-                                } else {
-                                    $amount = $amount;
-                                }
-                            }
-                            ?>
                     <b><span class="amount">{{currencyFormat($amount,$code = $currency)}} </span></b>
 
 

@@ -425,25 +425,6 @@ $json = json_encode($data);
                         <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
-                @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
-                        <?php
-                         $amt_to_credit = \DB::table('payments')
-                        ->where('user_id', \Auth::user()->id)
-                        ->where('payment_method','Credit Balance')
-                        ->where('payment_status','success')
-                        ->where('amt_to_credit','!=',0)
-                        ->value('amt_to_credit');
-
-                        if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                            if ($totalPaid <= $amt_to_credit) {
-                                $cartBalance = $totalPaid;
-                            } else {
-                                $cartBalance = $amt_to_credit;
-                            }
-                        }
-                        ?>
-
-                @endif
                  @php
                 $taxName = array_unique($taxName);
                 @endphp
@@ -519,7 +500,7 @@ $json = json_encode($data);
 
                     </th>
                     <td>
-                        -{{$balance=currencyFormat($cartBalance,$code = $currency)}}
+                        -{{$balance=currencyFormat($creditBalance,$code = $currency)}}
                     </td>
                 </tr>
                 @endif
@@ -529,15 +510,6 @@ $json = json_encode($data);
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                            <?php
-                            if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                                if ($totalPaid <= $amt_to_credit) {
-                                    $totalPaid = 0;
-                                } else {
-                                    $totalPaid = $totalPaid-$amt_to_credit;
-                                }
-                            }
-                            ?>
                     <b><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></b>
 
 

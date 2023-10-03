@@ -72,6 +72,9 @@ class ProcessController extends Controller
                 $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
                 $amount = rounding($invoice->grand_total);
                 $creditBalance = $invoice->billing_pay;
+                if(empty($creditBalance)){
+                    $creditBalance=0;
+                }
                 if (count($invoice->payment()->get())) {//If partial payment is made
                     $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                     $amount = rounding($invoice->grand_total - $paid);

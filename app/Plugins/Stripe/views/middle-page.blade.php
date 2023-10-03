@@ -449,7 +449,19 @@ $currency = $invoice->currency;
                         </td>
                     </tr>
                 @endif
-               
+                @if(count(\Cart::getConditionsByType('fee')))
+                    @foreach(\Cart::getConditionsByType('fee') as $fee)
+                        <tr>
+                            <th>
+                                <strong>{!! $fee->getName() !!}</strong><br/>
+
+                            </th>
+                            <td>
+                                {!! $fee->getValue() !!}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>

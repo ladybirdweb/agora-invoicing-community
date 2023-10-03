@@ -4,10 +4,13 @@
 <div id="content" role="main">
 <div class="page-content ">
 <div>
-<div class="row" style="margin-left:0px">
-    
-<strong>Thank you. Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a> 
+<div class="alert alert-success">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+<strong>Thank you. Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
 </div>
+
+
 </strong><br>
 @foreach($invoiceItems as $invoiceItem)
 <?php
@@ -15,10 +18,14 @@ $currency = $invoice->currency;
 $date = getDateHtml($invoiceItem->created_at);
 ?>
 
+
 @endforeach
 
 
+
+
 <section>
+
 
 @foreach($orders as $order)
 <?php
@@ -31,15 +38,17 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 <tr>
 <th colspan="4">Order Details</th>
 
+
 </tr>
 </thead>
 
+
 <tfoot>
-    <tr>
+<tr>
 <th scope="row">Product Name:</th>
 <td><span class="woocommerce-Price-amount amount"> {{$product->name}}</span></td>
 </tr>
-    <tr>
+<tr>
 <th scope="row">Quantity:</th>
 <td><span class="woocommerce-Price-amount amount"> {{$order->qty}} </span></td>
 </tr>
@@ -70,6 +79,8 @@ $orderTotal = $order->price_override;
 </table>
 
 
+
+
 @if($downloadPermission['downloadPermission'] == 1 && $product->type != '4')
 
       <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
@@ -83,29 +94,40 @@ $orderTotal = $order->price_override;
 
 
 
+
+
+
+
 </div>
 </div>
 
 
+
+
 </div>
 
 
 
-        
+
+
+
+
 
 </div><!-- end main content -->
 
-    
-    </div>
-        </div>
-<script>
-  function deploy(button) {
-    var orderNumber = button.value;
-    openModal(orderNumber);
-  }
 
-  function openModal(orderNumber) {
-    $('#tenant .modal-body').text('Order Number: ' + orderNumber);
-    $('#tenant').modal('show');
-  }
+</div>
+</div>
+<script>
+function deploy(button) {
+var orderNumber = button.value;
+openModal(orderNumber);
+}
+
+
+function openModal(orderNumber) {
+$('#tenant .modal-body').text('Order Number: ' + orderNumber);
+$('#tenant').modal('show');
+}
 </script>
+

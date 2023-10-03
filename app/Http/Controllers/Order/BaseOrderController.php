@@ -215,11 +215,12 @@ class BaseOrderController extends ExtendedOrderController
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days->days);
+                $planid = $days->id;
             }
 
             $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $days->id, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '0']);
+                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '0']);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {

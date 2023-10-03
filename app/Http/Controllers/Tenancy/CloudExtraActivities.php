@@ -316,6 +316,9 @@ class CloudExtraActivities extends Controller
             \Session::forget('installation_path');
             \Session::forget('product_id');
             \Session::forget('oldLicense');
+            \Session::forget('increase-decrease-days');
+            \Session::forget('increase-decrease-days-dont-cloud');
+
 
             $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
             $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');

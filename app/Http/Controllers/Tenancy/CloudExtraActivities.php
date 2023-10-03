@@ -365,27 +365,24 @@ class CloudExtraActivities extends Controller
                         \Session::put('increase-decrease-days-dont-cloud', $orderId);
                     }
                 }
-            } elseif($base_price_new == $base_priceOld)
-            {
+            } elseif ($base_price_new == $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                     \Session::put('increase-decrease-days', $planDaysNew);
-                }
-                else {
+                } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
                     $daysRemain = $futureDateTime->diffInDays($currentDateTime);
 
                     if ($planDaysNew !== $planDaysOld) {
-                        if($planDaysOld < $planDaysNew){
+                        if ($planDaysOld < $planDaysNew) {
                             $daysRemainNew = $planDaysOld - $daysRemain;
                             $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
                             \Session::put('increase-decrease-days', $daysRemainNewFinal);
                         }
-                        if($planDaysOld > $planDaysNew){
+                        if ($planDaysOld > $planDaysNew) {
                             if ($daysRemain <= $planDaysNew) {
                                 \Session::put('increase-decrease-days', $daysRemain);
-
                             } else {
                                 $daysRemainNew = $planDaysOld - $daysRemain;
                                 $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
@@ -398,9 +395,7 @@ class CloudExtraActivities extends Controller
                         \Session::put('increase-decrease-days-dont-cloud', $orderId);
                     }
                 }
-
-            }
-            else {
+            } else {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                     \Session::put('increase-decrease-days', $planDaysNew);
@@ -730,17 +725,13 @@ class CloudExtraActivities extends Controller
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
                     }
                 }
-            }
-            elseif($base_price_new == $base_priceOld)
-            {
+            } elseif ($base_price_new == $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
+                } else {
+                    $price = 0;
                 }
-                else {
-                        $price = 0;
-                    }
-            }
-            else {
+            } else {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new * $newAgents;
                 } else {

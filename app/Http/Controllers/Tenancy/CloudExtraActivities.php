@@ -339,6 +339,7 @@ class CloudExtraActivities extends Controller
             $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->value('add_price') * $newAgents;
 
             \Session::put('upgradeProductId', $product_id_new);
+            \Session::put('plan', $planIdNew);
 
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
@@ -594,6 +595,8 @@ class CloudExtraActivities extends Controller
         \Session::forget('upgradeorderId');
         \Session::forget('upgradeProductId');
         \Session::forget('upgradeNewActiveOrder');
+        \Session::forget('plan');
+
 
         \Cart::clear();
     }

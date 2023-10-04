@@ -9,6 +9,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
@@ -171,6 +172,8 @@ class RazorpayController extends Controller
 
     public function getViewMessageAfterRenew($invoice, $state, $currency)
     {
+        $order = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
+        $order_number = Order::where('id', $order)->value('number');
         $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
         $product = Product::where('name', $invoiceItem->product_name)->first();
         $date1 = new DateTime($invoiceItem->created_at);
@@ -184,7 +187,7 @@ class RazorpayController extends Controller
         $status = 'Success';
 
         $message = view('themes.default1.front.postRenewTemplate', compact('invoice', 'date',
-            'product', 'invoiceItem', 'state', 'currency'))->render();
+            'product', 'invoiceItem', 'state', 'currency' ,'order_number'))->render();
 
         return ['status' => $status, 'message' => $message];
     }

@@ -32,21 +32,6 @@
                                             </tr>
                                         </thead>
 
-                                        <tbody>
-
-                                            <tr class="woocommerce-table__line-item order_item">
-
-                                                <td class="woocommerce-table__product-name product-name">
-                                                    <strong>{{$invoiceItem->product_name}}</strong> <strong>× {{$invoiceItem->quantity}}</strong>
-                                                </td>
-
-                                                <td class="woocommerce-table__product-total product-total">
-                                                    <span class="woocommerce-Price-amount amount">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span>
-                                                </td>
-
-                                            </tr>
-
-                                        </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th scope="row">Product Name:</th>

@@ -11,19 +11,15 @@
                                 $currency = $invoice->currency;
                                 $cont = new \App\Http\Controllers\License\LicensePermissionsController();
                                 $downloadPermission = $cont->getPermissionsForProduct($product->id);
+                                $date = getDateHtml($date);
                                 ?>
-
                                 <div class="alert alert-success">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <strong><i class="far fa-thumbs-up"></i>
                                         <strong>Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
                                 </div>
 
-
                                 <section>
-
-                                    <h2 style="margin-top:40px ; margin-bottom:10px;">Payment Details</h2>
-
                                     <table class="table table-bordered table-hover ">
                                         <thead class="thead-light">
                                             <tr>
@@ -34,25 +30,38 @@
 
                                         <tfoot>
                                             <tr>
+                                            <tr>
                                                 <th scope="row">Product Name:</th>
-                                                <td>{{$invoiceItem->product_name}}</td>
+                                                <td style="font-weight: normal"> {{$invoiceItem->product_name}}<td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Quantity:</th>
-                                                <td>{{$invoiceItem->quantity}}</td>
+                                                <td style="font-weight: normal">{{$invoiceItem->quantity}}</td>
+                                            </tr>
+                                            <tr>
+                                            <tr>
+
+
+                                                <th scope="row">Order No.:</th>
+                                                <td style="font-weight: normal">{!! $order_number !!}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Invoice No.:</th>
-                                                <td>{{$invoice->number}}</td>
+                                                <td style="font-weight: normal">{{$invoice->number}}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Payment method:</th>
-                                                <td>{{Session::get('payment_method')}}</td>
+                                                <td style="font-weight: normal">{{Session::get('payment_method')}}</td>
+                                            </tr>
+                                            <tr>
+                                            <tr>
+                                                <th scope="row">Date:</th>
+                                                <td>{!! $date !!}</td>
                                             </tr>
 
                                             <tr>
                                                 <th scope="row">Total:</th>
-                                                <td><span class="woocommerce-Price-amount amount">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span></td>
+                                                <td style="font-weight: normal"><span class="woocommerce-Price-amount amount">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span></td>
                                             </tr>
                                         </tfoot>
                                     </table>

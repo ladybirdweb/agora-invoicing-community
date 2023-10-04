@@ -176,15 +176,9 @@ class RazorpayController extends Controller
         $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
         $product = Product::where('name', $invoiceItem->product_name)->first();
         $date1 = new DateTime($invoiceItem->created_at);
-
-        $tz = \Auth::user()->timezone()->first()->name;
-
-        $date1->setTimezone(new DateTimeZone($tz));
         $date = $date1->format('M j, Y, g:i a ');
-
         \Cart::clear();
         $status = 'Success';
-
         $message = view('themes.default1.front.postRenewTemplate', compact('invoice', 'date',
             'product', 'invoiceItem', 'state', 'currency', 'order_number'))->render();
 

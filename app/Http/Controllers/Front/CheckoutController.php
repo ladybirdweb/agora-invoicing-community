@@ -246,7 +246,7 @@ class CheckoutController extends InfoController
         try {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
-            $payment_method = ($isTrue) ? $request->input('payment_gateway') : 'Credit Balance';
+            $payment_method = ($isTrue) ? $request->input('payment_gateway') : 'Credits';
             \Session::put('payment_method', $payment_method);
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
             $cost = $request->input('cost');

@@ -71,7 +71,7 @@ class AuthController extends BaseAuthController
                         return redirect($url);
                     }
 
-                    return redirect($url)->with('Success', 'Email verification successful.
+                    return redirect($url)->with('success', 'Email verification successful.
                     Please login to access your account !!');
                 } else {
                     return redirect($url)->with('warning', 'This email is already verified');
@@ -81,7 +81,7 @@ class AuthController extends BaseAuthController
             }
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
-                return redirect($url)->with('Success', 'Email verification successful,
+                return redirect($url)->with('success', 'Email verification successful,
                  Please login to access your account');
             }
 

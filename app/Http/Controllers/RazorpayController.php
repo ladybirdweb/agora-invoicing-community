@@ -148,7 +148,7 @@ class RazorpayController extends Controller
         $status = 'Success';
 
         $message = view('themes.default1.front.postRenewTemplate', compact('invoice', 'date',
-            'product', 'invoiceItem', 'state', 'currency' ,'order_number'))->render();
+            'product', 'invoiceItem', 'state', 'currency', 'order_number'))->render();
 
         return ['status' => $status, 'message' => $message];
     }

@@ -42,11 +42,11 @@
                                             <tr>
 
 
-                                                <th scope="row">Order No.:</th>
+                                                <th scope="row">Order No:</th>
                                                 <td style="font-weight: normal">{!! $order_number !!}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">Invoice No.:</th>
+                                                <th scope="row">Invoice No:</th>
                                                 <td style="font-weight: normal">{{$invoice->number}}</td>
                                             </tr>
                                             <tr>

@@ -6,8 +6,8 @@
 <div>
 <div class="alert alert-success">
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-<strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-<strong>Thank you. Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
+<strong><i class="far fa-thumbs-up">
+<strong>Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
 </div>
 
 
@@ -17,16 +17,9 @@
 $currency = $invoice->currency;
 $date = getDateHtml($invoiceItem->created_at);
 ?>
-
-
 @endforeach
 
-
-
-
 <section>
-
-
 @foreach($orders as $order)
 <?php
 $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();

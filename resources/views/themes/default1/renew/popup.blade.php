@@ -10,6 +10,7 @@
             <div class="modal-body">
 
                 <label>Current number of agents: {{$agents}}</label>
+                <br>
                 <label>Current Plan: {{$planName}}</label>
                 <!-- Form  -->
                 

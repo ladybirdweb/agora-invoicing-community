@@ -428,13 +428,14 @@ class CloudExtraActivities extends Controller
                         } else {
                             $discount = $priceRemaining - $priceToBePaid;
                             $price = 0;
-                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
+                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
+                            $payUpdate = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->get();
 
                             $formattedValue = currencyFormat(round($discount), getCurrencyForClient(\Auth::user()->country), true);
                             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                             $orderNumber = Order::where('id', $orderId)->value('number');
                             $formattedPay = currencyFormat($pay, getCurrencyForClient(\Auth::user()->country), true);
-                            if ($pay) {
+                            if (!$payUpdate->isEmpty()) {
                                 $pay = $pay + round($discount);
                                 Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
 
@@ -461,14 +462,15 @@ class CloudExtraActivities extends Controller
                         } else {
                             $discount = $priceRemaining - $priceToBePaid;
                             $price = 0;
-                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->value('amt_to_credit');
+                            $pay = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
+                            $payUpdate = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->get();
 
                             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                             $formattedValue = currencyFormat(round($discount), getCurrencyForClient(\Auth::user()->country), true);
                             $orderNumber = Order::where('id', $orderId)->value('number');
                             $formattedPay = currencyFormat($pay, getCurrencyForClient(\Auth::user()->country), true);
 
-                            if ($pay) {
+                            if (!$payUpdate->isEmpty()) {
                                 $pay = $pay + round($discount);
                                 Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
 

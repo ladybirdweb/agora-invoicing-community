@@ -186,7 +186,7 @@ class RazorpayController extends Controller
         $date = $date1->format('M j, Y, g:i a ');
 
         \Cart::clear();
-        $status = 'success';
+        $status = 'Success';
 
         $message = view('themes.default1.front.postRenewTemplate', compact('invoice', 'date',
             'product', 'invoiceItem', 'state', 'currency'))->render();

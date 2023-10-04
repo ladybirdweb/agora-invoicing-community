@@ -12,7 +12,6 @@ use App\Model\Payment\TaxByState;
 use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;

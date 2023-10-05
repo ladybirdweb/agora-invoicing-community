@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Http\Controllers\Common\CronController;
 use Illuminate\Console\Command;
 

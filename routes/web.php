@@ -138,6 +138,8 @@ Route::middleware('installAgora')->group(function () {
     Route::patch('my-password', [Front\ClientController::class, 'postPassword']);
     Route::get('paynow/{id}', [Front\CheckoutController::class, 'payNow']);
 
+    Route::delete('invoices/delete/{id}', [Front\ClientController::class, 'invoiceDelete']);
+
     Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getVersionList'])->name('get-versions');
     Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getGithubVersionList'])->name('get-github-versions');
 

@@ -206,6 +206,20 @@ class BaseSettingsController extends PaymentSettingsController
             '1' => '1 day',
         ];
 
+        $invoiceDays = [
+            '7' => '7 days',
+            '5' => '5 days',
+            '2' => '2 days',
+            '1' => '1 day',
+        ];
+
+        $selectedDays = [];
+        $daysLists = ExpiryMailDay::get();
+        if (count($daysLists) > 0) {
+            foreach ($daysLists as $daysList) {
+                $selectedDays[] = $daysList;
+            }
+        }
         $delLogDays = ['720' => '720 Days', '365' => '365 days', '180' => '180 Days',
             '150' => '150 Days', '60' => '60 Days', '30' => '30 Days', '15' => '15 Days', '5' => '5 Days', '2' => '2 Days', '0' => 'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
@@ -213,6 +227,7 @@ class BaseSettingsController extends PaymentSettingsController
         $Auto_expiryday[] = json_decode(ExpiryMailDay::first()->autorenewal_days, true);
         $post_expiryday[] = json_decode(ExpiryMailDay::first()->postexpiry_days, true);
         $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
+        $invoiceDeletionDay[] = ExpiryMailDay::first()->invoice_days;
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -231,7 +246,9 @@ class BaseSettingsController extends PaymentSettingsController
             'post_expiry',
             'post_expiryday',
             'cloudDays',
-            'beforeCloudDay'
+            'beforeCloudDay',
+            'invoiceDays',
+            'invoiceDeletionDay'
         ));
     }
 
@@ -259,6 +276,7 @@ class BaseSettingsController extends PaymentSettingsController
             $allStatus->post_expirymail = 0;
         }
         $allStatus->cloud_mail_status = $request->cloud_cron ? $request->cloud_cron : 0;
+        $allStatus->invoice_deletion_status = $request->invoice_cron ? $request->invoice_cron : 0;
         $allStatus->save();
         $this->saveConditions();
 
@@ -279,9 +297,8 @@ class BaseSettingsController extends PaymentSettingsController
 
         // $cloudDays = is_array($request->input('cloud_days')) ? $request->input('cloud_days') : [$request->input('cloud_days')];
 
-        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
-
-        ActivityLogDay::findOrFail(1)->update(['days' => $request->input('logdelday')]);
+        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days'), 'invoice_days' => $request->input('invoice_days')]);
+        ActivityLogDay::findOrFail(1)->update(['days' => $request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }

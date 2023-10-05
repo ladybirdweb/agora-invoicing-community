@@ -184,18 +184,19 @@ trait ApiKeySettings
             $subexpiry_dailyAt = \Request::get('subexpiry-dailyAt');
             $postexpiry_commands = \Request::get('postsubexpiry-commands');
             $postexpiry_dailyAt = \Request::get('postsubexpiry-dailyAt');
+            $cloud_commands = \Request::get('cloud-commands');
+            $cloud_dailyAt = \Request::get('cloud-dailyAt');
+            $invoice_commands = \Request::get('invoice-commands');
+            $invoice_dailyAt = \Request::get('invoice-dailyAt');
 
             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
             $subexpiry_command = $this->getCommand($subexpiry_commands, $subexpiry_dailyAt);
             $postexpiry_command = $this->getCommand($postexpiry_commands, $postexpiry_dailyAt);
-            $cloud_commands = \Request::get('cloud-commands');
-            $cloud_dailyAt = \Request::get('cloud-dailyAt');
-
-            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
             $cloud_command = $this->getCommand($cloud_commands, $cloud_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command, 'cloud' => $cloud_command];
+            $invoice_command = $this->getCommand($invoice_commands, $invoice_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command, 'cloud' => $cloud_command , 'invoice' => $invoice_command];
 
             $this->storeCommand($jobs);
         }

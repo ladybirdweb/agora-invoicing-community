@@ -294,8 +294,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $amt_to_credit = null;
-            $credits=0;
-            $deductions=0;
+            $credits = 0;
+            $deductions = 0;
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
@@ -322,19 +322,19 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     $grand_total = $grand_total - $amt_to_credit;
                 }
             }
-            if(\Session::has('credits')){
-                $credits=\Session::get('credits');
+            if (\Session::has('credits')) {
+                $credits = \Session::get('credits');
             }
-            if(\Session::has('deduction')){
+            if (\Session::has('deduction')) {
                 $deductions = \Session::get('deduction');
             }
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'billing_pay'=>$amt_to_credit,'credits' => $credits,'deductions'=> $deductions]);
+                'currency' => $currency, 'coupon_code' => \Session::get('code'), 'discount' => \Session::get('discountPrice'), 'discount_mode' => 'coupon', 'billing_pay'=>$amt_to_credit, 'credits' => $credits, 'deductions'=> $deductions]);
 
             foreach (\Cart::getContent() as $cart) {
-                $this->createInvoiceItems($invoice->id, $cart, $amt_to_credit,$credits,$deductions);
+                $this->createInvoiceItems($invoice->id, $cart, $amt_to_credit, $credits, $deductions);
             }
             if (emailSendingStatus()) {
                 $this->sendMail($user_id, $invoice->id);
@@ -348,7 +348,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function createInvoiceItems($invoiceid, $cart, $amt_credit = null,$credits=null,$deductions=null)
+    public function createInvoiceItems($invoiceid, $cart, $amt_credit = null, $credits = null, $deductions = null)
     {
         try {
             $planid = 0;
@@ -380,7 +380,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'agents' => $agents,
                 'billing_pay' => $amt_credit,
                 'credits' => $credits,
-                'deductions'=> $deductions
+                'deductions'=> $deductions,
             ]);
 
             return $invoiceItem;

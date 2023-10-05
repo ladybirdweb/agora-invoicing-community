@@ -257,8 +257,8 @@ class CloudExtraActivities extends Controller
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                     $actualPrice = $price;
-                    $deduction =0;
-                    $credits =0;
+                    $deduction = 0;
+                    $credits = 0;
                     \Session::put('agentIncreaseDate', 'do-it');
                 } else {
                     $agentsAdded = $newAgents - $oldAgents;
@@ -270,14 +270,14 @@ class CloudExtraActivities extends Controller
                     $price = $agentsAdded * $pricePerThatAgent;
                     $actualPrice = $base_price * $newAgents;
                     $deduction = $actualPrice - $price;
-                    $credits =0;
+                    $credits = 0;
                 }
             } else {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price * $newAgents;
                     $actualPrice = $price;
-                    $deduction =0;
-                    $credits =0;
+                    $deduction = 0;
+                    $credits = 0;
                     \Session::put('agentIncreaseDate', 'do-it');
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -300,20 +300,20 @@ class CloudExtraActivities extends Controller
                         $price = $priceToBePaid - $priceRemaining;
                         $actualPrice = $base_price * $newAgents;
                         $deduction = $actualPrice - $price;
-                        $credits =0;
+                        $credits = 0;
                     } else {
                         $price = 0;
                         $actualPrice = $base_price * $newAgents;
                         $deduction = $actualPrice;
-                        $credits =0;
+                        $credits = 0;
                     }
 
 //                    (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id,[0=>'Credit Balance'],'Credit Balance',Carbon::now(),$price,null,round($discount),'pending');
                 }
             }
             \Session::put('actualPrice', round($actualPrice));
-            \Session::put('deduction',round($deduction));
-            \Session::put('credits',round($credits));
+            \Session::put('deduction', round($deduction));
+            \Session::put('credits', round($credits));
             $items = ['id' => $product_id, 'name' => $product->name, 'price' => round($price), 'planId' => $planId,
                 'quantity' => 1, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $newAgents], 'associatedModel' => $product];
 
@@ -365,9 +365,9 @@ class CloudExtraActivities extends Controller
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new;
                     \Session::put('increase-decrease-days', $planDaysNew);
-                     $actualPrice = $base_price_new;
-                     $deduction = 0;
-                     $credits = 0;
+                    $actualPrice = $base_price_new;
+                    $deduction = 0;
+                    $credits = 0;
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
                     $pricePerDayOld = $base_priceOld / $planDaysOld; //1600
@@ -390,7 +390,7 @@ class CloudExtraActivities extends Controller
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
                         $actualPrice = $base_price_new;
-                        $deduction = $base_price_new- $price;
+                        $deduction = $base_price_new - $price;
                         $credits = 0;
                         \Session::put('increase-decrease-days-dont-cloud', $orderId);
                     }
@@ -539,8 +539,8 @@ class CloudExtraActivities extends Controller
                 }
             }
             \Session::put('actualPrice', round($actualPrice));
-            \Session::put('deduction',round($deduction));
-            \Session::put('credits',round($credits));
+            \Session::put('deduction', round($deduction));
+            \Session::put('credits', round($credits));
             $items = ['id' => $product_id_new, 'name' => $productNew->name, 'price' => round($price), 'planId' => $planIdNew,
                 'quantity' => 1, 'attributes' => ['currency' => $currencyNew['currency'], 'symbol' => $currencyNew['symbol'], 'agents' => $newAgents, 'deduction' => round($deduction), 'credits' => round($credits)], 'associatedModel' => $productNew];
 

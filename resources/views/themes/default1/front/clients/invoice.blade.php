@@ -47,7 +47,65 @@
         padding: 4px;
         border-radius: 4px;
     }
+
+    #iconStyle{
+    font-size: 17px;
+    color: #fff;
+    background-color: #8a959c;
+    border-color: #8a959c;
+    box-shadow: none;
+    border-radius: 4px;
+    line-height: 20px;
+}
 </style>
+
+<div id="message-container"></div>
+<div class="col-md-12 pull-center">
+  <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+    <thead>
+      <tr>
+        <th>Invoice No</th>
+        <th>Date</th>
+        <th>Order No</th>
+        <th>Total</th>
+        <th>Paid</th>
+        <th>Balance</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr> </thead>
+  </table>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Required Details</h5>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ url('store-basic-details') }}">
+          @csrf
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label"><b>Company Name</b><span style="color: red;">*</span></label>
+            <input type="text" class="form-control required" id="company" name="company">
+
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label"><b>Address</b><span style="color: red;">*</span></label>
+            <textarea class="form-control required" id="address" name="address"></textarea>
+
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+  <button type="submit" class="btn btn-primary" id="submit">
+    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+    <span class="button-text"> <i class="fa fa-save">&nbsp;&nbsp;</i>Save</span>
+  </button>
+</div>
+
+    </style>
     @auth
         @php
             $amt = \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->value('amt_to_credit');
@@ -276,6 +334,52 @@
                 $('.loader').css('display', 'block');
             },
         });
+
+
+            $('#invoice-table').on('click', '.delete-btn', function () {
+                var id = $(this).data('id');
+                var messageContainer = $('#message-container');
+
+                if (confirm('Are you sure you want to delete this invoice?')) {
+                    // Send AJAX request to delete item
+                    $.ajax({
+                        url: '/invoices/delete/' + id,
+                        type: 'DELETE',
+                        success: function (response) {
+                            // Display success message
+                            var successMessage = '<div class="alert alert-success">' +
+                                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                 '<span aria-hidden="true">&times;</span></button>' +
+                                                 '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                                                 response.message + '!</div>';
+                            messageContainer.html(successMessage);
+                            // Reload the DataTable
+                            setTimeout(function(){
+                                messageContainer.empty();
+                                location.reload();
+                            }, 3000);
+                        },
+                        error: function (xhr, status, error) {
+                            // Display error message
+                            var errorMessage = '<div class="alert alert-danger">' +
+                                               '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                               '<span aria-hidden="true">&times;</span></button>' +
+                                               '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value){
+                                errorMessage += '<li>' + value + '</li>';
+                            });
+                            errorMessage += '</ul></div>';
+
+                            messageContainer.html(errorMessage);
+                            setTimeout(function(){
+                                messageContainer.empty();
+                                location.reload();
+                            }, 5000);
+                        }
+                    });
+                }
+            });
 
     </script>
     @if(!$check)

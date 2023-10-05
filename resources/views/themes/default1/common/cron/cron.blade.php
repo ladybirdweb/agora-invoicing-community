@@ -66,6 +66,7 @@ Cron Setting
                    $Autorenewal_status = \App\Model\Common\StatusSetting::pluck('subs_expirymail')->first();
                    $postExpiry_status = \App\Model\Common\StatusSetting::pluck('post_expirymail')->first();
                    $cloudStatus = \App\Model\Common\StatusSetting::pluck('cloud_mail_status')->first();
+                   $invoiceStatus = \App\Model\Common\StatusSetting::pluck('invoice_deletion_status')->first();
                   ?>
          <div class="card-header">
              <h3 class="card-title">{{Lang::get('message.set_cron_period')}}  </h3>
@@ -81,7 +82,27 @@ Cron Setting
              
               <!-- /.form-group -->
               <div class="form-group select2">
-                <label>{{Lang::get('message.expiry_mail_sent')}}</label> <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them to renew the product. This email is send out only to those who have not enabled auto renewal"></i>
+                <label >{{Lang::get('message.expiry_mail_sent')}}</label> 
+                <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them to renew the product. This email is send out only to those who have not enabled auto renewal"></i>
+
+                <?php 
+                 if (count($selectedDays) > 0) {
+                foreach ($selectedDays as $selectedDay) {
+                    $saved[$selectedDay->days] = 'true';
+                }
+               }  else {
+                    $saved=[];
+                }
+                 if (count($saved) > 0) {
+                   foreach ($saved as $key => $value) {
+                     $savedkey[]=$key;
+                   }
+                   $saved1=$savedkey?$savedkey:[''];
+                       }
+                       else{
+                        $saved1=[];
+                       }
+                 ?>
                   
                    @if ($mailStatus == 0)
                     <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
@@ -186,6 +207,25 @@ Cron Setting
 
 
 
+              <!-- /.form-group -->
+            </div>
+
+                       <div class="col-md-6">
+              <div class="form-group">
+                <label>{{Lang::get('Invoice deletion')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger deletion of the old unpaid invoices that are not linked to any orders."></i>
+                  @if ($invoiceStatus == 0)
+                    <select id ="days" name="invoice_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('Please enable the invoice deletion cron')}}</option>
+                    </select>
+                      @else
+                <select name="invoice_days" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" style="width: 100%;">
+                    @foreach ($invoiceDays as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $invoiceDeletionDay)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                  @endforeach
+                </select>
+                @endif
+              </div>
+            </div>
           </div>
           <!-- /.row -->
           @if ( $mailStatus || $activityStatus || $cloudStatus ==1)
@@ -209,6 +249,10 @@ Cron Setting
 
 
 <script>
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';
     }).addClass('active');

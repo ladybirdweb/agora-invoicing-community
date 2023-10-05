@@ -7,6 +7,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -16,7 +17,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Session;
-use App\Model\Order\OrderInvoiceRelation;
+
 class RenewController extends BaseRenewController
 {
     use TaxCalculation;
@@ -285,16 +286,15 @@ class RenewController extends BaseRenewController
         $invoiceId = OrderInvoiceRelation::where('order_id', $subscription->order_id)
             ->latest('created_at')
             ->value('invoice_id');
-        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->where('plan_id',$request->plan)->latest('created_at')->first();
-        if($invoiceItem){
-        $invoice = Invoice::where('id', $invoiceItem->invoice_id)
-            ->where('is_renewed', 1)
-            ->where('status', 'pending')
-            ->first();
-            if($invoice){
-            return redirect('my-invoice/'. $invoice->id .  '#invoice-section')
-                    ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
- 
+        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->where('plan_id', $request->plan)->latest('created_at')->first();
+        if ($invoiceItem) {
+            $invoice = Invoice::where('id', $invoiceItem->invoice_id)
+                ->where('is_renewed', 1)
+                ->where('status', 'pending')
+                ->first();
+            if ($invoice) {
+                return redirect('my-invoice/'.$invoice->id.'#invoice-section')
+                        ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
             }
         }
         if (\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {

@@ -312,7 +312,6 @@ class CronController extends BaseCronController
         return $subscriptions;
     }
 
-
     public function eachSubscription()
     {
         $status = StatusSetting::value('expiry_mail');
@@ -377,16 +376,15 @@ class CronController extends BaseCronController
             }
         }
     }
-    
+
     /**
      * Deletes old invoices based on specified criteria.
-     * 
+     *
      * This function checks if invoices should be deleted, retrieves old invoices,
      * and deletes invoices that meet specific conditions.
-     * 
+     *
      * @return void
      */
-
     public function invoicesDeletion()
     {
         if ($this->shouldDeleteInvoices()) {
@@ -406,29 +404,28 @@ class CronController extends BaseCronController
         return StatusSetting::value('invoice_deletion_status') == 1;
     }
 
-    
     private function getOldInvoices($days)
     {
         $date = Carbon::now()->subDays($days);
         $oldInvoices = Invoice::where('status', 'pending')
                           ->where('date', '<', $date)
                           ->get();
+
         return $oldInvoices;
     }
 
     private function canDeleteInvoice($invoice)
     {
-        $condition1 = $invoice->is_renewed == 0 && 
-                      !$invoice->orderRelation()->exists() && 
+        $condition1 = $invoice->is_renewed == 0 &&
+                      ! $invoice->orderRelation()->exists() &&
                       $invoice->invoiceItem()->exists();
 
-        $condition2 = $invoice->is_renewed != 0 && 
-                      $invoice->orderRelation()->exists() && 
+        $condition2 = $invoice->is_renewed != 0 &&
+                      $invoice->orderRelation()->exists() &&
                       $invoice->invoiceItem()->exists();
 
         return $condition1 || $condition2;
     }
-
 
     private function deleteInvoice($invoice)
     {
@@ -443,7 +440,6 @@ class CronController extends BaseCronController
         // Delete the Invoice record
         $invoice->delete();
     }
-
 
     public function getOnDayExpiryInfoSubs()
     {

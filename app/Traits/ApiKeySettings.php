@@ -196,7 +196,7 @@ trait ApiKeySettings
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
             $cloud_command = $this->getCommand($cloud_commands, $cloud_dailyAt);
             $invoice_command = $this->getCommand($invoice_commands, $invoice_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command, 'cloud' => $cloud_command , 'invoice' => $invoice_command];
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command, 'cloud' => $cloud_command, 'invoice' => $invoice_command];
 
             $this->storeCommand($jobs);
         }

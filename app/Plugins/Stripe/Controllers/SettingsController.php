@@ -157,11 +157,11 @@ class SettingsController extends Controller
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
-                if($invoice->is_renewed == 0){
-                \Session::forget('subscription_id');
-                \Session::forget('plan_id');
-               }
-      
+                if ($invoice->is_renewed == 0) {
+                    \Session::forget('subscription_id');
+                    \Session::forget('plan_id');
+                }
+
                 if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
@@ -210,6 +210,7 @@ class SettingsController extends Controller
             return redirect()->route('checkout');
         } catch (\Exception $e) {
             dd($e);
+
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

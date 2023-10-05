@@ -121,11 +121,15 @@ $currency = $invoice->currency;
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-total">
+                                    @if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration'))
+                                        <span class="amount">{{currencyFormat(\Session::has('actualPrice')?\Session::get('actualPrice'):$item->price,$code = $item->attributes->currency)}}</span>
+                                    @else
                                     @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
                                     <span class="amount">{{currencyFormat($item->quantity * \Session::get('togglePrice'),$code = $item->attributes->currency)}}</span>
                                     @else
                                     <span class="amount">{{currencyFormat($item->quantity * $item->price,$code = $item->attributes->currency)}}</span>
 
+                                    @endif
                                     @endif
                                 </td>
                             </tr>
@@ -150,6 +154,22 @@ $currency = $invoice->currency;
     </div>
         <table class="cart-totals m-2">
             <tbody>
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($item->attributes->deduction??\Session::get('deduction'),$code = $item->attributes->currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
                   
                     <th>
@@ -178,6 +198,22 @@ $currency = $invoice->currency;
                     </td>
                 </tr>
                 @endif
+            @if(\Session::has('credits'))
+                <tr class="credits" style="color: forestgreen;">
+
+                    <th>
+
+                        <strong>Credits</strong><br/>
+
+                    </th>
+                    <td>
+                        +{{currencyFormat($item->attributes->credits??\Session::get('credits'),$code = $item->attributes->currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditionsByType('tax') as $tax)
@@ -331,7 +367,11 @@ $currency = $invoice->currency;
                             {{$item->quantity}}
                         </td>
                         <td class="product-total">
+                            @if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration'))
+                                <span class="amount">{{currencyFormat(\Session::has('actualPrice')?\Session::get('actualPrice'):$item->regular_price,$code = $currency)}}</span>
+                            @else
                             <span class="amount">{{currencyFormat($item->regular_price,$code = $currency)}}</span>
+                            @endif
                         </td>
                     </tr>
                     @empty 
@@ -356,6 +396,23 @@ $currency = $invoice->currency;
     </div>
         <table class="cart-totals">
             <tbody>
+
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($item->attributes->deduction??\Session::get('deduction'),$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
                     <?php 
                     $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
@@ -384,6 +441,22 @@ $currency = $invoice->currency;
                     </td>
                 </tr>
                 @endif
+            @if(\Session::has('credits'))
+                <tr class="credits" style="color: forestgreen;">
+
+                    <th>
+
+                        <strong>Credits</strong><br/>
+
+                    </th>
+                    <td>
+                        +{{currencyFormat($item->attributes->credits ??\Session::get('credits'),$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
 
                  @foreach($taxName as $tax)
                   @php

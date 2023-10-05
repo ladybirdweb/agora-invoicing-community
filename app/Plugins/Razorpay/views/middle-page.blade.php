@@ -199,12 +199,16 @@ $json = json_encode($data);
                                     {{$item->quantity}}
                                 </td>
                                   <td class="product-total">
+                                      @if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration'))
+                                          <span class="amount">{{currencyFormat(\Session::has('actualPrice')?\Session::get('actualPrice'):$item->price,$code = $item->attributes->currency)}}</span>
+                                      @else
                                     @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
                                     <span class="amount">{{currencyFormat($item->quantity * \Session::get('togglePrice'),$code = $item->attributes->currency)}}</span>
                                     @else
                                     <span class="amount">{{currencyFormat($item->quantity * $item->price,$code = $item->attributes->currency)}}</span>
 
                                     @endif
+                                      @endif
                                 </td>
                             </tr>
                             @empty 
@@ -229,6 +233,22 @@ $json = json_encode($data);
     </div>
         <table class="cart-totals" style="margin: 10px">
             <tbody>
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($item->attributes->deduction??\Session::get('deduction'),$code = $item->attributes->currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
                   
                     <th>
@@ -258,6 +278,22 @@ $json = json_encode($data);
                     </td>
                 </tr>
                 @endif
+            @if(\Session::has('credits'))
+                <tr class="credits" style="color: forestgreen;">
+
+                    <th>
+
+                        <strong>Credits</strong><br/>
+
+                    </th>
+                    <td>
+                        +{{currencyFormat($item->attributes->credits??\Session::get('credits'),$code = $item->attributes->currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditionsByType('tax') as $tax)
 
@@ -386,9 +422,11 @@ $json = json_encode($data);
                         <td class="product-quantity">
                             {{$item->quantity}}
                         </td>
-                        <td class="product-total">
+                        @if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration'))
+                            <span class="amount">{{currencyFormat(\Session::has('actualPrice')?\Session::get('actualPrice'):$item->regular_price,$code = $currency)}}</span>
+                        @else
                             <span class="amount">{{currencyFormat($item->regular_price,$code = $currency)}}</span>
-                        </td>
+                        @endif
                     </tr>
                     @empty 
                 <p>Your Cart is void</p>
@@ -412,6 +450,22 @@ $json = json_encode($data);
     </div>
         <table class="cart-totals" style="margin: 10px">
             <tbody>
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($item->attributes->deduction??\Session::get('deduction'),$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
                     <?php 
                     $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
@@ -440,6 +494,22 @@ $json = json_encode($data);
                     </td>
                 </tr>
                 @endif
+            @if(\Session::has('credits'))
+                <tr class="credits" style="color: forestgreen;">
+
+                    <th>
+
+                        <strong>Credits</strong><br/>
+
+                    </th>
+                    <td>
+                        +{{currencyFormat($item->attributes->credits ??\Session::get('credits'),$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
 
                  @foreach($taxName as $tax)
                   @php

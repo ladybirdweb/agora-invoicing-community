@@ -108,8 +108,11 @@ Checkout
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    
+                                    @if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration'))
+                                        <span class="amount">{{currencyFormat(\Session::has('actualPrice')?\Session::get('actualPrice'):$item->regular_price,$code = $currency)}}</span>
+                                    @else
                                     <span class="amount">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
+                                    @endif
                                 </td>
                             </tr>
                             @empty 
@@ -200,6 +203,22 @@ Checkout
         <h4 class="heading-primary">Cart Total</h4>
         <table class="cart-totals">
             <tbody>
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($invoice->deduction??0,$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
                     <?php 
                     $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
@@ -212,6 +231,22 @@ Checkout
                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
+            @if(\Session::has('credits'))
+                <tr class="credits" style="color: forestgreen;">
+
+                    <th>
+
+                        <strong>Credits</strong><br/>
+
+                    </th>
+                    <td>
+                        +{{currencyFormat($invoice->credits??0,$code = $currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                  @php
                 $taxName = array_unique($taxName);
                 @endphp

@@ -169,6 +169,20 @@ active
                         <div class="col-sm-4">
                             <table class="table h6 text-dark" >
                                 @foreach($items as $item)
+                                    @if(\Session::has('deduction'))
+                                        <tr class="credits" style="color: indianred;">
+
+                                            <th>
+                                                Deducted
+                                            </th>
+                                            <td>
+                                                -{{currencyFormat($invoice->deduction??0,$code = $symbol)}}
+                                            </td>
+
+
+                                        </tr>
+
+                                    @endif
                                  <tr>
                                  <th>Subtotal</th>
                                     <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
@@ -180,8 +194,18 @@ active
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 </tr>
                                 @endif
-                          
 
+                                        <tr class="credits" style="color: forestgreen;">
+
+                                            <th>
+                                                Credits
+                                            </th>
+                                            <td>
+                                                +{{currencyFormat($invoice->credits??0,$code = $symbol)}}
+                                            </td>
+
+
+                                        </tr>
                                 
                                     <?php
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();

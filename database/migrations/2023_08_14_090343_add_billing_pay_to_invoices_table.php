@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->string('billing_pay', 255)->nullable();
+            $table->string('credits', 255)->nullable();
+            $table->string('deductions', 255)->nullable();
         });
     }
 
@@ -27,6 +29,8 @@ return new class extends Migration
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->dropColumn('billing_pay');
+            $table->dropColumn('credits');
+            $table->dropColumn('deductions');
         });
     }
 };

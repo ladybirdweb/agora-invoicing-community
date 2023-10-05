@@ -231,7 +231,7 @@ $json = json_encode($data);
                 <tr class="cart-subtotal">
                   
                     <th>
-                        <strong>Cart Subtotal</strong>
+                        <strong>Cart Subtotals</strong>
                     </th>
                     <td>
                         <span class="amount">{{currencyFormat($cartSubtotalWithoutCondition,$code = $currency)}}</span>

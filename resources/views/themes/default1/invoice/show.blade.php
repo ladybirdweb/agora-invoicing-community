@@ -169,6 +169,19 @@ Invoice
                               
                                        
                                  <table class="table">
+                                         <tr class="credits" style="color: indianred;">
+
+                                             <th>
+                                                 Deducted
+                                             </th>
+                                             <td>
+                                                 -{{currencyFormat($invoice->deduction??0,$code = $symbol)}}
+                                             </td>
+
+
+                                         </tr>
+
+
                                      <tr>
                                          <th>Subtotal:</th>
                                          <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
@@ -178,6 +191,17 @@ Invoice
                                   <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 @endif
+                                     <tr class="credits" style="color: forestgreen;">
+
+                                         <th>
+                                             Credits
+                                         </th>
+                                         <td>
+                                             +{{currencyFormat($invoice->credits??0,$code = $symbol)}}
+                                         </td>
+
+
+                                     </tr>
 
                                  <?php
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
@@ -210,6 +234,7 @@ Invoice
                                      
                                        
                                     @endif
+
                                      <tr class="cart-subtotal" style="color: indianred">
 
                                          <th>

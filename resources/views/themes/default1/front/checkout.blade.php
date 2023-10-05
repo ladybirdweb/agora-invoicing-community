@@ -49,12 +49,14 @@ Checkout
     <?php
       $amt_to_credit = 0;
       $curr ='';
+      $final =0;
       if(empty($content)){
           $curr = '';
       }
       else{
           foreach ($content as $item){
               $curr = $item->attributes->currency;
+              $final = $item->attributes->finalPrice;
           }
       }
     ?>
@@ -141,14 +143,18 @@ $cartSubtotalWithoutCondition = 0;
                                    <?php
                                     $productId = \DB::table('products')->where('name', $item->name)->value('id');
                                     $planid = null;
-                                    if (\Session::has('toggleState') || \Session::get('toggleState') == null) {
-                                        $toggleState = \Session::get('toggleState');
-                                        $price = $item->price;
+                                    if(\Session::has('upgradeDowngradeProduct') || \Session::has('AgentAlteration')){
+                                        $price = \Session::has('actualPrice')?\Session::get('actualPrice'):$item->price;
                                     }
-                                    else{
-                                      $planid = \DB::table('plans')->where('product',$item->id)->value('id');
-                                      $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
-                                    }    
+                                    else {
+                                        if (\Session::has('toggleState') || \Session::get('toggleState') == null) {
+                                            $toggleState = \Session::get('toggleState');
+                                            $price = $item->price;
+                                        } else {
+                                            $planid = \DB::table('plans')->where('product', $item->id)->value('id');
+                                            $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
+                                        }
+                                    }
 
                                     ?>
 
@@ -160,8 +166,6 @@ $cartSubtotalWithoutCondition = 0;
                                            ?>
 
                                                 {{ $item->quantity * $item->conditions->getName() }}
-                                           
-                                           
 
                                             @else
                                                 {{currencyFormat($item->quantity * $price,$code = $item->attributes->currency)}}
@@ -278,6 +282,22 @@ $cartSubtotalWithoutCondition = 0;
         <h4 class="heading-primary">Cart Total</h4>
         <table class="cart-totals">
             <tbody>
+            @if(\Session::has('deduction'))
+                <tr class="credits" style="color: indianred;">
+
+                    <th>
+
+                        <strong>Deducted</strong><br/>
+
+                    </th>
+                    <td>
+                        -{{currencyFormat($item->attributes->deduction??\Session::get('deduction'),$code = $item->attributes->currency)}}
+                    </td>
+
+
+                </tr>
+
+            @endif
                 <tr class="cart-subtotal">
 
                     <th>
@@ -286,7 +306,6 @@ $cartSubtotalWithoutCondition = 0;
                     <td>
 
                         <span class="amount">
-
                                 {{currencyFormat($cartSubtotalWithoutCondition,$code = $item->attributes->currency)}}
                             </span>
                       
@@ -319,13 +338,30 @@ $cartSubtotalWithoutCondition = 0;
 
                 </tr>
                 @endif
+                @if(\Session::has('credits'))
+                    <tr class="credits" style="color: forestgreen;">
+
+                        <th>
+
+                            <strong>Credits</strong><br/>
+
+                        </th>
+                        <td>
+                            +{{currencyFormat($item->attributes->credits??\Session::get('credits'),$code = $item->attributes->currency)}}
+                        </td>
+
+
+                    </tr>
+
+                @endif
+
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditions() as $tax)
 
                  @if($tax->getName()!= 'null')
                 <tr class="Taxes">
                     <?php
-                    $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                        $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                     ?>
                    <th>
                         
@@ -349,29 +385,30 @@ $cartSubtotalWithoutCondition = 0;
                     $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
                     ?>
                    <th>
-                        
+
                         <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
 
                     </th>
                     <td>
                      {!! $bifurcateTax['tax'] !!}
                   </td>
-                  
-                   
+
+
                 </tr>
                 @endif
-                
+
                 @endforeach
                @endif
                     <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
                         <th><strong>Balance</strong></th>
                         <td>
                                 <?php
-                                if (\Cart::getTotal() <= $amt_to_credit) {
-                                    $cartTotal = \Cart::getTotal();
-                                } else {
-                                    $cartTotal = $amt_to_credit;
-                                }
+                                    if (\Cart::getTotal() <= $amt_to_credit) {
+                                        $cartTotal = \Cart::getTotal();
+                                    } else {
+                                        $cartTotal = $amt_to_credit;
+                                    }
+
                                 ?>
                             -{{$dd=currencyFormat($cartTotal, $item->attributes->currency)}}
                         </td>
@@ -385,6 +422,7 @@ $cartSubtotalWithoutCondition = 0;
         <span class="amount">
             <div id="balance-content">
                 <?php
+
                     if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
                         if (\Cart::getTotal() <= $amt_to_credit) {
                             $cartTotal = 0;

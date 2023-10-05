@@ -32,7 +32,7 @@ class Condition extends Model
             if ($status->cloud_mail_status == 1) {
                 $result['cloud'] = true;
             }
-            if($status->invoice_deletion_status == 1){
+            if ($status->invoice_deletion_status == 1) {
                 $result['invoice'] = true;
             }
         }

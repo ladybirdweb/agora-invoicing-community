@@ -224,6 +224,35 @@
             </div><!-- /.info-box-content -->
 
         </div><!-- /.info-box -->
+
+            <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fas fa-file-invoice"></i></span>
+                <!-- Apply any bg-* class to to the icon to color it -->
+                <div class="info-box-content" style="display: block;">
+               
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                           {!! Form::label('invoice_fetching', Lang::get('Invoice deletion') . ' <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger deletion of the old unpaid invoices that are not linked to any orders."></i>', [], false) !!}<br>
+                            {!! Form::checkbox('invoice_cron',1,$condition->checkActiveJob()['invoice'],['id'=>'invoice_fetching']) !!}&nbsp;{{Lang::get('Enable Invoice Deletion')}}
+                        </div>
+
+                    </div>
+                         <div class="col-md-6" id="invoice">
+                        {!! Form::select('invoice-commands',$commands,$condition->getConditionValue('invoice')['condition'],['class'=>'form-control','id'=>'invoice-command']) !!}
+                          <div id='invoice-daily-at'>
+                            {!! Form::text('invoice-dailyAt',$condition->getConditionValue('invoice')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+                        </div>
+                    </div>
+
+
+                   
+                </div>
+            </div><!-- /.info-box-content -->
+
+        </div><!-- /.info-box -->
     </div>
     <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
         </div>
@@ -499,6 +528,50 @@ $(".time-picker").datetimepicker({
 
         // Ldap cron settings end //
     });
+
+
+                 $(document).ready(function () {
+$(".time-picker").datetimepicker({
+        format: 'HH:ss',
+        // useCurrent: false, //Important! See issue #1075
+    });
+
+
+        var checked = $("#invoice_fetching").is(':checked');
+        check(checked, 'invoice_fetching');
+        $("#invoice_fetching").on('click', function () {
+            checked = $("#invoice_fetching").is(':checked');
+            check(checked);
+        });
+        var command = $("#invoice-command").val();
+        showDailyAt(command);
+        $("#invoice-command").on('change', function () {
+            command = $("#invoice-command").val();
+            showDailyAt(command);
+        });
+        function check(checked, id) {
+            if (checked) {
+                $("#invoice").show();
+            } else {
+                $("#invoice").hide();
+            }
+        }
+        function showDailyAt(command) {
+            if (command === 'dailyAt') {
+                $("#invoice-daily-at").show();
+                // $("input").prop('required',true);
+            } else {
+                $("#invoice-daily-at").hide();
+            }
+        }
+
+      
+
+
+
+        // Ldap cron settings end //
+    });
+
 //-------------------------------------------------------------//
 
     function checksome(showtext = true)

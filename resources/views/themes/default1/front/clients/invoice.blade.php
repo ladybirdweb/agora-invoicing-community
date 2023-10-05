@@ -33,9 +33,18 @@ active
    width: 500px;
    height: 500px;
 }
+#iconStyle{
+    font-size: 17px;
+    color: #fff;
+    background-color: #8a959c;
+    border-color: #8a959c;
+    box-shadow: none;
+    border-radius: 4px;
+    line-height: 20px;
+}
 
 </style>
-
+<div id="message-container"></div>
 <div class="col-md-12 pull-center">
   <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
     <thead>
@@ -181,6 +190,53 @@ active
                 $('.loader').css('display', 'block');
             },
         });
+
+
+            $('#invoice-table').on('click', '.delete-btn', function () {
+                var id = $(this).data('id');
+                var messageContainer = $('#message-container');
+
+                if (confirm('Are you sure you want to delete this invoice?')) {
+                    // Send AJAX request to delete item
+                    $.ajax({
+                        url: '/invoices/delete/' + id,
+                        type: 'DELETE',
+                        success: function (response) {
+                            // Display success message
+                            var successMessage = '<div class="alert alert-success">' +
+                                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                 '<span aria-hidden="true">&times;</span></button>' +
+                                                 '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                                                 response.message + '!</div>';
+                            messageContainer.html(successMessage);
+                            // Reload the DataTable
+                            setTimeout(function(){
+                                messageContainer.empty();
+                                location.reload();
+                            }, 3000);
+                        },
+                        error: function (xhr, status, error) {
+                            // Display error message
+                            var errorMessage = '<div class="alert alert-danger">' +
+                                               '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                               '<span aria-hidden="true">&times;</span></button>' +
+                                               '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value){
+                                errorMessage += '<li>' + value + '</li>';
+                            });
+                            errorMessage += '</ul></div>';
+
+                            messageContainer.html(errorMessage);
+                            setTimeout(function(){
+                                messageContainer.empty();
+                                location.reload();
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+
     </script>
 @if(!$check)
 <script>
@@ -200,6 +256,7 @@ active
         });
     });
 </script>
+
 @endif
 
 @stop

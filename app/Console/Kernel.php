@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutorenewalExpirymail::class,
         \App\Console\Commands\PostExpiryCron::class,
         \App\Console\Commands\moveImages::class,
+        \App\Console\Commands\invoiceDeletion::class,
 
     ];
 
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel
             ->daily();
         $this->execute($schedule, 'subsExpirymail');
         $this->execute($schedule, 'postExpirymail');
+        $this->execute($schedule, 'invoice');
 
         // Schedule the cloudEmail method
         //Should not be touched unless you are changing something with cloud
@@ -85,6 +87,7 @@ class Kernel extends ConsoleKernel
                 $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
                 $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
                 $postExpirystatus = StatusSetting::pluck('post_expirymail')->first();
+                $invoiceDeletionstatus = StatusSetting::pluck('invoice_deletion_status')->first();
                 $delLogDays = ActivityLogDay::pluck('days')->first();
                 if ($delLogDays == null) {
                     $delLogDays = 99999999;
@@ -111,6 +114,11 @@ class Kernel extends ConsoleKernel
                         if ($postExpirystatus) {
                             return $this->getCondition($schedule->command('postexpiry:notification'), $command);
                         }
+                    case 'invoice' : 
+                    if($invoiceDeletionstatus){
+                        return $this->getCondition($schedule->command('invoices:delete'), $command);
+                    }
+
                 }
             }
         }

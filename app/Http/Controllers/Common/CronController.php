@@ -312,6 +312,7 @@ class CronController extends BaseCronController
         return $subscriptions;
     }
 
+
     public function eachSubscription()
     {
         $status = StatusSetting::value('expiry_mail');
@@ -376,6 +377,73 @@ class CronController extends BaseCronController
             }
         }
     }
+    
+    /**
+     * Deletes old invoices based on specified criteria.
+     * 
+     * This function checks if invoices should be deleted, retrieves old invoices,
+     * and deletes invoices that meet specific conditions.
+     * 
+     * @return void
+     */
+
+    public function invoicesDeletion()
+    {
+        if ($this->shouldDeleteInvoices()) {
+            $days = ExpiryMailDay::value('invoice_days');
+            $dueInvoices = $this->getOldInvoices($days);
+
+            foreach ($dueInvoices as $invoice) {
+                if ($this->canDeleteInvoice($invoice)) {
+                    $this->deleteInvoice($invoice);
+                }
+            }
+        }
+    }
+
+    private function shouldDeleteInvoices()
+    {
+        return StatusSetting::value('invoice_deletion_status') == 1;
+    }
+
+    
+    private function getOldInvoices($days)
+    {
+        $date = Carbon::now()->subDays($days);
+        $oldInvoices = Invoice::where('status', 'pending')
+                          ->where('date', '<', $date)
+                          ->get();
+        return $oldInvoices;
+    }
+
+    private function canDeleteInvoice($invoice)
+    {
+        $condition1 = $invoice->is_renewed == 0 && 
+                      !$invoice->orderRelation()->exists() && 
+                      $invoice->invoiceItem()->exists();
+
+        $condition2 = $invoice->is_renewed != 0 && 
+                      $invoice->orderRelation()->exists() && 
+                      $invoice->invoiceItem()->exists();
+
+        return $condition1 || $condition2;
+    }
+
+
+    private function deleteInvoice($invoice)
+    {
+        // Delete related InvoiceItem records
+        $invoice->invoiceItem()->delete();
+
+        if ($invoice->is_renewed != 0 && $invoice->orderRelation()->exists()) {
+            // Delete related OrderRelation records
+            $invoice->orderRelation()->delete();
+        }
+
+        // Delete the Invoice record
+        $invoice->delete();
+    }
+
 
     public function getOnDayExpiryInfoSubs()
     {

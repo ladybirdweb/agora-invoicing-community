@@ -206,6 +206,13 @@ class BaseSettingsController extends PaymentSettingsController
             '1' => '1 day',
         ];
 
+        $invoiceDays = [
+            '7' => '7 days',
+            '5' => '5 days',
+            '2' => '2 days',
+            '1' => '1 day',
+        ];
+
         $selectedDays = [];
         $daysLists = ExpiryMailDay::get();
         if (count($daysLists) > 0) {
@@ -219,6 +226,7 @@ class BaseSettingsController extends PaymentSettingsController
         $Auto_expiryday[] = ExpiryMailDay::first()->autorenewal_days;
         $post_expiryday[] = ExpiryMailDay::first()->postexpiry_days;
         $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
+        $invoiceDeletionDay[] = ExpiryMailDay::first()->invoice_days;
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -237,7 +245,9 @@ class BaseSettingsController extends PaymentSettingsController
             'post_expiry',
             'post_expiryday',
             'cloudDays',
-            'beforeCloudDay'
+            'beforeCloudDay',
+            'invoiceDays',
+            'invoiceDeletionDay'
         ));
     }
 
@@ -265,6 +275,7 @@ class BaseSettingsController extends PaymentSettingsController
             $allStatus->post_expirymail = 0;
         }
         $allStatus->cloud_mail_status = $request->cloud_cron ? $request->cloud_cron : 0;
+        $allStatus->invoice_deletion_status = $request->invoice_cron ? $request->invoice_cron : 0;
         $allStatus->save();
         $this->saveConditions();
         /* redirect to Index page with Success Message */
@@ -295,7 +306,7 @@ class BaseSettingsController extends PaymentSettingsController
             }
         }
 
-        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
+        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days'), 'invoice_days' => $request->input('invoice_days')]);
         ActivityLogDay::findOrFail(1)->update(['days' => $request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

@@ -256,6 +256,7 @@ class SettingsController extends Controller
             return redirect()->route('checkout');
         } catch (\Exception $e) {
             dd($e);
+
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

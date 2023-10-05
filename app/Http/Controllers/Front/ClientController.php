@@ -351,21 +351,21 @@ class ClientController extends BaseClientController
 
                          return currencyFormat($pendingAmount, $code = $model->currency);
                      })
-                     ->addColumn('status', function ($model) {  
+                     ->addColumn('status', function ($model) {
                          return  getStatusLabel($model->status, 'badge');
                      })
                     ->addColumn('Action', function ($model) {
                         $status = $model->status;
                         $payment = '';
                         if ($status != 'Success' && $model->grand_total > 0) {
-                             $payNowButton = '<a href="' . url('paynow/' . $model->id) . '" class="btn btn-primary btn-xs" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to pay"><i class="fa fa-credit-card"></i></a>';
-                            $deleteButton = '<a class="btn btn-primary btn-xs delete-btn" id="iconStyle" data-id="' . $model->id . '" data-toggle="tooltip" data-placement="top" title="Click here to delete"><i class="fa fa-trash"></i></a>';
-                            return $payNowButton . ' ' . $deleteButton;
+                            $payNowButton = '<a href="'.url('paynow/'.$model->id).'" class="btn btn-primary btn-xs" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to pay"><i class="fa fa-credit-card"></i></a>';
+                            $deleteButton = '<a class="btn btn-primary btn-xs delete-btn" id="iconStyle" data-id="'.$model->id.'" data-toggle="tooltip" data-placement="top" title="Click here to delete"><i class="fa fa-trash"></i></a>';
+
+                            return $payNowButton.' '.$deleteButton;
                         }
 
                         return '<p><a href='.url('my-invoice/'.$model->id).
                         " class='btn btn-primary btn-xs' id='iconStyle' data-toggle='tooltip' data-placement='top' title='Click her to view'><i class='fa fa-eye'></i></a>".$payment.'</p>';
-                        
                     })
                      ->filterColumn('number', function ($query, $keyword) {
                          $sql = 'invoices.number like ?';
@@ -926,16 +926,17 @@ class ClientController extends BaseClientController
     {
         $invoice = Invoice::find($id);
 
-        if (!$invoice) {
+        if (! $invoice) {
             return response()->json(['error' => 'Invoice not found'], 404);
         }
 
-        if ($invoice->is_renewed == 0 && !$invoice->orderRelation()->exists() && $invoice->invoiceItem()->exists()) {
+        if ($invoice->is_renewed == 0 && ! $invoice->orderRelation()->exists() && $invoice->invoiceItem()->exists()) {
             // Delete related InvoiceItem records
             $invoice->invoiceItem()->delete();
             // Delete the Invoice record
             $invoice->delete();
             \Session::forget('invoice');
+
             return response()->json(['message' => 'Invoice deleted successfully']);
         }
 
@@ -949,10 +950,10 @@ class ClientController extends BaseClientController
             \Session::forget('invoice');
             \Session::forget('subscription_id');
             \Session::forget('plan_id');
+
             return response()->json(['message' => 'Invoice deleted successfully']);
         }
 
         return response()->json(['error' => 'Cannot delete invoice.'], 400);
     }
-
 }

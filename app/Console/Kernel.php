@@ -124,11 +124,10 @@ class Kernel extends ConsoleKernel
                         if ($postExpirystatus) {
                             return $this->getCondition($schedule->command('postexpiry:notification'), $command);
                         }
-                    case 'invoice' : 
-                    if($invoiceDeletionstatus){
-                        return $this->getCondition($schedule->command('invoices:delete'), $command);
-                    }
-
+                    case 'invoice':
+                        if ($invoiceDeletionstatus) {
+                            return $this->getCondition($schedule->command('invoices:delete'), $command);
+                        }
                 }
             }
         }

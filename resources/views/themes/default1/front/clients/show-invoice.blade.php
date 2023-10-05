@@ -77,7 +77,7 @@ active
                     </div>
                 </header>
 
-                <div class="bill-info">
+                <div class="bill-info"  id="invoice-section">
                     <div class="row" style="margin-top: 25px">
                         <div class="col-md-6">
                             <div class="bill-to">
@@ -254,4 +254,15 @@ active
     </section>
     </div>
 
+
+<script type="text/javascript">
+    @if(isset($redirectUrl))
+    <script>
+        window.location.href = "{{ url($redirectUrl) }}";
+        window.onload = function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+    </script>
+@endif
+</script>
 @stop

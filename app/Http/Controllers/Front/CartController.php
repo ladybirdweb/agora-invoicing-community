@@ -15,6 +15,8 @@ use App\User;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
+use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 
 class CartController extends BaseCartController
 {
@@ -171,8 +173,26 @@ class CartController extends BaseCartController
         try {
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
+                 $itemName = $item->name;
+                 $itemQuantity = $item->quantity;
+                 $userId = \Auth::user()->id;
+
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
+
+                $unpaidInvoice = Invoice::where('user_id', $userId)
+                ->where('is_renewed', 0)
+                ->where('status','pending')
+                ->whereHas('invoiceItem', function ($query) use ($itemName, $itemQuantity) {
+                    $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
+                })
+                ->first();
+                if ($unpaidInvoice){
+                    Cart::clear($item->id);
+                    return redirect('my-invoice/'. $unpaidInvoice->id)
+                    ->with('warning', 'You have an unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
+
+                }
             }
 
             return view('themes.default1.front.cart', compact('cartCollection'));

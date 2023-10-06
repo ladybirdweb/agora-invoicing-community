@@ -207,9 +207,9 @@ class CloudExtraActivities extends Controller
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
-            if (empty($installation_path)) {
-                return errorResponse(trans('message.installation_path_not_found'));
-            }
+//            if (empty($installation_path)) {
+//                return errorResponse(trans('message.installation_path_not_found'));
+//            }
             \Session::put('upgradeInstallationPath', $installation_path);
 
             $items = $this->getThePaymentCalculationUpgradeDowngrade($agents, $oldLicense, $orderId, $planId);
@@ -239,6 +239,7 @@ class CloudExtraActivities extends Controller
             \Session::forget('upgradeNewActiveOrder');
             \Session::forget('increase-decrease-days-dont-cloud');
             \Session::forget('increase-decrease-days');
+            \Session::forget('priceRemaining');
 
             if (is_null($planId)) {
                 $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
@@ -345,7 +346,9 @@ class CloudExtraActivities extends Controller
 
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
                     \Session::put('increase-decrease-days', $planDaysNew);
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
@@ -360,17 +363,23 @@ class CloudExtraActivities extends Controller
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemainNewFinal;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
+                        $priceRemaining = $pricePerThatAgentOld;
+                        $priceToBePaid = $pricePerThatAgentNew;
                         \Session::put('increase-decrease-days', $daysRemainNewFinal);
                     } else {
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
+                        $priceRemaining = $pricePerThatAgentOld;
+                        $priceToBePaid = $pricePerThatAgentNew;
                         \Session::put('increase-decrease-days-dont-cloud', $orderId);
                     }
                 }
             } elseif ($base_price_new == $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
                     \Session::put('increase-decrease-days', $planDaysNew);
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -392,15 +401,21 @@ class CloudExtraActivities extends Controller
                                 \Session::put('increase-decrease-days', $daysRemainNewFinal);
                             }
                         }
+                        $priceRemaining = 0;
+                        $priceToBePaid = 0;
                         $price = 0;
                     } else {
+                        $priceRemaining = 0;
+                        $priceToBePaid = 0;
                         $price = 0;
                         \Session::put('increase-decrease-days-dont-cloud', $orderId);
                     }
                 }
             } else {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
                     \Session::put('increase-decrease-days', $planDaysNew);
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
@@ -490,6 +505,8 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
+            \Session::put('priceRemaining',round($priceRemaining));
+            \Session::put('priceToBePaid',round($priceToBePaid));
             $items = ['id' => $product_id_new, 'name' => $productNew->name, 'price' => round($price), 'planId' => $planIdNew,
                 'quantity' => 1, 'attributes' => ['currency' => $currencyNew['currency'], 'symbol' => $currencyNew['symbol'], 'agents' => $newAgents], 'associatedModel' => $productNew];
 
@@ -572,6 +589,8 @@ class CloudExtraActivities extends Controller
 
     public function doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productID, $oldLicenseCode)
     {
+        \Session::forget('priceRemaining');
+
         $this->doTheActivity();
 
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
@@ -711,7 +730,10 @@ class CloudExtraActivities extends Controller
 
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
+
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
                     $pricePerDayOld = $base_priceOld / $planDaysOld; //1600
@@ -725,21 +747,31 @@ class CloudExtraActivities extends Controller
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemainNewFinal;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
+                        $priceRemaining = $pricePerThatAgentOld;
+                        $priceToBePaid = $pricePerThatAgentNew;
                     } else {
                         $pricePerThatAgentNew = $pricePerDayNew * $daysRemain;
                         $pricePerThatAgentOld = $pricePerDayOld * $daysRemain;
                         $price = $pricePerThatAgentNew - $pricePerThatAgentOld;
+                        $priceRemaining = $pricePerThatAgentOld;
+                        $priceToBePaid = $pricePerThatAgentNew;
                     }
                 }
             } elseif ($base_price_new == $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
                 } else {
+                    $priceRemaining = 0;
+                    $priceToBePaid = 0;
                     $price = 0;
                 }
             } else {
                 if (Carbon::now() >= $ends_at) {
-                    $price = $base_price_new * $newAgents;
+                    $price = $base_price_new;
+                    $priceRemaining = 0;
+                    $priceToBePaid = $price;
                 } else {
                     $futureDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $ends_at);
                     $currentDateTime = Carbon::now();
@@ -778,7 +810,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            $items = ['actual_price'=>currencyFormat($actualPrice, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
+            $items = ['priceoldplan'=>currencyFormat($priceRemaining, $currencyNew['currency'], true),'pricenewplan'=>currencyFormat($priceToBePaid, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
 
             return $items;
         } catch(\Exception $e) {

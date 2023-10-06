@@ -883,8 +883,12 @@ $price = $order->price_override;
                     </div>
                     <div class="form-group mb-2">
                         <div class="col-12">
-                            <p>Credits remaining on your current plan: <span id="discount" class="discount"></span></p>
+                            <p>Total Credits remaining on your current plan: <span id="priceOldPlan" class="priceOldPlan"></span></p>
                         </div>
+                        <div class="col-12"  style="margin-top: -13px;">
+                            <p>Price for the new plan: <span id="priceNewPlan" class="priceNewPlan"></span></p>
+                        </div>
+
                         <div class="col-12" style="margin-top: -13px;">
                             <p>Price to be paid: <span id="priceToPay" class="priceToPay"></span></p>
                         </div>
@@ -1874,7 +1878,8 @@ $price = $order->price_override;
                 data: {'plan': val, 'agents': '{{$latestAgents}}', 'orderId': '{{$id}}'},
                 success: function (data) {
                     $(".priceperagent").val(data.priceperagent);
-                    $(".price").val(data.actual_price);
+                    $(".priceOldPlan").text(data.priceoldplan);
+                    $(".priceNewPlan").text(data.pricenewplan);
                     $(".discount").text(data.discount);
                     $(".priceToPay").text(data.price_to_be_paid);
                     $('.loader-wrapper').hide();

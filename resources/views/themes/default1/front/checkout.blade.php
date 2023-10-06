@@ -141,14 +141,18 @@ $cartSubtotalWithoutCondition = 0;
                                    <?php
                                     $productId = \DB::table('products')->where('name', $item->name)->value('id');
                                     $planid = null;
-                                    if (\Session::has('toggleState') || \Session::get('toggleState') == null) {
-                                        $toggleState = \Session::get('toggleState');
-                                        $price = $item->price;
+                                    if(\Session::has('priceToBePaid')){
+                                        $price=\Session::get('priceToBePaid');
                                     }
-                                    else{
-                                      $planid = \DB::table('plans')->where('product',$item->id)->value('id');
-                                      $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
-                                    }    
+                                    else {
+                                        if (\Session::has('toggleState') || \Session::get('toggleState') == null) {
+                                            $toggleState = \Session::get('toggleState');
+                                            $price = $item->price;
+                                        } else {
+                                            $planid = \DB::table('plans')->where('product', $item->id)->value('id');
+                                            $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->value('add_price');
+                                        }
+                                    }
 
                                     ?>
 
@@ -195,12 +199,21 @@ $cartSubtotalWithoutCondition = 0;
 
                 {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
 
+                @if(\Session::has('priceRemaining'))
+                    <input type="checkbox" id="billing-temp-balance" class="checkbox" checked disabled>
+                    <label for="billing-pay-balance" class="checkbox-label" disabled><b>Total Credits remaining on your current plan: {{currencyFormat(\Session::get('priceRemaining'),$code = $item->attributes->currency)}}</b></label>
+                    <p class="underline-label" style="width: 70%;"></p>
+                    <br>
+                @endif
+
                 @if(Cart::getTotal()>0)
 
                  <?php
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item->attributes['currency']);
 
                 ?>
+
+
                 @if($gateways)
                 <div class="row">
                         <?php $amt_to_credit = \DB::table('payments')

@@ -320,6 +320,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     $grand_total = $grand_total - $amt_to_credit;
                 }
             }
+
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
@@ -345,7 +346,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         try {
             $planid = 0;
             $product_name = $cart->name;
-            $regular_price = $cart->price;
+            $regular_price = (\Session::has('priceToBePaid'))?\Session::get('priceToBePaid'):$cart->price;
             $quantity = $cart->quantity;
             $agents = $cart->attributes->agents;
             $domain = $this->domain($cart->id);

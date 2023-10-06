@@ -226,18 +226,6 @@ active
                                 </tr>
                                 @endif
 
-                                    <tr class="cart-subtotal" style="color: indianred">
-
-                                        <th>
-                                            <strong>Balance</strong>
-
-                                        </th>
-                                        <td>
-                                            -{{$dd=currencyFormat($invoice->billing_pay,$symbol)}}
-                                        </td>
-                                    </tr>
-                               
-
                                 <tr class="h4">
                                     <th>Total</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>

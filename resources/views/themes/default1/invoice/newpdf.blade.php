@@ -223,19 +223,6 @@
                                     <td>{{$invoice->processing_fee}}</td>
                                 </tr>
                                 @endif
-                                     <tr class="cart-subtotal" style="color: indianred">
-
-                                         <th>
-                                             <strong>Balance</strong>
-
-                                         </th>
-                                         <td>
-                                             @php
-                                                 $bill=\DB::table('invoices')->where('id',$invoice->id)->value('billing_pay')
-                                             @endphp
-                                             -{{$dd=currencyFormat($bill,$symbol)}}
-                                         </td>
-                                     </tr>
                                     <tr>
                                     <th>Total:</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>

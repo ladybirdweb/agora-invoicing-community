@@ -7,6 +7,7 @@ use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Model\Order\InstallationDetail;
 use Tests\DBTestCase;
 
 class OrderSearchControllerTest extends DBTestCase
@@ -135,19 +136,20 @@ class OrderSearchControllerTest extends DBTestCase
         Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
     }
 
+
     public function test_getBaseQueryForOrders_shouldNotGiveDuplicates_WhenSameOrderHasMoreThanOneInstallationpath()
     {
-        $this->getLoggedInUser('admin');
-        $product = Product::create(['name' => 'Helpdesk']);
-        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id]);
+    $this->getLoggedInUser('admin');
+    $product = Product::create(['name' => 'Helpdesk']);
+    $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id]);
 
-        // Create multiple installation details for the same order
-        $installationDetails1 = InstallationDetail::create(['installation_path' => 'test1.com', 'order_id' => $order->id]);
-        $installationDetails2 = InstallationDetail::create(['installation_path' => 'test2.com', 'order_id' => $order->id]);
+    // Create multiple installation details for the same order
+    $installationDetails1 = InstallationDetail::create(['installation_path' => 'test1.com', 'order_id' => $order->id]);
+    $installationDetails2 = InstallationDetail::create(['installation_path' => 'test2.com', 'order_id' => $order->id]);
 
-        $query = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $results = $query->get();
-        $uniqueOrder = $results->pluck('id')->unique();
-        $this->assertCount(1, $uniqueOrder);
+    $query = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+    $results = $query->get();
+    $uniqueOrder = $results->pluck('id')->unique();
+    $this->assertCount(1, $uniqueOrder);
     }
 }

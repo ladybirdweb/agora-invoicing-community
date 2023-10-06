@@ -207,9 +207,9 @@ class CloudExtraActivities extends Controller
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
-//            if (empty($installation_path)) {
-//                return errorResponse(trans('message.installation_path_not_found'));
-//            }
+            if (empty($installation_path)) {
+                return errorResponse(trans('message.installation_path_not_found'));
+            }
             \Session::put('upgradeInstallationPath', $installation_path);
 
             $items = $this->getThePaymentCalculationUpgradeDowngrade($agents, $oldLicense, $orderId, $planId);

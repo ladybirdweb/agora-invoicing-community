@@ -71,6 +71,9 @@ class CartController extends BaseCartController
      */
     public function cart(Request $request)
     {
+        \Session::forget('priceRemaining');
+        \Session::forget('priceToBePaid');
+
         try {
             $plan = '';
             if ($request->has('subscription')) {//put he Plan id sent into session variable

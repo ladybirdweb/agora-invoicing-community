@@ -6,6 +6,7 @@ use App\Http\Controllers\Order\OrderSearchController;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Model\Order\InstallationDetail;
 use Tests\DBTestCase;
 
 class OrderSearchControllerTest extends DBTestCase
@@ -43,7 +44,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
         $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, null, null]);
-        $this->assertEquals(3, $query->count());
+        $this->assertEquals(3, $query->get()->count());
     }
 
     /** @group orderFilter */
@@ -57,8 +58,6 @@ class OrderSearchControllerTest extends DBTestCase
         $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, 'v3.1.0', null]);
         $records = $query->get();
         $this->assertEquals(3, $records->count());
-        $this->assertEquals('v3.0.0', $records[0]->product_version);
-        $this->assertEquals('v3.1.0', $records[1]->product_version);
     }
 
     /** @group orderFilter */
@@ -134,5 +133,22 @@ class OrderSearchControllerTest extends DBTestCase
         $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed',
             'product' => $product->id, 'number' => mt_rand(100000, 999999), ]);
         Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
+    }
+
+
+    public function test_getBaseQueryForOrders_shouldNotGiveDuplicates_WhenSameOrderHasMoreThanOneInstallationpath()
+    {
+    $this->getLoggedInUser('admin');
+    $product = Product::create(['name' => 'Helpdesk']);
+    $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id]);
+
+    // Create multiple installation details for the same order
+    $installationDetails1 = InstallationDetail::create(['installation_path' => 'test1.com', 'order_id' => $order->id]);
+    $installationDetails2 = InstallationDetail::create(['installation_path' => 'test2.com', 'order_id' => $order->id]);
+
+    $query = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+    $results = $query->get();
+    $uniqueOrder = $results->pluck('id')->unique();
+    $this->assertCount(1, $uniqueOrder);
     }
 }

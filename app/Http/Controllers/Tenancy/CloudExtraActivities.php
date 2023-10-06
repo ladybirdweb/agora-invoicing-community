@@ -505,8 +505,8 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            \Session::put('priceRemaining',round($priceRemaining));
-            \Session::put('priceToBePaid',round($priceToBePaid));
+            \Session::put('priceRemaining', round($priceRemaining));
+            \Session::put('priceToBePaid', round($priceToBePaid));
             $items = ['id' => $product_id_new, 'name' => $productNew->name, 'price' => round($price), 'planId' => $planIdNew,
                 'quantity' => 1, 'attributes' => ['currency' => $currencyNew['currency'], 'symbol' => $currencyNew['symbol'], 'agents' => $newAgents], 'associatedModel' => $productNew];
 
@@ -733,7 +733,6 @@ class CloudExtraActivities extends Controller
                     $price = $base_price_new;
                     $priceRemaining = 0;
                     $priceToBePaid = $price;
-
                 } else {
                     $pricePerDayNew = $base_price_new / $planDaysNew; //800
                     $pricePerDayOld = $base_priceOld / $planDaysOld; //1600
@@ -810,7 +809,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            $items = ['priceoldplan'=>currencyFormat($priceRemaining, $currencyNew['currency'], true),'pricenewplan'=>currencyFormat($priceToBePaid, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
+            $items = ['priceoldplan'=>currencyFormat($priceRemaining, $currencyNew['currency'], true), 'pricenewplan'=>currencyFormat($priceToBePaid, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat($price, $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
 
             return $items;
         } catch(\Exception $e) {

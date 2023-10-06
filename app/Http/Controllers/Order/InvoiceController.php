@@ -346,7 +346,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         try {
             $planid = 0;
             $product_name = $cart->name;
-            $regular_price = (\Session::has('priceToBePaid'))?\Session::get('priceToBePaid'):$cart->price;
+            $regular_price = (\Session::has('priceToBePaid')) ? \Session::get('priceToBePaid') : $cart->price;
             $quantity = $cart->quantity;
             $agents = $cart->attributes->agents;
             $domain = $this->domain($cart->id);

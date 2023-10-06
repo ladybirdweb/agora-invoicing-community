@@ -119,6 +119,9 @@ class OrderController extends BaseOrderController
     {
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
+    
+
+        $count = count($query->get()->toArray());
 
         return \DataTables::of($query)
             ->orderColumn('client', '-orders.created_at $1')
@@ -129,7 +132,7 @@ class OrderController extends BaseOrderController
             ->orderColumn('order_date', 'orders.created_at $1')
             ->orderColumn('update_ends_at', 'orders.created_at $1')
 
-            ->setTotalRecords($query->count())
+            ->setTotalRecords($count)
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
             })

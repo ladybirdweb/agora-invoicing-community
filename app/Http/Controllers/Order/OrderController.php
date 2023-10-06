@@ -119,7 +119,6 @@ class OrderController extends BaseOrderController
     {
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
-    
 
         $count = count($query->get()->toArray());
 

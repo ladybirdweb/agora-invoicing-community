@@ -366,7 +366,7 @@ class SettingsController extends Controller
 
             \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
             \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-            if($invoice->billing_pay) {
+            if ($invoice->billing_pay) {
                 Payment::create([
                     'invoice_id' => $invoice->id,
                     'user_id' => $invoice->user_id,

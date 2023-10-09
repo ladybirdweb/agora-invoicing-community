@@ -149,12 +149,17 @@ trait PaymentsAndInvoices
     public function postRazorpayPayment($invoice)
     {
         try {
-            $totalPayment = $invoice->grand_total;
+            $payment_method = \Session::get('payment_method');
+            $totalPayment = ($payment_method == 'Credits')
+                ? $invoice->billing_pay
+                : (empty($invoice->billing_pay) ?
+                    $invoice->grand_total :
+                    $invoice->grand_total - $invoice->billing_pay);
+
             if (count($invoice->payment()->get())) {//If partial payment is made
                 $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                 $totalPayment = $invoice->grand_total - $paid;
             }
-            $payment_method = \Session::get('payment_method');
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();
             $paymentRenewal = $this->updateInvoicePayment(

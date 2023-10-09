@@ -315,7 +315,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 if ($grand_total <= $amt_to_credit) {
                     $amt_to_credit = $grand_total;
-                    $grand_total = 0;
                 } else {
                     $grand_total = $grand_total - $amt_to_credit;
                 }

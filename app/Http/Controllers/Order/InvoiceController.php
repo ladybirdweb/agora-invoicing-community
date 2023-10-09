@@ -298,7 +298,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             $user_id = \Auth::user()->id;
-
             $grand_total = \Cart::getTotal();
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -313,10 +312,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     ->where('amt_to_credit', '!=', 0)
                     ->value('amt_to_credit');
 
-                if ($grand_total <= $amt_to_credit) {
+                if ($grand_total <= (int)$amt_to_credit) {
                     $amt_to_credit = $grand_total;
-                } else {
-                    $grand_total = $grand_total - $amt_to_credit;
                 }
             }
 

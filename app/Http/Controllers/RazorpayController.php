@@ -70,7 +70,7 @@ class RazorpayController extends Controller
                 $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
 
                 //After Regular Payment
-                if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
+                if ($control->checkRenew() === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);

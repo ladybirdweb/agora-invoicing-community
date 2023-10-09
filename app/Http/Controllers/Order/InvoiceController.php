@@ -312,7 +312,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     ->where('amt_to_credit', '!=', 0)
                     ->value('amt_to_credit');
 
-                if ($grand_total <= (int)$amt_to_credit) {
+                if ($grand_total <= (int) $amt_to_credit) {
                     $amt_to_credit = $grand_total;
                 }
             }

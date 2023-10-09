@@ -134,7 +134,7 @@ $cartSubtotalWithoutCondition = 0;
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-agents">
-                                    {{$item->attributes->agents}}
+                                    {{($item->attributes->agents)?$item->attributes->agents:'Unlimited'}}
                                 </td>
 
                                 <td class="product-subtotal">

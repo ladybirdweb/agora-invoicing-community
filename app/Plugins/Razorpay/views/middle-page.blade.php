@@ -154,6 +154,10 @@ $json = json_encode($data);
                                 <th class="product-version">
                                     Version
                                 </th>
+                                <th class="product-agents">
+                                    Agents
+                                </th>
+
 
                                 <th class="product-quantity">
                                     Quantity
@@ -193,6 +197,9 @@ $json = json_encode($data);
                                     Not available
                                     @endif
                                 </td>
+                                <th class="product-agents">
+                                    {{($item->attributes->agents)?$item->attributes->agents:'Unlimited'}}
+                                </th>
                                  
 
                                 <td class="product-quantity">

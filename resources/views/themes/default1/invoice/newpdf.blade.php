@@ -123,6 +123,7 @@
                                         <th>Order No</th>
                                         <th>Product</th>
                                         <th>Price</th>
+                                        <th>Agents</th>
                                         <th>Quantity</th>
                                         <th>Subtotal</th>
                                     </tr>
@@ -150,6 +151,7 @@
                                         @endif
                                         <td>{{$item->product_name}}</td>
                                          <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
+                                         <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
                                         <td>{{$item->quantity}}</td>
                                        <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                     </tr>

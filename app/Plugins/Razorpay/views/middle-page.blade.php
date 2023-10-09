@@ -388,6 +388,9 @@ $json = json_encode($data);
                             Not available
                             @endif
                         </td>
+                        <td class="product-agents">
+                            {{($item->agents)?$item->agents:'Unlimited'}}
+                        </td>
                          
 
                         <td class="product-quantity">

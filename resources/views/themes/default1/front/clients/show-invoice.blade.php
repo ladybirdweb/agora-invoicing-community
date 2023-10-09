@@ -157,7 +157,7 @@ active
                             <td>{{$item->product_name}} ({{$plan}})
                             </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
-                            <td>{{$item->agents}}</td>
+                            <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
                             <td>{{$item->quantity}}</td>
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>

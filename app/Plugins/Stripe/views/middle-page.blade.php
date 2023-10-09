@@ -323,7 +323,7 @@ $currency = $invoice->currency;
                             @endif
                         </td>
                         <td class="product-agents">
-                            {{$item->agents}}
+                            {{($item->agents)?$item->agents:'Unlimited'}}
                         </td>
                          
 

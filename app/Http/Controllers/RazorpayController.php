@@ -96,8 +96,8 @@ class RazorpayController extends Controller
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                    $pay = !(\Session::get('payment_method') == 'Credits');
-                    $this->doTheDeed($invoice,$pay);
+                    $pay = ! (\Session::get('payment_method') == 'Credits');
+                    $this->doTheDeed($invoice, $pay);
                     $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
                 } elseif ($cloud->checkUpgradeDowngrade()) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
@@ -119,8 +119,8 @@ class RazorpayController extends Controller
                     if ($invoice->grand_total) {
                         SettingsController::sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
-                    $pay = !(\Session::get('payment_method') == 'Credits');
-                    $this->doTheDeed($invoice,$pay);
+                    $pay = ! (\Session::get('payment_method') == 'Credits');
+                    $this->doTheDeed($invoice, $pay);
 
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];

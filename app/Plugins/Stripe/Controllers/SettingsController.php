@@ -189,8 +189,8 @@ class SettingsController extends Controller
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }
-                    $pay = !(\Session::get('payment_method') == 'Credits');
-                    $this->doTheDeed($invoice,$pay);
+                    $pay = ! (\Session::get('payment_method') == 'Credits');
+                    $this->doTheDeed($invoice, $pay);
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -215,8 +215,8 @@ class SettingsController extends Controller
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }
-                    $pay = !(\Session::get('payment_method') == 'Credits');
-                    $this->doTheDeed($invoice,$pay);
+                    $pay = ! (\Session::get('payment_method') == 'Credits');
+                    $this->doTheDeed($invoice, $pay);
                     if (\Session::has('AgentAlterationRenew')) {
                         $newAgents = \Session::get('newAgentsRenew');
                         $orderId = \Session::get('orderIdRenew');

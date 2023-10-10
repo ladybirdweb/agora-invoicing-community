@@ -133,6 +133,8 @@
                                     @foreach($invoiceItems as $item)
                                     <tr>
                                         @php
+                                            $period_id =\DB::table('plans_periods_relation')->where('plan_id',$item->plan_id)->latest()->value('period_id');
+                                             $plan = \DB::table('periods')->where('id',$period_id)->latest()->value('name');
 
                                          $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
                                         if ($item->tax_name != 'null') {
@@ -149,7 +151,8 @@
                                             <td>--</td>
                                            
                                         @endif
-                                        <td>{{$item->product_name}}</td>
+
+                                        <td>{{$item->product_name}} {{$plan}}</td>
                                          <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                          <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
                                         <td>{{$item->quantity}}</td>

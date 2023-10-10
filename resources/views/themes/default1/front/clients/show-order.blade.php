@@ -624,7 +624,7 @@ $price = $order->price_override;
                                                 <div>
                                                     <?php
                                                     $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
-                                                        ->where('installation_path','!=','cloud.fratergroup.in')->latest()->value('installation_path');
+                                                        ->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
                                                     ?>
 
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
@@ -729,7 +729,7 @@ $price = $order->price_override;
                     <div id="success-domain"></div>
                     <div id="failure-domain"></div>
                     <div class="section-box">
-                        <p><i>If you wish to purchase a domain, you can <a href="https://store.ladybirdwebhost.com/" target="_blank">Click here.</a> And after the domain is set up, you will have to point your CNAME to our cloud <a href="https://docs.faveohelpdesk.com/docs/helper/cname/" target="_blank">Click here.</a></i></p>
+                        <p><i>If you wish to purchase a domain, you can <a href="https://store.ladybirdwebhost.com/" target="_blank">Click here.</a> And after the domain is set up, you will have to point your CNAME to our cloud <a href="https://docs.faveohelpdesk.com/docs/helper/cname/" target="_blank">Learn more.</a></i></p>
                     </div>
 
                     <label id="clouduserdomainfill" style="margin-left: 14px;"><strong></strong></label>

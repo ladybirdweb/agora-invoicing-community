@@ -111,7 +111,7 @@ class ClientController extends BaseClientController
                 return response()->json($response);
             }
         } catch(\Exception $ex) {
-            $result = [$ex->getMessage()];
+            $result = $ex->getMessage();
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
 
             return response()->json(compact('result'), 500);
@@ -120,7 +120,7 @@ class ClientController extends BaseClientController
 
     public function stripePay($request)
     {
-        try {
+      
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
             $amount = 1;
@@ -162,9 +162,7 @@ class ClientController extends BaseClientController
             ]);
 
             return ['charge' => $charge, 'customer' => $customer];
-        } catch(\Exception $e) {
-            return errorResponse($e->getMessage());
-        }
+        
     }
 
     public function disableAutorenewalStatus(Request $request)
@@ -231,12 +229,12 @@ class ClientController extends BaseClientController
                 // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'),null,$amount, 'Payment method updated');
 
                 return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
             }
         } catch(\Exception $ex) {
-            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $amount, 'Payment method updated', $result);
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'),$result,$amount,'Payment method updated');
 
             return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
         }

@@ -141,9 +141,9 @@ class SettingsController extends Controller
                 $amount = rounding(\Session::get('totalToBePaid'));
             }
             $currency = strtolower($invoice->currency);
-          
+
             $strCharge = $this->stripePay($request);
-           if ($strCharge  && $strCharge['charge']['status'] == 'succeeded') {
+            if ($strCharge && $strCharge['charge']['status'] == 'succeeded') {
                 $stripeCustomerId = $strCharge['customer']['id'];
                 $user = User::find($invoice->user_id);
 
@@ -244,12 +244,11 @@ class SettingsController extends Controller
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             $control = new \App\Http\Controllers\Order\RenewController();
-            if($control->checkRenew() != true){
-            return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
-        }else{
-            return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
- 
-        }
+            if ($control->checkRenew() != true) {
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+            } else {
+                return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+            }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
@@ -265,57 +264,56 @@ class SettingsController extends Controller
 
     public function stripePay($request)
     {
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-            $stripe = Stripe::make($stripeSecretKey);
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = Stripe::make($stripeSecretKey);
 
-            if (\Session::get('invoice')) {
-                $invoice = \Session::get('invoice');
-                // $invoiceTotal = \Session::get('totalToBePaid');
-                $amount = rounding(\Cart::getTotal());
-                if (! $amount) {//During renewal
-                    $amount = rounding(\Session::get('totalToBePaid'));
-                }
-                $currency = strtolower($invoice->currency);
+        if (\Session::get('invoice')) {
+            $invoice = \Session::get('invoice');
+            // $invoiceTotal = \Session::get('totalToBePaid');
+            $amount = rounding(\Cart::getTotal());
+            if (! $amount) {//During renewal
+                $amount = rounding(\Session::get('totalToBePaid'));
             }
+            $currency = strtolower($invoice->currency);
+        }
 
-            $token = $stripe->tokens()->create([
-                'card' => [
-                    'number' => $request->get('card_no'),
-                    'exp_month' => $request->get('exp_month'),
-                    'exp_year' => $request->get('exp_year'),
-                    'cvc' => $request->get('cvv'),
-                ],
-            ]);
+        $token = $stripe->tokens()->create([
+            'card' => [
+                'number' => $request->get('card_no'),
+                'exp_month' => $request->get('exp_month'),
+                'exp_year' => $request->get('exp_year'),
+                'cvc' => $request->get('cvv'),
+            ],
+        ]);
 
-            if (! isset($token['id'])) {
-                \Session::put('error', 'The Stripe Token was not generated correctly');
+        if (! isset($token['id'])) {
+            \Session::put('error', 'The Stripe Token was not generated correctly');
 
-                return redirect()->route('stripform');
-            }
-            $customer = $stripe->customers()->create([
-                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                'email' => \Auth::user()->email,
-                'address' => [
-                    'line1' => \Auth::user()->address,
-                    'postal_code' => \Auth::user()->zip,
-                    'city' => \Auth::user()->town,
-                    'state' => \Auth::user()->state,
-                    'country' => \Auth::user()->country,
-                ],
-            ]);
+            return redirect()->route('stripform');
+        }
+        $customer = $stripe->customers()->create([
+            'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+            'email' => \Auth::user()->email,
+            'address' => [
+                'line1' => \Auth::user()->address,
+                'postal_code' => \Auth::user()->zip,
+                'city' => \Auth::user()->town,
+                'state' => \Auth::user()->state,
+                'country' => \Auth::user()->country,
+            ],
+        ]);
 
-            $stripeCustomerId = $customer['id'];
-            $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
-            $charge = $stripe->charges()->create([
-                'customer' => $customer['id'],
-                'currency' => $currency,
-                'amount' => $amount,
-                'description' => 'Add in wallet',
-            ]);
+        $stripeCustomerId = $customer['id'];
+        $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
+        $charge = $stripe->charges()->create([
+            'customer' => $customer['id'],
+            'currency' => $currency,
+            'amount' => $amount,
+            'description' => 'Add in wallet',
+        ]);
 
-            return ['charge' => $charge, 'customer' => $customer];
-        
-}
+        return ['charge' => $charge, 'customer' => $customer];
+    }
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
@@ -329,7 +327,7 @@ class SettingsController extends Controller
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
         if ($payment) {
             $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage, $amount,$message);
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage, $amount, $message);
         }
     }
 
@@ -346,7 +344,7 @@ class SettingsController extends Controller
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
         if ($payment) {
             $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount,$message);
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount, $message);
         }
     }
 

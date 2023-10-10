@@ -523,7 +523,7 @@ $currency = $invoice->currency;
 </div>
 
 
-<div class="modal fade" id="stripeModal" data-keyboard="false">
+<div class="modal fade" id="stripeModal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="padding: 16px;">
              <div class="modal-header">
@@ -547,7 +547,7 @@ $currency = $invoice->currency;
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
+                                <input id="card_no" type="tel" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
                                 @error('card_no')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -611,6 +611,9 @@ $currency = $invoice->currency;
 </div> 
 
 <script>
+     $('.custom-close').click(function(){
+               location.reload();
+               });
 $(document).ready(function() {
     $("#submit_total").validate({
         rules: {
@@ -618,13 +621,14 @@ $(document).ready(function() {
                 required: true,
                 digits: true,
                 minlength: 15,
-                maxlength: 16
+                maxlength: 16,
             },
             exp_month: {
                 required: true,
                 digits: true,
                 minlength: 2,
-                maxlength: 2
+                maxlength: 2,
+                range: [1, 12] 
             },
             exp_year: {
                 required: true,
@@ -650,7 +654,8 @@ $(document).ready(function() {
                 required: "Expiration month is required",
                 digits: "Please enter digits only",
                 minlength: "Expiration month must be 2 digits",
-                maxlength: "Expiration month must be 2 digits"
+                maxlength: "Expiration month must be 2 digits",
+                range: "Expiration month cannot exceed 12"
             },
             exp_year: {
                 required: "Expiration year is required",
@@ -659,7 +664,7 @@ $(document).ready(function() {
                 maxlength: "Expiration year must be 2 digits",
                 notPastYear: "Expiration year cannot be in the past"
             },
-             cvv: {
+            cvv: {
                 required: "CVV is required",
                 digits: "Please enter digits only",
                 rangelength: "CVV must be either 3 or 4 digits"
@@ -678,31 +683,42 @@ $(document).ready(function() {
         }
     });
 
+    var $form = $("#submit_total");
+    var $cardNo = $("#card_no");
+    var $expMonth = $("#exp_month");
+    var $expYear = $("#exp_year");
+    var $cvv = $("#cvv");
+    var $payButton = $("#pay_now");
+
+    $form.on("submit", function(event) {
+        // Check if each field is valid
+        var isCardNoValid = $cardNo.valid();
+        var isExpMonthValid = $expMonth.valid();
+        var isExpYearValid = $expYear.valid();
+        var isCvvValid = $cvv.valid();
+
+        if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
+            $payButton.prop("disabled", true);
+            $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
+        } else {
+                event.preventDefault();
+        }
+    });
+
     $.validator.addMethod("notPastYear", function(value, element) {
         var currentYear = new Date().getFullYear() % 100;
         var enteredYear = parseInt(value, 10);
         return enteredYear >= currentYear;
     }, "Expiration year cannot be in the past");
 });
+
+
 </script>
-
-
-
-
-
-
-
-
 <script>
     $('#stripe-button1').on('click',function(){
         $('#stripeModal').modal('show');
     })
 
-        $('#submit_total').submit(function(){
-     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x ' ></i>Processing ...")
-    $("#pay_now").prop('disabled', true);
-
-  });
 $(function() {
     var $form         = $(".require-validation");
   $('form.require-validation').bind('submit', function(e) {
@@ -724,18 +740,7 @@ $(function() {
         e.preventDefault();
       }
     });
-  
-    // if (!$form.data('cc-on-file')) {
-    //   e.preventDefault();
-    //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-    //   Stripe.createToken({
-    //     number: $('.card-number').val(),
-    //     cvc: $('.card-cvc').val(),
-    //     exp_month: $('.card-expiry-month').val(),
-    //     exp_year: $('.card-expiry-year').val()
-    //   }, stripeResponseHandler);
-    // }
-  
+
   });
   
   function stripeResponseHandler(status, response) {

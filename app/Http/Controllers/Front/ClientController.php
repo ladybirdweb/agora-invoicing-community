@@ -120,49 +120,47 @@ class ClientController extends BaseClientController
 
     public function stripePay($request)
     {
-      
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-            $stripe = Stripe::make($stripeSecretKey);
-            $amount = 1;
-            $currency = \Auth::user()->currency;
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = Stripe::make($stripeSecretKey);
+        $amount = 1;
+        $currency = \Auth::user()->currency;
 
-            $token = $stripe->tokens()->create([
-                'card' => [
-                    'number' => $request->get('card_no'),
-                    'exp_month' => $request->get('exp_month'),
-                    'exp_year' => $request->get('exp_year'),
-                    'cvc' => $request->get('cvv'),
-                ],
-            ]);
+        $token = $stripe->tokens()->create([
+            'card' => [
+                'number' => $request->get('card_no'),
+                'exp_month' => $request->get('exp_month'),
+                'exp_year' => $request->get('exp_year'),
+                'cvc' => $request->get('cvv'),
+            ],
+        ]);
 
-            if (! isset($token['id'])) {
-                \Session::put('error', 'The Stripe Token was not generated correctly');
+        if (! isset($token['id'])) {
+            \Session::put('error', 'The Stripe Token was not generated correctly');
 
-                return redirect()->route('stripform');
-            }
-            $customer = $stripe->customers()->create([
-                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                'email' => \Auth::user()->email,
-                'address' => [
-                    'line1' => \Auth::user()->address,
-                    'postal_code' => \Auth::user()->zip,
-                    'city' => \Auth::user()->town,
-                    'state' => \Auth::user()->state,
-                    'country' => \Auth::user()->country,
-                ],
-            ]);
+            return redirect()->route('stripform');
+        }
+        $customer = $stripe->customers()->create([
+            'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+            'email' => \Auth::user()->email,
+            'address' => [
+                'line1' => \Auth::user()->address,
+                'postal_code' => \Auth::user()->zip,
+                'city' => \Auth::user()->town,
+                'state' => \Auth::user()->state,
+                'country' => \Auth::user()->country,
+            ],
+        ]);
 
-            $stripeCustomerId = $customer['id'];
-            $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
-            $charge = $stripe->charges()->create([
-                'customer' => $customer['id'],
-                'currency' => $currency,
-                'amount' => $amount,
-                'description' => 'Add in wallet',
-            ]);
+        $stripeCustomerId = $customer['id'];
+        $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
+        $charge = $stripe->charges()->create([
+            'customer' => $customer['id'],
+            'currency' => $currency,
+            'amount' => $amount,
+            'description' => 'Add in wallet',
+        ]);
 
-            return ['charge' => $charge, 'customer' => $customer];
-        
+        return ['charge' => $charge, 'customer' => $customer];
     }
 
     public function disableAutorenewalStatus(Request $request)
@@ -229,12 +227,12 @@ class ClientController extends BaseClientController
                 // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'),null,$amount, 'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), null, $amount, 'Payment method updated');
 
                 return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
             }
         } catch(\Exception $ex) {
-            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'),$result,$amount,'Payment method updated');
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
 
             return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
         }

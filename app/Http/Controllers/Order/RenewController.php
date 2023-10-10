@@ -108,7 +108,6 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-            Subscription::where('id', $id)->update(['is_subscribed' => '1']);
             $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
             $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);

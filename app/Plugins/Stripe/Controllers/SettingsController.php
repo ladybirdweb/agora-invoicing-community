@@ -136,9 +136,9 @@ class SettingsController extends Controller
                 $amount = rounding(\Session::get('totalToBePaid'));
             }
             $currency = strtolower($invoice->currency);
-
+          
             $strCharge = $this->stripePay($request);
-            if ($strCharge['charge']['status'] == 'succeeded') {
+           if ($strCharge  && $strCharge['charge']['status'] == 'succeeded') {
                 $stripeCustomerId = $strCharge['customer']['id'];
                 $user = User::find($invoice->user_id);
 
@@ -149,6 +149,10 @@ class SettingsController extends Controller
                 $currency = Currency::where('code', $currency)->pluck('symbol')->first();
 
                 $control = new \App\Http\Controllers\Order\RenewController();
+                if($invoice->is_renewed == 0){
+                 \Session::forget('subscription_id');
+                 \Session::forget('plan_id');
+                }
                 //After Regular Payment
                 if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
@@ -181,11 +185,13 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
-            }
-
+            $control = new \App\Http\Controllers\Order\RenewController();
+            if($control->checkRenew() != true){
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+        }else{
+            return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+ 
+        }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
@@ -201,7 +207,6 @@ class SettingsController extends Controller
 
     public function stripePay($request)
     {
-        try {
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
 
@@ -251,10 +256,8 @@ class SettingsController extends Controller
             ]);
 
             return ['charge' => $charge, 'customer' => $customer];
-        } catch(\Exception $e) {
-            return errorResponse($e->getMessage());
-        }
-    }
+        
+}
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
@@ -267,7 +270,8 @@ class SettingsController extends Controller
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
         if ($payment) {
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage, $amount, 'Product purchase');
+            $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage, $amount,$message);
         }
     }
 
@@ -283,7 +287,8 @@ class SettingsController extends Controller
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
         if ($payment) {
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount, 'Product purchase');
+            $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
+            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount,$message);
         }
     }
 }

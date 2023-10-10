@@ -104,8 +104,11 @@ input:checked + .slider:before {
         color: white;
         font-size: 20px;
       }
-
-
+      .alert.alert-danger .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+}
 </style>
  @if(Auth::check())
 <li><a href="{{url('my-invoices')}}">Home</a></li>
@@ -828,7 +831,7 @@ $json = json_encode($data);
                             <!-- Card No. input -->
                             <div class="form-group row">
                                 <div class="col-md-12">
-                                    <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
+                                    <input id="card_no" type="tel" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
                                     @error('card_no')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -923,13 +926,14 @@ $(document).ready(function() {
                 required: true,
                 digits: true,
                 minlength: 15,
-                maxlength: 16
+                maxlength: 16,
             },
             exp_month: {
                 required: true,
                 digits: true,
                 minlength: 2,
-                maxlength: 2
+                maxlength: 2,
+                range: [1, 12] 
             },
             exp_year: {
                 required: true,
@@ -955,7 +959,8 @@ $(document).ready(function() {
                 required: "Expiration month is required",
                 digits: "Please enter digits only",
                 minlength: "Expiration month must be 2 digits",
-                maxlength: "Expiration month must be 2 digits"
+                maxlength: "Expiration month must be 2 digits",
+                range: "Expiration month cannot exceed 12"
             },
             exp_year: {
                 required: "Expiration year is required",
@@ -964,7 +969,7 @@ $(document).ready(function() {
                 maxlength: "Expiration year must be 2 digits",
                 notPastYear: "Expiration year cannot be in the past"
             },
-             cvv: {
+            cvv: {
                 required: "CVV is required",
                 digits: "Please enter digits only",
                 rangelength: "CVV must be either 3 or 4 digits"
@@ -983,12 +988,46 @@ $(document).ready(function() {
         }
     });
 
+    var $form = $("#submit_total");
+    var $cardNo = $("#card_no");
+    var $expMonth = $("#exp_month");
+    var $expYear = $("#exp_year");
+    var $cvv = $("#cvv");
+    var $payButton = $("#pay");
+
+    $form.on("submit", function(event) {
+        // Check if each field is valid
+        var isCardNoValid = $cardNo.valid();
+        var isExpMonthValid = $expMonth.valid();
+        var isExpYearValid = $expYear.valid();
+        var isCvvValid = $cvv.valid();
+
+        if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
+            $payButton.prop("disabled", true);
+            $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
+        } else {
+            event.preventDefault();
+        }
+    });
+
     $.validator.addMethod("notPastYear", function(value, element) {
         var currentYear = new Date().getFullYear() % 100;
         var enteredYear = parseInt(value, 10);
         return enteredYear >= currentYear;
     }, "Expiration year cannot be in the past");
 });
+
+
+    function validateForm() {
+        var isValid = $("#valid-modal").valid();
+        var isCardNoValid = $('#card_no').valid();
+        var isExpMonthValid = $('#exp_month').valid();
+        var isExpYearValid = $('#exp_year').valid();
+        var isCvvValid = $('#cvv').valid();
+
+        return isValid && isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid;
+    }
+
 </script>
 
 
@@ -998,10 +1037,6 @@ $(document).ready(function() {
                {
                location.reload();
                });
-      // $('#strclose').click(function() 
-      //          {
-      //          location.reload();
-      //          });
 
         // Checkout details as a json
 var options = <?php echo $json; ?>
@@ -1076,90 +1111,78 @@ var rzp = new Razorpay(options);
 
     });
 
-    function cardUpdate() {
-              $('#renewal-modal').modal('show');
-            var id = $('#order').val();
-            $('#payment').on('click',function(){
-                var pay = $('#sel-payment').val();
-                if(pay == null) {
-                $("#payment").html("<i class='fa fa-check'></i> Validate");
-                $('#payerr').show();
-                $('#payerr').html("Please Select the Payment");
-                $('#payerr').focus();
-                $('#sel-payment').css("border-color","red");
-                $('#payerr').css({"color":"red"});
-                return false;
-                }
-                if(pay == 'stripe'){
-                 $('#renewal-modal').modal('hide');
-                 $('#stripe-Modal').modal('show');
+function cardUpdate() {
+    $('#renewal-modal').modal('show');
+    var id = $('#order').val();
+    $('#payment').on('click', function () {
+        var pay = $('#sel-payment').val();
+        if (pay == null) {
+            $("#payment").html("<i class='fa fa-check'></i> Validate");
+            $('#payerr').show();
+            $('#payerr').html("Please Select the Payment");
+            $('#payerr').focus();
+            $('#sel-payment').css("border-color", "red");
+            $('#payerr').css({ "color": "red" });
+            return false;
+        }
+        if (pay == 'stripe') {
+            $('#renewal-modal').modal('hide');
+            $('#stripe-Modal').modal('show');
 
-                 $('#pay').on('click',function(){
-                      $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
-                     $.ajax({
-
-
-                url : '{{url("strRenewal-enable")}}',
-                type : 'POST',
-                    data: { 
-                         "order_id" : id,
-                         "card_no": $('#card_no').val(),
-                         "exp_month": $('#exp_month').val(),
-                         "exp_year": $('#exp_year').val(),
-                         "cvv": $('#password').val(),
-                         "amount": $('#amount').val(),
-                         "_token": "{!! csrf_token() !!}",
-                          },
-
-                success: function (response) {
-                    $('#stripe-Modal').modal('hide');
-                    $('#alertMessage-2').show();
-                    $('#updateButton').show();
-                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
-                    $('#alertMessage-2').html(result+ ".");
-                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                    setInterval(function(){
-                        $('#alertMessage-2').slideUp(3000);
-                    }, 3000);
-                    location.reload();
-                    
-                },
-                  error: function (data) {
-                     $('#stripe-Modal').modal('show');
-                        $("#pay").attr('disabled',false);
+            $('#pay').on('click', function () {
+                var isValid = validateForm();
+                if (isValid) {
+                    $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
+                    $.ajax({
+                        url: '{{url("strRenewal-enable")}}',
+                        type: 'POST',
+                        data: {
+                            "order_id": id,
+                            "card_no": $('#card_no').val(),
+                            "exp_month": $('#exp_month').val(),
+                            "exp_year": $('#exp_year').val(),
+                            "cvv": $('#password').val(),
+                            "amount": $('#amount').val(),
+                            "_token": "{!! csrf_token() !!}",
+                        },
+                        success: function (response) {
+                            $('#stripe-Modal').modal('hide');
+                            $('#alertMessage-2').show();
+                            $('#updateButton').show();
+                            var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
+                            $('#alertMessage-2').html(result + ".");
+                            $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                            setInterval(function () {
+                                $('#alertMessage-2').slideUp(3000);
+                            }, 3000);
+                            location.reload();
+                        },
+                      error: function (data) {
+                        console.log(data);
+                        var errorMessage = data.responseJSON.result;
+                        console.log(errorMessage);
+                        $('#stripe-Modal').modal('show');
+                        $("#pay").attr('disabled', false);
                         $("#pay").html("Pay now");
-                        $('html, body').animate({scrollTop:0}, 500);
-
-
-                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                        for (var key in data.responseJSON.errors)
-                        {
-                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
-                        }
-                        html += '</ul></div>';
-
+                        $('html, body').animate({ scrollTop: 0 }, 500);
+                        var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                         $('#error-1').show();
                         document.getElementById('error-1').innerHTML = html;
-                        setInterval(function(){
+                        setInterval(function () {
                             $('#error-1').slideUp(3000);
                         }, 8000);
                     }
-
-
+                    });
+                }
             });
-                 });
-             }else if(pay == 'razorpay')
-             {
-                $('#renewal-modal').modal('hide');
-                rzp.open();
-                e.preventDefault();
+        } else if (pay == 'razorpay') {
+            $('#renewal-modal').modal('hide');
+            rzp.open();
+            e.preventDefault();
+        }
+    });
+}
 
-             }
-   
-
-
-            });
-    }
 </script>
 
 
@@ -1214,48 +1237,6 @@ var rzp = new Razorpay(options);
          <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<!--         <script type="text/javascript">
-             $('#showAutopayment-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        "url":  '{!! Url('autoPayment-client/'.$order->id) !!}',
-                           error: function(xhr) {
-                           if(xhr.status == 401) {
-                            alert('Your session has expired. Please login again to continue.')
-                            window.location.href = '/login';
-                           }
-                        }
-
-                        },
-
-                    "oLanguage": {
-                        "sLengthMenu": "_MENU_ Records per page",
-                        "sSearch"    : "Search: ",
-                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
-                    },
-
-                    columns: [
-                        {data: 'number', name: 'number'},
-                        {data: 'total', name: 'total'},
-                        {data: 'payment_status', name: 'payment_status'},
-                        {data: 'created_at', name: 'created_at'},
-                        {data: 'action', name: 'action'}    
-                    ],
-                    "fnDrawCallback": function( oSettings ) {
-                         $(function () {
-                          $('[data-toggle="tooltip"]').tooltip({
-                            container : 'body'
-                          });
-                        });
-                        $('.loader').css('display', 'none');
-                    },
-                    "fnPreDrawCallback": function(oSettings, json) {
-                        $('.loader').css('display', 'block');
-                    },
-                });
-        </script> -->
-    
         <script type="text/javascript">
              $('#showpayment-table').DataTable({
                     processing: true,
@@ -1299,7 +1280,7 @@ var rzp = new Razorpay(options);
 
         $("#reissueLic").click(function(){
              if ($('#domainRes').val() == 1) {
-                            var oldDomainId = $(this).attr('data-id');
+            var oldDomainId = $(this).attr('data-id');
             $("#orderId").val(oldDomainId);
             $("#domainModal").modal();
             $("#domainSave").on('click',function(){
@@ -1452,11 +1433,6 @@ var rzp = new Razorpay(options);
         $('#stripeModal').modal('show');
     })
 
-        $('#valid-modal').submit(function(){
-     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
-    $("#pay_now").prop('disabled', true);
-
-  });
 $(function() {
     var $form         = $(".require-validation");
   $('form.require-validation').bind('submit', function(e) {
@@ -1478,18 +1454,7 @@ $(function() {
         e.preventDefault();
       }
     });
-  
-    // if (!$form.data('cc-on-file')) {
-    //   e.preventDefault();
-    //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-    //   Stripe.createToken({
-    //     number: $('.card-number').val(),
-    //     cvc: $('.card-cvc').val(),
-    //     exp_month: $('.card-expiry-month').val(),
-    //     exp_year: $('.card-expiry-year').val()
-    //   }, stripeResponseHandler);
-    // }
-  
+    
   });
   
   function stripeResponseHandler(status, response) {

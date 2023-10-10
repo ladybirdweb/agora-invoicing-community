@@ -110,12 +110,12 @@ class CheckoutController extends InfoController
             return redirect('login')->with('fails', 'Please login');
         }
 
-        if (\Cart::isEmpty()) {//During renewal when payment fails due to some reason
-            $invoice = \Session::get('invoice');
-            if ($invoice && \Session::has('fails')) {
-                return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
-            }
-        }
+        // if (\Cart::isEmpty()) {//During renewal when payment fails due to some reason
+        //     $invoice = \Session::get('invoice');
+        //     if ($invoice && \Session::has('fails')) {
+        //         return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
+        //     }
+        // }
 
         $content = Cart::getContent();
         $taxConditions = $this->getAttributes($content);

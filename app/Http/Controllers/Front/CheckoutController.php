@@ -436,7 +436,6 @@ class CheckoutController extends InfoController
             \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
         }
     }
-
     private function performCloudActions($invoice)
     {
         $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
@@ -449,16 +448,14 @@ class CheckoutController extends InfoController
             $this->doTheDeed($invoice, false);
             $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
         } elseif ($cloud->checkAgentAlteration()) {
-            $subId = \Session::get('AgentAlteration'); // use if needed in future
+            $subId = \Session::get('AgentAlteration'); // use if needed in the future
             $newAgents = \Session::get('newAgents');
             $orderId = \Session::get('orderId');
             $installationPath = \Session::get('installation_path');
             $productId = \Session::get('product_id');
             $oldLicense = \Session::get('oldLicense');
             $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
-        }
-
-        if (\Session::has('AgentAlterationRenew')) {
+        } elseif (\Session::has('AgentAlterationRenew')) { // Added missing parentheses
             $newAgents = \Session::get('newAgentsRenew');
             $orderId = \Session::get('orderIdRenew');
             $installationPath = \Session::get('installation_pathRenew');

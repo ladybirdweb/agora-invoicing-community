@@ -401,7 +401,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     return errorResponse([trans('message.cloud_domain_empty')]);
                 }
 
-                $cloud_domain = $cloud_domain.'.faveocloud.com';
+                $cloud_domain = $cloud_domain.'.fratergroup.in';
 
                 if (! (new CloudExtraActivities(new Client, new FaveoCloud()))->checkDomain($cloud_domain)) {
                     return errorResponse([trans('message.domain_taken')]);

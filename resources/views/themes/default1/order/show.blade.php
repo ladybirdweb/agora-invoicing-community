@@ -117,6 +117,18 @@ input:checked + .slider:before {
                                     <b>Status: </b>{{$order->order_status}}
                                 </div>
                             </div>
+                            <br>
+                            <?php
+                                   $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
+                                   $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
+                                   ?>
+                            @if(!empty($terminatedOrderId))
+                                <p class="order-links">
+                                    This order <b>{{$order->number}}</b>
+                                    has been generated because this order was terminated: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a>.
+                                </p>
+                            @endif
+
                             @if($order->order_status=='Terminated')
                                 <br>
                                 <div class="row">

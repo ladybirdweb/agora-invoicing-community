@@ -295,6 +295,17 @@ $price = $order->price_override;
                     @slot('license')
 
                         <table class="table">
+                            <?php
+                                $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
+                                $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
+                                ?>
+                         @if(!empty($terminatedOrderId))
+                                <p class="order-links">
+                                    This order <b>{{$order->number}}</b>
+                                    has been generated because this order was terminated: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a>.
+                                </p>
+                         @endif
+
                             <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
                             <tbody>
                             <tr>
@@ -618,7 +629,7 @@ $price = $order->price_override;
 
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
                                                     <h6 class="mb-1"><i>Current domain: {{$installation_path}}</i></h6>
-                                                    <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic.</p>
+                                                    <p class="card-text mb-0">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -717,6 +728,10 @@ $price = $order->price_override;
                 <div class="modal-body">
                     <div id="success-domain"></div>
                     <div id="failure-domain"></div>
+                    <div class="section-box">
+                        <p><i>If you wish to purchase a domain, you can <a href="https://store.ladybirdwebhost.com/" target="_blank">Click here.</a> And after the domain is set up, you will have to point your CNAME to our cloud <a href="https://docs.faveohelpdesk.com/docs/helper/cname/" target="_blank">Click here.</a></i></p>
+                    </div>
+
                     <label id="clouduserdomainfill" style="margin-left: 14px;"><strong></strong></label>
                     <div class="form-group">
                         <div class="col-12">

@@ -95,14 +95,6 @@ return [
             'Horizon' => 'Laravel\\Horizon\\Horizon',
         ],
     ],
-    'laravel/socialite' => [
-        'providers' => [
-            0 => 'Laravel\\Socialite\\SocialiteServiceProvider',
-        ],
-        'aliases' => [
-            'Socialite' => 'Laravel\\Socialite\\Facades\\Socialite',
-        ],
-    ],
     'laravel/tinker' => [
         'providers' => [
             0 => 'Laravel\\Tinker\\TinkerServiceProvider',

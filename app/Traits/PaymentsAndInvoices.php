@@ -167,7 +167,7 @@ trait PaymentsAndInvoices
                 $payment_method,
                 $payment_status,
                 $payment_date,
-                $totalPayment
+                intval($totalPayment)
             );
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');

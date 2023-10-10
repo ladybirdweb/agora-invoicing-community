@@ -291,7 +291,7 @@ class CheckoutController extends InfoController
                     $true = false;
                     $control = new \App\Http\Controllers\Order\RenewController();
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    if (! empty($inovice->billing_pay)) {
+                    if (!empty($invoice->billing_pay)) {
                         Invoice::where('id', $invoice->id)->update(['grand_total'=> ($invoice->grand_total + $invoice->billing_pay)]);
                     }
                     $payment->postRazorpayPayment($invoice);

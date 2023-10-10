@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\v3_0_4;
+namespace Database\Seeders\v3_0_5;
 use App\Model\Mailjob\ExpiryMailDay;
 
 use Illuminate\Database\Seeder;

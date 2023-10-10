@@ -146,7 +146,7 @@ Invoice
 
                                         @endphp
                                         <td>{{$item->product_name}}
-                                            ({{$plan}})</td>
+                                            {{$plan}}</td>
                                          <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                          <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
                                         <td>{{$item->quantity}}</td>

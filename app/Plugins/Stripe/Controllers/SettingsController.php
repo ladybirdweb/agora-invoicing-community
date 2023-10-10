@@ -189,7 +189,7 @@ class SettingsController extends Controller
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }
-                    $this->doTheDeed($invoice,false);
+                    $this->doTheDeed($invoice, false);
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -214,7 +214,7 @@ class SettingsController extends Controller
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
                     }
-                    $this->doTheDeed($invoice,false);
+                    $this->doTheDeed($invoice, false);
                     if (\Session::has('AgentAlterationRenew')) {
                         $newAgents = \Session::get('newAgentsRenew');
                         $orderId = \Session::get('orderIdRenew');
@@ -347,7 +347,7 @@ class SettingsController extends Controller
         }
     }
 
-    private function doTheDeed($invoice,$pay=true)
+    private function doTheDeed($invoice, $pay = true)
     {
         $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
         if ($amt_to_credit) {

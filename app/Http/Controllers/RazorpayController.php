@@ -96,7 +96,7 @@ class RazorpayController extends Controller
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                    $this->doTheDeed($invoice);
+                    $this->doTheDeed($invoice,false);
                     $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
                 } elseif ($cloud->checkUpgradeDowngrade()) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
@@ -118,7 +118,7 @@ class RazorpayController extends Controller
                     if ($invoice->grand_total) {
                         SettingsController::sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
-                    $this->doTheDeed($invoice);
+                    $this->doTheDeed($invoice,false);
 
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
@@ -188,7 +188,7 @@ class RazorpayController extends Controller
         return ['status' => $status, 'message' => $message];
     }
 
-    private function doTheDeed($invoice)
+    private function doTheDeed($invoice,$pay = true)
     {
         $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
         if ($amt_to_credit) {
@@ -207,7 +207,7 @@ class RazorpayController extends Controller
 
             \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
             \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-            if ($invoice->billing_pay) {
+            if ($invoice->billing_pay && $pay) {
                 Payment::create([
                     'invoice_id' => $invoice->id,
                     'user_id' => $invoice->user_id,

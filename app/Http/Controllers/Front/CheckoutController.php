@@ -288,14 +288,21 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
+                    $true = false;
                     $control = new \App\Http\Controllers\Order\RenewController();
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    if(!empty($inovice->billing_pay)){
+                        Invoice::where('id',$invoice->id)->update(['grand_total'=> ($invoice->grand_total + $invoice->billing_pay)]);
+                    }
                     $payment->postRazorpayPayment($invoice);
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
-                    $this->checkoutAction($invoice, \Session::has('AgentAlteration')); //For free product generate invoice without payment
+                    if($control->checkRenew() || \Session::has('AgentAlteration')){
+                        $true = true;
+                    }
+                    $this->checkoutAction($invoice, $true); //For free product generate invoice without payment
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);

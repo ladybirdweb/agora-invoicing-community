@@ -308,7 +308,7 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
-                    if (\Session::has('agentIncreaseDate')) {
+                    if (\Session::has('agentIncreaseDate') || $control->checkRenew()) {
                         $control = new \App\Http\Controllers\Order\RenewController();
                         $control->successRenew($invoice, true);
                     }
@@ -455,6 +455,15 @@ class CheckoutController extends InfoController
             $installationPath = \Session::get('installation_path');
             $productId = \Session::get('product_id');
             $oldLicense = \Session::get('oldLicense');
+            $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+        }
+
+        if (\Session::has('AgentAlterationRenew')) {
+            $newAgents = \Session::get('newAgentsRenew');
+            $orderId = \Session::get('orderIdRenew');
+            $installationPath = \Session::get('installation_pathRenew');
+            $productId = \Session::get('product_idRenew');
+            $oldLicense = \Session::get('oldLicenseRenew');
             $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
         }
     }

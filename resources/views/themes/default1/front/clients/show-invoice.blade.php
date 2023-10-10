@@ -154,7 +154,7 @@ active
                               $plan = \DB::table('periods')->where('id',$period_id)->latest()->value('name');
 
                             @endphp
-                            <td>{{$item->product_name}} ({{$plan}})
+                            <td>{{$item->product_name}} {{($plan)}}
                             </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
                             <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>

@@ -375,10 +375,10 @@ class CheckoutController extends InfoController
             $url = '';
 
             $url = url("download/$user_id/$invoice->number");
-            $payment = new \App\Http\Controllers\Order\InvoiceController();
-            $payment->postRazorpayPayment($invoice);
             //execute the order
             if (! $agent) {
+                $payment = new \App\Http\Controllers\Order\InvoiceController();
+                $payment->postRazorpayPayment($invoice);
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
             }

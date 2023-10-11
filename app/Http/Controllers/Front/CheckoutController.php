@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
@@ -275,6 +276,10 @@ class CheckoutController extends InfoController
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
+                    }
+                    if (! empty($invoice->cloud_domain)) {
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
                     }
                     $this->performCloudActions($invoice);
 

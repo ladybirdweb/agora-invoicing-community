@@ -78,7 +78,7 @@ Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->g
 Route::middleware('installAgora')->group(function () {
     Route::post('store_toggle_state', [Common\TemplateController::class, 'toggle'])->withoutMiddleware(['auth', 'admin']);
     Route::get('pricing', [Front\CartController::class, 'cart'])->name('pricing');
-    Route::get('group/{templateid}/{groupid}/', [Front\PageController::class, 'pageTemplates']);
+    Route::get('group/{templateid}/{groupid}/{autoPopId?}', [Front\PageController::class, 'pageTemplates']);
     Route::post('cart/remove', [Front\CartController::class, 'cartRemove']);
     Route::post('update-agent-qty', [Front\CartController::class, 'updateAgentQty']);
     Route::post('update-qty', [Front\CartController::class, 'updateProductQty']);

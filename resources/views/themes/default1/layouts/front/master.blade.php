@@ -1244,6 +1244,11 @@ domainInput.addEventListener("input", function() {
                 $("#createtenancy").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
                 var domain = $('#userdomainPurchase').val();
                 var order = $('#orderId').val();
+                if(order===""){
+                    var url = window.location.href;
+                    var urlParts = url.split('/');
+                    order = urlParts[urlParts.length - 1];
+                }
                 $.ajax({
                     url: "{{url('create/tenant/purchase')}}",
                     type: "POST",

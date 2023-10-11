@@ -460,7 +460,7 @@ class PageController extends Controller
      * @param  int  $templateid  Id of the Template
      * @return longtext The Template to be displayed
      */
-    public function pageTemplates(int $templateid = null, int $groupid)
+    public function pageTemplates(int $templateid = null, int $groupid, $autoPopId=null)
     {
         try {
             $productsHightlight = Product::wherehighlight(1)->get();
@@ -471,7 +471,7 @@ class PageController extends Controller
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
-            $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
+            $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform, $autoPopId);
             $products = Product::all();
             $plan = '';
             $description = '';
@@ -510,7 +510,7 @@ class PageController extends Controller
      * @param  $trasform
      * @return string
      */
-    public function getTemplateOne($helpdesk_products, $trasform)
+    public function getTemplateOne($helpdesk_products, $trasform, $autoPopId = null)
     {
         try {
             $template = '';
@@ -532,11 +532,22 @@ class PageController extends Controller
                         $trasform[$product['id']]['subscription'] = '';
                         if ($product['add_to_contact'] != 1) {
                             $prod_id = $product['id'];
-                            $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? '<button class="btn btn-primary btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">
+                            if($autoPopId == $prod_id){
+                                $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? '<script>$(document).ready(function() { $("#tenancy").modal("show"); });</script><button class="btn btn-primary btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">
+  <span style="white-space: nowrap;">Order Now</span>
+</button>' : '<button class="btn btn-dark btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">
+  <span style="white-space: nowrap;">Order Now</span>
+</button>
+<script>$(document).ready(function() { $("#tenancy").modal("show"); });</script>';
+                            }
+                            else{
+                                $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? '<button class="btn btn-primary btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">
   <span style="white-space: nowrap;">Order Now</span>
 </button>' : '<button class="btn btn-dark btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">
   <span style="white-space: nowrap;">Order Now</span>
 </button>';
+                            }
+
                         } else {
                             $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<a class='btn btn-primary btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>" : "<a class='btn btn-dark btn-modern sales buttonsale' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
                         }

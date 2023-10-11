@@ -75,23 +75,7 @@ $orderTotal = $order->price_override;
       <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
       @else
 
-      @endif
-    <div class="modal fade open-createTenantDialog" id="tenant" data-backdrop="static" data-keyboard="false">
-      <!-- Modal content -->
-    </div>
-    
-    @endforeach
-    <br>
-    
-    </section>
-
-<button style="visibility: hidden;" class="btn btn-sm btn-primary btn-xs deploy-button" value="{{$order->number}}" style="margin-bottom:15px;" onclick="deploy(this)">
-<i class="fa fa-download" style="color:white;"></i>&nbsp;&nbsp;Deploy
-</button>
 @endif
-<div class="modal fade open-createTenantDialog" id="tenant" data-backdrop="static" data-keyboard="false">
-<!-- Modal content -->
-</div>
 @endforeach
 <br>
 </section>

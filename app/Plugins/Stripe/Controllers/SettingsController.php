@@ -155,9 +155,9 @@ class SettingsController extends Controller
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
-                if($invoice->is_renewed == 0){
-                 \Session::forget('subscription_id');
-                 \Session::forget('plan_id');
+                if ($invoice->is_renewed == 0) {
+                    \Session::forget('subscription_id');
+                    \Session::forget('plan_id');
                 }
                 //After Regular Payment
                 if ($control->checkRenew() === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {

@@ -332,10 +332,10 @@ class RenewController extends BaseRenewController
                 $oldAgents = intval(substr(Order::where('id', $order_id)->value('serial_key'), 12));
                 if ($oldAgents != $agents) {
                     if (empty($installation_path)) {
-                        return redirect()->back()->with('success', trans('message.without_installation_found'));
+                        return redirect()->back()->with('fails', trans('message.without_installation_found'));
                     }
                     if ($this->checktheAgent($agents, $installation_path)) {
-                        return redirect()->back()->with('success', trans('message.agent_reduce'));
+                        return redirect()->back()->with('fails', trans('message.agent_reduce'));
                     }
                 }
                 $cost = (int) $cost * (int) $agents;

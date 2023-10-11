@@ -181,7 +181,6 @@ class TenantController extends Controller
         //This above code is only written
         // to differentiate HD and SD when we reach the
         // market place feature this needs to be removed
-
         $this->validate($request,
             [
                 'orderNo' => 'required',

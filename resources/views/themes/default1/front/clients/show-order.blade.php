@@ -591,10 +591,7 @@ $price = $order->price_override;
                                 <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
 
 
-                    </label>
-                    @else
-                    <h6 style="margin-top: 8px;">Please enable the payment gateways</h6>
-                    @endif
+                
 
 
                                     <label class="switch toggle_event_editing">

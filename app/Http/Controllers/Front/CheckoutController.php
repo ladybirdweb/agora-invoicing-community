@@ -319,6 +319,10 @@ class CheckoutController extends InfoController
                         $control = new \App\Http\Controllers\Order\RenewController();
                         $control->successRenew($invoice, true);
                     }
+                    if (!empty($invoice->cloud_domain)) {
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
+                    }
                     $this->performCloudActions($invoice);
                     \Cart::clear();
 

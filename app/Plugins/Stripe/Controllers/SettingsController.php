@@ -169,6 +169,11 @@ class SettingsController extends Controller
 
                     $this->doTheDeed($invoice);
 
+                    if (! empty($invoice->cloud_domain)) {
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
+                    }
+
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -205,10 +210,6 @@ class SettingsController extends Controller
                     $this->doTheDeed($invoice);
                     $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-                    if (! empty($invoice->cloud_domain)) {
-                        $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
-                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
-                    }
                     $status = $view['status'];
                     $message = $view['message'];
                 } else {

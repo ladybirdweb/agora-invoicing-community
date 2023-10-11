@@ -11,6 +11,7 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
@@ -252,11 +253,11 @@ class CheckoutController extends InfoController
             $payment_method = ($isTrue) ? $request->input('payment_gateway') : 'Credits';
             \Session::put('payment_method', $payment_method);
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
+            
             $cost = $request->input('cost');
             $state = $this->getState();
             if ($paynow === false) {//When regular payment
-                $invoice = $invoice_controller->generateInvoice();
-
+                $invoice = $invoice_controller->generateInvoice();   
                 $amount = intval(Cart::getSubTotal());
                 if (\Session::has('nothingLeft')) {
                     $amount = \Session::get('nothingLeft');
@@ -270,7 +271,11 @@ class CheckoutController extends InfoController
                     $url = '';
 
                     $this->checkoutAction($invoice); //For free product generate invoice without payment
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
+                   $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                   
+                    $orders= Order::where('invoice_id', $invoice->id)->get();
+
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items' ,'orders','orderNumber'))->render();
                     // }
                     \Cart::clear();
                     if (\Session::has('nothingLeft')) {
@@ -283,11 +288,12 @@ class CheckoutController extends InfoController
                     }
                     $this->performCloudActions($invoice);
 
-                    return redirect('checkout')->with('success', $url);
+                    return redirect('checkout')->with('Success', $url);
                 }
             } else {//When renewal, pending payments
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
+
                 $amount = intval($invoice->grand_total);
                 if (\Session::has('nothingLeft')) {
                     $check = \Session::get('nothingLeft');
@@ -305,12 +311,16 @@ class CheckoutController extends InfoController
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
+
                     $url = '';
                     if ($control->checkRenew() || \Session::has('AgentAlteration')) {
                         $true = true;
                     }
                     $this->checkoutAction($invoice, $true); //For free product generate invoice without payment
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
+                    $orders= Order::where('invoice_id', $invoice->id)->get();
+                    $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                   
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items','orders','orderNumber'))->render();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
@@ -326,7 +336,7 @@ class CheckoutController extends InfoController
                     $this->performCloudActions($invoice);
                     \Cart::clear();
 
-                    return redirect('checkout')->with('success', $url);
+                    return redirect('checkout')->with('Success', $url);
                 }
             }
         } catch (\Exception $ex) {

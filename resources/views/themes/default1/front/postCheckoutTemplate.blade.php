@@ -1,115 +1,90 @@
-<div class="container">
-                            
-            
-            <div >
+<div class="container ">
+<div >
+<div>
+<div id="content" role="main">
+<div class="page-content ">
+<div>
+<div class="alert alert-success">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<strong><i class="far fa-thumbs-up"></i>
+<strong>Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
+</div>
+</strong><br>
 
-            <!-- main content -->
-            <div >
-
-                            
-    <div id="content" role="main">
-                
-           <div class="page-content">
-                    <div>
-
-    
-        
-            <strong>Thank you. Your {{$product->name}} order is confirmed. A confirmation Mail has been sent to you on your registered
-                Email
-            </strong><br>
-
-            <ul class="">
-
-                <li class="">
-                    Invoice number:                    <strong>{{$invoice->number}}</strong>
-                </li>
-
-                <li class="woocommerce-order-overview__date date">
-                    Date:                    <strong>{!! $date !!}</strong>
-                </li>
-
-                                    <li class="woocommerce-order-overview__email email">
-                        Email:                        <strong>{{\Auth::user()->email}}</strong>
-                    </li>
-                
-               
-
-                                    <li class="woocommerce-order-overview__payment-method method">
-                        Payment method:                        <strong>{{Session::get('payment_method')}}</strong>
-                    </li>
-                
-            </ul>
-
-        
-       
+@foreach($orders as $order)
+<?php
+$product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
+$cont = new \App\Http\Controllers\License\LicensePermissionsController();
+$downloadPermission = $cont->getPermissionsForProduct($order->product);
+?>
+@endforeach
 <section>
-    
-    <h2 style="margin-top:40px ; margin-bottom:10px;">Order Details</h2>
-    
-    <table class="table table-bordered table-striped">
-    
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        
-        <tbody>
-            <tr>
 
-    <td>
-        <strong>{{$product->name}} ×   {{$items[0]->quantity}} </strong>
-    </td>
 
-    <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code=$invoice->currency)}}</span>    </td>
+
+<table class="table table-bordered table-hover ">
+<thead class="thead-light">
+<tr>
+<th colspan="4">Order Details</th>
+
 
 </tr>
+</thead>
 
-        </tbody>
-        <tfoot>
-                                <tr>
-                        <th scope="row">Invoice No:</th>
-                        <td><span class="woocommerce-Price-amount amount"> {{$invoice->number}}</span></td>
-                    </tr>
-                                        <tr>
-                        <th scope="row">Payment method:</th>
-                        <td>{{Session::get('payment_method')}}</td>
-                    </tr>
-                                        <tr>
-                        <th scope="row">Total:</th>
-                            <td><span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</span></td>
-                    </tr>
-                            </tfoot>
-    </table>
-    
-          
 
+<tfoot>
+<tr>
+<th scope="row">Product Name:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$product->name}}</span></td>
+</tr>
+<tr>
+<th scope="row">Quantity:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$items[0]->quantity}} </span></td>
+</tr>
+<tr>
  
-                    <br><br>
-                     <a href= product/download/{{$product->id}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
-          
+<th scope="row">Order No:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$orderNumber}}</span></td>
+</tr>
+<tr>
+<th scope="row">Invoice No:</th>
+<td><span class="woocommerce-Price-amount amount"> {{$invoice->number}}</span></td>
+</tr>
+<tr>
+<tr>
+<th scope="row">Date:</th>
+<td>{!! $date !!}</td>
+</tr>
+<tr>
+<th scope="row">Total:</th>
+<td><span class="amount">{{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</span></td>
+</tr>
+</tfoot>
+</table>
+<br>
+@if($downloadPermission['downloadPermission'] == 1 && $product->type != '4')
 
-    
+ <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>  Download the Latest Version here</a>
+@else
 
-    
-
+@endif
 </section>
-
-    
-
 </div>
-                </div>
-           
-
-        
-    </div>
-
-        
-
 </div>
+</div>
+</div><!-- end main content -->
+</div>
+</div>
+<script>
+function deploy(button) {
+var orderNumber = button.value;
+openModal(orderNumber);
+}
 
-    
-    </div>
-    </div>
+
+function openModal(orderNumber) {
+$('#tenant .modal-body').text('Order Number: ' + orderNumber);
+$('#tenant').modal('show');
+}
+</script>
+

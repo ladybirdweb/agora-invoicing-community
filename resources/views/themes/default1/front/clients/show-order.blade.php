@@ -579,66 +579,67 @@ $price = $order->price_override;
                     </table>
                 @endslot
 
+                        @slot('autorenewal')
 
-                @slot('autorenewal')
+        <div class="row">
+            @if($gateways)
 
-                    <div class="row">
-                        @if($gateways)
-
-                            <div class="col-8">
-
-
-                                <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
+                <div class="col-8">
 
 
-                
+                    <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
 
 
-                                    <label class="switch toggle_event_editing">
-                                        <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
-                                               class="renewcheckbox" id="renew">
-                                        <span class="slider round"></span>
-                                        <input type="hidden" name="" id="order" value="{{$id}}">
+                </div>
+                <div class="col-4">
+                    <label class="switch toggle_event_editing">
 
 
-                                    </label>
-                                    @else
-                                        <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
-                                @endif
-
-                            </div>
-                    </div>
-
-                    <!--    <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
-
-                           <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                                   <thead>
-                                   <tr>
-                                       <th>Order No</th>
-                                       <th>Total</th>
-                                       <th>Status</th>
-                                       <th>Payment Date</th>
-                                       <th>Action</th>
-                                   </tr>
-                                   </thead>
-                               </table> -->
-                    @if($statusAutorenewal == 1)
-                        <div class="row">
-
-              <div class="col-8" id="updateButton"> 
-              <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
-              <h6 style="margin-top: 8px;">Click here to update your card details</h6>
-
-                                <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
+                        <label class="switch toggle_event_editing">
+                            <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
+                                class="renewcheckbox" id="renew">
+                            <span class="slider round"></span>
+                            <input type="hidden" name="" id="order" value="{{$id}}">
 
 
-                            </div>
-
-                        </div>
+                        </label>
+                        @else
+                            <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
                     @endif
 
+                </div>
+        </div>
 
-                @endslot
+        <!--    <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
+
+            <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                    <thead>
+                    <tr>
+                        <th>Order No</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                </table> -->
+        @if($statusAutorenewal == 1)
+            <div class="row">
+
+                <div class="col-8" id="updateButton">
+                    <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
+                    <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
+
+                    <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
+
+
+                </div>
+
+            </div>
+        @endif
+
+
+        @endslot
 
                 @slot('cloud')
                     <p style="margin-left: 530px;"><b>Plan Expiry:</b> {!! getDateHtml($subscription->ends_at) !!}</p>

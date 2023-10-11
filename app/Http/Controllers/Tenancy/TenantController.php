@@ -10,6 +10,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
+use App\User;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
@@ -191,7 +192,13 @@ class TenantController extends Controller
             ]);
 
         $settings = Setting::find(1);
-        $user = \Auth::user()->email;
+        $userInformation = $request->has('userInfo') ? User::find($request->input('userInfo')) : \Auth::user();
+
+        $userEmail = $userInformation->email;
+        $userFirstName = $userInformation->first_name;
+        $userLastName = $userInformation->last_name;
+        $userId = $userInformation->id;
+
         $mail = new \App\Http\Controllers\Common\PhpMailController();
 
         try {
@@ -215,9 +222,9 @@ class TenantController extends Controller
                 throw new Exception('Invalid App key provided. Please contact admin.');
             }
             $token = str_random(32);
-            \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
+            \DB::table('third_party_tokens')->insert(['user_id' => $userId, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(), 'product'=>$product, 'product_id'=>$order[0]->product()->value('id')];
+            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$userEmail, 'userId'=>$userId, 'timestamp'=>time(), 'product'=>$product, 'product_id'=>$order[0]->product()->value('id')];
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
@@ -231,20 +238,16 @@ class TenantController extends Controller
 
             $result = json_decode($response);
             if ($result->status == 'fails') {
-                $this->prepareMessages($faveoCloud, $user);
+                $this->prepareMessages($faveoCloud, $userEmail);
 
                 $this->googleChat($result->message);
                 if ($result->message == 'Domain already taken. Please select a different domain') {
                     return ['status' => 'false', 'message' => $result->message];
                 }
 
-                if ($result->message == 'Domain already taken. Please select a different domain') {
-                    return ['status' => 'false', 'message' => $result->message];
-                }
-
                 return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
-                $this->prepareMessages($faveoCloud, $user);
+                $this->prepareMessages($faveoCloud, $userEmail);
 
                 $this->googleChat($result->message);
 
@@ -253,7 +256,7 @@ class TenantController extends Controller
                 if (! strpos($faveoCloud, 'fratergroup.in')) {
                     CloudEmail::create([
                         'result_message' => $result->message,
-                        'user' => $user,
+                        'user' => $userEmail,
                         'result_password' => $result->password,
                         'domain' => $faveoCloud,
                     ]);
@@ -291,26 +294,26 @@ class TenantController extends Controller
                     $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
                     $result->message = str_replace('website', strtolower($product), $result->message);
                     $result->message = str_replace('You will receive password on your registered email', '', $result->message);
-                    $userData = $result->message.'<br><br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
+                    $userData = $result->message.'<br><br> Email:'.' '.$userEmail.'<br>'.'Password:'.' '.$result->password;
 
                     $replace = [
                         'message' => $userData,
                         'product' => $order[0]->product()->value('name'),
-                        'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+                        'name' => $userFirstName.' '.$userLastName,
                         'contact' => $contact['contact'],
                         'logo' => $contact['logo'],
                         'title' => $settings->title,
                         'company_email' => $settings->company_email,
                     ];
 
-                    $this->prepareMessages($faveoCloud, $user, true);
-                    $mail->SendEmail($settings->email, $user, $template->data, $subject, $replace, $type);
+                    $this->prepareMessages($faveoCloud, $userEmail, true);
+                    $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $replace, $type);
 
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
                 }
             }
         } catch (Exception $e) {
-            $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$user;
+            $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$userEmail;
             $this->googleChat($message);
 
             return ['status' => 'false', 'message' => trans('message.something_bad')];

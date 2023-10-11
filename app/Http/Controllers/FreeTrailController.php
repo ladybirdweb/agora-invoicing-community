@@ -83,7 +83,7 @@ class FreeTrailController extends Controller
                     \DB::table('free_trial_allowed')->insert([
                         'user_id' => $userId,
                         'product_id' => ($request->get('product') == 'Helpdesk' ? 117 : 119),
-                        'domain' => $request->domain.'.fratergroup.in',
+                        'domain' => $request->domain.'.faveocloud.com',
                     ]);
                     \Session::forget('planDays');
 

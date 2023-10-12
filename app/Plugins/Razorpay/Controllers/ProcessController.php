@@ -88,7 +88,7 @@ class ProcessController extends Controller
                 \Session::put('totalToBePaid', $totalPaid);
                 \View::addNamespace('plugins', $path);
 
-                echo view('plugins::middle-page', compact('total', 'rzp_key', 'rzp_secret', 'apilayer_key', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'totalPaid','creditBalance'));
+                echo view('plugins::middle-page', compact('total', 'rzp_key', 'rzp_secret', 'apilayer_key', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'totalPaid', 'creditBalance'));
             } else {//When regular payment
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];

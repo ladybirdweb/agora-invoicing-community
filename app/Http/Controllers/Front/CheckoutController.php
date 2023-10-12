@@ -264,7 +264,7 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
-                    $show = false;
+                    $show = true;
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
@@ -301,7 +301,7 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
-                    $show = true;
+                    $show = false;
                     $true = false;
                     $control = new \App\Http\Controllers\Order\RenewController();
                     $payment = new \App\Http\Controllers\Order\InvoiceController();

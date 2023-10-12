@@ -852,7 +852,7 @@ class CronController extends BaseCronController
 
     public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $productName, $template, $order, $payment)
     {
-        $amount = currencyFormat($total,getCurrencyForClient($user->country));
+        $amount = currencyFormat($total, getCurrencyForClient($user->country));
         $setting = Setting::find(1);
         $paymentSuccessdata = 'Payment for '.$productName.' of '.$user->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
@@ -863,7 +863,7 @@ class CronController extends BaseCronController
 
     public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment)
     {
-        $amount = currencyFormat($total,getCurrencyForClient($user->country));
+        $amount = currencyFormat($total, getCurrencyForClient($user->country));
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.$user->currency.' '.$total.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new \App\Http\Controllers\Common\PhpMailController();

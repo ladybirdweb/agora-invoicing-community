@@ -275,7 +275,7 @@ class CheckoutController extends InfoController
 
                     $orders = Order::where('invoice_id', $invoice->id)->get();
 
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber','show'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber', 'show'))->render();
                     // }
                     \Cart::clear();
                     if (\Session::has('nothingLeft')) {
@@ -321,7 +321,7 @@ class CheckoutController extends InfoController
                     $orders = Order::where('invoice_id', $invoice->id)->get();
                     $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
 
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber','show'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber', 'show'))->render();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');

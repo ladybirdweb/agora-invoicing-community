@@ -37,22 +37,8 @@ return $randomString;
 }
  $api = new Api($rzp_key, $rzp_secret);
 $currency = $invoice->currency;
-$amt_to_credit = \DB::table('payments')
-    ->where('user_id', \Auth::user()->id)
-    ->where('payment_method','Credit Balance')
-    ->where('payment_status','success')
-    ->where('amt_to_credit','!=',0)
-    ->value('amt_to_credit');
+$cartTotal = $invoice->grand_total;
 
-if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-    if ($invoice->grand_total <= $amt_to_credit) {
-        $cartTotal = 0;
-    } else {
-        $cartTotal = $invoice->grand_total - $amt_to_credit;
-    }
-} else {
-    $cartTotal = $invoice->grand_total;
-}
 
 if ($currency == 'INR'){
 $orderData = [

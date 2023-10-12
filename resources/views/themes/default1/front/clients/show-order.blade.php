@@ -14,10 +14,7 @@
         {
             font-size: 15px;
         }
-        .modal-backdrop {
-            /* bug fix - no overlay */
-            display: none;
-        }
+
         .switch {
             position: relative;
             display: inline-block;
@@ -109,6 +106,14 @@
         top: 0;
         right: 0;
 }
+    .modal {
+        z-index: 1050; 
+    }
+    
+    .modal-backdrop.show {
+        z-index: 1040;
+    }
+
 </style>
     @if(Auth::check())
         <li><a href="{{url('my-invoices')}}">Home</a></li>
@@ -958,7 +963,7 @@ $price = $order->price_override;
 
 
 
-               <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false" style="position: relative;bottom: 300px;">
+        <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false" style="position: relative;bottom: 300px;">
         <div class="modal-dialog">
           <div class="modal-content" style="width:400px;">
             <div class="modal-header">

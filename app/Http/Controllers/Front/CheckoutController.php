@@ -239,7 +239,7 @@ class CheckoutController extends InfoController
         }
 
         if ($isTrue != 0) {
-            if(\Cart::getTotal()>0) {
+            if (\Cart::getTotal() > 0) {
                 if (Cart::getSubTotal() != 0 || $cost > 0) {
                     $this->validate($request, [
                         'payment_gateway' => 'required',

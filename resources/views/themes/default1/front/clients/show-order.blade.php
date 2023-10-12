@@ -110,13 +110,13 @@
         right: 0;
 }
 </style>
- @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li><a href= "{{url('my-orders')}}">My Orders</a></li>
-<li class="active">View Order</li>
+    @if(Auth::check())
+        <li><a href="{{url('my-invoices')}}">Home</a></li>
+    @else
+        <li><a href="{{url('login')}}">Home</a></li>
+    @endif
+    <li><a href= "{{url('my-orders')}}">My Orders</a></li>
+    <li class="active">View Order</li>
 @stop
 <?php
 
@@ -579,67 +579,68 @@ $price = $order->price_override;
                     </table>
                 @endslot
 
-                        @slot('autorenewal')
 
-        <div class="row">
-            @if($gateways)
+                @slot('autorenewal')
 
-                <div class="col-8">
+                    <div class="row">
+                        @if($gateways)
 
-
-                    <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
+                            <div class="col-8">
 
 
-                </div>
-                <div class="col-4">
-                    <label class="switch toggle_event_editing">
+                                <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
 
 
-                        <label class="switch toggle_event_editing">
-                            <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
-                                class="renewcheckbox" id="renew">
-                            <span class="slider round"></span>
-                            <input type="hidden" name="" id="order" value="{{$id}}">
+                            </div>
+                            <div class="col-4">
+                                <label class="switch toggle_event_editing">
 
 
-                        </label>
-                        @else
-                            <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
+                                    <label class="switch toggle_event_editing">
+                                        <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
+                                               class="renewcheckbox" id="renew">
+                                        <span class="slider round"></span>
+                                        <input type="hidden" name="" id="order" value="{{$id}}">
+
+
+                                    </label>
+                                    @else
+                                        <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
+                                @endif
+
+                            </div>
+                    </div>
+
+                    <!--    <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
+
+                           <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                                   <thead>
+                                   <tr>
+                                       <th>Order No</th>
+                                       <th>Total</th>
+                                       <th>Status</th>
+                                       <th>Payment Date</th>
+                                       <th>Action</th>
+                                   </tr>
+                                   </thead>
+                               </table> -->
+                    @if($statusAutorenewal == 1)
+                        <div class="row">
+
+                            <div class="col-8" id="updateButton">
+                                <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
+                                <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
+
+                                <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
+
+
+                            </div>
+
+                        </div>
                     @endif
 
-                </div>
-        </div>
 
-        <!--    <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
-
-            <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <thead>
-                    <tr>
-                        <th>Order No</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Payment Date</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                </table> -->
-        @if($statusAutorenewal == 1)
-            <div class="row">
-
-                <div class="col-8" id="updateButton">
-                    <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
-                    <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
-
-                    <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
-
-
-                </div>
-
-            </div>
-        @endif
-
-
-        @endslot
+                @endslot
 
                 @slot('cloud')
                     <p style="margin-left: 530px;"><b>Plan Expiry:</b> {!! getDateHtml($subscription->ends_at) !!}</p>
@@ -744,38 +745,6 @@ $price = $order->price_override;
         </div>
     </div>
 
-    <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false" style="position: relative;bottom: 300px;">
-<div class="modal-dialog">
-  <div class="modal-content" style="width:400px;">
-    <div class="modal-header">
-      <h4 class="modal-title">Select the payment</h4>
-    </div>
-    <div class="modal-body">
-                <div id="alertMessage-1"></div>
-      <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-          {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
-           
-
-           <select name=""  id="sel-payment" class="form-control" >
-                <option value="" disabled selected>Choose your option</option>
-                 @foreach($gateways as $key =>  $gateway)
-                <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
-                    @endforeach
-                <!-- <option value="razorpay">Razorpay</option> -->
-               </select>
-           
-           </div>
-      <span id="payerr"></span>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left closeandrefresh" id="srclose" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-      <button type="button" id="payment" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
-    </div>
-  </div>
-  <!-- /.modal-content -->
-</div>
-<!-- /.modal-dialog -->
-</div>
 
 
     <!-- Cloud Domain Change Modal -->
@@ -989,41 +958,42 @@ $price = $order->price_override;
 
 
 
-    <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false">
+               <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false" style="position: relative;bottom: 300px;">
         <div class="modal-dialog">
-            <div class="modal-content" style="width:400px;">
-                <div class="modal-header">
-                    <h4 class="modal-title">Select the Payment</h4>
-                </div>
-                <div class="modal-body">
-                    <div id="alertMessage-1"></div>
-                    <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                        {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
-
-
-                        <select name=""  id="sel-payment" class="form-control" >
-                            <option value="" disabled selected>Choose your option</option>
-                            @foreach($gateways as $key =>  $gateway)
-                                <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
-                            @endforeach
-                            <!-- <option value="razorpay">Razorpay</option> -->
-                        </select>
-
-                    </div>
-                    <span id="payerr"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left closeandrefresh" id="srclose" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                    <button type="button" id="payment" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
-                </div>
+          <div class="modal-content" style="width:400px;">
+            <div class="modal-header">
+              <h4 class="modal-title">Select the payment</h4>
             </div>
-            <!-- /.modal-content -->
+            <div class="modal-body">
+                        <div id="alertMessage-1"></div>
+              <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                  {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
+                   
+        
+                   <select name=""  id="sel-payment" class="form-control" >
+                        <option value="" disabled selected>Choose your option</option>
+                         @foreach($gateways as $key =>  $gateway)
+                        <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                            @endforeach
+                        <!-- <option value="razorpay">Razorpay</option> -->
+                       </select>
+                   
+                   </div>
+              <span id="payerr"></span>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-left closeandrefresh" id="srclose" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+              <button type="button" id="payment" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
-    </div>
+        </div>
 
 
 
+   
     <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static" style="position: relative;bottom: 200px;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1133,9 +1103,8 @@ $price = $order->price_override;
 
 
 
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-<script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script>
    function refreshPage() {
             location.reload(); 
         }
@@ -1250,14 +1219,16 @@ $(document).ready(function() {
     }
 
 </script>
+    <script type="text/javascript">
 
-
-<script type="text/javascript">
-
-      $('#srclose').click(function() 
-               {
-               location.reload();
-               });
+        $('#srclose').click(function()
+                 {
+                 location.reload();
+                 });
+        // $('#strclose').click(function()
+        //          {
+        //          location.reload();
+        //          });
 
         // Checkout details as a json
         var options = <?php echo $json; ?>
@@ -1373,15 +1344,10 @@ function cardUpdate() {
                             var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                             $('#alertMessage-2').html(result + ".");
                             $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                            setInterval(function () {
-                                $('#alertMessage-2').slideUp(3000);
-                            }, 3000);
                             location.reload();
                         },
                       error: function (data) {
-                        console.log(data);
                         var errorMessage = data.responseJSON.result;
-                        console.log(errorMessage);
                         $('#stripe-Modal').modal('show');
                         $("#pay").attr('disabled', false);
                         $("#pay").html("Pay now");
@@ -1389,9 +1355,6 @@ function cardUpdate() {
                         var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                         $('#error-1').show();
                         document.getElementById('error-1').innerHTML = html;
-                        setInterval(function () {
-                            $('#error-1').slideUp(3000);
-                        }, 8000);
                     }
                     });
                 }
@@ -1403,8 +1366,7 @@ function cardUpdate() {
         }
     });
 }
-
-</script>
+    </script>
 
 
     <script type="text/javascript">
@@ -1457,19 +1419,48 @@ function cardUpdate() {
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript">
-             $('#showpayment-table').DataTable({
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!--         <script type="text/javascript">
+             $('#showAutopayment-table').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        "url":  '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
+                        "url":  '{!! Url('autoPayment-client/'.$order->id) !!}',
                            error: function(xhr) {
                            if(xhr.status == 401) {
                             alert('Your session has expired. Please login again to continue.')
                             window.location.href = '/login';
                            }
                         }
+
+                        },
+
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ Records per page",
+                        "sSearch"    : "Search: ",
+                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                    },
+
+                    columns: [
+                        {data: 'number', name: 'number'},
+                        {data: 'total', name: 'total'},
+                        {data: 'payment_status', name: 'payment_status'},
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'action', name: 'action'}
+                    ],
+                    "fnDrawCallback": function( oSettings ) {
+                         $(function () {
+                          $('[data-toggle="tooltip"]').tooltip({
+                            container : 'body'
+                          });
+                        });
+                        $('.loader').css('display', 'none');
+                    },
+                    "fnPreDrawCallback": function(oSettings, json) {
+                        $('.loader').css('display', 'block');
+                    },
+                });
+        </script> -->
 
     <script type="text/javascript">
         $('#showpayment-table').DataTable({
@@ -1513,20 +1504,18 @@ function cardUpdate() {
         });
 
         $("#reissueLic").click(function(){
-             if ($('#domainRes').val() == 1) {
-            var oldDomainId = $(this).attr('data-id');
-            $("#orderId").val(oldDomainId);
-            $("#domainModal").modal();
-            $("#domainSave").on('click',function(){
-            var id = $('#orderId').val();
-            $.ajax ({
-                type: 'patch',
-                url : "{{url('reissue-license')}}",
-                data : {'id':id},
-                  beforeSend: function () {
-                 $('#response1').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-                },
+            if ($('#domainRes').val() == 1) {
+                var oldDomainId = $(this).attr('data-id');
+                $("#orderId").val(oldDomainId);
+                $("#domainModal").modal();
+                $("#domainSave").on('click',function(){
+                    var id = $('#orderId').val();
+                    $.ajax ({
+                        type: 'patch',
+                        url : "{{url('reissue-license')}}",
+                        data : {'id':id},
+                        beforeSend: function () {
+                            $('#response1').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
 
                         },
 
@@ -1670,189 +1659,76 @@ function cardUpdate() {
             $('#stripeModal').modal('show');
         })
 
-$(function() {
-    var $form         = $(".require-validation");
-  $('form.require-validation').bind('submit', function(e) {
-    var $form         = $(".require-validation"),
-        inputSelector = ['input[type=email]', 'input[type=password]',
-                         'input[type=text]', 'input[type=file]',
-                         'textarea'].join(', '),
-        $inputs       = $form.find('.required').find(inputSelector),
-        $errorMessage = $form.find('div.error'),
-        valid         = true;
-        $errorMessage.addClass('hide');
- 
-        $('.has-error').removeClass('has-error');
-    $inputs.each(function(i, el) {
-      var $input = $(el);
-      if ($input.val() === '') {
-        $input.parent().addClass('has-error');
-        $errorMessage.removeClass('hide');
-        e.preventDefault();
-      }
-    });
-    
-  });
-  
-  function stripeResponseHandler(status, response) {
-        if (response.error) {
-            $('.error')
-                .removeClass('hide')
-                .find('.alert')
-                .text(response.error.message);
-        } else {
-            // token contains id, last4, and card type
-            var token = response['id'];
-            // insert the token into the form so it gets submitted to the server
-            $form.find('input[type=text]').empty();
-            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-            $form.get(0).submit();
-        }
-    }
-  
-});
-     /*
-      * Increase No. Of Agents
-      */
-     $('#agentplus').on('click',function(){
-         var $agtqty=$(this).parents('.quantity').find('.qty');
-         var $productid = $(this).parents('.quantity').find('.productid');
-         var $agentprice = $(this).parents('.quantity').find('.agentprice');
-         var $currency = $(this).parents('.quantity').find('.currency');
-         var $symbol  = $(this).parents('.quantity').find('.symbol');
-         var currency = $currency.val();//Get the Currency for the Product
-         var symbol = $symbol.val();//Get the Symbol for the Currency
-         var productid = parseInt($productid.val()); //get Product Id
-         var currentAgtQty = parseInt($agtqty.val()); //Get Current Quantity of Prduct
-         var actualAgentPrice = parseInt($agentprice.val());//Get Initial Price of Prduct
-         // console.log(productid,currentVal,actualprice);
+        $(function() {
+            var $form         = $(".require-validation");
+            $('form.require-validation').bind('submit', function(e) {
+                var $form         = $(".require-validation"),
+                    inputSelector = ['input[type=email]', 'input[type=password]',
+                        'input[type=text]', 'input[type=file]',
+                        'textarea'].join(', '),
+                    $inputs       = $form.find('.required').find(inputSelector),
+                    $errorMessage = $form.find('div.error'),
+                    valid         = true;
+                $errorMessage.addClass('hide');
 
-         var finalAgtqty = $('#agtqty').val(currentAgtQty + 1).val();
-         var finalAgtprice = $('#agentprice').val(actualAgentPrice * finalAgtqty).val();
+                $('.has-error').removeClass('has-error');
+                $inputs.each(function(i, el) {
+                    var $input = $(el);
+                    if ($input.val() === '') {
+                        $input.parent().addClass('has-error');
+                        $errorMessage.removeClass('hide');
+                        e.preventDefault();
+                    }
+                });
 
-         $.ajax({
-             type: "POST",
-             data:{'productid':productid},
-             beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                // if (!$form.data('cc-on-file')) {
+                //   e.preventDefault();
+                //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+                //   Stripe.createToken({
+                //     number: $('.card-number').val(),
+                //     cvc: $('.card-cvc').val(),
+                //     exp_month: $('.card-expiry-month').val(),
+                //     exp_year: $('.card-expiry-year').val()
+                //   }, stripeResponseHandler);
+                // }
 
-             },
-             url: "{{url('update-agent-qty')}}",
-             success: function () {
-                 location.reload();
-             }
-         });
-     });
-     /*
-     *Decrease No. of Agents
-      */
-     $(document).ready(function(){
-         var currentagtQty = $('#agtqty').val();
-         if(currentagtQty>1) {
-             $('#agentminus').on('click', function () {
+            });
 
-                 var $agtqty = $(this).parents('.quantity').find('.qty');
-                 var $productid = $(this).parents('.quantity').find('.productid');
-                 var $agentprice = $(this).parents('.quantity').find('.agentprice');
-                 var $currency = $(this).parents('.quantity').find('.currency');
-                 var $symbol = $(this).parents('.quantity').find('.symbol');
-                 var currency = $currency.val();//Get the Currency for the Product
-                 var symbol = $symbol.val();//Get the Symbol for the Currency
-                 var productid = parseInt($productid.val()); //get Product Id
-                 var currentAgtQty = parseInt($agtqty.val()); //Get Current Agent of Prduct
-                 var actualAgentPrice = parseInt($agentprice.val()); //Get Initial Price of Prduct
-                 // console.log(productid,currentVal,actualprice);
-                 console.log(actualAgentPrice);
-                 if (!isNaN(currentAgtQty)) {
-                     var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val(); //Quantity After decreasinf
-                     var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val(); //Final Price aftr decresing  qty
-                 }
-                 $.ajax({
-                     type: "POST",
-                     data: {'productid': productid},
-                     beforeSend: function () {
-                         $('#response').html("<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-                     },
-                     url: "{{url('reduce-agent-qty')}}",
-                     success: function () {
-                         location.reload();
-                     }
-                 });
+            function stripeResponseHandler(status, response) {
+                if (response.error) {
+                    $('.error')
+                        .removeClass('hide')
+                        .find('.alert')
+                        .text(response.error.message);
+                } else {
+                    // token contains id, last4, and card type
+                    var token = response['id'];
+                    // insert the token into the form so it gets submitted to the server
+                    $form.find('input[type=text]').empty();
+                    $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+                    $form.get(0).submit();
+                }
+            }
 
-             });
-         }
+        });
+        /*
+         * Increase No. Of Agents
+         */
+        $('#agentplus').on('click',function(){
+            var $agtqty=$(this).parents('.quantity').find('.qty');
+            var $productid = $(this).parents('.quantity').find('.productid');
+            var $agentprice = $(this).parents('.quantity').find('.agentprice');
+            var $currency = $(this).parents('.quantity').find('.currency');
+            var $symbol  = $(this).parents('.quantity').find('.symbol');
+            var currency = $currency.val();//Get the Currency for the Product
+            var symbol = $symbol.val();//Get the Symbol for the Currency
+            var productid = parseInt($productid.val()); //get Product Id
+            var currentAgtQty = parseInt($agtqty.val()); //Get Current Quantity of Prduct
+            var actualAgentPrice = parseInt($agentprice.val());//Get Initial Price of Prduct
+            // console.log(productid,currentVal,actualprice);
 
-     });
-
-
-
-
-     /*
-     *Increse Product Quantity
-      */
-     $('#quantityplus').on('click',function(){
-         var $productid = $(this).parents('.quantity').find('.productid');
-         var productid = parseInt($productid.val()); //get Product Id
-         // console.log(productid,currentVal,actualprice);
-         $.ajax({
-             type: "POST",
-             data: {'productid':productid},
-             beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-             },
-             url: "{{url('update-qty')}}",
-             success: function () {
-                 location.reload();
-             }
-         });
-     });
-
-     /*
-      * Reduce Procut Quantity
-      */
-     $('#quantityminus').on('click',function(){
-         var $qty=$(this).parents('.quantity').find('.qty');
-         var $productid = $(this).parents('.quantity').find('.productid');
-         var $price = $(this).parents('.quantity').find('.quatprice');
-         var productid = parseInt($productid.val()); //get Product Id
-         var currentQty = parseInt($qty.val()); //Get Current Quantity of Prduct
-         var incraesePrice = parseInt($price.val()); //Get Initial Price of Prduct
-         if (!isNaN(currentQty)) {
-             var finalqty = $('#qty').val(currentQty -1 ).val() ; //Quantity After Increasing
-             var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
-         }
-         $.ajax({
-             type: "POST",
-             data: {'productid':productid},
-             beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-             },
-             url: "{{url('reduce-product-qty')}}",
-             success: function () {
-                 location.reload();
-             }
-         });
-     });
-
-     function Addon(id){
-         $.ajax({
-             type: "GET",
-             data:{"id": id, "category": "addon"},
-             url: "{{url('cart')}}",
-             success: function (data) {
-                 location.reload();
-             }
-         });
-     }
-
-
-
-
-    $(document).ready(function() {
-        $('#changeDomain').on('click', function() {
-            $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
-            var newDomain = $('#clouduserdomain').val();
-            var currentDomain = "{!! \App\Model\Order\InstallationDetail::where('order_id', $id)->value('installation_path') !!}";
+            var finalAgtqty = $('#agtqty').val(currentAgtQty + 1).val();
+            var finalAgtprice = $('#agentprice').val(actualAgentPrice * finalAgtqty).val();
 
             $.ajax({
                 type: "POST",

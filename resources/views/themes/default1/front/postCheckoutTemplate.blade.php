@@ -62,12 +62,14 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 </tfoot>
 </table>
 <br>
+ @if($show)
 @if($downloadPermission['downloadPermission'] == 1 && $product->type != '4')
 
  <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>  Download the Latest Version here</a>
 @else
 
 @endif
+ @endif
 </section>
 </div>
 </div>

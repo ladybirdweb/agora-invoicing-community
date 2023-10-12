@@ -264,6 +264,7 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
+                    $show = false;
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
@@ -274,7 +275,7 @@ class CheckoutController extends InfoController
 
                     $orders = Order::where('invoice_id', $invoice->id)->get();
 
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber','show'))->render();
                     // }
                     \Cart::clear();
                     if (\Session::has('nothingLeft')) {
@@ -300,6 +301,7 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
+                    $show = true;
                     $true = false;
                     $control = new \App\Http\Controllers\Order\RenewController();
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
@@ -319,7 +321,7 @@ class CheckoutController extends InfoController
                     $orders = Order::where('invoice_id', $invoice->id)->get();
                     $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
 
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber','show'))->render();
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');

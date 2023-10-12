@@ -51,6 +51,10 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 <td><span class="woocommerce-Price-amount amount"> {{$invoice->number}}</span></td>
 </tr>
 <tr>
+ <th scope="row">Payment method:</th>
+ <td><span class="woocommerce-Price-amount amount"> {{Session::get('payment_method')}}</span></td>
+</tr>
+<tr>
 <tr>
 <th scope="row">Date:</th>
 <td>{!! $date !!}</td>

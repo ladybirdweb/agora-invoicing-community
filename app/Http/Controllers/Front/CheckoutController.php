@@ -11,6 +11,7 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
@@ -318,8 +319,9 @@ class CheckoutController extends InfoController
                         $true = true;
                     }
                     $this->checkoutAction($invoice, $true); //For free product generate invoice without payment
-                    $orders = Order::where('invoice_id', $invoice->id)->get();
-                    $orderNumber = Order::where('invoice_id', $invoice->id)->value('number');
+                    $order = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
+                    $orders = Order::where('id', $order)->get();
+                    $orderNumber = Order::where('id', $order)->value('number');
 
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', 'orders', 'orderNumber', 'show'))->render();
                     if (\Session::has('nothingLeft')) {

@@ -123,8 +123,6 @@ class OrderController extends BaseOrderController
 
         $count = count($query->get()->toArray());
 
-        $count = count($query->get()->toArray());
-
         return \DataTables::of($query)
             ->orderColumn('client', '-orders.created_at $1')
             ->orderColumn('product_name', 'orders.created_at $1')

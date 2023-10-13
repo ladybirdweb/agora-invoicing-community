@@ -23,15 +23,21 @@ class PromotionRequest extends Request
      */
     public function rules()
     {
-        return [
+        $rules = [
             'code' => 'required',
             'type' => 'required',
             'applied' => 'required',
-            'value' => ['nullable', 'numeric', 'between:1,100'],
             'uses' => 'required',
             'start' => 'required',
             'expiry' => 'required|after:start',
-
         ];
+        // If 'type' is 'percentage', add additional validation for 'value'
+        if ($this->input('type') === '1') {
+            $rules['value'] = 'required|numeric|between:1,100';
+        } else {
+            $rules['value'] = 'required|numeric';
+        }
+
+        return $rules;
     }
 }

@@ -59,11 +59,12 @@ Cron Setting
         
         <!-- /.box-header -->
        
-              {!! Form::open(['url' => 'cron-days', 'method' => 'PATCH','id'=>'Form']) !!}
+              {!! Form::open(['url' => 'cron-days', 'method' => 'PATCH','id' => 'cronForm']) !!}
               <?php 
                    $mailStatus = \App\Model\Common\StatusSetting::pluck('expiry_mail')->first();
                    $activityStatus =\App\Model\Common\StatusSetting::pluck('activity_log_delete')->first();
                    $Autorenewal_status = \App\Model\Common\StatusSetting::pluck('subs_expirymail')->first();
+                   $postExpiry_status = \App\Model\Common\StatusSetting::pluck('post_expirymail')->first();
                    $cloudStatus = \App\Model\Common\StatusSetting::pluck('cloud_mail_status')->first();
                   ?>
          <div class="card-header">
@@ -128,7 +129,7 @@ Cron Setting
               <label>{{ Lang::get('Subscription renewal reminder - Auto payment') }}</label>
               <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users before product expiry reminding them product will be renewed automatically. This email is send out only to those who have enabled auto renewal"></i>
 
-              @if ($mailStatus == 0)
+              @if ($Autorenewal_status == 0)
                   <select id="subdays" name="subexpiryday[]" class="form-control selectpicker" style="width: 100%; color: black;" disabled>
                       <option value="">{{ Lang::get('message.enable_mail_cron') }}</option>
                   </select>
@@ -166,7 +167,7 @@ Cron Setting
             <label>{{ Lang::get('Subscription expired') }}</label>
             <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger email which are sent out to users after product expiry reminding them to renew the product. This email is send out to all users using auto renewal or are using manual payment method. For self-hosted and cloud both"></i>
 
-            @if ($mailStatus == 0)
+            @if ($postExpiry_status == 0)
                 <select id="postdays" name="postsubexpiry_days[]" class="form-control selectpicker" style="width: 100%; color: black;" disabled>
                     <option value="">{{ Lang::get('message.enable_mail_cron') }}</option>
                 </select>
@@ -232,6 +233,63 @@ Cron Setting
     configureSelect2('#subdays');
     configureSelect2('#postdays');
   });
+</script>
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include jQuery Validation Plugin -->
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#cronForm').validate({
+        rules: {
+            'expiryday[]': {
+                required: true
+            },
+            'logdelday': {
+                required: true
+            },
+            'subexpiryday[]': { 
+                required: true
+            },
+            'cloud_days': {
+                required: true
+            },
+            'postsubexpiry_days[]': {
+                required: true
+            }
+        },
+        messages: {
+            'expiryday[]': {
+                required: "Please select at least one option."
+            },
+            'logdelday': {
+                required: "Please select an option."
+            },
+            'subexpiryday[]': {
+                required: "Please select at least one option."
+            },
+            'cloud_days': {
+                required: "Please select at least one option."
+            },
+            'postsubexpiry_days[]': {
+                required: "Please select at least one option."
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        }
+    });
+});
+
 </script>
 
 @stop

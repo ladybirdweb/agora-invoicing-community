@@ -56,7 +56,7 @@ User
             
             ?>
             @if($user->profile_pic != null)
-            <img class="img-circle" src="{{ asset('storage/common/images/user/' . $client->profile_pic) }}" alt="User Avatar" style="width: 100px;height: 100px;">
+            <img class="img-circle" src="{{ asset('storage/common/images/users/' . $client->profile_pic) }}" alt="User Avatar" style="width: 100px;height: 100px;">
             @else
             <img class="img-circle" src="{{ $client->profile_pic }}" alt="User Avatar" style="width: 100px;height: 100px;">
             @endif

@@ -258,9 +258,8 @@ class CartController extends BaseCartController
                 if (\Auth::user()) {
                     if ($userid == '') {
                         $country = \Auth::user()->country;
-                    }
-                    else{
-                        $country = \DB::table('users')->where('id',$userid)->value('country');
+                    } else {
+                        $country = \DB::table('users')->where('id', $userid)->value('country');
                     }
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }

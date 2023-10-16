@@ -10,9 +10,7 @@ use App\Http\Controllers\Order\RenewController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
@@ -751,7 +749,6 @@ class CloudExtraActivities extends Controller
                 $base_price_new = $base_price_new * $newAgents;
             }
 
-
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
                     $price = $base_price_new;
@@ -855,7 +852,6 @@ class CloudExtraActivities extends Controller
             $oldAgents = $request->get('oldAgents');
             $orderId = $request->get('orderId');
             $planId = Subscription::where('order_id', $orderId)->value('plan_id');
-
 
             $product_id = Plan::where('id', $planId)->pluck('product')->first();
 

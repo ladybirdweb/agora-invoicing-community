@@ -132,11 +132,10 @@ class CartController extends BaseCartController
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
             $actualPrice = $this->cost($product->id, $planid);
-            if(\Session::has('plan') && $product->can_modify_agent){
+            if (\Session::has('plan') && $product->can_modify_agent) {
                 $planid = \Session::get('plan');
                 $agtQty = $plan->where('id', $planid)->first()->planPrice->first()->no_of_agents;
-            }
-            else{
+            } else {
                 $agtQty = $plan->planPrice->first()->no_of_agents;
             }
             $agents = $agtQty != null ? $agtQty : 0;

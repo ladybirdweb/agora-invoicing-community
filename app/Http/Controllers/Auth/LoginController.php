@@ -262,5 +262,6 @@ class LoginController extends Controller
                 ],
             ]);
         }
+        Session::forget('toggleState');
     }
 }

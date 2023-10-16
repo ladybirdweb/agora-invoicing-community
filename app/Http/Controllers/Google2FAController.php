@@ -257,5 +257,6 @@ class Google2FAController extends Controller
                 ],
             ]);
         }
+        \Session::forget('toggleState');
     }
 }

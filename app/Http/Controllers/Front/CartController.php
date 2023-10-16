@@ -11,6 +11,7 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use App\User;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -255,7 +256,12 @@ class CartController extends BaseCartController
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 if (\Auth::user()) {
-                    $country = \Auth::user()->country;
+                    if($userid ==''){
+                        $country = \Auth::user()->country;
+                    }
+                    else{
+                        $country = User::where('id',$userid)->value('country');
+                    }
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 foreach ($plans as $plan) {

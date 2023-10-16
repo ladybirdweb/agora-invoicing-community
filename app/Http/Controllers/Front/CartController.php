@@ -243,7 +243,8 @@ class CartController extends BaseCartController
      *
      * @throws \Exception
      */
-    public function planCost($productid, $userid = '', $planid = '', $admin)
+
+    public function planCost($productid, $userid = '', $planid = '',$admin=false)
     {
         try {
             $product = Product::find($productid);

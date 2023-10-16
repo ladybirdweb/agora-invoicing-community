@@ -8,7 +8,7 @@ class Template extends Model
 {
     protected $table = 'templates';
 
-    protected $fillable = ['name', 'data', 'type', 'url'];
+    protected $fillable = ['name', 'data', 'type', 'url','reply_to'];
 
     public function type()
     {

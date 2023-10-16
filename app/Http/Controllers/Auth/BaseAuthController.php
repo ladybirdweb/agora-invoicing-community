@@ -188,6 +188,7 @@ class BaseAuthController extends Controller
                 'website_url' => $website_url,
                 'contact' => $contact['contact'],
                 'logo' => $contact['logo'],
+                'company_email' => $settings->company_email,
             ];
 
             $type = '';

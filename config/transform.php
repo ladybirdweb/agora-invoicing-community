@@ -30,6 +30,7 @@ return[
         'url' => '{{url}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
 
     ],
 
@@ -100,6 +101,8 @@ return[
         'contact_us' => '{{contact-us}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
+
 
     ],
 
@@ -135,6 +138,7 @@ return[
         'manager_code' => '{{manager_code}}',
         'manager_mobile' => '{{manager_mobile}}',
         'manager_skype' => '{{manager_skype}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'account_manager_email' => [

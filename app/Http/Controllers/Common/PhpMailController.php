@@ -11,6 +11,8 @@ use App\Model\Product\Subscription;
 use App\Payment_log;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use App\Model\Common\TemplateType;
+use App\Model\Common\Template;
 use Illuminate\Http\Request;
 
 class PhpMailController extends Controller
@@ -160,9 +162,17 @@ class PhpMailController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->from_name;
+            $temp_id = TemplateType::where('name',$type)->value('id');
+            $reply_email_from_db = Template::where('type',$temp_id)->value('reply_to');
+            $reply_to = null;
+            if (filter_var($reply_email_from_db, FILTER_VALIDATE_EMAIL)) {
+            $reply_to = $reply_email_from_db;
+            } elseif (isset($replace['reply_email']) && filter_var($replace['reply_email'], FILTER_VALIDATE_EMAIL)) {
+                $reply_to = $replace['reply_email'];
+            }
 
             $this->setMailConfig($settings);
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc,$reply_to) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -185,6 +195,10 @@ class PhpMailController extends Controller
                         $m->attach($file['path'], $options = []);
                     }
                 }
+                if (! empty($reply_to)) {
+                    $m->replyTo($reply_to, $fromname);
+                }
+            
             });
             \DB::table('email_log')->insert([
                 'date' => date('Y-m-d H:i:s'),

@@ -16,7 +16,7 @@
                                 <div class="alert alert-success">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <strong><i class="far fa-thumbs-up"></i>
-                                        <strong>Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></strong>
+                                        <strong>Your Payment has been received.</strong>
                                 </div>
 
                                 <section>

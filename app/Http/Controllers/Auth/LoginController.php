@@ -121,6 +121,9 @@ class LoginController extends Controller
 
             return redirect('2fa/validate');
         }
+
+        $this->convertCart();
+
         activity()->log('Logged In');
 
         return redirect($this->redirectPath());
@@ -214,6 +217,7 @@ class LoginController extends Controller
             return redirect('2fa/validate');
         }
         if (Auth::check()) {
+            $this->convertCart();
             return redirect($this->redirectPath());
         }
     }
@@ -235,6 +239,27 @@ class LoginController extends Controller
             return redirect()->back();
         } catch (\Exception $e) {
             Session::flash('error', 'Please Enter the Details');
+        }
+    }
+
+    private function convertCart(){
+        $contents = \Cart::getContent();
+        foreach ($contents as $content){
+            $cartcont = new \App\Http\Controllers\Front\CartController();
+            $price = $cartcont->planCost($content->id, \Auth::user()->id);
+            if(!empty($content->attributes->domain)){
+                $price = $price * $content->attributes->agents;
+            }
+            \Cart::update($content->id, [
+                'price'      => $price,
+                'attributes' => [
+                    'currency' => getCurrencyForClient(\Auth::user()->country),
+                    'symbol' => \App\Model\Payment\Currency::where('code',getCurrencyForClient(\Auth::user()->country))->value('symbol'),
+                    'agents' => $content->attributes->agents,
+                    'domain' => $content->attributes->domain,
+                ],
+            ]);
+
         }
     }
 }

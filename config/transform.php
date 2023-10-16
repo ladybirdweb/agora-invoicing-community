@@ -103,7 +103,6 @@ return[
         'contact' => '{{contact}}',
         'reply_email' => '{{reply_email}}',
 
-
     ],
 
     'subscription_going_to_end_mail' => [

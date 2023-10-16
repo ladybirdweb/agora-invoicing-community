@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('templates', 'reply_to')) {
-        Schema::table('templates', function (Blueprint $table) {
-            $table->string('reply_to')->nullable();
-        });
-    }
+            Schema::table('templates', function (Blueprint $table) {
+                $table->string('reply_to')->nullable();
+            });
+        }
     }
 
     /**

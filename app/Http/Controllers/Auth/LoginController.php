@@ -249,7 +249,7 @@ class LoginController extends Controller
         foreach ($contents as $content) {
             $cartcont = new \App\Http\Controllers\Front\CartController();
             $price = $cartcont->planCost($content->id, \Auth::user()->id);
-            if (! empty($content->attributes->domain)) {
+            if ($content->attributes->domain!="") {
                 $price = $price * $content->attributes->agents;
             }
             \Cart::update($content->id, [

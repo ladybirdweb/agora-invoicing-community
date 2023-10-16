@@ -3007,6 +3007,8 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'Database\\Seeders\\v3_0_3\\PricingTemplateSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_3\\TemplateTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
         'Database\\Seeders\\v3_0_3\\TemplateTypeTableSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_3/DatabaseSeeder.php',
+        'Database\\Seeders\\v3_0_5\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_5/DatabaseSeeder.php',
+        'Database\\Seeders\\v3_0_5\\ExpiryMailDaySeeder' => __DIR__ . '/../..' . '/database/seeders/v3_0_5/DatabaseSeeder.php',
         'DebugBar\\Bridge\\CacheCacheCollector' => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',
         'DebugBar\\Bridge\\DoctrineCollector' => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar/Bridge/DoctrineCollector.php',
         'DebugBar\\Bridge\\MonologCollector' => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar/Bridge/MonologCollector.php',

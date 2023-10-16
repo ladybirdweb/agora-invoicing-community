@@ -243,9 +243,7 @@ class CloudExtraActivities extends Controller
             \Session::forget('priceRemaining');
 
             if (is_null($planId)) {
-                $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
-                $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-                $planId = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                $planId = Subscription::where('order_id', $orderId)->value('plan_id');
             }
             $product_id = Plan::where('id', $planId)->pluck('product')->first();
             $planDays = Plan::where('id', $planId)->pluck('days')->first();
@@ -325,9 +323,7 @@ class CloudExtraActivities extends Controller
             \Session::forget('increase-decrease-days');
             \Session::forget('increase-decrease-days-dont-cloud');
 
-            $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
-            $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-            $planIdOld = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+            $planIdOld = Subscription::where('order_id', $orderId)->value('plan_id');
 
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
             $oldAgents = substr($oldAgents, 12, 16);
@@ -352,7 +348,7 @@ class CloudExtraActivities extends Controller
             $currencyNew = userCurrencyAndPrice('', $planNew);
             $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', $countryid)->value('add_price');
             if (! $base_price_new) {
-                $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', $countryid)->value('add_price') * $newAgents;
+                $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', 0)->value('add_price') * $newAgents;
             } else {
                 $base_price_new = $base_price_new * $newAgents;
             }
@@ -723,9 +719,8 @@ class CloudExtraActivities extends Controller
     {
         try {
             $discount = 0;
-            $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
-            $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-            $planIdOld = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+
+            $planIdOld = Subscription::where('order_id', $orderId)->value('plan_id');
 
             $ends_at = Subscription::where('order_id', $orderId)->value('ends_at');
             $oldAgents = substr($oldAgents, 12, 16);
@@ -751,10 +746,11 @@ class CloudExtraActivities extends Controller
             $currencyNew = userCurrencyAndPrice('', $planNew);
             $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', $countryid)->value('add_price');
             if (! $base_price_new) {
-                $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', $countryid)->value('add_price') * $newAgents;
+                $base_price_new = PlanPrice::where('plan_id', $planIdNew)->where('currency', $currencyNew['currency'])->where('country_id', 0)->value('add_price') * $newAgents;
             } else {
                 $base_price_new = $base_price_new * $newAgents;
             }
+
 
             if ($base_price_new > $base_priceOld) {
                 if (Carbon::now() >= $ends_at) {
@@ -858,9 +854,8 @@ class CloudExtraActivities extends Controller
             $newAgents = $request->get('number');
             $oldAgents = $request->get('oldAgents');
             $orderId = $request->get('orderId');
-            $invoice_ids = OrderInvoiceRelation::where('order_id', $orderId)->pluck('invoice_id')->toArray();
-            $invoice_id = Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-            $planId = InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+            $planId = Subscription::where('order_id', $orderId)->value('plan_id');
+
 
             $product_id = Plan::where('id', $planId)->pluck('product')->first();
 

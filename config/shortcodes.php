@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     '{{website_url}}' => 'The URL of the website',
     '{{name}}' => 'User\'s name',
@@ -30,6 +29,3 @@ return [
     '{{title}}' => 'Title information',
     '{{company_email}}' => 'Company email address',
 ];
-
-
-?>

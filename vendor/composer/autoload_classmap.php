@@ -1955,6 +1955,8 @@ return array(
     'Database\\Seeders\\v3_0_3\\PricingTemplateSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_3\\TemplateTableSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
     'Database\\Seeders\\v3_0_3\\TemplateTypeTableSeeder' => $baseDir . '/database/seeders/v3_0_3/DatabaseSeeder.php',
+    'Database\\Seeders\\v3_0_5\\DatabaseSeeder' => $baseDir . '/database/seeders/v3_0_5/DatabaseSeeder.php',
+    'Database\\Seeders\\v3_0_5\\ExpiryMailDaySeeder' => $baseDir . '/database/seeders/v3_0_5/DatabaseSeeder.php',
     'DebugBar\\Bridge\\CacheCacheCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',
     'DebugBar\\Bridge\\DoctrineCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/DoctrineCollector.php',
     'DebugBar\\Bridge\\MonologCollector' => $vendorDir . '/maximebf/debugbar/src/DebugBar/Bridge/MonologCollector.php',

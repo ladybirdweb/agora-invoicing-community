@@ -261,7 +261,7 @@ class CartController extends BaseCartController
                     } else {
                         $country = \DB::table('users')->where('id', $userid)->value('country');
                     }
-                    $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->first();
+                    $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('id');
 
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }

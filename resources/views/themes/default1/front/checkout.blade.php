@@ -150,7 +150,7 @@ $cartSubtotalWithoutCondition = 0;
                                             $price = $item->price;
                                         } else {
                                             $planid = \DB::table('plans')->where('product', $item->id)->value('id');
-                                            $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+                                            $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('id');
 
                                             $price = \DB::table('plan_prices')->where('plan_id', $planid)->where('currency', $item->attributes->currency)->where('country_id',$countryids)->value('add_price');
                                             if(!$price){

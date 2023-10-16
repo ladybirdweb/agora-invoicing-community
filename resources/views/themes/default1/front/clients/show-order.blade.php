@@ -700,9 +700,7 @@ $price = $order->price_override;
 
                     </div>
                         <?php
-                        $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
-                        $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-                        $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+                        $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
                         $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
                         $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
                         ?>
@@ -925,9 +923,8 @@ $price = $order->price_override;
                         });
                     }
 
-                    $invoice_ids = \App\Model\Order\OrderInvoiceRelation::where('order_id', $id)->pluck('invoice_id')->toArray();
-                    $invoice_id = \App\Model\Order\Invoice::whereIn('id', $invoice_ids)->latest()->value('id');
-                    $planIdOld = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice_id)->value('plan_id');
+
+                    $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
                     $planNameReal = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
                     ?>
                     <label class="mb-1" style="margin-left: 14px;">Current Plan: {{$planNameReal}}</label>

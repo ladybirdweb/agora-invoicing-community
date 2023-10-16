@@ -218,6 +218,7 @@ class LoginController extends Controller
         }
         if (Auth::check()) {
             $this->convertCart();
+
             return redirect($this->redirectPath());
         }
     }
@@ -242,24 +243,24 @@ class LoginController extends Controller
         }
     }
 
-    private function convertCart(){
+    private function convertCart()
+    {
         $contents = \Cart::getContent();
-        foreach ($contents as $content){
+        foreach ($contents as $content) {
             $cartcont = new \App\Http\Controllers\Front\CartController();
             $price = $cartcont->planCost($content->id, \Auth::user()->id);
-            if(!empty($content->attributes->domain)){
+            if (! empty($content->attributes->domain)) {
                 $price = $price * $content->attributes->agents;
             }
             \Cart::update($content->id, [
                 'price'      => $price,
                 'attributes' => [
                     'currency' => getCurrencyForClient(\Auth::user()->country),
-                    'symbol' => \App\Model\Payment\Currency::where('code',getCurrencyForClient(\Auth::user()->country))->value('symbol'),
+                    'symbol' => \App\Model\Payment\Currency::where('code', getCurrencyForClient(\Auth::user()->country))->value('symbol'),
                     'agents' => $content->attributes->agents,
                     'domain' => $content->attributes->domain,
                 ],
             ]);
-
         }
     }
 }

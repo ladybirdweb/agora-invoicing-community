@@ -256,11 +256,10 @@ class CartController extends BaseCartController
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 if (\Auth::user()) {
-                    if($userid ==''){
+                    if ($userid == '') {
                         $country = \Auth::user()->country;
-                    }
-                    else{
-                        $country = User::where('id',$userid)->value('country');
+                    } else {
+                        $country = User::where('id', $userid)->value('country');
                     }
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }

@@ -313,6 +313,7 @@ class AuthController extends BaseAuthController
             'manager_skype'      => $manager->skype,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email,
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);

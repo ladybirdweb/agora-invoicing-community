@@ -3,6 +3,27 @@
 Edit Templates
 @stop
 @section('content-header')
+ <style>
+        .shortcode-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .shortcode-container {
+            margin-top: 10px;
+        }
+
+        .shortcode {
+            margin-right: 20px;
+        }
+
+        .form-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
     <div class="col-sm-6">
         <h1>Edit Template</h1>
     </div>
@@ -17,6 +38,32 @@ Edit Templates
 @stop
 
 @section('content')
+
+<div class="card card-secondary card-outline">
+    <!-- Card Header with explanatory text -->
+    <div class="card-header">
+        <h3 class="card-title">Shortcode Information</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Card Body with shortcode section -->
+    <div class="card-body">
+        <p>Below are the available shortcodes that you can use in your template:</p>
+        <div class="shortcode-box">
+            <h4>Available Shortcodes:</h4>
+            <div class="shortcode-container">
+                @foreach ($codes as $code)
+                    <span class="shortcode" data-toggle="tooltip" data-placement="top" title="{{ $tooltips[$code] }}">{{ $code }}</span>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="card card-secondary card-outline">
 
 
@@ -44,6 +91,13 @@ Edit Templates
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.template-types'),['class'=>'required']) !!}
                         {!! Form::select('type',[''=>'Select','Type'=>$type],null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                     <div class="col-md-6 form-group {{ $errors->has('reply_to') ? 'has-error' : '' }}">
+                        <!-- first name -->
+                        {!! Form::label('reply_to',Lang::get('Reply to'),['class'=>'required']) !!}
+                        {!! Form::text('reply_to',null,['class' => 'form-control']) !!}
 
                     </div>
                     
@@ -111,5 +165,14 @@ Edit Templates
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'setting';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
+<script>
+    $(document).ready(function() {
+        $('.shortcode').each(function() {
+            var tooltipText = $(this).data('tooltip');
+            $(this).attr('title', tooltipText);
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>
 @stop

@@ -110,16 +110,26 @@ class TemplateController extends Controller
         try {
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
+            $shortcodes = config('transform');
+            $tooltips = config('shortcodes');
+
 
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/'.$i;
             $template = $this->template->where('id', $id)->first();
             $type = $this->type->pluck('name', 'id')->toArray();
+            $templateType = TemplateType::find($template->type);
+            $shortcodeName = $templateType->name;
+            $codes = null;
+            if (array_key_exists($shortcodeName, $shortcodes)) {
+            $codes = $shortcodes[$shortcodeName];
+            }
 
-            return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+
+            return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl','codes','tooltips'));
+            } catch (\Exception $ex) {
+                return redirect()->back()->with('fails', $ex->getMessage());
+            }
     }
 
     public function update($id, Request $request)

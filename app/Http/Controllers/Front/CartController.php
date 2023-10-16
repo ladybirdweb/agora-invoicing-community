@@ -256,23 +256,19 @@ class CartController extends BaseCartController
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 if (\Auth::user()) {
-
-                    if($userid==''){
+                    if ($userid == '') {
                         $country = \Auth::user()->country;
-                    }
-                    else{
-                        $country = \DB::table('users')->where('id',$userid)->value('country');
+                    } else {
+                        $country = \DB::table('users')->where('id', $userid)->value('country');
                     }
                     $currencyAndSymbol = getCurrencyForClient($country);
-
                 }
 
                 foreach ($plans as $plan) {
                     $currencyQuery = Plan::where('product', $productid);
-                    if($userid!=""){
+                    if ($userid != '') {
                         $currency = userCurrencyAndPrice($userid, $plan);
-                    }
-                    else {
+                    } else {
                         $currency = userCurrencyAndPrice('', $plan);
                     }
                     if ($currency['currency'] == $currencyAndSymbol && ! $admin) {
@@ -287,7 +283,7 @@ class CartController extends BaseCartController
                             $cost = $daysQuery->offer_price ? $daysQuery->add_price - (($daysQuery->offer_price / 100) * $daysQuery->add_price) : $daysQuery->add_price;
                         }
                     } else {
-                        if($currency['currency'] == $currencyAndSymbol){
+                        if ($currency['currency'] == $currencyAndSymbol) {
                             $id = $planid;
                             $daysQuery = PlanPrice::where('plan_id', $planid)->where('currency', $currency)->first();
                             $cost = $daysQuery->offer_price ? $daysQuery->add_price - (($daysQuery->offer_price / 100) * $daysQuery->add_price) : $daysQuery->add_price;

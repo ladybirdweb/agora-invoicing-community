@@ -253,6 +253,7 @@ class CartController extends BaseCartController
                 if (! \Auth::user()) {//When user is not logged in
                     $location = getLocation();
                     $country = findCountryByGeoip($location['iso_code']);
+                    $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('country_id');
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 if (\Auth::user()) {

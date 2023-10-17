@@ -919,6 +919,7 @@ class CloudExtraActivities extends Controller
         if (! $this->checkDomain($request->input('domain'))) {
             return response(['status' => false, 'message' => trans('message.domain_taken')]);
         }
+        \Session::forget('plan_id');
         (new CartController())->cart($request);
 
         return response()->json(['redirectTo' => env('APP_URL').'/show/cart']);

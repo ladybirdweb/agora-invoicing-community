@@ -419,7 +419,7 @@ class CronController extends BaseCronController
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;
                 $order = \App\Model\Order\Order::find($value->order_id);
-                if ($order) {
+                if ($order && $order->order_status == 'executed') {
                     $order = $this->getOrderById($value->order_id);
                     $invoice = $this->getInvoiceByOrderId($value->order_id);
                     $item = $this->getInvoiceItemByInvoiceId($invoice->id);

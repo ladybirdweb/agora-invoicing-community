@@ -289,6 +289,8 @@ class CronController extends BaseCronController
             $endDate = Carbon::now()->addDays($day);
 
             $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+                ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
+                ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '0')
                 ->get()
                 ->toArray(); // Convert the collection to an array
@@ -318,6 +320,8 @@ class CronController extends BaseCronController
             $endDate = Carbon::now()->addDays($day);
 
             $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+                ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
+                ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '1')
                 ->get()
                 ->toArray(); // Convert the collection to an array
@@ -350,6 +354,8 @@ class CronController extends BaseCronController
             $startDate = Carbon::now()->subDays($day)->toDateString(); // Use $day here
 
             $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+                ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
+                ->where('orders.order_status', 'executed')
                 ->get()
                 ->toArray();
 
@@ -419,7 +425,7 @@ class CronController extends BaseCronController
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;
                 $order = \App\Model\Order\Order::find($value->order_id);
-                if ($order && $order->order_status == 'executed') {
+                if ($order) {
                     $order = $this->getOrderById($value->order_id);
                     $invoice = $this->getInvoiceByOrderId($value->order_id);
                     $item = $this->getInvoiceItemByInvoiceId($invoice->id);

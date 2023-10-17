@@ -529,7 +529,7 @@ class PageController extends Controller
                     $trasform[$product['id']]['feature'] = $product['description'];
 
                     if ($product['type'] == 4) {
-                        $trasform[$product['id']]['subscription'] = "";
+                        $trasform[$product['id']]['subscription'] = '';
                         if ($product['add_to_contact'] != 1) {
                             $prod_id = $product['id'];
                             $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? '<button class="btn btn-primary btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$prod_id.'">

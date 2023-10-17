@@ -286,7 +286,7 @@ class CheckoutController extends InfoController
                         \Session::forget('nothingLeft');
                     }
                     if (! empty($invoice->cloud_domain)) {
-                        $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product',[117,119])->value('number');
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', [117, 119])->value('number');
                         (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
                     }
                     $this->performCloudActions($invoice);
@@ -335,7 +335,7 @@ class CheckoutController extends InfoController
                         $control->successRenew($invoice, true);
                     }
                     if (! empty($invoice->cloud_domain)) {
-                        $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product',[117,119])->value('number');
+                        $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', [117, 119])->value('number');
                         (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
                     }
                     $this->performCloudActions($invoice);

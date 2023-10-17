@@ -419,14 +419,14 @@ class CronController extends BaseCronController
                 $user = $this->getUserById($userid);
                 $end = $value->update_ends_at;
                 $order = \App\Model\Order\Order::find($value->order_id);
-                if($order){
-                $order = $this->getOrderById($value->order_id);
-                $invoice = $this->getInvoiceByOrderId($value->order_id);
-                $item = $this->getInvoiceItemByInvoiceId($invoice->id);
-                $product = $item->product_name;
-                if (emailSendingStatus()) {
-                    $this->Expiredsub_Mail($user, $end, $product, $order, $value->id);
-                }
+                if ($order) {
+                    $order = $this->getOrderById($value->order_id);
+                    $invoice = $this->getInvoiceByOrderId($value->order_id);
+                    $item = $this->getInvoiceItemByInvoiceId($invoice->id);
+                    $product = $item->product_name;
+                    if (emailSendingStatus()) {
+                        $this->Expiredsub_Mail($user, $end, $product, $order, $value->id);
+                    }
                 }
             }
         }

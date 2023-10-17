@@ -148,7 +148,7 @@ class ExtendedBaseProductController extends Controller
                 </div>";
             }
             if (in_array($product->id, [117, 119])) {
-                $field .= '<div class="col col-4">
+                $field .= '<div>
     <div class="form-group">
         <label class="required">'./* @scrutinizer ignore-type */ \Lang::get('message.cloud_domain').'</label>
         <div class="input-group">

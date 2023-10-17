@@ -238,7 +238,6 @@ class TenantController extends Controller
 
             $result = json_decode($response);
             if ($result->status == 'fails') {
-
                 if ($result->message == 'Domain already taken. Please select a different domain') {
                     $newRandomDomain = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 28);
 

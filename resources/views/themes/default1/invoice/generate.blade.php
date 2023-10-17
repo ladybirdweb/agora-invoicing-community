@@ -157,7 +157,11 @@ Create Invoice
                 var agents = data['agents'];
                 //console.log(field);
                 $("#price").val(price);
-                $("#fields").replaceWith(field);
+                const elementFields = document.getElementById('fields');
+                // Check if the 'fields' element is now empty
+                if (elementFields) {
+                    elementFields.innerHTML = field
+                }
                 const element1 = document.getElementById('qty')
                 if (element1) {
                     element1.innerHTML = qty

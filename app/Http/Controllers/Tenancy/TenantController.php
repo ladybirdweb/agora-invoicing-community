@@ -238,12 +238,16 @@ class TenantController extends Controller
 
             $result = json_decode($response);
             if ($result->status == 'fails') {
+
+                if ($result->message == 'Domain already taken. Please select a different domain') {
+                    $newRandomDomain = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 28);
+
+                    return $this->createTenantWithRandomDomain($newRandomDomain, $request);
+                }
+
                 $this->prepareMessages($faveoCloud, $userEmail);
 
                 $this->googleChat($result->message);
-                if ($result->message == 'Domain already taken. Please select a different domain') {
-                    return ['status' => 'false', 'message' => $result->message];
-                }
 
                 return ['status' => 'false', 'message' => trans('message.something_bad')];
             } elseif ($result->status == 'validationFailure') {
@@ -504,5 +508,14 @@ class TenantController extends Controller
             'headers' => $message_headers,
             'body' => json_encode($message),
         ]);
+    }
+
+    private function createTenantWithRandomDomain($randomDomain, Request $request)
+    {
+        // Modify the request with the new random domain
+        $request->merge(['domain' => $randomDomain]);
+
+        // Call the createTenant function with the modified request
+        return $this->createTenant($request);
     }
 }

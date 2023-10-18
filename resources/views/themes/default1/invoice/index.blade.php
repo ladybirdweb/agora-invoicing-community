@@ -3,6 +3,29 @@
 Invoices
 @stop
 @section('content-header')
+<style type="text/css">
+#loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+}
+
+#loader i.fa-spinner {
+    font-size: 48px;
+}
+
+#invoice-table {
+    position: relative;
+    z-index: 1;
+}
+</style>
     <div class="col-sm-6">
         <h1>All Invoices</h1>
     </div>
@@ -137,7 +160,11 @@ Invoices
         <div class="row">
 
             <div class="col-md-12">
-  
+
+                <div id="loader" style="display: none;">
+                    <i class="fa fa-spinner fa-spin"></i> 
+                </div>
+                  
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>

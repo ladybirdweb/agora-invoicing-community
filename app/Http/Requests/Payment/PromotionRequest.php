@@ -43,25 +43,25 @@ class PromotionRequest extends Request
 
     public function messages()
     {
-    return [
-        'code.required' => 'The coupon code field is required.',
-        'code.string' => 'The coupon code must be a string.',
-        'code.max' => 'The coupon code must not exceed 255 characters.',
-        'type.required' => 'The type field is required.',
-        'type.in' => 'Invalid type. Allowed values are: percentage, other_type.',
-        'applied.required' => 'The applied for a product field is required.',
-        'applied.date' => 'The applied for a product field must be a valid date.',
-        'uses.required' => 'The uses field is required.',
-        'uses.numeric' => 'The uses field must be a number.',
-        'uses.min' => 'The uses field must be at least :min.',
-        'start.required' => 'The start field is required.',
-        'start.date' => 'The start field must be a valid date.',
-        'expiry.required' => 'The expiry field is required.',
-        'expiry.date' => 'The expiry field must be a valid date.',
-        'expiry.after' => 'The expiry date must be after the start date.',
-        'value.required' => 'The discount value field is required.',
-        'value.numeric' => 'The discount value field must be a number.',
-        'value.between' => 'The discount value field must be between :min and :max if the type is percentage.',
-    ];
-}
+        return [
+            'code.required' => 'The coupon code field is required.',
+            'code.string' => 'The coupon code must be a string.',
+            'code.max' => 'The coupon code must not exceed 255 characters.',
+            'type.required' => 'The type field is required.',
+            'type.in' => 'Invalid type. Allowed values are: percentage, other_type.',
+            'applied.required' => 'The applied for a product field is required.',
+            'applied.date' => 'The applied for a product field must be a valid date.',
+            'uses.required' => 'The uses field is required.',
+            'uses.numeric' => 'The uses field must be a number.',
+            'uses.min' => 'The uses field must be at least :min.',
+            'start.required' => 'The start field is required.',
+            'start.date' => 'The start field must be a valid date.',
+            'expiry.required' => 'The expiry field is required.',
+            'expiry.date' => 'The expiry field must be a valid date.',
+            'expiry.after' => 'The expiry date must be after the start date.',
+            'value.required' => 'The discount value field is required.',
+            'value.numeric' => 'The discount value field must be a number.',
+            'value.between' => 'The discount value field must be between :min and :max if the type is percentage.',
+        ];
+    }
 }

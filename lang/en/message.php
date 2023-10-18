@@ -736,4 +736,5 @@ return [
     'change_agents_failed' => 'Oopsie daisy! While you were tweaking your agents, it looks like something got tangled up in the cloud server. No worries though – our awesome team is already on the case to fix things up!',
     'agent_reduce' => "Oops! You can't reduce the number of agents on this plan at the moment. It looks like you have some active agents in your account. We recommend deactivating any extra agents before trying to adjust your agent count in the plan.",
     'not_allowed_domain' => 'Oops! It seems like you entered an invalid domain format that is not allowed on the internet. Please enter a valid domain name to continue.',
+    'agent_zero' => 'It looks like you\'ve selected zero agents. Please choose a valid number of agents to continue.',
 ];

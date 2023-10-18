@@ -165,6 +165,9 @@ class CloudExtraActivities extends Controller
     {
         try {
             $newAgents = $request->newAgents;
+            if(empty($newAgents)){
+                return errorResponse(trans('message.agent_zero'));
+            }
             $orderId = $request->input('orderId');
             $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
             if (empty($installation_path)) {
@@ -849,6 +852,7 @@ class CloudExtraActivities extends Controller
     {
         try {
             $newAgents = $request->get('number');
+
             $oldAgents = $request->get('oldAgents');
             $orderId = $request->get('orderId');
             $planId = Subscription::where('order_id', $orderId)->value('plan_id');
@@ -863,8 +867,12 @@ class CloudExtraActivities extends Controller
             $countryid = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('country_id');
 
             $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->where('country_id', $countryid)->value('add_price');
+
             if (! $base_price) {
                 $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->where('country_id', 0)->value('add_price');
+            }
+            if(empty($newAgents)){
+                return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> 0, 'priceToPay'=>0];
             }
             if ($newAgents > $oldAgents) {
                 if (Carbon::now() >= $ends_at) {

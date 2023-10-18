@@ -178,6 +178,14 @@
                                      <?php
                                     $invoice = \DB::table('invoices')->where('id',$item->invoice_id)->first();
                                     ?>
+
+                                     @if($invoice->credits)
+                                         <tr>
+                                             <th>Discount</th>
+                                             <td>{{currencyFormat($invoice->credits,$code=$symbol)}} (Credits)</td>
+                                         </tr>
+                                     @endif
+
                                     @if($invoice->discount)
                                 <tr>
                                     <th>Discount</th>

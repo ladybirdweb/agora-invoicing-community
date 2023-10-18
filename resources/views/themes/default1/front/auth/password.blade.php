@@ -19,7 +19,12 @@ main
 @section('content')
 <div class="row">
     <div class="col-md-12">
-
+        <div id="errorMessage" class="alert alert-danger alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="errorMessageText"></span>
+        </div>
         <div class="featured-boxes">
          
             <div class="row">
@@ -183,20 +188,13 @@ main
                                             $("#resetmail").html("Send Email");
                                            }
                                         },
-                                        error: function (ex) {
-                                       var myJSON = JSON.parse(ex.responseText);
-                                                var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><ul>';
-                                               
-                                         $("#resetmail").html("Send Email");
-                                         html += '<li>' + myJSON.message + '</li>'
-
-                                            html += '</ul></div>';
-                                          
-                                            $('#errorMessage').show();
-                                             document.getElementById('errorMessage').innerHTML = html;
-                                           
-                                           
-                                        }
+                                     error: function(ex) {
+                                        var myJSON = JSON.parse(ex.responseText);
+                                        var errorMessage = myJSON.result && myJSON.result.length > 0 ? myJSON.result[0] : "An error occurred.";
+                                        $('#errorMessageText').text(errorMessage);
+                                        $('#errorMessage').show();
+                                        $("#resetmail").html("Send Email");
+                                    }
                                     });
                                   }
                                   else{

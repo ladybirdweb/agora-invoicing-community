@@ -446,6 +446,13 @@ User
                                         "sSearch"    : "Search: ",
                                         "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                     },
+                                     columnDefs: [
+                                    {
+                                        targets: 'no-sort',
+                                        orderable: false,
+                                        order: []
+                                    }
+                                    ],
                         
                                     columns: [
                                         {data: 'checkbox', name: 'checkbox'},

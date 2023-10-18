@@ -18,7 +18,26 @@ User
     .btn-xs{
         padding:.300rem!important;
     }
- 
+    #loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); 
+    z-index: 9999;
+}
+
+#loader i.fa-spinner {
+    font-size: 48px; 
+}
+
+#invoice-table {
+    position: relative;
+    z-index: 1;
 }
 </style>
     <div class="col-sm-6">
@@ -140,6 +159,9 @@ User
                         <!--------------------Invoice detail tab starts here-------------------------------->
 
                         <div class="tab-pane text-left fade show active" id="activity" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
+                              <div id="loader" style="display: none;">
+                                <i class="fa fa-spinner fa-spin"></i> 
+                            </div>
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>

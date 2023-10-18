@@ -165,7 +165,7 @@ class CloudExtraActivities extends Controller
     {
         try {
             $newAgents = $request->newAgents;
-            if(empty($newAgents)){
+            if (empty($newAgents)) {
                 return errorResponse(trans('message.agent_zero'));
             }
             $orderId = $request->input('orderId');
@@ -871,7 +871,7 @@ class CloudExtraActivities extends Controller
             if (! $base_price) {
                 $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->where('country_id', 0)->value('add_price');
             }
-            if(empty($newAgents)){
+            if (empty($newAgents)) {
                 return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> 0, 'priceToPay'=>0];
             }
             if ($newAgents > $oldAgents) {

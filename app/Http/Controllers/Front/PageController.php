@@ -302,7 +302,7 @@ class PageController extends Controller
                             $currency = userCurrencyAndPrice('', $plan);
                             $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
                             $planDetails = userCurrencyAndPrice('', $plan);
-                            $prices[] = ($product->status)?round($planDetails['plan']->add_price /12):$planDetails['plan']->add_price;
+                            $prices[] = ($product->status) ? round($planDetails['plan']->add_price / 12) : $planDetails['plan']->add_price;
                             $prices[] .= $planDetails['symbol'];
                             $prices[] .= $planDetails['currency'];
                         }
@@ -667,7 +667,7 @@ class PageController extends Controller
             foreach ($plans as $plan) {
                 if ($plan->days == 365 || $plan->days == 366) {
                     $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = ($product->status)?round($planDetails['plan']->add_price /12):$planDetails['plan']->add_price;
+                    $prices[] = ($product->status) ? round($planDetails['plan']->add_price / 12) : $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 } elseif (! $product->status && $product->type != '4') {

@@ -162,7 +162,7 @@ $days = $pay->where('product','117')->value('days');
                                     @if($set->phone != NULL)
                                         <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap"><i class="fas fa-phone"></i>
-                                                        <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
+                                                        <a style="color: inherit" href="tel:{{$set->phone}}">+{{$set->phone_code}} {{$set->phone}}</a>
                                                     </span>
                                         </li>
                                     @endif

@@ -72,7 +72,7 @@ Edit Coupon
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}&nbsp;&nbsp;<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter the discount amount here"></i></b></td>
                         <td>
                             <div class="form-group col-lg-6 {{ $errors->has('value') ? 'has-error' : '' }}">
 
@@ -86,7 +86,7 @@ Edit Coupon
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!}&nbsp;&nbsp;<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter here how many times that coupon can be used"></i></b></td>
                         <td>
                             <div class="form-group col-lg-6{{ $errors->has('uses') ? 'has-error' : '' }}">
 
@@ -217,6 +217,11 @@ Edit Coupon
     $('#endDate').datetimepicker({
         format: 'L'
     });
+
+    $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
 
 </script>
 @stop

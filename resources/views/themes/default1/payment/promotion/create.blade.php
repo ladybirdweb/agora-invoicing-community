@@ -239,5 +239,12 @@ Create Coupon
         format: 'L'
     });
 
+    $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+
 </script>
+
+
 @stop

@@ -302,7 +302,7 @@ class PageController extends Controller
                             $currency = userCurrencyAndPrice('', $plan);
                             $offerprice = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('offer_price');
                             $planDetails = userCurrencyAndPrice('', $plan);
-                            $prices[] = $planDetails['plan']->add_price;
+                            $prices[] = round($planDetails['plan']->add_price /12);
                             $prices[] .= $planDetails['symbol'];
                             $prices[] .= $planDetails['currency'];
                         }
@@ -667,7 +667,7 @@ class PageController extends Controller
             foreach ($plans as $plan) {
                 if ($plan->days == 365 || $plan->days == 366) {
                     $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] = round($planDetails['plan']->add_price /12);
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 } elseif (! $product->status && $product->type != '4') {
@@ -711,7 +711,7 @@ class PageController extends Controller
                         if ($description->price_description == 'Free') {
                             $priceDescription = 'free';
                         } else {
-                            $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per month';
+                            $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agent</strong>' : 'per month';
                         }
 
                         // Break the loop if we find a plan with 30 or 31 days
@@ -758,7 +758,7 @@ class PageController extends Controller
                             $priceDescription = 'free';
                         } else {
                             if ($product->status) {
-                                $priceDescription = $description->no_of_agents ? 'per year for<strong>'.' '.$description->no_of_agents.' '.'agents</strong>' : 'per year';
+                                $priceDescription = $description->no_of_agents ? 'per month for<strong>'.' '.$description->no_of_agents.' '.'agent</strong>' : 'per month';
                             } else {
                                 $priceDescription = $description->price_description;
                             }

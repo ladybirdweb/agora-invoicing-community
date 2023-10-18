@@ -16,7 +16,7 @@ class Invoice extends BaseModel
     protected $table = 'invoices';
 
     protected $fillable = ['user_id', 'number', 'date', 'coupon_code', 'discount',
-        'grand_total', 'currency', 'status', 'description', 'is_renewed', 'processing_fee', 'billing_pay', 'cloud_domain'];
+        'grand_total', 'currency', 'status', 'description', 'is_renewed', 'processing_fee', 'billing_pay', 'cloud_domain','credits'];
 
     protected $casts = [
         'date' => 'datetime',

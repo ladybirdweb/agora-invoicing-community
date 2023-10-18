@@ -173,6 +173,12 @@ active
                                  <th>Subtotal</th>
                                     <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                 </tr>
+                                    @if($invoice->credits)
+                                        <tr>
+                                            <th>Discount</th>
+                                            <td>{{currencyFormat($invoice->credits,$code=$symbol)}} (Credits)</td>
+                                        </tr>
+                                    @endif
                                 @if($invoice->discount)
                                 <tr>
                                     <th>Discount</th>

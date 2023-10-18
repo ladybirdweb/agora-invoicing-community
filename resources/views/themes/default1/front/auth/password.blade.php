@@ -19,7 +19,7 @@ main
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div id="errorMessage" class="alert alert-danger alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
+        <div id="errorMessage" class="alert alert-success alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -176,6 +176,9 @@ main
                                             $('#alertMessage').html(result);
                                             // $('#alertMessage2').html(result);
                                             $("#resetmail").html("Send Email");
+                                             setTimeout(function() {
+                                            location.reload(true);
+                                        }, 2000);
                                           
                                               // response.success("Success");
                                            }  else {
@@ -186,6 +189,9 @@ main
                                             $('#alertMessage').html(result);
                                             // $('#alertMessage2').html(result);
                                             $("#resetmail").html("Send Email");
+                                             setTimeout(function() {
+                                            location.reload(true);
+                                        }, 2000);
                                            }
                                         },
                                      error: function(ex) {
@@ -194,6 +200,9 @@ main
                                         $('#errorMessageText').text(errorMessage);
                                         $('#errorMessage').show();
                                         $("#resetmail").html("Send Email");
+                                         setTimeout(function() {
+                                            location.reload(true);
+                                        }, 2000);
                                     }
                                     });
                                   }

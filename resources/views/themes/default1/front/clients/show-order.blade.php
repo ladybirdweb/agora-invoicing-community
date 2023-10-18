@@ -338,8 +338,8 @@ $price = $order->price_override;
                                 ?>
                          @if(!empty($terminatedOrderId))
                                 <p class="order-links">
-                                    This order <b>{{$order->number}}</b>
-                                    has been generated because this order was terminated: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a>.
+                                    The Order <b>{{$order->number}}</b>
+                                    has been generated because the order: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a> was terminated.
                                 </p>
                          @endif
 

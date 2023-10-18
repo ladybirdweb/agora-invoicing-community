@@ -667,11 +667,7 @@ class PageController extends Controller
             foreach ($plans as $plan) {
                 if ($plan->days == 365 || $plan->days == 366) {
                     $planDetails = userCurrencyAndPrice('', $plan);
-<<<<<<< HEAD
-                    $prices[] = round($planDetails['plan']->add_price / 12);
-=======
                     $prices[] = ($product->status)?round($planDetails['plan']->add_price /12):$planDetails['plan']->add_price;
->>>>>>> af320baf7 (year month)
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 } elseif (! $product->status && $product->type != '4') {

@@ -166,6 +166,14 @@ class AdminOrderInvoiceController extends Controller
                             if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
                                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($installedPath);
                             }
+                            if($model->order_status =='Terminated'){
+                                $badge = 'badge';
+
+                                $orderLink= '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>'.'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has been Terminated">
+
+                         </label>
+            Terminated</span>';
+                            }
 
                             return $orderLink;
                         })

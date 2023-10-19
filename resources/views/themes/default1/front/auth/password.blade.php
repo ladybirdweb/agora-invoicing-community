@@ -178,7 +178,7 @@ main
                                             $("#resetmail").html("Send Email");
                                              setTimeout(function() {
                                             location.reload(true);
-                                        }, 2000);
+                                        }, 10000);
                                           
                                               // response.success("Success");
                                            }  else {
@@ -191,7 +191,7 @@ main
                                             $("#resetmail").html("Send Email");
                                              setTimeout(function() {
                                             location.reload(true);
-                                        }, 2000);
+                                        }, 10000);
                                            }
                                         },
                                      error: function(ex) {
@@ -202,7 +202,7 @@ main
                                         $("#resetmail").html("Send Email");
                                          setTimeout(function() {
                                             location.reload(true);
-                                        }, 2000);
+                                        }, 10000);
                                     }
                                     });
                                   }

@@ -307,6 +307,8 @@ class TenantController extends Controller
                         'logo' => $contact['logo'],
                         'title' => $settings->title,
                         'company_email' => $settings->company_email,
+                        'reply_email' => $settings->company_email,
+
                     ];
 
                     $this->prepareMessages($faveoCloud, $userEmail, true);

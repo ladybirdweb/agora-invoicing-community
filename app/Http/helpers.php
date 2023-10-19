@@ -576,12 +576,19 @@ function getContactData()
     $countryCode = Country::where('country_code_char2', $setting->country)->value('phonecode');
     $logo = '<img style="max-width: 20%;height: auto;" src="'.asset('storage/images/'.$setting->logo).'" />';
     $billingContact = '
-    <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-        <p style="line-height: 20px;">'.$setting->company.'<br />
-        <a class="moz-txt-link-abbreviated" href="mailto:'.$setting->company_email.'">'.$setting->company_email.'</a><br />
-        <a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />
-        Tel: '.'+'.$countryCode.' '.$setting->phone.'</p>
-    </td>';
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-family: Arial, sans-serif; font-size: 11px; color: #333; padding-left: 25px;">
+            <tr>
+            <td style="color: #333; font-family: Arial,sans-serif; font-size: 12px; font-weight: bold; padding-bottom: 0;">BILLING CONTACT</td>
+            </tr>
+        <tr>
+            <td valign="top">
+                <p style="line-height: 20px;">'.$setting->company.'<br />
+                Email: <a href="mailto:'.$setting->company_email.'">'.$setting->company_email.'</a><br />
+                Website: <a href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />
+                Tel: +' . $countryCode . ' ' . $setting->phone . '</p>
+            </td>
+        </tr>
+    </table>';
 
     return ['logo' => $logo, 'contact' => $billingContact];
 }

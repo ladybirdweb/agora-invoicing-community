@@ -493,7 +493,7 @@ class ClientController extends AdvanceSearchController
             $website_url = url('/');
             $replace = ['name' => $user['first_name'].' '.$user['last_name'],
                 'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, 'contact' => $contact['contact'],
-                'logo' => $contact['logo'], ];
+                'logo' => $contact['logo'],'reply_email' => $setting->company_email, ];
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();

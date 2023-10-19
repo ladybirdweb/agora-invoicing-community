@@ -26,7 +26,6 @@ return[
         'website_url' => '{{website_url}}',
         'name' => '{{name}}',
         'username' => '{{username}}',
-        'password' => '{{password}}',
         'url' => '{{url}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
@@ -50,6 +49,7 @@ return[
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
         'orderHeading' => '{{orderHeading}}',
+        'reply_email' => '{{reply_email}}',
 
     ],
 
@@ -63,19 +63,9 @@ return[
         'url' => '{{url}}',
         'serialkeyurl' => '{{serialkeyur}}',
         'knowledge_base' => '{{knowledge_base}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
-    'cloud_order' => [
-        'name' => '{{name}}',
-        'downloadurl' => '{{downloadurl}}',
-        'invoiceurl' => '{{invoiceurl}}',
-        'product' => '{{product}}',
-        'number' => '{{number}}',
-        'expiry' => '{{expiry}}',
-        'url' => '{{url}}',
-        'serialkeyurl' => '{{serialkeyur}}',
-        'knowledge_base' => '{{knowledge_base}}',
-    ],
 
     /*
      * This is for invoice mail content
@@ -90,6 +80,7 @@ return[
         'currency' => '{{currency}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     /*
@@ -115,6 +106,7 @@ return[
         'contact' => '{{contact}}',
         'product_type' => '{{product_type}}',
         'deletionDate' => '{{deletionDate}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'subscription_over_mail' => [
@@ -127,6 +119,7 @@ return[
         'contact' => '{{contact}}',
         'product_type' => '{{product_type}}',
         'deletionDate' => '{{deletionDate}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'sales_manager_email' => [
@@ -148,6 +141,7 @@ return[
         'manager_code' => '{{manager_code}}',
         'manager_mobile' => '{{manager_mobile}}',
         'manager_skype' => '{{manager_skype}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'auto_subscription_going_to_end' => [
@@ -160,6 +154,7 @@ return[
         'renewPrice' => '{{renewPrice}}',
         'product_type' => '{{product_type}}',
         'deletionDate' => '{{deletionDate}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'payment_failed' => [
@@ -172,6 +167,7 @@ return[
         'url' => '{{url}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
     ],
     'payment_successfull' => [
         'name' => '{{name}}',
@@ -181,6 +177,7 @@ return[
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
         'future_expiry' => '{{future_expiry}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'cloud_deleted' => [
@@ -190,6 +187,7 @@ return[
         'expiry' => '{{expiry}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'cloud_created' => [
@@ -199,6 +197,35 @@ return[
         'contact' => '{{contact}}',
         'title' => '{{title}}',
         'company_email' => '{{company_email}}',
+        'reply_email' => '{{reply_email}}',
     ],
+
+    'contact_us' => [
+    'name' => '{{name}}',
+    'message' => '{{message}}',
+    'logo' => '{{logo}}',
+    'contact' => '{{contact}}',
+    'title' => '{{title}}',
+    'email' => '{{email}}',
+    'mobile' => '{{mobile}}',
+    'ip_address' => '{{ip_address}}',
+    'request_url' => '{{request_url}}',
+    'reply_email' => '{{reply_email}}',
+    ],
+
+    'demo_request' => [
+    'name' => '{{name}}',
+    'message' => '{{message}}',
+    'logo' => '{{logo}}',
+    'contact' => '{{contact}}',
+    'title' => '{{title}}',
+    'email' => '{{email}}',
+    'mobile' => '{{mobile}}',
+    'ip_address' => '{{ip_address}}',
+    'request_url' => '{{request_url}}',
+    'reply_email' => '{{reply_email}}',
+    ],
+
+
 
 ];

@@ -2,7 +2,7 @@
 
 return [
     '{{website_url}}' => 'The URL of the website',
-    '{{name}}' => 'User\'s name',
+    '{{name}}' => 'User\'s full name',
     '{{username}}' => 'User\'s username',
     '{{password}}' => 'User\'s password',
     '{{url}}' => 'URL of the resource',
@@ -28,4 +28,18 @@ return [
     '{{message}}' => 'Message information',
     '{{title}}' => 'Title information',
     '{{company_email}}' => 'Company email address',
+    '{{total}}' => 'Total Amount',
+    '{{email}}' => 'User\'s email',
+    '{{mobile}}' => 'User\'s mobile',
+    '{{ip_address}}' => 'User\'s ip_address',
+    '{{request_url}}' => 'User\'s request_url',
+    '{{contact-us}}' => 'User\'s contact_us',
+    '{{product_type}}' => 'User\'s product_type',
+    '{{address}}' => 'address information',
+    '{{content}}' => 'content',
+    '{{currency}}' => 'currency information',
+    '{{renewPrice}}' => 'renewPrice information',
+    '{{exception}}' => 'exception information',
+
+
 ];

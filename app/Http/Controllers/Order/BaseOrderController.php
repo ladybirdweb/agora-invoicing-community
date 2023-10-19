@@ -358,7 +358,8 @@ class BaseOrderController extends ExtendedOrderController
             'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
             'knowledge_base' => $knowledgeBaseUrl,
             'contact' => $contact['contact'],
-            'logo' => $contact['logo'], ];
+            'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email, ];
 
         $type = '';
         if ($template) {

@@ -85,7 +85,7 @@ class CartController extends BaseCartController
             $id = $request->input('id');
 
             if ($request->has('domain')) {
-                $domain = $request->input('domain').'.faveocloud.com';
+                $domain = $request->input('domain').'.fratergroup.in';
             }
 
             if (! property_exists($id, Cart::getContent())) {

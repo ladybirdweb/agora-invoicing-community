@@ -10,14 +10,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Common\StatusSetting;
+use App\Model\Common\Template;
+use App\Model\Common\TemplateType;
 use App\Model\Front\FrontendPage;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use App\Model\Common\Template;
-use App\Model\Common\TemplateType;
 
 class PageController extends Controller
 {
@@ -821,49 +821,48 @@ class PageController extends Controller
     public function postContactUs(Request $request)
     {
         try {
-        $contact = getContactData();
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required',
-            'g-recaptcha-response' => $captchaRule.'captcha',
-        ],
-            [
-                'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-            ]);
+            $contact = getContactData();
+            $apiKeys = StatusSetting::value('recaptcha_status');
+            $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+            $this->validate($request, [
+                'name'    => 'required',
+                'email'   => 'required|email',
+                'message' => 'required',
+                'g-recaptcha-response' => $captchaRule.'captcha',
+            ],
+                [
+                    'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+                ]);
 
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
+            $set = new \App\Model\Common\Setting();
+            $set = $set->findOrFail(1);
 
-        $template_type = TemplateType::where('name','contact_us')->value('id');
-        $template = Template::where('type',$template_type)->first();
-        $replace = [
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'message' => $request->input('message'),
-            'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
-            'ip_address' => $request->ip(),
-            'title' => $set->title,
-            'request_url' => request()->fullUrl(),
-            'contact' => $contact['contact'],
-            'logo' => $contact['logo'],
-            'reply_email' => $request->input('email'),
+            $template_type = TemplateType::where('name', 'contact_us')->value('id');
+            $template = Template::where('type', $template_type)->first();
+            $replace = [
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'message' => $request->input('message'),
+                'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
+                'ip_address' => $request->ip(),
+                'title' => $set->title,
+                'request_url' => request()->fullUrl(),
+                'contact' => $contact['contact'],
+                'logo' => $contact['logo'],
+                'reply_email' => $request->input('email'),
 
-        ];
-        $type = '';
+            ];
+            $type = '';
 
-           if ($template) {
+            if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($set->email, $set->company_email, $template->data,$template->name,$replace,$type);
+                $mail->SendEmail($set->email, $set->company_email, $template->data, $template->name, $replace, $type);
             }
 
             //$this->templateController->SendEmail($from, $to, $data, $subject);
@@ -887,49 +886,49 @@ class PageController extends Controller
 
     public function postDemoReq(Request $request)
     {
-        try{
-        $contact = getContactData();
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $this->validate($request, [
-            'name' => 'required',
-            'demoemail' => 'required|email',
-            'g-recaptcha-response' => $captchaRule.'captcha',
-        ]);
+        try {
+            $contact = getContactData();
+            $apiKeys = StatusSetting::value('recaptcha_status');
+            $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+            $this->validate($request, [
+                'name' => 'required',
+                'demoemail' => 'required|email',
+                'g-recaptcha-response' => $captchaRule.'captcha',
+            ]);
 
-       $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
+            $set = new \App\Model\Common\Setting();
+            $set = $set->findOrFail(1);
 
-        $template_type = TemplateType::where('name','demo_request')->value('id');
-        $template = Template::where('type',$template_type)->first();
-        $replace = [
-            'name' => $request->input('name'),
-            'email' => $request->input('demoemail'),
-            'message' => $request->input('message'),
-            'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
-            'ip_address' => $request->ip(),
-            'title' => $set->title,
-            'request_url' => request()->fullUrl(),
-            'contact' => $contact['contact'],
-            'logo' => $contact['logo'],
-            'reply_email' => $request->input('demoemail'),
+            $template_type = TemplateType::where('name', 'demo_request')->value('id');
+            $template = Template::where('type', $template_type)->first();
+            $replace = [
+                'name' => $request->input('name'),
+                'email' => $request->input('demoemail'),
+                'message' => $request->input('message'),
+                'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
+                'ip_address' => $request->ip(),
+                'title' => $set->title,
+                'request_url' => request()->fullUrl(),
+                'contact' => $contact['contact'],
+                'logo' => $contact['logo'],
+                'reply_email' => $request->input('demoemail'),
 
-        ];
-        $type = '';
+            ];
+            $type = '';
 
-           if ($template) {
+            if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
             $product = $request->input('product') != 'online' ? $request->input('product') : 'our product ';
-            $templatename = $template->name . ' ' . 'for' . ' ' . $product;
-     
+            $templatename = $template->name.' '.'for'.' '.$product;
 
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->SendEmail($set->email, $set->company_email, $template->data,$templatename,$replace,$type);
+                $mail->SendEmail($set->email, $set->company_email, $template->data, $templatename, $replace, $type);
             }
+
             return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

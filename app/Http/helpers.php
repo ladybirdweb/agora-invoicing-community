@@ -585,7 +585,7 @@ function getContactData()
                 <p style="line-height: 20px;">'.$setting->company.'<br />
                 Email: <a href="mailto:'.$setting->company_email.'">'.$setting->company_email.'</a><br />
                 Website: <a href="https://www.faveohelpdesk.com">'.$setting->website.'</a><br />
-                Tel: +' . $countryCode . ' ' . $setting->phone . '</p>
+                Tel: +'.$countryCode.' '.$setting->phone.'</p>
             </td>
         </tr>
     </table>';

@@ -131,23 +131,23 @@ class TemplateController extends Controller
         }
     }
 
-        public function update($id, Request $request)
-        {
-            $this->validate($request, [
-                'name' => 'required',
-                'data' => 'required',
-                'type' => 'required',
-            ]);
+    public function update($id, Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'data' => 'required',
+            'type' => 'required',
+        ]);
 
-            try {
-                $template = $this->template->where('id', $id)->first();
-                $template->fill($request->input())->save();
+        try {
+            $template = $this->template->where('id', $id)->first();
+            $template->fill($request->input())->save();
 
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            } catch (\Exception $ex) {
-                return redirect()->back()->with('fails', $ex->getMessage());
-            }
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
 
     /**
      * Remove the specified resource from storage.

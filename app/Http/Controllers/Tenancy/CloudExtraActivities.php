@@ -110,7 +110,7 @@ class CloudExtraActivities extends Controller
             if (! filter_var($newDomain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
                 return errorResponse(trans('message.not_allowed_domain'));
             }
-            if (strpos($newDomain, '.fratergroup.in') !== false) {
+            if (strpos($newDomain, '.faveocloud.com') !== false) {
                 return errorResponse(trans('message.cloud_not_allowed'));
             }
             if ($newDomain === $currentDomain) {
@@ -118,8 +118,8 @@ class CloudExtraActivities extends Controller
             }
             $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'lic_code'=> $request->get('lic_code'), 'product_id' => $request->product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
-            if (! strpos($newDomain, 'fratergroup.in')) {
-                if (empty($dns_record) || ! in_array('fratergroup.in', array_column($dns_record, 'target'))) {
+            if (! strpos($newDomain, 'faveocloud.com')) {
+                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                     return errorResponse(trans('message.cname'));
                 }
             }
@@ -169,7 +169,7 @@ class CloudExtraActivities extends Controller
                 return errorResponse(trans('message.agent_zero'));
             }
             $orderId = $request->input('orderId');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
             if (empty($installation_path)) {
                 return errorResponse(trans('message.installation_path_not_found'));
             }
@@ -208,7 +208,7 @@ class CloudExtraActivities extends Controller
             $agents = $request->agents;
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'cloud.fratergroup.in')->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
             if (empty($installation_path)) {
                 return errorResponse(trans('message.installation_path_not_found'));
             }

@@ -270,8 +270,8 @@ class RenewController extends BaseRenewController
                 if ($this->checktheAgent($agents, $installation_path)) {
                     return response(['status' => false, 'message' => trans('message.agent_reduce')]);
                 }
-                $license=Order::where('id',$order_id)->value('serial_key');
-                (new CloudExtraActivities(new Client, new FaveoCloud()))->doTheAgentAltering($agents,$license,$order_id,$installation_path,$sub->product_id);
+                $license = Order::where('id', $order_id)->value('serial_key');
+                (new CloudExtraActivities(new Client, new FaveoCloud()))->doTheAgentAltering($agents, $license, $order_id, $installation_path, $sub->product_id);
             }
             $renew = $this->renewBySubId($id, $planid, $payment_method, $cost, $code = '', true, $agents);
 

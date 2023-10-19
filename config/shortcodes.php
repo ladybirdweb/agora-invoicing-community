@@ -41,5 +41,4 @@ return [
     '{{renewPrice}}' => 'renewPrice information',
     '{{exception}}' => 'exception information',
 
-
 ];

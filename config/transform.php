@@ -66,7 +66,6 @@ return[
         'reply_email' => '{{reply_email}}',
     ],
 
-
     /*
      * This is for invoice mail content
      */
@@ -201,31 +200,29 @@ return[
     ],
 
     'contact_us' => [
-    'name' => '{{name}}',
-    'message' => '{{message}}',
-    'logo' => '{{logo}}',
-    'contact' => '{{contact}}',
-    'title' => '{{title}}',
-    'email' => '{{email}}',
-    'mobile' => '{{mobile}}',
-    'ip_address' => '{{ip_address}}',
-    'request_url' => '{{request_url}}',
-    'reply_email' => '{{reply_email}}',
+        'name' => '{{name}}',
+        'message' => '{{message}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'title' => '{{title}}',
+        'email' => '{{email}}',
+        'mobile' => '{{mobile}}',
+        'ip_address' => '{{ip_address}}',
+        'request_url' => '{{request_url}}',
+        'reply_email' => '{{reply_email}}',
     ],
 
     'demo_request' => [
-    'name' => '{{name}}',
-    'message' => '{{message}}',
-    'logo' => '{{logo}}',
-    'contact' => '{{contact}}',
-    'title' => '{{title}}',
-    'email' => '{{email}}',
-    'mobile' => '{{mobile}}',
-    'ip_address' => '{{ip_address}}',
-    'request_url' => '{{request_url}}',
-    'reply_email' => '{{reply_email}}',
+        'name' => '{{name}}',
+        'message' => '{{message}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'title' => '{{title}}',
+        'email' => '{{email}}',
+        'mobile' => '{{mobile}}',
+        'ip_address' => '{{ip_address}}',
+        'request_url' => '{{request_url}}',
+        'reply_email' => '{{reply_email}}',
     ],
-
-
 
 ];

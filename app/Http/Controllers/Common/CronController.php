@@ -720,7 +720,8 @@ class CronController extends BaseCronController
             'exception' => $exceptionMessage,
             'url' => $url,
             'contact' => $contact['contact'],
-            'logo' => $contact['logo'], ];
+            'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email, ];
         $type = '';
 
         if ($template) {
@@ -758,6 +759,7 @@ class CronController extends BaseCronController
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
             'future_expiry' => $end,
+            'reply_email' => $setting->company_email,
         ];
 
         $type = '';

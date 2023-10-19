@@ -6,6 +6,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
+use App\Model\Common\TemplateType;
 use App\User;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
@@ -122,8 +123,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $invoiceurl = $this->invoiceUrl($invoiceid);
         //template
         $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->invoice;
-        $template = $templates->where('id', $temp_id)->first();
+        $temp_id = TemplateType::where('name','invoice_mail')->value('id');
+        $template = $templates->where('type', $temp_id)->first();
         $type = '';
         $replace = [
             'name'       => $user->first_name.' '.$user->last_name,
@@ -134,6 +135,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             'currency'   => $this->currency($invoiceid),
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email,
         ];
         if ($template) {
             $type_id = $template->type;

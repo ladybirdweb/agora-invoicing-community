@@ -11,6 +11,7 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use App\User;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -84,7 +85,7 @@ class CartController extends BaseCartController
             $id = $request->input('id');
 
             if ($request->has('domain')) {
-                $domain = $request->input('domain').'.faveocloud.com';
+                $domain = $request->input('domain').'.fratergroup.in';
             }
 
             if (! property_exists($id, Cart::getContent())) {
@@ -126,15 +127,20 @@ class CartController extends BaseCartController
                 $quantity = $plan->planPrice->first()->product_quantity;
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
                 $qty = $quantity != null ? $quantity : 1;
-                $agtQty = $plan->planPrice->first()->no_of_agents;
-                // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
-                $agents = $agtQty != null ? $agtQty : 0;
                 $currency = userCurrencyAndPrice('', $plan);
                 // $this->checkProductsHaveSimilarCurrency($currency['currency']);
             } else {
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
             $actualPrice = $this->cost($product->id, $planid);
+            if (\Session::has('plan') && $product->can_modify_agent) {
+                $planid = \Session::get('plan');
+                $agtQty = $plan->where('id', $planid)->first()->planPrice->first()->no_of_agents;
+            } else {
+                $agtQty = $plan->planPrice->first()->no_of_agents;
+            }
+            $agents = $agtQty != null ? $agtQty : 0;
+
             $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
                 'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents, 'domain'=> $domain], 'associatedModel' => $product];
 
@@ -250,7 +256,11 @@ class CartController extends BaseCartController
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 if (\Auth::user()) {
-                    $country = \Auth::user()->country;
+                    if ($userid == '') {
+                        $country = \Auth::user()->country;
+                    } else {
+                        $country = \DB::table('users')->where('id', $userid)->value('country');
+                    }
                     $currencyAndSymbol = getCurrencyForClient($country);
                 }
                 foreach ($plans as $plan) {
@@ -271,7 +281,9 @@ class CartController extends BaseCartController
                 }
                 Session::put('plan', $id);
                 Session::put('planDays', Session::get('toggleState'));
-                Session::forget('toggleState');
+                if (\Auth::check()) {
+                    Session::forget('toggleState');
+                }
 
                 return $cost;
             } else {

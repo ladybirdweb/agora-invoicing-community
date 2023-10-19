@@ -135,6 +135,7 @@ class PhpMailController extends Controller
                             'expiry' => date('j M Y', strtotime($data->update_ends_at)),
                             'contact' => $contact['contact'],
                             'logo' => $contact['logo'],
+                            'reply_email' => $setting->company_email,
                         ];
                         if ($template) {
                             $type_id = $template->type;

@@ -276,7 +276,8 @@ class LicenseController extends Controller
             $productId = $this->searchProductId($sku);
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
-            $addLicense = $this->postCurl($url.'api/admin/license/add', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=1", $token);
+            $addLicense = $this->postCurl($url.'api/admin/license/add', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&
+            license_client_role='admin'&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=1", $token);
         } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
         }
@@ -315,7 +316,7 @@ class LicenseController extends Controller
             $licenseId = $searchLicense['licenseId'];
             $productId = $searchLicense['productId'];
             $licenseCode = $searchLicense['code'];
-            $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requireDomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=$license_limit", $token);
+            $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requireDomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_client_role='admin'&license_domain=$domain&license_ip=$ip&license_limit=$license_limit", $token);
         } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
         }

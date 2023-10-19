@@ -267,6 +267,38 @@
                         </td>
 
                     </tr>
+                         <tr>
+
+                        <td><b>{!! Form::label('contact_us',Lang::get('Contact us')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('cloud_created') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('contact_us',['Templates'=>$template->where('type',21)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Contact us Mail Template')}}</i> </p>
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                        <tr>
+
+                        <td><b>{!! Form::label('demo_request',Lang::get('Request a demo')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('cloud_created') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('demo_request',['Templates'=>$template->where('type',22)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                <p><i> {{Lang::get('Choose Demo request Mail Template')}}</i> </p>
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
                 <br>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}

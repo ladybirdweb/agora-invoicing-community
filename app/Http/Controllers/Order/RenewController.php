@@ -275,6 +275,8 @@ class RenewController extends BaseRenewController
             }
             $renew = $this->renewBySubId($id, $planid, $payment_method, $cost, $code = '', true, $agents);
 
+            Subscription::where('order_id', $order_id)->update(['plan_id'=>$planid]);
+
             if ($renew) {
                 return redirect()->back()->with('success', 'Renewed Successfully');
             }

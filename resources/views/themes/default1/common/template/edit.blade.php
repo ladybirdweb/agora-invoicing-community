@@ -96,7 +96,7 @@ Edit Templates
 
                      <div class="col-md-6 form-group {{ $errors->has('reply_to') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('reply_to',Lang::get('Reply to'),['class'=>'required']) !!}
+                        {!! Form::label('reply_to',Lang::get('Reply to')) !!}
                         {!! Form::text('reply_to',null,['class' => 'form-control']) !!}
 
                     </div>

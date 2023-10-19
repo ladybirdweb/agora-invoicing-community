@@ -223,6 +223,7 @@ class BaseCronController extends Controller
             'url'          => url('my-orders'),
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email,
 
         ];
         $type = '';
@@ -267,7 +268,9 @@ class BaseCronController extends Controller
             'expiry' => $end,
             'product' => $product,
             'number' => $order->number, 'contact' => $contact['contact'],
-            'logo' => $contact['logo']];
+            'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email,
+];
 
         $type = '';
         if ($template) {
@@ -314,7 +317,9 @@ class BaseCronController extends Controller
             'number' => $order->number,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
-            'url'   => url('my-orders'), ];
+            'url'   => url('my-orders'),
+            'reply_email' => $setting->company_email,
+          ];
         $type = '';
         if ($template) {
             $type_id = $template->type;

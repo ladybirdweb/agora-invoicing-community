@@ -91,11 +91,15 @@ $set = $set->findOrFail(1);
     <div class="col-md-6">
 
         <hr>
+        <?php
+        $state = \DB::table('states_subdivisions')->where('state_subdivision_code',$set->state)->value('state_subdivision_name');
+        $country = \DB::table('countries')->where('country_code_char2',$set->country)->value('country_name');
+        ?>
 
         <h4 class="heading-primary">Our Office</h4>
        <ul class="list list-icons list-icons-style-3 mt-4">
-                                <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}}</li>
-                                <li><i class="fas fa-phone"></i> <strong>Phone:</strong><b>+</b>{{$set->phone_code}} {{$set->phone}}</li>
+                                <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}},{{$set->city}},{{$state}},{{$country}},{{$set->zip}}.</li>
+                                <li><i class="fas fa-phone"></i> <strong>Phone: </strong><b>+</b>{{$set->phone_code}} {{$set->phone}}</li>
                                 <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
                             </ul>
         <hr>

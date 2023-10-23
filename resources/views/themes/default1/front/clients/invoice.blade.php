@@ -76,7 +76,7 @@
   </table>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<d  iv class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -341,7 +341,6 @@
                 var messageContainer = $('#message-container');
 
                 if (confirm('Are you sure you want to delete this invoice?')) {
-                    // Send AJAX request to delete item
                     $.ajax({
                         url: '/invoices/delete/' + id,
                         type: 'DELETE',
@@ -353,30 +352,42 @@
                                                  '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
                                                  response.message + '!</div>';
                             messageContainer.html(successMessage);
-                            // Reload the DataTable
                             setTimeout(function(){
                                 messageContainer.empty();
                                 location.reload();
                             }, 3000);
                         },
-                        error: function (xhr, status, error) {
-                            // Display error message
-                            var errorMessage = '<div class="alert alert-danger">' +
-                                               '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                               '<span aria-hidden="true">&times;</span></button>' +
-                                               '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
-                            var errors = xhr.responseJSON.errors;
-                            $.each(errors, function(key, value){
-                                errorMessage += '<li>' + value + '</li>';
-                            });
-                            errorMessage += '</ul></div>';
-
-                            messageContainer.html(errorMessage);
-                            setTimeout(function(){
-                                messageContainer.empty();
-                                location.reload();
-                            }, 5000);
+                  error: function (xhr, status, error) {
+                        
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.error) {
+                                var errorMessage = '<div class="alert alert-danger">' +
+                                                   '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                   '<span aria-hidden="true">&times;</span></button>' +
+                                                   '<strong>Oh Snap! </strong>' + response.error + '</div>';
+                                messageContainer.html(errorMessage);
+                            } else {
+                                var genericErrorMessage = '<div class="alert alert-danger">' +
+                                                          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                          '<span aria-hidden="true">&times;</span></button>' +
+                                                          '<strong>Oh Snap! </strong>Something went wrong.</div>';
+                                messageContainer.html(genericErrorMessage);
+                            }
+                        } catch (e) {
+                            var parsingErrorMessage = '<div class="alert alert-danger">' +
+                                                      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                      '<span aria-hidden="true">&times;</span></button>' +
+                                                      '<strong>Oh Snap! </strong>Something went wrong while processing the response.</div>';
+                            messageContainer.html(parsingErrorMessage);
                         }
+                                
+                                setTimeout(function(){
+                                    messageContainer.empty();
+                                    location.reload();
+                                }, 5000);
+                            }
+
                     });
                 }
             });
@@ -438,5 +449,7 @@
     </style>
 
 
- @stop
- 
+
+
+
+@stop

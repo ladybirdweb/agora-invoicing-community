@@ -188,7 +188,7 @@ class CartController extends BaseCartController
                 if ($unpaidInvoice) {
                     Cart::clear($item->id);
 
-                    return redirect('my-invoice/'.$unpaidInvoice->id .'#invoice-section')
+                    return redirect('my-invoice/'.$unpaidInvoice->id.'#invoice-section')
                     ->with('warning', 'You have an unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
                 }
             }

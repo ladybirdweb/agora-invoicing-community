@@ -478,13 +478,12 @@ class CronController extends BaseCronController
     private function canDeleteInvoice($invoice)
     {
         $condition1 = $invoice->is_renewed == 0 &&
-                      !$invoice->orderRelation()->exists() &&
+                      ! $invoice->orderRelation()->exists() &&
                       $invoice->invoiceItem()->exists();
 
         $condition2 = $invoice->is_renewed != 0 &&
                       $invoice->orderRelation()->exists() &&
                       $invoice->invoiceItem()->exists();
-
 
         return $condition1 || $condition2;
     }

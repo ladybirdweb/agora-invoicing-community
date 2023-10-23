@@ -925,12 +925,10 @@ class ClientController extends BaseClientController
             // Delete the Invoice record
             $invoice->delete();
             \Session::forget('invoice');
-            \Session::forget('subscription_id');
-            \Session::forget('plan_id');
-
             return response()->json(['message' => 'Invoice deleted successfully']);
         }
 
         return response()->json(['error' => 'Cannot delete invoice.'], 400);
     }
+    
 }

@@ -246,7 +246,6 @@ class SettingsController extends Controller
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
             }
@@ -255,8 +254,6 @@ class SettingsController extends Controller
 
             return redirect()->route('checkout');
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

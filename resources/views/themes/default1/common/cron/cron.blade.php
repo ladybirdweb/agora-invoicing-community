@@ -88,7 +88,7 @@ Cron Setting
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {
-                    $saved[$selectedDay->days] = 'true';
+                    $saved[$selectedDay] = 'true';
                 }
                }  else {
                     $saved=[];
@@ -183,6 +183,8 @@ Cron Setting
               </div>
             </div>
 
+
+
     <div class="col-md-6">
         <div class="form-group select2">
             <label>{{ Lang::get('Subscription expired') }}</label>
@@ -203,14 +205,7 @@ Cron Setting
         <!-- /.form-group -->
     </div>
 
-
-
-
-
-              <!-- /.form-group -->
-            </div>
-
-                       <div class="col-md-6">
+       <div class="col-md-6">
               <div class="form-group">
                 <label>{{Lang::get('Invoice deletion')}}</label>  <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="This cron is to trigger deletion of the old unpaid invoices that are not linked to any orders."></i>
                   @if ($invoiceStatus == 0)
@@ -226,6 +221,15 @@ Cron Setting
                 @endif
               </div>
             </div>
+
+
+
+
+
+              <!-- /.form-group -->
+            </div>
+
+          
           </div>
           <!-- /.row -->
           @if ( $mailStatus || $activityStatus || $cloudStatus ==1)

@@ -178,7 +178,6 @@ class CartController extends BaseCartController
 
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
-
                 $unpaidInvoice = Invoice::where('user_id', $userId)
                 ->where('is_renewed', 0)
                 ->where('status', 'pending')
@@ -189,7 +188,7 @@ class CartController extends BaseCartController
                 if ($unpaidInvoice) {
                     Cart::clear($item->id);
 
-                    return redirect('my-invoice/'.$unpaidInvoice->id)
+                    return redirect('my-invoice/'.$unpaidInvoice->id .'#invoice-section')
                     ->with('warning', 'You have an unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
                 }
             }

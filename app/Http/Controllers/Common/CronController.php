@@ -446,16 +446,18 @@ class CronController extends BaseCronController
      *
      * @return void
      */
-    public function invoicesDeletion()
+   public function invoicesDeletion()
     {
-        if ($this->shouldDeleteInvoices()) {
-            $days = ExpiryMailDay::value('invoice_days');
-            $dueInvoices = $this->getOldInvoices($days);
+        if (!$this->shouldDeleteInvoices()) {
+            return;
+        }
 
-            foreach ($dueInvoices as $invoice) {
-                if ($this->canDeleteInvoice($invoice)) {
-                    $this->deleteInvoice($invoice);
-                }
+        $days = ExpiryMailDay::value('invoice_days');
+        $dueInvoices = $this->getOldInvoices($days);
+
+        foreach ($dueInvoices as $invoice) {
+            if ($this->canDeleteInvoice($invoice)) {
+                $this->deleteInvoice($invoice);
             }
         }
     }
@@ -469,8 +471,9 @@ class CronController extends BaseCronController
     {
         $date = Carbon::now()->subDays($days);
         $oldInvoices = Invoice::where('status', 'pending')
-                          ->where('date', '<', $date)
-                          ->get();
+        ->where('date', '<', $date)
+        ->with(['invoiceItem', 'orderRelation'])
+        ->get();
 
         return $oldInvoices;
     }
@@ -490,17 +493,20 @@ class CronController extends BaseCronController
 
     private function deleteInvoice($invoice)
     {
-        // Delete related InvoiceItem records
-        $invoice->invoiceItem()->delete();
+        return \DB::transaction(function () use ($invoice) {
+            // Delete related InvoiceItem records
+            $invoice->invoiceItem()->delete();
 
-        if ($invoice->is_renewed != 0 && $invoice->orderRelation()->exists()) {
-            // Delete related OrderRelation records
-            $invoice->orderRelation()->delete();
-        }
+            if ($invoice->is_renewed != 0 && $invoice->orderRelation()->exists()) {
+                // Delete related OrderRelation records
+                $invoice->orderRelation()->delete();
+            }
 
-        // Delete the Invoice record
-        $invoice->delete();
+            // Delete the Invoice record
+            $invoice->delete();
+        });
     }
+
 
     public function getOnDayExpiryInfoSubs()
     {

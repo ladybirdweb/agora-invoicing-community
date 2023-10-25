@@ -923,35 +923,46 @@ class ClientController extends BaseClientController
      * @return \Illuminate\Http\JsonResponse
      */
     public function invoiceDelete($id)
-    {
-        $invoice = Invoice::find($id);
+   {
+    $invoice = Invoice::find($id);
 
-        if (! $invoice) {
-            return response()->json(['error' => 'Invoice not found'], 404);
-        }
-
-        if ($invoice->is_renewed == 0 && ! $invoice->orderRelation()->exists() && $invoice->invoiceItem()->exists()) {
-            // Delete related InvoiceItem records
-            $invoice->invoiceItem()->delete();
-            // Delete the Invoice record
-            $invoice->delete();
-            \Session::forget('invoice');
-
-            return response()->json(['message' => 'Invoice deleted successfully']);
-        }
-
-        if ($invoice->is_renewed != 0 && $invoice->orderRelation()->exists() && $invoice->invoiceItem()->exists()) {
-            // Delete related InvoiceItem records
-            $invoice->invoiceItem()->delete();
-            // Delete related OrderRelation records
-            $invoice->orderRelation()->delete();
-            // Delete the Invoice record
-            $invoice->delete();
-            \Session::forget('invoice');
-
-            return response()->json(['message' => 'Invoice deleted successfully']);
-        }
-
-        return response()->json(['error' => 'Cannot delete invoice.'], 400);
+    if (! $invoice) {
+        return response()->json(['error' => 'Invoice not found'], 404);
     }
+
+    if ($this->canDeleteInvoice($invoice)) {
+        $this->deleteInvoice($invoice);
+
+        return response()->json(['message' => 'Invoice deleted successfully']);
+    }
+
+    return response()->json(['error' => 'Cannot delete invoice.'], 400);
+    }
+
+    private function canDeleteInvoice($invoice)
+    {
+    return (
+    $invoice->is_renewed == 0 &&
+    ! $invoice->orderRelation()->exists() &&
+    $invoice->invoiceItem()->exists()
+    ) || (
+    $invoice->is_renewed != 0 &&
+    $invoice->orderRelation()->exists() &&
+    $invoice->invoiceItem()->exists()
+    );
+    }
+
+    private function deleteInvoice($invoice)
+    {
+    $invoice->invoiceItem()->delete();
+
+    if ($invoice->is_renewed != 0 && $invoice->orderRelation()->exists()) {
+        $invoice->orderRelation()->delete();
+    }
+
+    $invoice->delete();
+    \Session::forget('invoice');
+    }
+
+
 }

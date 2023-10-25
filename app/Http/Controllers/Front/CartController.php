@@ -172,19 +172,11 @@ class CartController extends BaseCartController
         try {
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
-                $itemName = $item->name;
-                $itemQuantity = $item->quantity;
-                $userId = \Auth::user()->id;
 
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
-                $unpaidInvoice = Invoice::where('user_id', $userId)
-                ->where('is_renewed', 0)
-                ->where('status', 'pending')
-                ->whereHas('invoiceItem', function ($query) use ($itemName, $itemQuantity) {
-                    $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
-                })
-                ->first();
+                $unpaidInvoice = $this->checkUnpaidInvoices($item);
+               
                 if ($unpaidInvoice) {
                     Cart::clear($item->id);
 
@@ -200,6 +192,28 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+    private function checkUnpaidInvoices($item)
+    {
+        $userId = \Auth::user()->id;
+        $itemName = $item->name;
+        $itemQuantity = $item->quantity;
+
+        $unpaidInvoice = Invoice::where('user_id', $userId)
+        ->where('is_renewed', 0)
+        ->where('status', 'pending')
+        ->whereHas('invoiceItem', function ($query) use ($itemName, $itemQuantity) {
+        $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
+        })
+        ->first();
+
+        if ($unpaidInvoice) {
+        Cart::clear($item->id);
+        return $unpaidInvoice;
+     }
+        return null;
+    }
+
 
     public function cartRemove(Request $request)
     {

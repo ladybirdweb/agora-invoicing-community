@@ -433,26 +433,28 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             $domainArray = $response->message;
             for ($i = 0; $i < count($domainArray); $i++) {
-                if ($domainArray[$i]->domain == $installation_path) {
-                    $data = ['id' => $domainArray[$i]->id, 'app_key'=>$keys->app_key, 'deleteTenant'=> true, 'token'=>$token, 'timestamp'=>time()];
-                    $encodedData = http_build_query($data);
-                    $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
-                    $client = new Client([]);
-                    $response = $client->request(
-                        'DELETE',
-                        $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
-                    );
-                    $responseBody = (string) $response->getBody();
-                    $response = json_decode($responseBody);
-                    if ($response->status == 'success') {
-                        $this->deleteCronForTenant($domainArray[$i]->id);
-                        $this->reissueCloudLicense($order_id);
-                        Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
-                        \DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
+                if(!is_null($domainArray[$i])) {
+                    if ($domainArray[$i]->domain == $installation_path) {
+                        $data = ['id' => $domainArray[$i]->id, 'app_key' => $keys->app_key, 'deleteTenant' => true, 'token' => $token, 'timestamp' => time()];
+                        $encodedData = http_build_query($data);
+                        $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+                        $client = new Client([]);
+                        $response = $client->request(
+                            'DELETE',
+                            $this->cloud->cloud_central_domain . '/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                        );
+                        $responseBody = (string)$response->getBody();
+                        $response = json_decode($responseBody);
+                        if ($response->status == 'success') {
+                            $this->deleteCronForTenant($domainArray[$i]->id);
+                            $this->reissueCloudLicense($order_id);
+                            Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
+                            \DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
 
-                        return redirect()->back()->with('success', $response->message);
-                    } else {
-                        return redirect()->back()->with('fails', $response->message);
+                            return redirect()->back()->with('success', $response->message);
+                        } else {
+                            return redirect()->back()->with('fails', $response->message);
+                        }
                     }
                 }
             }

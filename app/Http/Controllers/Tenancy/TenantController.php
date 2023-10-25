@@ -441,9 +441,9 @@ class TenantController extends Controller
                         $client = new Client([]);
                         $response = $client->request(
                             'DELETE',
-                            $this->cloud->cloud_central_domain . '/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                            $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
                         );
-                        $responseBody = (string)$response->getBody();
+                        $responseBody = (string) $response->getBody();
                         $response = json_decode($responseBody);
                         if ($response->status == 'success') {
                             $this->deleteCronForTenant($domainArray[$i]->id);

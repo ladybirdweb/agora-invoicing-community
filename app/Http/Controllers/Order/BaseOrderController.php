@@ -69,7 +69,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @throws \Exception
      */
-    public function executeOrder($invoiceid, $order_status = 'executed')
+    public function executeOrder($invoiceid, $order_status = 'executed', $admin = false)
     {
         try {
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
@@ -77,7 +77,7 @@ class BaseOrderController extends ExtendedOrderController
             if (count($invoice_items) > 0) {
                 foreach ($invoice_items as $item) {
                     if ($item) {
-                        $items = $this->getIfItemPresent($item, $invoiceid, $user_id, $order_status);
+                        $items = $this->getIfItemPresent($item, $invoiceid, $user_id, $order_status, $admin);
                     }
                 }
             }
@@ -90,7 +90,7 @@ class BaseOrderController extends ExtendedOrderController
         }
     }
 
-    public function getIfItemPresent($item, $invoiceid, $user_id, $order_status)
+    public function getIfItemPresent($item, $invoiceid, $user_id, $order_status, $admin = false)
     {
         try {
             $product = $this->product->where('name', $item->product_name)->first()->id;
@@ -122,7 +122,7 @@ class BaseOrderController extends ExtendedOrderController
 
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
-                $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
+                $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key,$admin);
             }
 
             if (emailSendingStatus()) {
@@ -174,7 +174,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    public function addSubscription($orderid, $planid, $version, $product, $serial_key)
+    public function addSubscription($orderid, $planid, $version, $product, $serial_key, $admin = false)
     {
         try {
             $permissions = LicensePermissionsController::getPermissionsForProduct($product);
@@ -183,7 +183,7 @@ class BaseOrderController extends ExtendedOrderController
             }
             $days = null;
             $status = Product::find($product);
-            if ($status->status) {
+            if ($status->status && !$admin) {
                 if (\Session::get('planDays') == 'monthly') {
                     $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
                 } elseif (\Session::get('planDays') == 'freeTrial') {

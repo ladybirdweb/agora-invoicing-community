@@ -23,7 +23,7 @@ class ExtendedOrderController extends Controller
     {
         try {
             $invoiceid = $request->input('invoiceid');
-            $execute = $this->executeOrder($invoiceid);
+            $execute = $this->executeOrder($invoiceid, 'executed', true);
 
             //only for cloud
             $cloud_domain = Invoice::where('id', $invoiceid)->value('cloud_domain');

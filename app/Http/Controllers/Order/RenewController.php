@@ -8,7 +8,6 @@ use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -307,9 +306,9 @@ class RenewController extends BaseRenewController
     {
         $subscription = Subscription::find($id);
         $userId = $subscription->user_id;
-        $existingUnpaidInvoice = $this->checkExistingUnpaidInvoice($subscription,$request->input('plan'));
-          if ($existingUnpaidInvoice) {
-            return redirect('my-invoice/' . $existingUnpaidInvoice->invoice_id . '#invoice-section')
+        $existingUnpaidInvoice = $this->checkExistingUnpaidInvoice($subscription, $request->input('plan'));
+        if ($existingUnpaidInvoice) {
+            return redirect('my-invoice/'.$existingUnpaidInvoice->invoice_id.'#invoice-section')
                 ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
         }
 
@@ -358,17 +357,16 @@ class RenewController extends BaseRenewController
         }
     }
 
-     private function checkExistingUnpaidInvoice($subscription, $planId)
+    private function checkExistingUnpaidInvoice($subscription, $planId)
     {
         $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) {
-                $query->where('is_renewed', 1)->where('status', 'pending');
-            })
+            $query->where('is_renewed', 1)->where('status', 'pending');
+        })
             ->latest('created_at')
             ->first();
-            return $latestInvoiceItem;
 
+        return $latestInvoiceItem;
     }
-
 
     public function setSession($sub_id, $planid)
     {

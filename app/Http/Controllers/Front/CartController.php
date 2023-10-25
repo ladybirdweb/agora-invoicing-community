@@ -172,11 +172,10 @@ class CartController extends BaseCartController
         try {
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
-
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
                 $unpaidInvoice = $this->checkUnpaidInvoices($item);
-               
+
                 if ($unpaidInvoice) {
                     Cart::clear($item->id);
 
@@ -203,17 +202,18 @@ class CartController extends BaseCartController
         ->where('is_renewed', 0)
         ->where('status', 'pending')
         ->whereHas('invoiceItem', function ($query) use ($itemName, $itemQuantity) {
-        $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
+            $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
         })
         ->first();
 
         if ($unpaidInvoice) {
-        Cart::clear($item->id);
-        return $unpaidInvoice;
-     }
+            Cart::clear($item->id);
+
+            return $unpaidInvoice;
+        }
+
         return null;
     }
-
 
     public function cartRemove(Request $request)
     {

@@ -446,9 +446,9 @@ class CronController extends BaseCronController
      *
      * @return void
      */
-   public function invoicesDeletion()
+    public function invoicesDeletion()
     {
-        if (!$this->shouldDeleteInvoices()) {
+        if (! $this->shouldDeleteInvoices()) {
             return;
         }
 
@@ -506,7 +506,6 @@ class CronController extends BaseCronController
             $invoice->delete();
         });
     }
-
 
     public function getOnDayExpiryInfoSubs()
     {

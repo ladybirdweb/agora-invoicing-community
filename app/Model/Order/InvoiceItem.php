@@ -35,4 +35,9 @@ class InvoiceItem extends BaseModel
     {
         return $this->hasOne(\App\Model\Order\Order::class);
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'invoice_id');
+    }
 }

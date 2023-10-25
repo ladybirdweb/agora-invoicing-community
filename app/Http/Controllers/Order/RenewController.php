@@ -314,20 +314,12 @@ class RenewController extends BaseRenewController
     {
         $subscription = Subscription::find($id);
         $userId = $subscription->user_id;
-        $invoiceId = OrderInvoiceRelation::where('order_id', $subscription->order_id)
-            ->latest('created_at')
-            ->value('invoice_id');
-        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->where('plan_id', $request->plan)->latest('created_at')->first();
-        if ($invoiceItem) {
-            $invoice = Invoice::where('id', $invoiceItem->invoice_id)
-                ->where('is_renewed', 1)
-                ->where('status', 'pending')
-                ->first();
-            if ($invoice) {
-                return redirect('my-invoice/'.$invoice->id.'#invoice-section')
-                        ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
-            }
+        $existingUnpaidInvoice = $this->checkExistingUnpaidInvoice($subscription,$request->input('plan'));
+          if ($existingUnpaidInvoice) {
+            return redirect('my-invoice/' . $existingUnpaidInvoice->invoice_id . '#invoice-section')
+                ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
         }
+
         if (\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
             throw new \Exception('Permission denied. Invalid modification of data');
         }
@@ -372,6 +364,18 @@ class RenewController extends BaseRenewController
             throw new \Exception($ex->getMessage());
         }
     }
+
+     private function checkExistingUnpaidInvoice($subscription, $planId)
+    {
+        $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) {
+                $query->where('is_renewed', 1)->where('status', 'pending');
+            })
+            ->latest('created_at')
+            ->first();
+            return $latestInvoiceItem;
+
+    }
+
 
     public function setSession($sub_id, $planid)
     {

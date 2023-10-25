@@ -433,7 +433,7 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             $domainArray = $response->message;
             for ($i = 0; $i < count($domainArray); $i++) {
-                if(!is_null($domainArray[$i])) {
+                if (! is_null($domainArray[$i])) {
                     if ($domainArray[$i]->domain == $installation_path) {
                         $data = ['id' => $domainArray[$i]->id, 'app_key' => $keys->app_key, 'deleteTenant' => true, 'token' => $token, 'timestamp' => time()];
                         $encodedData = http_build_query($data);
@@ -441,9 +441,9 @@ class TenantController extends Controller
                         $client = new Client([]);
                         $response = $client->request(
                             'DELETE',
-                            $this->cloud->cloud_central_domain . '/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+                            $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
                         );
-                        $responseBody = (string)$response->getBody();
+                        $responseBody = (string) $response->getBody();
                         $response = json_decode($responseBody);
                         if ($response->status == 'success') {
                             $this->deleteCronForTenant($domainArray[$i]->id);

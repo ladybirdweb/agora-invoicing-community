@@ -137,7 +137,7 @@ class ExtendedBaseInvoiceController extends Controller
     {
         try {
             foreach ($invoiceChecked as $key => $value) {
-                if ($key != 0) {//If Payment is linked to Invoice
+                if (isset($key)) {//If Payment is linked to Invoice
                     $invoice = Invoice::find($value);
                     $invoice_status = 'pending';
                     $invoicAmount[$key] = $invoicAmount[$key] == '' ? 0 : $invoicAmount[$key];

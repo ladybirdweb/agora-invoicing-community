@@ -152,12 +152,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $from = $request->input('from');
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
-
+        $query->orderBy('date', 'desc');
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
          ->orderColumn('number', '-invoices.id $1')
          ->orderColumn('user_id', 'invoices.id $1')
-         ->orderColumn('date', 'invoices.id $1')
+        ->orderColumn('date', 'invoices.id $1')
          ->orderColumn('status', 'invoices.id $1')
          ->orderColumn('grand_total', 'invoices.id $1')
          ->addColumn('checkbox', function ($model) {

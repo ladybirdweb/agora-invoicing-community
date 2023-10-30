@@ -471,7 +471,7 @@ class CronController extends BaseCronController
     {
         $date = Carbon::now()->subDays($days);
         $oldInvoices = Invoice::where('status', 'pending')
-        ->where('date', '<', $date)
+        ->where('date', '<=', $date)
         ->with(['invoiceItem', 'orderRelation'])
         ->get();
 

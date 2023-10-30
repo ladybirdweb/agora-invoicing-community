@@ -194,15 +194,11 @@ class CartController extends BaseCartController
 
     private function checkUnpaidInvoices($item)
     {
-        $userId = \Auth::user()->id;
-        $itemName = $item->name;
-        $itemQuantity = $item->quantity;
-
-        $unpaidInvoice = Invoice::where('user_id', $userId)
+        $unpaidInvoice = Invoice::where('user_id',\Auth::user()->id)
         ->where('is_renewed', 0)
         ->where('status', 'pending')
-        ->whereHas('invoiceItem', function ($query) use ($itemName, $itemQuantity) {
-            $query->where('product_name', $itemName)->where('quantity', $itemQuantity);
+        ->whereHas('invoiceItem', function ($query) use ($item->name, $item->quantity) {
+            $query->where('product_name', $item->name)->where('quantity', $item->quantity);
         })
         ->first();
 

@@ -153,6 +153,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
         $query->orderBy('date', 'desc');
+
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
          ->orderColumn('number', '-invoices.id $1')

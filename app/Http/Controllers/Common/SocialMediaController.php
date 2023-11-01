@@ -188,25 +188,22 @@ class SocialMediaController extends Controller
 
             // Migrate over to SSL/TLS
             // Load the Tweets
-            $tweets = $twitter->get('statuses/user_timeline',
+            $tweets = $twitter->get('/statuses/user_timeline',
                 ['screen_name' => $username, 'exclude_replies' => 'true',
                     'include_rts' => 'false', 'count' => $tweet_limit, ]);
 
-            //dd($tweets);
             // Example output
             // Put this after fetching Tweets
             $twitter = '';
             // Create the HTML output
-            //dd($tweets[0]->text);
-            if (! empty($tweets)) {
                 foreach ($tweets as $tweet) {
+                    if (property_exists($tweets,'text')) {
                     $twitter .= '<li>
-                        <span class="status"><i class="fa fa-twitter"></i> '.$tweet->text.'</span>
+                        <span class="status"><i class="fa fa-twitter"></i> '.array_key_exists('text',$tweet) ? $tweet['text'] : ''.'</span>
                         <span class="meta">'.date('g:i a M j', strtotime($tweet->created_at)).'</span>
                      </li>';
+                    }
                 }
-            }
-
             echo '<ul>'.$twitter.'</ul>';
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

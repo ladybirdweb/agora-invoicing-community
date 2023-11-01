@@ -196,14 +196,14 @@ class SocialMediaController extends Controller
             // Put this after fetching Tweets
             $twitter = '';
             // Create the HTML output
-                foreach ($tweets as $tweet) {
-                    if (property_exists($tweets,'text')) {
+            foreach ($tweets as $tweet) {
+                if (property_exists($tweets, 'text')) {
                     $twitter .= '<li>
-                        <span class="status"><i class="fa fa-twitter"></i> '.array_key_exists('text',$tweet) ? $tweet['text'] : ''.'</span>
+                        <span class="status"><i class="fa fa-twitter"></i> '.array_key_exists('text', $tweet) ? $tweet['text'] : ''.'</span>
                         <span class="meta">'.date('g:i a M j', strtotime($tweet->created_at)).'</span>
                      </li>';
-                    }
                 }
+            }
             echo '<ul>'.$twitter.'</ul>';
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

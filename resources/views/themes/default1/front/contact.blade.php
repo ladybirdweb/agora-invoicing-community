@@ -28,6 +28,7 @@ What can we help you with?
 <?php 
 $set = new \App\Model\Common\Setting();
 $set = $set->findOrFail(1);
+$address = preg_replace("/^\R+|\R+\z/", '', $set->address);
 ?>
 
 <div class="row">
@@ -98,7 +99,7 @@ $set = $set->findOrFail(1);
 
         <h4 class="heading-primary">Our Office</h4>
        <ul class="list list-icons list-icons-style-3 mt-4">
-       <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{ implode(', ', array_filter([$set->address, $set->city, $state, $country, $set->zip])) }}.</li>
+       <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{ implode(', ', array_filter([$address, $set->city, $state, $country, $set->zip])) }}.</li>
                                 <li><i class="fas fa-phone"></i> <strong>Phone: </strong><b>+</b>{{$set->phone_code}} {{$set->phone}}</li>
                                 <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
                             </ul>

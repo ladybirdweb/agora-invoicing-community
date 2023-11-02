@@ -196,7 +196,7 @@ class SocialMediaController extends Controller
             // Put this after fetching Tweets
             $twitter = '';
             // Create the HTML output
-           
+
             foreach ($tweets as $tweet) {
                 $twitter .= '<li>
                 <span class="status"><i class="fa fa-twitter"></i> '.optional($tweet)->text.'</span>

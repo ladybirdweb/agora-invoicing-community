@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
-use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
@@ -138,6 +137,7 @@ class BaseOrderController extends ExtendedOrderController
             throw new \Exception($ex->getMessage());
         }
     }
+
     public function addToMailchimp($product, $user_id, $item)
     {
         try {

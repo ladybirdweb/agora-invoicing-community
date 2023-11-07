@@ -117,7 +117,6 @@ class BaseOrderController extends ExtendedOrderController
                 'number' => $this->generateNumber(),
                 'created_at' => Carbon::now(),
             ]);
-            $this->updateInvoiceDate($invoiceid);
             \Session::put('upgradeNewActiveOrder', $order->id);
 
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
@@ -139,13 +138,6 @@ class BaseOrderController extends ExtendedOrderController
             throw new \Exception($ex->getMessage());
         }
     }
-
-    protected function updateInvoiceDate($invoiceId)
-    {
-        $invoice = Invoice::find($invoiceId);
-        $invoice->update(['date' => Carbon::now()]);
-    }
-
     public function addToMailchimp($product, $user_id, $item)
     {
         try {

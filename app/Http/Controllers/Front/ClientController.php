@@ -283,7 +283,7 @@ class ClientController extends BaseClientController
                     ->orderColumn('orderNo', '-invoices.date ASC')
                     ->orderColumn('date', '-invoices.date ASC')
                     ->orderColumn('total', '-invoices.date ASC')
-                    ->orderColumn('pais', '-invoices.date ASC')
+                    ->orderColumn('paid', '-invoices.date ASC')
                     ->orderColumn('balance', '-invoices.date ASC')
                     ->orderColumn('status', '-invoices.date ASC')
                     ->orderColumn('date', '-invoices.date ASC')

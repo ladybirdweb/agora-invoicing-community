@@ -596,12 +596,14 @@ function getContactData()
 function cloudSubDomain()
 {
     $cloudSubDomain = \App\Model\Common\FaveoCloud::find(1);
+
     return optional($cloudSubDomain)->cloud_cname;
 }
 
 function cloudCentralDomain()
 {
     $cloudSubDomain = \App\Model\Common\FaveoCloud::find(1);
+
     return str_replace('https://', '', optional($cloudSubDomain)->cloud_central_domain);
 }
 

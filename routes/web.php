@@ -575,7 +575,6 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('cloud-data-center-store', [Tenancy\CloudExtraActivities::class, 'storeCloudDataCenter'])->name('cloud-data-center-store');
 
-
     /*
      * Api
      */

@@ -586,21 +586,28 @@ function getContactData()
     return ['logo' => $logo, 'contact' => $billingContact];
 }
 
-function cloudSubDomain(){
+function cloudSubDomain()
+{
     $cloudSubDomain = \App\Model\Common\FaveoCloud::find(1);
+
     return $cloudSubDomain->cloud_cname;
 }
 
-function cloudCentralDomain(){
+function cloudCentralDomain()
+{
     $cloudSubDomain = \App\Model\Common\FaveoCloud::find(1);
+
     return str_replace('https://', '', $cloudSubDomain->cloud_central_domain);
 }
 
-function cloudPopUpDetails(){
+function cloudPopUpDetails()
+{
     $cloudPop = \App\CloudPopUp::find(1);
+
     return $cloudPop;
 }
 
-function cloudPopupProducts(){
+function cloudPopupProducts()
+{
     return \App\Model\Product\CloudProducts::value('cloud_product')->toArray();
 }

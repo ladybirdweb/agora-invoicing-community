@@ -69,7 +69,7 @@ class CloudExtraActivities extends Controller
     public function orderDomainCloudAutofill(Request $request)
     {
         // Output the modified domain value
-        $installtion_path = InstallationDetail::where('order_id', $request->orderId)->where('installation_path', '!=', )->latest()->value('installation_path');
+        $installtion_path = InstallationDetail::where('order_id', $request->orderId)->where('installation_path', '!=')->latest()->value('installation_path');
         if (! empty($installtion_path)) {
             return response()->json(['data'=> $installtion_path]);
         }
@@ -173,7 +173,7 @@ class CloudExtraActivities extends Controller
                 return errorResponse(trans('message.agent_zero'));
             }
             $orderId = $request->input('orderId');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', )->latest()->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=')->latest()->value('installation_path');
             if (empty($installation_path)) {
                 return errorResponse(trans('message.installation_path_not_found'));
             }
@@ -212,7 +212,7 @@ class CloudExtraActivities extends Controller
             $agents = $request->agents;
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', )->latest()->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=')->latest()->value('installation_path');
 //            if (empty($installation_path)) {
 //                return errorResponse(trans('message.installation_path_not_found'));
 //            }
@@ -959,12 +959,10 @@ class CloudExtraActivities extends Controller
 
         return \DataTables::collection($collection)
             ->addColumn('Cloud Product', function ($model) {
-
-                return "<p><a href='".url('/products/'.$model->product->id.'/edit')."'>".$model->product->name."</a></p>";
+                return "<p><a href='".url('/products/'.$model->product->id.'/edit')."'>".$model->product->name.'</a></p>';
             })
             ->addColumn('Cloud free plan', function ($model) {
-                return "<p><a href='".url('/plans/'.$model->product->id.'/edit')."'>".$model->plan->name."</a></p>";
-
+                return "<p><a href='".url('/plans/'.$model->product->id.'/edit')."'>".$model->plan->name.'</a></p>';
             })
             ->addColumn('Cloud product key', function ($model) {
                 return $model->cloud_product_key;
@@ -975,46 +973,43 @@ class CloudExtraActivities extends Controller
                 class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
             })
-            ->rawColumns(['Cloud Product', 'Cloud free plan', 'Cloud product key','action'])
+            ->rawColumns(['Cloud Product', 'Cloud free plan', 'Cloud product key', 'action'])
             ->make(true);
     }
 
-    public function DeleteProductConfig(Request $request){
+    public function DeleteProductConfig(Request $request)
+    {
         try {
             CloudProducts::whereid($request->get('id'))->delete();
-            return successResponse('message.pop_delete');
 
-        }
-        Catch(\Exception $e){
+            return successResponse('message.pop_delete');
+        } catch(\Exception $e) {
             return errorResponse($e->getMessage());
         }
-
     }
 
-    public function storeCloudDataCenter(Request $request){
-
+    public function storeCloudDataCenter(Request $request)
+    {
         $request->validate(['cloud_countries' => 'required', 'cloud_state' => 'required']);
         $countryName = Country::where('country_code_char2', strtoupper($request->get('cloud_countries')))->value('nicename');
         $state = $request->get('cloud_state');
         $city = $request->get('cloud_city');
-        $geo = (empty($city))?$this->getStateCoordinates($state):$this->getStateCoordinates($city);
-        $state = State::where('state_subdivision_code',$state)->value('state_subdivision_name');
-        if(!empty($geo)){
-          CloudDataCenters::create([
-              'cloud_countries' => $countryName,
-              'cloud_state'  => $state,
-              'cloud_city'   => $city,
-              'latitude'    => $geo['latitude'],
-              'longitude'   => $geo['longitude']
-          ]);
-            return redirect()->back()->with('success', 'message.saved_products');
+        $geo = (empty($city)) ? $this->getStateCoordinates($state) : $this->getStateCoordinates($city);
+        $state = State::where('state_subdivision_code', $state)->value('state_subdivision_name');
+        if (! empty($geo)) {
+            CloudDataCenters::create([
+                'cloud_countries' => $countryName,
+                'cloud_state'  => $state,
+                'cloud_city'   => $city,
+                'latitude'    => $geo['latitude'],
+                'longitude'   => $geo['longitude'],
+            ]);
 
-        }
-        else{
+            return redirect()->back()->with('success', 'message.saved_products');
+        } else {
             return redirect()->back()->with('fails', 'message.no_lat_or_long');
         }
     }
-
 
     private function getStateCoordinates($stateName)
     {
@@ -1031,20 +1026,19 @@ class CloudExtraActivities extends Controller
         }
         $latitude = $data[0]['lat'];
         $longitude = $data[0]['lon'];
+
         return ['latitude' => $latitude, 'longitude' => $longitude];
     }
 
-    public function removeLocation(Request $request){
+    public function removeLocation(Request $request)
+    {
         try {
-            $location = array_first(explode(", ",$request->location_id));
-            CloudDataCenters::where('cloud_state',$location)->orWhere('cloud_city',$location)->delete();
-            return redirect()->back()->with('success', 'message.removed_datacenter');
+            $location = array_first(explode(', ', $request->location_id));
+            CloudDataCenters::where('cloud_state', $location)->orWhere('cloud_city', $location)->delete();
 
-        }
-        Catch(\Exception $e){
+            return redirect()->back()->with('success', 'message.removed_datacenter');
+        } catch(\Exception $e) {
             return redirect()->back()->with('fails', 'message.something_went_wrong');
         }
     }
-
-
 }

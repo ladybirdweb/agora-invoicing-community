@@ -609,5 +609,5 @@ function cloudPopUpDetails()
 
 function cloudPopupProducts()
 {
-    return \App\Model\Product\CloudProducts::value('cloud_product')->toArray();
+    return \App\Model\Product\CloudProducts::pluck('cloud_product')->toArray();
 }

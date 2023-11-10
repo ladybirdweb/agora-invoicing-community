@@ -72,7 +72,7 @@ $downloadPermission = $cont->getPermissionsForProduct($order->product);
 </table>
 <br>
  @if($show)
-@if($downloadPermission['downloadPermission'] == 1 && $product->type != '4')
+@if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
 
  <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>  Download the Latest Version here</a>
 @else

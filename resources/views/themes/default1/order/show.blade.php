@@ -378,7 +378,7 @@ input:checked + .slider:before {
                         
                          <th >Installation Path</th>
 
-                        @if(!in_array($order->product,[117,119]))
+                        @if(!in_array($order->product,cloudPopupProducts()))
                         <th>Installation IP</th>
                         @endif
                             <th>Current Version </th>
@@ -406,7 +406,7 @@ input:checked + .slider:before {
                         ?>
                             <tr>
                                 <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                @if(!in_array($order->product,[117,119]))
+                                @if(!in_array($order->product,cloudPopupProducts()))
 
                                 <td>{{$installationDetails['installed_ip'][$key]}}</td>
                                 @endif

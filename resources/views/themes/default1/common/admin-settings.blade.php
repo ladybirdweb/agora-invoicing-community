@@ -165,11 +165,11 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('view/tenant')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-users fa-stack-1x"></i>
+                                    <i class="fa fa-cloud fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Tenants</p>
+                        <p class="box-title" >Cloud Hub</p>
                     </div>
                 </div>
 

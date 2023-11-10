@@ -538,13 +538,15 @@ Route::middleware('installAgora')->group(function () {
 
     Route::get('delete/domain/{orderNumber}/{isDelete}', [Tenancy\TenantController::class, 'DeleteCloudInstanceForClient']);
 
-    Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
-
     Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
+
+    Route::post('cloud-pop-up', [Tenancy\TenantController::class, 'cloudPopUp'])->name('cloud-pop-up')->middleware('admin');
+
+    Route::post('cloud-product-store', [Tenancy\TenantController::class, 'cloudProductStore'])->name('cloud-product-store')->middleware('admin');
+
     Route::post('enable/cloud', [Tenancy\TenantController::class, 'enableCloud'])->name('enable-cloud')->middleware('admin');
 
     Route::post('upgrade-plan-for-cloud', [Tenancy\CloudExtraActivities::class, 'upgradePlan']);
-    Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
 
     Route::get('api/domain', [Tenancy\CloudExtraActivities::class, 'domainCloudAutofill']);
 
@@ -556,15 +558,9 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
 
-    Route::get('api/domain', [Tenancy\CloudExtraActivities::class, 'domainCloudAutofill']);
-
     Route::post('api/takeCloudDomain', [Tenancy\CloudExtraActivities::class, 'orderDomainCloudAutofill']);
 
-    Route::post('get-cloud-upgrade-cost', [Tenancy\CloudExtraActivities::class, 'getUpgradeCost']);
-
     Route::post('changeAgents', [Tenancy\CloudExtraActivities::class, 'agentAlteration']);
-
-    Route::post('upgradeDowngradeCloud', [Tenancy\CloudExtraActivities::class, 'upgradeDowngradeCloud']);
 
     Route::get('format-currency', [Tenancy\CloudExtraActivities::class, 'formatCurrency']);
 
@@ -574,6 +570,16 @@ Route::middleware('installAgora')->group(function () {
 
     // routes/web.php
     Route::post('/update-session', [Tenancy\CloudExtraActivities::class, 'updateSession'])->name('update-session');
+
+    Route::get('fetch-data', [Tenancy\CloudExtraActivities::class, 'fetchData'])->name('fetch-data');
+
+    Route::delete('delete-cloud-product', [Tenancy\CloudExtraActivities::class, 'DeleteProductConfig'])->name('delete-cloud-product');
+
+    Route::delete('remove-location', [Tenancy\CloudExtraActivities::class, 'removeLocation'])->name('remove-location');
+
+    Route::post('cloud-data-center-store', [Tenancy\CloudExtraActivities::class, 'storeCloudDataCenter'])->name('cloud-data-center-store');
+
+
     /*
      * Api
      */

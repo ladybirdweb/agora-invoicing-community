@@ -13,6 +13,7 @@ use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\TaxOption;
+use App\Model\Product\CloudProducts;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
@@ -59,7 +60,7 @@ class FreeTrailController extends Controller
 
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
-                $product_is = ($request->product == 'Helpdesk') ? 117 : 119;
+                $product_is = CloudProducts::where('cloud_product_key',$request->product)->value('cloud_product');
                 if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id', $product_is)->count() >= 1) {
                     return ['status' => 'false', 'message' => trans('message.limit_is_up')];
                 }
@@ -82,8 +83,8 @@ class FreeTrailController extends Controller
                     }
                     \DB::table('free_trial_allowed')->insert([
                         'user_id' => $userId,
-                        'product_id' => ($request->get('product') == 'Helpdesk' ? 117 : 119),
-                        'domain' => $request->domain.'.faveocloud.com',
+                        'product_id' => CloudProducts::where('cloud_product_key',$request->product)->value('cloud_product'),
+                        'domain' => $request->domain.'.'.cloudSubDomain(),
                     ]);
                     \Session::forget('planDays');
 
@@ -137,15 +138,12 @@ class FreeTrailController extends Controller
     private function createFreetrailInvoiceItems($product_type)
     {
         try {
-            if ($product_type == 'Helpdesk') {
-                $product = Product::with(['planRelation' => function ($query) {
-                    $query->where('name', 'LIKE', '%free%');
-                }])->find(117);
-            } else {
-                $product = Product::with(['planRelation' => function ($query) {
-                    $query->where('name', 'LIKE', '%free%');
-                }])->find(119);
-            }
+            $cloudProduct = CloudProducts::where('cloud_product_key', $product_type)
+                ->select('cloud_free_plan', 'cloud_product')
+                ->first();
+             $product = Product::with(['planRelation' => function ($query) use ($cloudProduct) {
+                    $query->where('id',$cloudProduct->cloud_free_plan);
+                }])->find($cloudProduct->cloud_product);
 
             if ($product) {
                 $plan_id = $product->planRelation()->where('days', '<', 30)->value('id');

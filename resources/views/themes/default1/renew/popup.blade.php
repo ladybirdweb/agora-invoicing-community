@@ -45,7 +45,7 @@
 
                 foreach ($plans as $planId => $planName) {
                     if (isset($renewalPrices[$planId])) {
-                        if(in_array($productid,[117,119])) {
+                        if(in_array($productid,cloudPopupProducts())) {
                             $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                         }
                         else{
@@ -54,7 +54,7 @@
                     }
                 }
               //add more cloud ids until we have a generic way to differentiate
-              if(in_array($productid,[117,119])){
+              if(in_array($productid,cloudPopupProducts())){
                   $plans = array_filter($plans, function ($value) {
                       return stripos($value, 'free') === false;
                   });
@@ -73,7 +73,7 @@
                     @endif
                     {!! Form::hidden('user',$userid) !!}
                     </div>
-                @if(in_array($productid,[117,119]))
+                @if(in_array($productid,cloudPopupProducts()))
                      <div class="form-group">
                          {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
 

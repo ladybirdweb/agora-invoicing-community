@@ -526,7 +526,7 @@ $days = $pay->where('product','117')->value('days');
                 <div class="modal-content">
                     {!! Form::open() !!}
                     <div class="modal-header">
-                        <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
+                        <h4 class="modal-title">{{cloudPopUpDetails()->cloud_top_message}}</h4>
                     </div>
 
                     <div class="modal-body">
@@ -539,29 +539,26 @@ $days = $pay->where('product','117')->value('days');
                         <div class="container">
                             <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                                 <div class="form-group">
-                                    <label><b>{{trans('message.cloud_field_label')}}</b></label>
+                                    <label><b>{!!  cloudPopUpDetails()->cloud_label_field !!}</b></label>
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
-
                                       <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                      <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                      <input type="text" class="form-control col col-5 rounded-0" value=".{{cloudSubDomain()}}" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                                       <p id="validationMessage"></p>
                                     </div>
 
                                 </div>
-                                <label style="margin-top: 2px;"><b>Choose your desired cloud product</b></label>
+                                <label style="margin-top: 2px;"><b>{!!cloudPopUpDetails()->cloud_label_radio  !!}</b></label>
                                 <div class="row">
+                                    <?php $cloudProducts = \App\Model\Product\CloudProducts::get(); ?>
+
+                                    @foreach($cloudProducts as $cloudProduct)
                                     <div class="col col-6">
                                         <div class="radio-option">
-                                            <input type="radio" name="option" class="product" value="ServiceDesk" checked>
-                                            <label style="margin-left: 2px;">Faveo ServiceDesk</label>
+                                            <input type="radio" name="option" class="product" value="{!! $cloudProduct->cloud_product_key !!}" checked>
+                                            <label style="margin-left: 2px;">{!! \DB::table('products')->where('id',$cloudProduct->cloud_product)->value('name') !!}</label>
                                         </div>
                                     </div>
-                                    <div class="col col-6">
-                                        <div class="radio-option">
-                                            <input type="radio" name="option" class="product" value="Helpdesk">
-                                            <label style="margin-left: 2px;">Faveo HelpDesk</label>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                                 <hr class="custom-line">
                                 <div class="text-center">
@@ -611,7 +608,7 @@ $days = $pay->where('product','117')->value('days');
             <div class="modal-content">
                 {!! Form::open() !!}
                 <div class="modal-header">
-                    <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
+                    <h4 class="modal-title">{{cloudPopUpDetails()->cloud_top_message}}</h4>
                 </div>
 
                 <div class="modal-body">
@@ -625,11 +622,11 @@ $days = $pay->where('product','117')->value('days');
                         <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                             <input type="hidden" id="orderNo" name="order" value="117">
                             <div class="form-group">
-                                <label><b>{{trans('message.cloud_field_label')}}</b></label>
+                                <label><b>{{cloudPopUpDetails()->cloud_label_field}}</b></label>
                                 <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                     <input type="hidden"  name="order" id="orderId"/>
                                     <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                    <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                    <input type="text" class="form-control col col-5 rounded-0" value=".{{cloudSubDomain()}}" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                                     <p id="validationMessagePurchase"></p>
                                 </div>
                             </div>

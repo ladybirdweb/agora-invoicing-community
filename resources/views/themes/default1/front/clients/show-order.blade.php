@@ -309,11 +309,11 @@ $price = $order->price_override;
                          ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
                     ];
                 }
-                    if($product->type == '4' && $order->order_status!='Terminated'){
+                    if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated'){
                         $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
                     }
 
-                    if ($price == '0' && $product->type != '4' && $order->order_status!='Terminated') {
+                    if ($price == '0' && !in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated') {
                         $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
                     }
                     elseif($price != '0' && $order->order_status!='Terminated')
@@ -356,13 +356,13 @@ $price = $order->price_override;
                                     <td><b>Licensed Domain/IP:</b></td>
                                     <td>{{$order->domain}} </td>
                                     <td>
-                                        @if($product->type != '4' && $price != '0')
+                                        @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
                                             <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                                 Reissue License</button></td>
-                                    @elseif($product->type != '4' && $price == '0')
+                                    @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
                                         <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                             Reissue License</button></td>
-                                    @elseif($product->type == '4' && $price != '0')
+                                    @elseif(in_array($product->id,cloudPopupProducts()) && $price != '0')
                                         <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                             Reissue License</button></td>
                                     @endif
@@ -406,7 +406,7 @@ $price = $order->price_override;
                             <tr>
 
                                 <th>Installation Path</th>
-                                @if($product->type != '4')
+                                @if(!in_array($product->id,cloudPopupProducts()))
                                     <th>Installation IP</th>
                                 @endif
                                 <th>Current Version </th>
@@ -433,7 +433,7 @@ $price = $order->price_override;
                                 ?>
                                 <tr>
                                     <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                    @if($product->type != '4')
+                                    @if(!in_array($product->id,cloudPopupProducts()))
                                         <td>{{$installationDetails['installed_ip'][$key]}}</td>
                                     @endif
                                     @if($productversion)
@@ -661,7 +661,7 @@ $price = $order->price_override;
                                                 <div>
                                                     <?php
                                                     $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
-                                                        ->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
+                                                        ->where('installation_path','!=',)->latest()->value('installation_path');
                                                     ?>
 
                                                     <h5 class="mb-1">Change Cloud Domain</h5>
@@ -911,13 +911,13 @@ $price = $order->price_override;
 
                     foreach ($plans as $planId => $planName) {
                         if (isset($renewalPrices[$planId])) {
-                            if(in_array($product->id,[117,119])) {
+                            if(in_array($product->id,cloudPopupProducts())) {
                                 $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                             }
                         }
                     }
                     // Add more cloud IDs until we have a generic way to differentiate
-                    if(in_array($product->id,[117,119])){
+                    if(in_array($product->id,cloudPopupProducts())){
                         $plans = array_filter($plans, function ($value) {
                             return stripos($value, 'free') === false;
                         });

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Tenancy;
 
+use App\CloudPopUp;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
+use App\Model\CloudDataCenters;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use App\Model\Product\CloudProducts;
 use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
 use App\User;
@@ -32,6 +35,7 @@ class TenantController extends Controller
     {
         if ($this->cloud && $this->cloud->cloud_central_domain) {
             $cloud = $this->cloud;
+            $cloudPopUp = CloudPopUp::find(1);
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
 
             if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
@@ -57,8 +61,18 @@ class TenantController extends Controller
             $cloud = null;
         }
         $cloudButton = StatusSetting::value('cloud_button');
+        $cloudDataCenters = CloudDataCenters::all();
 
-        return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud'));
+        // Format the results as per the specified format
+        $regions = $cloudDataCenters->map(function ($center) {
+            return [
+                'name' => !empty($center->cloud_city)?$center->cloud_city.', ' . $center->cloud_countries:$center->cloud_state.', ' . $center->cloud_countries,
+                'latitude' => $center->latitude,
+                'longitude' => $center->longitude,
+            ];
+        });
+
+        return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud','regions','cloudPopUp'));
     }
 
     public function enableCloud(Request $request)
@@ -99,7 +113,7 @@ class TenantController extends Controller
 
             return \DataTables::collection($collection)
                 ->addColumn('Order', function ($model) {
-                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
+                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
                     $order_number = \DB::table('orders')->where('id', $order_id)->value('number');
 
                     if (empty($order_id) || empty($order_number)) {
@@ -109,7 +123,7 @@ class TenantController extends Controller
                     return "<p><a href='".url('/orders/'.$order_id)."'>$order_number</a></p>";
                 })
                 ->addColumn('Deletion day', function ($model) {
-                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->value('order_id');
+                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
                     $subscription_date = Subscription::where('order_id', $order_id)->value('ends_at');
                     if (empty($subscription_date)) {
                         return '--';
@@ -178,10 +192,8 @@ class TenantController extends Controller
     public function createTenant(Request $request)
     {
         $order = Order::wherenumber($request->orderNo)->get();
-        $product = strpos($order[0]->product()->value('name'), 'ServiceDesk') ? 'ServiceDesk' : 'Helpdesk';
-        //This above code is only written
-        // to differentiate HD and SD when we reach the
-        // market place feature this needs to be removed
+        $product = CloudProducts::where('cloud_product', $order[0]->product()->value('id'))->value('cloud_product_key');
+
         $this->validate($request,
             [
                 'orderNo' => 'required',
@@ -208,11 +220,11 @@ class TenantController extends Controller
             $company = str_replace(' ', '', $company);
 
             // Convert uppercase letters to lowercase
-            $faveoCloud = strtolower($company).'.faveocloud.com';
+            $faveoCloud = strtolower($company).'.'.cloudSubDomain();
 
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if (! strpos($faveoCloud, 'faveocloud.com')) {
-                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
+            if (! strpos($faveoCloud, cloudSubDomain())) {
+                if (empty($dns_record) || ! in_array(cloudSubDomain(), array_column($dns_record, 'target'))) {
                     return ['status' => 'false', 'message' => trans('message.cname')];
                 }
             }
@@ -256,24 +268,6 @@ class TenantController extends Controller
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                if (! strpos($faveoCloud, 'faveocloud.com')) {
-                    CloudEmail::create([
-                        'result_message' => $result->message,
-                        'user' => $userEmail,
-                        'result_password' => $result->password,
-                        'domain' => $faveoCloud,
-                    ]);
-                    $client = new Client();
-                    $client->request('GET', env('CLOUD_JOB_URL'), [
-                        'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
-                        'query' => [
-                            'token' => env('CLOUD_OAUTH_TOKEN'),
-                            'domain' => $faveoCloud,
-                        ],
-                    ]);
-
-                    return ['status' => $result->status, 'message' => trans('message.create_in_progress').'.'];
-                } else {
                     $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                         'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                         'query' => [
@@ -315,7 +309,6 @@ class TenantController extends Controller
                     $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $replace, $type);
 
                     return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
-                }
             }
         } catch (Exception $e) {
             $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$userEmail;
@@ -380,7 +373,7 @@ class TenantController extends Controller
     private function deleteCronForTenant($tenantId)
     {
         $client = new Client();
-        if (strpos($tenantId, 'faveocloud.com')) {
+        if (strpos($tenantId, cloudSubDomain())) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
                 'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
                 'query' => [
@@ -403,13 +396,12 @@ class TenantController extends Controller
     {
         $this->validate($request, [
             'cloud_central_domain' => 'required',
+            'cloud_cname' => 'required',
         ]);
 
         try {
             $cloud = new FaveoCloud;
-            $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cron_server_url' => $request->input('cron_server_url'),
-                'cron_server_key' => $request->input('cron_server_key'), ]);
-
+            $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cloud_cname' => $request->input('cloud_cname'),]);
             // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
@@ -423,7 +415,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $order_id = Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->value('id');
-            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', 'billing.faveocloud.com')->value('installation_path');
+            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', )->value('installation_path');
             $response = $this->client->request(
                 'GET',
                 $this->cloud->cloud_central_domain.'/tenants', [
@@ -522,4 +514,43 @@ class TenantController extends Controller
         // Call the createTenant function with the modified request
         return $this->createTenant($request);
     }
+
+    public function cloudPopUp(Request $request){
+
+            $this->validate($request, [
+                'cloud_top_message' => 'required',
+                'cloud_label_field' => 'required',
+                'cloud_label_radio' => 'required',
+            ]);
+
+            try {
+                $cloud = new CloudPopUp;
+                $cloud->updateOrCreate(['id' => 1], ['cloud_top_message' => $request->input('cloud_top_message'),
+                         'cloud_label_field' => $request->input('cloud_label_field'),
+                         'cloud_label_radio' => $request->input('cloud_label_radio')]);
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            } catch (Exception $e) {
+                return redirect()->back()->with('fails', $e->getMessage());
+            }
+
+    }
+
+    public function cloudProductStore(Request $request){
+        $request->validate(
+            [
+                'cloud_product' => 'required',
+                'cloud_free_plan' => 'required',
+                'cloud_product_key' => 'required',
+            ]
+        );
+        try {
+            CloudProducts::create($request->all());
+
+            return redirect()->back()->with('success', 'message.saved_products');
+        }
+        Catch(\Exception $e){
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
 }

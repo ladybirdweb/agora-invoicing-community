@@ -301,6 +301,35 @@ $price = $order->price_override;
             <div class="row pt-2">
 
                 <div class="col-lg-3 mt-4 mt-lg-0">
+            @php
+                if($order->order_status!='Terminated'){
+                    $navigations = [
+                         ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                         //['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
+                    }
+                else{
+                     $navigations = [
+                         ['id'=>'license-details', 'name'=>'Order Terminated','active'=>1, 'slot'=>'license','icon'=>'fas fa-warning'],
+                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ];
+                }
+                    if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated'){
+                        $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
+                    }
+
+                    if ($price == '0' && !in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated') {
+                        $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
+                    elseif($price != '0' && $order->order_status!='Terminated')
+                    {
+                      $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+                    }
+            @endphp
 
                     <aside class="sidebar mt-2 mb-5">
 
@@ -377,8 +406,7 @@ $price = $order->price_override;
                          @endif
                     <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
 
-
-                    <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
+                        <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
 
 
                         <div class="row">
@@ -405,14 +433,14 @@ $price = $order->price_override;
                                     <span id="copiedMessage" class="hidden">Copied</span>
 
                                          @if ($licenseStatus == 1)
-                                            @if($product->type != '4' && $price != '0')
+                                            @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
 
                                              <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
-                                             @elseif($product->type != '4' && $price == '0')
+                                             @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
                                              <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
-                                             @elseif($product->type == '4' && $price != '0')
+                                             @elseif(in_array($product->id,cloudPopupProducts()) && $price != '0')
                                              <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
                                              @endif
@@ -468,16 +496,56 @@ $price = $order->price_override;
                                     <tr>
 
                                     <th>Installation Path</th>
-                                    @if($product->type != '4')
+                                    @if(!in_array($product->id,cloudPopupProducts()))
                                         <th>Installation IP</th>
+
                                     @endif
                                     <th>Current Version </th>
                                     <th>  Last Active</th>
 
                                 </tr></thead>
 
-                                     <tbody>
-                              @foreach($installationDetails['installed_path'] as $key => $ins)
+                            <tr>
+                                <td><b>Update Expiry Date:</b></td>
+                                <td>{!! $date !!}</td>
+                                <td></td>
+                            </tr>
+
+                            @if($order->license_mode=='File')
+                                <tr>
+                                    <td><b>Localized License:</b></td>
+                                    <td>
+                                        <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
+                                    </td>
+                                    <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
+                                        <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
+                                    </td>
+                                </tr>
+                            @endif
+
+                            </tbody>
+
+                        </table>
+                        <script src="{{asset('common/js/licCode.js')}}"></script>
+
+
+                        <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+
+                            <thead>
+                            <tr>
+
+                                <th>Installation Path</th>
+                                @if(!in_array($product->id,cloudPopupProducts()))
+                                    <th>Installation IP</th>
+                                @endif
+                                <th>Current Version </th>
+                                <th>  Last Active</th>
+
+                            </tr></thead>
+                            <tbody>
+                            @foreach($installationDetails['installed_path'] as $key => $ins)
+
                                 <?php
                                 $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
 
@@ -496,7 +564,7 @@ $price = $order->price_override;
                                 ?>
                                 <tr>
                                     <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                    @if($product->type != '4')
+                                    @if(!in_array($product->id,cloudPopupProducts()))
                                         <td>{{$installationDetails['installed_ip'][$key]}}</td>
                                     @endif
                                     @if($productversion)
@@ -1031,13 +1099,13 @@ $price = $order->price_override;
 
                         foreach ($plans as $planId => $planName) {
                             if (isset($renewalPrices[$planId])) {
-                                if(in_array($product->id,[117,119])) {
+                                if(in_array($product->id,cloudPopupProducts())) {
                                     $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                                 }
                             }
                         }
                         // Add more cloud IDs until we have a generic way to differentiate
-                        if(in_array($product->id,[117,119])){
+                        if(in_array($product->id,cloudPopupProducts())){
                             $plans = array_filter($plans, function ($value) {
                                 return stripos($value, 'free') === false;
                             });

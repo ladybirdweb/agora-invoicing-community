@@ -533,7 +533,13 @@ $social = App\Model\Common\SocialMedia::get();
 
     <div class="modal fade" id="tenant" tabindex="-1" role="dialog" aria-labelledby="trialModalLabel" aria-hidden="true">
 
-        <div class="modal-dialog">
+        <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open() !!}
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{cloudPopUpDetails()->cloud_top_message}}</h4>
+                    </div>
 
             <div class="modal-content">
                  {!! Form::open() !!}
@@ -631,7 +637,7 @@ $social = App\Model\Common\SocialMedia::get();
             <div class="modal-content">
                 {!! Form::open() !!}
                 <div class="modal-header">
-                    <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
+                    <h4 class="modal-title">{{cloudPopUpDetails()->cloud_top_message}}</h4>
                 </div>
 
                 <div class="modal-body">
@@ -645,12 +651,12 @@ $social = App\Model\Common\SocialMedia::get();
                         <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                             <input type="hidden" id="orderNo" name="order" value="117">
                             <div class="form-group">
-                                <label><b>{{trans('message.cloud_field_label')}}</b></label>
-                                 <div class="input-group mb-2">
+                                <label><b>{{cloudPopUpDetails()->cloud_label_field}}</b></label>
+                                     <div class="input-group mb-2">
                                     <input type="hidden"  name="order" id="orderId"/>
                                     <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>
-                                    <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
-                                   
+                                    <input type="text" class="form-control col col-5 rounded-0" value=".{{cloudSubDomain()}}" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
+                                    <p id="validationMessagePurchase"></p>
                                 </div>
                                  <p id="validationMessagePurchase"></p>
                             </div>

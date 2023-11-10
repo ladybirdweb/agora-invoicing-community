@@ -61,7 +61,7 @@ Renew
 
                     </div>
                 </div>
-                @if(in_array($productid,[117,119]))
+                @if(in_array($productid,cloudPopupProducts()))
                 <div class="row">
                     <div class="col-md-4 form-group">
                         {!! Form::label('agents', 'Agents', ['class' => 'col-form-label required']) !!}
@@ -99,7 +99,7 @@ Renew
      });
      var shouldFetchPlanCost = true; // Disable further calls until needed
 
-     @if(in_array($productid,[117,119]))
+     @if(in_array($productid,cloudPopupProducts()))
      function fetchPlanCost(planId) {
          if(!shouldFetchPlanCost){
              return

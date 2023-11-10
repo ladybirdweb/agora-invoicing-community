@@ -301,9 +301,9 @@ class TemplateController extends Controller
                 // $duration = $value->periods;
                 $duration = Period::where('days', $value->days)->first();
                 $months = $duration ? $duration->name : '';
-                if ($product->type != '4') {
+                if (!in_array($product->id,cloudPopupProducts())) {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
-                } elseif ($cost != '0' && $product->type == '4') {
+                } elseif ($cost != '0' && in_array($product->id,cloudPopupProducts())) {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
                 }
                 // $price = currencyFormat($cost, $code = $currency);

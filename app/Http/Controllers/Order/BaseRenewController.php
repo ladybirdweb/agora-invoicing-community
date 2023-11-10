@@ -113,7 +113,7 @@ class BaseRenewController extends Controller
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
-//            if (!empty($agents) && in_array($product->id, [117, 119])) {
+//            if (!empty($agents) && in_array($product->id, cloudPopupProducts())) {
 //                $license_code = Order::where('id', $orderid)->value('serial_key');
 //                $cost = $cost * (int) substr($license_code, -4);
 //            }
@@ -137,7 +137,7 @@ class BaseRenewController extends Controller
             $renewController = new RenewController();
             $renewController->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $renewalPrice, $currency, $qty = 1, $agents, $planid, $user->id, $tax_name, $tax_rate, $renewalPrice);
-            if (in_array($product->id, [117, 119])) {
+            if (in_array($product->id, cloudPopupProducts())) {
                 $license_code = Order::where('id', $orderid)->value('serial_key');
                 $installation_path = InstallationDetail::where('order_id', $orderid)->latest()->value('installation_path');
                 \Session::put('AgentAlterationRenew', $user->id);

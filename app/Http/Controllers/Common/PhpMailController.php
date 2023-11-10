@@ -7,6 +7,7 @@ use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -91,7 +92,7 @@ class PhpMailController extends Controller
             $day = ExpiryMailDay::value('cloud_days');
             $today = new Carbon('today');
             $sub = Subscription::whereNotNull('update_ends_at')
-        ->whereIn('product_id', [117, 119])
+        ->whereIn('product_id', cloudPopupProducts())
         ->where(function ($query) use ($today, $day) {
             $query->whereDate('update_ends_at', '<', $today)
                 ->orWhereDate('update_ends_at', $today->subDays($day + 1));
@@ -109,7 +110,7 @@ class PhpMailController extends Controller
                 }
                 $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-                if (is_null($id) || $id == 'billing.faveocloud.com') {
+                if (is_null($id) || $id == cloudCentralDomain()) {
                     $order->delete();
                 } else {
                     //Destroy the tenat

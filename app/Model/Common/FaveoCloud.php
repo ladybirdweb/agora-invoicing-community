@@ -8,11 +8,11 @@ class FaveoCloud extends Model
 {
     protected $table = 'faveo_cloud';
 
-    protected $fillable = ['cloud_central_domain', 'cron_server_url', 'cron_server_key'];
+    protected $fillable = ['cloud_central_domain', 'cloud_cname'];
 
     protected static $logName = 'Cloud detail';
 
-    protected static $logAttributes = ['cloud_central_domain', 'cron_server_url', 'cron_server_key'];
+    protected static $logAttributes = ['cloud_central_domain', 'cloud_cname'];
 
     protected static $logOnlyDirty = true;
 

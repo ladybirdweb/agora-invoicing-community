@@ -660,7 +660,7 @@ class ClientController extends BaseClientController
                                 } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
-                                if (! in_array($model->product_id, [117, 119])) {
+                                if (! in_array($model->product_id, cloudPopupProducts())) {
                                     $listUrl = $this->getPopup($model, $model->product_id);
                                 }
                                 $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);

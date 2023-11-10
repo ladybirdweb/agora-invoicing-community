@@ -16,8 +16,7 @@
                                     <div class="modal-body">
 
                                       
-
-                                            <p class="text-black"><strong>Current number of agents:</strong> {{$agents}}</p>
+                                         <p class="text-black"><strong>Current number of agents:</strong> {{$agents}}</p>
 
                                             <p class="text-black"><strong>Current plan:</strong> {{$planName}}</p>
                                                     <?php
@@ -51,7 +50,7 @@
 
                                             foreach ($plans as $planId => $planName) {
                                                 if (isset($renewalPrices[$planId])) {
-                                                    if(in_array($productid,[117,119])) {
+                                                    if(in_array($productid,cloudPopupProducts())) {
                                                         $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                                                     }
                                                     else{
@@ -60,7 +59,7 @@
                                                 }
                                             }
                                           //add more cloud ids until we have a generic way to differentiate
-                                          if(in_array($productid,[117,119])){
+                                          if(in_array($productid,cloudPopupProducts())){
                                               $plans = array_filter($plans, function ($value) {
                                                   return stripos($value, 'free') === false;
                                               });
@@ -82,7 +81,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @if(in_array($productid,[117,119]))
+                                            @if(in_array($productid,cloudPopupProducts()))
 
                                             <div class="row">
                                                 <div class="form-group col">

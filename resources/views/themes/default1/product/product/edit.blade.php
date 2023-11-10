@@ -65,7 +65,7 @@ Edit Product
 <div class="card card-secondary card-tabs">
 
     {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
-
+    <?php dump($product); ?>
     <div class="card-header p-0 pt-1">
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <li class="nav-item">
@@ -88,7 +88,7 @@ Edit Product
                                     <h6 id= "namecheck"></h6>
 
                                 </div>
-                   
+
                                 <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}

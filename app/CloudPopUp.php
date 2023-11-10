@@ -11,5 +11,5 @@ class CloudPopUp extends Model
 
     protected $table = 'cloud_pop_up';
 
-    protected $guarded =[];
+    protected $guarded = [];
 }

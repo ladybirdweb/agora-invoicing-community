@@ -60,7 +60,7 @@ class FreeTrailController extends Controller
 
             $userId = $request->get('id');
             if (Auth::user()->id == $userId) {
-                $product_is = CloudProducts::where('cloud_product_key',$request->product)->value('cloud_product');
+                $product_is = CloudProducts::where('cloud_product_key', $request->product)->value('cloud_product');
                 if (\DB::table('free_trial_allowed')->where('user_id', $userId)->where('product_id', $product_is)->count() >= 1) {
                     return ['status' => 'false', 'message' => trans('message.limit_is_up')];
                 }
@@ -83,7 +83,7 @@ class FreeTrailController extends Controller
                     }
                     \DB::table('free_trial_allowed')->insert([
                         'user_id' => $userId,
-                        'product_id' => CloudProducts::where('cloud_product_key',$request->product)->value('cloud_product'),
+                        'product_id' => CloudProducts::where('cloud_product_key', $request->product)->value('cloud_product'),
                         'domain' => $request->domain.'.'.cloudSubDomain(),
                     ]);
                     \Session::forget('planDays');
@@ -141,9 +141,9 @@ class FreeTrailController extends Controller
             $cloudProduct = CloudProducts::where('cloud_product_key', $product_type)
                 ->select('cloud_free_plan', 'cloud_product')
                 ->first();
-             $product = Product::with(['planRelation' => function ($query) use ($cloudProduct) {
-                    $query->where('id',$cloudProduct->cloud_free_plan);
-                }])->find($cloudProduct->cloud_product);
+            $product = Product::with(['planRelation' => function ($query) use ($cloudProduct) {
+                $query->where('id', $cloudProduct->cloud_free_plan);
+            }])->find($cloudProduct->cloud_product);
 
             if ($product) {
                 $plan_id = $product->planRelation()->where('days', '<', 30)->value('id');

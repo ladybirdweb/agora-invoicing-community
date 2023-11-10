@@ -9,14 +9,15 @@ class CloudProducts extends BaseModel
 {
     protected $table = 'cloud_products';
 
-    protected $guarded =[];
+    protected $guarded = [];
 
-    public function product(){
+    public function product()
+    {
         return $this->belongsTo(Product::class, 'cloud_product');
-
     }
 
-    public function plan(){
-        return $this->belongsTo(Plan::class,'cloud_free_plan');
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'cloud_free_plan');
     }
 }

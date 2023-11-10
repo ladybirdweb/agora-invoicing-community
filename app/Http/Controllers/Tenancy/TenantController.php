@@ -66,13 +66,13 @@ class TenantController extends Controller
         // Format the results as per the specified format
         $regions = $cloudDataCenters->map(function ($center) {
             return [
-                'name' => !empty($center->cloud_city)?$center->cloud_city.', ' . $center->cloud_countries:$center->cloud_state.', ' . $center->cloud_countries,
+                'name' => ! empty($center->cloud_city) ? $center->cloud_city.', '.$center->cloud_countries : $center->cloud_state.', '.$center->cloud_countries,
                 'latitude' => $center->latitude,
                 'longitude' => $center->longitude,
             ];
         });
 
-        return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud','regions','cloudPopUp'));
+        return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud', 'regions', 'cloudPopUp'));
     }
 
     public function enableCloud(Request $request)
@@ -268,45 +268,45 @@ class TenantController extends Controller
 
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                    $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
-                        'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
-                        'query' => [
-                            'token' => env('CLOUD_OAUTH_TOKEN'),
-                            'domain' => $faveoCloud,
-                        ],
-                    ]);
+                $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
+                    'auth' => [env('CLOUD_USER'), env('CLOUD_AUTH')],
+                    'query' => [
+                        'token' => env('CLOUD_OAUTH_TOKEN'),
+                        'domain' => $faveoCloud,
+                    ],
+                ]);
 
-                    //template
-                    $template = new \App\Model\Common\Template();
-                    $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
-                    $template = $template->where('type', $temp_type_id)->first();
-                    $contact = getContactData();
+                //template
+                $template = new \App\Model\Common\Template();
+                $temp_type_id = \DB::table('template_types')->where('name', 'cloud_created')->value('id');
+                $template = $template->where('type', $temp_type_id)->first();
+                $contact = getContactData();
 
-                    $type = '';
-                    if ($template) {
-                        $type_id = $template->type;
-                        $temp_type = new \App\Model\Common\TemplateType();
-                        $type = $temp_type->where('id', $type_id)->first()->name;
-                    }
-                    $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
-                    $result->message = str_replace('website', strtolower($product), $result->message);
-                    $result->message = str_replace('You will receive password on your registered email', '', $result->message);
-                    $userData = $result->message.'<br><br> Email:'.' '.$userEmail.'<br>'.'Password:'.' '.$result->password;
+                $type = '';
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                $subject = 'Your '.$order[0]->product()->value('name').' is now ready for use. Get started!';
+                $result->message = str_replace('website', strtolower($product), $result->message);
+                $result->message = str_replace('You will receive password on your registered email', '', $result->message);
+                $userData = $result->message.'<br><br> Email:'.' '.$userEmail.'<br>'.'Password:'.' '.$result->password;
 
-                    $replace = [
-                        'message' => $userData,
-                        'product' => $order[0]->product()->value('name'),
-                        'name' => $userFirstName.' '.$userLastName,
-                        'contact' => $contact['contact'],
-                        'logo' => $contact['logo'],
-                        'title' => $settings->title,
-                        'company_email' => $settings->company_email,
-                    ];
+                $replace = [
+                    'message' => $userData,
+                    'product' => $order[0]->product()->value('name'),
+                    'name' => $userFirstName.' '.$userLastName,
+                    'contact' => $contact['contact'],
+                    'logo' => $contact['logo'],
+                    'title' => $settings->title,
+                    'company_email' => $settings->company_email,
+                ];
 
-                    $this->prepareMessages($faveoCloud, $userEmail, true);
-                    $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $replace, $type);
+                $this->prepareMessages($faveoCloud, $userEmail, true);
+                $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $replace, $type);
 
-                    return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
+                return ['status' => $result->status, 'message' => $result->message.trans('message.cloud_created_successfully')];
             }
         } catch (Exception $e) {
             $message = $e->getMessage().' Domain: '.$faveoCloud.' Email: '.$userEmail;
@@ -399,7 +399,7 @@ class TenantController extends Controller
 
         try {
             $cloud = new FaveoCloud;
-            $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cloud_cname' => $request->input('cloud_cname'),]);
+            $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cloud_cname' => $request->input('cloud_cname')]);
             // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
@@ -413,7 +413,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $order_id = Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->value('id');
-            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=', )->value('installation_path');
+            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=')->value('installation_path');
             $response = $this->client->request(
                 'GET',
                 $this->cloud->cloud_central_domain.'/tenants', [
@@ -513,27 +513,28 @@ class TenantController extends Controller
         return $this->createTenant($request);
     }
 
-    public function cloudPopUp(Request $request){
+    public function cloudPopUp(Request $request)
+    {
+        $this->validate($request, [
+            'cloud_top_message' => 'required',
+            'cloud_label_field' => 'required',
+            'cloud_label_radio' => 'required',
+        ]);
 
-            $this->validate($request, [
-                'cloud_top_message' => 'required',
-                'cloud_label_field' => 'required',
-                'cloud_label_radio' => 'required',
-            ]);
+        try {
+            $cloud = new CloudPopUp;
+            $cloud->updateOrCreate(['id' => 1], ['cloud_top_message' => $request->input('cloud_top_message'),
+                'cloud_label_field' => $request->input('cloud_label_field'),
+                'cloud_label_radio' => $request->input('cloud_label_radio')]);
 
-            try {
-                $cloud = new CloudPopUp;
-                $cloud->updateOrCreate(['id' => 1], ['cloud_top_message' => $request->input('cloud_top_message'),
-                         'cloud_label_field' => $request->input('cloud_label_field'),
-                         'cloud_label_radio' => $request->input('cloud_label_radio')]);
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            } catch (Exception $e) {
-                return redirect()->back()->with('fails', $e->getMessage());
-            }
-
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
     }
 
-    public function cloudProductStore(Request $request){
+    public function cloudProductStore(Request $request)
+    {
         $request->validate(
             [
                 'cloud_product' => 'required',
@@ -545,10 +546,8 @@ class TenantController extends Controller
             CloudProducts::create($request->all());
 
             return redirect()->back()->with('success', 'message.saved_products');
-        }
-        Catch(\Exception $e){
+        } catch(\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
 }

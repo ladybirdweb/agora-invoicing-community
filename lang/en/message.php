@@ -737,5 +737,5 @@ return [
     'agent_reduce' => "Oops! You can't reduce the number of agents on this plan at the moment. It looks like you have some active agents in your account. We recommend deactivating any extra agents before trying to adjust your agent count in the plan.",
     'not_allowed_domain' => 'Oops! It seems like you entered an invalid domain format that is not allowed on the internet. Please enter a valid domain name to continue.',
     'agent_zero' => 'It looks like you\'ve selected zero agents. Please choose a valid number of agents to continue.',
-    'cloud_cname' => 'Cloud Cname Record'
+    'cloud_cname' => 'Cloud Cname Record',
 ];

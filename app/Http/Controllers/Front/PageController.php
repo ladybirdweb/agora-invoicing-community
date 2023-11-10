@@ -615,9 +615,9 @@ class PageController extends Controller
                 $cost = rounding($cost);
                 $duration = $value->periods;
                 $months = count($duration) > 0 ? $duration->first()->name : '';
-                if (!in_array($product->id,cloudPopupProducts())) {
+                if (! in_array($product->id, cloudPopupProducts())) {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
-                } elseif ($cost != '0' && in_array($product->id,cloudPopupProducts())) {
+                } elseif ($cost != '0' && in_array($product->id, cloudPopupProducts())) {
                     $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product);
                 }
                 // $price = currencyFormat($cost, $code = $currency);
@@ -670,7 +670,7 @@ class PageController extends Controller
                     $prices[] = ($product->status) ? round($planDetails['plan']->add_price / 12) : $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
-                } elseif (! $product->status && !in_array($product->id,cloudPopupProducts())) {
+                } elseif (! $product->status && ! in_array($product->id, cloudPopupProducts())) {
                     $planDetails = userCurrencyAndPrice('', $plan);
                     $prices[] = $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];

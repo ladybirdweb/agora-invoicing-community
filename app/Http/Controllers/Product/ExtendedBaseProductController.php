@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
-use App\Model\Common\FaveoCloud;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Payment\TaxProductRelation;

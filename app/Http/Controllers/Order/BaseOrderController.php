@@ -338,10 +338,11 @@ class BaseOrderController extends ExtendedOrderController
 
         $template = $templates->where('type', $temp_id)->first();
 
-        $knowledgeBaseUrl = $setting->company_url;
+        $knowledgeBaseUrl = $setting->knowledge_base_url;
 
         $orderHeading = ($value != '4') ? 'Download' : 'Order';
         $orderUrl = ($value != '4') ? $downloadurl : url('my-order/'.$orderid);
+        $licenseCode_url = url('my-order/'.$orderid);
         $end = app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y');
@@ -358,7 +359,8 @@ class BaseOrderController extends ExtendedOrderController
             'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
             'knowledge_base' => $knowledgeBaseUrl,
             'contact' => $contact['contact'],
-            'logo' => $contact['logo'], ];
+            'logo' => $contact['logo'],];
+         
 
         $type = '';
         if ($template) {

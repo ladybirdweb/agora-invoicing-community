@@ -413,7 +413,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
             $order_id = Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->value('id');
-            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=')->value('installation_path');
+            $installation_path = \DB::table('installation_details')->where('order_id', $order_id)->where('installation_path', '!=',cloudCentralDomain())->value('installation_path');
             $response = $this->client->request(
                 'GET',
                 $this->cloud->cloud_central_domain.'/tenants', [

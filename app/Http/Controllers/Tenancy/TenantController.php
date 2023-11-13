@@ -545,7 +545,7 @@ class TenantController extends Controller
         try {
             CloudProducts::create($request->all());
 
-            return redirect()->back()->with('success', 'message.saved_products');
+            return redirect()->back()->with('success', trans('message.saved_products'));
         } catch(\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }

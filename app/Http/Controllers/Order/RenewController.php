@@ -263,7 +263,7 @@ class RenewController extends BaseRenewController
             $order_id = $sub->order_id;
             if ($request->has('agents')) {
                 $agents = $request->input('agents');
-                $installation_path = InstallationDetail::where('order_id', $order_id)->where('installation_path', '!=',cloudCentralDomain())->latest()->value('installation_path');
+                $installation_path = InstallationDetail::where('order_id', $order_id)->where('installation_path', '!=', cloudCentralDomain())->latest()->value('installation_path');
                 if (empty($installation_path)) {
                     return response(['status' => false, 'message' => trans('message.no_installation_found')]);
                 }

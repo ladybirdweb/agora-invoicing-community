@@ -744,5 +744,14 @@ return [
     'no_lat_or_long' => 'Latitude and longitude was not found for this location',
     'removed_datacenter' => 'Data center was removed',
     'something_went_wrong' => 'Something has gone. Will advice you to try later',
+    'cloud_country' => 'Country',
+    'cloud_state' => 'State/County',
+    'cloud_city' => 'City',
+    'cloud_product' => 'Saas Product',
+    'cloud_free_plan' => 'Saas free trial plan',
+    'cloud_product_key' => 'Saas product key',
+    'cloud_label_radio' => 'Label for radio button',
+    'cloud_label_field' => 'Label for the domain field',
+    'cloud_top_message' => 'Heading for the popup',
 
 ];

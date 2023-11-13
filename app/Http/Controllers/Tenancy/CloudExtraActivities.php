@@ -212,7 +212,7 @@ class CloudExtraActivities extends Controller
             $agents = $request->agents;
             $orderId = $request->orderId;
             $oldLicense = Order::where('id', $orderId)->latest()->value('serial_key');
-            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=',cloudCentralDomain())->latest()->value('installation_path');
+            $installation_path = InstallationDetail::where('order_id', $orderId)->where('installation_path', '!=', cloudCentralDomain())->latest()->value('installation_path');
 //            if (empty($installation_path)) {
 //                return errorResponse(trans('message.installation_path_not_found'));
 //            }

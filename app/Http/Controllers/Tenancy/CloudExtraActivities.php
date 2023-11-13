@@ -982,7 +982,7 @@ class CloudExtraActivities extends Controller
         try {
             CloudProducts::whereid($request->get('id'))->delete();
 
-            return successResponse('message.pop_delete');
+            return successResponse(trans('message.pop_delete'));
         } catch(\Exception $e) {
             return errorResponse($e->getMessage());
         }
@@ -1005,9 +1005,9 @@ class CloudExtraActivities extends Controller
                 'longitude'   => $geo['longitude'],
             ]);
 
-            return redirect()->back()->with('success', 'message.saved_data_center');
+            return redirect()->back()->with('success', trans('message.saved_data_center'));
         } else {
-            return redirect()->back()->with('fails', 'message.no_lat_or_long');
+            return redirect()->back()->with('fails', trans('message.no_lat_or_long'));
         }
     }
 
@@ -1036,9 +1036,9 @@ class CloudExtraActivities extends Controller
             $location = array_first(explode(', ', $request->location_id));
             CloudDataCenters::where('cloud_state', $location)->orWhere('cloud_city', $location)->delete();
 
-            return redirect()->back()->with('success', 'message.removed_datacenter');
+            return redirect()->back()->with('success', trans('message.removed_datacenter'));
         } catch(\Exception $e) {
-            return redirect()->back()->with('fails', 'message.something_went_wrong');
+            return redirect()->back()->with('fails', trans('message.something_went_wrong'));
         }
     }
 }

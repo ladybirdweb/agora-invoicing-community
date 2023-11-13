@@ -873,6 +873,7 @@ $price = $order->price_override;
 
                         </div>
                     @endif
+
                     </div>
                 </div>
             </div>

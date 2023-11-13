@@ -136,7 +136,6 @@ class ExtendedBaseInvoiceController extends Controller
              $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
         try {
-            \Log::debug('sandesh', (array) $invoiceChecked);
             foreach ($invoiceChecked as $key => $value) {
                 if (isset($key)) {//If Payment is linked to Invoice
                     $invoice = Invoice::find($value);

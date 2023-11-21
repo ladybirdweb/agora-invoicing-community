@@ -342,7 +342,7 @@
 
                 if (confirm('Are you sure you want to delete this invoice?')) {
                     $.ajax({
-                        url: '/invoices/delete/' + id,
+                        url: "{{ url('invoices/delete/') }}/" + id,
                         type: 'DELETE',
                         success: function (response) {
                             // Display success message

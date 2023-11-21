@@ -136,20 +136,9 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
-        if (\Session::has('session-url')) {
-            $url = \Session::get('session-url');
-
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
-        } else {
-            $user = \Auth::user()->role;
-            $redirectResponse = redirect()->intended('/');
-            $intendedUrl = $redirectResponse->getTargetUrl();
-            if (strpos($intendedUrl, 'autopaynow') == false) {
-                return ($user == 'user') ? 'my-invoices' : '/';
-            }
-
-            return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
-        }
+       
+        return Redirect()->getIntendedUrl() ? substr(Redirect()->getIntendedUrl(), strlen(env('APP_URL'))) : env('APP_URL').'/my-invoices' ;
+       
     }
 
     public function redirectToGithub($provider)//redirect to twitter ,github,google and linkedin

@@ -743,7 +743,7 @@ class TemplateTableSeeder extends Seeder
 
         Template::whereIn('id', [21, 22])->delete();
 
-        Template::create(['id' => 21, 'name' => 'Contact us', 'type' => 21, 'url' => 'null', 'reply_to' => '{{email}}','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 21, 'name' => 'Contact us', 'type' => 21, 'url' => 'null', 'reply_to' => '{{email}}','data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
         <tbody>
         <tr>
         <td style="width: 30px;">&nbsp;</td>
@@ -778,7 +778,7 @@ class TemplateTableSeeder extends Seeder
         </table>
         <p>&nbsp;</p>']);
 
-        Template::create(['id' => 22, 'name' => 'Requesting a demo', 'type' => 22, 'url' => 'null', 'reply_to' => '{{email}}','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 22, 'name' => 'Requesting a demo', 'type' => 22, 'url' => 'null', 'reply_to' => '{{email}}','data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
         <tbody>
         <tr>
         <td style="width: 30px;">&nbsp;</td>

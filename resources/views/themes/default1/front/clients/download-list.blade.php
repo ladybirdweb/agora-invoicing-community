@@ -1,4 +1,4 @@
-<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#list" style="color:white;" >  <i class='fa fa-download' style="color:white;" title=Download></i>&nbsp;Download</a>
+<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="modal" data-target="#list">  <i class='fa fa-download' data-toggle="tooltip" title="Click here to download"></i>&nbsp;</a>
 <style>
     .more-text{
      display:none;

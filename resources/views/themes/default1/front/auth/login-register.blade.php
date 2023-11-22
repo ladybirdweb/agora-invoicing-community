@@ -1,410 +1,179 @@
-<!DOCTYPE html>
-<html>
-<head>
+@extends('themes.default1.layouts.front.master')
+@section('title')
+    Login | Register
+@stop
+@section('page-header')
+    Login | Register
+@stop
+@section('page-heading')
+Sign in or Register
+@stop
+@section('breadcrumb')
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">Sign in &nbsp;&nbsp;or&nbsp;&nbsp; Register</li>
+@stop 
+@section('main-class')
+    main
+@stop
+@section('content')
+    <?php
+    use App\Http\Controllers\Front\CartController;
+    $country = findCountryByGeoip($location['iso_code']);
+    $states = findStateByRegionId($location['iso_code']);
+    $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+    $state_code = $location['iso_code'] . "-" . $location['state'];
+    $state = getStateByCode($state_code);
 
-    <!-- Basic -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Login | Register | Faveo</title>
-
-    <meta name="keywords" content="Faveo" />
-    <meta name="description" content="Faveo">
-    <meta name="author" content="Sakthivel Munusami">
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="../img/faveo.png">
-
-    <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-
-    <!-- Web Fonts  -->
-    <link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
-
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/animate.compat.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/simple-line-icons.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/owl.carousel.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/owl.theme.default.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/magnific-popup.min.css')}}">
-
-    <!-- Theme CSS -->
-    <link id="default-styles" rel="stylesheet" href="{{asset('client/porto/css-2/theme.css')}}">
-    <link id="default-styles-2" rel="stylesheet" href="{{asset('client/porto/css-2/theme-elements.css')}}">
-    <link id="default-styles-3" rel="stylesheet" href="{{asset('client/porto/css-2/theme-blog.css')}}">
-    <link id="default-styles-4" rel="stylesheet" href="{{asset('client/porto/css-2/theme-shop.css')}}">
-
-    <link id="rtl-styles" rel="stylesheet" href="{{asset('client/porto/css-2/rtl-theme.css')}}">
-    <link id="rtl-styles-2" rel="stylesheet" href="{{asset('client/porto/css-2/rtl-theme-elements.css')}}">
-    <link id="rtl-styles-3" rel="stylesheet" href="{{asset('client/porto/css-2/rtl-theme-blog.css')}}">
-    <link id="rtl-styles-4" rel="stylesheet" href="{{asset('client/porto/css-2/rtl-theme-shop.css')}}">
-
-    <!-- Demo CSS -->
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/demo-transportation-logistic.css')}}">
-
-    <!-- Skin CSS -->
-    <link id="skinCSS" rel="stylesheet" href="{{asset('client/porto/css-2/skin-transportation-logistic.css')}}">
-
-    <!-- Theme Custom CSS -->
-    <link rel="stylesheet" href="{{asset('client/porto/css-2/custom.css')}}">
-
-    <!-- Head Libs -->
-    <script src="{{asset('client/porto/js-2/modernizr.min.js')}}"></script>
-
+    ?>
     <style>
-
-        .sticky-header-active .d-sticky-header-negative-none {
-            display: block !important;
+  .bootstrap-select.btn-group .btn .filter-option 
+  {
+      font-weight: normal;
+  }
+        .required:after{
+            content:'*';
+            color:red;
+            padding-left:0px;
         }
+
+
+        
+
+        .wizard-inner
+        {
+            display:none;
+        }
+
+        
+
+        .nav-tabs{
+            border-bottom: none;
+            margin: -5px;
+        }
+        .tab-content {
+            border-radius: 0px;
+            box-shadow: inherit;
+
+            border: none ;
+            border-top: 0;
+            /*padding: 15px;*/
+        }
+
+        .open>.dropdown-menu {
+            display: block;
+            color:black;
+        }
+        .inner>.dropdown-menu{
+            margin-top: 0px;
+        }
+        .bootstrap-select .dropdown-toggle .caret {
+           display: none;
+        }
+
+        .form-control:not(.form-control-sm):not(.form-control-lg) {
+        /*font-size: 13.6px;
+        font-size: 0.85rem;*/
+        line-height: normal;
+    }
+
+
+
     </style>
+    
+    <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" />
 
-</head>
-<body data-plugin-page-transition>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-<div class="body p-relative bottom-1">
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    <header id="header" class="header-effect-reveal" data-plugin-options="{'stickyEnabled': true, 'stickyEffect': 'reveal', 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': false, 'stickyStartAt': 200, 'stickySetTop': '-44px'}">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> 
+    <div class="row">
+        <div class="col-md-12">
 
-        <div class="header-body border-0 border-bottom-light">
+            <section>
+                <div class="wizard">
+                    <div class="wizard-inner" style="display: none">
 
-            <div class="header-container container-fluid p-0">
+                        <ul class="nav nav-tabs" role="tablist" style=" margin: -5px!important;">
+                            <li role="presentation" class="active">
+                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
 
-                <div class="header-row">
 
-                    <div class="header-column header-column-border-right flex-grow-0 d-sticky-header-active-none">
-
-                        <div class="header-row">
-
-                            <div class="header-logo p-relative top-30 m-0" style="width: 320px;height: 150px;text-align: center;">
-
-                                <a href="../index.html">
-
-                                    <img alt="Porto" width="130" height="75" src="../img/faveo.png">
                                 </a>
-                            </div>
-                        </div>
+                                <p style="display: none">Contact Information</p>
+                            </li>
+                            <li role="presentation" class="disabled" >
+                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
+
+
+                                </a>
+                                <p style="display: none">Identity Verification</p>
+                            </li>
+                            <li role="presentation" class="disabled">
+                                <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
+
+
+                                </a>
+                                <p style="display: none">Confirmation</p>
+                            </li>
+
+
+                        </ul>
                     </div>
-
-                    <div class="header-column">
-
-                        <div class="border-bottom-light w-100">
-
-                            <div class="hstack gap-4 px-4 py-2 font-weight-semi-bold d-none d-lg-flex">
-
-                                <div class="d-none d-lg-inline-block ps-1">
-
-                                    <a class="text-color-default text-color-hover-primary text-2" href="tel:+91 95133 12768">
-
-                                        <i class="fas fa-phone text-4 p-relative top-2"></i> &nbsp;(+91) 95133 12768
-                                    </a>
+                    <div class="row tab-content">
+                        <div class="col-md-12 tab-pane active" id="step1">
+                            <div class="featured-boxes">
+                                <div id="error">
                                 </div>
-
-                                <div class="vr d-lg-inline-block opacity-2 d-none d-xl-inline-block"></div>
-
-                                <div class="d-none d-xl-inline-block">
-
-                                    <a class="text-color-default text-color-hover-primary text-2" href="mailto:support@faveohelpdesk.com">
-
-                                        <i class="fas fa-envelope text-4 p-relative top-2"></i> &nbsp;support@faveohelpdesk.com
-                                    </a>
+                                <div id="success">
                                 </div>
-
-                                <div class="ms-auto d-none d-lg-inline-block">
-
-                                    <div class="ms-auto d-none d-lg-inline-block">
-
-                                        <ul class="nav nav-pills">
-
-                                            <li class="nav-item dropdown">
-
-                                                <a class="nav-link text-2 p-0 text-color-default" href="#" role="button" id="dropdownLanguage" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                                                    <img id="flagIcon" src="../img/blank.gif" class="flag flag-us" alt="English">&nbsp;English
-
-                                                    <i class="fas fa-angle-down"></i>
-                                                </a>
-
-                                                <div class="dropdown-menu dropdown-menu-end text-2" aria-labelledby="dropdownLanguage">
-
-                                                    <a class="dropdown-item text-color-default" href="#" id="englishOption">
-
-                                                        <img src="../img/blank.gif" class="flag flag-us" alt="English">&nbsp;English
-                                                    </a>
-
-                                                    <a class="dropdown-item text-color-default" href="#" id="arabicOption">
-
-                                                        <img src="../img/blank.gif" class="flag flag-ar" alt="Arabic">&nbsp;Arabic
-                                                    </a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <div id="fails">
                                 </div>
-
-                                <div class="vr opacity-2 d-none d-lg-inline-block"></div>
-
-                                <div class="d-none d-lg-inline-block">
-
-                                    <ul class="nav nav-pills me-1">
-
-                                        <li class="nav-item pe-2 mx-1">
-
-                                            <a href="https://www.facebook.com/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Facebook" class="text-color-default text-color-hover-primary text-4">
-
-                                                <i class="fab fa-facebook-f"></i>
-                                            </a>
-                                        </li>
-
-                                        <li class="nav-item px-2 mx-1">
-
-                                            <a href="https://twitter.com/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Twitter" class="text-color-default text-color-hover-primary text-4">
-
-                                                <i class="fab fa-twitter"></i>
-                                            </a>
-                                        </li>
-
-
-                                        <li class="nav-item px-2 mx-1 me-0 pe-0">
-
-                                            <a href="https://www.linkedin.com/showcase/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Linkedin" class="text-color-default text-color-hover-primary text-4">
-
-                                                <i class="fab fa-linkedin-in"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                <div id="alertMessage1"></div>
+                                <div id="alertMessage2"></div>
+                                <!-- <div id="error2">
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="header-row h-100">
-
-                            <div class="hstack h-100 w-100">
-
-                                <div class="h-100 w-100 w-xl-auto">
-
-                                    <div class="header-nav header-nav-links h-100 justify-content-end justify-content-lg-start me-4 me-lg-0 ms-lg-3">
-
-                                        <div class="header-nav-main header-nav-main-square header-nav-main-dropdown-no-borders header-nav-main-text-capitalize header-nav-main-text-size-4 header-nav-main-arrows header-nav-main-full-width-mega-menu header-nav-main-mega-menu-bg-hover header-nav-main-effect-5">
-
-                                            <nav class="collapse">
-
-                                                <ul class="nav nav-pills" id="mainNav">
-
-                                                    <li class="d-sticky-header-negative-none" style="display:none">
-
-                                                        <a class="nav-link" href="../index.html">
-
-                                                            <img alt="Porto" width="75" height="50" src="../img/faveo.png">
-                                                        </a>
-                                                    </li>
-
-                                                    <li class="dropdown">
-
-                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
-                                                            &nbsp;Store&nbsp;
-                                                        </a>
-
-                                                        <ul class="dropdown-menu border-light mt-n1">
-
-                                                            <li>
-                                                                <a href="pricing.html" class="dropdown-item">HelpDesk Perpetual</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="pricing.html" class="dropdown-item">HelpDesk Recurring</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="javascript:;" class="dropdown-item">ServiceDesk Perpetual</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="pricing.html" class="dropdown-item">ServiceDesk Recurring</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="pricing.html" class="dropdown-item">Services</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="pricing.html" class="dropdown-item">Faveo Cloud</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a class="nav-link" href="contact.html">Contact Us</a>
-                                                    </li>
-
-                                                    <li class="dropdown">
-
-                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
-                                                            &nbsp;My Account&nbsp;
-                                                        </a>
-
-                                                        <ul class="dropdown-menu border-light mt-n1">
-
-                                                            <li>
-                                                                <a href="../index.html" class="dropdown-item">Dashboard</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="orders.html" class="dropdown-item">My Orders</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="invoices.html" class="dropdown-item">My Invoices</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="profile.html" class="dropdown-item">My Profile</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="javascript:;" class="dropdown-item">Logout</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a class="nav-link active" href="signup-in.html">Sign Up</a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-
-
-                                        <div class="header-nav-features header-nav-features-no-border header-nav-features-lg-show-border order-1 order-lg-2 me-2 me-lg-0">
-
-                                            <div class="header-nav-feature header-nav-features-cart d-inline-flex ms-2">
-
-                                                <a href="javascript:;" class="header-nav-features-toggle text-decoration-none">
-
-                                                    <span class="text-dark opacity-8 font-weight-bold text-color-hover-primary"> Cart</span>
-
-                                                    <img src="../img/icons/icon-cart.svg" width="14" alt="" class="header-nav-top-icon-img">
-
-                                                    <span class="cart-info">
-
-                                                        <span class="cart-qty">1</span>
-                                                    </span>
-                                                </a>
-
-                                                <div class="header-nav-features-dropdown right-15" id="headerTopCartDropdown">
-
-                                                    <ol class="mini-products-list">
-
-                                                        <li class="item">
-
-                                                            <a href="#" data-bs-toggle="tooltip" title="Camera X1000" class="product-image"><img src="../img/products/product-1.jpg" alt="Camera X1000"></a>
-
-                                                            <div class="product-details">
-
-                                                                <p class="product-name">
-
-                                                                    <a href="#">Helpdesk Enterprise Advance</a>
-                                                                </p>
-
-                                                                <p class="qty-price">
-
-                                                                    1X <span class="price">$99</span>
-                                                                </p>
-
-                                                                <a href="javascript:;" data-bs-toggle="tooltip" title="Remove This Item" class="btn-remove"><i class="fas fa-times"></i></a>
-                                                            </div>
-                                                        </li>
-                                                    </ol>
-
-                                                    <div class="totals">
-
-                                                        <span class="label">Total:</span>
-
-                                                        <span class="price-total"><span class="price">$99</span></span>
-                                                    </div>
-
-                                                    <div class="actions">
-
-                                                        <a class="btn btn-dark btn-modern text-uppercase font-weight-semi-bold" href="cart.html">View Cart</a>
-
-                                                        <a class="btn btn-primary" href="checkout.html">Checkout</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse" data-bs-target=".header-nav-main nav">
-
-                                            <i class="fas fa-bars"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="vr opacity-2 ms-auto d-none d-xl-inline-block"></div>
-
-                                <div class="px-4 d-none d-xxl-inline-block ws-nowrap">
-
-                                    <a href="#" class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2">START FREE TRIAL</a>
-
-                                    <a href="#" class="btn border-0 px-4 py-2 line-height-9 btn-primary">REQUEST FOR DEMO</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div role="main" class="main">
-
-        <div class="custom-page-header border-bottom-light">
-            <section class="page-header page-header-modern bg-color-light-scale-1 border-0 my-0">
-                <div class="container my-3">
-                    <div class="row">
-                        <div class="col-md-12 align-self-center p-static order-2 text-center">
-                            <h1 class="font-weight-bold text-10 text-dark">Sign in or Register</h1>
-                        </div>
-                        <div class="col-md-12 align-self-center order-1">
-                            <ul class="breadcrumb breadcrumb-light d-block text-center">
-                                <li><a class="text-primary" href="../index.html">Home</a></li>
-                                <li class="active text-dark">Sign in &nbsp;&nbsp;or&nbsp;&nbsp; Register</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <div class="container py-4">
-
-            <div class="row justify-content-center">
-
-                <div class="col-md-6 col-lg-5 mb-5 mb-lg-0 pe-5">
+                                <div id="alertMessage2" class="-text" ></div> -->
+              
+                                <div class="row justify-content-center">
+                                          <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
                     <h2 class="font-weight-bold text-5 mb-0">Login</h2>
 
-                    <form action="/" id="frmSignIn" method="post" class="needs-validation">
+                     @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
+                    @else
+                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
+                    @endif
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Username or E-mail Address <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" class="form-control form-control-lg text-4" required>
+                                 {!! Form::text('email1',null,['class' => 'form-control form-control-lg text-4','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
 
-                                <input type="password" value="" class="form-control form-control-lg text-4" required>
+                                {!! Form::password('password1', ['class' => 'form-control form-control-lg text-4', 'id' => 'pass', 'style' => 'height: calc(1.5em + 0.75rem + 2px);']) !!}
+                                                                     
+
                             </div>
                         </div>
 
@@ -412,7 +181,7 @@
 
                             <div class="form-group col-md-auto">
 
-                                <div class="custom-control custom-checkbox">
+                                <div class="custom-control custom-checkbox" style="padding-right: 100px;">
 
                                     <input type="checkbox" class="custom-control-input" id="rememberme">
 
@@ -420,387 +189,1720 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-auto">
+                            <div class="form-group col-md-auto {{ $errors->has('password1') ? 'has-error' : '' }}">
 
-                                <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="forgot.html">Forgot Password?</a>
+                                <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="{{url('password/reset')}}" style="padding-left: 100px;">({{Lang::get('message.forgot-my-password')}})</a>
                             </div>
                         </div>
+
+                        @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                                                    {!! NoCaptcha::renderJs() !!}
+                                                    {!! NoCaptcha::display(['id' => 'recaptcha1']) !!}
+                                                    <div class="loginrobot-verification"></div>
+                        @endif
 
                         <div class="row">
 
                             <div class="form-group col">
 
                                 <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Login</button>
+                                @if($google_status == 1 || $twitter_status == 1 || $github_status == 1 ||$linkedin_status == 1)
 
                                 <div class="divider">
 
                                     <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">or</span>
                                 </div>
+                                @endif
+                                @if($google_status == 1)
 
-                                <a href="javascript:;" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
+                                <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
 
-                                    <i class="fab fa-facebook text-5 me-2"></i> Login With Facebook
-                                </a>
+                                    <i class="fab fa-google text-5 me-2"></i> Login With Google
+                                </a><br><br>
+                                @endif
+                                @if($twitter_status == 1)
+
+                                <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
+
+                                    <i class="fab fa-twitter text-5 me-2"></i> Login With Twitter
+                                </a><br><br>
+                                @endif
+                                @if($github_status == 1 )
+
+                                <a href="{{ url('/auth/redirect/github') }}"  class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
+
+                                    <i class="fab fa-github text-5 me-2"></i> Login With Github
+                                </a><br><br>
+                                @endif
+                                 @if($linkedin_status == 1 )
+
+                                <a href="{{ url('/auth/redirect/linkedin') }}"  class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
+
+                                    <i class="fab fa-linkedin-in text-5 me-2"></i> Login With Linkedin
+                                </a><br><br>
+                                @endif
                             </div>
                         </div>
-                    </form>
+                   {!! Form::close() !!}
                 </div>
+                                    
+                <div class="col-md-6 col-lg-6 ps-5">
 
-                <div class="col-md-6 col-lg-5 ps-5">
 
                     <h2 class="font-weight-bold text-5 mb-0">Register</h2>
 
-                    <form action="/" id="frmSignUp" method="post">
+                    <form name="registerForm" id="regiser-form">
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('first_name') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">First Name <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" class="form-control form-control-lg text-4" required>
+                                 {!! Form::text('first_name',null,['class'=>'form-control form-control-lg text-4', 'id'=>'first_name']) !!}
+                                <span id="first_namecheck"></span>
                             </div>
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('last_name') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Last Name <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" class="form-control form-control-lg text-4" required>
+                                {!! Form::text('last_name',null,['class'=>'form-control form-control-lg text-4', 'id'=>'last_name']) !!}
+                                <span id="last_namecheck"></span>
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">E-mail address <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" class="form-control form-control-lg text-4" required>
+                                {!! Form::email('email',null,['class'=>'form-control form-control-lg text-4', 'id'=>'email']) !!}
+                                <span id="emailcheck"></span>
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Company Name <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" class="form-control form-control-lg text-4" required>
+                                {!! Form::text('company',null,['class'=>'form-control form-control-lg text-4', 'id'=>'company']) !!}
+                                <span id="companycheck"></span>
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Address <span class="text-color-danger">*</span></label>
 
-                                <textarea maxlength="500" data-msg-required="Please enter your address." rows="3" class="form-control text-3 h-auto py-2" name="message" required=""></textarea>
+                                {!! Form::textarea('address',null,['class'=>'form-control form-control-lg text-4','rows'=>4, 'id'=>'address']) !!}
+                                 <span id="addresscheck"></span>
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Country <span class="text-color-danger">*</span></label>
 
-                                <select name="size" class="form-select form-control h-auto py-2">
-                                    <option value="">India</option>
-                                    <option value="usa">United States</option>
-                                    <option value="uk">United Kingdom</option>
-                                    <option value="france">France</option>
-                                </select>
+                                <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                <span id="countrycheck"></span>
                             </div>
                         </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
 
-                                <input type="number" value="" class="form-control form-control-lg text-4" required>
-                            </div>
+                                {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
+                                <input class="form-control form-control-lg text-4" id="mobilenum" name="mobile" type="tel">
+                                {!! Form::hidden('mobile_code',null,['class'=>'form-control form-control-lg text-4','disabled','id'=>'mobile_code']) !!}
+                                <span id="valid-msg" class="hide"></span>
+                                <span id="error-msg" class="hide"></span>
+                                <span id="mobile_codecheck"></span>
+                                </div>
                         </div>
+
+                      <div class="form-row hidden">
+                        <div class="form-group col{{ $errors->has('state') ? 'has-error' : '' }}">
+                            {!! Form::label('state',Lang::get('message.state')) !!}
+                            <?php
+                            $value = "";
+                            if (count($state) > 0) {
+                                $value = $state;
+                            }
+                            if (old('state')) {
+                                $value = old('state');
+                            }
+                            ?>
+
+                            {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+
+                            <span id="statecheck"></span>
+                        </div>
+
+                    </div>
 
                         <div class="row">
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
 
-                                <input type="password" value="" class="form-control form-control-lg text-4" required>
+                                {!! Form::password('password',['class'=>'form-control form-control-lg text-4', 'id'=>'password']) !!}
+                                <span id="password1check"></span>
                             </div>
 
-                            <div class="form-group col">
+                            <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Re-enter Password <span class="text-color-danger">*</span></label>
 
-                                <input type="password" value="" class="form-control form-control-lg text-4" required>
+                               {!! Form::password('password_confirmation',['class'=>'form-control form-control-lg text-4', 'id'=>'confirm_pass']) !!}
+                                <span id="conpasscheck"></span>
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="form-row">
+                        <div class="form-group col-lg-6">
+                            @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                                {!! NoCaptcha::display(['id' => 'g-recaptcha-1', 'data-callback' => 'onRecaptcha']) !!}
+                                <input type="hidden" id="g-recaptcha-response-1" name="g-recaptcha-response-1">
+                                <div class="robot-verification" id="captcha"></div>
+                                <span id="captchacheck"></span>
+                            @endif
+                        </div>
+                    </div>
 
+                        <div class="row">
+                            @if($status->terms ==0)
                             <div class="form-group col">
 
                                 <div class="form-check">
 
-                                    <input class="form-check-input" type="checkbox" value="" name="agree" id="tabContent13Checkbox" data-msg-required="You must agree before submiting." required="">
-
-                                    <label class="form-check-label" for="tabContent13Checkbox">
-
-                                        Agree to terms and conditions
-                                    </label>
+                                    <input type="hidden" value="true" name="terms" id="term">
                                 </div>
                             </div>
+                            @else
+
+                            <div class="form-group col">
+
+                                <div class="form-check" style="padding-left: 0px;">
+
+                                    <input type="checkbox" value="false" name="terms" id="term" ><a href="{{$apiKeys->terms_url}}" target="_blank">
+                                        Agree to terms and conditions
+                                    </a>
+                                    <br><span id="termscheck"></span>
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
-
-  
                         <div class="row">
 
                             <div class="form-group col">
 
-                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Register</button>
+                                <button type="button" name="register" id="register" onclick="registerUser()" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Register</button>
 
                             </div>
                         </div>
                     </form>
                 </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="col-md-12 tab-pane" id="step2">
+
+                            <div class="container py-4">
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
+
+                    <p class="text-2">You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
+
+                    <form novalidate="novalidate" name="verifyForm">
+                        <input type="hidden" name="user_id" id="user_id"/>
+                        <input type="hidden" name="email_password" id="email_password"/>
+                        <input type="hidden" id="checkEmailStatus" value="{{$status->emailverification_status}}">
+                        @if($status->emailverification_status == 1)
+                        <div class="form-row">
+                        <div class="form-group col">
+                            <label  for="mobile" class="required">Email</label>
+                            <div class="input-group">
+                                <input type="hidden" id="emailstatusConfirm" value="{{$status->emailverification_status}}">
+                                <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                </div>
+
+                            </div>
+                            <span id="conemail"></span>
+                        </div>
+
+                    </div>
+                        @endif
+
+                        <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+
+                        @if($status->msg91_status == 1)
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <input id="mobile_code_hidden" name="mobile_code" type="hidden">
+                                <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                <label for="mobile" class="required">Mobile</label><br/>
+                                <input type="hidden" id="mobstatusConfirm" value="{{$status->msg91_status}}">
+                                <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
+                                <span id="valid-msg1" class="hide"></span>
+                                <span id="error-msg1" class="hide"></span>
+
+                                <span id="conmobile"></span>
+                            </div>
+
+                        </div>
+                    @endif
+
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading..." name="sendOtp" id="sendOtp" onclick="sendOTP()">Next</button>
+                            </div>
+                        </div>
+                    </form>
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+                                      <div class="col-md-12 tab-pane" id="step3">
+                                        <div id="error2"></div>
+                                        <div id="successMessage2"></div>
+                                        <div id="alertMessage3"></div>
+                                        <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
+                                        <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5 mx-auto text-cente">
+                                        <div class="container">
+
+                                        <div id="alert-resend" class="alert alert-success alert-dismissible d-none" role="alert">
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                                        <strong>Success!</strong> OTP sent.
+                                        </div>
+
+                                        <form name="verify_otp_form">
+
+                                             <div class="row">
+                                            <label class="form-label text-color-dark text-3">Enter OTP <span class="text-color-danger">*</span></label>
+
+                                            <div class="form-group col-3">
+                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
+                                            </div>
+
+                                            <div class="form-group col-3">
+                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
+                                            </div>
+
+                                            <div class="form-group col-3">
+                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
+                                            </div>
+
+                                            <div class="form-group col-3">
+                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
+                                            </div>
+                                        </div>
+
+                                              
+
+                                                <button id="verifyOtp" onclick="verifyBySendOtp()" class="btn btn-dark btn-modern w-100 text-uppercase text-3 mt-3">Verify OTP</button>
+
+                                                <p id="message"></p>
+
+                                                <p class="text-2 mb-2">Didn't receive the OTP? <span class="font-weight-bold text-black text-4" id="timer">10</span> seconds</p>
+
+                                                <button id="resendOTP" onclick="resendOTP()" disabled class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2">
+                                                    Resend OTP
+                                                </button>
+
+                                                <a id="voiceOTP" class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2">
+                                                    <i class="fas fa-phone text-5 me-2"></i> Receive OTP via Voice Call
+                                                </a>
+
+                                                  </form>
+                                            </div>
+                                        </div>
+                            
+                    </div>
+                </div>
         </div>
+        </section>
     </div>
-
-    <footer id="footer" class="position-relative bg-color-light-scale-1 border-top-0">
-
-        <div class="container pt-5 pb-3">
-
-            <div class="row pt-5">
-
-                <div class="col-lg-4">
-
-                    <h4 class="text-color-dark font-weight-bold mb-3">Faveo</h4>
-
-                    <p class="text-3-5 font-weight-medium pe-lg-2">
-                        Web-based support ticket system, Easy to install, easy to use cost effective ticket management solution for startups, SME’s and enterprises.
-                    </p>
-
-                    <ul class="list list-unstyled">
-
-                        <li class="d-flex align-items-center mb-4">
-
-                            <i class="icon icon-envelope text-color-grey text-5 font-weight-bold position-relative top-1 me-3-5"></i>
-
-                            <a href="mailto:support@faveohelpdesk.com" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">support@faveohelpdesk.com</a>
-                        </li>
-
-                        <li class="d-flex align-items-center mb-4">
-
-                            <i class="icon icon-phone text-color-grey text-5 font-weight-bold position-relative top-1 me-3-5"></i>
-
-                            <a href="tel:95133 12768" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">(+91) 95133 12768</a>
-                        </li>
-                    </ul>
-
-                    <ul class="social-icons social-icons-clean social-icons-medium">
-
-                        <li class="social-icons-facebook">
-
-                            <a href="https://www.facebook.com/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Facebook">
-
-                                <i class="fab fa-facebook-f text-color-grey-lighten"></i>
-                            </a>
-                        </li>
-
-                        <li class="social-icons-twitter">
-
-                            <a href="https://twitter.com/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Twitter">
-
-                                <i class="fab fa-twitter text-color-grey-lighten"></i>
-                            </a>
-                        </li>
-
-                        <li class="social-icons-linkedin">
-
-                            <a href="https://www.linkedin.com/showcase/faveohelpdesk" target="_blank" data-bs-toggle="tooltip" title="Linkedin">
-
-                                <i class="fab fa-linkedin text-color-grey-lighten"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-8">
-
-                    <div class="row mb-3">
-
-                        <div class="col-lg-6 mb-4 mb-lg-0">
-
-                            <h4 class="text-color-dark font-weight-bold mb-3">Latest Tweets</h4>
-
-                            <ul class="list list-unstyled columns-lg-1">
-
-                                <li><a href="javascript:;" class="text-color-grey text-color-hover-primary">You better believe it!</a></li>
-
-                                <li><a href="javascript:;" class="text-color-grey text-color-hover-primary">I would love to.</a></li>
-
-                                <li><a href="javascript:;" class="text-color-grey text-color-hover-primary">Check your messages and notifications</a></li>
-
-                                <li><a href="javascript:;" class="text-color-grey text-color-hover-primary">Let theme shine like a star </a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-6">
-
-                            <h4 class="text-color-dark font-weight-bold mb-3">Contact Us</h4>
-
-                            <ul class="list list-styled columns-lg-2 px-2">
-
-                                <li><a href="https://support.faveohelpdesk.com/knowledgebase" class="text-color-grey text-color-hover-primary">User Manual</a></li>
-
-                                <li><a href="https://www.faveohelpdesk.com/become-a-partner/" class="text-color-grey text-color-hover-primary">Become a Partner</a></li>
-
-                                <li><a href="https://www.faveohelpdesk.com/our-partners/" class="text-color-grey text-color-hover-primary">Our Partners</a></li>
-
-                                <li><a href="https://www.faveohelpdesk.com/love-open-source/" class="text-color-grey text-color-hover-primary">We Love Open Source</a></li>
-
-                                <li><a href="https://www.faveohelpdesk.com/faveo-helpdesk-road-map/" class="text-color-grey text-color-hover-primary">Faveo Road Map</a></li>
-
-                                <li><a href="https://www.faveohelpdesk.com/support-community-edition/" class="text-color-grey text-color-hover-primary">Support the Community Edition</a></li>
-
-                                <li><a href="https://developers.faveohelpdesk.com" class="text-color-grey text-color-hover-primary">Developer Portal</a></li>
-
-                                <li><a href="https://forum.faveohelpdesk.com/" class="text-color-grey text-color-hover-primary">Community Forums</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col p-relative bottom-3">
-
-                            <div class="alert alert-success d-none" id="newsletterSuccess">
-
-                                <strong>Success!</strong> You've been added to our email list.
-                            </div>
-
-                            <div class="alert alert-danger d-none" id="newsletterError"></div>
-
-                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
-
-                                <h4 class="text-color-dark ws-nowrap me-3 mb-3 mb-lg-0">Subscribe to Newsletter:</h4>
-
-                                <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
-
-<div class="input-group">
-
-                                        <input class="form-control bg-light border" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
-
-                                        <button class="btn btn-primary" type="submit"><strong>GO!</strong></button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-copyright bg-transparent">
-
-            <div class="container">
-
-                <hr class="bg-color-dark opacity-1">
-
-                <div class="row">
-                    <div class="col mt-4 mb-4 pb-5">
-
-                        <p class="text-center text-3 mb-0 text-color-grey">Copyright © 2023.
-
-                            <a href="https://www.faveohelpdesk.com/" class="text-color-grey text-color-hover-primary font-weight-bold">Ladybird Web Solution Pvt Ltd. </a>
-
-                            All Rights Reserved.Powered by
-
-                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="../img/ladybird.png" alt="Ladybird"></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-</div>
-
-<!-- Vendor -->
-<script src="{{asset('client/porto/js-2/plugins.min.js')}}"></script>
-
-<!-- Theme Base, Components and Settings -->
-<script src="{{asset('client/porto/js-2/theme.js')}}"></script>
-
-<!-- Demo -->
-<script src="{{asset('client/porto/js-2/demo-transportation-logistic.js')}}"></script>
-
-<!-- Current Page Vendor and Views -->
-<script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
-
-<!-- Theme Custom -->
-<script src="{{asset('client/porto/js-2/custom.js')}}"></script>
-
-<!-- Theme Initialization Files -->
-<script src="{{asset('client/porto/js-2/theme.init.js')}}"></script>
-<script>
-
-<!--Start of Tawk.to Script-->
-{!! $everyPageScripts !!}
-
-<!--End of Tawk.to Script-->
-</script>
-
-
-<script>
+    </div>
+@stop
+@section('script')
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+    <script>
+        ///////////////////////////////////////////////////////////////////////////////
+        ///Google Recaptcha
+        function recaptchaCallback() {
+            document.querySelectorAll('.g-recaptcha').forEach(function (el) {
+                grecaptcha.render(el);
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
+    </script>
+
+    <script type="text/javascript">
+
+
+
+        function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+
+            }
+        }
+
+        function verifyBySendOtp() {
+            $('#enterotp').hide();
+            if(verify_otp_check()) {
+                $("#verifyOtp").attr('disabled',true);
+                // $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                var data = {
+                    "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    "code"  :   $('#verify_country_code').val(),
+                    "otp"   :   $('#oneTimePassword').val(),
+                    'id'    :   $('#hidden_user_id').val(),
+                };
+                $.ajax({
+                    url: '{{url('otp/verify')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        $("#verifyOtp").attr('disabled',false);
+                        $('#error2').hide();
+                        $('#error').hide();
+                        $('#alertMessage2').show();
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                        // $('#alertMessage3').show();
+                        $('#successMessage2').hide();
+                        $('#success').html(result);
+                        $("#verifyOtp").html("Verify OTP");
+                        $('.nav-tabs li a[href="#step1"]').tab('show');
+                        $('.wizard-inner').css('display','none');
+                        setTimeout(()=>{
+                            getLoginTab();
+                        },10)
+                        setTimeout(function() {
+                            location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        $("#verifyOtp").attr('disabled',false);
+                        if (xhr.status === 422) {
+                         var myJSON = xhr.responseJSON.message;
+                         console.log(myJSON);
+                         console.log(xhr);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
+                              for (var key in xhr.responseJSON.errors)
+                        {
+                            html += '<li>' + xhr.responseJSON.errors[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+                        }
+                        else{
+                        var myJSON = JSON.parse(xhr.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
+                        $("#verifyOtp").html("Verify OTP");
+                        for (var key in myJSON)
+                        {
+                            html += '<li>' + myJSON[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+                 
+                        }
+                        $('#successMessage2').hide();
+                        $('#alertMessage2').hide();
+                        $('#error2').show();
+                        document.getElementById('error2').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error2').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        function getLoginTab(){
+            registerForm.elements['first_name'].value = '';
+            registerForm.elements['last_name'].value = '';
+            registerForm.elements['email'].value = '';
+            registerForm.elements['company'].value = '';
+            registerForm.elements['bussiness'].value = '';
+            registerForm.elements['company_type'].value = '';
+            registerForm.elements['company_size'].value = '';
+            registerForm.elements['mobile'].value = '';
+            registerForm.elements['address'].value = '';
+            registerForm.elements['user_name'].value = '';
+            registerForm.elements['password'].value = '';
+            registerForm.elements['password_confirmation'].value = '';
+            registerForm.elements['terms'].checked = false;
+
+            $('.nav-tabs li a[href="#step1"]').tab('show');
+            $('.wizard-inner').css('display','none');
+        }
+
+        $(".prev-step").click(function (e) {
+            getLoginTab();
+        });
+
+        //Enter OTP Validation
+        $('#oneTimePassword').keyup(function(){
+            verify_otp_check();
+        });
+
+        //--------------------------------------------------ReSend OTP via SMS---------------------------------------------------//
+
+        $('#resendOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "text",
+            };
+            $("#resendOTP").attr('disabled',true);
+            $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                      setTimeout(function(){
+                        $('#alertMessage3').hide();
+                        }, 3000);
+                },
+                error: function (ex) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    ('#successMessage2').hide();
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+        //---------------------------------------Resend OTP via voice call--------------------------------------------------//
+
+        $('#voiceOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "voice",
+            };
+            $("#voiceOTP").attr('disabled',true);
+            $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                     setTimeout(function(){
+                        $('#alertMessage3').hide();
+                        }, 3000);
+                },
+                error: function (ex) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        /*
+        * Email ANd Mobile Validation when Send Button is cliced on Tab2
+         */
+        /////////////////////////////////////////////////////////////////////////////////////////////////
+        $('#verify_email').keyup(function(){//Email
+            verify_email_check();
+        });
+
+        function verify_email_check(){
+            if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
+
+                var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+                if (pattern.test($('#verify_email').val())) {
+                    $('#conemail').hide();
+                    $('#verify_email').css("border-color","");
+                    return true;
+                } else{
+                    $('#conemail').show();
+                    $('#conemail').html("Please Enter a valid email");
+                    $('#conemail').focus();
+                    $('#verify_email').css("border-color","red");
+                    $('#conemail').css({"color":"red","margin-top":"5px"});
+                    return false;
+
+                }
+            }
+            return true;
+
+        }
+
+        $('#verify_number').keyup(function(){//Mobile
+            verify_number_check();
+        });
+
+        function verify_number_check(){
+
+            var userNumber = $('#verify_number').val();
+            if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
+                if (userNumber.length < 5){
+                    $('#conmobile').show();
+                    $('#conmobile').html("Please Enter Your Mobile No.");
+                    $('#conmobile').focus();
+                    $('#verify_number').css("border-color","red");
+                    $('#conmobile').css({"color":"red","margin-top":"5px"});
+
+
+                    // mobile_error = false;
+                    return false;
+                }
+                else{
+                    $('#conmobile').hide();
+
+                    $('#verify_number').css("border-color","");
+                    return true;
+
+                }
+            }
+            return true;
+
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*
+          * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
+         */
+        function sendOTP() {
+            $('#conemail').hide();
+            $('#conmobile').hide();
+            var mail_error = true;
+            var mobile_error = true;
+            if((verify_email_check()) && (verify_number_check()))
+            {
+
+                var oldemail=sessionStorage.getItem('oldemail');
+                var newemail = $('#verify_email').val(); // this.value
+                var oldnumber = sessionStorage.getItem('oldemail');
+                var newnumber = $('#verify_number').val();
+
+                $("#sendOtp").attr('disabled',true);
+                $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                var data = {
+                    "newemail": newemail,
+                    "newnumber": newnumber,
+                    "oldnumber": oldnumber,
+                    "oldemail": oldemail,
+                    "email": $('#verify_email').val(),
+                    "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    'code': $('#verify_country_code').val(),
+                    'id': $('#user_id').val(),
+                    'password': $('#email_password').val()
+                };
+                $.ajax({
+                    url: '{{url('otp/sendByAjax')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        // window.history.replaceState(response.type, "TitleTest", "login");
+                        $("#sendOtp").attr('disabled',false);
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+                        if (($("#checkOtpStatus").val()) == 1 ) {
+                            $('#successMessage2').html(result);
+                            $('#error1').hide();
+                            $('.wizard-inner').css('display','none');
+                            var $active = $('.wizard .nav-tabs li.active');
+                            $active.next().removeClass('disabled');
+                            nextTab($active);
+
+                            setTimeout(function(){
+                                sessionStorage.removeItem('oldemail');
+                                sessionStorage.clear();
+                            }, 500);
+                            window.scrollTo(0, 10);
+                            verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
+                            $("#sendOtp").html("Send");
+                        } else {//Show Only Email Success Message when Mobile Status is Not Active
+                            $('#emailsuccess').html(result);
+                            $('#successMessage1').hide();
+                            $("#sendOtp").html("Send");
+                            $('#error1').hide();
+                        }
+                          setTimeout(function(){
+                                $('#emailsuccess').hide();
+                            }, 3000);
+                            setTimeout(function(){
+                                $('#successMessage1').hide();
+                            }, 3000);
+                            setTimeout(function(){
+                                $('#successMessage2').hide();
+                            }, 3000);
+                    },
+                    error: function (ex) {
+                        $("#sendOtp").attr('disabled',false);
+                        var myJSON = JSON.parse(ex.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        $("#sendOtp").html("Send");
+
+                        html += '<li>' + myJSON.message + '</li>'
+
+                        html += '</ul></div>';
+                        $('#alertMessage1').hide();
+                        $('#successMessage1').hide();
+                        $('#error1').show();
+                        document.getElementById('error1').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error1').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else{
+                return false;
+            }
+
+        }
+
+  
+
+
+        //robot validation for Login Form
+        function validateform() {
+            var input = $("#recaptcha1 :input[name='g-recaptcha-response']");
+            console.log(input.val());
+            if(input.val() == null || input.val()==""){
+                $('.loginrobot-verification').empty()
+                $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Registration Form Validation
+
+        function first_namecheck(){
+            var firrstname_val = $('#first_name').val();
+            if(firrstname_val.length == ''){
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Please Enter First Name");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
+                // userErr =false;
+
+                $('html, body').animate({
+                    scrollTop: $("#first_namecheck").offset().top -200
+                }, 1000)
+                return false;
+            }
+
+            if(firrstname_val.length > 30){
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Max 30 characters allowed ");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
+                // userErr =false;
+
+                $('html, body').animate({
+                    scrollTop: $("#first_namecheck").offset().top -200
+                }, 1000)
+                return false;
+            }
+
+            var pattern = new RegExp(/[^a-zA-Z0-9]/);
+            if(pattern.test(firrstname_val)) {
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Special characters not allowed");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
+
+                $('html, body').animate({
+                    scrollTop: $("#first_namecheck").offset().top -200
+                }, 1000)
+                return false;
+            }
+
+            else{
+                $('#first_namecheck').hide();
+                $('#first_name').css("border-color","");
+                return true;
+            }
+        }
+        //Validating last name field
+        function last_namecheck(){
+            var lastname_val = $('#last_name').val();
+            if(lastname_val.length == ''){
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Please Enter Last Name");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#last_namecheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
+
+            if(lastname_val.length > 30 ){
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Maximum 30 characters allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#last_namecheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
+
+
+            var pattern = new RegExp(/[^a-zA-Z0-9]/);
+            if(pattern.test(lastname_val)){
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Special characters not allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#last_namecheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
+
+            else{
+                $('#last_namecheck').hide();
+                $('#last_name').css("border-color","");
+                return true;
+            }
+        }
+        //Validating email field
+        function emailcheck(){
+
+            var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+            if (pattern.test($('#email').val())){
+                $('#emailcheck').hide();
+                $('#email').css("border-color","");
+                return true;
+
+            }
+            else{
+                $('#emailcheck').show();
+                $('#emailcheck').html("Please Enter a valid email");
+                $('#emailcheck').focus();
+                $('#email').css("border-color","red");
+                $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                // mail_error = false;
+                $('html, body').animate({
+                    scrollTop: $("#emailcheck").offset().top -200
+                }, 1000)
+            }
+
+        }
+
+        function companycheck(){
+            var company_val = $('#company').val();
+            if(company_val.length == ''){
+                $('#companycheck').show();
+                $('#companycheck').html("Please Enter Company Name");
+                $('#companycheck').focus();
+                $('#company').css("border-color","red");
+                $('#companycheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#companycheck").offset().top - 200
+                }, 1000)
+            }
+
+            else{
+                $('#companycheck').hide();
+                $('#company').css("border-color","");
+                return true;
+            }
+        }
+
+
+            function addresscheck(){
+                var address_val = $('#address').val();
+                if(address_val.length == ''){
+                    $('#addresscheck').show();
+                    $('#addresscheck').html("Please Enter Address ");
+                    $('#addresscheck').focus();
+                     $('#address').css("border-color","red");
+                    $('#addresscheck').css({"color":"red","margin-top":"5px"});
+                    // userErr =false;
+                   $('html, body').animate({
+                    scrollTop: $("#addresscheck").offset().top -200
+                }, 1000)
+                }
+                else{
+                     $('#addresscheck').hide();
+                      $('#address').css("border-color","");
+                     return true;
+                }
+               }
+
+
+
+
+
+        function countrycheck(){
+            var country_val = $('#country').val();
+            if(country_val == ''){
+                $('#countrycheck').show();
+                $('#countrycheck').html("Please Select One Country ");
+                $('#countrycheck').focus();
+                $('#country').css("border-color","red");
+                $('#countrycheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#countrycheck").offset().top - 200
+                }, 1000)
+            }
+            else{
+                $('#countrycheck').hide();
+                $('#country').css("border-color","");
+                return true;
+            }
+        }
+
+        function mobile_codecheck(){
+            var mobile_val = $('#mobilenum').val();
+            if(mobile_val.length == ''){
+                $('#mobile_codecheck').show();
+                $('#mobile_codecheck').html("Please Enter Mobile No. ");
+                $('#mobile_codecheck').focus();
+                $('#mobilenum').css("border-color","red");
+                $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#mobile_codecheck").offset().top -200
+                }, 1000)
+            }
+            else{
+                $('#mobile_codecheck').hide();
+                $('#mobilenum').css("border-color","");
+                return true;
+            }
+        }
+
+
+
+        function towncheck(){
+            var town_val = $('#city').val();
+            if(town_val.length == ''){
+                $('#towncheck').show();
+                $('#towncheck').html("Please Enter Town ");
+                $('#towncheck').focus();
+                $('#city').css("border-color","red");
+                $('#towncheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#towncheck").offset().top -200
+                }, 1000)
+            }
+            else{
+                $('#towncheck').hide();
+                $('#city').css("border-color","");
+                return true;
+            }
+        }
+
+        function statecheck(){
+            var state_val = $('#state-list').val();
+            if(state_val.length == ''){
+                $('#statecheck').show();
+                $('#statecheck').html("Please Select a State ");
+                $('#statecheck').focus();
+                $('#state-list').css("border-color","red");
+                $('#statecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#statecheck").offset().top -200
+                }, 1000)
+            }
+
+            else{
+                $('#statecheck').hide();
+                $('#state-list').css("border-color","");
+                return true;
+            }
+        }
+
+
+
+
+
+        function password1check(){
+            var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+            if (pattern.test($('#password').val())){
+                $('#password1check').hide();
+                $('#password').css("border-color","");
+                return true;
+
+            }
+            else{
+                $('#password1check').show();
+                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
+                $('#password1check').focus();
+                $('#password').css("border-color","red");
+                $('#password1check').css({"color":"red","margin-top":"0px"});
+
+                // mail_error = false;
+                return false;
+
+            }
+
+        }
+
+
+
+        //    $('#conpassword').keyup(function(){
+        //     con_password_check();
+        // });
+
+        function conpasscheck(){
+            var confirmPassStore= $('#confirm_pass').val();
+            var passwordStore = $('#password').val();
+            if(confirmPassStore != passwordStore){
+                $('#conpasscheck').show();
+                $('#conpasscheck').html("Passwords Don't Match");
+                $('#conpasscheck').focus();
+                $('#confirm_pass').css("border-color","red");
+                $('#conpasscheck').css("color","red");
+                $('html, body').animate({
+                    scrollTop: $("#conpasscheck").offset().top -200
+                }, 1000)
+            }
+            else{
+                $('#conpasscheck').hide();
+                $('#confirm_pass').css("border-color","");
+                return true;
+            }
+        }
+
+        function terms(){
+            var term_val = $('#term').val();
+            if(term_val == 'false'){
+                $('#termscheck').show();
+                $('#termscheck').html("Terms must be accepted");
+                $('#termscheck').focus();
+                $('#term').css("border-color","red");
+                $('#termscheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                return false;;
+            }
+
+            else{
+                $('#termscheck').hide();
+                $('#term').css("border-color","");
+                return true;
+            }
+        }
+        
+        
+        var recaptchaValid = false;
+        function onRecaptcha(response) {
+        if (response === '') {
+            recaptchaValid = false; // reCAPTCHA validation failed
+        } else {
+            recaptchaValid = true; // reCAPTCHA validation succeeded
+            $('#g-recaptcha-response-1').val(response);
+        }
+        }
     
+         function validateRecaptcha() {
+                 var recaptchaResponse = $('#g-recaptcha-response-1').val();
 
-    var defaultStyles = document.querySelectorAll('[id^="default-styles"]');
-    var rtlStyles = document.querySelectorAll('[id^="rtl-styles"]');
+                if (recaptchaResponse === '') {
+                    $('#captchacheck').show();
+                    $('#captchacheck').html("Robot verification failed, please try again.");
+                    $('#captchacheck').focus();
+                    $('#captcha').css("border-color", "red");
+                    $('#captchacheck').css({"color": "red", "margin-top": "5px"});
+                    return false;
+                } else {
+                    $('#captchacheck').hide();
+                    return true;
+                }
+         }
 
-    const flagIcon = document.getElementById('flagIcon');
-    const englishOption = document.getElementById('englishOption');
-    const arabicOption = document.getElementById('arabicOption');
 
-    englishOption.addEventListener('click', function() {
-        flagIcon.className = 'flag flag-us';
-        flagIcon.alt = 'English';
-        flagIcon.nextSibling.textContent = ' English ';
+        ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+        ///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
+        $(document).on('change','#term',function(){
+            if($(this).val()=="false"){
+                $(this).val("true");
+            }
+            else{
+                $(this).val("false");
+            }
+        })
+        //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
+        function gtag_report_conversion(tag) {
+            window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+            
+              gtag('config', tag);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        function registerUser() {
 
-        defaultStyles.forEach(function(link) {
-            link.disabled = false;
+            $('#first_namecheck').hide();
+            $('#last_namecheck').hide();
+            $('#emailcheck').hide();
+            $('#companycheck').hide();
+            $('#countrycheck').hide();
+            $('#mobile_codecheck').hide();
+            $('#addresscheck').hide();
+            $('#towncheck').hide();
+            $('#statecheck').hide();
+            $('#password1check').hide();
+            $('#conpasscheck').hide();
+            $('#termscheck').hide();
+
+
+            var first_nameErr = true;
+            var last_nameErr = true;
+            var emailErr = true;
+            var companyeErr = true;
+            var countryErr = true;
+            var addressErr = true;
+            var mobile_codeErr = true;
+            var password1Err = true;
+            var conPassErr = true;
+            var termsErr = true;
+            // con_password_check();
+            
+            
+      
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() &&
+        validateRecaptcha())
+            {
+
+               
+                 var tag = "<?php echo $analyticsTag; ?>";
+                 if (tag !== "" ){
+                        gtag_report_conversion(tag);
+                    }
+                
+                $("#register").attr('disabled',true);
+                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+                $.ajax({
+                    url: '{{url("auth/register")}}',
+                    type: 'POST',
+                    data: {
+                        "first_name": $('#first_name').val(),
+                        "last_name": $('#last_name').val(),
+                        "email": $('#email').val(),
+                        "company": $('#company').val(),
+                        "bussiness": $('#business').val(),
+                        "company_type": $('#company_type').val(),
+                        "company_size": $('#company_size').val(),
+                        "country": $('#country').val(),
+                        "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
+                        "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
+                        "address": $('#address').val(),
+                        "city": $('#city').val(),
+                        "state": $('#state-list').val(),
+                        "zip": $('#zip').val(),
+                        "user_name": $('#user_name').val(),
+                        "password": $('#password').val(),
+                        "password_confirmation": $('#confirm_pass').val(),
+                        "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
+                        "terms": $('#term').val(),
+
+                        "_token": "{!! csrf_token() !!}",
+                    },
+                    success: function (response) {
+                        // window.history.pushState(response.type, "TitleTest", "thankyou");
+
+                        $("#register").attr('disabled',false);
+                        if(response.type == 'success'){
+                            $('.wizard-inner').css('display','block');
+                            if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
+                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                                $('#alertMessage1').html(result);
+                                window.scrollTo(0,0);
+                                $("#register").html("Submit");
+                            } else {
+                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                                $('#successMessage1').html(result);
+                                var $active = $('.wizard .nav-tabs li.active');
+                                $active.next().removeClass('disabled');
+                                nextTab($active);
+                                window.scrollTo(0,0);
+                                verifyForm.elements['user_id'].value = response.user_id;
+                                if($("#emailstatusConfirm").val() == 1) {
+                                    var emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
+                                    sessionStorage.setItem('oldemail',emailverfy);
+
+                                }
+
+                            }
+
+                            verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
+                            var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val().replace(/[\. ,:-]+/g, '');
+                            sessionStorage.setItem('oldenumber',numberverify);
+                            verifyForm.elements['email_password'].value = $('#password').val();
+                            $("#register").html("Register");
+                            setTimeout(function(){
+                                $('#alertMessage1').hide();
+                            }, 3000);
+                             setTimeout(function(){
+                                $('#successMessage1').hide();
+                            }, 3000);
+                        }
+                    },
+                    error: function (data) {
+                        $("#register").attr('disabled',false);
+                        $("#register").html("Register");
+                        $('html, body').animate({scrollTop:0}, 500);
+
+
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        for (var key in data.responseJSON.errors)
+                        {
+                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+
+                        $('#error').show();
+                        document.getElementById('error').innerHTML = html;
+                        setInterval(function(){
+                            $('#error').slideUp(3000);
+                        }, 8000);
+                    }
+                });
+            }
+            else{
+                return false;
+            }
+        };
+
+
+
+
+        //get login tab1
+
+
+
+        $( document ).ready(function() {
+            var printitem= localStorage.getItem('successmessage');
+            if(printitem != null){
+                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
+                $('#alertMessage2').html(result);
+                localStorage.removeItem('successmessage');
+                localStorage.clear();
+            }
+
         });
-        rtlStyles.forEach(function(link) {
-            link.disabled = true;
+
+
+
+    </script>
+
+
+
+    <script>
+
+        var data='{{json_encode($value)}}';
+        var state=JSON.parse(data.replace(/&quot;/g,'"'));
+        // console.log(state)
+        $(document).ready(function () {
+            var val = $("#country").val();
+            getCountryAttr(val);
+        });
+
+        function getCountryAttr(val) {
+            if(val!=""){
+                getState(val);
+                getCode(val);
+            }
+            else{
+                console.log(val)
+                $("#state-list").html('<option value="">Please select Country</option>').val('');
+            }
+
+//        getCurrency(val);
+
+        }
+
+        function getState(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{url('get-loginstate')}}/" + val,
+                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                success: function (data) {
+
+                    $("#state-list").html('<option value="">Please select Country</option>').val('');
+
+
+                    $("#state-list").html(data).val(state.id);
+                }
+            });
+        }
+
+
+        function getCode(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{url('get-code')}}",
+                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                success: function (data) {
+                    $("#mobile_code").val(data);
+                    $("#mobile_code_hidden").val(data);
+                }
+            });
+        }
+        function getCurrency(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{url('get-currency')}}",
+                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                success: function (data) {
+                    $("#currency").val(data);
+                }
+            });
+        }
+    </script>
+    <!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
+    In your html page, add the snippet and call
+    goog_report_conversion when someone clicks on the
+    chosen link or button. -->
+    <script type="text/javascript">
+        //<![CDATA[
+        goog_snippet_vars = function() {
+            var w = window;
+            w.google_conversion_id = 1027628032;
+            w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+            w.google_remarketing_only = false;
+        }
+        // DO NOT CHANGE THE CODE BELOW.
+        goog_report_conversion = function(url) {
+            goog_snippet_vars();
+            window.google_conversion_format = "3";
+            var opt = new Object();
+            opt.onload_callback = function() {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            }
+            var conv_handler = window['google_trackConversion'];
+            if (typeof(conv_handler) == 'function') {
+                conv_handler(opt);
+            }
+            fbq('track', 'CompleteRegistration');
+        }
+        //]]>
+    </script>
+    <!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
+    In your html page, add the snippet and call
+    goog_report_conversion when someone clicks on the
+    chosen link or button. -->
+    <script type="text/javascript">
+        //<![CDATA[
+        goog_snippet_vars = function() {
+            var w = window;
+            w.google_conversion_id = 1027628032;
+            w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+            w.google_remarketing_only = false;
+        }
+        // DO NOT CHANGE THE CODE BELOW.
+        goog_report_conversion = function(url) {
+            goog_snippet_vars();
+            window.google_conversion_format = "3";
+            var opt = new Object();
+            opt.onload_callback = function() {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            }
+            var conv_handler = window['google_trackConversion'];
+            if (typeof(conv_handler) == 'function') {
+                conv_handler(opt);
+            }
+            fbq('track', 'CompleteRegistration');
+        }
+        //]]>
+    </script>
+    <script type="text/javascript"
+            src="//www.googleadservices.com/pagead/conversion_async.js">
+    </script>
+    <!-- Facebook Pixel Code -->
+    <!-- <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+     fbq('init', '308328899511239');
+    fbq('track', 'PageView');
+
+    </script> -->
+
+    <script type="text/javascript"
+            src="//www.googleadservices.com/pagead/conversion_async.js">
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+
+            //Initialize tooltips
+            $('.nav-tabs > li a[title]').tooltip();
+            $('.nav-tabs .active a[href="#step1"]').click(function(){
+                $('.wizard-inner').css('display','none');
+            })
+            //Wizard
+            if(!$('.nav-tabs .active a[href="#step1"]')){
+                $('.wizard-inner').css('display','block');
+            }
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+                var $target = $(e.target);
+
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
+
+            /*$(".next-step").click(function (e) {
+                $('.wizard-inner').show();
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                nextTab($active);
+                window.scrollTo(0, 10);
+
+            });*/
+
+            $(".prev").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                prevTab($active);
+                $('.wizard-inner').css('display','block');
+            });
+        });
+
+        function nextTab(elem) {
+
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script type="text/javascript">
+        var telInput = $('#mobilenum'),
+            errorMsg = document.querySelector("#error-msg"),
+            validMsg = document.querySelector("#valid-msg"),
+            addressDropdown = $("#country");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: false,
+        });
+        var reset = function() {
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            reset();
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#mobilenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            telInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#mobilenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+    <script>
+        var tel = $('.phone'),
+            country = $('#country').val();
+        addressDropdown = $("#country");
+        errorMsg1 = document.querySelector("#error-msg1"),
+            validMsg1 = document.querySelector("#valid-msg1");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
+            // allowDropdown: false,
+            // autoHideDialCode: false,
+            // autoPlaceholder: "off",
+            // dropdownContainer: "body",
+            // excludeCountries: ["us"],
+            // formatOnDisplay: false,
+            geoIpLookup: function(callback) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    resp.country= country;
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            // hiddenInput: "full_number",
+            initialCountry: "auto",
+            // nationalMode: false,
+            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            placeholderNumberType: "MOBILE",
+            // preferredCountries: ['cn', 'jp'],
+            separateDialCode: false,
+
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var reset = function() {
+            errorMsg1.innerHTML = "";
+            errorMsg1.classList.add("hide");
+            validMsg1.classList.add("hide");
+        };
+
+        addressDropdown.change(function() {
+            tel.intlTelInput("setCountry", $(this).val());
+        });
+
+        tel.on('blur', function () {
+            reset();
+            if ($.trim(tel.val())) {
+                if (tel.intlTelInput("isValidNumber")) {
+                    $('.phone').css("border-color","");
+                    validMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',false);
+                } else {
+                    var errorCode = tel.intlTelInput("getValidationError");
+                    errorMsg1.innerHTML = errorMap[errorCode];
+                    $('#conmobile').html("");
+
+                    $('.phone').css("border-color","red");
+                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
+                    errorMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',true);
+                }
+            }
+        });
+
+
+    function resendOTP() {
+
+        otp = generateOTP();
+
+        otpInputs.forEach(input => input.value = "");
+
+        document.getElementById("alert-resend").classList.toggle('d-none');
+
+        setTimeout(()=>{
+
+            document.getElementById("alert-resend").classList.toggle('d-none');
+
+        },2000)
+
+        document.getElementById("resendButton").disabled = true;
+
+        startTimer();
+    }
+
+
+
+    function startTimer() {
+        let seconds = 10;
+        document.getElementById("timer").textContent = seconds;
+
+        timerInterval = setInterval(function () {
+            seconds--;
+            document.getElementById("timer").textContent = seconds;
+
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("resendButton").disabled = false;
+            }
+        }, 1000);
+    }
+
+      otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+
+            if (value.match(/\d/)) {
+                if (value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            } else {
+                e.target.value = '';
+                if (index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            }
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const clipboardData = e.clipboardData.getData('text');
+            const numbers = clipboardData.match(/\d/g);
+            let currentIndex = index;
+
+            if (numbers) {
+                numbers.forEach((number, i) => {
+                    if (currentIndex < otpInputs.length) {
+                        otpInputs[currentIndex].value = number;
+                        currentIndex++;
+                    }
+                });
+
+                if (currentIndex > index) {
+                    otpInputs[currentIndex - 1].focus();
+                }
+            }
         });
     });
-
-    arabicOption.addEventListener('click', function() {
-        flagIcon.className = 'flag flag-ar';
-        flagIcon.alt = 'Arabic';
-        flagIcon.nextSibling.textContent = ' Arabic ';
-
-        defaultStyles.forEach(function(link) {
-            link.disabled = true;
-        });
-        rtlStyles.forEach(function(link) {
-            link.disabled = false;
-        });
-    });
-
-    defaultStyles.forEach(function(link) {
-        link.disabled = false;
-    });
-    rtlStyles.forEach(function(link) {
-        link.disabled = true;
-    });
-</script>
-</body>
-</html>
+    </script>
+    <noscript>
+        <img height="1" width="1"
+             src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
+&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+@stop

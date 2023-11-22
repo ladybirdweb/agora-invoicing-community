@@ -6,129 +6,162 @@ Invoice
  View Invoice
 @stop
 @section('breadcrumb')
- @if(Auth::check())
-   <li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-   <li><a href="{{url('login')}}">Home</a></li>
+@section('breadcrumb')
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
     @endif
-<li><a href="{{url('my-invoices')}}">My Account</a></li>
-<li class="active">Invoice</li>
-@stop
+     <li class="active text-dark">View Invoice</li>
+@stop 
+<style type="text/css">
+    .text-fail{
+        color: red;
+    }
+    .text-warning{
+        color: yellow;
+    }
+    .invoice-table{
+        border: none;
+    }
+</style>
 @section('nav-invoice')
 active
 @stop
 
 @section('content')
-    <div class="featured-box featured-box-primary text-left mt-5" style="max-width: 900px">
-
-    <section class="box-content">
-        @php
+   @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
-             $date = getDateHtml($invoice->date);
+            $date = getDateHtml($invoice->date);
             $symbol = $invoice->currency;
             $itemsSubtotal = 0;
             $taxAmt = 0;
         @endphp
 
-        <div>
-            @if($set->logo)
-                <img alt="Logo" width="100" height="50" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
-            @endif
-             <h4 class="float-right" >Date: {!! $date !!}</h4>
-            <div class="invoice">
+        <div id="examples" class="container py-4" style="max-width: 900px">
 
-                <header class="clearfix">
-                    <div class="row" style="border-bottom: 1px solid rgba(0, 0, 0, 0.06);">
-                        <div class="col-sm-6 mt-3">
-                            <h2 class="h2 mt-0 mb-1 text-dark font-weight-bold">INVOICE</h2>
-                            <h4 class="h4 m-0 text-dark font-weight-bold">#{{$invoice->number}}</h4>
-                        </div>
-                        <div class="col-sm-6 text-right mt-3 mb-3">
-                            <address class="ib" style="margin-bottom: 0px">
-                                <strong>{{$set->company}}</strong><br>
-                                {{$set->address}}<br>
-                                {{$set->city}}<br/>
+            <div class="row">
+
+                <div class="col-lg-6 col-sm-12 order-1 order-lg-2">
+
+                    <div class="overflow-hidden mb-1">
+
+                         @if($set->logo)
+                        <img alt="Logo" width="150" height="100" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
+                         @endif
+
+                        <h2 class="font-weight-normal text-7 mb-0">Invoice &nbsp;<span class="text-0 text-color-grey">#{{$invoice->number}}</span></h2>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12 text-lg-end order-1 order-lg-2">
+
+                    <div class="overflow-hidden mb-2 pb-1">
+
+                        <h4 class="mb-0">Date: {!! $date !!}</h4>
+                    </div>
+
+                    @php
+                $statusClass = '';
+                $statusText = '';
+
+                switch ($invoice->status) {
+                    case 'Success':
+                        $statusClass = 'text-success';
+                        $statusText = 'PAID';
+                        break;
+                    case 'partially paid':
+                        $statusClass = 'text-warning';
+                        $statusText = 'Partially paid';
+                        break;
+                    default:
+                        $statusClass = 'text-fail';
+                        $statusText = 'Unpaid';
+                        break;
+                }
+                @endphp
+
+                    <div class="overflow-hidden mb-4">
+                     <h2 class="font-weight-normal text-7 mb-0 {{ $statusClass }}">
+                    <strong class="font-weight-extra-bold">{{ $statusText }}</strong>
+                </h2>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row pt-3">
+
+                <div class="col-lg-6">
+
+                    <h2 class="text-color-dark font-weight-bold text-4 mb-1">From</h2>
+
+                    <ul class="list list-unstyled text-2 mb-0">
+
+                        <li class="mb-0"><strong>{{$set->company}}</strong></li>
+
+                        <li class="mb-0">{{$set->address}}</li>
+
+                        <li class="mb-0">{{$set->city}}<br/>
                                 @if(key_exists('name',getStateByCode($set->state)))
                                 {{getStateByCode($set->state)['name']}}
                                 @endif
                                 {{$set->zip}}<br/>
                                 Country: {{getCountryByCode($set->country)}}<br/>
                                 Mobile: <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
-                                Email: {{$set->company_email}}
-                            </address><br>
-                             @if($set->gstin)
-                            <div class="bill-data text-right">
-                                <p class="mb-0">
-                                    <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$set->gstin}}</span>
-                                </p>
-                            </div>
-                            @endif
+                                Email: {{$set->company_email}}</li>
 
-                             @if($set->cin_no)
-                             <div class="bill-data text-right">
-                                <p class="mb-0">
-                                    <span class="text-dark">CIN:</span>
-                                    <span class="value">#{{$set->cin_no}}</span>
-                                </p>
-                            </div>
-                             @endif
-                        </div>
-                    </div>
-                </header>
+                         @if($set->gstin)
+                        <li class="mb-0 mt-2 text-4"><b class="text-dark">GSTIN:</b> #{{$set->gstin}}</li>
+                        @endif
+                        @if($set->cin_no)
 
-                <div class="bill-info">
-                    <div class="row" style="margin-top: 25px">
-                        <div class="col-md-6">
-                            <div class="bill-to">
-                                <p class="h5 mb-1 text-dark font-weight-semibold">To:</p>
-                                <address>
-                                    <strong>{{$user->first_name}} {{$user->last_name}}</strong><br>
-                                    @if($user->address)
-                                        {{$user->address}}<br/>
-                                    @endif
-                                    {{$user->town}}<br/>
-                                    @if(key_exists('name',getStateByCode($user->state)))
-                                        {{getStateByCode($user->state)['name']}}
-                                    @endif
-                                    {{$user->zip}}<br/>
-                                    Country: {{getCountryByCode($user->country)}}<br/>
-                                    Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
-                                    Email: {{$user->email}}
-                                </address>
-                                @if($user->gstin)
-                            <div class="bill-data">
-                                <p class="mb-0">
-                                    <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$user->gstin}}</span>
-                                </p>
-                            </div>
-                            @endif <br>
-                            </div>
-                        </div>
-                        
-                        
-                        
-
-                       
-                        
-                    </div>
+                        <li class="mb-0 text-4"><b class="text-dark">CIN:</b> #{{$set->cin_no}}</li>
+                        @endif
+                    </ul>
                 </div>
 
-                <table class="table table-striped table-responsive-md invoice-items">
-                    <thead>
-                    <tr class="text-dark">
-                        <th class="font-weight-semibold">Order No</th>
-                        <th class="font-weight-semibold">Product</th>
-                        <th class="font-weight-semibold">Price</th>
-                        <th class="font-weight-semibold">Agents</th>
-                        <th class="font-weight-semibold">Quantity</th>
+                <div class="col-lg-6 mb-4 mb-lg-0">
 
+                    <h2 class="text-color-dark font-weight-bold text-4 mb-1">To</h2>
 
-                        <th class="font-weight-semibold">Subtotal</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                    <ul class="list list-unstyled text-2 mb-0">
+
+                        <li class="mb-0"><strong>{{$user->first_name}} {{$user->last_name}}</strong></li>
+
+                        @if($user->address)
+                        {{$user->address}}<br/>
+                        @endif
+                        {{$user->town}}<br/>
+                        @if(key_exists('name',getStateByCode($user->state)))
+                            {{getStateByCode($user->state)['name']}}
+                        @endif
+                        {{$user->zip}}<br/>
+                        Country: {{getCountryByCode($user->country)}}<br/>
+                        Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
+                        Email: {{$user->email}}
+        </ul>
+                </div>
+            </div>
+
+            <div class="card p-3 mt-3">
+
+                <div class="table-responsive">
+                    <table class="table table-striped">
+
+                        <thead>
+                        <tr>
+                            <th>Order No</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Agents</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        </thead>
+
+                               <tbody>
                     @foreach($items as $item)
                         <tr>
                             @php
@@ -157,23 +190,33 @@ active
                             <td>{{$item->product_name}} {{($plan)}}
                             </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
-                            <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
+                             <td>{{($item->agents)?$item->agents:'Unlimited'}}</td>
                             <td>{{$item->quantity}}</td>
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
-                </table>
-                <div class="invoice-summary">
-                    <div class="row justify-content-end">
-                        <div class="col-sm-4">
-                            <table class="table h6 text-dark" >
+                    </table>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-12 col-lg-6"></div>
+
+                    <div class="col-sm-12 col-lg-6 text-lg-end">
+
+                        <div class="table-responsive">
+
+                            <table class="table h6 text-dark">
                                 @foreach($items as $item)
-                                 <tr>
-                                 <th>Subtotal</th>
+
+                                <tbody>
+                                <tr>
+
+                                    <th>Subtotal</th>
+
                                     <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                 </tr>
-                                    @if($invoice->credits)
+                                @if($invoice->credits)
                                         <tr>
                                             <th>Discount</th>
                                             <td>{{currencyFormat($invoice->credits,$code=$symbol)}} (Credits)</td>
@@ -185,10 +228,8 @@ active
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 </tr>
                                 @endif
-                          
 
-                                
-                                    <?php
+                                 <?php
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
                                     if($order != null) {
                                         $productId = $order->product;
@@ -230,28 +271,75 @@ active
                                     <td>{{$invoice->processing_fee}}</td>
                                 </tr>
                                 @endif
-
                                 <tr class="h4">
-                                    <th>Total</th>
-                                    <td>{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
+
+                                    <th class="border-0">Total</th>
+
+                                    <td class="border-0">{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
                                 </tr>
                                 @endforeach
+                                </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="text-right">
-                <a href="{{url('pdf?invoiceid='.$invoice->id)}}" class="btn btn-default"><i class="fa fa-download"></i> Generate PDF</a>
+            <div class="card p-3 mt-3">
 
-                @if($invoice->status !='Success')
-                    <a href="{{url('paynow/'.$invoice->id)}}" target="_blank" class="btn btn-primary ml-3"><i class="fa fa-credit-card"></i> Pay Now</a>
+                <div class="table-responsive">
+                    <table class="table">
+                        @foreach($payments as $payment)
+                        @php
+                        $DateTime = getDateHtml($payment->created_at);
+                        $orderid = \DB::table('orders')->where('invoice_id',$invoice->id)->value('id');
+                        $transcationid = \DB::table('auto_renewals')->where('order_id',$orderid)->value('customer_id');
+
+                        @endphp
+
+                        <thead>
+                        <tr>
+                            <th>Transaction Date</th>
+                            <th>Method</th>
+                            <th>Transaction ID</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr>
+                            <td>{!! $DateTime !!}</td>
+                            <td>{{$payment->payment_method}}</td>
+                            @if($transcationid)
+                            <td>{{$transcationid}}</td>
+                            @else
+                            <td>--</td>
+                            @endif
+                            <td>{{$payment->amount}}</td>
+                            @if($payment->payment_status == 'success')
+                            <td><span class="badge badge-success badge-xs">{{$payment->payment_status}}</span></td>
+                            @else
+                            <td><span class="badge badge-danger badge-xs">{{$payment->payment_status}}</span></td>
+                            @endif
+
+                        </tr>
+
+                        </tbody>
+                        @endforeach
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4">
+
+                <a href="{{url('pdf?invoiceid='.$invoice->id)}}"  class="btn btn-dark float-end ms-2"><i class="fa fa-download"></i> Generate PDF</a>
+
+                 @if($invoice->status !='Success')
+                    <a href="{{url('paynow/'.$invoice->id)}}" target="_blank" class="btn btn-dark float-end ms-2"><i class="fa fa-credit-card"></i> Pay Now</a>
                 @endif
+
             </div>
         </div>
-    </section>
-    </div>
 
 @stop

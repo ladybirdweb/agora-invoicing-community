@@ -1,122 +1,99 @@
 <!DOCTYPE html>
 <html>
-<?php 
-$setting = \App\Model\Common\Setting::where('id', 1)->first();
-$everyPageScripts = ''; 
-$scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
+<head>
+<?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScript = '';
+$scripts = \App\Model\Common\ChatScript::get();
+foreach($scripts as $script)
+    if($script->on_every_page == 1) {
+        $everyPageScript = $script->script;
+    }
 
 foreach($scripts as $script) {
     $everyPageScripts .= $script->script;
 }
 ?>
-<style type="text/css">
-    /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */
-    .dataTables_wrapper {
-        overflow-x: auto;
-    }
-
-    .highlight-button {
-        background-color: #0088CC;
-        color: white !important;
-        font-weight: bold;
-    }
-    .highlight {
-        border: 2px solid;
-        border-radius: 5px;
-        padding: 8px;
-        transition: background-color 0.3s;
-        height: 90%;
-    }
-    .highlight:hover {
-        background-color: blue;
-        color: white;
-    }
-
-    label.required:after {
-        color: red;
-     }
-.highlight:hover {
-    background-color: blue;
-    color: white;
-}
-
-.custom-line {
-    border: none;
-    border-top: 1px solid #ccc;
-    margin: 10px 0;
-}
-#validationMessage {
-  position: absolute;
-  top: 80px; /* Adjust this value to align the error message properly */
-  margin-left:32px;
-  left: 0;
-  font-size: 12px;
-  color: red;
-}
-
-  .breadcrumb > li + li:before {
-        content: "\3e" !important;
-    }
-</style>
-       
 
 
-<head>
     <!-- Basic -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title') | {{$setting->favicon_title_client}}</title>
+     <title>@yield('title') | {{$setting->favicon_title_client}}</title>
 
-    <meta name="keywords" content="HTML5 Template" />
-    <meta name="description" content="Register, signup here to start using Faveo Helpdesk or signin to your existing account">
-    <meta name="author" content="okler.net">
+    <meta name="keywords" content="Faveo" />
+    <meta name="description" content="Faveo">
+    <meta name="author" content="Sakthivel Munusami">
 
-    <!-- Favicon -->
+     <!-- Favicon -->
     @if($setting->fav_icon)
-        <link rel="shortcut icon" href='{{asset("storage/common/images/$setting->fav_icon")}}' type="image/x-icon" />
-    @endif
+    <link rel="shortcut icon"  href='{{asset("storage/common/images/$setting->fav_icon")}}' type="image/x-icon" />
+     @endif
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+
     <!-- Web Fonts  -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+    <link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/all.min.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/animate.compat.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/simple-line-icons.min.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/magnific-popup.min.css')}}">
 
-    <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/css/font-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/css/animate.min.css')}}">
-    <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
+    <!-- Theme CSS -->
+    <link id="default-styles" rel="stylesheet" href="{{asset('client/porto/css-2/theme.css')}}">
+    <link id="default-styles-2" rel="stylesheet" href="{{asset('client/porto/css-2/theme-elements.css')}}">
+    <link id="default-styles-3" rel="stylesheet" href="{{asset('client/porto/css-2/theme-blog.css')}}">
+    <link id="default-styles-4" rel="stylesheet" href="{{asset('client/porto/css-2/theme-shop.css')}}">
 
-    <link rel="stylesheet" href="{{asset('client/porto/css-1/theme.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-1/theme-elements.css')}}">
-    <link rel="stylesheet" href="{{asset('client/porto/css-1/theme-shop.css')}}">
+   
 
-    <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+    <!-- Demo CSS -->
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/demo-transportation-logistic.css')}}">
 
+    <!-- Skin CSS -->
+    <link id="skinCSS" rel="stylesheet" href="{{asset('client/porto/css-2/skin-transportation-logistic.css')}}">
 
-    {{-- this can be customised to any skin available --}}
-    <link rel="stylesheet" href="{{asset('client/porto/css-1/skins/default.css')}}">
-    {{--  any custom css can be defined in this  --}}
-    <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="{{asset('client/porto/css-2/custom.css')}}">
 
+     <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
     <!-- Head Libs -->
-    <script src="{{asset('client/js/modernizr.min.js')}}"></script>
+    <script src="{{asset('client/porto/js-2/modernizr.min.js')}}"></script>
+      <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
-    <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
-    <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+    <script src="{{asset('common/js/jquery-2.1.4.js')}}" type="text/javascript"></script>
+    <script src="{{asset('common/js/jquery2.1.1.min.js')}}" type="text/javascript"></script>
 
+    <style>
+
+        .sticky-header-active .d-sticky-header-negative-none {
+            display: block !important;
+        }
+        #footer h1, #footer h2, #footer h3, #footer h4, #footer h5, #footer h6
+        {
+            color: black !important;
+        }
+    </style>
 
 </head>
-<style>
-    .alert {
-        font-weight:bolder;
-    }
-</style>
-<body>
 <?php
+$domain = [];
+$set = new \App\Model\Common\Setting();
+$set = $set->findOrFail(1);
+$pay = new \App\Model\Payment\Plan();
+$days = $pay->where('product','117')->value('days');
+?>
+@include('themes.default1.front.demoForm')
+<body data-plugin-page-transition>
+    <?php
 $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
 $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
@@ -131,295 +108,282 @@ $set = $set->findOrFail(1);
 $pay = new \App\Model\Payment\Plan();
 $days = $pay->where('product','117')->value('days');
 ?>
-@include('themes.default1.front.demoForm')
-<div class="body">
-    <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
-        <div class="header-body"  style="top: -50px;">
-            <div class="header-container container">
+ @php
+$social = App\Model\Common\SocialMedia::get();
+@endphp
+
+<div class="body p-relative bottom-1">
+
+    <header id="header" class="header-effect-reveal" data-plugin-options="{'stickyEnabled': true, 'stickyEffect': 'reveal', 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': false, 'stickyStartAt': 200, 'stickySetTop': '-44px'}">
+
+        <div class="header-body border-0 border-bottom-light">
+
+            <div class="header-container container-fluid p-0">
+
                 <div class="header-row">
-                    <div class="header-column">
+
+                    <div class="header-column header-column-border-right flex-grow-0 d-sticky-header-active-none">
+
                         <div class="header-row">
-                            <div class="header-logo">
-                                <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">
-                                    <img alt="Logo" width="100" height="51" data-sticky-width="70" data-sticky-height="36" data-sticky-top="30" src="{{asset('storage/images/'.$setting->logo)}}">
+
+                            <div class="header-logo p-relative top-30 m-0" style="width: 320px;height: 150px;text-align: center;">
+
+                                <a href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
+
+                                    <img alt="Porto" width="130" height="75" src="{{asset('storage/images/'.$setting->logo)}}">
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="header-column justify-content-end">
-                        <div class="header-row pt-3">
-                            <nav class="header-nav-top">
-                                <ul class="nav nav-pills">
 
+                    <div class="header-column">
 
-                                    @if($set->company_email != NULL)
-                                        <li class="nav-item nav-item-anim-icon d-none d-md-block">
-                                                    <span class="ws-nowrap"><i class="fas fa-envelope"></i>
-                                                        <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
-                                                    </span>
-                                        </li>
-                                    @endif
-                                    @if($set->phone != NULL)
-                                        <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
-                                                    <span class="ws-nowrap"><i class="fas fa-phone"></i>
-                                                        <a style="color: inherit" href="tel:{{$set->phone}}">+{{$set->phone_code}} {{$set->phone}}</a>
-                                                    </span>
-                                        </li>
-                                    @endif
-                                    @if(!Auth::user())
-                                        <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
-                                                    <span class="ws-nowrap">
-                                                        <a style="color: inherit" href={{url('login')}}><i class="fas fa-user"></i>My Account</a>
-                                                    </span>
-                                        </li>
-                                    @endif
+                        <div class="border-bottom-light w-100">
 
-                                </ul>
-                            </nav>
-                        </div>
+                            <div class="hstack gap-4 px-4 py-2 font-weight-semi-bold d-none d-lg-flex">
+                                 @if($set->phone != NULL)
+                                <div class="d-none d-lg-inline-block ps-1">
 
+                                    <a class="text-color-default text-color-hover-primary text-2" href="tel:{{$set->phone}}">
 
-                        <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
+                                        <i class="fas fa-phone text-4 p-relative top-2"></i> &nbsp;+{{$set->phone_code}} {{$set->phone}}
+                                    </a>
+                                </div>
+                                @endif
+                                <div class="vr d-lg-inline-block opacity-2 d-none d-xl-inline-block"></div>
+                                @if($set->company_email != NULL)
+                                <div class="d-none d-xl-inline-block">
 
-                                <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
-                                    <i class="fa fa-bars"></i>
-                                </button>
+                                    <a class="text-color-default text-color-hover-primary text-2" href="mailto:{{$set->company_email}}">
 
-                                <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
-                                    <nav class="collapse">
-                                        <ul class="nav nav-pills" id="mainNav">
+                                        <i class="fas fa-envelope text-4 p-relative top-2"></i> &nbsp;{{$set->company_email}}
+                                    </a>
+                                </div>
+                               @endif
+                                <div class="ms-auto d-none d-lg-inline-block">
 
-                                                <?php
-                                                $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
-                                                ?>
+                                </div>
+                                @php
+                                $social = App\Model\Common\SocialMedia::get();
+                                @endphp
 
+                                <div class="vr opacity-2 d-none d-lg-inline-block"></div>
 
-                                                @if($cloud == 1)
-                                                    <!-- Button to Start Free Trial -->
-                                                    <a class="nav-link open-createTenantDialog" id="startFreeTrialBtn" style="text-decoration: none; cursor: pointer; background-color: #0088CC; color: white !important; font-weight: bold;">
-                                                        <div>
-                                                            <i class="fas fa-cloud"></i>
-                                                            <span style="margin-left: 3px;">START FREE TRIAL</span>
-                                                        </div>
-                                                    </a>
+                                <div class="d-none d-lg-inline-block">
+
+                                    <ul class="nav nav-pills me-1">
+                                     @foreach($social as $media)
+                                        <li class="nav-item pe-2 mx-1">
+                                            <a href="{{$media->link}}" target="_blank" data-bs-toggle="tooltip" title="{{$media->name}}" class="text-color-default text-color-hover-primary text-4">
+                                                @if ($media->name === 'Facebook')
+                                                    <i class="fab fa-facebook-f"></i>
+                                                @elseif ($media->name === 'Twitter')
+                                                    <i class="fab fa-twitter"></i>
+                                                @elseif ($media->name === 'Linkedin')
+                                                    <i class="fab fa-linkedin-in"></i>
                                                 @endif
+                                            </a>
+                                        </li>
+                                    @endforeach
 
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                        ?>
 
-                                            <?php
-                                            $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                        <div class="header-row h-100">
 
-                                            ?>
+                            <div class="hstack h-100 w-100">
 
-                                            <li class="dropdown">
-                                                <a class="dropdown-item dropdown-toggle" href="#">
-                                                    Store&nbsp;
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    @if(count($groups)>0)
-                                                        @foreach($groups as $group)
+                                <div class="h-100 w-100 w-xl-auto">
+
+                                    <div class="header-nav header-nav-links h-100 justify-content-end justify-content-lg-start me-4 me-lg-0 ms-lg-3">
+
+                                        <div class="header-nav-main header-nav-main-square header-nav-main-dropdown-no-borders header-nav-main-text-capitalize header-nav-main-text-size-4 header-nav-main-arrows header-nav-main-full-width-mega-menu header-nav-main-mega-menu-bg-hover header-nav-main-effect-5">
+
+                                            <nav class="collapse">
+
+                                                <ul class="nav nav-pills" id="mainNav">
+
+                                                    <li class="d-sticky-header-negative-none" style="display:none">
+
+                                                        <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
+
+                                                            <img alt="Porto" width="75" height="50" src="{{asset('storage/images/'.$setting->logo)}}">
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="dropdown">
+
+                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
+                                                            &nbsp;Store&nbsp;
+                                                        </a>
+
+                                                        <ul class="dropdown-menu border-light mt-n1">
+                                                           @foreach($groups as $group)
                                                             <li>
-                                                                <a class="dropdown-item" href="{{url("group/$group->pricing_templates_id/$group->id")}}">
-                                                                    {{$group->name}}
-                                                                </a>
+                                                                <a class="dropdown-item" href="{{url("group/$group->pricing_templates_id/$group->id")}}">{{$group->name}}</a>
                                                             </li>
-                                                        @endforeach
+                                                            @endforeach
+                                                        </ul>
+                                                    </li>
+
+                                                    <li>
+                                                        <a class="nav-link" href="{{url('contact-us')}}">Contact Us</a>
+                                                    </li>
+                                                    @if(Auth::user())
+
+                                                    <li class="dropdown">
+
+                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
+                                                            &nbsp;My Account&nbsp;
+                                                        </a>
+
+                                                        <ul class="dropdown-menu border-light mt-n1">
+                                                           @if(Auth::user()->role == 'admin')
+                                                            <li>
+                                                                <a href="{{url('/')}}" class="dropdown-item">Admin Dashboard</a>
+                                                            </li>
+                                                            @endif
+                                                            <li>
+                                                                <a href="{{url('client-dashboard')}}" class="dropdown-item">Dashboard</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{url('my-orders')}}" class="dropdown-item">My Orders</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="{{url('my-invoices')}}" class="dropdown-item">My Invoices</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="{{url('my-profile')}}" class="dropdown-item">My Profile</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="{{url('auth/logout')}}" class="dropdown-item">Logout</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
                                                     @else
-                                                        <li>
-                                                            <a class="dropdown-item">
-                                                                No Groups Added
-                                                            </a>
-                                                        </li>
+
+                                                    <li>
+                                                        <a class="nav-link active" href="{{url('login')}}">Sign Up</a>
+                                                    </li>
                                                     @endif
                                                 </ul>
-                                            </li>
+                                            </nav>
+                                        </div>
 
-
-                                            <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get();
-                                             ?>
-
-                                            @foreach($pages as $page)
-
-                                                <li class="dropdown">
-                                                    @if($page->parent_page_id==0)
-                                                            <?php
-                                                            $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
-                                                            if ($ifdrop > 0) {
-                                                                $class = 'nav-link dropdown-toggle';
-                                                            } else {
-                                                                $class = 'nav-link';
-                                                            }
-                                                            ?>
-                                                        @if($page->type == 'contactus')
-                                                            <a class="nav-link" href="{{url('contact-us')}}">
-                                                                @else
-                                                                    <a class="{{$class}}" href="{{$page->url}}">
-                                                                        @endif
-                                                                        {{ucfirst($page->name)}}
-                                                                    </a>
-                                                                @endif
-                                                                @if(\App\Model\Front\FrontendPage::where('publish',1)->where('parent_page_id',$page->id)->count()>0)
-
-
-                                                                        <?php $childs = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->get(); // dd($childs); ?>
-                                                                    <ul class="dropdown-menu">
-
-                                                                        @foreach($childs as $child)
-                                                                            <li>
-                                                                                <a href="{{$child->url}}">
-                                                                                    {{ucfirst($child->name)}}
-                                                                                </a>
-                                                                            </li>
-
-                                                                        @endforeach
-                                                                    </ul>
-                                                        @endif
-
-                                                </li>
-                                            @endforeach
-
-
-
-
-
-                                            <li class="dropdown dropdown-mega dropdown-mega-shop" id="headerShop">
-                                                <a class="dropdown-item dropdown-toggle" href="{{url('show/cart')}}">
-                                                    <i class="fa fa-shopping-cart"></i> Cart ({{Cart::getTotalQuantity()}})
-                                                </a>
-                                                <ul class="dropdown-menu">
+                                <div class="header-nav-features header-nav-features-no-border header-nav-features-lg-show-border order-1 order-lg-2 me-2 me-lg-0">
+                                    <div class="header-nav-feature header-nav-features-cart d-inline-flex ms-2">
+                                        <a href="{{ url('show/cart') }}" class="header-nav-features-toggle text-decoration-none">
+                                            <span class="text-dark opacity-8 font-weight-bold text-color-hover-primary"> Cart</span>
+                                            <img src="../img/icons/icon-cart.svg" width="14" alt="" class="header-nav-top-icon-img">
+                                            <span class="cart-info">
+                                                <span class="cart-qty">{{ Cart::getTotalQuantity() }}</span>
+                                            </span>
+                                        </a>
+                                        <div class="header-nav-features-dropdown right-15" id="headerTopCartDropdown">
+                                            <ol class="mini-products-list">
+                                                @forelse(Cart::getContent() as $key => $item)
+                                                    <?php
+                                                    $product = App\Model\Product\Product::where('id', $item->id)->first();
+                                                    if ($product->require_domain == 1) {
+                                                        $domain[$key] = $item->id;
+                                                    }
+                                                    $currency = $item->attributes['currency'];
+                                                    $total = rounding($item->getPriceSumWithConditions());
+                                                    ?>
+                                                    <li class="item">
+                                                        <a href="#" data-bs-toggle="tooltip" title="{{ $product->name }}" class="product-image">
+                                                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                                                        </a>
+                                                        <div class="product-details">
+                                                            <p class="product-name">
+                                                                <a href="#">{{ $item->name }}</a><br>
+                                                                <span class="amount"><strong>{{ currencyFormat($total, $code = $currency) }}</strong></span>
+                                                            </p>
+                                                            <a onclick="removeItem('{{$item->id}}');"data-bs-toggle="tooltip" title="Remove This Item" class="btn-remove">
+                                                                <i class="fas fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    @php
+                                                        $data = \App\Model\Product\ProductGroup::where('hidden', '!=', 1)->first();
+                                                    @endphp
                                                     <li>
                                                         <div class="dropdown-mega-content">
                                                             <table class="cart">
                                                                 <tbody>
-
-                                                                @forelse(Cart::getContent() as $key=>$item)
-
-                                                                        <?php
-                                                                        // dd($item);
-                                                                        $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                                                        if ($product->require_domain == 1) {
-                                                                            $domain[$key] = $item->id;
-                                                                        }
-
-                                                                        $currency =  $item->attributes['currency'];
-                                                                        ?>
-                                                                    <tr>
-
-                                                                        <td class="product-thumbnail">
-                                                                            <img width="100" height="100" alt="{{$product->name}}" class="img-responsive" src="{{$product->image}}">
-                                                                        </td>
-
-                                                                        <td class="product-name">
-                                                                                <?php
-                                                                                $total = rounding($item->getPriceSumWithConditions())
-                                                                                ?>
-                                                                            <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
-                                                                        </td>
-
-                                                                        <td class="product-actions">
-                                                                            <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                                                                                <!--  @if(Session::has('items'))
-                                                                                    {{Session::forget('items')}}
-                                                                                @endif -->
-                                                                                <i class="fa fa-times"></i>
-                                                                            </a>
-                                                                        </td>
-
-                                                                    </tr>
-                                                                @empty
                                                                     @php
                                                                         $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
                                                                     @endphp
-
                                                                     <tr>
                                                                         <td>
-
-
-                                                                            @if(Auth::check())
-                                                                                <a href="">Choose a Product
-                                                                                    @else
-                                                                                        <a href="{{url('login')}}">Choose a Product
-                                                                                            @endif
-                                                                                        </a></td>
-                                                                    </tr>
-
-
-                                                                @endforelse
-
-
-                                                                @if(!Cart::isEmpty())
-                                                                    <tr>
-                                                                        <td class="actions" colspan="6">
-                                                                            <div class="actions-continue">
-                                                                                <a href="{{url('show/cart')}}"><button class="btn btn-default pull-left">View Cart</button></a>
-
-
-                                                                                @if(count($domain)>0)
-                                                                                    <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
-                                                                                @else
-                                                                                    <a href="{{url('checkout')}}"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
-                                                                                @endif
-                                                                            </div>
+                                                                            @if (Auth::check())
+                                                                                <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
+                                                                            @else
+                                                                                <a href="{{ url('login') }}">Choose a Product
+                                                                            @endif
+                                                                                </a>
                                                                         </td>
                                                                     </tr>
-                                                                @endif
                                                                 </tbody>
                                                             </table>
                                                         </div>
                                                     </li>
-                                                </ul>
-                                            </li>&nbsp&nbsp
-                                            <?php
-                                             $Demo_page = App\Demo_page::first();
-                                            ?>
-
-                                             @if($Demo_page->status)
-                                                <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req" style="cursor: pointer;">
-                                                        REQUEST FOR DEMO
-                                                    </a>
-                                                </li>&nbsp&nbsp&nbsp
+                                                @endforelse
+                                                  <div class="totals">
+                                                <span class="label">Total:</span>
+                                                <span class="price-total"><span class="price">${{ Cart::getTotal() }}</span></span>
+                                            </div>
+                                                @if (!Cart::isEmpty())
+                                                    <li>
+                                                        <div class="actions">
+                                                            <a class="btn btn-dark btn-modern text-uppercase font-weight-semi-bold"
+                                                                href="{{ url('show/cart') }}">View Cart</a>
+                                                            @if (count($domain) > 0)
+                                                                <a href="#domain" data-toggle="modal" data-target="#domain"
+                                                                    class="btn btn-primary">Proceed to Checkout</a>
+                                                            @else
+                                                                <a href="{{ url('checkout') }}" class="btn btn-primary">Checkout</a>
+                                                            @endif
+                                                        </div>
+                                                    </li>
                                                 @endif
-
-                                            @if(!Auth::user())
-                                                <a class="nav-link" style="font-size: 12px;text-decoration: none;cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;" href="{{url('login')}} ">
-                                                        SIGNUP FOR FREE
-                                                    </a>
-
-
-
-
-
-                                            @else
-                                                <li class="dropdown">
-                                                    <a class="dropdown-item dropdown-toggle" href="{{url('login')}}">
-                                                        My Account
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        @if(Auth::user()->role == 'admin')
-                                                            <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
-                                                        @endif
-                                                        <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
-                                                    </ul>
-                                                </li>
-                                            @endif
-
-
-                                        </ul>
-                                    </nav>
+                                            </ol>
+                                          
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <ul class="header-social-icons social-icons d-none d-sm-block">
-                                    @php
-                                        $social = App\Model\Common\SocialMedia::get();
-                                    @endphp
-                                    @foreach($social as $media)
-                                        <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
-                                    @endforeach
-                                </ul>
+
+                                        <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse" data-bs-target=".header-nav-main nav">
+
+                                            <i class="fas fa-bars"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <?php
+                                $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
+                                $Demo_page = App\Demo_page::first();
+                                ?>
+
+                                <div class="vr opacity-2 ms-auto d-none d-xl-inline-block"></div>
+
+                                <div class="px-4 d-none d-xxl-inline-block ws-nowrap">
+                                    @if($cloud == 1)
+                                    <a class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2 open-createTenantDialog" id="startFreeTrialBtn" style="color: white;">START FREE TRIAL</a>
+                                    @endif
+                                    @if($Demo_page->status)
+                                    <a id="demo-req" class="btn border-0 px-4 py-2 line-height-9 btn-primary" style="color: white;">REQUEST FOR DEMO</a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -427,27 +391,25 @@ $days = $pay->where('product','117')->value('days');
             </div>
         </div>
     </header>
-
     <div role="main" class=@yield('main-class')>
 
-        <section class="page-header page-header-modern bg-color-light-scale-1 page-header-md">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 align-self-center p-static order-2 text-center">
-                        <h1 class="text-dark text-dark">
-                            <strong>
-                                @yield('page-heading')
-                            </strong>
-                        </h1>
-                    </div>
-                    <div class="col-md-12 align-self-center order-1">
-                        <ul class="breadcrumb d-block text-center" style="font-weight: initial;">
-                            @yield('breadcrumb')
-                        </ul>
+                  <div class="custom-page-header border-bottom-light">
+            <section class="page-header page-header-modern bg-color-light-scale-1 border-0 my-0">
+                <div class="container my-3">
+                    <div class="row">
+                        <div class="col-md-12 align-self-center p-static order-2 text-center">
+                            <h1 class="font-weight-bold text-10 text-dark">@yield('page-heading')</h1>
+                        </div>
+                        <div class="col-md-12 align-self-center order-1">
+                            <ul class="breadcrumb breadcrumb-light d-block text-center">
+                                @yield('breadcrumb')
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+        <br>
 
         <div class="container">
             @if(request()->has('message'))
@@ -520,60 +482,70 @@ $days = $pay->where('product','117')->value('days');
 
     @auth
 
+    <div class="modal fade" id="tenant" tabindex="-1" role="dialog" aria-labelledby="trialModalLabel" aria-hidden="true">
 
-        <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {!! Form::open() !!}
-                    <div class="modal-header">
-                        <h4 class="modal-title">{{trans('message.cloud_heading')}}</h4>
-                    </div>
+        <div class="modal-dialog">
 
-                    <div class="modal-body">
-                        <div id="cloudsuccess">
+            <div class="modal-content">
+                 {!! Form::open() !!}
+
+                <div class="modal-header">
+
+                    <h4 class="modal-title" id="trialModalLabel">Let's create your Faveo cloud instance together!</h4>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
+
+                      <div id="cloudsuccess">
                         </div>
                         <div id="clouderror">
                         </div>
-                        <!-- Form  -->
 
-                        <div class="container">
-                            <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
-                                <div class="form-group">
-                                    <label><b>{{trans('message.cloud_field_label')}}</b></label>
-                                    <div class="row" style="margin-left: 2px; margin-right: 2px;">
+                    <div class="row">
 
-                                      <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
+                        <div class="form-group col">
+
+                            <label class="form-label">Enter your desired cloud domain name</label>
+
+                            <div class="input-group mb-2">
+
+                                <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
                                       <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                                       <p id="validationMessage"></p>
-                                    </div>
-
-                                </div>
-                                <label style="margin-top: 2px;"><b>Choose your desired cloud product</b></label>
-                                <div class="row">
-                                    <div class="col col-6">
-                                        <div class="radio-option">
-                                            <input type="radio" name="option" class="product" value="ServiceDesk" checked>
-                                            <label style="margin-left: 2px;">Faveo ServiceDesk</label>
-                                        </div>
-                                    </div>
-                                    <div class="col col-6">
-                                        <div class="radio-option">
-                                            <input type="radio" name="option" class="product" value="Helpdesk">
-                                            <label style="margin-left: 2px;">Faveo HelpDesk</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="custom-line">
-                                <div class="text-center">
-                                <div class="row data-center">
-                                    <div class="col col-12">
-                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
-                                    </div>
-                                </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="row">
+
+                        <div class="form-group col">
+
+                            <label class="form-label">Choose your desired cloud product</label>
+
+                            <br>
+
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                             <input type="radio" name="option" class="product" value="Helpdesk">
+                                Faveo Helpdesk
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" name="option" class="product" value="ServiceDesk" checked> Faveo Servicedesk
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <p class="text-center text-black"><strong>Your data center location is </strong> United States</p>
+                </form>
+                </div>
                     <script>
 
                         $(document).ready(function() {
@@ -594,16 +566,16 @@ $days = $pay->where('product','117')->value('days');
                         });
                     </script>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                <div class="modal-footer">
+
+                   <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                         <button type="submit"  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
 
                         {!! Form::close()  !!}
-                    </div>
-                    <!-- /Form -->
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog-->
-        </div><!-- /.modal -->
+                </div>
+            </div>
+        </div>
+    </div>
     @endauth
 
     <div class="modal fade" id="tenancy" data-backdrop="static" data-keyboard="false">
@@ -626,7 +598,7 @@ $days = $pay->where('product','117')->value('days');
                             <input type="hidden" id="orderNo" name="order" value="117">
                             <div class="form-group">
                                 <label><b>{{trans('message.cloud_field_label')}}</b></label>
-                                <div class="row" style="margin-left: 2px; margin-right: 2px;">
+                                 <div class="input-group mb-2">
                                     <input type="hidden"  name="order" id="orderId"/>
                                     <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>
                                     <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
@@ -683,67 +655,57 @@ $days = $pay->where('product','117')->value('days');
     </div><!-- /.modal -->
 
 
-    <footer id="footer">
-
-        <div class="container" >
-
-            <div class="footer-ribbon"><span>Get in Touch</span></div>
-            <div id="mailchimp-message"></div>
-            <div class="row py-5 my-4" style = "margin-top: 50%;" >
-                <?php
-                $count  = \App\Model\Front\Widgets::where('publish', 1)->count();
-                switch ($count) {
-                    case '1':
-                        $class = 12;
-                        break;
-                    case '2':
-                        $class = 6;
-                        break;
-                    case '3':
-                        $class = 4;
-                        break;
-                    case '4':
-                        $class = 3;
-                        break;
-                    default:
-                        $class = 12;
-                        break;
-                }
-                $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
-                if ($widgets) {
-                    $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
-                            </div>' : '';
-                }
-                $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
-                ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
 
 
+    <footer id="footer" class="position-relative bg-color-light-scale-1 border-top-0">
 
+        <div class="container pt-5 pb-3">
 
-                        <div class="alert alert-danger d-none" id="newsletterError"></div>
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
-                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
-                                </span>
-                            </div>
+            <div class="row pt-5">
+
+                  <div class="col-lg-4">
+
+                    <h4 class="text-color-dark font-weight-bold mb-3">Faveo</h4>
+
+                    <p class="text-3-5 font-weight-medium pe-lg-2">
+                        Web-based support ticket system, Easy to install, easy to use cost effective ticket management solution for startups, SME’s and enterprises.
+                    </p>
+
+                    <ul class="list list-unstyled">
+                        @if($set->company_email)
+
+                        <li class="d-flex align-items-center mb-4">
+
+                             <i class="fa-regular fa-envelope fa-xl"></i>&nbsp;&nbsp;
+
+                            <a href="mailto:{{$set->company_email}}" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">{{$set->company_email}}</a>
+                        </li>
                         @endif
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                        @if($set->phone)
 
-                                @endforeach
-                            </ul>
+                        <li class="d-flex align-items-center mb-4">
+
+                           <i class="fas fa-phone text-4 p-relative top-2"></i>&nbsp;
+
+                            <a href="tel:{{$set->phone}}" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">+{{$set->phone_code}} {{$set->phone}}</a>
+                        </li>
                         @endif
-                    @endcomponent
-                @endif
-                <?php
+                    </ul>
+
+                 <ul class="social-icons social-icons-clean social-icons-medium">
+                    @foreach($social as $media)
+                            <li class="social-icons-{{ strtolower($media->name) }}">
+                                <a href="{{ $media->link }}" target="_blank" data-bs-toggle="tooltip" title="{{ ucfirst($media->name) }}">
+                                    <i class="fab fa-{{ strtolower($media->name) }} text-color-grey-lighten"></i>
+                                </a>
+                            </li>
+                        @endforeach
+                 </ul>
+
+                </div>
+
+                <div class="col-lg-8">
+                 <?php
 
                 $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                 if ($widgets) {
@@ -751,132 +713,81 @@ $days = $pay->where('product','117')->value('days');
                             </div>' : '';
                 }
                 ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
-                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
-                                </span>
-                            </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
 
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                    <div class="row mb-3">
 
-                                    heelo
-                                @endforeach
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+
+                            <h4 class="text-color-dark font-weight-bold mb-3">Latest Tweets</h4>
+
+                            <ul class="list list-unstyled columns-lg-1">
+
+                              {!! $tweetDetails !!}
                             </ul>
-                        @endif
-                    @endcomponent
-                @endif
-                <?php
-                $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
-                if ($widgets) {
-                    $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
-                            </div>' : '';
-                }
+                        </div>
+
+                        <div class="col-lg-6">
+                             <?php
+                    $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
+
+                    ?>
 
 
-                ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
-                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
-                                </span>
-                            </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
+                            <h4 class="text-color-dark font-weight-bold mb-3">Contact Us</h4>
 
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                            <ul class="list list-styled columns-lg-2 px-2">
 
-                                @endforeach
+                              {!! $widgets->content !!}
                             </ul>
-                        @endif
-                        <!-- @if($set->company_email != NULL)
-                            <li class="mb-1">
-                                <i class="fas fa-envelope"></i>
-                                <p class="m-0">
-                                    <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
-                                         </p>
-                                     </li>
-                                 @endif
-                        @if($set->phone != NULL)
-                            <li class="mb-1">
-                                <i class="fas fa-phone"></i>
-                                <p class="m-0">
-                                    <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
-                                         </p>
-                                     </li>
-                                 @endif
-                        @if($set->address != NULL)
-                            <li class="mb-1">
-                                <i class="fa fa-map-marker"></i>
-                                <p class="m-0">{{$set->address}}</p>
-                                     </li>
-                                 @endif -->
-                    @endcomponent
-                @endif
+                        </div>
+                    </div>
 
-                <?php
+                    <div class="row">
 
-                $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
-                if ($widgets) {
-                    $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
-                            </div>' : '';
+                        <div class="col p-relative bottom-3">
 
-                }
-                ?>
 
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
-                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
-                                </span>
+                               <div id="mailchimp-message"></div>
+
+
+                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
+
+                                <h4 class="text-color-dark ws-nowrap me-3 mb-3 mb-lg-0">Subscribe to Newsletter:</h4>
+
+                                <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
+
+                                       <div class="input-group">
+
+                                        <input class="form-control bg-light border" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
+
+                                        <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
+                                    </div>
+                                </form>
                             </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
-
-                                @endforeach
-                            </ul>
-                        @endif
-                    @endcomponent
-                @endif
-
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="footer-copyright">
-            <div class="container py-2">
-                <div class="row py-4">
-                    <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-                        <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
-                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('storage/common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
-                    </div>
+          <div class="footer-copyright bg-transparent">
 
+            <div class="container">
+
+                <hr class="bg-color-dark opacity-1">
+
+                <div class="row">
+                        <div class="col mt-4 mb-4 pb-5">
+
+                        <p class="text-center text-3 mb-0 text-color-grey">Copyright © <?php echo date('Y') ?> .
+
+                            <a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold">{{$set->company}}. </a>
+
+                            All Rights Reserved.Powered by
+
+                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('storage/common/images/Ladybird1.png')}}"alt="Ladybird"></a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -885,6 +796,8 @@ $days = $pay->where('product','117')->value('days');
 
 
 <!-- Vendor -->
+<script src="{{asset('client/porto/js-2/plugins.min.js')}}"></script>
+
 
 <script src="{{asset('client/js/jquery.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
@@ -912,14 +825,18 @@ $days = $pay->where('product','117')->value('days');
 <script src="{{asset('client/js/vide.min.js')}}"></script>
 
 <!-- Theme Base, Components and Settings -->
-<script src="{{asset('client/porto/js-1/theme.js')}}"></script>
+<script src="{{asset('client/porto/js-2/theme.js')}}"></script>
 
 <!-- any custom js/effects can be defined in this -->
 <script src="{{asset('client/porto/js/custom.js')}}"></script>
 
 <!-- Theme Initialization Files -->
-<script src="{{asset('client/porto/js-1/theme.init.js')}}"></script>
+<script src="{{asset('client/porto/js-2/theme.init.js')}}"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+<!-- Current Page Vendor and Views -->
+<script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
+
+
 
 <script type="text/javascript">
     var csrfToken = $('[name="csrf_token"]').attr('content');

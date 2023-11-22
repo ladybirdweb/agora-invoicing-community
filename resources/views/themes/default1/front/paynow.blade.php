@@ -6,8 +6,12 @@ Checkout
 Checkout
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Checkout</li>
+ @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+@else
+     <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+@endif
+ <li class="active text-dark">Checkout</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
@@ -31,292 +35,354 @@ Checkout
 \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
 
 ?>
-<div class="container">
-<div class="row">
+    <div class="container shop py-3">
 
-    <div class="col-md-8">
-        <div class="card card-default" style="margin-bottom: 40px;">
-             <div class="card-header">
-                 <h4 class="card-title m-0">
-                    
-                        Review & Payment
-                </h4>
-            </div>
+            <div class="row">
+
+                <div class="col-lg-7 mb-4 mb-lg-0">
+
+                    <form method="post" action="">
+
+                        <div class="table-responsive">
+
+                            <table class="shop_table cart">
+
+                                <thead>
+
+                                <tr class="text-color-dark">
+
+                                    <th class="product-thumbnail" >
+                                        &nbsp;
+                                    </th>
+
+                                    <th class="product-name text-uppercase">
+
+                                        Product
+
+                                    </th>
+
+                                    <th class="product-price text-uppercase" >
+
+                                        Version
+                                    </th>
+
+                                    <th class="product-quantity text-uppercase" >
+
+                                        Quantity
+                                    </th>
+                                     <th class="product-agents text-uppercase" >
+
+                                        Agent
+                                    </th>
+
+                                    <th class="product-subtotal text-uppercase text-end">
+
+                                        Total
+                                    </th>
+                                </tr>
+                                </thead>
+                                 @foreach($items as $item)
+                                        @php
+                                        Session::forget('code');
+                                        $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
+                                        if ($item->tax_name != 'null') {
+                                            $taxAmt +=  $item->subtotal;
+                                         }
+                                         @endphp
+
+                                <tbody>
 
 
-            <div class="card-body">
-                <div>
-                    <table class="shop_table cart">
-                        <thead>
-                            <tr>
-                                <th class="product-thumbnail">
-                                    &nbsp;
-                                </th>
+                                <tr class="cart_table_item">
 
-                                <th class="product-name">
-                                    Product
-                                </th>
-                                <th class="product-quantity">
-                                    Version
-                                </th>
-                                <th class="product-agents">
-                                    Agents
-                                </th>
+                                    <td class="product-thumbnail">
 
-                                <th class="product-quantity">
-                                    Quantity
-                                </th>
-                                <th class="product-name">
-                                    Total
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                            @forelse($items as $item)
-                            @php
-                            Session::forget('code');
-                            $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
-                            if ($item->tax_name != 'null') {
-                                $taxAmt +=  $item->subtotal;
-                             }
-                             @endphp
-                            <tr class="cart_table_item">
+                                        <div class="product-thumbnail-wrapper">
 
-                                <td class="product-thumbnail">
-                                    
-                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
+                                            <span class="product-thumbnail-image" data-bs-toggle="tooltip" title="Faveo Enterprise Advance">
 
-                                </td>
+                                                    <img width="90" height="90" alt="" class="img-fluid" src="{{$product->image}}">
+                                                </span>
+                                        </div>
+                                    </td>
 
-                                <td class="product-name">
-                                    {{$item->product_name}}
-                                </td>
+                                    <td class="product-name">
 
-                                <td class="product-quantity">
-                                    @if($product->version)
-                                    {{$product->version}}
-                                    @else 
-                                    Not available
+                                        <span class="font-weight-semi-bold text-color-dark">{{$item->product_name}}</span>
+                                    </td>
+
+                                    <td class="product-price">
+
+                                        <span class="amount font-weight-medium text-color-grey">   
+                                            @if($product->version)
+                                            {{$product->version}}
+                                            @else 
+                                            Not available
+                                            @endif</span>
+                                    </td>
+
+                                    <td class="product-quantity">
+
+                                        <span class="amount font-weight-medium text-color-grey">{{$item->quantity}}</span>
+                                    </td>
+                                    <td class="product-agents">
+
+                                        <span class="amount font-weight-medium text-color-grey">{{($item->agents)?$item->agents:'Unlimited'}}</span>
+                                    </td>
+
+                                    <td class="product-subtotal text-end">
+
+                                        <span class="amount text-color-dark font-weight-bold text-4">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                @endforeach
+                            </table>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-lg-5 position-relative">
+
+                    <div class="card border-width-3 border-radius-0 border-color-hover-dark" data-plugin-sticky data-plugin-options="{'minWidth': 991, 'containerSelector': '.row', 'padding': {'top': 85}}">
+
+                        <div class="card-body">
+
+                            <h4 class="font-weight-bold text-uppercase text-4 mb-3">Your Order</h4>
+
+                            <div class="table-responsive">
+
+                                <table class="shop_table cart-totals mb-3">
+
+                                    <tbody>
+                                <?php 
+                                $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
+                                $subtotal = array_sum($subtotals);
+                                ?>
+
+                                    <tr>
+                                        <td class="border-top-0">
+                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
+                                        </td>
+                                        <td class="text-end align-top border-top-0">
+                                            <span class="amount font-weight-medium text-color-grey">{{currencyFormat($subtotal,$code = $currency)}}</span>
+                                        </td>
+                                    </tr>
+
+
+                                @php
+                                $taxName = array_unique($taxName);
+                                @endphp
+                                  @foreach($taxName as $tax)
+                                  @php
+                                  $taxDetails = explode('@', $tax);
+                                  @endphp
+                                  @if ($taxDetails[0]!= 'null')
+                                                            
+                                                       
+                                    <tr>
+                                         <?php
+                                        $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                        ?>
+                                       <td class="border-top-0">
+                                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
+                                                                {!! $bifurcateTax['html'] !!}
+                                                            </span>
+                                                        </td>
+                                        <td class="text-end align-top border-top-0"><span class="amount font-weight-medium text-color-grey">
+                                           
+                                            {!! $bifurcateTax['tax'] !!}
+                                        </span>
+
+                                        </td>
+                                    </tr>
+                             
+                               
                                     @endif
-                                </td>
-                                <td class="product-agents">
-                                   {{($item->agents)?$item->agents:'Unlimited'}}
-                                </td>
-
-                                <td class="product-quantity">
-                                    {{$item->quantity}}
-                                </td>
-                                <td class="product-name">
-                                    
-                                    <span class="amount">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
-                                </td>
-                            </tr>
-                            @empty 
-                        <p>Your Cart is void</p>
-                        @endforelse
-                        
+                                    @endforeach
 
 
-                    </table>
+                                    @if($paid)
 
-                </div>
-                <div class="col-md-12">
-                    <hr class="tall">
-                </div>
-                {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform']) !!}
-                  @if($invoice->grand_total > 0)
-                <h4 class="heading-primary">Select a payment method</h4>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-4">
-                            <p class="underline-label"></p>
-                        </div>
-                    </div>
-                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
+                                    <td class="border-top-0">
+                                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
+                                                                Paid
+                                                            </strong>
+                                                        </td>
+                                    <td class="text-end align-top border-top-0"><span class="amount font-weight-medium text-color-grey">
+
+                                        {{currencyFormat($paid,$code = $currency)}}</span>
+                                    </td>
+                                </tr>
+
+                                <tr class="total">
+                                    <th>
+                                        <strong>Balance</strong>
+                                    </th>
+                                    <td class="text-end align-top border-top-0"><span class="amount font-weight-medium text-color-grey">
+                                        {{currencyFormat($invoice->grand_total,$code = $currency)}}
+                                    </span>
+                                    </td>
+                                </tr>
+                                @endif
+                                <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
+                                    <td class="border-top-0">
+                                    <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Balance</strong></td>
+                                    <td class="text-end align-top border-top-0">
+                                        <span class="amount font-weight-medium text-color-grey">
+                                        <?php
+                                        if(empty($invoice->billing_pay)) {
+                                            if ($invoice->grand_total <= $amt_to_credit) {
+                                                $cartTotal = $invoice->grand_total;
+                                            } else {
+                                                $cartTotal = $amt_to_credit;
+                                            }
+                                        }else{
+                                            $cartTotal = $invoice->billing_pay;
+                                        }
+                                        ?>
+                                        -{{$dd=currencyFormat($cartTotal, $currency)}}
+                                    </span>
+                                    </td>
+                                </tr>
+                                @if($invoice->billing_pay)
+                                <tr id="balance-row" class="cart-subtotal" style="color: indianred;">
+                                  <td class="border-top-0">
+                                    <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Balance</strong></td>
+                                    <td class="text-end align-top border-top-0">
+                                        <span class="amount font-weight-medium text-color-grey">
+                                        -{{$dd=currencyFormat($invoice->billing_pay, $currency)}}
+                                    </span>
+                                    </td>
+                                </tr>
+                                @endif
+
+                                       <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
+                                               <td class="border-top-0">
+                                    <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Balance</strong></td>
+                                            <td class="text-end align-top border-top-0">
+                                        <span class="amount font-weight-medium text-color-grey">
+                                                <?php
+                                                if(empty($invoice->billing_pay)) {
+                                                    if ($invoice->grand_total <= $amt_to_credit) {
+                                                        $cartTotal = $invoice->grand_total;
+                                                    } else {
+                                                        $cartTotal = $amt_to_credit;
+                                                    }
+                                                }else{
+                                                    $cartTotal = $invoice->billing_pay;
+                                                }
+                                                ?>
+                                                -{{$dd=currencyFormat($cartTotal, $currency)}}\</span>
+                                            </td>
+                                        </tr>
+
+
+                                    <tr class="total">
+
+                                        <td>
+                                            <strong class="text-color-dark text-3-5">Total</strong>
+                                        </td>
+                                        <?php
+                                         if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
+                                            if ($invoice->grand_total <= $amt_to_credit) {
+                                                $cartTotal = 0;
+                                            } else {
+                                                $cartTotal = $invoice->grand_total - $amt_to_credit;
+                                            }
+                                        } else {
+                                            $cartTotal = $invoice->grand_total;
+                                        }
+                                        ?>
+                                            <td class="text-end">
+                                            <strong><span class="amount text-color-grey text-5">{{ currencyFormat($cartTotal, $code = $currency) }}</span></strong>
+                                        </td>
+                                    </tr>
+                                    {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform']) !!}
+                                    @if($invoice->grand_total > 0)
+                                     <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
                        ?>
-                    
-                
-                @if(count($gateways))
+                          @if(count($gateways))
+                          @if(empty($invoice->billing_pay) && $amt_to_credit)
 
-                  <div class="row">
-                    <div class="col-md-6">
-                        @if(empty($invoice->billing_pay) && $amt_to_credit)
-                        <div class="checkbox-container">
-                            <h5 class="heading-primary">Your available balance</h5>
 
-                            @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
-                                <input type="checkbox" id="billing-pay-balance" class="custom-checkbox" checked>
-                            @else
-                                <input type="checkbox" id="billing-pay-balance" class="custom-checkbox">
-                            @endif
-                            <label for="billing-pay-balance" class="checkbox-label"><b>Use your balance: {{currencyFormat($amt_to_credit,$code = $currency)}}</b></label>
+                                    <tr class="total">
+
+                                        <td colspan="2">
+
+                                            <div class="row">
+
+                                                <div class="col-sm-8">
+
+                                                    <strong class="text-color-dark text-3-5">YOUR AVAILABLE BALANCE</strong>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+
+                                                <div class="form-group col mb-0">
+
+                                                    <div class="form-check">
+                                                         @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
+
+
+                                                        <input class="form-check-input mt-1" type="checkbox" id="billing-pay-balance" name="agree" id="tabContent9Checkbox" data-msg-required="You must agree before submiting." checked>
+                                                        @else
+                                                         <input class="form-check-input mt-1" type="checkbox" id="billing-pay-balance" name="agree" id="tabContent9Checkbox" data-msg-required="You must agree before submiting." checked>
+                                                        @endif
+
+                                                        <label class="form-check-label" for="tabContent9Checkbox">
+                                                            Use your balance <strong class="text-3-5">{{currencyFormat($amt_to_credit,$code = $currency)}}</strong>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                      @endif
+
+                                    <tr class="payment-methods">
+
+                                        <td colspan="2">
+
+                                            <strong class="d-block text-color-dark mb-2">Payment Methods</strong>
+
+                                            <div class="d-flex flex-column">
+                                                 @foreach($gateways as $gateway)
+                                                   <?php
+                                                      $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
+                                                    ?>
+
+                                                <label class="d-flex align-items-center text-color-grey mb-0" for="payment_method1">
+
+                                                 {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
+
+
+                                                    <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
+                                                    <div id="fee" style="display:none;position: relative; bottom: -30px;right: 110px;">
+                                                        <p class="text-color-dark text-3-5">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div><br>
+                                                </label>
+                                                  @endforeach
+
+                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                      @endif
+                                             {!! Form::hidden('invoice_id',$invoice->id) !!}
+                                             {!! Form::hidden('cost',$invoice->grand_total) !!}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="submit" id="proceed" class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3">Proceed <i class="fas fa-arrow-right ms-2"></i></button>
+                           @endif
+                             {!! Form::close() !!}
                         </div>
-                        <p class="underline-label"></p>
-                        <br>
-                        @endif
-                        <h5 class="heading-primary">Payment gateway</h5>
-                        @foreach($gateways as $gateway)
-                        <?php
-                          $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
-                        ?>
-                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
-                         <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
-                          <br>
-                         <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
-                        @endforeach
-                        <p class="underline-label"></p>
                     </div>
                 </div>
-            
-            @endif
-
-
-                 
-            
-            
-            
-                  @endif
-                     <div class="col-md-6">
-                        
-                        {!! Form::hidden('invoice_id',$invoice->id) !!}
-                        {!! Form::hidden('cost',$invoice->grand_total) !!}
-                    </div>
-
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-4">
-                        <button type="submit" id="proceed" class="btn btn-primary">
-
-                            Use this payment method
-                             <i class= "fa fa-forward"></i>
-                        </button>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <h4 class="heading-primary">Cart Total</h4>
-        <table class="cart-totals">
-            <tbody>
-                <tr class="cart-subtotal">
-                    <?php 
-                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
-                    $subtotal = array_sum($subtotals);
-                    ?>
-                    <th>
-                        <strong>Cart Subtotal</strong>
-                    </th>
-                    <td>
-                       <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
-                    </td>
-                </tr>
-                 @php
-                $taxName = array_unique($taxName);
-                @endphp
-                  @foreach($taxName as $tax)
-                  @php
-                  $taxDetails = explode('@', $tax);
-                  @endphp
-                  @if ($taxDetails[0]!= 'null')
-                                            
-                                       
-                    <tr>
-                         <?php
-                        $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
-                        ?>
-                        <th>
 
-                            <strong>{!! $bifurcateTax['html'] !!}</strong>
-
-
-                        </th>
-                        <td>
-                           
-                            {!! $bifurcateTax['tax'] !!}
-
-                        </td>
-                    </tr>
-             
-               
-                    @endif
-                    @endforeach
-
-
-                    @if($paid)
-
-                    <tr class="total">
-                    <th>
-                        <strong>Paid</strong>
-                    </th>
-                    <td>
-
-                        {{currencyFormat($paid,$code = $currency)}}
-                    </td>
-                </tr>
-
-                <tr class="total">
-                    <th>
-                        <strong>Balance</strong>
-                    </th>
-                    <td>
-                        {{currencyFormat($invoice->grand_total,$code = $currency)}}
-                    </td>
-                </tr>
-                @endif
-                <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
-                    <th><strong>Balance</strong></th>
-                    <td>
-                        <?php
-                        if(empty($invoice->billing_pay)) {
-                            if ($invoice->grand_total <= $amt_to_credit) {
-                                $cartTotal = $invoice->grand_total;
-                            } else {
-                                $cartTotal = $amt_to_credit;
-                            }
-                        }else{
-                            $cartTotal = $invoice->billing_pay;
-                        }
-                        ?>
-                        -{{$dd=currencyFormat($cartTotal, $currency)}}
-                    </td>
-                </tr>
-                @if($invoice->billing_pay)
-                <tr id="balance-row" class="cart-subtotal" style="color: indianred;">
-                    <th><strong>Balance</strong></th>
-                    <td>
-                        -{{$dd=currencyFormat($invoice->billing_pay, $currency)}}
-                    </td>
-                </tr>
-                @endif
-                <tr class="total">
-                    <th>
-                        <strong>Order Total</strong>
-                    </th>
-                    <td>
-
-                        <strong><span class="amount">  <div id="balance-content">
-                <?php
-                if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance')) {
-                    if ($invoice->grand_total <= $amt_to_credit) {
-                        $cartTotal = 0;
-                    } else {
-                        $cartTotal = $invoice->grand_total - $amt_to_credit;
-                    }
-                } else {
-                    $cartTotal = $invoice->grand_total;
-                }
-                ?>
-                                    {{ currencyFormat($cartTotal, $code = $currency) }}
-            </div></span></strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
   $('#checkoutsubmitform').submit(function(){

@@ -6,12 +6,12 @@ Pricing | Faveo Helpdesk
  {{$headline}}
 @stop
 @section('breadcrumb')
- @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">Pricing</li>
+@if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">Pricing</li>
 @stop
 @section('main-class') 
 main
@@ -128,10 +128,99 @@ main
         .buttonsale{
             text-align: center;
         }
-       
+       .plan-features ul {
+    list-style-type: none;
+    padding: 0;
+}
 
+.plan-features li {
+    position: relative;
+    padding-left: 30px; 
+    margin-bottom: 10px;
+}
+
+.plan-features li::before {
+    content: "\f00c"; 
+    font-family: FontAwesome;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+}
+.carousel-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+.blue-background li::before{
+
+    background-color: #099fdc;
+}
+/* Styles for pagination container */
+.pagination-container {
+    display: flex;
+    justify-content: space-between; /* Positions items at each end of the container */
+    align-items: center; /* Centers vertically */
+    width: 100%; /* Adjust width as needed */
+    /* Additional styles for container if required */
+}
+
+/* Styles for pagination links (arrows) */
+.pagination a {
+    font-size: 24px; /* Adjust font size as needed */
+    color: #333; /* Adjust the color of the arrows */
+    text-decoration: none;
+    /* Additional styles for arrows if required */
+}
+.fa-arrow-left:before{
+    position: relative;
+    bottom: 500px;
+    right: 30px;
+    color: #099fdc;
+    display: flex;
+}
+.fa-arrow-right:before {
+    position: relative;
+    bottom: 500px;
+    left: 1120px;
+    color: #099fdc;
+    display: flex;
+
+}
+.pricing-table {
+     flex-wrap: nowrap;
+    display: flex;
+    width: 100%; /* Change the width as needed based on your layout */
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.5s ease; /* Transition effect for smoother movement */
+}
+
+.card {
+    flex: 0 0 33.33%; /* Assuming 3 items per page */
+    transition: transform 0.5s ease; /* Transition effect for smoother movement */
+}
+
+/* Hide the fourth item */
+.pricing-table.hide-fourth {
+    transform: translateX(-100%);
+}
+
+
+.owl-carousel .owl-item img{
+    display: unset;
+    width: unset;
+}
 
 </style>
+
       <?php
      $templates = preg_replace(
         '/<span\s+class="price">Custom Pricing<\/span>/',
@@ -168,35 +257,24 @@ main
         <h4 style="text-align: center;">{{$tagline}} </h4>
 
        
- 
-        <div class="pricing-table mb-4">
-        {!! html_entity_decode($templates) !!}
    
-        </div>
+
+
+        <div class="row mb-5 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="100">
+                    <div class="col">
+                        <div class="owl-carousel nav-outside nav-arrows-1 custom-carousel-box-shadow-2 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="750" data-plugin-options="{'responsive': {'0': {'items': 1}, '479': {'items': 1}, '768': {'items': 2}, '979': {'items': 3}, '1199': {'items': 3}}, 'autoplay': false, 'autoplayTimeout': 5000, 'autoplayHoverPause': true, 'dots': false, 'nav': true, 'loop': false, 'margin': 20, 'stagePadding': '75'}">
+
+                             {!! html_entity_decode($templates) !!}
+
+                          </div>
+                      </div>
+                  </div>
+
     </div>
-     <br/>    <br/>    <br/>    <br/>  <br/> <br/>
-    
-    
- <br/>    <br/>    <br/>    <br/>  <br/> <br/>
-
-
-
-
-
-
-
-
 
 </div>
 
-<!-- Your HTML template -->
-<!-- ... -->
 
-<!-- Your JavaScript code -->
-<!-- Your HTML template -->
-<!-- ... -->
-
-<!-- Your JavaScript code -->
 <script>
   $(document).ready(function() {
     $('.toggle_event_editing input').on('change', function() {
@@ -240,6 +318,20 @@ main
           console.error('Error sending unselected state value to the controller:', error);
         }
       });
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the <h4> element
+    var h4Element = document.querySelector('h4.text-color-primary');
+
+    // Check if the <h4> element has the class 'text-color-primary'
+    if (h4Element) {
+      // Add a class to the parent element of <li> elements
+      var planFeatures = document.querySelector('.plan-features');
+      if (planFeatures) {
+        planFeatures.classList.add('blue-background');
+      }
     }
   });
 </script>

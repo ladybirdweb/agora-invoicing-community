@@ -354,11 +354,11 @@ class ClientController extends BaseClientController
                         $payment = '';
                         if ($status != 'Success' && $model->grand_total > 0) {
                             $payment = '  <a href='.url('paynow/'.$model->id).
-                            " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
+                            " class='btn btn-light-scale-2 btn-sm text-dark' data-toggle='tooltip' data-placement='top' title='Click here to pay''><i class='fa fa-credit-card'></i></a>";
                         }
 
                         return '<p><a href='.url('my-invoice/'.$model->id).
-                        " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
+                        " class='btn btn-light-scale-2 btn-sm text-dark' data-toggle='tooltip' data-placement='top' title='Click here to view'><i class='fa fa-eye'></i></a>".$payment.'</p>';
                     })
                      ->filterColumn('number', function ($query, $keyword) {
                          $sql = 'invoices.number like ?';
@@ -393,6 +393,7 @@ class ClientController extends BaseClientController
     {
         try {
             $invoice = $this->invoice->findOrFail($id);
+            $payments = $invoice->payment;
             $user = \Auth::user();
             if ($invoice->user_id != $user->id) {
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
@@ -402,7 +403,7 @@ class ClientController extends BaseClientController
             $currency = getCurrencyForClient($user->country);
             $symbol = Currency::where('code', $currency)->value('symbol');
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order','payments'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -631,8 +632,8 @@ class ClientController extends BaseClientController
                             ->addColumn('Action', function ($model) {
                                 if ($model->order_status == 'Terminated') {
                                     return '<a href='.url('my-order/'.$model->id)." 
-                                class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View</a>";
+                                class='btn btn-light-scale-2 btn-sm text-dark' style='margin-right:5px;'>
+                                <i class='fa fa-eye' data-toggle='tooltip' data-placement='top' title='Click here to view'></i></a>";
                                 }
                                 $plan = Plan::where('product', $model->product_id)->value('id');
                                 $whatIsSub = Subscription::where('order_id', $model->id)->value('plan_id');
@@ -667,8 +668,8 @@ class ClientController extends BaseClientController
                                 $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 
                                 return '<a href='.url('my-order/'.$model->id)." 
-                                class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";
+                                class='btn btn-light-scale-2 btn-sm text-dark' style='margin-right:5px;'>
+                                <i class='fa fa-eye' data-toggle='tooltip' data-placement='top' title='Click here to view'></i>&nbsp; $listUrl $url $deleteCloud</a>";
                             })
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';
@@ -889,5 +890,19 @@ class ClientController extends BaseClientController
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function index()
+    {
+        $user = auth()->user();
+        $pendingInvoicesCount = $user->invoice()->where('status', 'pending')->count();
+        $ordersCount = $user->order()->count();
+        $renewedInvoicesCount = $user->invoice()
+        ->with('orderRelation')
+        ->whereHas('orderRelation', function ($query) {
+            $query->where('is_renewed', 1);
+        })
+        ->count();
+        return view('themes.default1.front.clients.index',compact('pendingInvoicesCount','ordersCount','renewedInvoicesCount'));
     }
 }

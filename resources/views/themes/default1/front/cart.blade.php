@@ -7,124 +7,48 @@
     Cart
 @stop
 @section('page-heading')
-    Items in the shopping cart
+Cart
 @stop
 @section('breadcrumb')
-    @if(Auth::check())
-        <li><a href="{{url('my-invoices')}}">Home</a></li>
-    @else
-        <li><a href="{{url('login')}}">Home</a></li>
-    @endif
-    <li class="active">Cart</li>
+@if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+@else
+     <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+@endif
+ <li class="active text-dark">Cart</li>
 @stop
 @section('main-class') "main shop" @stop
 
 
 
 @section('content')
-<style>
-    /* Add CSS styles here for cart page */
 
-    /* Style the cart table */
-    .shop_table.cart {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .shop_table.cart th,
-    .shop_table.cart td {
-        border: none; /* Remove borders between columns */
-        padding: 10px;
-        text-align: left;
-    }
-
-    .shop_table.cart th {
-        background-color: #eee;;
-    }
-
-    /* Style the cart item rows */
-    .cart_table_item {
-    border-bottom: 1px solid #ddd; /* Keep borders around each product */
-    background-color: #f9f9f9; /* Add a light shade to the product cells */
-
-}
-
-    .product-name-wrapper {
-        max-width: 200px; /* Adjust the max width as needed */
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-/* Style the "Remove" icon */
-
-
-
-/* Rest of your existing styles... */
-
-
-
-
-
-    /* Style the cart totals table */
-    .cart-totals {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .cart-totals th,
-    .cart-totals td {
-        border: none; /* Remove borders between columns */
-        padding: 10px;
-        text-align: left;
-    }
-
-  
-
-    /* Style the buttons */
-    .cart-buttons {
-        margin-top: 20px;
-    }
-
-    .cart-buttons a.btn {
-        white-space: nowrap;
-        margin-right: 10px;
-    }
-
-    /* Style the remove (cross) icon */
-    
-    .cart_table_item .remove-icon {
-    border-bottom: none;
-    padding-bottom: 0; /* Optionally, remove padding if needed */
-}
-/* Style the "Remove" icon */
-
-
-
-    
- 
-</style>
 
 
 
     <?php
     $cartTotal = 0;
     ?>
-    <div class="row">
-        <div class="col-md-12">
-            @if(!Cart::isEmpty())
-                <div class="featured-boxes">
-                    <div class="row">
 
-                        <div class="col-md-8">
-                            <div class="featured-box featured-box-primary align-left mt-sm">
-                                <div class="box-content">
-                                    <table class="shop_table cart">
-                                        @forelse($cartCollection as $item)
-                                        <div class="product-row">
-                                            @php
+        <div role="main" class="main shop pb-4">
+              @if(!Cart::isEmpty())
+
+            <div class="container py-4">
+                
+
+                <div class="row pb-4 mb-5">
+
+
+                    <div class="col-lg-8 mb-5 mb-lg-0">
+
+                        <form method="post" action="">
+
+                            <div class="table-responsive">
+                               
+
+                                <table class="shop_table cart">
+                                     @forelse($cartCollection as $item)
+                                    @php
                                                 if(\Auth::check()) {
                                                 Cart::clearItemConditions($item->id);
                                                 if(\Session::has('code')) {
@@ -151,71 +75,78 @@
                                                   $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
                                             @endphp
 
-                                            <thead>
+                                    <thead>
 
-                                            <tr>
-                                                <th class="product-remove">
-                                                    &nbsp;
-                                                </th>
-                                                <th class="product-thumbnail">
-                                                    &nbsp;
-                                                </th>
-                                                <th class="product-name">
-                                                    Product
-                                                </th>
+                                        <tr class="text-color-dark">
 
+                                            <th class="product-thumbnail" width="">
+                                                &nbsp;
+                                            </th>
 
-                                                <th class="product-price">
-                                                    Price
-                                                </th>
-                                                @if(!$isAgentAllowed)
-                                                    <th class="product-quantity">
-                                                        Quantity
-                                                    </th>
-                                                @else
-                                                    <th class="product-agents">
-                                                        Agents
-                                                    </th>
-                                                @endif
-                                                <th class="product-subtotal">
-                                                    Subtotal
-                                                </th>
+                                            <th class="product-name text-uppercase" width="">
 
-                                            </tr>
-                                            </thead>
+                                                Product
 
-                                            <tbody>
+                                            </th>
+
+                                            <th class="product-price text-uppercase" width="">
+
+                                                Price
+                                            </th>
+                                            @if(!$isAgentAllowed)
+
+                                            <th class="product-quantity text-uppercase" width="">
+
+                                                Quantity
+                                            </th>
+                                            @else
+                                            <th class="product-agents text-uppercase" width="">
+
+                                                Agents
+                                            </th>
+                                            @endif
 
 
-                                                
-                                                <tr class="cart_table_item">
-                                                <td class="float-left">
-        <div class="remove-icon">
-            <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                <i class="fa fa-times"></i>
-            </a>
-        </div>
-    </td>
-                                                <td class="product-thumbnail">
-                                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
-                                                </td>
-                                                    <td class="product-name">
-                                                        <div class="product-name-wrapper">
-                                                            {{$item->name}}
-                                                            <br>
-                                                            <i style="font-size: 12px;">{{$item->attributes->domain}}</i>
-                                                        </div>
-                                                    </td>
+                                            <th class="product-subtotal text-uppercase text-end" width="">
 
+                                                Subtotal
+                                            </th>
+                                        </tr>
+                                    </thead>
 
-                                                <td class="product-price">
-                                                         <span class="amount">
-                                                            {{currencyFormat($item->price,$code = $item->attributes->currency)}}
-                                                     </span>
-                                                    <div id="response"></div>
-                                                </td>
+                                    <tbody>
 
-                                                @if(!$isAgentAllowed)
+                                        <tr class="cart_table_item">
+
+                                            <td class="product-thumbnail">
+
+                                                <div class="product-thumbnail-wrapper">
+
+                                                    <a onclick="removeItem('{{$item->id}}');"class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product">
+
+                                                        <i class="fas fa-times"></i>
+                                                    </a>
+
+                                                    <span class="product-thumbnail-image"  data-bs-toggle="tooltip" title="Faveo Enterprise Advance">
+
+                                                        <img width="90" height="90" alt="" class="img-fluid" src="{{$item->associatedModel->image}}">
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                            <td class="product-name">
+
+                                                <span class="font-weight-semi-bold text-color-dark">{{$item->name}}</span>
+                                                <br>
+                                                <i style="font-size: 12px;">{{$item->attributes->domain}}</i>
+                                            </td>
+
+                                            <td class="product-price">
+
+                                                <span class="amount font-weight-medium text-color-grey">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
+                                            </td>
+
+                                            @if(!$isAgentAllowed)
                                                     <td class="product-quantity">
                                                         @if($isAllowedtoEdit['quantity'])
                                                             <div class="quantity">
@@ -255,96 +186,80 @@
                                                 @endif
                                                 @endif
 
-                                                <td class="product-subtotal">
-                                                      <span class="amount">
 
-                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
-                                                    </span>
+                                            <td class="product-subtotal text-end">
 
-
-
-                                                </td>
-
-                                            </tr>
-
-                                        </div>
-
-
-                                            @endforeach
-                                            </tbody>
-
-
-                                    </table>
-
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                        <div class="col-md-4">
-
-
-                            <div class="featured-box featured-box-primary text-left ">
-
-
-                                <div class="box-content">
-                                    <h4 class="heading-primary text-uppercase mb-md p-2" style=" background-color: #eee;">Cart Total</h4>
-                                    <table class="cart-totals">
-                                        <tbody>
-                                        <tr class="total">
-                                            <th>
-                                                <strong>Order Total</strong>
-                                            </th>
-                                            <td>
-                                                <strong><span class="amount"><small>&nbsp;</small>
-                                                {{currencyFormat($cartTotal, $item->attributes->currency)}}
-                                           </span></strong>
-
-
+                                                <span class="amount text-color-dark font-weight-bold text-4">                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
+                                               </span>
                                             </td>
                                         </tr>
+                                        @endforeach 
+                                    </tbody>
+                                      
+                                </table>
+
+                            </div>
+                          
+                        </form>
+                    </div>
+
+                    <div class="col-lg-4 position-relative">
+
+                        <div class="card border-width-3 border-radius-0 border-color-hover-dark" data-plugin-sticky data-plugin-options="{'minWidth': 991, 'containerSelector': '.row', 'padding': {'top': 85}}">
+
+                            <div class="card-body">
+
+                                <h4 class="font-weight-bold text-uppercase text-4 mb-3">Cart Totals</h4>
 
 
+                                <div class="table-responsive">
 
+                                    <table class="shop_table cart-totals mb-4">
 
+                                        <tbody>
 
+                                            <tr class="total">
+
+                                                <td>
+                                                    <strong class="text-color-dark text-3-5">Total</strong>
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <strong class="text-color-dark"><span class="amount text-color-dark text-5"> {{currencyFormat($cartTotal, $item->attributes->currency)}}</span></strong>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
+                                </div>
 
+                                <div class="row justify-content-between mx-0">
+
+                                    <div class="col-md-auto px-0 mb-3 mb-md-0">
+
+                                        <div class="d-flex align-items-center">
+                                            <form action="{{url('cart/clear')}}" method="post">
+                                            {{ csrf_field() }}
+
+                                             <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern text-2 text-uppercase">Clear Cart</button></a>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-auto px-0">
+                                        @if(count($domain)>0)
+
+                                       <a href="#domain" data-toggle="modal" data-target="#domain" class="btn btn-dark btn-modern text-2 text-uppercase">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
+                                         @else
+                                         <a href="{{url('checkout')}}" class="btn btn-dark btn-modern text-2 text-uppercase">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
+                                          @endif
+                                    </div>
                                 </div>
                             </div>
-                            <!-- </div> -->
-                            <div class="row">
-                                <div class="col col-md-5">
-                                    <form action="{{url('cart/clear')}}" method="post">
-                                        {{ csrf_field() }}
-                                        <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="width: max-content;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
-                                    </form>
-                                </div>
-                                <div class="col col-md-7">
-                                    @if(count($domain)>0)
-
-                                        <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm style="white-space: nowrap;" > Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
-
-                                    @else
-                                        <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="white-space: nowrap;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
-                                    @endif
-
-
-                                </div>
-
-
-                            </div>
-
-
                         </div>
-
-
                     </div>
                 </div>
-            @else
-                <div class="featured-boxes">
+                @else
+                   <div class="featured-boxes">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="featured-box featured-box-primary align-left mt-sm">
@@ -372,14 +287,9 @@
                         </div>
                     </div>
                 </div>
-            @endif
-
-
-
-
-
+                @endif
+            </div>
         </div>
-    </div>
     <script src="{{asset('client/js/jquery.min.js')}}"></script>
     <script>
         /*

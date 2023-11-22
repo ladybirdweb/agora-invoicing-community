@@ -9,61 +9,63 @@ Two-factor authentication
 Forgot Password
 @stop
 @section('breadcrumb')
-<li><a href="{{url('login')}}">Login</a></li>
-<li class="active">Two-factor authentication</li>
-@stop
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">Two-Factor Authentication</li>
+@stop 
 @section('main-class') 
 main
 @stop
 @section('content')
-<div class="row">
-    <div class="col-md-12">
+        <div class="container py-4">
 
-        <div class="featured-boxes">
-         
-            <div class="row">
-              <div class="col-lg-6 offset-lg-3">
+            <div class="row justify-content-center">
 
-                     <div id="alertMessage"></div>
-                     <div id="error"></div>
-                      
-                   <div class="featured-box featured-box-primary text-left mt-5">
-                        <div class="box-content">
-                          {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'get']) !!}
-                         <h2 style="text-align: center;">Two-Factor Authentication</h2>
-                            <div class="form-row">
-                                <div class="form-group col">
-                                    <label>Enter Authentication Code <span style="color: red">*</span></label>
-                                          <div class="input-group">
-                                      <input type="text" name="totp"  id="2fa_code" class="form-control input-lg">
-                                     
-                                  </div>
-                                   <h6 id="codecheck"></h6>
-                               
-                            
-                      
-                                <p>Open the two-factor authentication app on your device to view your authentication code and verify your identity.</p>
-                              <button type="submit" class="btn btn-primary float-right" >
-                                            Verify
-                                </button>
-                                    @if(!Session::has('reset_token'))
-                                <b>Having problems?</b><br>
-                                 <a href="{{'recovery-code'}}" >Login using recovery code</a>
-                                @endif
-                                {!! Form::close() !!}
-                           
+                <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
+
+                    {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'get']) !!}
+
+
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <label class="form-label text-color-dark text-3">Enter Authentication Code <span class="text-color-danger">*</span></label>
+
+                                <input type="text" name="totp"  id="2fa_code" value="" class="form-control form-control-lg text-4" required>
                             </div>
-                               
+                            <h6 id="codecheck"></h6>
+                        </div>
+
+                        <p class="text-2">Open the two-factor authentication app on your device to view your authentication code and verify your identity.</p>
+
+                        <div class="row">
+
+                            <div class="form-group">
+                                @if(!Session::has('reset_token'))
+
+                                <div class="custom-control custom-checkbox">
+
+                                    <label class="custom-control-label text-2">Having problems? <a href="{{'recovery-code'}}" >Login using recovery code</a></label>
+                                </div>
+                                  @endif
                             </div>
 
                         </div>
 
-                    </div>
-                  
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Verify</button>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
 
         </div>
-    </div>
-</div>
 @stop 

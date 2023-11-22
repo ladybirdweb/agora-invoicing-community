@@ -293,7 +293,6 @@ active
                         @php
                         $DateTime = getDateHtml($payment->created_at);
                         $orderid = \DB::table('orders')->where('invoice_id',$invoice->id)->value('id');
-                        $transcationid = \DB::table('auto_renewals')->where('order_id',$orderid)->value('customer_id');
 
                         @endphp
 
@@ -301,7 +300,6 @@ active
                         <tr>
                             <th>Transaction Date</th>
                             <th>Method</th>
-                            <th>Transaction ID</th>
                             <th>Total</th>
                             <th>Status</th>
                         </tr>
@@ -311,11 +309,6 @@ active
                         <tr>
                             <td>{!! $DateTime !!}</td>
                             <td>{{$payment->payment_method}}</td>
-                            @if($transcationid)
-                            <td>{{$transcationid}}</td>
-                            @else
-                            <td>--</td>
-                            @endif
                             <td>{{$payment->amount}}</td>
                             @if($payment->payment_status == 'success')
                             <td><span class="badge badge-success badge-xs">{{$payment->payment_status}}</span></td>

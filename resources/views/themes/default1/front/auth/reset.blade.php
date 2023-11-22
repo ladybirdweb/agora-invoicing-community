@@ -9,78 +9,65 @@ Reset Your Password
 Reset Password
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Reset Password </li>
-@stop
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">Reset Password</li>
+@stop 
 @section('main-class') 
 main
 @stop
 @section('content')
 
 
-<div class="row" >
-    <div class="col-md-12" >
+     <div class="container py-4">
 
-        <div class="featured-boxes">
-           
-         
-            
-            <div class="row">
-                 <div class="col-lg-6 offset-lg-3">
+            <div class="row justify-content-center">
 
-                     <div class="featured-box featured-box-primary text-left mt-5">
-                          
-                        <div class="box-content">
-                            
-                               
-                            <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
-                            {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
+                <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
+
+                    <p class="text-2">Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.</p>
+
+                    {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
                             <input type="hidden" name="token" value="{{ $reset_token }}">
                             <input type="hidden" name="email" value="{{ $email }}">
-                            <div class="form-row">
-                                <div class="form-group col{{ $errors->has('password') ? 'has-error' : '' }}">
-                                   
-                                        <p id="passwordHelpBlock" class="form-text text-muted">
-                                            Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
-                                       </p>
-                                      
 
-                                     
-                                        <input type="password" value="" class="form-control input-lg" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?php } ?>>
-                                   
-                                </div>
+                        <div class="row">
+
+                            <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
+
+                                <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
+
+                                <input type="password" value="" class="form-control form-control-lg text-4" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?php } ?>>
+
+
                             </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group col{{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
-                                   
-                                        <!--<a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>-->
-                                        {!! Form::password('password_confirmation',['placeholder'=>'Retype password','class' => 'form-control input-lg']) !!}
-                                        <!--<input type="password" value="" class="form-control input-lg">-->
-                                    
-                                </div>
-                            
-                    </div>
-                            @if ($captchaStatus==1 && $captchaKeys->nocaptcha_sitekey != '00' && $captchaKeys->captcha_secretCheck != '00')
-                                {!! NoCaptcha::renderJs() !!}
-                                {!! NoCaptcha::display() !!}
-                            @endif
-                            <div class="row">
-                                
-                               
-                                
-                                <div class="col-md-12">
-                                     <input type="submit" value="Reset Password" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                                    <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
-                                </div>
-                            </div>
-                           {!! Form::close() !!}
                         </div>
-                    </div>
+
+                        <div class="row">
+
+                            <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+
+                                <label class="form-label text-color-dark text-3">Confirm Password <span class="text-color-danger">*</span></label>
+
+                                {!! Form::password('password_confirmation',['placeholder'=>'Retype password','class' => 'form-control form-control-lg text-4']) !!}
+
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Reset Password</button>
+
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
-
         </div>
-    </div>
-</div>
 @stop

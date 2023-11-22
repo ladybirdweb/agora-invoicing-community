@@ -1,3 +1,4 @@
+
 @extends('themes.default1.layouts.front.master')
 @section('title')
     Invoice
@@ -10,18 +11,17 @@
 @stop
 @section('breadcrumb')
     @if(Auth::check())
-        <li><a href="{{url('my-invoices')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
     @else
-        <li><a href="{{url('login')}}">Home</a></li>
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
     @endif
-    <li class="active">My Invoices</li>
-@stop
+     <li class="active text-dark">My Invoices</li>
+@stop 
 <?php $check = App\User::where('id', Auth::id())->value('company');
 
 ?>
-
 @section('content')
-    <style>
+   <style>
         [type=search] {
             padding-right: 20px;
         }
@@ -33,8 +33,11 @@
             width: 500px;
             height: 500px;
         }
-
-    </style>
+        #invoice-table td {
+            padding: 0px; 
+            text-align: center;
+        }
+</style>
     @auth
         @php
             $amt = \DB::table('payments')->where('user_id',\Auth::user()->id)->where('payment_method','Credit Balance')->where('payment_status','success')->value('amt_to_credit');
@@ -52,7 +55,7 @@
             });
         </script>
     @endauth
-    <div class="col-md-12 pull-center">
+
 
             <div class="modal fade" id="credit" tabindex="-1" role="dialog" aria-labelledby="creditLabel" aria-hidden="true">
 
@@ -60,7 +63,7 @@
                     <div class="modal-content credit-content">
                         <div class="modal-header credit-header">
                             <h4 class="modal-title credit-title">Credit Balance: {!! $formattedValue !!}</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -89,22 +92,47 @@
                     </div>
                 </div>
             </div>
-        <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-            <thead>
-            <tr>
-                <th>Invoice No</th>
-                <th>Date</th>
-                <th>Order No</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Balance</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr> </thead>
-        </table>
-    </div>
 
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+           <div class="row pt-2">
+
+            @include('themes.default1.front.clients.navbar')
+
+
+                <div class="col-lg-9">
+
+                   <div class="tab-pane tab-pane-navigation active" id="invoices" role="tabpanel">
+
+                        <div id="examples" class="container py-4">
+
+                            <div class="row">
+
+                                <div class="col">
+
+
+                                                <table id="invoice-table" class="table table-striped table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Invoice No</th>
+                                                    <th>Date</th>
+                                                    <th>Order No</th>
+                                                    <th>Total</th>
+                                                    <th>Paid</th>
+                                                    <th>Balance</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr> </thead>
+                                            </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,6 +164,7 @@
             </div>
         </div>
     </div>
+
 
 
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
@@ -221,6 +250,7 @@
                 {data: 'status', name: 'status'},
                 {data: 'Action', name: 'Action', searchable: true}
             ],
+            
             "fnDrawCallback": function( oSettings ) {
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip({
@@ -288,4 +318,6 @@
         }
     </style>
 
-@stop
+
+ @stop
+ 

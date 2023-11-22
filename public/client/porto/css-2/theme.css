@@ -1298,7 +1298,7 @@ html:not(.boxed) #header.header-floating-bar .header-nav-main nav > ul > li.drop
 
 @media (min-width: 1200px) {
 	html:not(.sticky-header-active) #header.header-floating-bar .header-body {
-		max-width: 1140px;
+		max-width: 1200px;
 		right: 15px;
 	}
 

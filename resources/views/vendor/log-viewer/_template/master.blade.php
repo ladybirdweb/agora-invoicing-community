@@ -74,7 +74,7 @@ $set = $set->findOrFail(1);
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="{{url('my-invoices')}}" class="nav-link">Go to Client Panel</a>
+                <a href="{{url('client-dashboard')}}" class="nav-link">Go to Client Panel</a>
             </li>
 
         </ul>

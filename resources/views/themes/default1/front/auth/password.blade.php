@@ -3,83 +3,79 @@
 Forgot Paswword | Faveo Helpdesk
 @stop
 @section('page-heading')
- Forgot Password? Reset it Now!
+ Forgot Password
 @stop
 @section('page-header')
 Forgot Password
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
-<li><a href="{{url('login')}}">Login</a></li>
-<li class="active">Forgot Password</li>
+@section('breadcrumb')
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">Forgot Password? Reset it Now!</li>
+@stop  
 @stop
 @section('main-class') 
 main
 @stop
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div id="errorMessage" class="alert alert-success alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
+        <div class="container py-4">
+            <div id="errorMessage" class="alert alert-success alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             <span id="errorMessageText"></span>
         </div>
-        <div class="featured-boxes">
-         
-            <div class="row">
-              <div class="col-lg-6 offset-lg-3">
-                     <div id="alertMessage"></div>
-                     <div id="errorMessage"></div>
-                   <div class="featured-box featured-box-primary text-left mt-5">
-                        <div class="box-content">
-                          
-                           
-                         <p>Lost your password? Please enter your email address. You will receive a link to create a new password via email.</p>
-                            <div class="form-row">
-                                <div class="form-group col">
-                                   
-                                        <label>Email Address <span style="color: red">*</span></label>
-                                          <div class="input-group">
-                                      <input type="text" name="email" value="" id="email" class="form-control input-lg">
-                                      <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                                      </div>
-                                  </div>
-                                   <h6 id="resetpasswordcheck"></h6>
-                                        <!-- {!! Form::text('email',null,['class' => 'form-control input-lg']) !!} -->
-                                    
-                                </div>
-                               
+         <div id="alertMessage"></div>
+        <div id="errorMessage"></div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
+
+                    <p class="text-2">Lost your password? Please enter your email address. You will receive a link to create a new password via email.</p>
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
+
+                                <input name="email" value="" id="email" class="form-control form-control-lg text-4" required>
                             </div>
-                            @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                            <h6 id="resetpasswordcheck"></h6>
+                        </div>
+
+                        <div class="row justify-content-between">
+
+                            <div class="form-group col-md-auto">
+
+                                <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="{{url('login')}}">I know my password</a>
+                            </div>
+                        </div>
+                           @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                 {!! NoCaptcha::display(['id' => 'pass-recaptcha-1', 'data-callback' => 'PassonRecaptcha']) !!}
                                 <input type="hidden" id="pass-recaptcha-response-1" name="pass-recaptcha-response-1">
                                 <div class="pass-verification" id="passcaptcha"></div>
                                 <span id="passcaptchacheck"></span>
                             @endif
-                            <div class="clear"></div>
-                                <div class="form-row">
-                         <div class="form-group col">
-                               <a href="{{url('login')}}" class="pt-left back-login">Click Here To Login</a>
-                                <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="resetmail" onclick="resetpassword()">
-                                            Send Email
-                                </button>
-                              
-                                  
+
+                        <div class="row">
+
+                            <div class="form-group col">
+
+                                <button type="button" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading..." name="sendOtp" id="resetmail" onclick="resetpassword()">Send Mail</button>
+
                             </div>
                         </div>
-                           
-                        </div>
-                    </div>
                 </div>
             </div>
-
         </div>
-    </div>
-</div>
 @stop 
 @section('script')
+
 <script>
 
    var recaptchaValid = false;
@@ -151,7 +147,7 @@ main
                         function resetpassword() 
                         {  
                             
-                             var mail_error = true;
+                           var mail_error = true;
                            var mobile_error = true;
                            $('#resetpasswordcheck').hide();
                                                         
@@ -211,4 +207,5 @@ main
                                   }
                                 }
                               </script>
-                              @stop
+@stop
+                              

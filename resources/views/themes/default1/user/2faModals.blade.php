@@ -16,7 +16,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
 @if($user->password)
 <div class="modal fade" id="2fa-modal1" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
- <div class="modal-content" style="width:700px;">
+ <div class="modal-content">
    <div class="modal-header">
      <h4 class="modal-title">Set up Authenticator</h4>
    </div>
@@ -41,7 +41,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
 @else
 <div class="modal fade" id="2fa-modal1" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
- <div class="modal-content" style="width:700px;">
+ <div class="modal-content">
    <div class="modal-header">
      <h4 class="modal-title">Set up Authenticator</h4>
    </div>

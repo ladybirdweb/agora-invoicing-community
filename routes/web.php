@@ -109,6 +109,7 @@ Route::middleware('installAgora')->group(function () {
     /*
      * Front Client Pages
      */
+    Route::get('client-dashboard', [Front\ClientController::class, 'index']);
 
     Route::post('first-login', [FreeTrailController::class, 'firstLoginAttempt']);
 

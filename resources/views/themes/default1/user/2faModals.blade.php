@@ -55,7 +55,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
      </form>
    </div>
    <div class="modal-footer">
-     <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+     <button type="button" class="btn btn-default pull-left closeandrefresh" data-bs-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
      <button type="button" id="verify_password" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Validate</button>
    </div>
  </div>
@@ -300,7 +300,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
          </div>
          <div class="col-md-4">
          
-          <button class="btn btn-primary" id="generateNewCode">Generate New</button>
+          <button class="btn btn-dark" id="generateNewCode">Generate New</button>
 
 
          </div>
@@ -333,7 +333,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
       <span id="passerror"></span>
    </div>
    <div class="modal-footer">
-     <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+     <button type="button" class="btn btn-default pull-left" data-bs-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
    </div>
  </div>
  <!-- /.modal-content -->

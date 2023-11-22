@@ -198,9 +198,9 @@ Sign in or Register
                         @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                                     {!! NoCaptcha::renderJs() !!}
                                                     {!! NoCaptcha::display(['id' => 'recaptcha1']) !!}
-                                                    <div class="loginrobot-verification"></div>
+                                                    <div class="loginrobot-verification"></div><br>
                         @endif
-
+                   
                         <div class="row">
 
                             <div class="form-group col">
@@ -501,34 +501,17 @@ Sign in or Register
                                         <form name="verify_otp_form">
 
                                              <div class="row">
-                                            <label class="form-label text-color-dark text-3">Enter OTP <span class="text-color-danger">*</span></label>
-
-                                            <div class="form-group col-3">
-                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
-                                            </div>
-
-                                            <div class="form-group col-3">
-                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
-                                            </div>
-
-                                            <div class="form-group col-3">
-                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
-                                            </div>
-
-                                            <div class="form-group col-3">
-                                                <input class="form-control otp-input" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="1" required>
-                                            </div>
-                                        </div>
+                                            <input type="hidden" name="user_id" id="hidden_user_id"/>
+                                            <input class="form-control form-control-lg text-4"  id="oneTimePassword" name="oneTimePassword" type="text" >
+                                            <span id="enterotp"></span>
+                                        </div><br>
 
                                               
 
-                                                <button id="verifyOtp" onclick="verifyBySendOtp()" class="btn btn-dark btn-modern w-100 text-uppercase text-3 mt-3">Verify OTP</button>
+                                                <button name="verifyOtp" id="verifyOtp" onclick="verifyBySendOtp()" class="btn btn-dark btn-modern w-100 text-uppercase text-3 mt-3">Verify OTP</button>
 
-                                                <p id="message"></p>
 
-                                                <p class="text-2 mb-2">Didn't receive the OTP? <span class="font-weight-bold text-black text-4" id="timer">10</span> seconds</p>
-
-                                                <button id="resendOTP" onclick="resendOTP()" disabled class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2">
+                                                <button id="resendOTP" onclick="resendOTP()" class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2">
                                                     Resend OTP
                                                 </button>
 

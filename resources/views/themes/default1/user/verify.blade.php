@@ -9,13 +9,24 @@ Email/Mobile Verification
 Reset Password
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Verify</li>
-@stop
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">verify</li>
+@stop 
 @section('main-class')
 main
 @stop
 @section('content')
+<style>
+    .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 .selected-flag {
+    width: 84px;
+    position: relative;
+    left: 10px;
+}
+</style>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
 <!DOCTYPE html>
 <html ng-app="smsApp">
@@ -66,17 +77,19 @@ main
                 @endif
 
                 <div class="featured-box featured-box-primary text-left mt-5">
-                    <div class="box-content">
+                    <div class="box-content" style="border: none;">
                         @if($user)
                         @if ($user->active != 1 && $user->mobile_verified == 1)
                         <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
-                        <label for="mobile" class="required">Email</label><br />
-                        <input type="text" class="form-control input-lg" name="email" value="{{$user -> email}}" id="u_email">
+                        <p class="text-2">You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
+
+                        <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
+                        <input type="text"  class="form-control form-control-lg text-4" name="email" value="{{$user -> email}}" id="u_email">
                         <input type="hidden" name="oldmail" value="{{$user -> email}}" id="oldmail">
                         <h6 id="mailcheck"></h6>
                         <div class="clear"></div>
                         <div class="form-group col">
-                            <button class="btn btn-primary float-right mb-5" style="margin-top:15px ; margin-right: -15px;" id="sendEmail" ng-click="sendEmail()">Send Email</button>
+                            <button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" style="margin-top:15px ; margin-right: -15px;" id="sendEmail" ng-click="sendEmail()">Send Email</button>
                         </div>
                         @endif
 
@@ -87,45 +100,46 @@ main
                             <div class="row" ng-hide="showOTP">
                                 @if($user->mobile)
                                 <input type="hidden" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code">
+                                <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+
                                  <label for="mobile" class="required">Mobile</label><br />
-                                  <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user ->  mobile}}" id="u_mobile">
+                                  <input type="text" class="form-control form-control-lg text-4 phonecode"  name="mobile" value="{{$user ->  mobile}}" id="u_mobile">
                                  @else
                                  <input type="hidden" name="countryCode" id="u_code">
+                                <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+
                                   <label for="mobile" class="required">Mobile</label><br />
-                                   <input type="text" class="form-control input-lg phonecode" name="mobile" id="u_mobile">
+                                   <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" id="u_mobile">
 
                                 @endif
                                 <h6 id="mobcheck"></h6>
                                 <div class="clear"></div>
-                                <div class="form-group col"><button class="btn btn-primary float-right mb-5" id="sendOTP" ng-click="sendOTP()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send OTP</button></div>
+                                <div class="form-group col"><button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" id="sendOTP" ng-click="sendOTP()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send OTP</button></div>
                             </div>
                         </div>
 
                         <div ng-show="showOTP">
                             <label for="mobile" class="required">Enter OTP</label><br />
                             <div class="row">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control input-lg" id="otp" ng-model="otp">
+                                    <input type="text" class="form-control form-control-lg text-4" id="otp" ng-model="otp">
                                     <h6 id="verifyotp"></h6>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-primary float-right" style="width: max-content;" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="button" class="btn btn-danger float-right" style="width: max-content;" name="resendOTP" id="resendOTP">
+                                <button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" style="width: max-content;" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button>
+
+                                
+                            </div><br>
+                            <div class="row">
+                                
+                                    <button type="button"class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3"  name="resendOTP" id="resendOTP">
                                         Resend OTP
                                     </button>
-                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-sm-6 col-md-3 col-lg-6">
                                     <p>Did not receive OTP via SMS?</p>
-                                    <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style="margin-top:-15px;"><i class="fa fa-phone"></i>
+                                    <button type="button" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" name="voiceOTP" id="voiceOTP" value="Verify OTP" style="margin-top:-15px;"><i class="fa fa-phone"></i>
                                         Receive OTP via Voice call
                                     </button>
                                 </div>
-                            </div>
                         </div>
                         @endif
 
@@ -133,8 +147,11 @@ main
                         <div class="row">
                             <div class="form-group col-lg-12 email-mobile">
                                 <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
-                                <label for="mobile" class="required">Email</label><br />
-                                <input type="text" class="form-control input-lg" name="email" value="{{$user -> email}}" id="u_email">
+                                <p class="text-2">You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
+
+                                <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
+
+                                <input type="text" class="form-control form-control-lg text-4" name="email" value="{{$user -> email}}" id="u_email">
                                 <input type="hidden" name="oldemail" value="{{$user -> email}}" id="oldemail">
                                 <h6 id="emailcheck"></h6>
                                 <div class="clear"></div>
@@ -142,38 +159,37 @@ main
                                 </div>
                                 <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
                                 <input type="hidden" class="form-control" name="code" value="{{$user->mobile_code}}" id="u_code">
-                                <label for="mobile" class="required">Mobile</label><br />
-                                <input type="text" class="form-control input-lg phonecode" name="mobile" value="{{$user-> mobile}}" id="u_mobile" type="tel">
+                                <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+
+                                <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
+
+                                <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" value="{{$user-> mobile}}" id="u_mobile" type="tel">
                                 <input type="hidden" name="oldemail" value="{{$user->mobile}}" id="oldnumber">
                                 <h6 id="mobilecheck"></h6>
                                 <div class="clear"></div>
-                                <div class="form-group col"><button class="btn btn-primary float-right mb-5" id="sendOTPmail" ng-click="sendOTPmail()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send </button></div>
+                                <div class="form-group col"><button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" id="sendOTPmail" ng-click="sendOTPmail()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send </button></div>
                             </div>
                         </div>
                         <div class="otp-field" style="display: none;">
-                            <label for="mobile" class="required">Enter OTP</label>
+                            <label class="form-label text-color-dark text-3">Enter OTP <span class="text-color-danger">*</span></label>
+
                             <div class="row">
-                                <div class="col-md-6">
                                     <input type="text" class="form-control input-lg" id="otp1" name="oneTimePassword" ng-model="otp">
                                     <h6 id="confirmotp"></h6>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-primary float-right" id="verifyOtp" style="width: max-content;" onclick="verifyBySendOtp()">Verify OTP</button>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="button" class="btn btn-danger float-right" name="resendOTP" style="width: max-content;" id="resendOTP">
+                                    <button  class="btn btn-dark btn-modern w-100 text-uppercase text-3 mt-3" id="verifyOtp" style="width: max-content;" onclick="verifyBySendOtp()">Verify OTP</button>
+                                
+                            </div><br>
+                            <div class="row">
+                                    <button type="button" class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2" name="resendOTP" style="width: max-content;" id="resendOTP">
                                         Resend OTP
                                     </button>
-                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-6 col-md-3 col-lg-6">
                                     <p>Did not receive OTP via SMS?</p>
-                                    <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style="margin-top:-15px;"><i class="fa fa-phone"></i>
+                                    <button type="button" class="btn btn-dark btn-outline btn-modern w-100 text-uppercase font-weight-bold text-3 mt-2" name="voiceOTP" id="voiceOTP" value="Verify OTP" style="margin-top:-15px;"><i class="fa fa-phone"></i>
                                         Receive OTP via Voice call
                                     </button>
                                 </div>
-                            </div>
                         </div>
                         @endif
                         @endif

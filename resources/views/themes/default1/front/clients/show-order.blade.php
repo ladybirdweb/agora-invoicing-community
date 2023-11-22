@@ -339,7 +339,7 @@ $price = $order->price_override;
                                 </a>
                             </li>
                             @endif
-                          
+
                             @if($price == '0' && $product->type != '4' && $order->order_status!='Terminated')
 
                             <li class="nav-item">
@@ -954,7 +954,7 @@ $price = $order->price_override;
                         <br><br>
 
                         <div class="col-12">
-                            <p class="text-black"><strong>Price to be paid:</strong> <span id="pricetopay" class="pricetopay"></span></p>
+                            <p class="text-black" id="pricetopaid" style="display: none;"><strong>Price to be paid:</strong> <span id="pricetopay" class="pricetopay"></span></p>
                         </div>
                     <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
@@ -1050,16 +1050,16 @@ $price = $order->price_override;
 
                                 <div class="custom-select-1">
 
-                                {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control', 'onchange' => 'getPrice(this.value)']) !!}
+                                {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control upgrade-select', 'onchange' => 'getPrice(this.value)']) !!}
 
                             </div>
                         </div>
 
-                        <p class="text-black"><strong>Total Credits remaining on your current plan: </strong><span id="priceOldPlan" class="priceOldPlan"></span></p>
+                        <p class="text-black" id="upgrade1" style="display: none;" ><strong>Total Credits remaining on your current plan: </strong><span id="priceOldPlan" class="priceOldPlan"></span></p>
 
-                        <p class="text-black"><strong>Price for the new plan: </strong><span id="priceNewPlan" class="priceNewPlan"></span></p>
+                        <p class="text-black" id="upgrade2" style="display: none;" ><strong>Price for the new plan: </strong><span id="priceNewPlan" class="priceNewPlan"></span></p>
 
-                        <p class="text-black"><strong>Price to be paid: </strong><span id="priceToPay" class="priceToPay"></span></p>
+                        <p class="text-black" id="upgrade2" style="display: none;" ><strong>Price to be paid: </strong><span id="priceToPay" class="priceToPay" ></span></p>
                         <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
                     <div class="loader-wrapper" style="display: none; background: white;" >
@@ -1865,4 +1865,30 @@ function cardUpdate() {
             });
         });
   </script>
+<script>
+    $(document).ready(function() {
+        $('.upgrade-select').on('change', function() {
+            var selectedPlanId = $(this).val();
+            if (selectedPlanId !== '') {
+                $('#upgrade1, #upgrade2, #upgrade3').show();
+            } else {
+                $('#upgrade1, #upgrade2, #upgrade3').hide();
+            }
+        });
+    });
+    
+    
+  $(document).ready(function() {
+        $('#numberAGt').on('input', function() {
+            var enteredValue = $(this).val();
+            if (enteredValue !== '') {
+                $('#pricetopaid').show();
+            } else {
+                $('#pricetopaid').hide();
+            }
+        });
+    });
+</script>
+
+
 @stop

@@ -19,6 +19,9 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
                     <div class="row">
 
                         <div class="col">
+                            <?php
+                            $apiKeys = \App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+                            ?>
 
                         @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                         {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return DemovalidateRecaptcha()']) !!}

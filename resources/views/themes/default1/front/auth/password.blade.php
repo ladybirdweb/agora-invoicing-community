@@ -36,7 +36,7 @@ main
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    <p class="text-2">Lost your password? Please enter your email address. You will receive a link to create a new password via email.</p>
+                    <p class="text-2">Lost your password? Please enter your new password.</p>
                         <div class="row">
 
                             <div class="form-group col">
@@ -59,7 +59,7 @@ main
                                 {!! NoCaptcha::display(['id' => 'pass-recaptcha-1', 'data-callback' => 'PassonRecaptcha']) !!}
                                 <input type="hidden" id="pass-recaptcha-response-1" name="pass-recaptcha-response-1">
                                 <div class="pass-verification" id="passcaptcha"></div>
-                                <span id="passcaptchacheck"></span>
+                                <span id="passcaptchacheck"></span><br>
                             @endif
 
                         <div class="row">

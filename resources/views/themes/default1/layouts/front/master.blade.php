@@ -783,9 +783,9 @@ $social = App\Model\Common\SocialMedia::get();
 
                             <a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold">{{$set->company}}. </a>
 
-                            All Rights Reserved.Powered by
+                            All Rights Reserved. Powered by
 
-                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('storage/common/images/Ladybird1.png')}}"alt="Ladybird"></a>
+                            &nbsp;<a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}"alt="Ladybird"></a>
                         </p>
                     </div>
                 </div>

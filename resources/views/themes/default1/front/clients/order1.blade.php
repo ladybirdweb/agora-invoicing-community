@@ -13,13 +13,13 @@ active
  My Orders
 @stop
 @section('breadcrumb')
- @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">My Orders</li>
-@stop
+    @if(Auth::check())
+        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+    @else
+         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+    @endif
+     <li class="active text-dark">My Orders</li>
+@stop 
 
 @section('content')
 <style>
@@ -28,26 +28,41 @@ active
 }
 </style>
 
-    <div class="col-md-12 pull-center">
+      <div class="row pt-2">
 
-                <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-
-             
-
-                    <thead><tr>
-                            <th>Product Name</th>
-                            <th>Date</th>
-                            <th>Order No</th>
-                            <th>Version</th>
-                            <th>Agents</th>
-                            <th>Updates Expiry Date</th>
-                            <th>Action</th>
-                        </tr></thead>
+            @include('themes.default1.front.clients.navbar')
 
 
-                </table>
-                </div>   
+                <div class="col-lg-9">
+
+                   <div class="tab-pane tab-pane-navigation active" id="invoices" role="tabpanel">
+
+                        <div id="examples" class="container py-4">
+
+                            <div class="row">
+
+                                <div class="col">
+
+
+                                                <table id="order-table"class="table table-striped table-bordered">
+                                                 <thead><tr>
+                                                <th>Product Name</th>
+                                                <th>Purchase Date</th>
+                                                <th>Order No</th>
+                                                <th>Version</th>
+                                                <th>Agents</th>
+                                                <th>Expiry Date</th>
+                                                <th>Action</th>
+                                            </tr></thead>
+                                            </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
                     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />

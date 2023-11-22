@@ -1,112 +1,114 @@
-<a href="#renew" <?php if(\Cart::getContent()->isNotEmpty()) {?> class="btn  btn-primary btn-xs" data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Make sure the cart is empty to Renew your product" onclick="return false" <?php } else {?> class="btn  btn-primary btn-xs" <?php } ?> data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh"></i>&nbsp;Renew</a>
-<div class="modal fade" id="renew{{$id}}" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<a href="#renew" <?php if(\Cart::getContent()->isNotEmpty()) {?> class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Make sure the cart is empty to Renew your product" onclick="return false" <?php } else {?> class="btn btn-light-scale-2 btn-sm text-dark" <?php } ?> data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh" data-toggle="tooltip" title="Click here to renew"></i>&nbsp;</a>
+<div class="modal fade" id="renew{{$id}}" tabindex="-1" role="dialog" aria-labelledby="renewModalLabel" aria-hidden="true">
 
-            {!! Form::open(['url'=>'client/renew/'.$id]) !!}
-            <div class="modal-header">
-                 <h4 class="modal-title">Renew your order</h4>
-            </div>
-            <div class="modal-body">
+                            <div class="modal-dialog">
+                                 {!! Form::open(['url'=>'client/renew/'.$id]) !!}
 
-                <label>Current number of agents: {{$agents}}</label>
-                <br>
-                <label>Current Plan: {{$planName}}</label>
-                <!-- Form  -->
-                
-                <?php
+                                <div class="modal-content">
 
-              $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
-                      ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
-                      ->where('plans.product',$productid)
-                      ->where('plan_prices.renew_price','!=','0')
-                      ->pluck('plans.name', 'plans.id')
-                       ->toArray();
+                                    <div class="modal-header">
 
-                $planIds = array_keys($plans);
+                                        <h4 class="modal-title" id="renewModalLabel">Renew your order</h4>
 
-                $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+                                        <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    </div>
 
-                $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                    ->where('country_id',$countryids->country_id)
-                    ->where('currency',getCurrencyForClient(\Auth::user()->country))
-                    ->latest()
-                    ->pluck('renew_price', 'plan_id')
-                    ->toArray();
+                                    <div class="modal-body">
 
-                if(empty($renewalPrices)){
-                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                        ->where('country_id',0)
-                        ->where('currency',getCurrencyForClient(\Auth::user()->country))
-                        ->latest()
-                        ->pluck('renew_price', 'plan_id')
-                        ->toArray();
-                }
+                                      
 
-                foreach ($plans as $planId => $planName) {
-                    if (isset($renewalPrices[$planId])) {
-                        if(in_array($productid,[117,119])) {
-                            $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
-                        }
-                        else{
-                            $plans[$planId] .= " (Renewal price: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
-                        }
-                    }
-                }
-              //add more cloud ids until we have a generic way to differentiate
-              if(in_array($productid,[117,119])){
-                  $plans = array_filter($plans, function ($value) {
-                      return stripos($value, 'free') === false;
-                  });
-              }
-                // $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
-                $userid = Auth::user()->id;
-                ?>
-                <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('plan','Plans',['class'=>'required']) !!}
+                                            <p class="text-black"><strong>Current number of agents:</strong> {{$agents}}</p>
 
-                    @if($agents == 'Unlimited')
-                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value)',]) !!}
-                    @else
-                        {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',]) !!}
-                    @endif
-                    {!! Form::hidden('user',$userid) !!}
-                    </div>
-                @if(in_array($productid,[117,119]))
-                     <div class="form-group">
-                         {!! Form::label('agents', 'Agents:', ['class' => 'col-form-label']) !!}
+                                            <p class="text-black"><strong>Current plan:</strong> {{$planName}}</p>
+                                                    <?php
 
-                         {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents','min' => '1', 'placeholder' => '']) !!}
-                     </div>
-                @endif
-                <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label style="display: inline-block;">Price to be paid:</label>
+                                          $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                                                  ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                                                  ->where('plans.product',$productid)
+                                                  ->where('plan_prices.renew_price','!=','0')
+                                                  ->pluck('plans.name', 'plans.id')
+                                                   ->toArray();
+
+                                            $planIds = array_keys($plans);
+
+                                            $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+
+                                            $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
+                                                ->where('country_id',$countryids->country_id)
+                                                ->where('currency',getCurrencyForClient(\Auth::user()->country))
+                                                ->latest()
+                                                ->pluck('renew_price', 'plan_id')
+                                                ->toArray();
+
+                                            if(empty($renewalPrices)){
+                                                $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
+                                                    ->where('country_id',0)
+                                                    ->where('currency',getCurrencyForClient(\Auth::user()->country))
+                                                    ->latest()
+                                                    ->pluck('renew_price', 'plan_id')
+                                                    ->toArray();
+                                            }
+
+                                            foreach ($plans as $planId => $planName) {
+                                                if (isset($renewalPrices[$planId])) {
+                                                    if(in_array($productid,[117,119])) {
+                                                        $plans[$planId] .= " (Renewal price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
+                                                    }
+                                                    else{
+                                                        $plans[$planId] .= " (Renewal price: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
+                                                    }
+                                                }
+                                            }
+                                          //add more cloud ids until we have a generic way to differentiate
+                                          if(in_array($productid,[117,119])){
+                                              $plans = array_filter($plans, function ($value) {
+                                                  return stripos($value, 'free') === false;
+                                              });
+                                          }
+                                            // $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
+                                            $userid = Auth::user()->id;
+                                            ?>
+
+                                            <div class="row">
+                                                <div class="form-group col">
+                                                    <label class="form-label">Plans <span class="text-danger"> *</span></label>
+                                                    <div class="custom-select-1">
+                                                            @if($agents == 'Unlimited')
+                                                                {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value)',]) !!}
+                                                            @else
+                                                                {!! Form::select('plan',['' => 'Select'] + $plans, null, ['class' => 'form-control plan-dropdown', 'onchange' => 'fetchPlanCost(this.value, ' . $agents . ')',]) !!}
+                                                            @endif
+                                                            {!! Form::hidden('user',$userid) !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if(in_array($productid,[117,119]))
+
+                                            <div class="row">
+                                                <div class="form-group col">
+                                                    <label class="form-label">Agents <span class="text-danger"> *</span></label>
+                                                    <div class="custom-select-1">
+                                                         {!! Form::number('agents', $agents, ['class' => 'form-control agents', 'id' => 'agents','min' => '1', 'placeholder' => '']) !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            <p class="text-black"><strong>Price to be paid:</strong><span id="price" class="price"></span></p>
+
+                                    
+                                    </div>
+
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-light closebutton" id="closebutton" data-dismiss="modal">Close</button>
+
+                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" id="saveRenew">Save</button>
+                                    </div>
+                                </div>
+                                 {!! Form::close()  !!} 
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <span id="price" class="price" style="display: inline-block; margin-left: -141px;"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="overlay" style="display: none;"></div> <!-- Add this line -->
-
-                <div class="loader-wrapper" style="display: none; background: white;" >
-                    <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
-
-                </div>
-
-            </div>
-            <div class="modal-footer" style="margin-top: -23px;">
-                <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit"  class="btn btn-primary" id="saveRenew"><i class="fa fa-check" >&nbsp;&nbsp;</i>Renew</button>
-                {!! Form::close()  !!}
-            </div>
-            <!-- /Form -->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->  
   
 <script>
 

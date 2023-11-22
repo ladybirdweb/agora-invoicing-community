@@ -345,6 +345,7 @@ class CheckoutController extends InfoController
                 }
             }
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -386,7 +387,6 @@ class CheckoutController extends InfoController
             }
             $paynow = true;
         }
-
         return $paynow;
     }
 

@@ -1,4 +1,4 @@
-<a data-id="{{$orderNumber}}" href="#edittenant" class="btn  btn-primary btn-xs" data-toggle="modal"><i class="fa fa-edit"></i>&nbsp;Change Cloud Domain</a>
+<a data-id="{{$orderNumber}}" href="#edittenant" class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="modal"><i class="fa fa-edit" data-toggle="tooltip" title="Click here to change the domain"></i>&nbsp;</a>
 <div class="modal fade" id="edittenant" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">

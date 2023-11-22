@@ -403,7 +403,7 @@ class ClientController extends BaseClientController
             $currency = getCurrencyForClient($user->country);
             $symbol = Currency::where('code', $currency)->value('symbol');
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order','payments'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order', 'payments'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -903,6 +903,7 @@ class ClientController extends BaseClientController
             $query->where('is_renewed', 1);
         })
         ->count();
-        return view('themes.default1.front.clients.index',compact('pendingInvoicesCount','ordersCount','renewedInvoicesCount'));
+
+        return view('themes.default1.front.clients.index', compact('pendingInvoicesCount', 'ordersCount', 'renewedInvoicesCount'));
     }
 }

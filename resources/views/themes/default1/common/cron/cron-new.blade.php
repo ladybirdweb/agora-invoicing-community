@@ -27,7 +27,7 @@
         {{-- alert block end --}}
         @if(!$execEnabled)
         <div class="alert alert-warning">
-            {{ trans('lang.please_enable_php_exec_for_cronjob_check') }}
+            {{Lang::get('message.please_enable_php_exec_for_cronjob_check')}}
         </div>
         @endif
 

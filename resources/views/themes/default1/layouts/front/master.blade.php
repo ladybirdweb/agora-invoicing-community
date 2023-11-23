@@ -2,11 +2,12 @@
 <html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScript = '';
-$scripts = \App\Model\Common\ChatScript::get();
+$scripts = \App\Model\Common\ChatScript::where('name','TAWK')->get();
 foreach($scripts as $script)
     if($script->on_every_page == 1) {
         $everyPageScript = $script->script;
     }
+   // dd($everyPageScript);
 
 ?>
 <style type="text/css">
@@ -1135,6 +1136,8 @@ domainInput.addEventListener("input", function() {
 @yield('script')
 
 <!--Start of Tawk.to Script-->
+{!! $everyPageScript !!}
+
 <!--Start of Tawk.to Script-->
 
 <script type="text/javascript">

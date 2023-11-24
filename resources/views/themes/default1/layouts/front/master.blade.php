@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
-<?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
-$everyPageScript = '';
-$scripts = \App\Model\Common\ChatScript::where('name','TAWK')->get();
-foreach($scripts as $script)
-    if($script->on_every_page == 1) {
-        $everyPageScript = $script->script;
-    }
-   // dd($everyPageScript);
+<?php 
+$setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScripts = ''; 
+$scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
 
+foreach($scripts as $script) {
+    $everyPageScripts .= $script->script;
+}
 ?>
 <style type="text/css">
     /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */
@@ -1136,15 +1135,10 @@ domainInput.addEventListener("input", function() {
 @yield('script')
 
 <!--Start of Tawk.to Script-->
-{!! $everyPageScript !!}
+{!! $everyPageScripts !!}
 
 <!--Start of Tawk.to Script-->
 
-<script type="text/javascript">
-    {!! html_entity_decode($everyPageScript) !!}
-
-
-</script>
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
        
         <script type="text/javascript">

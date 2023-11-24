@@ -30,6 +30,15 @@ Sign in or Register
 
 
     ?>
+   <?php 
+$setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScripts = ''; 
+$scripts = \App\Model\Common\ChatScript::where('on_registration', 1)->get();
+
+foreach($scripts as $script) {
+    $everyPageScripts .= $script->script;
+}
+?>
     <style>
   .bootstrap-select.btn-group .btn .filter-option 
   {
@@ -583,6 +592,11 @@ Sign in or Register
         }
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
+
+<!--Start of Tawk.to Script-->
+{!! $everyPageScripts !!}
+
+<!--End of Tawk.to Script-->
 
     <script type="text/javascript">
 

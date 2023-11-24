@@ -120,6 +120,7 @@ class ChatScriptController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $this->validate($request, [
             'name' => 'required',
             'script' => 'required',
@@ -132,7 +133,7 @@ class ChatScriptController extends Controller
 
         try {
             $script = $this->script->where('id', $id)->first();
-            $script->on_every_page = $script->on_registration ? 0 : 1;
+            $script->on_every_page = $request->on_registration ? 0 : 1;
             $script->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

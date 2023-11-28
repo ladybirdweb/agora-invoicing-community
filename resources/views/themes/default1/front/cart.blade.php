@@ -263,10 +263,10 @@ Cart
                     <div class="row">
                         <div class="col-md-12">
                             <div class="featured-box featured-box-primary align-left mt-sm">
-                                <div class="box-content">
+                                <div class="box-content" style="border: none;">
 
                                     <div class="col-md-offset-5">
-                                        <p>There are no items in this cart.</p>
+                                        <p class="text-black">There are no items in this cart.</p>
                                         @if(Auth::check())
 
                                             @php
@@ -274,11 +274,11 @@ Cart
                                             @endphp
                                         
                                            @if(!is_null($data))
-                                            <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn btn-primary">CONTINUE SHOPPING
+                                            <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2">CONTINUE SHOPPING
                                                 @endif
 
                                                 @else
-                                                    <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
+                                                    <a href="{{url('login')}}" class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2">CONTINUE SHOPPING
                                                         @endif
                                                     </a>
                                     </div>

@@ -4,6 +4,16 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
     <div class="modal fade" id="demo-req" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
 
         <div class="modal-dialog">
+            <?php
+                $apiKeys = \App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+                ?>
+    
+            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+            {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return DemovalidateRecaptcha()']) !!}
+            @else
+            {!! Form::open(['url'=>'demo-request','method' => 'post']) !!}
+            @endif
+
 
             <div class="modal-content">
 
@@ -19,16 +29,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
                     <div class="row">
 
                         <div class="col">
-                            <?php
-                            $apiKeys = \App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-                            ?>
-
-                        @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                        {!! Form::open(['url'=>'demo-request','method' => 'post','onsubmit'=>'return DemovalidateRecaptcha()']) !!}
-                        @else
-                        {!! Form::open(['url'=>'demo-request','method' => 'post']) !!}
-                        @endif
-
+   
                                 <div class="contact-form-success alert alert-success d-none mt-4">
 
                                     <strong>Success!</strong> Your message has been sent to us.
@@ -47,14 +48,14 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                         <label class="form-label mb-1 text-2">Name <span class="text-danger"> *</span> </label>
 
-                                        <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="name" id="name" required="">
+                                        <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="name" id="name" required>
                                     </div>
 
                                     <div class="form-group col-lg-6">
 
                                         <label class="form-label mb-1 text-2">E-mail Address <span class="text-danger"> *</span></label>
 
-                                        <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="demoemail" id="demoemail" required="">
+                                        <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="demoemail" id="demoemail" required>
                                     </div>
                                 </div>
 
@@ -77,7 +78,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                     <div class="form-group col">
 
-                                        <label class="form-label">Product <span class="text-danger"> *</span></label>
+                                        <label class="form-label">Product</label>
 
                                         <div class="custom-select-1">
 
@@ -99,7 +100,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
                                    <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message" required></textarea>
                                     </div>
                                 </div>
-                            {!! Form::close() !!}
+                            
                         </div>
                     </div>
                 </div>
@@ -108,9 +109,10 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;&nbsp;&nbsp;
 
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Book a Demo</button>
+                    <button type="submit" class="btn btn-primary" name="demoregister" id="demoregister">Book a Demo</button>
                 </div>
             </div>
+            {!! Form::close() !!}
         </div>
     </div>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>

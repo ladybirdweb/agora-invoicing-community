@@ -279,7 +279,7 @@ $social = App\Model\Common\SocialMedia::get();
                                     <div class="header-nav-feature header-nav-features-cart d-inline-flex ms-2">
                                         <a href="{{ url('show/cart') }}" class="header-nav-features-toggle text-decoration-none">
                                             <span class="text-dark opacity-8 font-weight-bold text-color-hover-primary"> Cart</span>
-                                            <img src="../img/icons/icon-cart.svg" width="14" alt="" class="header-nav-top-icon-img">
+                                            <img src="{{asset('client/porto/fonts/icon-cart.svg')}}" width="14" alt="" class="header-nav-top-icon-img">
                                             <span class="cart-info">
                                                 <span class="cart-qty">{{ Cart::getTotalQuantity() }}</span>
                                             </span>
@@ -335,11 +335,12 @@ $social = App\Model\Common\SocialMedia::get();
                                                         </div>
                                                     </li>
                                                 @endforelse
+                                                @if (!Cart::isEmpty())
                                                   <div class="totals">
                                                 <span class="label">Total:</span>
-                                                <span class="price-total"><span class="price">${{ Cart::getTotal() }}</span></span>
+                                                <span class="price-total"><span class="price">{{ currencyFormat(Cart::getTotal(), $code = $currency) }}</span></span>
                                             </div>
-                                                @if (!Cart::isEmpty())
+                                                
                                                     <li>
                                                         <div class="actions">
                                                             <a class="btn btn-dark btn-modern text-uppercase font-weight-semi-bold"
@@ -557,7 +558,6 @@ $social = App\Model\Common\SocialMedia::get();
                                     $('#userdomain').val(data.data);
                                 },
                                 error: function(error) {
-                                    console.error('Error:', error);
                                 }
                             });
                         });
@@ -599,8 +599,9 @@ $social = App\Model\Common\SocialMedia::get();
                                     <input type="hidden"  name="order" id="orderId"/>
                                     <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>
                                     <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
-                                    <p id="validationMessagePurchase"></p>
+                                   
                                 </div>
+                                 <p id="validationMessagePurchase"></p>
                             </div>
                             <div class="text-center">
                                 <div class="row data-center">
@@ -636,7 +637,6 @@ $social = App\Model\Common\SocialMedia::get();
                                 $('#userdomainPurchase').val(data.data);
                             },
                             error: function(error) {
-                                console.error('Error:', error);
                             }
                         });
                     });
@@ -1093,7 +1093,7 @@ domainInput.addEventListener("input", function() {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
-                    $('#register').attr('disabled',false);
+                    $('#demoregister').attr('disabled',false);
                 } else {
                     var errorCodedemo = demotelInput.intlTelInput("getValidationError");
                     errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
@@ -1102,7 +1102,7 @@ domainInput.addEventListener("input", function() {
                     $('#mobilenumdemo').css("border-color","red");
                     $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
                     errorMsgdemo.classList.remove("hide");
-                    $('#register').attr('disabled',true);
+                    $('#demoregister').attr('disabled',true);
                 }
             }
         });
@@ -1116,7 +1116,7 @@ domainInput.addEventListener("input", function() {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
-                    $('#register').attr('disabled',false);
+                    $('#demoregister').attr('disabled',false);
                 } else {
                     var errorCodedemo = demotelInput.intlTelInput("getValidationError");
                     errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
@@ -1125,7 +1125,7 @@ domainInput.addEventListener("input", function() {
                     $('#mobilenumdemo').css("border-color","red");
                     $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
                     errorMsgdemo.classList.remove("hide");
-                    $('#register').attr('disabled',true);
+                    $('#demoregister').attr('disabled',true);
                 }
             }
         });
@@ -1274,6 +1274,12 @@ domainInput.addEventListener("input", function() {
             }, 10000);
         </script>
 @endif
+<script>
+    $(document).ready(function() {
+        $.fn.modal.Constructor.Default.backdrop = 'static';
+    });
+</script>
+
         <style>
             .custom-line {
                 border: none;
@@ -1282,8 +1288,7 @@ domainInput.addEventListener("input", function() {
             }
             #validationMessage {
               position: absolute;
-              top: 80px; /* Adjust this value to align the error message properly */
-              margin-left:32px;
+              top: 40px; /* Adjust this value to align the error message properly */
               left: 0;
               font-size: 12px;
               color: red;

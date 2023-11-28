@@ -18,7 +18,10 @@ Dashboard
 
             @include('themes.default1.front.clients.navbar')
 
-
+<?php
+$status = 'pending';
+$updated_ends_at = 'expired';
+?>
                 <div class="col-lg-9">
 
                     <div class="tab-pane tab-pane-navigation active" id="dashboard" role="tabpanel">
@@ -27,7 +30,7 @@ Dashboard
 
                             <div class="col-sm-4 mb-4 mb-lg-0">
 
-                                <a href="./pages/invoices.html" class="text-decoration-none">
+                                <a  href="{{url('my-invoices?status='.$status)}}" class="text-decoration-none">
 
                                     <div class="card border-1 bg-color-grey">
 
@@ -55,7 +58,7 @@ Dashboard
 
                             <div class="col-sm-4 mb-4 mb-lg-0">
 
-                                <a href="./pages/orders.html" class="text-decoration-none">
+                                <a href="{{url('my-orders')}}" class="text-decoration-none">
 
                                     <div class="card border-1 bg-color-grey">
 
@@ -82,7 +85,7 @@ Dashboard
 
                             <div class="col-sm-4 mb-4 mb-lg-0">
 
-                                <a href="./pages/orders.html" class="text-decoration-none">
+                                <a href="{{url('my-orders?updated_ends_at='.$updated_ends_at)}}" class="text-decoration-none">
 
                                     <div class="card border-1 bg-color-grey">
 
@@ -97,7 +100,7 @@ Dashboard
 
                                                 <div class="col-sm-8">
 
-                                                    <strong class="text-8 text-color-grey text-end me-2" data-to="{{$renewedInvoicesCount}}">{{$renewedInvoicesCount}}</strong>
+                                                    <strong class="text-8 text-color-grey text-end me-2" data-to="{{$renewalCount}}">{{$renewalCount}}</strong>
                                                 </div>
                                             </div>
 

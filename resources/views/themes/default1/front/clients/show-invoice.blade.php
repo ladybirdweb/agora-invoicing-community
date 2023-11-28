@@ -326,7 +326,7 @@ active
 
             <div class="mt-4">
 
-                <a href="{{url('pdf?invoiceid='.$invoice->id)}}"  class="btn btn-dark float-end ms-2"><i class="fa fa-download"></i> Generate PDF</a>
+                <a href="{{url('pdf?invoiceid='.$invoice->id)}}" onclick="refreshPage()"  class="btn btn-dark float-end ms-2"><i class="fa fa-download"></i> Generate PDF</a>
 
                  @if($invoice->status !='Success')
                     <a href="{{url('paynow/'.$invoice->id)}}" target="_blank" class="btn btn-dark float-end ms-2"><i class="fa fa-credit-card"></i> Pay Now</a>
@@ -334,5 +334,13 @@ active
 
             </div>
         </div>
-
+<script>
+  function refreshPage() {
+    // Wait for 3 seconds (3000 milliseconds) before refreshing the page
+    setTimeout(function() {
+      // Reload the current page
+      location.reload();
+    }, 4000); // 3000 milliseconds = 3 seconds
+  }
+</script>
 @stop

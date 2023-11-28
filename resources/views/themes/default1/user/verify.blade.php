@@ -24,7 +24,6 @@ main
     .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 .selected-flag {
     width: 84px;
     position: relative;
-    left: 10px;
 }
 </style>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>

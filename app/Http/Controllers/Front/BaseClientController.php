@@ -11,6 +11,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
 use Hash;
+use Illuminate\Http\Request;
 
 class BaseClientController extends Controller
 {
@@ -286,10 +287,10 @@ class BaseClientController extends Controller
         }
     }
 
-    public function orders()
+    public function orders(Request $request)
     {
         try {
-            return view('themes.default1.front.clients.order1');
+            return view('themes.default1.front.clients.order1',compact('request'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

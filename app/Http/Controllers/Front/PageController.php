@@ -314,7 +314,7 @@ class PageController extends Controller
                         $prices[] .= $planDetails['symbol'];
                         $prices[] .= $planDetails['currency'];
                     }
-                }
+                
 
                 if (! empty($prices)) {
                     if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
@@ -324,6 +324,7 @@ class PageController extends Controller
                     $finalPrice = str_replace($prices[1], '', $format);
                     $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
+            }
             }
 
             return $cost;

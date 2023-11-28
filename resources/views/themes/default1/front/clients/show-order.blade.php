@@ -393,12 +393,14 @@ $price = $order->price_override;
                                     </div>
 
                                     <div class="col-sm-7">
+                                        <span id="serialKey">{{$order->serial_key}}</span>
+                                        
+                                       <a href="#" class="btn btn-light-scale-2 text-black btn-sm ms-4" id="copyButton" data-bs-toggle="tooltip" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </a>
+                                    
+                                    <span id="copiedMessage" class="hidden">Copied</span>
 
-                                       {{$order->serial_key}}
-
-                                        <a class="btn btn-light-scale-2 text-black btn-sm ms-4" data-type="copy" data-bs-toggle="tooltip" title="Copy">
-                                            <i class="fas fa-copy"></i>
-                                        </a>
                                          @if ($licenseStatus == 1)
                                             @if($product->type != '4' && $price != '0')
 
@@ -1137,7 +1139,8 @@ $price = $order->price_override;
                     <img class="img-responsive" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2lfp0fkZmeGd6aCOzuIBC1QDTvcyGcM6OGQ&usqp=CAU">
                 </div>
             </div>
-
+           <div id="alertMessage-2"></div>
+            <div id="error-1"></div>
             <div class="col-md-12 ">
                 <div class="modal-body">
                     <form id="valid-modal">
@@ -1420,7 +1423,7 @@ $(document).ready(function() {
                         $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                         setInterval(function(){
                             $('#alertMessage-2').slideUp(3000);
-                        }, 1000);
+                        }, 4000);
                         $('#updateButton').hide();
                     },
                 })
@@ -1474,7 +1477,7 @@ function cardUpdate() {
                             var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                             $('#alertMessage-2').html(result + ".");
                             $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                            location.reload();
+                            
                         },
                       error: function (data) {
                         var errorMessage = data.responseJSON.result;
@@ -1889,6 +1892,47 @@ function cardUpdate() {
         });
     });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const copyButton = document.getElementById('copyButton');
+    const serialKey = document.getElementById('serialKey').innerText;
+    const copiedMessage = document.getElementById('copiedMessage');
+
+    copyButton.addEventListener('click', () => {
+        const textarea = document.createElement('textarea');
+        textarea.value = serialKey;
+
+        document.body.appendChild(textarea);
+
+        textarea.select();
+
+        document.execCommand('copy');
+
+        document.body.removeChild(textarea);
+
+        const tooltip = new bootstrap.Tooltip(copyButton);
+        copyButton.removeAttribute('title');
+
+
+        copiedMessage.classList.remove('hidden');
+        setTimeout(() => copiedMessage.classList.add('hidden'), 2000); 
+    });
+});
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+        #copiedMessage {
+        position: absolute;
+        top: -30px; 
+        left: 45%;
+        color: green;
+
+    }
+</style>
+
 
 
 @stop

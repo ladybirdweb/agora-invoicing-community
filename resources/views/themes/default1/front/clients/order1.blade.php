@@ -75,7 +75,7 @@ active
             serverSide: true,
             order: [[ 4, "asc" ]],
             ajax: {
-            "url":  '{!! route('get-my-orders') !!}',
+            "url": '{!! route('get-my-orders', "updated_ends_at=$request->updated_ends_at") !!}',
                error: function(xhr) {
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')

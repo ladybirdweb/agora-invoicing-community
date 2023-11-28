@@ -260,23 +260,28 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function invoices()
+    public function invoices(Request $request)
     {
         try {
-            return view('themes.default1.front.clients.invoice');
+            return view('themes.default1.front.clients.invoice',compact('request'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function getInvoices()
+    public function getInvoices(Request $request)
     {
+        $status = $request->input('status');
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-            ->leftJoin('orders', 'order_invoice_relations.order_id', '=', 'orders.id')
-            ->select('orders.number')
-            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
-            ->groupBy('invoices.number')
-            ->where('invoices.user_id', '=', \Auth::user()->id);
+        ->leftJoin('orders', 'order_invoice_relations.order_id', '=', 'orders.id')
+        ->select('orders.number')
+        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
+        ->groupBy('invoices.number')
+        ->where('invoices.user_id', '=', \Auth::user()->id);
+    
+        if ($status == 'pending') {
+            $invoices->where('invoices.status', '=', 'pending');
+        }
 
         return \DataTables::of($invoices)
                     ->orderColumn('number', '-invoices.id $1')
@@ -580,10 +585,14 @@ class ClientController extends BaseClientController
      * Show all the orders for User
      */
 
-    public function getOrders()
+    public function getOrders(Request $request)
     {
         try {
+            $updated_ends_at = $request->input('updated_ends_at');
             $orders = $this->getClientPanelOrdersData();
+            if($updated_ends_at == 'expired'){
+                $orders = $this->getClientPanelOrdersData()->where('update_ends_at', '<', now());
+            }
 
             return \DataTables::of($orders)
                         ->orderColumn('products.name', '-orders.id $1')
@@ -897,13 +906,12 @@ class ClientController extends BaseClientController
         $user = auth()->user();
         $pendingInvoicesCount = $user->invoice()->where('status', 'pending')->count();
         $ordersCount = $user->order()->count();
-        $renewedInvoicesCount = $user->invoice()
-        ->with('orderRelation')
-        ->whereHas('orderRelation', function ($query) {
-            $query->where('is_renewed', 1);
+        $renewalCount = $user->order()
+        ->whereHas('subscription', function ($query) {
+            $query->where('update_ends_at', '<', now());
         })
         ->count();
 
-        return view('themes.default1.front.clients.index', compact('pendingInvoicesCount', 'ordersCount', 'renewedInvoicesCount'));
+        return view('themes.default1.front.clients.index', compact('pendingInvoicesCount', 'ordersCount', 'renewalCount'));
     }
 }

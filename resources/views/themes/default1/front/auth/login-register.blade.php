@@ -422,7 +422,9 @@ Sign in or Register
 
                         <div class="col-md-12 tab-pane" id="step2">
 
-                            <div class="container py-4">
+                            <div class="container py-4" >
+                            <div id="successMessage1" style="width: 500px;position: relative;left: 260px;text-align: center;"></div>
+                            <div id = "emailsuccess" style="width: 500px;position: relative;left: 260px;text-align: center;"></div>
 
             <div class="row justify-content-center">
 
@@ -485,7 +487,7 @@ Sign in or Register
                         </div>
                                       <div class="col-md-12 tab-pane" id="step3">
                                         <div id="error2"></div>
-                                        <div id="successMessage2"></div>
+                                        <div id="successMessage2" style="width: 500px;position: relative;left: 260px;text-align: center;"></div>
                                         <div id="alertMessage3"></div>
                                         <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
                                         <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5 mx-auto text-cente">
@@ -499,6 +501,7 @@ Sign in or Register
                                         </div>
 
                                         <form name="verify_otp_form">
+                                            <label for="mobile" class="required">Enter OTP</label><br />
 
                                              <div class="row">
                                             <input type="hidden" name="user_id" id="hidden_user_id"/>
@@ -531,7 +534,7 @@ Sign in or Register
     </div>
 @stop
 @section('script')
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
+    <!--<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>-->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
@@ -609,9 +612,7 @@ Sign in or Register
                         $("#verifyOtp").attr('disabled',false);
                         if (xhr.status === 422) {
                          var myJSON = xhr.responseJSON.message;
-                         console.log(myJSON);
-                         console.log(xhr);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
+                         var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
                               for (var key in xhr.responseJSON.errors)
                         {
                             html += '<li>' + xhr.responseJSON.errors[key][0] + '</li>'
@@ -932,7 +933,6 @@ Sign in or Register
         //robot validation for Login Form
         function validateform() {
             var input = $("#recaptcha1 :input[name='g-recaptcha-response']");
-            console.log(input.val());
             if(input.val() == null || input.val()==""){
                 $('.loginrobot-verification').empty()
                 $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
@@ -1495,7 +1495,6 @@ Sign in or Register
                 getCode(val);
             }
             else{
-                console.log(val)
                 $("#state-list").html('<option value="">Please select Country</option>').val('');
             }
 
@@ -1809,78 +1808,6 @@ Sign in or Register
         });
 
 
-    function resendOTP() {
-
-        otp = generateOTP();
-
-        otpInputs.forEach(input => input.value = "");
-
-        document.getElementById("alert-resend").classList.toggle('d-none');
-
-        setTimeout(()=>{
-
-            document.getElementById("alert-resend").classList.toggle('d-none');
-
-        },2000)
-
-        document.getElementById("resendButton").disabled = true;
-
-        startTimer();
-    }
-
-
-
-    function startTimer() {
-        let seconds = 10;
-        document.getElementById("timer").textContent = seconds;
-
-        timerInterval = setInterval(function () {
-            seconds--;
-            document.getElementById("timer").textContent = seconds;
-
-            if (seconds <= 0) {
-                clearInterval(timerInterval);
-                document.getElementById("resendButton").disabled = false;
-            }
-        }, 1000);
-    }
-
-      otpInputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
-            const value = e.target.value;
-
-            if (value.match(/\d/)) {
-                if (value.length === 1 && index < otpInputs.length - 1) {
-                    otpInputs[index + 1].focus();
-                }
-            } else {
-                e.target.value = '';
-                if (index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-            }
-        });
-
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const clipboardData = e.clipboardData.getData('text');
-            const numbers = clipboardData.match(/\d/g);
-            let currentIndex = index;
-
-            if (numbers) {
-                numbers.forEach((number, i) => {
-                    if (currentIndex < otpInputs.length) {
-                        otpInputs[currentIndex].value = number;
-                        currentIndex++;
-                    }
-                });
-
-                if (currentIndex > index) {
-                    otpInputs[currentIndex - 1].focus();
-                }
-            }
-        });
-    });
     </script>
     <noscript>
         <img height="1" width="1"

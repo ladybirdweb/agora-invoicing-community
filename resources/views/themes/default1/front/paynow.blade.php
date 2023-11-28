@@ -353,14 +353,14 @@ Checkout
                                                       $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
                                                     ?>
 
-                                                <label class="d-flex align-items-center text-color-grey mb-0" for="payment_method1">
+                                                <label class="align-items-center text-color-grey mb-0" for="payment_method1">
 
                                                  {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
 
 
                                                     <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
-                                                    <div id="fee" style="display:none;position: relative; bottom: -30px;right: 110px;">
-                                                        <p class="text-color-dark text-3-5">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div><br>
+                                                    <div id="fee" style="display:none;">
+                                                        <p class="text-color-dark text-3-5">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
                                                 </label>
                                                   @endforeach
 
@@ -400,18 +400,30 @@ Checkout
         $('#fee').show();
     }
   });
+  
+$(document).ready(function() {
+  showInitialFee();
 
-  function getGateway($this)
-  {
-    var gateWayName = $this.value;
-    var fee = $this.getAttribute("processfee");
-    console.log(fee)
-    if (fee == '0') {
-        $('#fee').hide();
-    } else {
-        $('#fee').show();
-    }
+  $('input[name="payment_gateway"]').on('change', function() {
+    getGateway(this);
+  });
+});
+
+function showInitialFee() {
+  $('#fee').show();
+}
+
+function getGateway(element) {
+  var gatewayName = element.value;
+  var fee = element.getAttribute("processfee");
+
+  if (fee === '0') {
+    $('#fee').hide();
+  } else {
+    $('#fee').show();
   }
+}
+
 
   $(document).ready(function () {
       $('#billing-pay-balance').on('change', function () {
@@ -507,6 +519,8 @@ Checkout
           updateContent();
       });
   });
+  
+
 </script>
 <style>
     .underline-label {

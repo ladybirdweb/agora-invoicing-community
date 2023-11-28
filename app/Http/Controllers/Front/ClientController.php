@@ -263,7 +263,7 @@ class ClientController extends BaseClientController
     public function invoices(Request $request)
     {
         try {
-            return view('themes.default1.front.clients.invoice',compact('request'));
+            return view('themes.default1.front.clients.invoice', compact('request'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -278,7 +278,7 @@ class ClientController extends BaseClientController
         ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
         ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', \Auth::user()->id);
-    
+
         if ($status == 'pending') {
             $invoices->where('invoices.status', '=', 'pending');
         }
@@ -590,7 +590,7 @@ class ClientController extends BaseClientController
         try {
             $updated_ends_at = $request->input('updated_ends_at');
             $orders = $this->getClientPanelOrdersData();
-            if($updated_ends_at == 'expired'){
+            if ($updated_ends_at == 'expired') {
                 $orders = $this->getClientPanelOrdersData()->where('update_ends_at', '<', now());
             }
 

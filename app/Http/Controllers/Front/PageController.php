@@ -316,17 +316,16 @@ class PageController extends Controller
                         $prices[] .= $planDetails['symbol'];
                         $prices[] .= $planDetails['currency'];
                     }
-                
 
-                if (! empty($prices)) {
-                    if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
-                        $prices[0] = $prices[0] - (($offerprice / 100) * $prices[0]);
+                    if (! empty($prices)) {
+                        if (isset($offerprice) && $offerprice != '' && $offerprice != null) {
+                            $prices[0] = $prices[0] - (($offerprice / 100) * $prices[0]);
+                        }
+                        $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                        $finalPrice = str_replace($prices[1], '', $format);
+                        $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                     }
-                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                    $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
                 }
-            }
             }
 
             return $cost;

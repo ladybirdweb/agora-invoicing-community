@@ -156,7 +156,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                     <td class="product-quantity">
 
-                                        <span class="amount font-weight-medium text-color-grey">{$item->quantity}}</span>
+                                        <span class="amount font-weight-medium text-color-grey">{{$item->quantity}}</span>
                                     </td>
                                     @else
                                      <td class="product-agents">
@@ -509,16 +509,28 @@ $cartSubtotalWithoutCondition = 0;
     }
   });
 
-  function getGateway($this)
-  {
-    var gateWayName = $this.value;
-    var fee = $this.getAttribute("processfee");
-    if (fee == '0') {
-        $('#fee').hide();
-    } else {
-        $('#fee').show();
+$(document).ready(function() {
+      showInitialFee();
+    
+      $('input[name="payment_gateway"]').on('change', function() {
+        getGateway(this);
+      });
+    });
+    
+    function showInitialFee() {
+      $('#fee').show();
     }
-  }
+    
+    function getGateway(element) {
+      var gatewayName = element.value;
+      var fee = element.getAttribute("processfee");
+    
+      if (fee === '0') {
+        $('#fee').hide();
+      } else {
+        $('#fee').show();
+      }
+    }
       $(document).ready(function () {
       $('#billing-pay-balance').on('change', function () {
           var isChecked = $(this).prop('checked');

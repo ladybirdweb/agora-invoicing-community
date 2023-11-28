@@ -154,65 +154,11 @@ main
     line-height: 20px;
     color: white;
 }
-.carousel-wrapper {
-    width: 100%;
-    margin: 0 auto;
-    max-width: 1200px;
-}
-.blue-background li::before{
+
+.blue li::before{
 
     background-color: #099fdc;
 }
-/* Styles for pagination container */
-.pagination-container {
-    display: flex;
-    justify-content: space-between; /* Positions items at each end of the container */
-    align-items: center; /* Centers vertically */
-    width: 100%; /* Adjust width as needed */
-    /* Additional styles for container if required */
-}
-
-/* Styles for pagination links (arrows) */
-.pagination a {
-    font-size: 24px; /* Adjust font size as needed */
-    color: #333; /* Adjust the color of the arrows */
-    text-decoration: none;
-    /* Additional styles for arrows if required */
-}
-.fa-arrow-left:before{
-    position: relative;
-    bottom: 500px;
-    right: 30px;
-    color: #099fdc;
-    display: flex;
-}
-.fa-arrow-right:before {
-    position: relative;
-    bottom: 500px;
-    left: 1120px;
-    color: #099fdc;
-    display: flex;
-
-}
-.pricing-table {
-     flex-wrap: nowrap;
-    display: flex;
-    width: 100%; /* Change the width as needed based on your layout */
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.5s ease; /* Transition effect for smoother movement */
-}
-
-.card {
-    flex: 0 0 33.33%; /* Assuming 3 items per page */
-    transition: transform 0.5s ease; /* Transition effect for smoother movement */
-}
-
-/* Hide the fourth item */
-.pricing-table.hide-fourth {
-    transform: translateX(-100%);
-}
-
 
 .owl-carousel .owl-item img{
     display: unset;
@@ -263,7 +209,6 @@ main
         <div class="row mb-5 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="100">
                     <div class="col">
                         <div class="owl-carousel nav-outside nav-arrows-1 custom-carousel-box-shadow-2 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="750" data-plugin-options="{'responsive': {'0': {'items': 1}, '479': {'items': 1}, '768': {'items': 2}, '979': {'items': 3}, '1199': {'items': 3}}, 'autoplay': false, 'autoplayTimeout': 5000, 'autoplayHoverPause': true, 'dots': false, 'nav': true, 'loop': false, 'margin': 20, 'stagePadding': '75'}">
-
                              {!! html_entity_decode($templates) !!}
 
                           </div>
@@ -321,19 +266,6 @@ main
     }
   });
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Get the <h4> element
-    var h4Element = document.querySelector('h4.text-color-primary');
-
-    // Check if the <h4> element has the class 'text-color-primary'
-    if (h4Element) {
-      // Add a class to the parent element of <li> elements
-      var planFeatures = document.querySelector('.plan-features');
-      if (planFeatures) {
-        planFeatures.classList.add('blue-background');
-      }
-    }
-  });
 </script>
 @stop
 

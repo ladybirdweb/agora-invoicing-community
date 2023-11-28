@@ -12,7 +12,7 @@ function redirectOnClick($route) {
     <aside class="sidebar mt-2 mb-5">
         <ul class="nav nav-list flex-column">
             <li class="nav-item">
-                <a class="nav-link {{ isActiveRoute('index') }}" href="#dashboard" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="120" data-hash-delay="500"
+                <a class="nav-link {{ isActiveRoute('client-dashboard') }}" href="#dashboard" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="120" data-hash-delay="500"
                    onclick="{{ redirectOnClick('client-dashboard') }}">Dashboard</a>
             </li>
             <li class="nav-item">

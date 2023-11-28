@@ -220,12 +220,15 @@
 
     </script>
     <script>
+       var status = '';
+
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
             order: [[ 1, "asc" ]],
             ajax: {
-                "url":  '{!! route('get-my-invoices') !!}',
+                "url": '{!! route('get-my-invoices', "status=$request->status") !!}',
+
                 error: function(xhr) {
                     if(xhr.status == 401) {
                         alert('Your session has expired. Please login again to continue.')
@@ -263,6 +266,7 @@
                 $('.loader').css('display', 'block');
             },
         });
+
     </script>
     @if(!$check)
         <script>
@@ -281,6 +285,7 @@
                     localStorage.setItem('isModalFilled', 'true');
                 });
             });
+  
         </script>
 
     @endif

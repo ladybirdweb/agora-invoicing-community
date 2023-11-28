@@ -657,7 +657,7 @@ $currency = $invoice->currency;
     <div class="modal-dialog">
         <div class="modal-content" style="padding: 16px;">
              <div class="modal-header">
-            <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" aria-hidden="true">&times;</button>
                 <h4 style="white-space: nowrap;" class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
 
          <div class="horizontal-images">
@@ -739,6 +739,7 @@ $currency = $invoice->currency;
         </div>
     </div>
 </div> 
+
 <script>
      $('.custom-close').click(function(){
                location.reload();
@@ -895,8 +896,5 @@ $(function() {
             margin-left: 20px;
         }
     </style>
-
-
-
 
 @endsection

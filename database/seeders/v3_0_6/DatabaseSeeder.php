@@ -905,7 +905,7 @@ class PricingTemplateSeeder extends Seeder
                         </div>
                     </div>
                 </div>
-<div class="plan-features">
+<div class="plan-features blue">
 
                 
                     <li>{{feature}}</li>

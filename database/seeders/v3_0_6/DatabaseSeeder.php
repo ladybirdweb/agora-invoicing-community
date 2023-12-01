@@ -3,6 +3,7 @@
 namespace Database\Seeders\v3_0_6;
 use Illuminate\Database\Seeder;
 use App\Model\Common\PricingTemplate;
+use App\Model\Front\Widgets;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Widgets::where('type','footer4')->delete();
 
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');

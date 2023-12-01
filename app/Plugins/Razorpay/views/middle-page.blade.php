@@ -129,9 +129,9 @@ $json = json_encode($data);
 
                         <form method="post" action="">
 
-                            <div class="table-responsive">
+                            <div class="totals-cart">
 
-                                <table class="shop_table cart">
+                                <table class="shop_table">
 
                                     <thead>
 
@@ -356,7 +356,7 @@ $json = json_encode($data);
                                             </strong>
                                         </td>
                                                           <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">$
+                                            <span class="amount font-weight-medium text-color-grey">
                                                          {!! $fee->getValue() !!}
                                                      </span>
                                                       </td>
@@ -436,9 +436,9 @@ $json = json_encode($data);
 
                         <form method="post" action="">
 
-                            <div class="table-responsive">
+                            <div class="totals-cart">
 
-                                <table class="shop_table cart">
+                                <table class="shop_table">
 
                                     <thead>
 

@@ -83,7 +83,7 @@ Edit Widget
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
-                        {!! Form::select('type', [''=>'Choose','footer1'=>'Footer 1','footer2'=>'Footer 2','footer3'=>'Footer 3','footer4'=>'Footer 4'],$widget->type,['class' => 'form-control']) !!}
+                        {!! Form::select('type', [''=>'Choose','footer1'=>'Footer 1','footer2'=>'Footer 2','footer3'=>'Footer 3'],$widget->type,['class' => 'form-control']) !!}
 
                     </div>
 

@@ -259,10 +259,10 @@ class RenewController extends BaseRenewController
             $payment_method = $request->input('payment_method');
             $code = $request->input('code');
             $cost = $request->input('cost');
+            $sub = Subscription::find($id);
+            $order_id = $sub->order_id;
             if ($request->has('agents')) {
                 $agents = $request->input('agents');
-                $sub = Subscription::find($id);
-                $order_id = $sub->order_id;
                 $installation_path = InstallationDetail::where('order_id', $order_id)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()->value('installation_path');
                 if (empty($installation_path)) {
                     return response(['status' => false, 'message' => trans('message.no_installation_found')]);

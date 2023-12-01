@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Model\Common\TemplateType;
 use App\Model\Common\Template;
 use App\Model\Common\PricingTemplate;
+use App\Model\Front\Widgets;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -14,6 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Widgets::where('type','footer4')->delete();
 
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');

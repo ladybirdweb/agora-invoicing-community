@@ -43,6 +43,9 @@
         color: white;
         font-size: 20px;
       }
+      .shop_table th {
+          padding: 4px 3.8px !important;
+      }
 
     </style>
 <script src="https://js.stripe.com/v3/"></script>
@@ -72,7 +75,7 @@ $currency = $invoice->currency;
 
                         <form method="post" action="">
 
-                            <div class="table-responsive">
+                            <div class="totals-cart">
 
                                 <table class="shop_table cart">
 
@@ -80,7 +83,7 @@ $currency = $invoice->currency;
 
                                     <tr class="text-color-dark">
 
-                                        <th class="product-thumbnail" width="15%">
+                                        <th class="product-thumbnail">
                                             &nbsp;
                                         </th>
 
@@ -299,7 +302,7 @@ $currency = $invoice->currency;
                                             </strong>
                                         </td>
                                                           <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">$
+                                            <span class="amount font-weight-medium text-color-grey">
                                                          {!! $fee->getValue() !!}
                                                      </span>
                                                       </td>
@@ -379,7 +382,7 @@ $currency = $invoice->currency;
 
                         <form method="post" action="">
 
-                            <div class="table-responsive">
+                            <div class="totals-cart">
 
                                 <table class="shop_table cart">
 
@@ -891,10 +894,6 @@ $(function() {
   
 });
 </script>
-    <style>
-        strong{
-            margin-left: 20px;
-        }
-    </style>
+
 
 @endsection

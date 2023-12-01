@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+.list-styled.columns-lg-2.px-2 li a {
+    color: #777 !important; /* Set the anchor text color to black */
+}
+</style>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScript = '';
 $scripts = \App\Model\Common\ChatScript::get();
@@ -659,116 +664,91 @@ $social = App\Model\Common\SocialMedia::get();
 
     <footer id="footer" class="position-relative bg-color-light-scale-1 border-top-0">
 
-        <div class="container pt-5 pb-3">
+       <div class="container pt-5 pb-3">
+           <div class="row">
+    <?php
+    function renderWidget($widget, $set, $social, $mailchimpKey)
+    {
+        $tweetDetails = $widget->allow_tweets == 1 ? '<div id="tweets" class="twitter"></div>' : '';
 
-            <div class="row pt-5">
+        $socialMedia = '';
+        if ($widget->allow_social_media) {
+            // Social Media Icons
+            $socialMedia .= '<ul class="list list-unstyled">';
+            if ($set->company_email) {
+                $socialMedia .= '<li class="d-flex align-items-center mb-4">
+                                    <i class="fa-regular fa-envelope fa-xl"></i>&nbsp;&nbsp;
+                                    <a href="mailto:' . $set->company_email . '" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">' . $set->company_email . '</a>
+                                </li>';
+            }
+            if ($set->phone) {
+                $socialMedia .= '<li class="d-flex align-items-center mb-4">
+                                    <i class="fas fa-phone text-4 p-relative top-2"></i>&nbsp;
+                                    <a href="tel:' . $set->phone . '" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">+' . $set->phone_code . ' ' . $set->phone . '</a>
+                                </li>';
+            }
+            $socialMedia .= '</ul>';
 
-                  <div class="col-lg-4">
+            // Social Icons
+            $socialMedia .= '<ul class="social-icons social-icons-clean social-icons-medium">';
+            foreach ($social as $media) {
+                $socialMedia .= '<li class="social-icons-' . strtolower($media->name) . '">
+                                    <a href="' . $media->link . '" target="_blank" data-bs-toggle="tooltip" title="' . ucfirst($media->name) . '">
+                                        <i class="fab fa-' . strtolower($media->name) . ' text-color-grey-lighten"></i>
+                                    </a>
+                                </li>';
+            }
+            $socialMedia .= '</ul>';
+        }
 
-                    <h4 class="text-color-dark font-weight-bold mb-3">Faveo</h4>
+        $mailchimpSection = '';
+        if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
+            // Mailchimp Subscription Form
+            $mailchimpSection .= '<div id="mailchimp-message"></div>
+                                    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
+                                        <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
+                                            <div class="input-group">
+                                                <input class="form-control bg-light border" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
+                                                <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
+                                            </div>
+                                        </form>
+                                    </div>';
+        }
+        
+          // Check if the 'menu' class exists in the widget content
+        $hasMenuClass = strpos($widget->content, 'menu') !== false;
+    
+        // Add class if 'menu' class exists in the widget content
+        if ($hasMenuClass) {
+            $widget->content = str_replace('<ul', '<ul class="list list-styled columns-lg-2 px-2"', $widget->content);
+        }
 
-                    <p class="text-3-5 font-weight-medium pe-lg-2">
-                        Web-based support ticket system, Easy to install, easy to use cost effective ticket management solution for startups, SME’s and enterprises.
-                    </p>
-
-                    <ul class="list list-unstyled">
-                        @if($set->company_email)
-
-                        <li class="d-flex align-items-center mb-4">
-
-                             <i class="fa-regular fa-envelope fa-xl"></i>&nbsp;&nbsp;
-
-                            <a href="mailto:{{$set->company_email}}" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">{{$set->company_email}}</a>
-                        </li>
-                        @endif
-                        @if($set->phone)
-
-                        <li class="d-flex align-items-center mb-4">
-
-                           <i class="fas fa-phone text-4 p-relative top-2"></i>&nbsp;
-
-                            <a href="tel:{{$set->phone}}" class="d-inline-flex align-items-center text-decoration-none text-color-grey text-color-hover-primary font-weight-semibold text-4-5">+{{$set->phone_code}} {{$set->phone}}</a>
-                        </li>
-                        @endif
-                    </ul>
-
-                 <ul class="social-icons social-icons-clean social-icons-medium">
-                    @foreach($social as $media)
-                            <li class="social-icons-{{ strtolower($media->name) }}">
-                                <a href="{{ $media->link }}" target="_blank" data-bs-toggle="tooltip" title="{{ ucfirst($media->name) }}">
-                                    <i class="fab fa-{{ strtolower($media->name) }} text-color-grey-lighten"></i>
-                                </a>
-                            </li>
-                        @endforeach
-                 </ul>
-
-                </div>
-
-                <div class="col-lg-8">
-                 <?php
-
-                $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
-                if ($widgets) {
-                    $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
-                            </div>' : '';
-                }
-                ?>
-
-                    <div class="row mb-3">
-
-                        <div class="col-lg-6 mb-4 mb-lg-0">
-
-                            <h4 class="text-color-dark font-weight-bold mb-3">Latest Tweets</h4>
-
-                            <ul class="list list-unstyled columns-lg-1">
-
-                              {!! $tweetDetails !!}
-                            </ul>
+        return '<div class="col-lg-4">
+                    <div class="widget-container">
+                        <h4 class="text-color-dark font-weight-bold mb-3">' . $widget->name . '</h4>
+                        <div class="widget-content">
+                            <p class="text-3-5 font-weight-medium pe-lg-2">' . $widget->content . '</p>
+                            ' . $tweetDetails . '
+                            ' . ($widget->allow_social_media ? $socialMedia : '') . '
                         </div>
-
-                        <div class="col-lg-6">
-                             <?php
-                    $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
-
-                    ?>
-
-
-                            <h4 class="text-color-dark font-weight-bold mb-3">Contact Us</h4>
-
-                            <ul class="list list-styled columns-lg-2 px-2">
-
-                              {!! $widgets->content !!}
-                            </ul>
-                        </div>
+                        ' . $mailchimpSection . '
                     </div>
+                </div>';
+    }
 
-                    <div class="row">
+    $footerWidgetTypes = ['footer1', 'footer2', 'footer3'];
+    foreach ($footerWidgetTypes as $widgetType) {
+        $widget = \App\Model\Front\Widgets::where('publish', 1)->where('type', $widgetType)->select('name', 'content', 'allow_tweets', 'allow_mailchimp', 'allow_social_media')->first();
+        $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
 
-                        <div class="col p-relative bottom-3">
+        if ($widget) {
+            echo renderWidget($widget, $set, $social, $mailchimpKey);
+        }
+    }
+    ?>
+</div>
+</div>
 
-
-                               <div id="mailchimp-message"></div>
-
-
-                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
-
-                                <h4 class="text-color-dark ws-nowrap me-3 mb-3 mb-lg-0">Subscribe to Newsletter:</h4>
-
-                                <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
-
-                                       <div class="input-group">
-
-                                        <input class="form-control bg-light border" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
-
-                                        <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
           <div class="footer-copyright bg-transparent">
 

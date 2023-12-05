@@ -127,7 +127,7 @@ main
 
         .buttonsale{
             text-align: center;
-            border-radius: 10px;
+            border-radius: 11px;
             padding-top: 9px;
         }
        .plan-features ul {

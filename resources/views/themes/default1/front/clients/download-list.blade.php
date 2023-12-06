@@ -8,7 +8,9 @@
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
              <div class="modal-body" >
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="hideModals()"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
                 <?php
                 //Name of the product
                 $products = \App\Model\Product\Product::where('id', $productid)->pluck( 'name')->toArray();
@@ -45,7 +47,17 @@
                 </div>
 
 
-                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+              
+
+                </div>
+
+
+        </div>
+
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<!-- /.modal -->
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script type="text/javascript">
@@ -107,16 +119,6 @@
     });
     }
                 </script>
-
-                </div>
-
-
-        </div>
-
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-<!-- /.modal -->
-
 
 <script>
     $(function () {

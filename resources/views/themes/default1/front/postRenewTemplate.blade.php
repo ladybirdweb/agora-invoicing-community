@@ -21,33 +21,33 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between py-3 px-4 my-4">
 
                         <div class="text-center">
-                            <span>
-                                Order Number <br>
-                                <strong class="text-color-dark">{!! $order_number !!}</strong>
+                            <span><strong class="text-color-dark">
+                                Order Number</strong> <br>
+                                {!! $order_number !!}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Date <br>
-                                <strong class="text-color-dark">{!! $date !!}</strong>
+                            <span> <strong class="text-color-dark">
+                                Date </strong><br>
+                               {!! $date !!}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Email <br>
-                                <strong class="text-color-dark">{{\Auth::user()->email}}</strong>
+                            <span><strong class="text-color-dark">
+                                Email</strong> <br>
+                                {{\Auth::user()->email}}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Total <br>
-                                <strong class="text-color-dark">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</strong>
+                            <span><strong class="text-color-dark">
+                                Total </strong><br>
+                                {{currencyFormat($invoiceItem->subtotal,$code = $currency)}}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Payment Method <br>
-                                <strong class="text-color-dark">{{Session::get('payment_method')}}</strong>
+                            <span><strong class="text-color-dark">
+                                Payment Method </strong><br>
+                                {{Session::get('payment_method')}}
                             </span>
                         </div>
                     </div>

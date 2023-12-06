@@ -26,28 +26,28 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between py-3 px-4 my-4">
 
                         <div class="text-center">
-                            <span>
-                                Order Number <br>
-                                <strong class="text-color-dark">{{$orderNumber}}</strong>
+                            <span><strong class="text-color-dark">
+                                Order Number </strong><br>
+                                {{$orderNumber}}
                             </span>
                         </div>
      
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Email <br>
-                                <strong class="text-color-dark">{{\Auth::user()->email}}</strong>
+                            <span><strong class="text-color-dark">
+                                Email</strong> <br>
+                                {{\Auth::user()->email}}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Date <br>
-                                <strong class="text-color-dark">{!! $date !!}</strong>
+                            <span><strong class="text-color-dark">
+                                Date</strong> <br>
+                                {!! $date !!}
                             </span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>
-                                Total <br>
-                                <strong class="text-color-dark">{{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</strong>
+                            <span><strong class="text-color-dark">
+                                Total</strong> <br>
+                                {{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}
                             </span>
                         </div>
 

@@ -120,7 +120,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                     <td class="product-thumbnail">
 
-                                        <div class="product-thumbnail-wrapper">
+                                        <div class="product-thumbnail-wrapper" style="width: 100px;">
 
                                             <a onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove" data-bs-toggle="tooltip" title="Remove Product">
 

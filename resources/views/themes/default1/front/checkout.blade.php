@@ -25,8 +25,8 @@ Checkout
     }
     .remove-icon {
         position: absolute;
-        top: 0;
-        left: 100%; 
+        top: 20%;
+        left: 76%; 
         margin-left: 5px; 
         font-size: 17px;
         background: none;
@@ -234,7 +234,8 @@ $cartSubtotalWithoutCondition = 0;
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
                                         <td class=" align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">                                {{currencyFormat($cartSubtotalWithoutCondition,$code = $item->attributes->currency)}}
+                                            <span class="amount font-weight-medium text-color-grey">                                
+                                            {{currencyFormat($cartSubtotalWithoutCondition,$code = $item->attributes->currency)}}
                                            </span>
                                         </td>
                                     </tr>
@@ -275,11 +276,10 @@ $cartSubtotalWithoutCondition = 0;
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                                                         ?>
-                                                       <th>
-                                                            
-                                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong><br/>
+                                                        <td class="border-top-0">
+                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong>
 
-                                                        </th>
+                                                        </td>
                                                         <td class=" align-top border-top-0">
                                                             <span class="amount font-weight-medium text-color-grey">
                                                          {!! $bifurcateTax['tax'] !!}
@@ -298,11 +298,10 @@ $cartSubtotalWithoutCondition = 0;
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
                                                         ?>
-                                                       <th>
-                                                            
-                                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong><br/>
+                                                       <td class="border-top-0">
+                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong>
 
-                                                        </th>
+                                                        </td>
                                                         <td class=" align-top border-top-0">
                                                             <span class="amount font-weight-medium text-color-grey">
                                                          {!! $bifurcateTax['tax'] !!}

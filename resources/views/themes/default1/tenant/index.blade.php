@@ -279,7 +279,7 @@
                       </div>
 
                       <div class="col-md-4">
-                          {!! Form::label('cloud_city', Lang::get('message.cloud_city'), ['class' => 'required']) !!}
+                          {!! Form::label('cloud_city', Lang::get('message.cloud_city')) !!}
                           <div class="form-group">
                               <input type="text" name="cloud_city" class="form-control">
                           </div>

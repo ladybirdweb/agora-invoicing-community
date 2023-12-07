@@ -317,7 +317,7 @@ class CheckoutController extends InfoController
                     $items = $invoice->invoiceItem()->get();
 
                     $url = '';
-                    if ($control->checkRenew() || \Session::has('AgentAlteration')) {
+                    if ($control->checkRenew($invoice->is_renewed) || \Session::has('AgentAlteration')) {
                         $true = true;
                     }
                     $this->checkoutAction($invoice, $true); //For free product generate invoice without payment
@@ -330,7 +330,7 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                     }
-                    if (\Session::has('agentIncreaseDate') || $control->checkRenew()) {
+                    if (\Session::has('agentIncreaseDate') || $control->checkRenew($invoice->is_renewed)) {
                         $control = new \App\Http\Controllers\Order\RenewController();
                         $control->successRenew($invoice, true);
                     }

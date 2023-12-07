@@ -370,10 +370,10 @@ class RenewController extends BaseRenewController
         Session::forget('invoiceid');
     }
 
-    public function checkRenew()
+    public function checkRenew($flag=1)
     {
         $res = false;
-        if (Session::has('subscription_id') && Session::has('plan_id')) {
+        if (Session::has('subscription_id') && Session::has('plan_id') && $flag) {
             $res = true;
         }
 

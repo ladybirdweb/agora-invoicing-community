@@ -156,7 +156,7 @@ class SettingsController extends Controller
                 $control = new \App\Http\Controllers\Order\RenewController();
                 $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
                 //After Regular Payment
-                if ($control->checkRenew() === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {
+                if ($control->checkRenew($invoice->is_renewed) === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
 
@@ -240,7 +240,7 @@ class SettingsController extends Controller
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             $control = new \App\Http\Controllers\Order\RenewController();
-            if ($control->checkRenew() != true) {
+            if ($control->checkRenew($invoice->is_renewed) != true) {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             } else {
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');

@@ -164,9 +164,9 @@ class ProcessController extends Controller
         // }
         if ($invoiceid) {
             $control = new \App\Http\Controllers\Order\RenewController();
-            if ($control->checkRenew() === false) {
-                $invoice = new \App\Model\Order\Invoice();
-                $invoice = $invoice->findOrFail($invoiceid);
+            $invoice = new \App\Model\Order\Invoice();
+            $invoice = $invoice->findOrFail($invoiceid);
+            if ($control->checkRenew($invoice->is_renewed) === false) {
                 $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                 $state = \Auth::user()->state;
                 $currency = \Auth::user()->currency_symbol;
@@ -179,8 +179,6 @@ class ProcessController extends Controller
                 \Session::forget('code');
                 \Session::forget('codevalue');
             } else {
-                $invoice = new \App\Model\Order\Invoice();
-                $invoice = $invoice->findOrFail($invoiceid);
                 $control->/* @scrutinizer ignore-call */
                 successRenew($invoice);
                 $payment = new \App\Http\Controllers\Order\InvoiceController();

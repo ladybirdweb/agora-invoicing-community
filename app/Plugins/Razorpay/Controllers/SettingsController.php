@@ -205,7 +205,7 @@ class SettingsController extends Controller
                 $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
 
                 //After Regular Payment
-                if ($control->checkRenew() === false) {
+                if ($control->checkRenew($invoice->is_renewed) === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
 

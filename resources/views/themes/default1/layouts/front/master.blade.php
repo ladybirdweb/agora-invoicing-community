@@ -14,6 +14,7 @@ foreach($scripts as $script)
         $everyPageScript = $script->script;
     }
 
+$dataCenters = \App\Model\CloudDataCenters::all();
 ?>
 
 
@@ -570,36 +571,52 @@ $social = App\Model\Common\SocialMedia::get();
                                 <input type="text" name="domain" autocomplete="off" id="userdomain" class="form-control col col-7 rounded-0" placeholder="Domain" required>
                                       <input type="text" class="form-control col col-5 rounded-0" value=".faveocloud.com" disabled="true" style="background-color: #4081B5; color:white; border-color: #0088CC">
                                       <p id="validationMessage"></p>
-                            </div>
+                                    </div>
+
+                                </div>
+                                <label style="margin-top: 2px;"><b>{!!cloudPopUpDetails()->cloud_label_radio  !!}</b></label>
+                                <div class="row">
+                                    <?php $cloudProducts = \App\Model\Product\CloudProducts::get(); ?>
+
+                                    @foreach($cloudProducts as $cloudProduct)
+                                    <div class="col col-6">
+                                        <div class="radio-option">
+                                            <input type="radio" name="option" class="product" value="{!! $cloudProduct->cloud_product_key !!}" checked>
+                                            <label style="margin-left: 2px;">{!! \DB::table('products')->where('id',$cloudProduct->cloud_product)->value('name') !!}</label>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <hr class="custom-line">
+                                <div class="row data-center">
+                                    <div class="col col-12">
+                                        @if($dataCenters->count()==1)
+                                            <div class="text-center">
+                                                <p>Your data center location is <b data-nearest-center="">{!! array_first($dataCenters)->cloud_countries !!} </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                            </div>
+                                        @else
+                                            <label style="margin-top: 2px; text-align: left;"><b>Choose your data center</b></label>
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class="input-group"> <!-- Wrap select and icon within input-group -->
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-globe"></i></span>
+                                                        </div>
+                                                        <select name="cloud-data-centers" id="cloud-data-centers" class="form-control rounded-0">
+                                                            @foreach($dataCenters as $data)
+                                                                <option value="{{$data->id}}">{{$data->cloud_countries}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="form-group col">
-
-                            <label class="form-label">Choose your desired cloud product</label>
-
-                            <br>
-
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label">
-                             <input type="radio" name="option" class="product" value="Helpdesk">
-                                Faveo Helpdesk
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label">
-                                    <input type="radio" name="option" class="product" value="ServiceDesk" checked> Faveo Servicedesk
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <p class="text-center text-black"><strong>Your data center location is </strong> United States</p>
                 </form>
+
                 </div>
                     <script>
 
@@ -660,13 +677,32 @@ $social = App\Model\Common\SocialMedia::get();
                                 </div>
                                  <p id="validationMessagePurchase"></p>
                             </div>
-                            <div class="text-center">
                                 <div class="row data-center">
                                     <div class="col col-12">
-                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                        @if($dataCenters->count()==1)
+                                        <div class="text-center">
+                                        <p>Your data center location is <b data-nearest-center="">{!! array_first($dataCenters)->cloud_countries !!} </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                        </div>
+                                        @else
+                                            <label style="margin-top: 2px; text-align: left;"><b>Choose your data center</b></label>
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class="input-group"> <!-- Wrap select and icon within input-group -->
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-globe"></i></span>
+                                                        </div>
+                                                        <select name="cloud-data-centers" id="cloud-data-centers" class="form-control rounded-0">
+                                                            @foreach($dataCenters as $data)
+                                                                <option value="{{$data->id}}">{{$data->cloud_countries}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>

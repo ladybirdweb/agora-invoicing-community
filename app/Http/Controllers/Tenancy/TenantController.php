@@ -10,6 +10,7 @@ use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use App\Model\Payment\PlanPrice;
 use App\Model\Product\CloudProducts;
 use App\Model\Product\Subscription;
 use App\ThirdPartyApp;
@@ -115,12 +116,19 @@ class TenantController extends Controller
                 ->addColumn('Order', function ($model) {
                     $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
                     $order_number = \DB::table('orders')->where('id', $order_id)->value('number');
-
                     if (empty($order_id) || empty($order_number)) {
                         return '--';
                     }
+                    $badge = 'badge';
+                    $plan_id = Subscription::where('order_id',$order_id)->latest()->value('plan_id');
+                    $price = PlanPrice::where('plan_id',$plan_id)->latest()->value('add_price');
+                    $message = ($price) ? 'Paid Subscription' : 'Free Trial';
+                    $badgeclass = ($price) ? 'badge-success' : 'badge-info';
+                    return "<p><a href='".url('/orders/'.$order_id)."'>$order_number</a> <span class='".$badge." ".$badgeclass."'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top'>
 
-                    return "<p><a href='".url('/orders/'.$order_id)."'>$order_number</a></p>";
+                         </label>".
+                        $message."</span></p>";
+
                 })
                 ->addColumn('Deletion day', function ($model) {
                     $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');

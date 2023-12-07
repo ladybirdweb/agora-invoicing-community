@@ -8,6 +8,7 @@ foreach($scripts as $script)
         $everyPageScript = $script->script;
     }
 
+$dataCenters = \App\Model\CloudDataCenters::all();
 ?>
 <style type="text/css">
     /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */
@@ -561,12 +562,31 @@ $days = $pay->where('product','117')->value('days');
                                     @endforeach
                                 </div>
                                 <hr class="custom-line">
-                                <div class="text-center">
                                 <div class="row data-center">
                                     <div class="col col-12">
-                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                        @if($dataCenters->count()==1)
+                                            <div class="text-center">
+                                                <p>Your data center location is <b data-nearest-center="">{!! array_first($dataCenters)->cloud_countries !!} </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                            </div>
+                                        @else
+                                            <label style="margin-top: 2px; text-align: left;"><b>Choose your data center</b></label>
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class="input-group"> <!-- Wrap select and icon within input-group -->
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-globe"></i></span>
+                                                        </div>
+                                                        <select name="cloud-data-centers" id="cloud-data-centers" class="form-control rounded-0">
+                                                            @foreach($dataCenters as $data)
+                                                                <option value="{{$data->id}}">{{$data->cloud_countries}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
-                                </div>
                                 </div>
                             </form>
                         </div>
@@ -630,13 +650,32 @@ $days = $pay->where('product','117')->value('days');
                                     <p id="validationMessagePurchase"></p>
                                 </div>
                             </div>
-                            <div class="text-center">
                                 <div class="row data-center">
                                     <div class="col col-12">
-                                        <p>Your data center location is <b data-nearest-center="">United States </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                        @if($dataCenters->count()==1)
+                                        <div class="text-center">
+                                        <p>Your data center location is <b data-nearest-center="">{!! array_first($dataCenters)->cloud_countries !!} </b><!--<a role="button" href="javascript:void(0)" data-center-link="" aria-labelledby="data-center-text-label-dataCenter119678097062480"><b>Change</b></a>--></p>
+                                        </div>
+                                        @else
+                                            <label style="margin-top: 2px; text-align: left;"><b>Choose your data center</b></label>
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class="input-group"> <!-- Wrap select and icon within input-group -->
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-globe"></i></span>
+                                                        </div>
+                                                        <select name="cloud-data-centers" id="cloud-data-centers" class="form-control rounded-0">
+                                                            @foreach($dataCenters as $data)
+                                                                <option value="{{$data->id}}">{{$data->cloud_countries}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>

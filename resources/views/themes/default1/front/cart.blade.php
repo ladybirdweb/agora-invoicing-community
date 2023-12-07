@@ -144,6 +144,7 @@ Cart
                                             <td class="product-price">
 
                                                 <span class="amount font-weight-medium text-color-grey">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
+                                                <div id="response"></div>
                                             </td>
 
                                             @if(!$isAgentAllowed)

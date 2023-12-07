@@ -836,56 +836,53 @@ $social = App\Model\Common\SocialMedia::get();
 
 <script>
 
-    $('#mailchimp-subscription').click(function(){
-        var email = $('#newsletterEmail').val();
+$(document).ready(function() {
+    $('#newsletterForm').submit(function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        var emailInput = $('#newsletterEmail');
+        emailInput.removeClass('is-invalid is-valid'); // Remove the classes
+        
+        var email = emailInput.val();
         $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+        
+        // Your AJAX request for newsletter subscription
         $.ajax({
             type: 'POST',
             url: '{{url("mail-chimp/subcribe")}}',
-            data: {'email' : email,'_token': "{!! csrf_token() !!}"},
-            success: function(data){
+            data: {'email': email, '_token': "{!! csrf_token() !!}"},
+            success: function(data) {
                 $("#mailchimp-subscription").html("Go");
                 $('#mailchimp-message').show();
-                var result =  '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>'+data.message+'.</div>';
-                $('#mailchimp-message').show();
-                $('#mailchimp-message').html(result+ ".");
-                setInterval(function(){
-                    $('#mailchimp-message').slideUp(5000);
-
-                }, 2000);
+                var result = '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + '.</div>';
+                $('#mailchimp-message').html(result + ".");
+                $('#mailchimp-message').slideUp(5000);
             },
             error: function(response) {
-                if(response.status == 400) {
-                    var myJSON = response.responseJSON.message
-                    $("#mailchimp-subscription").html("Go");
-                    var html =  '<br><div class="alert alert-warning"><strong> Whoops! </strong>'+myJSON+'.</div>';
-                    $('#mailchimp-message').show();
-                    document.getElementById('mailchimp-message').innerHTML = html;
-                    setInterval(function(){
-                        $('#mailchimp-message').slideUp(5000);
+                $("#mailchimp-subscription").html("Go");
 
-                    }, 2000);
+                if (response.status == 400) {
+                    var myJSON = response.responseJSON.message;
+                    var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.</div>';
+                    $('#mailchimp-message').html(html);
+                    $('#mailchimp-message').show(); // Show the message
+                    $('#mailchimp-message').slideUp(5000);
                 } else {
                     var myJSON = response.responseJSON.errors;
-                    $("#mailchimp-subscription").html("Go");
                     var html = '<br><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in myJSON)
-                    {
-                        html += '<li>' + myJSON[key][0] + '</li>'
+                    for (var key in myJSON) {
+                        html += '<li>' + myJSON[key][0] + '</li>';
                     }
                     html += '</ul></div>';
-
-                    $('#mailchimp-message').show();
-                    document.getElementById('mailchimp-message').innerHTML = html;
-                    setInterval(function(){
-                        $('#mailchimp-message').slideUp(5000);
-
-                    }, 1000);
+                    $('#mailchimp-message').html(html);
+                    $('#mailchimp-message').show(); // Show the message
+                    $('#mailchimp-message').slideUp(5000);
                 }
-
             }
-        })
-    })
+        });
+    });
+});
+
 
     $.ajax({
         type: 'GET',

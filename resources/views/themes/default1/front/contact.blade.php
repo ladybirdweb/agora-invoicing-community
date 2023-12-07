@@ -92,7 +92,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                                   @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                 {!! NoCaptcha::renderJs() !!}
                                 {!! NoCaptcha::display(['id' => 'Contactrecaptcha']) !!}
-                                <div class="verification"></div>
+                                <div class="verification"></div><br>
                                 @endif
 
                         <div class="row">
@@ -110,7 +110,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                     <div>
 
-                        <h4 class="mt-2 mb-1">Our <strong>Office</strong></h4>
+                        <h4 class="mt-2 mb-1"><strong>Our Office</strong></h4>
 
                         <ul class="list list-icons list-icons-style-2 mt-2">
 

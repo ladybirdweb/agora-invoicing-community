@@ -40,12 +40,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: white;
+        color: white !important;
         font-size: 20px;
       }
-      .shop_table th {
-          padding: 4px 3.8px !important;
-      }
+      
+    .totals-cart{
+       margin-left: -90px !important;
+   }
 
     </style>
 <script src="https://js.stripe.com/v3/"></script>
@@ -111,7 +112,7 @@ $currency = $invoice->currency;
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase text-end" width="">
+                                        <th class="product-subtotal text-uppercase text-end" style="position: relative;right: 40px;">
 
                                             Total
                                         </th>

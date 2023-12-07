@@ -206,78 +206,79 @@ $social = App\Model\Common\SocialMedia::get();
 
                                         <div class="header-nav-main header-nav-main-square header-nav-main-dropdown-no-borders header-nav-main-text-capitalize header-nav-main-text-size-4 header-nav-main-arrows header-nav-main-full-width-mega-menu header-nav-main-mega-menu-bg-hover header-nav-main-effect-5">
 
-                                            <nav class="collapse">
+                                        <nav class="collapse">
 
-                                                <ul class="nav nav-pills" id="mainNav">
+                                        <ul class="nav nav-pills" id="mainNav">
 
-                                                    <li class="d-sticky-header-negative-none" style="display:none">
+                                            <li class="d-sticky-header-negative-none" style="display:none">
 
-                                                        <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
+                                                <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                                            <img alt="Porto" width="75" height="50" src="{{asset('storage/images/'.$setting->logo)}}">
-                                                        </a>
-                                                    </li>
+                                                    <img alt="Porto" width="75" height="50" src="{{asset('storage/images/'.$setting->logo)}}">
+                                                </a>
+                                            </li>
+                                            
 
-                                                    <li class="dropdown">
+                                            <li class="dropdown">
 
-                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
-                                                            &nbsp;Store&nbsp;
-                                                        </a>
+                                                <a class="nav-link dropdown-toggle {{ strpos(request()->url(), 'group') !== false ? 'active' : '' }}" href="javascript:;">
+                                                    &nbsp;Store&nbsp;
+                                                </a>
 
-                                                        <ul class="dropdown-menu border-light mt-n1">
-                                                           @foreach($groups as $group)
-                                                            <li>
-                                                                <a class="dropdown-item" href="{{url("group/$group->pricing_templates_id/$group->id")}}">{{$group->name}}</a>
-                                                            </li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </li>
-
+                                                <ul class="dropdown-menu border-light mt-n1">
+                                                @foreach($groups as $group)
                                                     <li>
-                                                        <a class="nav-link" href="{{url('contact-us')}}">Contact Us</a>
+                                                        <a class="dropdown-item" href="{{url("group/$group->pricing_templates_id/$group->id")}}">{{$group->name}}</a>
                                                     </li>
-                                                    @if(Auth::user())
+                                                    @endforeach
+                                                </ul>
+                                            </li>
 
-                                                    <li class="dropdown">
+                                            <li>
+                                                <a class="nav-link {{ Request::is('contact-us') ? 'active' : '' }}" href="{{url('contact-us')}}">Contact Us</a>
+                                            </li>
+                                            @if(Auth::user())
 
-                                                        <a class="nav-link dropdown-toggle" href="javascript:;">
-                                                            &nbsp;My Account&nbsp;
-                                                        </a>
+                                            <li class="dropdown">
 
-                                                        <ul class="dropdown-menu border-light mt-n1">
-                                                           @if(Auth::user()->role == 'admin')
-                                                            <li>
-                                                                <a href="{{url('/')}}" class="dropdown-item">Admin Dashboard</a>
-                                                            </li>
-                                                            @endif
-                                                            <li>
-                                                                <a href="{{url('client-dashboard')}}" class="dropdown-item">Dashboard</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="{{url('my-orders')}}" class="dropdown-item">My Orders</a>
-                                                            </li>
+                                                <a class="nav-link dropdown-toggle {{ Request::is('client-dashboard', 'my-orders', 'my-invoices', 'my-profile') ? 'active' : '' }}" href="javascript:;">
+                                                    &nbsp;My Account&nbsp;
+                                                </a>
 
-                                                            <li>
-                                                                <a href="{{url('my-invoices')}}" class="dropdown-item">My Invoices</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="{{url('my-profile')}}" class="dropdown-item">My Profile</a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="{{url('auth/logout')}}" class="dropdown-item">Logout</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    @else
-
+                                                <ul class="dropdown-menu border-light mt-n1">
+                                                @if(Auth::user()->role == 'admin')
                                                     <li>
-                                                        <a class="nav-link active" href="{{url('login')}}">Sign Up</a>
+                                                        <a href="{{url('/')}}" class="dropdown-item">Admin Dashboard</a>
                                                     </li>
                                                     @endif
+                                                    <li>
+                                                        <a href="{{url('client-dashboard')}}" class="dropdown-item">Dashboard</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{url('my-orders')}}" class="dropdown-item">My Orders</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{url('my-invoices')}}" class="dropdown-item">My Invoices</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{url('my-profile')}}" class="dropdown-item">My Profile</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{url('auth/logout')}}" class="dropdown-item">Logout</a>
+                                                    </li>
                                                 </ul>
-                                            </nav>
+                                            </li>
+                                            @else
+
+                                            <li>
+                                                <a class="nav-link {{ Request::is('login') ? 'active' : '' }}" href="{{url('login')}}">Sign Up</a>
+                                            </li>
+                                            @endif
+                                        </ul>
+                                        </nav>
                                         </div>
 
                                 <div class="header-nav-features header-nav-features-no-border header-nav-features-lg-show-border order-1 order-lg-2 me-2 me-lg-0">
@@ -788,11 +789,11 @@ $social = App\Model\Common\SocialMedia::get();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 <!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
 
 <script src="{{asset('client/js/bootstrap.min.js')}}"></script>
 <script src="{{asset('client/js/common.min.js')}}"></script>
-<script src="{{asset('client/js/jquery.validation.min.js')}}"></script>
+<!--<script src="{{asset('client/js/jquery.validation.min.js')}}"></script>-->
 <script src="{{asset('client/js/jquery.easy-pie-chart.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.gmap.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.lazyload.min.js')}}"></script>
@@ -836,7 +837,8 @@ $social = App\Model\Common\SocialMedia::get();
 
 <script>
 
-$(document).ready(function() {
+
+   $(document).ready(function() {
     $('#newsletterForm').submit(function(e) {
         e.preventDefault(); // Prevent default form submission
         

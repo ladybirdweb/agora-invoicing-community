@@ -37,6 +37,9 @@
             padding: 0px; 
             text-align: center;
         }
+        td a {
+        margin-top: 5px; 
+        }
 </style>
     @auth
         @php

@@ -47,6 +47,9 @@
     .totals-cart{
        margin-left: -90px !important;
    }
+   .img-fluid{
+       max-width: 300px !important;
+   }
 
     </style>
 <script src="https://js.stripe.com/v3/"></script>
@@ -112,7 +115,7 @@ $currency = $invoice->currency;
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase text-end" style="position: relative;right: 40px;">
+                                        <th class="product-subtotal text-uppercase">
 
                                             Total
                                         </th>
@@ -180,7 +183,7 @@ $currency = $invoice->currency;
                                         </td>
 
 
-                                        <td class="product-subtotal text-end">
+                                        <td class="product-subtotal">
                                             @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
 
                                             <span class="amount text-color-dark font-weight-bold text-4">
@@ -419,7 +422,7 @@ $currency = $invoice->currency;
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase text-end" width="">
+                                        <th class="product-subtotal text-uppercase" width="">
 
                                             Total
                                         </th>
@@ -484,7 +487,7 @@ $currency = $invoice->currency;
                                         </td>
 
 
-                                        <td class="product-subtotal text-end">
+                                        <td class="product-subtotal">
 
                                             <span class="amount text-color-dark font-weight-bold text-4">
                                                 {{currencyFormat($item->regular_price,$code = $currency)}}

@@ -233,7 +233,7 @@ $json = json_encode($data);
                                         </td>
 
 
-                                        <td class="product-subtotal text-end">
+                                        <td class="product-subtotal">
                                             @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
 
                                             <span class="amount text-color-dark font-weight-bold text-4">
@@ -537,7 +537,7 @@ $json = json_encode($data);
                                         </td>
 
 
-                                        <td class="product-subtotal text-end">
+                                        <td class="product-subtotal">
 
                                             <span class="amount text-color-dark font-weight-bold text-4">
                                                 {{currencyFormat($item->regular_price,$code = $currency)}}

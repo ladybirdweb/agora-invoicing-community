@@ -107,7 +107,7 @@ Cart
                                             @endif
 
 
-                                            <th class="product-subtotal text-uppercase text-end" width="">
+                                            <th class="product-subtotal text-uppercase" width="">
 
                                                 Subtotal
                                             </th>
@@ -188,7 +188,7 @@ Cart
                                                 @endif
 
 
-                                            <td class="product-subtotal text-end">
+                                            <td class="product-subtotal">
 
                                                 <span class="amount text-color-dark font-weight-bold text-4">                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
                                                </span>
@@ -329,42 +329,50 @@ Cart
         *Decrease No. of Agents
          */
         $(document).ready(function(){
-            var currentagtQty = $('#agtqty').val();
-            if(currentagtQty>1) {
-                $('#agentminus').on('click', function () {
-
-                    var $agtqty = $(this).parents('.quantity').find('.qty');
-                    var $productid = $(this).parents('.quantity').find('.productid');
-                    var $agentprice = $(this).parents('.quantity').find('.agentprice');
-                    var $currency = $(this).parents('.quantity').find('.currency');
-                    var $symbol = $(this).parents('.quantity').find('.symbol');
-                    var currency = $currency.val();//Get the Currency for the Product
-                    var symbol = $symbol.val();//Get the Symbol for the Currency
-                    var productid = parseInt($productid.val()); //get Product Id
-                    var currentAgtQty = parseInt($agtqty.val()); //Get Current Agent of Prduct
-                    var actualAgentPrice = parseInt($agentprice.val()); //Get Initial Price of Prduct
-                    // console.log(productid,currentVal,actualprice);
-                    console.log(actualAgentPrice);
-                    if (!isNaN(currentAgtQty)) {
-                        var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val(); //Quantity After decreasinf
-                        var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val(); //Final Price aftr decresing  qty
-                    }
-                    $.ajax({
-                        type: "POST",
-                        data: {'productid': productid},
-                        beforeSend: function () {
-                            $('#response').html("<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-                        },
-                        url: "{{url('reduce-agent-qty')}}",
-                        success: function () {
-                            location.reload();
-                        }
-                    });
-
-                });
+    var currentagtQty = $('#agtqty').val();
+    if (currentagtQty > 1) {
+        $('#agentminus').on('click', function () {
+            if ($(this).prop('disabled')) {
+                return; // Return if the button is disabled
             }
 
+            var $agtqty = $(this).parents('.quantity').find('.qty');
+            var $productid = $(this).parents('.quantity').find('.productid');
+            var $agentprice = $(this).parents('.quantity').find('.agentprice');
+            var $currency = $(this).parents('.quantity').find('.currency');
+            var $symbol = $(this).parents('.quantity').find('.symbol');
+            var currency = $currency.val();
+            var symbol = $symbol.val();
+            var productid = parseInt($productid.val());
+            var currentAgtQty = parseInt($agtqty.val());
+            var actualAgentPrice = parseInt($agentprice.val());
+
+            if (!isNaN(currentAgtQty) && currentAgtQty > 1) {
+                var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val();
+                var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val();
+            } else {
+                // If current quantity is 1 or less, don't perform decrement
+                return;
+            }
+
+            $('#agentminus, #agentplus').prop('disabled', true);
+            $.ajax({
+                type: "POST",
+                data: {'productid': productid},
+                beforeSend: function () {
+                    $('#response').html("<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position: fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                url: "{{url('reduce-agent-qty')}}",
+                success: function () {
+                    location.reload();
+                },
+                complete: function () {
+                    $('#agentminus, #agentplus').prop('disabled', false);
+                }
+            });
         });
+    }
+});
 
 
 

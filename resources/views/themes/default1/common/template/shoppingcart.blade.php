@@ -166,6 +166,9 @@ main
     display: unset;
     width: unset;
 }
+.plan-features p{
+    margin-top: 100px !important;
+}
 
 </style>
 

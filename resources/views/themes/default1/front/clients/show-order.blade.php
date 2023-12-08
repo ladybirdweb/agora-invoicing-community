@@ -116,6 +116,9 @@
     .order-table{
         border: none;
     }
+    .plan-features strong {
+   color: #000 !important;
+}
 
 </style>
 @if(Auth::check())
@@ -264,7 +267,7 @@ $price = $order->price_override;
 
                 <div class="col-lg-12 alert bg-color-light-scale-2">
 
-                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                    <div class="d-flex flex-column flex-md-row justify-content-between plan-features">
 
                         <div class="text-center">
                             <span>

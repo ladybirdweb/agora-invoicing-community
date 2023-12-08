@@ -36,7 +36,7 @@ main
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    <p class="text-2">Lost your password? Please enter your new password.</p>
+                    <p class="text-2">Lost your password?</p>
                         <div class="row">
 
                             <div class="form-group col">

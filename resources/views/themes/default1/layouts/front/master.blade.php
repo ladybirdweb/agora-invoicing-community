@@ -777,7 +777,7 @@ $social = App\Model\Common\SocialMedia::get();
 <script src="{{asset('client/porto/js-2/plugins.min.js')}}"></script>
 
 
-<script src="{{asset('client/js/jquery.min.js')}}"></script>
+<!--<script src="{{asset('client/js/jquery.min.js')}}"></script>-->
 <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>
 <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
@@ -791,7 +791,7 @@ $social = App\Model\Common\SocialMedia::get();
 <!-- Latest compiled JavaScript -->
 <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
 
-<script src="{{asset('client/js/bootstrap.min.js')}}"></script>
+<!--<script src="{{asset('client/js/bootstrap.min.js')}}"></script>-->
 <script src="{{asset('client/js/common.min.js')}}"></script>
 <!--<script src="{{asset('client/js/jquery.validation.min.js')}}"></script>-->
 <script src="{{asset('client/js/jquery.easy-pie-chart.min.js')}}"></script>

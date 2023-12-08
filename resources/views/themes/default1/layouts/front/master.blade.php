@@ -841,7 +841,7 @@ $social = App\Model\Common\SocialMedia::get();
 <script>
 
 
-   $(document).ready(function() {
+$(document).ready(function() {
     $('#newsletterForm').submit(function(e) {
         e.preventDefault(); // Prevent default form submission
         
@@ -849,9 +849,20 @@ $social = App\Model\Common\SocialMedia::get();
         emailInput.removeClass('is-invalid is-valid'); // Remove the classes
         
         var email = emailInput.val();
+
+        // Regular expression for email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            // Invalid email format
+            $('#mailchimp-message').html('<br><div class="alert alert-danger">Please enter a valid email address.</div>');
+            $('#mailchimp-message').show();
+            $('#mailchimp-message').slideUp(5000);
+            return; 
+        }
+
         $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
         
-        // Your AJAX request for newsletter subscription
         $.ajax({
             type: 'POST',
             url: '{{url("mail-chimp/subcribe")}}',
@@ -870,7 +881,7 @@ $social = App\Model\Common\SocialMedia::get();
                     var myJSON = response.responseJSON.message;
                     var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.</div>';
                     $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show(); // Show the message
+                    $('#mailchimp-message').show(); 
                     $('#mailchimp-message').slideUp(5000);
                 } else {
                     var myJSON = response.responseJSON.errors;
@@ -880,7 +891,7 @@ $social = App\Model\Common\SocialMedia::get();
                     }
                     html += '</ul></div>';
                     $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show(); // Show the message
+                    $('#mailchimp-message').show(); 
                     $('#mailchimp-message').slideUp(5000);
                 }
             }
@@ -888,6 +899,17 @@ $social = App\Model\Common\SocialMedia::get();
     });
 });
 
+
+
+    $.ajax({
+        type: 'GET',
+        url: "{{route('twitter')}}",
+        dataType: "html",
+        success: function (returnHTML) {
+            $('.twitter').html(returnHTML);
+
+        }
+    });
 
     function removeItem(id) {
         $.ajax({

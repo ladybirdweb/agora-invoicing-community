@@ -163,6 +163,7 @@ active
 
                                <tbody>
                     @foreach($items as $item)
+           
                         <tr>
                             @php
                             $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
@@ -207,7 +208,11 @@ active
                         <div class="table-responsive">
 
                             <table class="table h6 text-dark">
+                               
+                              
+                               
                                 @foreach($items as $item)
+                                 
 
                                 <tbody>
                                 <tr>
@@ -284,11 +289,14 @@ active
                     </div>
                 </div>
             </div>
-
+  
+        
+          @if(!$payments->isEmpty())
             <div class="card p-3 mt-3">
 
                 <div class="table-responsive">
                     <table class="table">
+                        
                         @foreach($payments as $payment)
                         @php
                         $DateTime = getDateHtml($payment->created_at);
@@ -320,9 +328,11 @@ active
 
                         </tbody>
                         @endforeach
+                       
                     </table>
                 </div>
             </div>
+             @endif
 
             <div class="mt-4">
 

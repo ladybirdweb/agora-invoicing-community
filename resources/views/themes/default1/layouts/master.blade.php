@@ -458,7 +458,7 @@
 
     <!-- jQuery -->
     <!-- jQuery UI 1.11.4 -->
-    <script src="{{asset('admin/js-1/jquery-ui.min.js')}}"></script>
+    <!--<script src="{{asset('admin/js-1/jquery-ui.min.js')}}"></script>-->
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
@@ -476,7 +476,7 @@
     <!-- jQuery Knob Chart -->
     <script src="{{asset('admin/plugins-1/jquery.knob.min.js')}}"></script>
     <!-- daterangepicker -->
-    <script src="{{asset('admin/plugins-1/moment.min.js')}}"></script>
+    <!--<script src="{{asset('admin/plugins-1/moment.min.js')}}"></script>-->
     <script src="{{asset('admin/plugins-1/daterangepicker.js')}}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{asset('admin/plugins-1/tempusdominus-bootstrap-4.min.js')}}"></script>

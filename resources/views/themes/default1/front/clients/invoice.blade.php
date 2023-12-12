@@ -172,8 +172,7 @@
 
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 
-    <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
-    <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
 

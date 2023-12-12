@@ -71,8 +71,7 @@ foreach($scripts as $script)
     <script src="{{asset('client/porto/js-2/modernizr.min.js')}}"></script>
       <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
-    <script src="{{asset('common/js/jquery-2.1.4.js')}}" type="text/javascript"></script>
-    <script src="{{asset('common/js/jquery2.1.1.min.js')}}" type="text/javascript"></script>
+    <!--<script src="{{asset('common/js/jquery-2.1.4.js')}}" type="text/javascript"></script>-->
 
     <style>
 
@@ -233,10 +232,42 @@ $social = App\Model\Common\SocialMedia::get();
                                                     @endforeach
                                                 </ul>
                                             </li>
+                                                 <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get();
+                                             ?>
 
-                                            <li>
-                                                <a class="nav-link {{ Request::is('contact-us') ? 'active' : '' }}" href="{{url('contact-us')}}">Contact Us</a>
-                                            </li>
+                                         @foreach($pages as $page)
+                                         @if($page->parent_page_id==0)
+                                         
+                                        <li class="dropdown">
+                                            <?php
+                                            $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
+                                            $class = $ifdrop > 0 ? 'nav-link dropdown-toggle' : 'nav-link';
+                                            ?>
+                                            @if($page->type == 'contactus')
+                                                <a class="dropdown-item {{ Request::url() == url('contact-us') ? $class.' active' : $class }}" href="{{ url('contact-us') }}">
+                                            @else
+                                                <a class="dropdown-item {{ Request::url() == $page->url ? $class.' active' : $class }}" href="{{ $page->url }}">
+                                            @endif
+                                                {{ ucfirst($page->name) }}
+                                            </a>
+                                            
+                                            @if(\App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count() > 0)
+                                                <?php $childs = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->get(); ?>
+                                                <ul class="dropdown-menu border-light mt-n1">
+                                                    @foreach($childs as $child)
+                                                        <li>
+                                                            <a href="{{ $child->url }}" class="dropdown-item {{ Request::url() == $child->url ? 'active' : '' }}">
+                                                                {{ ucfirst($child->name) }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </li>
+                                        @endif
+                                    @endforeach
+
+                                     
                                             @if(Auth::user())
 
                                             <li class="dropdown">
@@ -444,7 +475,7 @@ $social = App\Model\Common\SocialMedia::get();
             @if(Session::has('success')) 
 
             <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
             <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
 
             {!!Session::get('success')!!}
@@ -789,7 +820,7 @@ $social = App\Model\Common\SocialMedia::get();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 <!-- Latest compiled JavaScript -->
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!--<script src="{{asset('client/js/bootstrap.min.js')}}"></script>-->
 <script src="{{asset('client/js/common.min.js')}}"></script>

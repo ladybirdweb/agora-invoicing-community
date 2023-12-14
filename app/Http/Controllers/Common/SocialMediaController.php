@@ -174,40 +174,5 @@ class SocialMediaController extends Controller
         }
     }
 
-    public function getTweets()
-    {
-        try {
-            $tweet_limit = 2;
-            $username = 'faveohelpdesk';
-            $consumer_key = ApiKey::find(1)->value('twitter_consumer_key');
-            $consumer_secrete = ApiKey::find(1)->value('twitter_consumer_secret');
-            $access_token = ApiKey::find(1)->value('twitter_access_token');
-            $access_token_secrete = ApiKey::find(1)->value('access_tooken_secret');
-
-            $twitter = new TwitterOAuth($consumer_key, $consumer_secrete, $access_token, $access_token_secrete);
-
-            // Migrate over to SSL/TLS
-            // Load the Tweets
-            $tweets = $twitter->get('statuses/user_timeline',
-                ['screen_name' => $username, 'exclude_replies' => 'true',
-                    'include_rts' => 'false', 'count' => $tweet_limit, ]);
-
-            // Example output
-            // Put this after fetching Tweets
-            $twitter = '';
-            // Create the HTML output
-
-            foreach ($tweets as $tweet) {
-                $twitter .= '<li>
-                <span class="status"><i class="fa fa-twitter"></i> '.optional($tweet)->text.'</span>
-                <span class="meta">'.date('g:i a M j', strtotime(optional($tweet)->created_at)).'</span>
-             </li>';
-            }
-
-            echo '<ul>'.$twitter.'</ul>';
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
-            // $ex->getMessage();
-        }
-    }
+   
 }

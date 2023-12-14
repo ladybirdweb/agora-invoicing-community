@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\ApiKey;
-use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\SocialMediaRequest;
 use App\Model\Common\SocialMedia;
@@ -173,6 +171,4 @@ class SocialMediaController extends Controller
                 </div>';
         }
     }
-
-   
 }

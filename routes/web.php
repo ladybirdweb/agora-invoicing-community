@@ -169,11 +169,6 @@ Route::middleware('installAgora')->group(function () {
 
     Route::resource('social-media', Common\SocialMediaController::class);
     Route::get('get-social-media', [Common\SocialMediaController::class, 'getSocials'])->name('get-social-media');
-    /*
-     * Tweeter api
-     */
-    Route::get('twitter', [Common\SocialMediaController::class, 'getTweets'])->name('twitter');
-
     Route::auth();
     Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');

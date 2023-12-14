@@ -993,16 +993,6 @@ $days = $pay->where('product','117')->value('days');
         })
     })
 
-    $.ajax({
-        type: 'GET',
-        url: "{{route('twitter')}}",
-        dataType: "html",
-        success: function (returnHTML) {
-            $('.twitter').html(returnHTML);
-
-        }
-    });
-
     function removeItem(id) {
         $.ajax({
             type: "post",

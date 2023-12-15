@@ -20,13 +20,13 @@ class AdminOrderInvoiceController extends Controller
         ->where('invoices.user_id', '=', $id);
 
         return DataTables::of($invoices)
-         ->orderColumn('date', '-invoices.date ASC')
-         ->orderColumn('invoice_no', '-invoices.date ASC')
-         ->orderColumn('order_no', '-invoices.date ASC')
-         ->orderColumn('total', '-invoices.date ASC')
-         ->orderColumn('paid', '-invoices.date ASC')
-         ->orderColumn('balance', '-invoices.date ASC')
-         ->orderColumn('status', '-invoices.date ASC')
+         ->orderColumn('date', '-invoices.date $1')
+         ->orderColumn('invoice_no', '-invoices.date $1')
+         ->orderColumn('order_no', '-invoices.date $1')
+         ->orderColumn('total', '-invoices.date $1')
+         ->orderColumn('paid', '-invoices.date $1')
+         ->orderColumn('balance', '-invoices.date $1')
+         ->orderColumn('status', '-invoices.date $1')
 
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 

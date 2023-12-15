@@ -98,11 +98,28 @@ $address = preg_replace("/^\R+|\R+\z/", '', $set->address);
         ?>
 
         <h4 class="heading-primary">Our Office</h4>
-       <ul class="list list-icons list-icons-style-3 mt-4">
-       <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{ implode(', ', array_filter([$address, $set->city, $state, $country, $set->zip])) }}.</li>
-                                <li><i class="fas fa-phone"></i> <strong>Phone: </strong><b>+</b>{{$set->phone_code}} {{$set->phone}}</li>
-                                <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
-                            </ul>
+        <ul class="list list-icons list-icons-style-3 mt-4">
+    <li>
+        <i class="fas fa-map-marker-alt"></i>
+        <strong>Address:</strong>
+        {{ $address }}<br>
+        {{ implode(', ', array_filter([$set->city, $state, $country, $set->zip])) }}
+    </li>
+    <li>
+        <i class="fas fa-phone"></i>
+        <strong>Phone: </strong><b>+</b>{{$set->phone_code}} {{$set->phone}}
+    </li>
+    <li>
+        <i class="far fa-envelope"></i>
+        <strong>Email:</strong>
+        <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
+    </li>
+</ul>
+
+<hr>
+
+<hr>
+
         <hr>
 
       <!--  <h4 class="heading-primary">Business <strong>Hours</strong></h4>

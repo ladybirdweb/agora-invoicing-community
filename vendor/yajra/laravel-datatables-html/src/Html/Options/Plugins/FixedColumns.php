@@ -12,58 +12,63 @@ namespace Yajra\DataTables\Html\Options\Plugins;
 trait FixedColumns
 {
     /**
-     * Set fixedColumns option value.
-     *
-     * @param bool|array $value
-     * @return $this
-     * @see https://datatables.net/reference/option/fixedColumns
-     */
-    public function fixedColumns($value = true)
-    {
-        $this->attributes['fixedColumns'] = $value;
-
-        return $this;
-    }
-
-    /**
      * Set fixedColumns heightMatch option value.
      *
-     * @param string $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedColumns.heightMatch
      */
-    public function fixedColumnsHeightMatch($value = 'semiauto')
+    public function fixedColumnsHeightMatch(string $value = 'semiauto'): static
     {
-        $this->attributes['fixedColumns']['heightMatch'] = $value;
+        return $this->fixedColumns(['heightMatch' => $value]);
+    }
 
-        return $this;
+    /**
+     * Set fixedColumns option value.
+     *
+     * @param  array|bool  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/fixedColumns
+     */
+    public function fixedColumns(array|bool $value = true): static
+    {
+        return $this->setPluginAttribute('fixedColumns', $value);
     }
 
     /**
      * Set fixedColumns leftColumns option value.
      *
-     * @param int $value
+     * @param  int  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedColumns.leftColumns
      */
-    public function fixedColumnsLeftColumns(int $value = 1)
+    public function fixedColumnsLeftColumns(int $value = 1): static
     {
-        $this->attributes['fixedColumns']['leftColumns'] = $value;
-
-        return $this;
+        return $this->fixedColumns(['leftColumns' => $value]);
     }
 
     /**
      * Set fixedColumns rightColumns option value.
      *
-     * @param int $value
+     * @param  int  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedColumns.rightColumns
      */
-    public function fixedColumnsRightColumns(int $value = 0)
+    public function fixedColumnsRightColumns(int $value = 0): static
     {
-        $this->attributes['fixedColumns']['rightColumns'] = $value;
+        return $this->fixedColumns(['rightColumns' => $value]);
+    }
 
-        return $this;
+    /**
+     * @param  string|null  $key
+     * @return mixed
+     */
+    public function getFixedColumns(string $key = null): mixed
+    {
+        if (is_null($key)) {
+            return $this->attributes['fixedColumns'] ?? true;
+        }
+
+        return $this->attributes['fixedColumns'][$key] ?? false;
     }
 }

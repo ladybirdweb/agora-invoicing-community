@@ -2,27 +2,34 @@
 
 namespace Yajra\DataTables\Html;
 
-use Illuminate\Support\Fluent;
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Support\Fluent;
 use Yajra\DataTables\Html\Editor\Fields\Options;
 
 class SearchPane extends Fluent
 {
+    public function __construct($attributes = [])
+    {
+        parent::__construct(['show' => true] + $attributes);
+    }
+
     /**
-     * @param array $options
+     * @param  array  $options
      * @return static
      */
-    public static function make(array $options = [])
+    public static function make(array $options = []): static
     {
         return new static($options);
     }
 
     /**
-     * @param bool $value
-     * @return static
+     * @param  bool  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.cascadePanes
      */
-    public function cascadePanes($value = true)
+    public function cascadePanes(bool $value = true): static
     {
         $this->attributes['cascadePanes'] = $value;
 
@@ -30,11 +37,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param bool $value
-     * @return static
+     * @param  bool  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.clear
      */
-    public function clear($value = true)
+    public function clear(bool $value = true): static
     {
         $this->attributes['clear'] = $value;
 
@@ -42,11 +49,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param array $value
-     * @return static
+     * @param  array  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.columns
      */
-    public function columns(array $value = [])
+    public function columns(array $value = []): static
     {
         $this->attributes['columns'] = $value;
 
@@ -54,11 +61,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param bool $value
-     * @return static
+     * @param  bool  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.controls
      */
-    public function controls($value = true)
+    public function controls(bool $value = true): static
     {
         $this->attributes['controls'] = $value;
 
@@ -66,12 +73,12 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param array $value
-     * @return static
+     * @param  array  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.dtOpts
      * @see https://datatables.net/reference/option/columns.searchPanes.dtOpts
      */
-    public function dtOpts(array $value = [])
+    public function dtOpts(array $value = []): static
     {
         $this->attributes['dtOpts'] = $value;
 
@@ -79,11 +86,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.emptyMessage
      */
-    public function emptyMessage($value)
+    public function emptyMessage(string $value): static
     {
         $this->attributes['emptyMessage'] = $value;
 
@@ -91,11 +98,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.filterChanged
      */
-    public function filterChanged($value)
+    public function filterChanged(string $value): static
     {
         $this->attributes['filterChanged'] = $value;
 
@@ -103,11 +110,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param bool $value
-     * @return static
+     * @param  bool  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.hideCount
      */
-    public function hideCount($value = true)
+    public function hideCount(bool $value = true): static
     {
         $this->attributes['hideCount'] = $value;
 
@@ -115,11 +122,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.layout
      */
-    public function layout($value)
+    public function layout(string $value): static
     {
         $this->attributes['layout'] = $value;
 
@@ -127,11 +134,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  array  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.order
      */
-    public function order($value)
+    public function order(array $value): static
     {
         $this->attributes['order'] = $value;
 
@@ -139,11 +146,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param boolean $value
-     * @return static
+     * @param  boolean  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.orderable
      */
-    public function orderable($value = true)
+    public function orderable(bool $value = true): static
     {
         $this->attributes['orderable'] = $value;
 
@@ -151,11 +158,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param array $value
-     * @return static
+     * @param  array  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.panes
      */
-    public function panes(array $value)
+    public function panes(array $value): static
     {
         $panes = collect($value)->map(function ($pane) {
             if ($pane instanceof Arrayable) {
@@ -171,11 +178,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  float  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.threshold
      */
-    public function threshold($value)
+    public function threshold(float $value): static
     {
         $this->attributes['threshold'] = $value;
 
@@ -183,11 +190,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param boolean $value
-     * @return static
+     * @param  boolean  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.viewTotal
      */
-    public function viewTotal($value = true)
+    public function viewTotal(bool $value = true): static
     {
         $this->attributes['viewTotal'] = $value;
 
@@ -195,11 +202,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param boolean $value
-     * @return static
+     * @param  boolean  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.viewTotal
      */
-    public function hideTotal($value = true)
+    public function hideTotal(bool $value = true): static
     {
         $this->attributes['viewTotal'] = ! $value;
 
@@ -209,24 +216,22 @@ class SearchPane extends Fluent
     /**
      * Get options from a model.
      *
-     * @param mixed $model
-     * @param string $value
-     * @param string $key
+     * @param  class-string<\Illuminate\Database\Eloquent\Model>|EloquentBuilder  $model
+     * @param  string  $value
+     * @param  string  $key
      * @return $this
      */
-    public function modelOptions($model, $value, $key = 'id')
+    public function modelOptions(EloquentBuilder|string $model, string $value, string $key = 'id'): SearchPane
     {
-        return $this->options(
-            Options::model($model, $value, $key)
-        );
+        return $this->options(Options::model($model, $value, $key));
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  array|Arrayable  $value
+     * @return $this
      * @see https://datatables.net/reference/option/columns.searchPanes.options
      */
-    public function options($value)
+    public function options(array|Arrayable $value): static
     {
         if ($value instanceof Arrayable) {
             $value = $value->toArray();
@@ -240,26 +245,29 @@ class SearchPane extends Fluent
     /**
      * Get options from a table.
      *
-     * @param mixed $table
-     * @param string $value
-     * @param string $key
-     * @param \Closure $whereCallback
-     * @param string|null $key
+     * @param  string  $table
+     * @param  string  $value
+     * @param  string  $key
+     * @param  \Closure|null  $callback
+     * @param  string|null  $connection
      * @return $this
      */
-    public function tableOptions($table, $value, $key = 'id', \Closure $whereCallback = null, $connection = null)
-    {
-        return $this->options(
-            Options::table($table, $value, $key, $whereCallback, $connection)
-        );
+    public function tableOptions(
+        string $table,
+        string $value,
+        string $key = 'id',
+        Closure $callback = null,
+        string $connection = null
+    ): static {
+        return $this->options(Options::table($table, $value, $key, $callback, $connection));
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/columns.searchPanes.className
      */
-    public function className($value)
+    public function className(string $value): static
     {
         $this->attributes['className'] = $value;
 
@@ -267,11 +275,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/searchPanes.panes.header
      */
-    public function header($value)
+    public function header(string $value): static
     {
         $this->attributes['header'] = $value;
 
@@ -279,11 +287,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param bool $value
-     * @return static
+     * @param  bool  $value
+     * @return $this
      * @see https://datatables.net/reference/option/columns.searchPanes.show
      */
-    public function show($value = true)
+    public function show(bool $value = true): static
     {
         $this->attributes['show'] = $value;
 
@@ -291,11 +299,11 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/columns.searchPanes.name
      */
-    public function name($value)
+    public function name(string $value): static
     {
         $this->attributes['name'] = $value;
 
@@ -303,13 +311,37 @@ class SearchPane extends Fluent
     }
 
     /**
-     * @param mixed $value
-     * @return static
+     * @param  array|string  $value
+     * @return $this
      * @see https://datatables.net/reference/option/columns.searchPanes.orthogonal
      */
-    public function orthogonal($value)
+    public function orthogonal(array|string $value): static
     {
         $this->attributes['orthogonal'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param  boolean  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/searchPanes.collapse
+     */
+    public function collapse(bool $value = true): static
+    {
+        $this->attributes['collapse'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param  boolean  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/searchPanes.initCollapsed
+     */
+    public function initCollapsed(bool $value = false): static
+    {
+        $this->attributes['initCollapsed'] = $value;
 
         return $this;
     }

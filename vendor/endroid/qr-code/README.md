@@ -48,6 +48,8 @@ $result = Builder::create()
     ->margin(10)
     ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
     ->logoPath(__DIR__.'/assets/symfony.png')
+    ->logoResizeToWidth(50)
+    ->logoPunchoutBackground(true)
     ->labelText('This is the label')
     ->labelFont(new NotoSans(20))
     ->labelAlignment(new LabelAlignmentCenter())
@@ -82,7 +84,9 @@ $qrCode = QrCode::create('Life is too short to be generating QR codes')
 
 // Create generic logo
 $logo = Logo::create(__DIR__.'/assets/symfony.png')
-    ->setResizeToWidth(50);
+    ->setResizeToWidth(50)
+    ->setPunchoutBackground(true)
+;
 
 // Create generic label
 $label = Label::create('Label')
@@ -121,6 +125,7 @@ found as a constant prefixed with WRITER_OPTION_ in the writer class.
   * `fpdf`: PDF to place the image in (default: new PDF)
   * `x`: image offset (default: 0)
   * `y`: image offset (default: 0)
+  * `link`: a URL or an identifier returned by `AddLink()`.
 * `PngWriter`
   * `compression_level`: compression level (0-9, default: -1 = zlib default)
 * `SvgWriter`
@@ -136,7 +141,7 @@ You can provide any writer options like this.
 ```php
 use Endroid\QrCode\Writer\SvgWriter;
 
-$builder->setWriterOptions([
+$builder->writerOptions([
     SvgWriter::WRITER_OPTION_EXCLUDE_XML_DECLARATION => true
 ]);
 ```
@@ -194,7 +199,7 @@ integrates the QR code library in Symfony for an even better experience.
 * Support for multiple configurations and injection via aliases
 * Generate QR codes for defined configurations via URL like /qr-code/<config>/Hello
 * Generate QR codes or URLs directly from Twig using dedicated functions
- 
+
 Read the [bundle documentation](https://github.com/endroid/qr-code-bundle)
 for more information.
 

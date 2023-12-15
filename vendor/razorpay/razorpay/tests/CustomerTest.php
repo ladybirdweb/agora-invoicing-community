@@ -51,6 +51,8 @@ class CustomerTest extends TestCase
         
         $this->assertTrue(is_array($data->toArray()));
 
+        $this->assertTrue(is_numeric($data->count()));
+
         $this->assertTrue(is_array($data['items']));
     }
 

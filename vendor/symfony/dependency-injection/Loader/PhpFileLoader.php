@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 class PhpFileLoader extends FileLoader
 {
-    protected $autoRegisterAliasesForSinglyImplementedInterfaces = false;
+    protected bool $autoRegisterAliasesForSinglyImplementedInterfaces = false;
     private ?ConfigBuilderGeneratorInterface $generator;
 
     public function __construct(ContainerBuilder $container, FileLocatorInterface $locator, string $env = null, ConfigBuilderGeneratorInterface $generator = null)
@@ -87,7 +87,7 @@ class PhpFileLoader extends FileLoader
     /**
      * Resolve the parameters to the $callback and execute it.
      */
-    private function executeCallback(callable $callback, ContainerConfigurator $containerConfigurator, string $path)
+    private function executeCallback(callable $callback, ContainerConfigurator $containerConfigurator, string $path): void
     {
         $callback = $callback(...);
         $arguments = [];
@@ -182,7 +182,7 @@ class PhpFileLoader extends FileLoader
         }
 
         if (!$this->container->hasExtension($alias)) {
-            $extensions = array_filter(array_map(function (ExtensionInterface $ext) { return $ext->getAlias(); }, $this->container->getExtensions()));
+            $extensions = array_filter(array_map(fn (ExtensionInterface $ext) => $ext->getAlias(), $this->container->getExtensions()));
             throw new InvalidArgumentException(sprintf('There is no extension able to load the configuration for "%s". Looked for namespace "%s", found "%s".', $namespace, $alias, $extensions ? implode('", "', $extensions) : 'none'));
         }
 

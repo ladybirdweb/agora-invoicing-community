@@ -54,11 +54,11 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
         };
     }
 
-    public static function isSupported()
+    public static function isSupported(): bool
     {
         self::$startTime ??= $_SERVER['REQUEST_TIME'] ?? time();
 
-        return \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL) && (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOL));
+        return \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL) && (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOL));
     }
 
     public function prune(): bool
@@ -79,7 +79,7 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
                 }
 
                 if ($time >= $expiresAt) {
-                    $pruned = $this->doUnlink($file) && !file_exists($file) && $pruned;
+                    $pruned = ($this->doUnlink($file) || !file_exists($file)) && $pruned;
                 }
             }
         } finally {
@@ -233,7 +233,7 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
             if ($isStaticValue) {
                 $value = "return [{$expiry}, {$value}];";
             } elseif ($this->appendOnly) {
-                $value = "return [{$expiry}, static function () { return {$value}; }];";
+                $value = "return [{$expiry}, static fn () => {$value}];";
             } else {
                 // We cannot use a closure here because of https://bugs.php.net/76982
                 $value = str_replace('\Symfony\Component\VarExporter\Internal\\', '', $value);
@@ -274,7 +274,7 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
         return $this->doCommonDelete($ids);
     }
 
-    protected function doUnlink(string $file)
+    protected function doUnlink(string $file): bool
     {
         unset(self::$valuesCache[$file]);
 

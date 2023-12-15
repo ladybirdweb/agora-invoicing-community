@@ -9,7 +9,7 @@ trait ListsPermittedUsers
     /**
      * Get the resource permitted users.
      *
-     * @param      $id           The resource id
+     * @param int  $id           The resource id
      * @param null $access_level Access level value
      * @return Response
      */

@@ -14,18 +14,28 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
-    "yajra/laravel-datatables-oracle": "8.*|9.*",
-    "yajra/laravel-datatables-buttons": "4.*",
+    "php": "^8.1",
+    "yajra/laravel-datatables-buttons": "^10",
     "yajra/laravel-datatables-editor": "1.*",
-    "yajra/laravel-datatables-html": "4.*",
-    "yajra/laravel-datatables-fractal": "1.*"
+    "yajra/laravel-datatables-export": "^10",
+    "yajra/laravel-datatables-fractal": "^10",
+    "yajra/laravel-datatables-html": "^10",
+    "yajra/laravel-datatables-oracle": "^10"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.0-dev"
+      "dev-master": "10.0-dev"
     }
   },
+  "config": {
+    "sort-packages": true
+  },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/yajra"
+    }
+  ]
 }

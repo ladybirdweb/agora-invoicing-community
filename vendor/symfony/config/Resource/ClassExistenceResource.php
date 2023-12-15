@@ -116,7 +116,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
     /**
      * @internal
      */
-    public function __wakeup()
+    public function __wakeup(): void
     {
         if (\is_bool($this->exists)) {
             $this->exists = [$this->exists, null];
@@ -139,7 +139,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
      *
      * @internal
      */
-    public static function throwOnRequiredClass(string $class, \Exception $previous = null)
+    public static function throwOnRequiredClass(string $class, \Exception $previous = null): void
     {
         // If the passed class is the resource being checked, we shouldn't throw.
         if (null === $previous && self::$autoloadedClass === $class) {
@@ -160,7 +160,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
 
         $message = sprintf('Class "%s" not found.', $class);
 
-        if (self::$autoloadedClass !== $class) {
+        if ($class !== (self::$autoloadedClass ?? $class)) {
             $message = substr_replace($message, sprintf(' while loading "%s"', self::$autoloadedClass), -1, 0);
         }
 

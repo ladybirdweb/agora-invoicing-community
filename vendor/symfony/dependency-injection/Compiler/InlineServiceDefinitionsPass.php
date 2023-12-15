@@ -24,6 +24,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class InlineServiceDefinitionsPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = true;
+
     private ?AnalyzeServiceReferencesPass $analyzingPass;
     private array $cloningIds = [];
     private array $connectedIds = [];
@@ -37,7 +39,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
         $this->analyzingPass = $analyzingPass;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->container = $container;
         if ($this->analyzingPass) {
@@ -51,6 +53,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
             $analyzedContainer = $container;
         }
         try {
+            $notInlinableIds = [];
             $remainingInlinedIds = [];
             $this->connectedIds = $this->notInlinedIds = $container->getDefinitions();
             do {
@@ -60,7 +63,8 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
                 }
                 $this->graph = $analyzedContainer->getCompiler()->getServiceReferenceGraph();
                 $notInlinedIds = $this->notInlinedIds;
-                $this->connectedIds = $this->notInlinedIds = $this->inlinedIds = [];
+                $notInlinableIds += $this->notInlinableIds;
+                $this->connectedIds = $this->notInlinedIds = $this->inlinedIds = $this->notInlinableIds = [];
 
                 foreach ($analyzedContainer->getDefinitions() as $id => $definition) {
                     if (!$this->graph->hasNode($id)) {
@@ -86,7 +90,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
             } while ($this->inlinedIds && $this->analyzingPass);
 
             foreach ($remainingInlinedIds as $id) {
-                if (isset($this->notInlinableIds[$id])) {
+                if (isset($notInlinableIds[$id])) {
                     continue;
                 }
 
@@ -126,8 +130,10 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
 
         $definition = $this->container->getDefinition($id);
 
-        if (!$this->isInlineableDefinition($id, $definition)) {
-            $this->notInlinableIds[$id] = true;
+        if (isset($this->notInlinableIds[$id]) || !$this->isInlineableDefinition($id, $definition)) {
+            if ($this->currentId !== $id) {
+                $this->notInlinableIds[$id] = true;
+            }
 
             return $value;
         }
@@ -188,7 +194,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
             return true;
         }
 
-        if ($this->currentId == $id) {
+        if ($this->currentId === $id) {
             return false;
         }
         $this->connectedIds[$id] = true;

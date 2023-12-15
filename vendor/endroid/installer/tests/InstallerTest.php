@@ -6,9 +6,9 @@ namespace Endroid\Installer\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class InstallerTest extends TestCase
+final class InstallerTest extends TestCase
 {
-    public function testNoTestsYet()
+    public function testNoTestsYet(): void
     {
         $this->assertTrue(true);
     }

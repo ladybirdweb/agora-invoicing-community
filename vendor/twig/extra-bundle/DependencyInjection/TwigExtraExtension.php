@@ -23,6 +23,7 @@ use Twig\Extra\TwigExtraBundle\Extensions;
  */
 class TwigExtraExtension extends Extension
 {
+    /** @return void */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new PhpFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
@@ -37,7 +38,7 @@ class TwigExtraExtension extends Extension
             if ($this->isConfigEnabled($container, $config[$extension])) {
                 $loader->load($extension.'.php');
 
-                if ('markdown' === $extension && \class_exists(CommonMarkConverter::class)) {
+                if ('markdown' === $extension && class_exists(CommonMarkConverter::class)) {
                     $loader->load('markdown_league.php');
                 }
             }

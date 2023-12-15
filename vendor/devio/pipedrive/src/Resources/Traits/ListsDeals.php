@@ -9,7 +9,7 @@ trait ListsDeals
     /**
      * Get the resource deals.
      *
-     * @param       $id      The resource id
+     * @param int   $id      The resource id
      * @param array $options Extra parameters
      * @return Response
      */

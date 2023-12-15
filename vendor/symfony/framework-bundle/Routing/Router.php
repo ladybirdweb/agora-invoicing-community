@@ -61,7 +61,7 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
 
     public function getRouteCollection(): RouteCollection
     {
-        if (null === $this->collection) {
+        if (!isset($this->collection)) {
             $this->collection = $this->container->get('routing.loader')->load($this->resource, $this->options['resource_type']);
             $this->resolveParameters($this->collection);
             $this->collection->addResource(new ContainerParametersResource($this->collectedParameters));
@@ -81,9 +81,9 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
     }
 
     /**
-     * @return string[] A list of classes to preload on PHP 7.4+
+     * @param string|null $buildDir
      */
-    public function warmUp(string $cacheDir): array
+    public function warmUp(string $cacheDir /* , string $buildDir = null */): array
     {
         $currentDir = $this->getOption('cache_dir');
 
@@ -109,7 +109,7 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
      * - the route schemes,
      * - the route methods.
      */
-    private function resolveParameters(RouteCollection $collection)
+    private function resolveParameters(RouteCollection $collection): void
     {
         foreach ($collection as $route) {
             foreach ($route->getDefaults() as $name => $value) {

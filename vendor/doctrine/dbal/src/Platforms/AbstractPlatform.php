@@ -103,6 +103,14 @@ abstract class AbstractPlatform
      */
     protected $_keywords;
 
+    private bool $disableTypeComments = false;
+
+    /** @internal */
+    final public function setDisableTypeComments(bool $value): void
+    {
+        $this->disableTypeComments = $value;
+    }
+
     /**
      * Sets the EventManager used by the Platform.
      *
@@ -578,7 +586,7 @@ abstract class AbstractPlatform
 
         $comment = $column->getComment();
 
-        if ($column->getType()->requiresSQLCommentHint($this)) {
+        if (! $this->disableTypeComments && $column->getType()->requiresSQLCommentHint($this)) {
             $comment .= $this->getDoctrineTypeComment($column->getType());
         }
 
@@ -1705,7 +1713,7 @@ abstract class AbstractPlatform
      * @param string             $operator The arithmetic operator (+ or -).
      * @param int|numeric-string $interval The interval that shall be calculated into the date.
      * @param string             $unit     The unit of the interval that shall be calculated into the date.
-     *                                     One of the DATE_INTERVAL_UNIT_* constants.
+     *                                     One of the {@see DateIntervalUnit} constants.
      *
      * @return string
      *
@@ -4155,7 +4163,7 @@ abstract class AbstractPlatform
      */
     public function supportsCreateDropDatabase()
     {
-        Deprecation::trigger(
+        Deprecation::triggerIfCalledFromOutside(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5513',
             '%s is deprecated.',
@@ -4626,6 +4634,10 @@ abstract class AbstractPlatform
             return false;
         }
 
+        if (! $this->columnDeclarationsMatch($column1, $column2)) {
+            return false;
+        }
+
         // If the platform supports inline comments, all comparison is already done above
         if ($this->supportsInlineColumnComments()) {
             return true;
@@ -4636,6 +4648,17 @@ abstract class AbstractPlatform
         }
 
         return $column1->getType() === $column2->getType();
+    }
+
+    /**
+     * Whether the database data type matches that expected for the doctrine type for the given colunms.
+     */
+    private function columnDeclarationsMatch(Column $column1, Column $column2): bool
+    {
+        return ! (
+            $column1->hasPlatformOption('declarationMismatch') ||
+            $column2->hasPlatformOption('declarationMismatch')
+        );
     }
 
     /**

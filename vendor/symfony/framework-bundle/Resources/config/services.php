@@ -15,8 +15,8 @@ use Psr\Clock\ClockInterface as PsrClockInterface;
 use Psr\EventDispatcher\EventDispatcherInterface as PsrEventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\CacheWarmer\ConfigBuilderCacheWarmer;
 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
+use Symfony\Component\Clock\Clock;
 use Symfony\Component\Clock\ClockInterface;
-use Symfony\Component\Clock\NativeClock;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
 use Symfony\Component\Config\ResourceCheckerConfigCacheFactory;
@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
@@ -47,7 +48,7 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpKernel\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as HttpKernelUriSigner;
 use Symfony\Component\Runtime\Runner\Symfony\HttpKernelRunner;
 use Symfony\Component\Runtime\Runner\Symfony\ResponseRunner;
 use Symfony\Component\Runtime\SymfonyRuntime;
@@ -120,7 +121,7 @@ return static function (ContainerConfigurator $container) {
         ->set('url_helper', UrlHelper::class)
             ->args([
                 service('request_stack'),
-                service('router.request_context')->ignoreOnInvalid(),
+                service('router')->ignoreOnInvalid(),
             ])
         ->alias(UrlHelper::class, 'url_helper')
 
@@ -157,6 +158,8 @@ return static function (ContainerConfigurator $container) {
                 param('kernel.secret'),
             ])
         ->alias(UriSigner::class, 'uri_signer')
+        ->alias(HttpKernelUriSigner::class, 'uri_signer')
+            ->deprecate('symfony/framework-bundle', '6.4', 'The "%alias_id%" alias is deprecated, use "'.UriSigner::class.'" instead.')
 
         ->set('config_cache_factory', ResourceCheckerConfigCacheFactory::class)
             ->args([
@@ -229,7 +232,7 @@ return static function (ContainerConfigurator $container) {
             ->args([service(KernelInterface::class), service('logger')->nullOnInvalid()])
             ->tag('kernel.cache_warmer')
 
-        ->set('clock', NativeClock::class)
+        ->set('clock', Clock::class)
         ->alias(ClockInterface::class, 'clock')
         ->alias(PsrClockInterface::class, 'clock')
 

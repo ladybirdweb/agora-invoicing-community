@@ -174,7 +174,7 @@ class ClassMapGenerator
             }
 
             $classes = PhpFileParser::findClasses($filePath);
-            if ('classmap' !== $autoloadType && isset($namespace, $basePath)) {
+            if ('classmap' !== $autoloadType && isset($namespace)) {
                 $classes = $this->filterByNamespace($classes, $filePath, $namespace, $autoloadType, $basePath);
 
                 // if no valid class was found in the file then we do not mark it as scanned as it might still be matched by another rule later
@@ -291,7 +291,7 @@ class ClassMapGenerator
         }
 
         // extract a prefix being a protocol://, protocol:, protocol://drive: or simply drive:
-        if (Preg::isMatch('{^( [0-9a-z]{2,}+: (?: // (?: [a-z]: )? )? | [a-z]: )}ix', $path, $match)) {
+        if (Preg::isMatchStrictGroups('{^( [0-9a-z]{2,}+: (?: // (?: [a-z]: )? )? | [a-z]: )}ix', $path, $match)) {
             $prefix = $match[1];
             $path = substr($path, \strlen($prefix));
         }
@@ -313,7 +313,7 @@ class ClassMapGenerator
         }
 
         // ensure c: is normalized to C:
-        $prefix = Preg::replaceCallback('{(^|://)[a-z]:$}i', function (array $m) { return strtoupper($m[0]); }, $prefix);
+        $prefix = Preg::replaceCallback('{(?:^|://)[a-z]:$}i', function (array $m) { return strtoupper((string) $m[0]); }, $prefix);
 
         return $prefix.$absolute.implode('/', $parts);
     }

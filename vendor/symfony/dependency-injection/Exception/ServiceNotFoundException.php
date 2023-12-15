@@ -50,17 +50,17 @@ class ServiceNotFoundException extends InvalidArgumentException implements NotFo
         $this->alternatives = $alternatives;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getSourceId()
+    public function getSourceId(): ?string
     {
         return $this->sourceId;
     }
 
-    public function getAlternatives()
+    public function getAlternatives(): array
     {
         return $this->alternatives;
     }

@@ -17,11 +17,11 @@ class Files extends Resource
     /**
      * Create a remote file and link it to an item.
      *
-     * @param $file_type
-     * @param $title
-     * @param $item_type
-     * @param $item_id
-     * @param $remote_location
+     * @param string $file_type
+     * @param string $title
+     * @param string $item_type
+     * @param int    $item_id
+     * @param string $remote_location
      * @return Response
      */
     public function createRemote($file_type, $title, $item_type, $item_id, $remote_location)
@@ -35,10 +35,10 @@ class Files extends Resource
     /**
      * Link a remote file to an item.
      *
-     * @param $item_type
-     * @param $item_id
-     * @param $remote_id
-     * @param $remote_location
+     * @param string $item_type
+     * @param int    $item_id
+     * @param string $remote_id
+     * @param string $remote_location
      * @return Response
      */
     public function linkRemote($item_type, $item_id, $remote_id, $remote_location)
@@ -52,7 +52,7 @@ class Files extends Resource
     /**
      * Initializes a file download.
      *
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function download($id) {

@@ -9,7 +9,7 @@ trait ListsProducts
     /**
      * Get the products attached to a resource.
      *
-     * @param       $id      The resource id
+     * @param int   $id      The resource id
      * @param array $options Extra parameters
      * @return Response
      */

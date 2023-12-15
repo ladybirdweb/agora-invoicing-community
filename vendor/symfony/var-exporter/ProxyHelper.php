@@ -27,7 +27,7 @@ final class ProxyHelper
      */
     public static function generateLazyGhost(\ReflectionClass $class): string
     {
-        if (\PHP_VERSION_ID >= 80200 && \PHP_VERSION_ID < 80300 && $class->isReadOnly()) {
+        if (\PHP_VERSION_ID < 80300 && $class->isReadOnly()) {
             throw new LogicException(sprintf('Cannot generate lazy ghost: class "%s" is readonly.', $class->name));
         }
         if ($class->isFinal()) {
@@ -91,7 +91,7 @@ final class ProxyHelper
         if ($class?->isFinal()) {
             throw new LogicException(sprintf('Cannot generate lazy proxy: class "%s" is final.', $class->name));
         }
-        if (\PHP_VERSION_ID >= 80200 && \PHP_VERSION_ID < 80300 && $class?->isReadOnly()) {
+        if (\PHP_VERSION_ID < 80300 && $class?->isReadOnly()) {
             throw new LogicException(sprintf('Cannot generate lazy proxy: class "%s" is readonly.', $class->name));
         }
 
@@ -142,15 +142,15 @@ final class ProxyHelper
                 continue;
             }
 
-            $signature = self::exportSignature($method);
-            $parentCall = $method->isAbstract() ? "throw new \BadMethodCallException('Cannot forward abstract method \"{$method->class}::{$method->name}()\".')" : "parent::{$method->name}(...\\func_get_args())";
+            $signature = self::exportSignature($method, true, $args);
+            $parentCall = $method->isAbstract() ? "throw new \BadMethodCallException('Cannot forward abstract method \"{$method->class}::{$method->name}()\".')" : "parent::{$method->name}({$args})";
 
             if ($method->isStatic()) {
                 $body = "        $parentCall;";
             } elseif (str_ends_with($signature, '): never') || str_ends_with($signature, '): void')) {
                 $body = <<<EOPHP
                         if (isset(\$this->lazyObjectState)) {
-                            (\$this->lazyObjectState->realInstance ??= (\$this->lazyObjectState->initializer)())->{$method->name}(...\\func_get_args());
+                            (\$this->lazyObjectState->realInstance ??= (\$this->lazyObjectState->initializer)())->{$method->name}({$args});
                         } else {
                             {$parentCall};
                         }
@@ -172,7 +172,7 @@ final class ProxyHelper
 
                 $body = <<<EOPHP
                         if (isset(\$this->lazyObjectState)) {
-                            return (\$this->lazyObjectState->realInstance ??= (\$this->lazyObjectState->initializer)())->{$method->name}(...\\func_get_args());
+                            return (\$this->lazyObjectState->realInstance ??= (\$this->lazyObjectState->initializer)())->{$method->name}({$args});
                         }
 
                         return {$parentCall};
@@ -213,8 +213,11 @@ final class ProxyHelper
             EOPHP;
     }
 
-    public static function exportSignature(\ReflectionFunctionAbstract $function, bool $withParameterTypes = true): string
+    public static function exportSignature(\ReflectionFunctionAbstract $function, bool $withParameterTypes = true, string &$args = null): string
     {
+        $byRefIndex = 0;
+        $args = '';
+        $param = null;
         $parameters = [];
         foreach ($function->getParameters() as $param) {
             $parameters[] = ($param->getAttributes(\SensitiveParameter::class) ? '#[\SensitiveParameter] ' : '')
@@ -222,6 +225,20 @@ final class ProxyHelper
                 .($param->isPassedByReference() ? '&' : '')
                 .($param->isVariadic() ? '...' : '').'$'.$param->name
                 .($param->isOptional() && !$param->isVariadic() ? ' = '.self::exportDefault($param) : '');
+            if ($param->isPassedByReference()) {
+                $byRefIndex = 1 + $param->getPosition();
+            }
+            $args .= ($param->isVariadic() ? '...$' : '$').$param->name.', ';
+        }
+
+        if (!$param || !$byRefIndex) {
+            $args = '...\func_get_args()';
+        } elseif ($param->isVariadic()) {
+            $args = substr($args, 0, -2);
+        } else {
+            $args = explode(', ', $args, 1 + $byRefIndex);
+            $args[$byRefIndex] = sprintf('...\array_slice(\func_get_args(), %d)', $byRefIndex);
+            $args = implode(', ', $args);
         }
 
         $signature = 'function '.($function->returnsReference() ? '&' : '')
@@ -305,6 +322,9 @@ final class ProxyHelper
     {
         $propertyScopes = Hydrator::$propertyScopes[$parent] ??= Hydrator::getPropertyScopes($parent);
         uksort($propertyScopes, 'strnatcmp');
+        foreach ($propertyScopes as $k => $v) {
+            unset($propertyScopes[$k][3]);
+        }
         $propertyScopes = VarExporter::export($propertyScopes);
         $propertyScopes = str_replace(VarExporter::export($parent), 'parent::class', $propertyScopes);
         $propertyScopes = preg_replace("/(?|(,)\n( )       |\n        |,\n    (\]))/", '$1$2', $propertyScopes);

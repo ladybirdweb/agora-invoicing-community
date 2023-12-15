@@ -426,9 +426,7 @@ public function NAME($value): static
             }
 
             if ($node instanceof EnumNode) {
-                $comment .= sprintf(' * @param ParamConfigurator|%s $value', implode('|', array_map(function ($a) {
-                    return var_export($a, true);
-                }, $node->getValues())))."\n";
+                $comment .= sprintf(' * @param ParamConfigurator|%s $value', implode('|', array_unique(array_map(fn ($a) => !$a instanceof \UnitEnum ? var_export($a, true) : '\\'.ltrim(var_export($a, true), '\\'), $node->getValues()))))."\n";
             } else {
                 $parameterTypes = $this->getParameterTypes($node);
                 $comment .= ' * @param ParamConfigurator|'.implode('|', $parameterTypes).' $value'."\n";
@@ -480,8 +478,8 @@ public function NAME($value): static
             if (null !== $p->getType()) {
                 if ($p->isArray()) {
                     $code = $p->areScalarsAllowed()
-                        ? 'array_map(function ($v) { return $v instanceof CLASS ? $v->toArray() : $v; }, $this->PROPERTY)'
-                        : 'array_map(function ($v) { return $v->toArray(); }, $this->PROPERTY)'
+                        ? 'array_map(fn ($v) => $v instanceof CLASS ? $v->toArray() : $v, $this->PROPERTY)'
+                        : 'array_map(fn ($v) => $v->toArray(), $this->PROPERTY)'
                     ;
                 } else {
                     $code = $p->areScalarsAllowed()
@@ -516,8 +514,8 @@ public function NAME(): array
             if (null !== $p->getType()) {
                 if ($p->isArray()) {
                     $code = $p->areScalarsAllowed()
-                        ? 'array_map(function ($v) { return \is_array($v) ? new '.$p->getType().'($v) : $v; }, $value[\'ORG_NAME\'])'
-                        : 'array_map(function ($v) { return new '.$p->getType().'($v); }, $value[\'ORG_NAME\'])'
+                        ? 'array_map(fn ($v) => \is_array($v) ? new '.$p->getType().'($v) : $v, $value[\'ORG_NAME\'])'
+                        : 'array_map(fn ($v) => new '.$p->getType().'($v), $value[\'ORG_NAME\'])'
                     ;
                 } else {
                     $code = $p->areScalarsAllowed()
@@ -591,7 +589,6 @@ public function NAME(string $key, mixed $value): static
         } catch (\ReflectionException) {
             return false;
         }
-        $r->setAccessible(true);
 
         return [] !== $r->getValue($node);
     }

@@ -238,7 +238,7 @@ class XmlUtils
         }
     }
 
-    protected static function getXmlErrors(bool $internalErrors)
+    protected static function getXmlErrors(bool $internalErrors): array
     {
         $errors = [];
         foreach (libxml_get_errors() as $error) {

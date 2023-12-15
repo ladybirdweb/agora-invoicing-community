@@ -28,46 +28,11 @@ class Users extends Resource
     /**
      * Get the user permissions.
      *
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function permissions($id)
     {
         return $this->request->get(':id/permissions', compact('id'));
-    }
-
-    /**
-     * Get the user permitted items.
-     *
-     * @param      $id
-     * @param null $access_level
-     * @return Response
-     */
-    public function permittedItems($id, $access_level = null)
-    {
-        return $this->request->get(':id/permittedItems', compact('id', 'access_level'));
-    }
-
-    /**
-     * Get the user blacklisted emails.
-     *
-     * @param $id
-     * @return Response
-     */
-    public function blacklistedEmails($id)
-    {
-        return $this->request->get(':id/blacklistedEmails', compact('id'));
-    }
-
-    /**
-     * Add a new blacklisted email to the user.
-     *
-     * @param $id
-     * @param $address
-     * @return Response
-     */
-    public function addBlacklistedEmail($id, $address)
-    {
-        return $this->request->post(':id/blacklistedEmails', compact('id', 'address'));
     }
 }

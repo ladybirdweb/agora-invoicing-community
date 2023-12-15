@@ -17,13 +17,15 @@ use Symfony\Component\DependencyInjection\TypedReference;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Looks for definitions with autowiring enabled and registers their corresponding "@required" properties.
+ * Looks for definitions with autowiring enabled and registers their corresponding "#[Required]" properties.
  *
  * @author Sebastien Morel (Plopix) <morel.seb@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
  */
 class AutowireRequiredPropertiesPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = true;
+
     protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         $value = parent::processValue($value, $isRoot);
@@ -40,9 +42,7 @@ class AutowireRequiredPropertiesPass extends AbstractRecursivePass
             if (!($type = $reflectionProperty->getType()) instanceof \ReflectionNamedType) {
                 continue;
             }
-            if (!$reflectionProperty->getAttributes(Required::class)
-                && ((false === $doc = $reflectionProperty->getDocComment()) || false === stripos($doc, '@required') || !preg_match('#(?:^/\*\*|\n\s*+\*)\s*+@required(?:\s|\*/$)#i', $doc))
-            ) {
+            if (!$reflectionProperty->getAttributes(Required::class)) {
                 continue;
             }
             if (\array_key_exists($name = $reflectionProperty->getName(), $properties)) {

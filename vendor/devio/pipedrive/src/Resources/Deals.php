@@ -15,11 +15,11 @@ class Deals extends Entity
     /**
      * Get the deals timeline.
      *
-     * @param       $start_date
-     * @param       $interval
-     * @param       $amount
-     * @param       $field_key
-     * @param array $options
+     * @param string $start_date
+     * @param string $interval
+     * @param int    $amount
+     * @param string $field_key
+     * @param array  $options
      * @return Response
      */
     public function timeline($start_date, $interval, $amount, $field_key, $options = [])
@@ -35,8 +35,8 @@ class Deals extends Entity
     /**
      * Add a participant to a deal.
      *
-     * @param $id
-     * @param $person_id
+     * @param int $id
+     * @param int $person_id
      * @return Response
      */
     public function addParticipant($id, $person_id)
@@ -47,7 +47,7 @@ class Deals extends Entity
     /**
      * Get the participants of a deal.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */
@@ -61,8 +61,8 @@ class Deals extends Entity
     /**
      * Delete a participant from a deal.
      *
-     * @param $id
-     * @param $deal_participant_id
+     * @param int $id
+     * @param int $deal_participant_id
      * @return Response
      */
     public function deleteParticipant($id, $deal_participant_id)
@@ -73,10 +73,10 @@ class Deals extends Entity
     /**
      * Add a product to the deal.
      *
-     * @param       $id
-     * @param       $product_id
+     * @param int   $id
+     * @param int   $product_id
      * @param       $item_price
-     * @param       $quantity
+     * @param int   $quantity
      * @param array $options
      * @return Response
      */
@@ -91,12 +91,12 @@ class Deals extends Entity
     }
 
     /**
-     * Update the deatils of an attached product.
+     * Update the details of an attached product.
      *
-     * @param       $id
-     * @param       $deal_product_id
+     * @param int   $id
+     * @param int   $deal_product_id
      * @param       $item_price
-     * @param       $quantity
+     * @param int   $quantity
      * @param array $options
      * @return Response
      */
@@ -113,14 +113,14 @@ class Deals extends Entity
     /**
      * Delete an attached product from a deal.
      *
-     * @param $id
-     * @param $product_attachment_id
+     * @param int $id
+     * @param int $product_attachment_id
      * @return Response
      */
     public function deleteProduct($id, $product_attachment_id)
     {
         return $this->request->delete(
-            ':id/products',
+            ':id/products/:product_attachment_id',
             compact('id', 'product_attachment_id')
         );
     }
@@ -128,7 +128,7 @@ class Deals extends Entity
     /**
      * Duplicate a deal.
      *
-     * @param $id The deal id
+     * @param int $id The deal id
      * @return Response
      */
     public function duplicate($id)
@@ -139,7 +139,7 @@ class Deals extends Entity
     /**
      * Get the email messages for a deal.
      * 
-     * @param $id The deal id
+     * @param int $id The deal id
      * @return Response
      */
     public function mailMessages($id)
@@ -150,7 +150,7 @@ class Deals extends Entity
     /**
      * Get the files for a deal.
      *
-     * @param $id The deal id
+     * @param int $id The deal id
      * @return Response
      */
     public function files($id)

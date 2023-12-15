@@ -82,14 +82,15 @@ class Entity extends Resource implements ArrayableInterface
      * @param string $relativeUrl
      * @param array  $data
      * @param array  $additionHeader
+     * @param string $apiVersion
      *
      * @return Entity
      */
-    protected function request($method, $relativeUrl, $data = null)
+    protected function request($method, $relativeUrl, $data = null, $apiVersion = "v1")
     {
         $request = new Request();
 
-        $response = $request->request($method, $relativeUrl, $data);
+        $response = $request->request($method, $relativeUrl, $data, $apiVersion);
 
         if ((isset($response['entity'])) and ($response['entity'] == $this->getEntity()))
         {

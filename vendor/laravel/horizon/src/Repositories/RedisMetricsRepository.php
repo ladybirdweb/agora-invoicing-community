@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\LuaScripts;
@@ -177,13 +178,13 @@ class RedisMetricsRepository implements MetricsRepository
      * Increment the metrics information for a job.
      *
      * @param  string  $job
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementJob($job, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'job:'.$job, 'measured_jobs', str_replace(',', '.', $runtime)
+            'job:'.$job, 'measured_jobs', str_replace(',', '.', (string) $runtime)
         );
     }
 
@@ -191,13 +192,13 @@ class RedisMetricsRepository implements MetricsRepository
      * Increment the metrics information for a queue.
      *
      * @param  string  $queue
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementQueue($queue, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'queue:'.$queue, 'measured_queues', str_replace(',', '.', $runtime)
+            'queue:'.$queue, 'measured_queues', str_replace(',', '.', (string) $runtime)
         );
     }
 
@@ -370,6 +371,33 @@ class RedisMetricsRepository implements MetricsRepository
     public function forget($key)
     {
         $this->connection()->del($key);
+    }
+
+    /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->forget('last_snapshot_at');
+        $this->forget('measured_jobs');
+        $this->forget('measured_queues');
+        $this->forget('metrics:snapshot');
+
+        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
+            $cursor = null;
+
+            do {
+                [$cursor, $keys] = $this->connection()->scan(
+                    $cursor, ['match' => config('horizon.prefix').$pattern]
+                );
+
+                foreach ($keys ?? [] as $key) {
+                    $this->forget(Str::after($key, config('horizon.prefix')));
+                }
+            } while ($cursor > 0);
+        }
     }
 
     /**

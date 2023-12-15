@@ -17,8 +17,8 @@ class ItemSearch extends Resource
     /**
      * Search.
      *
-     * @param       $term
-     * @param array $options
+     * @param string $term
+     * @param array  $options
      * @return Response
      */
     public function search($term, $options = [])
@@ -31,10 +31,10 @@ class ItemSearch extends Resource
     /**
      * Search from a specific field.
      *
-     * @param       $term
-     * @param       $field_type
-     * @param       $field_key
-     * @param array $options
+     * @param string $term
+     * @param string $field_type
+     * @param string $field_key
+     * @param array  $options
      * @return Response
      */
     public function searchFromField($term, $field_type, $field_key, $options = [])

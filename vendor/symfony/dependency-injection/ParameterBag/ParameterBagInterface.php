@@ -26,14 +26,14 @@ interface ParameterBagInterface
      *
      * @throws LogicException if the ParameterBagInterface cannot be cleared
      */
-    public function clear();
+    public function clear(): void;
 
     /**
      * Adds parameters to the service container parameters.
      *
      * @throws LogicException if the parameter cannot be added
      */
-    public function add(array $parameters);
+    public function add(array $parameters): void;
 
     /**
      * Gets the service container parameters.
@@ -50,14 +50,14 @@ interface ParameterBagInterface
     /**
      * Removes a parameter.
      */
-    public function remove(string $name);
+    public function remove(string $name): void;
 
     /**
      * Sets a service container parameter.
      *
      * @throws LogicException if the parameter cannot be set
      */
-    public function set(string $name, array|bool|string|int|float|\UnitEnum|null $value);
+    public function set(string $name, array|bool|string|int|float|\UnitEnum|null $value): void;
 
     /**
      * Returns true if a parameter name is defined.
@@ -67,14 +67,14 @@ interface ParameterBagInterface
     /**
      * Replaces parameter placeholders (%name%) by their values for all parameters.
      */
-    public function resolve();
+    public function resolve(): void;
 
     /**
      * Replaces parameter placeholders (%name%) by their values.
      *
      * @throws ParameterNotFoundException if a placeholder references a parameter that does not exist
      */
-    public function resolveValue(mixed $value);
+    public function resolveValue(mixed $value): mixed;
 
     /**
      * Escape parameter placeholders %.

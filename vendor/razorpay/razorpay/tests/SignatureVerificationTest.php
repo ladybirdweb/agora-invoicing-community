@@ -20,9 +20,9 @@ class SignatureVerificationTest extends TestCase
     {
         $orderId = 'order_IEIaMR65cu6nz3';
         $paymentId = 'pay_IH4NVgf4Dreq1l';
-        $signature = '0d4e745a1838664ad6c9c9902212a32d627d68e917290b0ad5f08ff4561bc50f';
+        $signature = '97f18ee6577a33ca7c37b949912de807b379afb3f39ccb571ffd76017463f8e5';
 
-        $this->assertTrue(true,$this->api->utility->verifyPaymentSignature(array(
+        $this->assertNull($this->api->utility->verifyPaymentSignature(array(
           'razorpay_order_id' => $orderId,
           'razorpay_payment_id' => $paymentId,
           'razorpay_signature' => $signature
@@ -38,9 +38,9 @@ class SignatureVerificationTest extends TestCase
         $paymentId = 'pay_IH3d0ara9bSsjQ';
         $paymentLinkReferenceId = 'TSsd1989';
         $paymentLinkStatus = 'paid';
-        $signature = '07ae18789e35093e51d0a491eb9922646f3f82773547e5b0f67ee3f2d3bf7d5b';
+        $signature = '57bab821bfe7ebcf41b32e362d16aa23d408b76c36317f960ae99a9301e4d364';
 
-        $this->assertTrue(true,$this->api->utility->verifyPaymentSignature(array(
+        $this->assertNull($this->api->utility->verifyPaymentSignature(array(
           'razorpay_payment_link_id' => $paymentLinkId,
           'razorpay_payment_link_reference_id' => $paymentLinkReferenceId,
           'razorpay_payment_link_status' => $paymentLinkStatus,
@@ -56,9 +56,9 @@ class SignatureVerificationTest extends TestCase
     {
         $subscriptionId = 'sub_ID6MOhgkcoHj9I';
         $paymentId = 'pay_IDZNwZZFtnjyym';
-        $signature = '601f383334975c714c91a7d97dd723eb56520318355863dcf3821c0d07a17693';
+        $signature = 'cbbaabf163d61fc9346b794b5f906bc2f6b0d944be71bc0e6b5c35fa21eade44';
 
-        $this->assertTrue(true,$this->api->utility->verifyPaymentSignature(array(
+        $this->assertNull($this->api->utility->verifyPaymentSignature(array(
           'razorpay_subscription_id' => $subscriptionId,
           'razorpay_payment_id' => $paymentId,
           'razorpay_signature' => $signature

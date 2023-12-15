@@ -23,6 +23,7 @@ use function is_a;
  * Factory for creating {@see Connection} instances.
  *
  * @psalm-type OverrideParams = array{
+ *     application_name?: string,
  *     charset?: string,
  *     dbname?: string,
  *     default_dbname?: string,
@@ -32,14 +33,16 @@ use function is_a;
  *     host?: string,
  *     password?: string,
  *     path?: string,
- *     pdo?: \PDO,
+ *     persistent?: bool,
  *     platform?: Platforms\AbstractPlatform,
  *     port?: int,
+ *     serverVersion?: string,
  *     url?: string,
  *     user?: string,
  *     unix_socket?: string,
  * }
  * @psalm-type Params = array{
+ *     application_name?: string,
  *     charset?: string,
  *     dbname?: string,
  *     defaultTableOptions?: array<string, mixed>,
@@ -54,7 +57,7 @@ use function is_a;
  *     memory?: bool,
  *     password?: string,
  *     path?: string,
- *     pdo?: \PDO,
+ *     persistent?: bool,
  *     platform?: Platforms\AbstractPlatform,
  *     port?: int,
  *     primary?: OverrideParams,
@@ -94,7 +97,8 @@ final class DriverManager
      *
      * @deprecated Use actual driver names instead.
      *
-     * @var string[]
+     * @var array<string, string>
+     * @psalm-var array<string, key-of<self::DRIVER_MAP>>
      */
     private static array $driverSchemeAliases = [
         'db2'        => 'ibm_db2',
@@ -205,10 +209,10 @@ final class DriverManager
     }
 
     /**
-     * @param class-string<Driver>|null     $driverClass
-     * @param key-of<self::DRIVER_MAP>|null $driver
-     *
      * @throws Exception
+     *
+     * @psalm-assert key-of<self::DRIVER_MAP>|null $driver
+     * @psalm-assert class-string<Driver>|null     $driverClass
      */
     private static function createDriver(?string $driver, ?string $driverClass): Driver
     {

@@ -23,27 +23,27 @@ class LazyObjectRegistry
     /**
      * @var array<class-string, \ReflectionClass>
      */
-    public static $classReflectors = [];
+    public static array $classReflectors = [];
 
     /**
      * @var array<class-string, array<string, mixed>>
      */
-    public static $defaultProperties = [];
+    public static array $defaultProperties = [];
 
     /**
      * @var array<class-string, list<\Closure>>
      */
-    public static $classResetters = [];
+    public static array $classResetters = [];
 
     /**
      * @var array<class-string, array{get: \Closure, set: \Closure, isset: \Closure, unset: \Closure}>
      */
-    public static $classAccessors = [];
+    public static array $classAccessors = [];
 
     /**
      * @var array<class-string, array{set: bool, isset: bool, unset: bool, clone: bool, serialize: bool, unserialize: bool, sleep: bool, wakeup: bool, destruct: bool, get: int}>
      */
-    public static $parentMethods = [];
+    public static array $parentMethods = [];
 
     public static ?\Closure $noInitializerState = null;
 
@@ -67,18 +67,18 @@ class LazyObjectRegistry
 
         $resetters = [];
         foreach ($classProperties as $scope => $properties) {
-            $resetters[] = \Closure::bind(static function ($instance, $skippedProperties, $onlyProperties = null) use ($properties) {
+            $resetters[] = \Closure::bind(static function ($instance, $skippedProperties) use ($properties) {
                 foreach ($properties as $name => $key) {
-                    if (!\array_key_exists($key, $skippedProperties) && (null === $onlyProperties || \array_key_exists($key, $onlyProperties))) {
+                    if (!\array_key_exists($key, $skippedProperties)) {
                         unset($instance->$name);
                     }
                 }
             }, null, $scope);
         }
 
-        $resetters[] = static function ($instance, $skippedProperties, $onlyProperties = null) {
+        $resetters[] = static function ($instance, $skippedProperties) {
             foreach ((array) $instance as $name => $value) {
-                if ("\0" !== ($name[0] ?? '') && !\array_key_exists($name, $skippedProperties) && (null === $onlyProperties || \array_key_exists($name, $onlyProperties))) {
+                if ("\0" !== ($name[0] ?? '') && !\array_key_exists($name, $skippedProperties)) {
                     unset($instance->$name);
                 }
             }
@@ -89,27 +89,23 @@ class LazyObjectRegistry
 
     public static function getClassAccessors($class)
     {
-        return \Closure::bind(static function () {
-            return [
-                'get' => static function &($instance, $name, $readonly) {
-                    if (!$readonly) {
-                        return $instance->$name;
-                    }
-                    $value = $instance->$name;
+        return \Closure::bind(static fn () => [
+            'get' => static function &($instance, $name, $readonly) {
+                if (!$readonly) {
+                    return $instance->$name;
+                }
+                $value = $instance->$name;
 
-                    return $value;
-                },
-                'set' => static function ($instance, $name, $value) {
-                    $instance->$name = $value;
-                },
-                'isset' => static function ($instance, $name) {
-                    return isset($instance->$name);
-                },
-                'unset' => static function ($instance, $name) {
-                    unset($instance->$name);
-                },
-            ];
-        }, null, \Closure::class === $class ? null : $class)();
+                return $value;
+            },
+            'set' => static function ($instance, $name, $value) {
+                $instance->$name = $value;
+            },
+            'isset' => static fn ($instance, $name) => isset($instance->$name),
+            'unset' => static function ($instance, $name) {
+                unset($instance->$name);
+            },
+        ], null, \Closure::class === $class ? null : $class)();
     }
 
     public static function getParentMethods($class)
@@ -141,7 +137,7 @@ class LazyObjectRegistry
         if (\ReflectionProperty::class === $scope = $frame['class'] ?? \Closure::class) {
             $scope = $frame['object']->class;
         }
-        if (null === $readonlyScope && '*' === $k[1] && ($class === $scope || is_subclass_of($class, $scope))) {
+        if (null === $readonlyScope && '*' === $k[1] && ($class === $scope || (is_subclass_of($class, $scope) && !isset($propertyScopes["\0$scope\0$property"])))) {
             return null;
         }
 

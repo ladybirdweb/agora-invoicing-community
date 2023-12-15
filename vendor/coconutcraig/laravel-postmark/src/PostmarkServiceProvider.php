@@ -18,13 +18,14 @@ class PostmarkServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'postmark');
 
-        $this->app['mail.manager']->extend('postmark', function () {
-            $config = $this->app->make('config');
+        $this->app['mail.manager']->extend('postmark', function ($config) {
+            $configuration = $this->app->make('config');
 
             return new PostmarkTransport(
                 $this->app->make(Factory::class),
-                $config->get('mail.mailers.postmark.message_stream_id'),
-                $config->get('services.postmark.token'),
+                $config['message_stream_id'] ?? null,
+                $configuration->get('services.postmark.options', []),
+                $configuration->get('services.postmark.token'),
             );
         });
     }

@@ -29,17 +29,17 @@ abstract class BaseNode implements NodeInterface
     private static array $placeholderUniquePrefixes = [];
     private static array $placeholders = [];
 
-    protected $name;
-    protected $parent;
-    protected $normalizationClosures = [];
-    protected $normalizedTypes = [];
-    protected $finalValidationClosures = [];
-    protected $allowOverwrite = true;
-    protected $required = false;
-    protected $deprecation = [];
-    protected $equivalentValues = [];
-    protected $attributes = [];
-    protected $pathSeparator;
+    protected string $name;
+    protected ?NodeInterface $parent;
+    protected array $normalizationClosures = [];
+    protected array $normalizedTypes = [];
+    protected array $finalValidationClosures = [];
+    protected bool $allowOverwrite = true;
+    protected bool $required = false;
+    protected array $deprecation = [];
+    protected array $equivalentValues = [];
+    protected array $attributes = [];
+    protected string $pathSeparator;
 
     private mixed $handlingPlaceholder = null;
 
@@ -98,7 +98,7 @@ abstract class BaseNode implements NodeInterface
         self::$placeholders = [];
     }
 
-    public function setAttribute(string $key, mixed $value)
+    public function setAttribute(string $key, mixed $value): void
     {
         $this->attributes[$key] = $value;
     }
@@ -118,12 +118,12 @@ abstract class BaseNode implements NodeInterface
         return $this->attributes;
     }
 
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
 
-    public function removeAttribute(string $key)
+    public function removeAttribute(string $key): void
     {
         unset($this->attributes[$key]);
     }
@@ -131,7 +131,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Sets an info message.
      */
-    public function setInfo(string $info)
+    public function setInfo(string $info): void
     {
         $this->setAttribute('info', $info);
     }
@@ -147,7 +147,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Sets the example configuration for this node.
      */
-    public function setExample(string|array $example)
+    public function setExample(string|array $example): void
     {
         $this->setAttribute('example', $example);
     }
@@ -163,7 +163,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Adds an equivalent value.
      */
-    public function addEquivalentValue(mixed $originalValue, mixed $equivalentValue)
+    public function addEquivalentValue(mixed $originalValue, mixed $equivalentValue): void
     {
         $this->equivalentValues[] = [$originalValue, $equivalentValue];
     }
@@ -171,7 +171,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Set this node as required.
      */
-    public function setRequired(bool $boolean)
+    public function setRequired(bool $boolean): void
     {
         $this->required = $boolean;
     }
@@ -179,14 +179,14 @@ abstract class BaseNode implements NodeInterface
     /**
      * Sets this node as deprecated.
      *
+     * You can use %node% and %path% placeholders in your message to display,
+     * respectively, the node name and its complete path.
+     *
      * @param string $package The name of the composer package that is triggering the deprecation
      * @param string $version The version of the package that introduced the deprecation
      * @param string $message the deprecation message to use
-     *
-     * You can use %node% and %path% placeholders in your message to display,
-     * respectively, the node name and its complete path
      */
-    public function setDeprecated(string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.')
+    public function setDeprecated(string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.'): void
     {
         $this->deprecation = [
             'package' => $package,
@@ -198,7 +198,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Sets if this node can be overridden.
      */
-    public function setAllowOverwrite(bool $allow)
+    public function setAllowOverwrite(bool $allow): void
     {
         $this->allowOverwrite = $allow;
     }
@@ -208,7 +208,7 @@ abstract class BaseNode implements NodeInterface
      *
      * @param \Closure[] $closures An array of Closures used for normalization
      */
-    public function setNormalizationClosures(array $closures)
+    public function setNormalizationClosures(array $closures): void
     {
         $this->normalizationClosures = $closures;
     }
@@ -218,7 +218,7 @@ abstract class BaseNode implements NodeInterface
      *
      * see ExprBuilder::TYPE_* constants.
      */
-    public function setNormalizedTypes(array $types)
+    public function setNormalizedTypes(array $types): void
     {
         $this->normalizedTypes = $types;
     }
@@ -238,7 +238,7 @@ abstract class BaseNode implements NodeInterface
      *
      * @param \Closure[] $closures An array of Closures used for final validation
      */
-    public function setFinalValidationClosures(array $closures)
+    public function setFinalValidationClosures(array $closures): void
     {
         $this->finalValidationClosures = $closures;
     }
@@ -417,7 +417,7 @@ abstract class BaseNode implements NodeInterface
      *
      * @throws InvalidTypeException when the value is invalid
      */
-    abstract protected function validateType(mixed $value);
+    abstract protected function validateType(mixed $value): void;
 
     /**
      * Normalizes the value.

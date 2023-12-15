@@ -9,7 +9,7 @@ trait ListsFollowers
     /**
      * List the followers of a resource.
      *
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function followers($id)

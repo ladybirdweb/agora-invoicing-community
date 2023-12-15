@@ -24,6 +24,7 @@ class UnusedTagsPass implements CompilerPassInterface
     private const KNOWN_TAGS = [
         'annotations.cached_reader',
         'assets.package',
+        'asset_mapper.compiler',
         'auto_alias',
         'cache.pool',
         'cache.pool.clearer',
@@ -46,6 +47,7 @@ class UnusedTagsPass implements CompilerPassInterface
         'container.stack',
         'controller.argument_value_resolver',
         'controller.service_arguments',
+        'controller.targeted_value_resolver',
         'data_collector',
         'event_dispatcher.dispatcher',
         'form.type',
@@ -74,14 +76,16 @@ class UnusedTagsPass implements CompilerPassInterface
         'property_info.list_extractor',
         'property_info.type_extractor',
         'proxy',
+        'remote_event.consumer',
         'routing.condition_service',
         'routing.expression_language_function',
         'routing.expression_language_provider',
         'routing.loader',
         'routing.route_loader',
+        'scheduler.schedule_provider',
+        'scheduler.task',
         'security.authenticator.login_linker',
         'security.expression_language_provider',
-        'security.remember_me_aware',
         'security.remember_me_handler',
         'security.voter',
         'serializer.encoder',
@@ -97,10 +101,14 @@ class UnusedTagsPass implements CompilerPassInterface
         'twig.runtime',
         'validator.auto_mapper',
         'validator.constraint_validator',
+        'validator.group_provider',
         'validator.initializer',
         'workflow',
     ];
 
+    /**
+     * @return void
+     */
     public function process(ContainerBuilder $container)
     {
         $tags = array_unique(array_merge($container->findTags(), self::KNOWN_TAGS));

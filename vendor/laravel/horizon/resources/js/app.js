@@ -25,24 +25,24 @@ Vue.use(VueRouter);
 
 Vue.prototype.$http = axios.create();
 
-// window.Horizon.basePath = '/' + window.Horizon.path;
-window.Horizon.basePath =  window.Horizon.path;
+window.Horizon.basePath = '/' + window.Horizon.path;
 
-// let routerBasePath = window.Horizon.basePath + '/';
+let routerBasePath = window.Horizon.basePath + '/';
 
 if (window.Horizon.path === '' || window.Horizon.path === '/') {
-    // routerBasePath = '/';
+    routerBasePath = '/';
     window.Horizon.basePath = '';
 }
 
 const router = new VueRouter({
     routes: Routes,
     mode: 'history',
-    // base: routerBasePath,
+    base: routerBasePath,
 });
 
 Vue.component('vue-json-pretty', VueJsonPretty);
 Vue.component('alert', require('./components/Alert.vue').default);
+Vue.component('scheme-toggler', require('./components/SchemeToggler.vue').default);
 
 Vue.mixin(Base);
 

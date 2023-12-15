@@ -1,6 +1,71 @@
 CHANGELOG
 =========
 
+6.4
+---
+
+ * Add `HttpClientAssertionsTrait`
+ * Add `AbstractController::renderBlock()` and `renderBlockView()`
+ * Add native return type to `Translator` and to `Application::reset()`
+ * Deprecate the integration of Doctrine annotations, either uninstall the `doctrine/annotations` package or disable the integration by setting `framework.annotations` to `false`
+ * Enable `json_decode_detailed_errors` context for Serializer by default if `kernel.debug` is true and the `seld/jsonlint` package is installed
+ * Add `DomCrawlerAssertionsTrait::assertAnySelectorTextContains(string $selector, string $text)`
+ * Add `DomCrawlerAssertionsTrait::assertAnySelectorTextSame(string $selector, string $text)`
+ * Add `DomCrawlerAssertionsTrait::assertAnySelectorTextNotContains(string $selector, string $text)`
+ * Deprecate `EnableLoggerDebugModePass`, use argument `$debug` of HttpKernel's `Logger` instead
+ * Deprecate `AddDebugLogProcessorPass::configureLogger()`, use HttpKernel's `DebugLoggerConfigurator` instead
+ * Deprecate not setting the `framework.handle_all_throwables` config option; it will default to `true` in 7.0
+ * Deprecate not setting the `framework.php_errors.log` config option; it will default to `true` in 7.0
+ * Deprecate not setting the `framework.session.cookie_secure` config option; it will default to `auto` in 7.0
+ * Deprecate not setting the `framework.session.cookie_samesite` config option; it will default to `lax` in 7.0
+ * Deprecate not setting either `framework.session.handler_id` or `save_path` config options; `handler_id` will
+   default to null in 7.0 if `save_path` is not set and to `session.handler.native_file` otherwise
+ * Deprecate not setting the `framework.uid.default_uuid_version` config option; it will default to `7` in 7.0
+ * Deprecate not setting the `framework.uid.time_based_uuid_version` config option; it will default to `7` in 7.0
+ * Deprecate not setting the `framework.validation.email_validation_mode` config option; it will default to `html5` in 7.0
+ * Deprecate `framework.validation.enable_annotations`, use `framework.validation.enable_attributes` instead
+ * Deprecate `framework.serializer.enable_annotations`, use `framework.serializer.enable_attributes` instead
+ * Add `array $tokenAttributes = []` optional parameter to `KernelBrowser::loginUser()`
+ * Add support for relative URLs in BrowserKit's redirect assertion
+ * Change BrowserKitAssertionsTrait::getClient() to be protected
+ * Deprecate the `framework.asset_mapper.provider` config option
+ * Add `--exclude` option to the `cache:pool:clear` command
+ * Add parameters deprecations to the output of `debug:container` command
+ * Change `framework.asset_mapper.importmap_polyfill` from a URL to the name of an item in the importmap
+ * Provide `$buildDir` when running `CacheWarmer` to build read-only resources
+ * Add the global `--profile` option to the console to enable profiling commands
+ * Deprecate the `routing.loader.annotation` service, use the `routing.loader.attribute` service instead
+ * Deprecate the `routing.loader.annotation.directory` service, use the `routing.loader.attribute.directory` service instead
+ * Deprecate the `routing.loader.annotation.file` service, use the `routing.loader.attribute.file` service instead
+ * Deprecate `AnnotatedRouteControllerLoader`, use `AttributeRouteControllerLoader` instead
+ * Deprecate `AddExpressionLanguageProvidersPass`, use `Symfony\Component\Routing\DependencyInjection\AddExpressionLanguageProvidersPass` instead
+ * Deprecate `DataCollectorTranslatorPass`, use `Symfony\Component\Translation\DependencyInjection\DataCollectorTranslatorPass` instead
+ * Deprecate `LoggingTranslatorPass`, use `Symfony\Component\Translation\DependencyInjection\LoggingTranslatorPass` instead
+ * Deprecate `WorkflowGuardListenerPass`, use `Symfony\Component\Workflow\DependencyInjection\WorkflowGuardListenerPass` instead
+
+6.3
+---
+
+ * Add `extra` option for `http_client.default_options` and `http_client.scoped_client`
+ * Add `DomCrawlerAssertionsTrait::assertSelectorCount(int $count, string $selector)`
+ * Allow to avoid `limit` definition in a RateLimiter configuration when using the `no_limit` policy
+ * Add `--format` option to the `debug:config` command
+ * Add support to pass namespace wildcard in `framework.messenger.routing`
+ * Deprecate `framework:exceptions` tag, unwrap it and replace `framework:exception` tags' `name` attribute by `class`
+ * Deprecate the `notifier.logger_notification_listener` service, use the `notifier.notification_logger_listener` service instead
+ * Allow setting private services with the test container
+ * Register alias for argument for workflow services with workflow name only
+ * Configure the `ErrorHandler` on `FrameworkBundle::boot()`
+ * Allow setting `debug.container.dump` to `false` to disable dumping the container to XML
+ * Add `framework.http_cache.skip_response_headers` option
+ * Display warmers duration on debug verbosity for `cache:clear` command
+ * Add `AbstractController::sendEarlyHints()` to send HTTP Early Hints
+ * Add autowiring aliases for `Http\Client\HttpAsyncClient`
+ * Deprecate the `Http\Client\HttpClient` service, use `Psr\Http\Client\ClientInterface` instead
+ * Add `stop_worker_on_signals` configuration option to `messenger` to define signals which would stop a worker
+ * Add support for `--all` option to clear all cache pools with `cache:pool:clear` command
+ * Add `--show-aliases` option to `debug:router` command
+
 6.2
 ---
 

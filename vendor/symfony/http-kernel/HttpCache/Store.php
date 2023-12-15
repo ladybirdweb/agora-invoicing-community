@@ -55,6 +55,8 @@ class Store implements StoreInterface
 
     /**
      * Cleanups storage.
+     *
+     * @return void
      */
     public function cleanup()
     {
@@ -247,6 +249,8 @@ class Store implements StoreInterface
     /**
      * Invalidates all cache entries that match the request.
      *
+     * @return void
+     *
      * @throws \RuntimeException
      */
     public function invalidate(Request $request)
@@ -413,6 +417,9 @@ class Store implements StoreInterface
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getPath(string $key)
     {
         return $this->root.\DIRECTORY_SEPARATOR.substr($key, 0, 2).\DIRECTORY_SEPARATOR.substr($key, 2, 2).\DIRECTORY_SEPARATOR.substr($key, 4, 2).\DIRECTORY_SEPARATOR.substr($key, 6);
@@ -467,15 +474,25 @@ class Store implements StoreInterface
     /**
      * Restores a Response from the HTTP headers and body.
      */
-    private function restoreResponse(array $headers, string $path = null): Response
+    private function restoreResponse(array $headers, string $path = null): ?Response
     {
         $status = $headers['X-Status'][0];
         unset($headers['X-Status']);
+        $content = null;
 
         if (null !== $path) {
             $headers['X-Body-File'] = [$path];
+            unset($headers['x-body-file']);
+
+            if ($headers['X-Body-Eval'] ?? $headers['x-body-eval'] ?? false) {
+                $content = file_get_contents($path);
+                \assert(HttpCache::BODY_EVAL_BOUNDARY_LENGTH === 24);
+                if (48 > \strlen($content) || substr($content, -24) !== substr($content, 0, 24)) {
+                    return null;
+                }
+            }
         }
 
-        return new Response($path, $status, $headers);
+        return new Response($content, $status, $headers);
     }
 }

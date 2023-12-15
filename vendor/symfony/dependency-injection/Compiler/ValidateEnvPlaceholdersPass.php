@@ -30,7 +30,7 @@ class ValidateEnvPlaceholdersPass implements CompilerPassInterface
 
     private array $extensionConfig = [];
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->extensionConfig = [];
 

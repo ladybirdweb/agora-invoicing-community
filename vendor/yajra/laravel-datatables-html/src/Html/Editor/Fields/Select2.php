@@ -7,114 +7,116 @@ namespace Yajra\DataTables\Html\Editor\Fields;
  */
 class Select2 extends Select
 {
-    protected $type = 'select2';
+    protected string $type = 'select2';
 
     /**
-     * @param bool $state
+     * @param  bool  $state
      * @return $this
      */
-    public function allowClear($state = true)
+    public function allowClear(bool $state = true): static
     {
-        $this->attributes['opts']['allowClear'] = $state;
-
-        return $this;
+        return $this->opts(['allowClear' => $state]);
     }
 
     /**
-     * @param string $text
-     * @param string|null $id
+     * @param  string  $value
      * @return $this
      */
-    public function placeholder($text = '', $id = null)
+    public function placeholder(string $value): static
     {
-        $this->attributes['opts']['placeholder'] = [
-            'id'   => $id,
-            'text' => $text,
-        ];
+        return $this->optsPlaceholder($value);
+    }
 
-        return $this;
+    /**
+     * @param  string  $text
+     * @param  string  $id
+     * @return $this
+     */
+    public function optsPlaceholder(string $text = '', string $id = ''): static
+    {
+        return $this->opts([
+            'placeholder' => [
+                'id' => $id,
+                'text' => $text,
+            ],
+        ]);
     }
 
     /**
      * Set select2 ajax option.
      *
-     * @param mixed $value
+     * @param  array|string  $value
      * @return $this
      */
-    public function ajax($value)
+    public function ajax(array|string $value): static
     {
+        $ajax = $this->opts['ajax'] ?? [];
+
         if (is_array($value)) {
-            $this->attributes['opts']['ajax'] = $value;
-        } else {
-            $this->attributes['opts']['ajax']['url'] = $value;
+            return $this->opts(['ajax' => array_merge($ajax, $value)]);
         }
 
-        return $this;
+        return $this->opts(['ajax' => array_merge($ajax, ['url' => $value])]);
     }
 
     /**
      * Set select2 ajax url option.
      *
-     * @param mixed $value
+     * @param  string  $value
      * @return $this
      */
-    public function ajaxUrl($value)
+    public function ajaxUrl(string $value): static
     {
-        $this->attributes['opts']['ajax']['url'] = $value;
-
-        return $this;
+        return $this->ajax(['url' => $value]);
     }
 
     /**
      * Set select2 ajaxDelay option.
      *
-     * @param mixed $value
+     * @param  int  $value
      * @return $this
      */
-    public function ajaxDelay($value = 250)
+    public function ajaxDelay(int $value = 250): static
     {
-        $this->attributes['opts']['ajax']['delay'] = $value;
-
-        return $this;
+        return $this->ajax(['delay' => $value]);
     }
 
     /**
      * Set select2 ajax data option.
      *
-     * @param mixed $data
+     * @param  array|string  $data
      * @return $this
      */
-    public function ajaxData($data)
+    public function ajaxData(array|string $data): static
     {
         if (is_array($data)) {
             $script = 'function(params) {';
             foreach ($data as $key => $value) {
-                $value  = json_encode($value);
-                $script .= " params.{$key} = {$value}; ";
+                $value = json_encode($value);
+                $script .= " params.$key = $value; ";
             }
             $script .= 'return params; }';
 
             $data = $script;
         }
 
-        $this->attributes['opts']['ajax']['data'] = $data;
-
-        return $this;
+        return $this->ajax(['data' => $data]);
     }
 
     /**
      * Set select2 ajax processResults option to process a paginated results.
      *
-     * @param string $display
-     * @param string $id
+     * @param  string  $display
+     * @param  string  $id
+     * @param  string  $wrap
      * @return $this
      */
-    public function processPaginatedResults($display = 'text', $id = 'id')
+    public function processPaginatedResults(string $display = 'text', string $id = 'id', string $wrap = 'results'): static
     {
         $script = 'function(data, params) { ';
         $script .= 'params.page = params.page || 1; ';
-        $script .= "data.data.map(function(e) { e.text = e.{$display}; e.id = e.{$id}; return e; }); ";
-        $script .= 'return { results: data.data, pagination: { more: data.current_page < data.last_page } };';
+        $script .= "data.$wrap.map(function(e) { e.text = e.$display; e.id = e.$id; return e; }); ";
+        $script .= "return { results: data.$wrap, pagination: { more: data.meta.current_page < data.meta.last_page } };";
         $script .= '}';
 
         return $this->processResults($script);
@@ -123,13 +125,11 @@ class Select2 extends Select
     /**
      * Set select2 ajax processResults option.
      *
-     * @param string $value
+     * @param  string  $value
      * @return $this
      */
-    public function processResults($value)
+    public function processResults(string $value): static
     {
-        $this->attributes['opts']['ajax']['processResults'] = $value;
-
-        return $this;
+        return $this->ajax(['processResults' => $value]);
     }
 }

@@ -90,11 +90,15 @@ class PassConfig
             new DefinitionErrorExceptionPass(),
         ]];
 
-        $this->afterRemovingPasses = [[
-            new ResolveHotPathPass(),
-            new ResolveNoPreloadPass(),
-            new AliasDeprecatedPublicServicesPass(),
-        ]];
+        $this->afterRemovingPasses = [
+            0 => [
+                new ResolveHotPathPass(),
+                new ResolveNoPreloadPass(),
+                new AliasDeprecatedPublicServicesPass(),
+            ],
+            // Let build parameters be available as late as possible
+            -2048 => [new RemoveBuildParametersPass()],
+        ];
     }
 
     /**
@@ -119,7 +123,7 @@ class PassConfig
      *
      * @throws InvalidArgumentException when a pass type doesn't exist
      */
-    public function addPass(CompilerPassInterface $pass, string $type = self::TYPE_BEFORE_OPTIMIZATION, int $priority = 0)
+    public function addPass(CompilerPassInterface $pass, string $type = self::TYPE_BEFORE_OPTIMIZATION, int $priority = 0): void
     {
         $property = $type.'Passes';
         if (!isset($this->$property)) {
@@ -192,7 +196,7 @@ class PassConfig
         return $this->mergePass;
     }
 
-    public function setMergePass(CompilerPassInterface $pass)
+    public function setMergePass(CompilerPassInterface $pass): void
     {
         $this->mergePass = $pass;
     }
@@ -202,7 +206,7 @@ class PassConfig
      *
      * @param CompilerPassInterface[] $passes
      */
-    public function setAfterRemovingPasses(array $passes)
+    public function setAfterRemovingPasses(array $passes): void
     {
         $this->afterRemovingPasses = [$passes];
     }
@@ -212,7 +216,7 @@ class PassConfig
      *
      * @param CompilerPassInterface[] $passes
      */
-    public function setBeforeOptimizationPasses(array $passes)
+    public function setBeforeOptimizationPasses(array $passes): void
     {
         $this->beforeOptimizationPasses = [$passes];
     }
@@ -222,7 +226,7 @@ class PassConfig
      *
      * @param CompilerPassInterface[] $passes
      */
-    public function setBeforeRemovingPasses(array $passes)
+    public function setBeforeRemovingPasses(array $passes): void
     {
         $this->beforeRemovingPasses = [$passes];
     }
@@ -232,7 +236,7 @@ class PassConfig
      *
      * @param CompilerPassInterface[] $passes
      */
-    public function setOptimizationPasses(array $passes)
+    public function setOptimizationPasses(array $passes): void
     {
         $this->optimizationPasses = [$passes];
     }
@@ -242,7 +246,7 @@ class PassConfig
      *
      * @param CompilerPassInterface[] $passes
      */
-    public function setRemovingPasses(array $passes)
+    public function setRemovingPasses(array $passes): void
     {
         $this->removingPasses = [$passes];
     }

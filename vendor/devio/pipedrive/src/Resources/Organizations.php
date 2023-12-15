@@ -15,7 +15,7 @@ class Organizations extends Entity
     /**
      * List the persons of a resource.
      *
-     * @param       $id      The resource id
+     * @param int   $id      The resource id
      * @param array $options Extra parameters
      * @return Response
      */

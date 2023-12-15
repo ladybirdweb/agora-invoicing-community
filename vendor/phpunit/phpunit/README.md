@@ -1,5 +1,3 @@
-<h1 align="center">🇺🇦 <a href="https://phpunit.de/stand-with-ukraine.html">UKRAINE NEEDS YOUR HELP NOW!</a></h1>
-
 # PHPUnit
 
 [![Latest Stable Version](https://poser.pugx.org/phpunit/phpunit/v/stable.png)](https://packagist.org/packages/phpunit/phpunit)
@@ -25,7 +23,7 @@ Alternatively, you may use [Composer](https://getcomposer.org/) to download and 
 
 ## Contribute
 
-Please refer to [CONTRIBUTING.md](https://github.com/sebastianbergmann/phpunit/blob/master/.github/CONTRIBUTING.md) for information on how to contribute to PHPUnit and its related projects.
+Please refer to [CONTRIBUTING.md](https://github.com/sebastianbergmann/phpunit/blob/main/.github/CONTRIBUTING.md) for information on how to contribute to PHPUnit and its related projects.
 
 ## List of Contributors
 

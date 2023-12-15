@@ -15,12 +15,14 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Looks for definitions with autowiring enabled and registers their corresponding "@required" methods as setters.
+ * Looks for definitions with autowiring enabled and registers their corresponding "#[Required]" methods as setters.
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
 class AutowireRequiredMethodsPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = true;
+
     protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         $value = parent::processValue($value, $isRoot);
@@ -54,19 +56,6 @@ class AutowireRequiredMethodsPass extends AbstractRecursivePass
                         $value->addMethodCall($r->name, []);
                     }
                     break;
-                }
-                if (false !== $doc = $r->getDocComment()) {
-                    if (false !== stripos($doc, '@required') && preg_match('#(?:^/\*\*|\n\s*+\*)\s*+@required(?:\s|\*/$)#i', $doc)) {
-                        if ($this->isWither($reflectionMethod, $doc)) {
-                            $withers[] = [$reflectionMethod->name, [], true];
-                        } else {
-                            $value->addMethodCall($reflectionMethod->name, []);
-                        }
-                        break;
-                    }
-                    if (false === stripos($doc, '@inheritdoc') || !preg_match('#(?:^/\*\*|\n\s*+\*)\s*+(?:\{@inheritdoc\}|@inheritdoc)(?:\s|\*/$)#i', $doc)) {
-                        break;
-                    }
                 }
                 try {
                     $r = $r->getPrototype();

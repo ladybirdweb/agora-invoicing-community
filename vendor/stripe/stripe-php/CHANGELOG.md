@@ -1,5 +1,50 @@
 # Changelog
 
+## 10.21.0 - 2023-08-10
+* [#1546](https://github.com/stripe/stripe-php/pull/1546) Update generated code
+  * Add support for new value `payment_reversal` on enum `BalanceTransaction.type`
+  * Add support for new value `adjusted_for_overdraft` on enum `CustomerBalanceTransaction.type`
+
+## 10.20.0 - 2023-08-03
+* [#1539](https://github.com/stripe/stripe-php/pull/1539) Update generated code
+  * Add support for `subscription_details` on `Invoice`
+  * Add support for new values `sepa_debit_fingerprint` and `us_bank_account_fingerprint` on enum `Radar.ValueList.item_type`
+
+## 10.19.0 - 2023-07-27
+* [#1534](https://github.com/stripe/stripe-php/pull/1534) Update generated code
+  * Improve PHPDoc type for `ApplicationFee.refunds`
+  * Add support for `deleted` on `Apps.Secret`
+* [#1526](https://github.com/stripe/stripe-php/pull/1526) Add constants for payment intent cancellation reasons
+* [#1533](https://github.com/stripe/stripe-php/pull/1533) Update generated code
+  * Add support for new value `service_tax` on enum `TaxRate.tax_type`
+* [#1487](https://github.com/stripe/stripe-php/pull/1487) PHPDoc: use union of literals for $method parameter throughout
+
+## 10.18.0 - 2023-07-20
+* [#1533](https://github.com/stripe/stripe-php/pull/1533) Update generated code
+  * Add support for new value `service_tax` on enum `TaxRate.tax_type`
+* [#1526](https://github.com/stripe/stripe-php/pull/1526) Add constants for payment intent cancellation reasons
+* [#1487](https://github.com/stripe/stripe-php/pull/1487) PHPDoc: use union of literals for $method parameter throughout
+
+## 10.17.0 - 2023-07-13
+* [#1525](https://github.com/stripe/stripe-php/pull/1525) Update generated code
+  * Add support for new resource `Tax.Settings`
+  * Add support for `retrieve` and `update` methods on resource `Settings`
+  * Add support for new value `invalid_tax_location` on enum `StripeError.code`
+  * Add support for `product` on `Tax.TransactionLineItem`
+  * Add constant for `tax.settings.updated` webhook event
+* [#1520](https://github.com/stripe/stripe-php/pull/1520) Update generated code
+  * Release specs are identical.
+
+## 10.16.0 - 2023-06-29
+* [#1517](https://github.com/stripe/stripe-php/pull/1517) Update generated code
+  * Add support for new value `application_fees_not_allowed` on enum `StripeError.code`
+  * Add support for `effective_at` on `CreditNote` and `Invoice`
+  * Add support for `on_behalf_of` on `Mandate`
+* [#1514](https://github.com/stripe/stripe-php/pull/1514) Update generated code
+  * Release specs are identical.
+* [#1512](https://github.com/stripe/stripe-php/pull/1512) Update generated code
+  * Change type of `Checkout.Session.success_url` from `string` to `nullable(string)`
+
 ## 10.15.0 - 2023-06-08
 * [#1506](https://github.com/stripe/stripe-php/pull/1506) Update generated code
   * Add support for `preferred_locales` on `Issuing.Cardholder`

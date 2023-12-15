@@ -10,7 +10,7 @@ class Mailbox extends Resource
     /**
      * Get the Mail threads details by ID.
      *
-     * @param $id   Mail threads ID to find.
+     * @param int $id   Mail threads ID to find.
 	 * @return Response
      */
     public function find($id)
@@ -21,7 +21,7 @@ class Mailbox extends Resource
     /**
      * Delete Mail threads by ID.
      *
-     * @param $id   Mail threads ID to delete.
+     * @param int $id   Mail threads ID to delete.
 	 * @return Response
      */
     public function delete($id)
@@ -32,7 +32,7 @@ class Mailbox extends Resource
     /**
      * Update Mail threads by ID.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $values
 	 * @return Response
      */
@@ -45,8 +45,8 @@ class Mailbox extends Resource
     /**
      * Get list of mail threads
      *
-     * @param       $folder
-     * @param array $options
+     * @param string $folder
+     * @param array  $options
 	 * @return Response 
      */
     public function mailThreads($folder, array $options = [])
@@ -59,7 +59,7 @@ class Mailbox extends Resource
     /**
      * Get mail messages inside specified mail thread by ID.
      *
-     * @param $id   Mail threads ID to find messages.
+     * @param int $id   Mail threads ID to find messages.
 	 * @return Response
      */
     public function mailMessages($id, $params=[])

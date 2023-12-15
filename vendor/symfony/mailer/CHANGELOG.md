@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+6.4
+---
+
+ * Add DSN parameter `peer_fingerprint` to verify TLS certificate fingerprint
+ * Change the default port for the `mailjet+smtp` transport from 465 to 587
+
+6.3
+---
+
+ * Add `MessageEvent::reject()` to allow rejecting an email before sending it
+ * Change the default port for the `mailgun+smtp` transport from 465 to 587
+ * Add `$authenticators` parameter in `EsmtpTransport` constructor and `EsmtpTransport::setAuthenticators()`
+  to allow overriding of default eSMTP authenticators
+
 6.2.7
 -----
 

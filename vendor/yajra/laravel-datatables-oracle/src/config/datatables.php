@@ -48,9 +48,7 @@ return [
         'eloquent'   => Yajra\DataTables\EloquentDataTable::class,
         'query'      => Yajra\DataTables\QueryDataTable::class,
         'collection' => Yajra\DataTables\CollectionDataTable::class,
-        'resource'   => Yajra\DataTables\ApiResourceDataTable::class,
-        
-        
+        'resource' => Yajra\DataTables\ApiResourceDataTable::class,
     ],
 
     /*
@@ -59,15 +57,11 @@ return [
      * Note, only change this if you know what you are doing!
      */
     'builders'       => [
-        // Illuminate\Database\Eloquent\Relations\Relation::class => 'eloquent',
-        // Illuminate\Database\Eloquent\Builder::class            => 'eloquent',
-        // Illuminate\Database\Query\Builder::class               => 'query',
-        // Illuminate\Support\Collection::class                   => 'collection',
-        
-      
+        //Illuminate\Database\Eloquent\Relations\Relation::class => 'eloquent',
+        //Illuminate\Database\Eloquent\Builder::class            => 'eloquent',
+        //Illuminate\Database\Query\Builder::class               => 'query',
+        //Illuminate\Support\Collection::class                   => 'collection',
     ],
-    
-    
 
     /*
      * Nulls last sql pattern for PostgreSQL & Oracle.
@@ -125,4 +119,9 @@ return [
         'options' => 0,
     ],
 
+    /*
+     * Default condition to determine if a parameter is a callback or not.
+     * Callbacks needs to start by those terms, or they will be cast to string.
+     */
+    'callback' => ['$', '$.', 'function'],
 ];

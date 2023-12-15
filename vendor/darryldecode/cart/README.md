@@ -1,4 +1,4 @@
-# Laravel 5 & 6 & 7 Shopping Cart
+# Laravel 5 & 6 , 7 & 9 Shopping Cart
 [![Build Status](https://travis-ci.org/darryldecode/laravelshoppingcart.svg?branch=master)](https://travis-ci.org/darryldecode/laravelshoppingcart)
 [![Total Downloads](https://poser.pugx.org/darryldecode/cart/d/total.svg)](https://packagist.org/packages/darryldecode/cart)
 [![License](https://poser.pugx.org/darryldecode/cart/license.svg)](https://packagist.org/packages/darryldecode/cart)
@@ -18,7 +18,7 @@ Install the package through [Composer](http://getcomposer.org/).
 For Laravel 5.1~:
 `composer require "darryldecode/cart:~2.0"`
 
-For Laravel 5.5, 5.6, or 5.7~:
+For Laravel 5.5, 5.6, or 5.7~, 9:
 
 ```composer require "darryldecode/cart:~4.0"``` or 
 ```composer require "darryldecode/cart"```
@@ -130,6 +130,7 @@ $userId // the current login user id
 \Cart::condition($condition1);
 \Cart::getTotal();
 \Cart::getSubTotal();
+\Cart::getSubTotalWithoutConditions();
 \Cart::addItemCondition($productID, $coupon101);
 // and so on..
 ```
@@ -378,6 +379,21 @@ $subTotal = Cart::getSubTotal();
 
 // for a specific user
 $subTotal = Cart::session($userId)->getSubTotal();
+```
+
+Get cart subtotal with out conditions: **Cart::getSubTotalWithoutConditions()**
+
+```php
+/**
+* get cart sub total with out conditions
+*
+* @param bool $formatted
+* @return float
+*/
+$subTotalWithoutConditions = Cart::getSubTotalWithoutConditions();
+
+// for a specific user
+$subTotalWithoutConditions = Cart::session($userId)->getSubTotalWithoutConditions();
 ```
 
 Get cart total: **Cart::getTotal()**

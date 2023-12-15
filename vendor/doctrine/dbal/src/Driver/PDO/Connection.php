@@ -2,6 +2,7 @@
 
 namespace Doctrine\DBAL\Driver\PDO;
 
+use Doctrine\DBAL\Driver\Exception\UnknownParameterType;
 use Doctrine\DBAL\Driver\PDO\PDOException as DriverPDOException;
 use Doctrine\DBAL\Driver\Result as ResultInterface;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
@@ -40,7 +41,7 @@ final class Connection implements ServerInfoAwareConnection
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getServerVersion()
     {
@@ -77,7 +78,11 @@ final class Connection implements ServerInfoAwareConnection
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @throws UnknownParameterType
+     *
+     * @psalm-assert ParameterType::* $type
      */
     public function quote($value, $type = ParameterType::STRING)
     {
@@ -85,7 +90,7 @@ final class Connection implements ServerInfoAwareConnection
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function lastInsertId($name = null)
     {

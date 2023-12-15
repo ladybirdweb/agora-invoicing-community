@@ -25,6 +25,7 @@
     "require-dev": {
         "mockery/mockery": "^1.0",
         "orchestra/testbench": "^6.0|^7.0|^8.0",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.0",
         "predis/predis": "^1.1|^2.0"
     },
@@ -39,7 +40,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Laravel\\Horizon\\Tests\\": "tests/"
+            "Laravel\\Horizon\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "extra": {
@@ -59,5 +63,21 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "post-autoload-dump": "@prepare",
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ],
+        "test": [
+            "@php vendor/bin/phpunit"
+        ]
+    }
 }

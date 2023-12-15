@@ -279,14 +279,14 @@ class ClientController extends BaseClientController
             ->where('invoices.user_id', '=', \Auth::user()->id);
 
         return \DataTables::of($invoices)
-                    ->orderColumn('number', '-invoices.date ASC')
-                    ->orderColumn('orderNo', '-invoices.date ASC')
-                    ->orderColumn('date', '-invoices.date ASC')
-                    ->orderColumn('total', '-invoices.date ASC')
-                    ->orderColumn('paid', '-invoices.date ASC')
-                    ->orderColumn('balance', '-invoices.date ASC')
-                    ->orderColumn('status', '-invoices.date ASC')
-                    ->orderColumn('date', '-invoices.date ASC')
+                    ->orderColumn('number', '-invoices.date $1')
+                    ->orderColumn('orderNo', '-invoices.date $1')
+                    ->orderColumn('date', '-invoices.date $1')
+                    ->orderColumn('total', '-invoices.date $1')
+                    ->orderColumn('paid', '-invoices.date $1')
+                    ->orderColumn('balance', '-invoices.date $1')
+                    ->orderColumn('status', '-invoices.date $1')
+                    ->orderColumn('date', '-invoices.date $1')
 
                     ->addColumn('number', function ($model) {
                         if ($model->is_renewed) {

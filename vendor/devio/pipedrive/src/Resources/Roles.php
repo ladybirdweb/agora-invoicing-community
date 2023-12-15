@@ -20,7 +20,7 @@ class Roles extends Resource
     /**
      * List the role subroles.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */
@@ -34,7 +34,7 @@ class Roles extends Resource
     /**
      * List the role settings.
      *
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function settings($id)
@@ -45,9 +45,9 @@ class Roles extends Resource
     /**
      * Add or update a setting value.
      *
-     * @param $id
-     * @param $setting_key
-     * @param $value
+     * @param int    $id
+     * @param string $setting_key
+     * @param int    $value
      * @return Response
      */
     public function setSetting($id, $setting_key, $value)

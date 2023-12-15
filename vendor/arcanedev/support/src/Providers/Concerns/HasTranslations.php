@@ -57,9 +57,10 @@ trait HasTranslations
      */
     protected function loadTranslations(): void
     {
-        $path = $this->getTranslationsPath();
+        $packagePath = $this->getTranslationsPath();
+        $vendorPath = $this->getTranslationsDestinationPath();
 
-        $this->loadTranslationsFrom($path, $this->getPackageName());
-        $this->loadJsonTranslationsFrom($path);
+        $this->loadTranslationsFrom($packagePath, $this->getPackageName());
+        $this->loadJsonTranslationsFrom(file_exists($vendorPath) ? $vendorPath : $packagePath);
     }
 }

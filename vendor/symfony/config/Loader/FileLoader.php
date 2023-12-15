@@ -25,9 +25,9 @@ use Symfony\Component\Config\Resource\GlobResource;
  */
 abstract class FileLoader extends Loader
 {
-    protected static $loading = [];
+    protected static array $loading = [];
 
-    protected $locator;
+    protected FileLocatorInterface $locator;
 
     private ?string $currentDir = null;
 
@@ -40,7 +40,7 @@ abstract class FileLoader extends Loader
     /**
      * Sets the current directory.
      */
-    public function setCurrentDir(string $dir)
+    public function setCurrentDir(string $dir): void
     {
         $this->currentDir = $dir;
     }
@@ -66,7 +66,7 @@ abstract class FileLoader extends Loader
      * @throws FileLoaderImportCircularReferenceException
      * @throws FileLocatorFileNotFoundException
      */
-    public function import(mixed $resource, string $type = null, bool $ignoreErrors = false, string $sourceResource = null, string|array $exclude = null)
+    public function import(mixed $resource, string $type = null, bool $ignoreErrors = false, string $sourceResource = null, string|array $exclude = null): mixed
     {
         if (\is_string($resource) && \strlen($resource) !== ($i = strcspn($resource, '*?{[')) && !str_contains($resource, "\n")) {
             $excluded = [];
@@ -97,7 +97,7 @@ abstract class FileLoader extends Loader
     /**
      * @internal
      */
-    protected function glob(string $pattern, bool $recursive, array|GlobResource &$resource = null, bool $ignoreErrors = false, bool $forExclusion = false, array $excluded = [])
+    protected function glob(string $pattern, bool $recursive, array|GlobResource &$resource = null, bool $ignoreErrors = false, bool $forExclusion = false, array $excluded = []): iterable
     {
         if (\strlen($pattern) === $i = strcspn($pattern, '*?{[')) {
             $prefix = $pattern;
@@ -129,7 +129,7 @@ abstract class FileLoader extends Loader
         yield from $resource;
     }
 
-    private function doImport(mixed $resource, string $type = null, bool $ignoreErrors = false, string $sourceResource = null)
+    private function doImport(mixed $resource, string $type = null, bool $ignoreErrors = false, string $sourceResource = null): mixed
     {
         try {
             $loader = $this->resolve($resource, $type);

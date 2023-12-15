@@ -73,6 +73,7 @@ use PHPUnit\Framework\Constraint\LogicalOr;
 use PHPUnit\Framework\Constraint\LogicalXor;
 use PHPUnit\Framework\Constraint\ObjectEquals;
 use PHPUnit\Framework\Constraint\ObjectHasAttribute;
+use PHPUnit\Framework\Constraint\ObjectHasProperty;
 use PHPUnit\Framework\Constraint\RegularExpression;
 use PHPUnit\Framework\Constraint\SameSize;
 use PHPUnit\Framework\Constraint\StringContains;
@@ -111,14 +112,14 @@ abstract class Assert
         if (!(is_int($key) || is_string($key))) {
             throw InvalidArgumentException::create(
                 1,
-                'integer or string'
+                'integer or string',
             );
         }
 
         if (!(is_array($array) || $array instanceof ArrayAccess)) {
             throw InvalidArgumentException::create(
                 2,
-                'array or ArrayAccess'
+                'array or ArrayAccess',
             );
         }
 
@@ -142,19 +143,19 @@ abstract class Assert
         if (!(is_int($key) || is_string($key))) {
             throw InvalidArgumentException::create(
                 1,
-                'integer or string'
+                'integer or string',
             );
         }
 
         if (!(is_array($array) || $array instanceof ArrayAccess)) {
             throw InvalidArgumentException::create(
                 2,
-                'array or ArrayAccess'
+                'array or ArrayAccess',
             );
         }
 
         $constraint = new LogicalNot(
-            new ArrayHasKey($key)
+            new ArrayHasKey($key),
         );
 
         static::assertThat($array, $constraint, $message);
@@ -191,7 +192,7 @@ abstract class Assert
     public static function assertNotContains($needle, iterable $haystack, string $message = ''): void
     {
         $constraint = new LogicalNot(
-            new TraversableContainsIdentical($needle)
+            new TraversableContainsIdentical($needle),
         );
 
         static::assertThat($haystack, $constraint, $message);
@@ -220,9 +221,9 @@ abstract class Assert
             $haystack,
             new TraversableContainsOnly(
                 $type,
-                $isNativeType
+                $isNativeType,
             ),
-            $message
+            $message,
         );
     }
 
@@ -238,9 +239,9 @@ abstract class Assert
             $haystack,
             new TraversableContainsOnly(
                 $className,
-                false
+                false,
             ),
-            $message
+            $message,
         );
     }
 
@@ -261,10 +262,10 @@ abstract class Assert
             new LogicalNot(
                 new TraversableContainsOnly(
                     $type,
-                    $isNativeType
-                )
+                    $isNativeType,
+                ),
             ),
-            $message
+            $message,
         );
     }
 
@@ -290,7 +291,7 @@ abstract class Assert
         static::assertThat(
             $haystack,
             new Count($expectedCount),
-            $message
+            $message,
         );
     }
 
@@ -314,7 +315,7 @@ abstract class Assert
         }
 
         $constraint = new LogicalNot(
-            new Count($expectedCount)
+            new Count($expectedCount),
         );
 
         static::assertThat($haystack, $constraint, $message);
@@ -369,7 +370,7 @@ abstract class Assert
     {
         $constraint = new IsEqualWithDelta(
             $expected,
-            $delta
+            $delta,
         );
 
         static::assertThat($actual, $constraint, $message);
@@ -384,7 +385,7 @@ abstract class Assert
     public static function assertNotEquals($expected, $actual, string $message = ''): void
     {
         $constraint = new LogicalNot(
-            new IsEqual($expected)
+            new IsEqual($expected),
         );
 
         static::assertThat($actual, $constraint, $message);
@@ -399,7 +400,7 @@ abstract class Assert
     public static function assertNotEqualsCanonicalizing($expected, $actual, string $message = ''): void
     {
         $constraint = new LogicalNot(
-            new IsEqualCanonicalizing($expected)
+            new IsEqualCanonicalizing($expected),
         );
 
         static::assertThat($actual, $constraint, $message);
@@ -414,7 +415,7 @@ abstract class Assert
     public static function assertNotEqualsIgnoringCase($expected, $actual, string $message = ''): void
     {
         $constraint = new LogicalNot(
-            new IsEqualIgnoringCase($expected)
+            new IsEqualIgnoringCase($expected),
         );
 
         static::assertThat($actual, $constraint, $message);
@@ -431,8 +432,8 @@ abstract class Assert
         $constraint = new LogicalNot(
             new IsEqualWithDelta(
                 $expected,
-                $delta
-            )
+                $delta,
+            ),
         );
 
         static::assertThat($actual, $constraint, $message);
@@ -446,7 +447,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             static::objectEquals($expected, $method),
-            $message
+            $message,
         );
     }
 
@@ -506,7 +507,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             static::greaterThanOrEqual($expected),
-            $message
+            $message,
         );
     }
 
@@ -562,7 +563,7 @@ abstract class Assert
         static::assertFileExists($actual, $message);
 
         $constraint = new IsEqualCanonicalizing(
-            file_get_contents($expected)
+            file_get_contents($expected),
         );
 
         static::assertThat(file_get_contents($actual), $constraint, $message);
@@ -598,7 +599,7 @@ abstract class Assert
         static::assertFileExists($actual, $message);
 
         $constraint = new LogicalNot(
-            new IsEqual(file_get_contents($expected))
+            new IsEqual(file_get_contents($expected)),
         );
 
         static::assertThat(file_get_contents($actual), $constraint, $message);
@@ -617,7 +618,7 @@ abstract class Assert
         static::assertFileExists($actual, $message);
 
         $constraint = new LogicalNot(
-            new IsEqualCanonicalizing(file_get_contents($expected))
+            new IsEqualCanonicalizing(file_get_contents($expected)),
         );
 
         static::assertThat(file_get_contents($actual), $constraint, $message);
@@ -636,7 +637,7 @@ abstract class Assert
         static::assertFileExists($actual, $message);
 
         $constraint = new LogicalNot(
-            new IsEqualIgnoringCase(file_get_contents($expected))
+            new IsEqualIgnoringCase(file_get_contents($expected)),
         );
 
         static::assertThat(file_get_contents($actual), $constraint, $message);
@@ -702,7 +703,7 @@ abstract class Assert
         static::assertFileExists($expectedFile, $message);
 
         $constraint = new LogicalNot(
-            new IsEqual(file_get_contents($expectedFile))
+            new IsEqual(file_get_contents($expectedFile)),
         );
 
         static::assertThat($actualString, $constraint, $message);
@@ -720,7 +721,7 @@ abstract class Assert
         static::assertFileExists($expectedFile, $message);
 
         $constraint = new LogicalNot(
-            new IsEqualCanonicalizing(file_get_contents($expectedFile))
+            new IsEqualCanonicalizing(file_get_contents($expectedFile)),
         );
 
         static::assertThat($actualString, $constraint, $message);
@@ -738,7 +739,7 @@ abstract class Assert
         static::assertFileExists($expectedFile, $message);
 
         $constraint = new LogicalNot(
-            new IsEqualIgnoringCase(file_get_contents($expectedFile))
+            new IsEqualIgnoringCase(file_get_contents($expectedFile)),
         );
 
         static::assertThat($actualString, $constraint, $message);
@@ -1227,9 +1228,9 @@ abstract class Assert
         static::assertThat(
             $className,
             new LogicalNot(
-                new ClassHasAttribute($attributeName)
+                new ClassHasAttribute($attributeName),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1257,7 +1258,7 @@ abstract class Assert
         static::assertThat(
             $className,
             new ClassHasStaticAttribute($attributeName),
-            $message
+            $message,
         );
     }
 
@@ -1285,9 +1286,9 @@ abstract class Assert
         static::assertThat(
             $className,
             new LogicalNot(
-                new ClassHasStaticAttribute($attributeName)
+                new ClassHasStaticAttribute($attributeName),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1304,7 +1305,7 @@ abstract class Assert
      */
     public static function assertObjectHasAttribute(string $attributeName, $object, string $message = ''): void
     {
-        self::createWarning('assertObjectHasAttribute() is deprecated and will be removed in PHPUnit 10.');
+        self::createWarning('assertObjectHasAttribute() is deprecated and will be removed in PHPUnit 10. Refactor your test to use assertObjectHasProperty() instead.');
 
         if (!self::isValidObjectAttributeName($attributeName)) {
             throw InvalidArgumentException::create(1, 'valid attribute name');
@@ -1317,7 +1318,7 @@ abstract class Assert
         static::assertThat(
             $object,
             new ObjectHasAttribute($attributeName),
-            $message
+            $message,
         );
     }
 
@@ -1334,7 +1335,7 @@ abstract class Assert
      */
     public static function assertObjectNotHasAttribute(string $attributeName, $object, string $message = ''): void
     {
-        self::createWarning('assertObjectNotHasAttribute() is deprecated and will be removed in PHPUnit 10.');
+        self::createWarning('assertObjectNotHasAttribute() is deprecated and will be removed in PHPUnit 10. Refactor your test to use assertObjectNotHasProperty() instead.');
 
         if (!self::isValidObjectAttributeName($attributeName)) {
             throw InvalidArgumentException::create(1, 'valid attribute name');
@@ -1347,9 +1348,39 @@ abstract class Assert
         static::assertThat(
             $object,
             new LogicalNot(
-                new ObjectHasAttribute($attributeName)
+                new ObjectHasAttribute($attributeName),
             ),
-            $message
+            $message,
+        );
+    }
+
+    /**
+     * Asserts that an object has a specified property.
+     *
+     * @throws ExpectationFailedException
+     */
+    final public static function assertObjectHasProperty(string $propertyName, object $object, string $message = ''): void
+    {
+        static::assertThat(
+            $object,
+            new ObjectHasProperty($propertyName),
+            $message,
+        );
+    }
+
+    /**
+     * Asserts that an object does not have a specified property.
+     *
+     * @throws ExpectationFailedException
+     */
+    final public static function assertObjectNotHasProperty(string $propertyName, object $object, string $message = ''): void
+    {
+        static::assertThat(
+            $object,
+            new LogicalNot(
+                new ObjectHasProperty($propertyName),
+            ),
+            $message,
         );
     }
 
@@ -1372,7 +1403,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsIdentical($expected),
-            $message
+            $message,
         );
     }
 
@@ -1393,9 +1424,9 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(
-                new IsIdentical($expected)
+                new IsIdentical($expected),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1421,7 +1452,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsInstanceOf($expected),
-            $message
+            $message,
         );
     }
 
@@ -1447,9 +1478,9 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(
-                new IsInstanceOf($expected)
+                new IsInstanceOf($expected),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1466,7 +1497,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_ARRAY),
-            $message
+            $message,
         );
     }
 
@@ -1483,7 +1514,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_BOOL),
-            $message
+            $message,
         );
     }
 
@@ -1500,7 +1531,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_FLOAT),
-            $message
+            $message,
         );
     }
 
@@ -1517,7 +1548,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_INT),
-            $message
+            $message,
         );
     }
 
@@ -1534,7 +1565,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_NUMERIC),
-            $message
+            $message,
         );
     }
 
@@ -1551,7 +1582,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_OBJECT),
-            $message
+            $message,
         );
     }
 
@@ -1568,7 +1599,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_RESOURCE),
-            $message
+            $message,
         );
     }
 
@@ -1585,7 +1616,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_CLOSED_RESOURCE),
-            $message
+            $message,
         );
     }
 
@@ -1602,7 +1633,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_STRING),
-            $message
+            $message,
         );
     }
 
@@ -1619,7 +1650,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_SCALAR),
-            $message
+            $message,
         );
     }
 
@@ -1636,7 +1667,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_CALLABLE),
-            $message
+            $message,
         );
     }
 
@@ -1653,7 +1684,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new IsType(IsType::TYPE_ITERABLE),
-            $message
+            $message,
         );
     }
 
@@ -1670,7 +1701,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_ARRAY)),
-            $message
+            $message,
         );
     }
 
@@ -1687,7 +1718,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_BOOL)),
-            $message
+            $message,
         );
     }
 
@@ -1704,7 +1735,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_FLOAT)),
-            $message
+            $message,
         );
     }
 
@@ -1721,7 +1752,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_INT)),
-            $message
+            $message,
         );
     }
 
@@ -1738,7 +1769,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_NUMERIC)),
-            $message
+            $message,
         );
     }
 
@@ -1755,7 +1786,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_OBJECT)),
-            $message
+            $message,
         );
     }
 
@@ -1772,7 +1803,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_RESOURCE)),
-            $message
+            $message,
         );
     }
 
@@ -1789,7 +1820,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_CLOSED_RESOURCE)),
-            $message
+            $message,
         );
     }
 
@@ -1806,7 +1837,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_STRING)),
-            $message
+            $message,
         );
     }
 
@@ -1823,7 +1854,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_SCALAR)),
-            $message
+            $message,
         );
     }
 
@@ -1840,7 +1871,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_CALLABLE)),
-            $message
+            $message,
         );
     }
 
@@ -1857,7 +1888,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(new IsType(IsType::TYPE_ITERABLE)),
-            $message
+            $message,
         );
     }
 
@@ -1900,9 +1931,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new LogicalNot(
-                new RegularExpression($pattern)
+                new RegularExpression($pattern),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1923,9 +1954,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new LogicalNot(
-                new RegularExpression($pattern)
+                new RegularExpression($pattern),
             ),
-            $message
+            $message,
         );
     }
 
@@ -1961,7 +1992,7 @@ abstract class Assert
         static::assertThat(
             $actual,
             new SameSize($expected),
-            $message
+            $message,
         );
     }
 
@@ -1997,9 +2028,9 @@ abstract class Assert
         static::assertThat(
             $actual,
             new LogicalNot(
-                new SameSize($expected)
+                new SameSize($expected),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2025,9 +2056,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new LogicalNot(
-                new StringMatchesFormatDescription($format)
+                new StringMatchesFormatDescription($format),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2044,9 +2075,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new StringMatchesFormatDescription(
-                file_get_contents($formatFile)
+                file_get_contents($formatFile),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2064,10 +2095,10 @@ abstract class Assert
             $string,
             new LogicalNot(
                 new StringMatchesFormatDescription(
-                    file_get_contents($formatFile)
-                )
+                    file_get_contents($formatFile),
+                ),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2096,9 +2127,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new LogicalNot(
-                new StringStartsWith($prefix)
+                new StringStartsWith($prefix),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2168,9 +2199,9 @@ abstract class Assert
         static::assertThat(
             $string,
             new LogicalNot(
-                new StringEndsWith($suffix)
+                new StringEndsWith($suffix),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2335,7 +2366,7 @@ abstract class Assert
         static::assertSame(
             $expectedElement->tagName,
             $actualElement->tagName,
-            $message
+            $message,
         );
 
         if ($checkAttributes) {
@@ -2346,8 +2377,8 @@ abstract class Assert
                     '%s%sNumber of attributes on node "%s" does not match',
                     $message,
                     !empty($message) ? "\n" : '',
-                    $expectedElement->tagName
-                )
+                    $expectedElement->tagName,
+                ),
             );
 
             for ($i = 0; $i < $expectedElement->attributes->length; $i++) {
@@ -2363,8 +2394,8 @@ abstract class Assert
                             $message,
                             !empty($message) ? "\n" : '',
                             $expectedAttribute->name,
-                            $expectedElement->tagName
-                        )
+                            $expectedElement->tagName,
+                        ),
                     );
                 }
             }
@@ -2380,8 +2411,8 @@ abstract class Assert
                 '%s%sNumber of child nodes of "%s" differs',
                 $message,
                 !empty($message) ? "\n" : '',
-                $expectedElement->tagName
-            )
+                $expectedElement->tagName,
+            ),
         );
 
         for ($i = 0; $i < $expectedElement->childNodes->length; $i++) {
@@ -2389,7 +2420,7 @@ abstract class Assert
                 $expectedElement->childNodes->item($i),
                 $actualElement->childNodes->item($i),
                 $checkAttributes,
-                $message
+                $message,
             );
         }
     }
@@ -2449,9 +2480,9 @@ abstract class Assert
         static::assertThat(
             $actualJson,
             new LogicalNot(
-                new JsonMatches($expectedJson)
+                new JsonMatches($expectedJson),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2489,9 +2520,9 @@ abstract class Assert
         static::assertThat(
             $actualJson,
             new LogicalNot(
-                new JsonMatches($expectedJson)
+                new JsonMatches($expectedJson),
             ),
-            $message
+            $message,
         );
     }
 
@@ -2513,7 +2544,7 @@ abstract class Assert
         static::assertJson($actualJson, $message);
 
         $constraintExpected = new JsonMatches(
-            $expectedJson
+            $expectedJson,
         );
 
         $constraintActual = new JsonMatches($actualJson);
@@ -2540,7 +2571,7 @@ abstract class Assert
         static::assertJson($actualJson, $message);
 
         $constraintExpected = new JsonMatches(
-            $expectedJson
+            $expectedJson,
         );
 
         $constraintActual = new JsonMatches($actualJson);
@@ -2721,7 +2752,7 @@ abstract class Assert
     {
         return static::logicalOr(
             new IsEqual($value),
-            new GreaterThan($value)
+            new GreaterThan($value),
         );
     }
 
@@ -2779,7 +2810,7 @@ abstract class Assert
     {
         return static::logicalOr(
             new IsEqual($value),
-            new LessThan($value)
+            new LessThan($value),
         );
     }
 

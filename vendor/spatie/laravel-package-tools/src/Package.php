@@ -13,6 +13,8 @@ class Package
 
     public bool $hasViews = false;
 
+    public bool $hasInertiaComponents = false;
+
     public ?string $viewNamespace = null;
 
     public bool $hasTranslations = false;
@@ -26,6 +28,8 @@ class Package
     public array $routeFileNames = [];
 
     public array $commands = [];
+
+    public array $consoleCommands = [];
 
     public array $viewComponents = [];
 
@@ -70,7 +74,7 @@ class Package
 
         $callable($installCommand);
 
-        $this->commands[] = $installCommand;
+        $this->consoleCommands[] = $installCommand;
 
         return $this;
     }
@@ -83,6 +87,15 @@ class Package
     public function hasViews(string $namespace = null): static
     {
         $this->hasViews = true;
+
+        $this->viewNamespace = $namespace;
+
+        return $this;
+    }
+
+    public function hasInertiaComponents(string $namespace = null): static
+    {
+        $this->hasInertiaComponents = true;
 
         $this->viewNamespace = $namespace;
 
@@ -173,6 +186,20 @@ class Package
     public function hasCommands(...$commandClassNames): static
     {
         $this->commands = array_merge($this->commands, collect($commandClassNames)->flatten()->toArray());
+
+        return $this;
+    }
+
+    public function hasConsoleCommand(string $commandClassName): static
+    {
+        $this->consoleCommands[] = $commandClassName;
+
+        return $this;
+    }
+
+    public function hasConsoleCommands(...$commandClassNames): static
+    {
+        $this->consoleCommands = array_merge($this->consoleCommands, collect($commandClassNames)->flatten()->toArray());
 
         return $this;
     }

@@ -7,7 +7,7 @@ namespace Yajra\DataTables\Html\Editor\Fields;
  */
 class Select extends Field
 {
-    protected $type = 'select';
+    protected string $type = 'select';
 
     /**
      * Set field multiple value.
@@ -15,7 +15,7 @@ class Select extends Field
      * @param  bool  $value
      * @return $this
      */
-    public function multiple(bool $value = true)
+    public function multiple(bool $value = true): static
     {
         $this->attributes['multiple'] = $value;
 
@@ -25,17 +25,19 @@ class Select extends Field
     /**
      * Set field optionsPair value.
      *
-     * @param  string|array  $label
+     * @param  array|string  $label
      * @param  string  $value
      * @return $this
      */
-    public function optionsPair($label = 'label', $value = 'value')
+    public function optionsPair(array|string $label = 'label', string $value = 'value'): static
     {
         if (is_array($label)) {
             $this->attributes['optionsPair'] = $label;
         } else {
-            $this->attributes['optionsPair']['label'] = $label;
-            $this->attributes['optionsPair']['value'] = $value;
+            $this->attributes['optionsPair'] = [
+                'label' => $label,
+                'value' => $value,
+            ];
         }
 
         return $this;
@@ -47,7 +49,7 @@ class Select extends Field
      * @param  string  $value
      * @return $this
      */
-    public function placeholder($value)
+    public function placeholder(string $value): static
     {
         $this->attributes['placeholder'] = $value;
 
@@ -60,7 +62,7 @@ class Select extends Field
      * @param  bool  $value
      * @return $this
      */
-    public function placeholderDisabled(bool $value)
+    public function placeholderDisabled(bool $value): static
     {
         $this->attributes['placeholderDisabled'] = $value;
 
@@ -73,7 +75,7 @@ class Select extends Field
      * @param  string  $value
      * @return $this
      */
-    public function placeholderValue($value)
+    public function placeholderValue(string $value): static
     {
         $this->attributes['placeholderValue'] = $value;
 

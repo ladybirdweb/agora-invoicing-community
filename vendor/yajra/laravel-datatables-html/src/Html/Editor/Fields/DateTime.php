@@ -4,16 +4,16 @@ namespace Yajra\DataTables\Html\Editor\Fields;
 
 class DateTime extends Field
 {
-    protected $type = 'datetime';
+    protected string $type = 'datetime';
 
     /**
      * Make a new instance of a field.
      *
-     * @param string $name
-     * @param string $label
-     * @return static|\Yajra\DataTables\Html\Editor\Fields\Field
+     * @param  array|string  $name
+     * @param  string  $label
+     * @return static
      */
-    public static function make($name, $label = '')
+    public static function make(array|string $name, string $label = ''): static
     {
         return parent::make($name, $label)->format('YYYY-MM-DD hh:mm a');
     }
@@ -23,105 +23,143 @@ class DateTime extends Field
      *
      * @return $this
      */
-    public function military()
+    public function military(): static
     {
         return $this->format('YYYY-MM-DD HH:mm');
     }
 
     /**
-     * @param \DateTime $dateTime
-     * @param string $format
+     * @param  \DateTime  $dateTime
+     * @param  string  $format
      * @return $this
      * @see https://editor.datatables.net/examples/dates/options-min-max.html
      */
-    public function minDate(\DateTime $dateTime, $format = 'Y-m-d')
+    public function minDate(\DateTime $dateTime, string $format = 'Y-m-d'): static
     {
-        $this->attributes['opts']['minDate'] = "new Date('" . $dateTime->format($format) . "')";
-
-        return $this;
+        return $this->opts(['minDate' => "new Date('".$dateTime->format($format)."')"]);
     }
 
     /**
-     * @param \DateTime $dateTime
-     * @param string $format
+     * @param  \DateTime  $dateTime
+     * @param  string  $format
      * @return $this
      * @see https://editor.datatables.net/examples/dates/options-min-max.html
      */
-    public function maxDate(\DateTime $dateTime, $format = 'Y-m-d')
+    public function maxDate(\DateTime $dateTime, string $format = 'Y-m-d'): static
     {
-        $this->attributes['opts']['maxDate'] = "new Date('" . $dateTime->format($format) . "')";
-
-        return $this;
+        return $this->opts(['maxDate' => "new Date('".$dateTime->format($format)."')"]);
     }
 
     /**
-     * @param bool $state
+     * @param  bool  $state
      * @return $this
      * @see https://editor.datatables.net/examples/dates/options-week-numbers.html
      */
-    public function showWeekNumber($state = true)
+    public function showWeekNumber(bool $state = true): static
     {
-        $this->attributes['opts']['showWeekNumber'] = $state;
-
-        return $this;
+        return $this->opts(['showWeekNumber' => $state]);
     }
 
     /**
-     * @param array $days
+     * @param  array  $days
      * @return $this
      * @see https://editor.datatables.net/examples/dates/options-disable-days.html
      */
-    public function disableDays(array $days)
+    public function disableDays(array $days): static
     {
-        $this->attributes['opts']['disableDays'] = $days;
-
-        return $this;
+        return $this->opts(['disableDays' => $days]);
     }
 
     /**
-     * @param int $minutes
+     * @param  int  $minutes
      * @return $this
      * @see https://editor.datatables.net/examples/dates/time-increment.html
      */
-    public function minutesIncrement($minutes)
+    public function minutesIncrement(int $minutes): static
     {
-        $this->attributes['opts']['minutesIncrement'] = $minutes;
-
-        return $this;
+        return $this->opts(['minutesIncrement' => $minutes]);
     }
 
     /**
-     * @param int $seconds
+     * @param  int  $seconds
      * @return $this
      * @see https://editor.datatables.net/examples/dates/time-increment.html
      */
-    public function secondsIncrement($seconds)
+    public function secondsIncrement(int $seconds): static
     {
-        $this->attributes['opts']['secondsIncrement'] = $seconds;
+        return $this->opts(['secondsIncrement' => $seconds]);
+    }
+
+    /**
+     * @param  array  $hours
+     * @return $this
+     * @see https://editor.datatables.net/examples/dates/datetime.html
+     */
+    public function hoursAvailable(array $hours): static
+    {
+        return $this->opts(['hoursAvailable' => $hours]);
+    }
+
+    /**
+     * @param  array  $minutes
+     * @return $this
+     * @see https://editor.datatables.net/examples/dates/datetime.html
+     */
+    public function minutesAvailable(array $minutes): static
+    {
+        return $this->opts(['minutesAvailable' => $minutes]);
+    }
+
+    /**
+     * The format of the date string loaded from the server for the field's
+     * value and also for sending to the server on form submission.
+     * The formatting options are defined by Moment.js.
+     *
+     * @param  string  $format
+     * @return $this
+     * @see https://editor.datatables.net/reference/field/datetime#Options
+     * @see https://momentjs.com/docs/#/displaying/format/
+     */
+    public function wireFormat(string $format = 'YYYY-MM-DDTHH:mm:ss.000000Z'): static
+    {
+        $this->attributes['wireFormat'] = $format;
 
         return $this;
     }
 
     /**
-     * @param array $hours
+     * Allow (default), or disallow, the end user to type into the date / time input element.
+     * If disallowed, they must use the calendar picker to enter data. This can be useful
+     * if you are using a more complex date format and wish to disallow the user from
+     * potentially making typing mistakes, although note that it does also disallow
+     * pasting of data.
+     *
+     * @param  bool  $state
      * @return $this
-     * @see https://editor.datatables.net/examples/dates/datetime.html
+     * @see https://editor.datatables.net/reference/field/datetime#Options
      */
-    public function hoursAvailable(array $hours)
+    public function keyInput(bool $state = true): static
     {
-        $this->attributes['opts']['hoursAvailable'] = $hours;
+        $this->attributes['keyInput'] = $state;
 
         return $this;
     }
 
     /**
-     * @param array $minutes
+     * The format of the date string that will be shown to the end user in the input element.
+     * The formatting options are defined by Moment.js. If a format is used that is not
+     * ISO8061 (i.e. YYYY-MM-DD) and Moment.js has not been included, Editor will
+     * throw an error stating that Moment.js must be included for custom
+     * formatting to be used.
+     *
+     * @param  string  $format
      * @return $this
-     * @see https://editor.datatables.net/examples/dates/datetime.html
+     * @see https://editor.datatables.net/reference/field/datetime#Options
+     * @see https://momentjs.com/docs/#/displaying/format/
      */
-    public function minutesAvailable(array $minutes)
+    public function displayFormat(string $format = 'YYYY-MM-DD hh:mm a'): static
     {
-        $this->attributes['opts']['minutesAvailable'] = $minutes;
+        $this->attributes['displayFormat'] = $format;
 
         return $this;
     }

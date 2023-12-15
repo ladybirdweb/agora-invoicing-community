@@ -1,4 +1,4 @@
-# Support [![Packagist License][badge_license]](LICENSE.md) [![For Laravel 5][badge_laravel]][link-github-repo]
+# Support [![Packagist License][badge_license]](LICENSE.md) [![For Laravel][badge_laravel]][link-github-repo]
 
 [![Github Workflow Status][badge_build]][link-github-status]
 [![Coverage Status][badge_coverage]][link-scrutinizer]
@@ -30,7 +30,7 @@ If you discover any security related issues, please email arcanedev.maroc@gmail.
 - [All Contributors][link-contributors]
 
 [badge_license]:   http://img.shields.io/packagist/l/arcanedev/support.svg?style=flat-square
-[badge_laravel]:   https://img.shields.io/badge/Laravel-5.1%20to%209.x-orange.svg?style=flat-square
+[badge_laravel]:   https://img.shields.io/badge/Laravel-5.1%20to%2010.x-orange.svg?style=flat-square
 [badge_build]:     https://img.shields.io/github/workflow/status/ARCANEDEV/Support/run-tests?style=flat-square
 [badge_coverage]:  https://img.shields.io/scrutinizer/coverage/g/ARCANEDEV/Support.svg?style=flat-square
 [badge_quality]:   https://img.shields.io/scrutinizer/g/ARCANEDEV/Support.svg?style=flat-square

@@ -26,15 +26,15 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 final class LockRegistry
 {
-    private static $openedFiles = [];
-    private static $lockedFiles;
-    private static $signalingException;
-    private static $signalingCallback;
+    private static array $openedFiles = [];
+    private static ?array $lockedFiles = null;
+    private static \Exception $signalingException;
+    private static \Closure $signalingCallback;
 
     /**
      * The number of items in this list controls the max number of concurrent processes.
      */
-    private static $files = [
+    private static array $files = [
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'AbstractAdapter.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'AbstractTagAwareAdapter.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'AdapterInterface.php',
@@ -83,7 +83,7 @@ final class LockRegistry
         return $previousFiles;
     }
 
-    public static function compute(callable $callback, ItemInterface $item, bool &$save, CacheInterface $pool, \Closure $setMetadata = null, LoggerInterface $logger = null)
+    public static function compute(callable $callback, ItemInterface $item, bool &$save, CacheInterface $pool, \Closure $setMetadata = null, LoggerInterface $logger = null): mixed
     {
         if ('\\' === \DIRECTORY_SEPARATOR && null === self::$lockedFiles) {
             // disable locking on Windows by default
@@ -97,11 +97,10 @@ final class LockRegistry
         }
 
         self::$signalingException ??= unserialize("O:9:\"Exception\":1:{s:16:\"\0Exception\0trace\";a:0:{}}");
-        self::$signalingCallback ??= function () { throw self::$signalingException; };
+        self::$signalingCallback ??= fn () => throw self::$signalingException;
 
         while (true) {
             try {
-                $locked = false;
                 // race to get the lock in non-blocking mode
                 $locked = flock($lock, \LOCK_EX | \LOCK_NB, $wouldBlock);
 
@@ -147,12 +146,15 @@ final class LockRegistry
         return null;
     }
 
+    /**
+     * @return resource|false
+     */
     private static function open(int $key)
     {
         if (null !== $h = self::$openedFiles[$key] ?? null) {
             return $h;
         }
-        set_error_handler(function () {});
+        set_error_handler(static fn () => null);
         try {
             $h = fopen(self::$files[$key], 'r+');
         } finally {

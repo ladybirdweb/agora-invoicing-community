@@ -49,6 +49,7 @@ class Leads extends Resource
     /**
      * Delete a label.
      *
+     * @var int $id
      * @return Response
      */
     public function deleteLabel($id)
@@ -59,7 +60,7 @@ class Leads extends Resource
     }
 
     /**
-     * @param $id
+     * @param int   $id
      * @param array $values
      * @return Response
      */
@@ -71,7 +72,7 @@ class Leads extends Resource
     }
 
     /**
-     * @param $id
+     * @param int   $id
      * @param array $values
      * @return Response
      */

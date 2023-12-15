@@ -27,7 +27,7 @@ class FileLocatorFileNotFoundException extends \InvalidArgumentException
         $this->paths = $paths;
     }
 
-    public function getPaths()
+    public function getPaths(): array
     {
         return $this->paths;
     }

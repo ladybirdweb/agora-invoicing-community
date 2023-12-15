@@ -7,13 +7,13 @@ use Yajra\DataTables\Html\Column;
 trait Action
 {
     /**
-     * Add a action column.
+     * Add an action column.
      *
-     * @param  array $attributes
-     * @param  bool $prepend
+     * @param  array  $attributes
+     * @param  bool  $prepend
      * @return $this
      */
-    public function addAction(array $attributes = [], $prepend = false)
+    public function addAction(array $attributes = [], bool $prepend = false): static
     {
         $attributes = array_merge([
             'defaultContent' => '',

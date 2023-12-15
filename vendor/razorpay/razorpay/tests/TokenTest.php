@@ -18,6 +18,8 @@ class TokenTest extends TestCase
 
     private $tokenId = "token_IEcux6sQtS8eLx";
 
+    protected static $partnerTokenId ;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -57,6 +59,59 @@ class TokenTest extends TestCase
         $this->assertTrue(is_array($data->toArray()));
         
         $this->assertTrue(in_array('payment',$data->toArray()));
+    }
+
+    public function testCreateToken()
+    {      
+        $data = $this->api->token->create($this->requestAttribute($this->customerId));
+
+        self::$partnerTokenId = $data['id'];
+
+        $this->assertTrue(is_array($data->toArray()));
+        
+        $this->assertTrue(in_array('card',$data->toArray()));
+    }
+
+    public function testFetchToken()
+    {
+        $data = $this->api->token->fetchCardPropertiesByToken(['id'=>self::$partnerTokenId]);
+        
+        $this->assertTrue(is_array($data->toArray()));
+        
+        $this->assertTrue(in_array('card',$data->toArray()));
+    }
+
+    public function testProcessPaymentOnAlternatePAorPG()
+    {
+        $data = $this->api->token->processPaymentOnAlternatePAorPG(['id'=>self::$partnerTokenId]);
+        
+        $this->assertTrue(is_array($data->toArray())); 
+    }
+
+    public function testDeleteToken()
+    {
+        $data = $this->api->token->deleteToken(['id'=>self::$partnerTokenId]);
+        
+        $this->assertTrue(is_array($data->toArray()));  
+    }
+
+    public function requestAttribute($customerId){
+        return [
+            "customer_id" => $customerId,
+            "method" => "card",
+            "card" => [
+                "number" => "4854980604708430",
+                "cvv" => "123",
+                "expiry_month" => "12",
+                "expiry_year" => "24",
+                "name" => "Gaurav Kumar",
+            ],
+            "authentication" => [
+                "provider" => "razorpay",
+                "provider_reference_id" => "pay_123wkejnsakd"
+            ],
+            "notes" => [],
+        ];
     }
 
 }

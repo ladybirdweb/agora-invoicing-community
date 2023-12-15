@@ -21,17 +21,15 @@ use Symfony\Component\VarExporter\Exception\NotInstantiableTypeException;
  */
 class Registry
 {
-    public static $reflectors = [];
-    public static $prototypes = [];
-    public static $factories = [];
-    public static $cloneable = [];
-    public static $instantiableWithoutConstructor = [];
+    public static array $reflectors = [];
+    public static array $prototypes = [];
+    public static array $factories = [];
+    public static array $cloneable = [];
+    public static array $instantiableWithoutConstructor = [];
 
-    public $classes = [];
-
-    public function __construct(array $classes)
-    {
-        $this->classes = $classes;
+    public function __construct(
+        public readonly array $classes,
+    ) {
     }
 
     public static function unserialize($objects, $serializables)

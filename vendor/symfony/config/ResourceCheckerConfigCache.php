@@ -107,7 +107,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
      *
      * @throws \RuntimeException When cache file can't be written
      */
-    public function write(string $content, array $metadata = null)
+    public function write(string $content, array $metadata = null): void
     {
         $mode = 0666;
         $umask = umask();
@@ -141,7 +141,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         return $this->file.'.meta';
     }
 
-    private function safelyUnserialize(string $file)
+    private function safelyUnserialize(string $file): mixed
     {
         $meta = false;
         $content = file_get_contents($file);
@@ -172,7 +172,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
     /**
      * @internal
      */
-    public static function handleUnserializeCallback(string $class)
+    public static function handleUnserializeCallback(string $class): void
     {
         trigger_error('Class not found: '.$class);
     }

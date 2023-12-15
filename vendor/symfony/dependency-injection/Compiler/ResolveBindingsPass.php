@@ -28,11 +28,13 @@ use Symfony\Component\VarExporter\ProxyHelper;
  */
 class ResolveBindingsPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = true;
+
     private array $usedBindings = [];
     private array $unusedBindings = [];
     private array $errorMessages = [];
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->usedBindings = $container->getRemovedBindingIds();
 
@@ -185,16 +187,19 @@ class ResolveBindingsPass extends AbstractRecursivePass
 
                 $typeHint = ltrim(ProxyHelper::exportType($parameter) ?? '', '?');
 
-                $name = Target::parseName($parameter);
+                $name = Target::parseName($parameter, parsedName: $parsedName);
 
-                if ($typeHint && \array_key_exists($k = preg_replace('/(^|[(|&])\\\\/', '\1', $typeHint).' $'.$name, $bindings)) {
+                if ($typeHint && (
+                    \array_key_exists($k = preg_replace('/(^|[(|&])\\\\/', '\1', $typeHint).' $'.$name, $bindings)
+                    || \array_key_exists($k = preg_replace('/(^|[(|&])\\\\/', '\1', $typeHint).' $'.$parsedName, $bindings)
+                )) {
                     $arguments[$key] = $this->getBindingValue($bindings[$k]);
 
                     continue;
                 }
 
-                if (\array_key_exists('$'.$name, $bindings)) {
-                    $arguments[$key] = $this->getBindingValue($bindings['$'.$name]);
+                if (\array_key_exists($k = '$'.$name, $bindings) || \array_key_exists($k = '$'.$parsedName, $bindings)) {
+                    $arguments[$key] = $this->getBindingValue($bindings[$k]);
 
                     continue;
                 }
@@ -205,7 +210,7 @@ class ResolveBindingsPass extends AbstractRecursivePass
                     continue;
                 }
 
-                if (isset($bindingNames[$name]) || isset($bindingNames[$parameter->name])) {
+                if (isset($bindingNames[$name]) || isset($bindingNames[$parsedName]) || isset($bindingNames[$parameter->name])) {
                     $bindingKey = array_search($binding, $bindings, true);
                     $argumentType = substr($bindingKey, 0, strpos($bindingKey, ' '));
                     $this->errorMessages[] = sprintf('Did you forget to add the type "%s" to argument "$%s" of method "%s::%s()"?', $argumentType, $parameter->name, $reflectionMethod->class, $reflectionMethod->name);

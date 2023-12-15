@@ -23,6 +23,8 @@ class PipedriveClient implements Client
      */
     protected $isOauth = false;
 
+    const DEFAULT_BODY_FORMAT = RequestOptions::JSON;
+
     /**
      * GuzzleClient constructor.
      *
@@ -100,7 +102,7 @@ class PipedriveClient implements Client
     public function post($url, $parameters = [])
     {
         $request = new GuzzleRequest('POST', $url);
-        $form = 'form_params';
+        $form = self::DEFAULT_BODY_FORMAT;
 
         // If any file key is found, we will assume we have to convert the data
         // into the multipart array structure. Otherwise, we will perform the
@@ -155,7 +157,7 @@ class PipedriveClient implements Client
     {
         $request = new GuzzleRequest('PUT', $url);
 
-        return $this->execute($request, ['form_params' => $parameters]);
+        return $this->execute($request, [self::DEFAULT_BODY_FORMAT => $parameters]);
     }
 
     /**
@@ -168,7 +170,7 @@ class PipedriveClient implements Client
     public function patch($url, $parameters = [])
     {
         $request = new GuzzleRequest('PATCH', $url);
-        $form = 'form_params';
+        $form = self::DEFAULT_BODY_FORMAT;
 
         // If any file key is found, we will assume we have to convert the data
         // into the multipart array structure. Otherwise, we will perform the
@@ -197,7 +199,7 @@ class PipedriveClient implements Client
     {
         $request = new GuzzleRequest('DELETE', $url);
 
-        return $this->execute($request, ['form_params' => $parameters]);
+        return $this->execute($request, [self::DEFAULT_BODY_FORMAT => $parameters]);
     }
 
     /**

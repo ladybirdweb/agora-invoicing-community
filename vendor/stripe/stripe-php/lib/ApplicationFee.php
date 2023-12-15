@@ -8,8 +8,8 @@ namespace Stripe;
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
  * @property string|\Stripe\Account $account ID of the Stripe account this fee was taken from.
- * @property int $amount Amount earned, in %s.
- * @property int $amount_refunded Amount in %s refunded (can be less than the amount attribute on the fee if a partial refund was issued)
+ * @property int $amount Amount earned, in cents (or local equivalent).
+ * @property int $amount_refunded Amount in cents (or local equivalent) refunded (can be less than the amount attribute on the fee if a partial refund was issued)
  * @property string|\Stripe\StripeObject $application ID of the Connect application that earned the fee.
  * @property null|string|\Stripe\BalanceTransaction $balance_transaction Balance transaction that describes the impact of this collected application fee on your account balance (not including refunds).
  * @property string|\Stripe\Charge $charge ID of the charge that the application fee was taken from.
@@ -18,7 +18,7 @@ namespace Stripe;
  * @property bool $livemode Has the value <code>true</code> if the object exists in live mode or the value <code>false</code> if the object exists in test mode.
  * @property null|string|\Stripe\Charge $originating_transaction ID of the corresponding charge on the platform account, if this fee was the result of a charge using the <code>destination</code> parameter.
  * @property bool $refunded Whether the fee has been fully refunded. If the fee is only partially refunded, this attribute will still be false.
- * @property \Stripe\Collection<\Stripe\StripeObject> $refunds A list of refunds that have been applied to the fee.
+ * @property \Stripe\Collection<\Stripe\ApplicationFeeRefund> $refunds A list of refunds that have been applied to the fee.
  */
 class ApplicationFee extends ApiResource
 {

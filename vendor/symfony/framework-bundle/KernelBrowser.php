@@ -73,6 +73,8 @@ class KernelBrowser extends HttpKernelBrowser
      * Enables the profiler for the very next request.
      *
      * If the profiler is not enabled, the call to this method does nothing.
+     *
+     * @return void
      */
     public function enableProfiler()
     {
@@ -86,6 +88,8 @@ class KernelBrowser extends HttpKernelBrowser
      *
      * By default, the Client reboots the Kernel for each request. This method
      * allows to keep the same kernel across requests.
+     *
+     * @return void
      */
     public function disableReboot()
     {
@@ -94,6 +98,8 @@ class KernelBrowser extends HttpKernelBrowser
 
     /**
      * Enables kernel reboot between requests.
+     *
+     * @return void
      */
     public function enableReboot()
     {
@@ -101,14 +107,17 @@ class KernelBrowser extends HttpKernelBrowser
     }
 
     /**
-     * @param UserInterface $user
+     * @param UserInterface        $user
+     * @param array<string, mixed> $tokenAttributes
      *
      * @return $this
      */
-    public function loginUser(object $user, string $firewallContext = 'main'): static
+    public function loginUser(object $user, string $firewallContext = 'main'/* , array $tokenAttributes = [] */): static
     {
+        $tokenAttributes = 2 < \func_num_args() ? func_get_arg(2) : [];
+
         if (!interface_exists(UserInterface::class)) {
-            throw new \LogicException(sprintf('"%s" requires symfony/security-core to be installed.', __METHOD__));
+            throw new \LogicException(sprintf('"%s" requires symfony/security-core to be installed. Try running "composer require symfony/security-core".', __METHOD__));
         }
 
         if (!$user instanceof UserInterface) {
@@ -116,6 +125,7 @@ class KernelBrowser extends HttpKernelBrowser
         }
 
         $token = new TestBrowserToken($user->getRoles(), $user, $firewallContext);
+        $token->setAttributes($tokenAttributes);
         // required for compatibility with Symfony 5.4
         if (method_exists($token, 'isAuthenticated')) {
             $token->setAuthenticated(true, false);
@@ -132,9 +142,7 @@ class KernelBrowser extends HttpKernelBrowser
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
-        $domains = array_unique(array_map(function (Cookie $cookie) use ($session) {
-            return $cookie->getName() === $session->getName() ? $cookie->getDomain() : '';
-        }, $this->getCookieJar()->all())) ?: [''];
+        $domains = array_unique(array_map(fn (Cookie $cookie) => $cookie->getName() === $session->getName() ? $cookie->getDomain() : '', $this->getCookieJar()->all())) ?: [''];
         foreach ($domains as $domain) {
             $cookie = new Cookie($session->getName(), $session->getId(), null, null, $domain);
             $this->getCookieJar()->set($cookie);

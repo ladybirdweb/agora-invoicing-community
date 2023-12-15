@@ -23,6 +23,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = false;
+
     private ParameterBagInterface $bag;
 
     public function __construct(
@@ -34,7 +36,7 @@ class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
     /**
      * @throws ParameterNotFoundException
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->bag = $container->getParameterBag();
 

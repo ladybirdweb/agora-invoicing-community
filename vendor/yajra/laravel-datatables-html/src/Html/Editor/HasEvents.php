@@ -5,72 +5,76 @@ namespace Yajra\DataTables\Html\Editor;
 use Illuminate\Support\Str;
 
 /**
- * @method Editor onClose($script)
- * @method Editor onCreate($script)
- * @method Editor onDisplayOrder($script)
- * @method Editor onEdit($script)
- * @method Editor onInitCreate($script)
- * @method Editor onInitEdit($script)
- * @method Editor onInitRemove($script)
- * @method Editor onInitSubmit($script)
- * @method Editor onOpen($script)
- * @method Editor onPostCreate($script)
- * @method Editor onPostEdit($script)
- * @method Editor onPostRemove($script)
- * @method Editor onPostSubmit($script)
- * @method Editor onPostUpload($script)
- * @method Editor onPreBlur($script)
- * @method Editor onPreBlurCancelled($script)
- * @method Editor onPreCreate($script)
- * @method Editor onPreEdit($script)
- * @method Editor onPreOpen($script)
- * @method Editor onPreOpenCancelled($script)
- * @method Editor onPreRemove($script)
- * @method Editor onPreSubmit($script)
- * @method Editor onPreSubmitCancelled($script)
- * @method Editor onPreUpload($script)
- * @method Editor onPreUploadCancelled($script)
- * @method Editor onProcessing($script)
- * @method Editor onRemove($script)
- * @method Editor onSetData($script)
- * @method Editor onSubmitComplete($script)
- * @method Editor onSubmitError($script)
- * @method Editor onSubmitSuccess($script)
- * @method Editor onSubmitUnsuccessful($script)
- * @method Editor onUploadXhrError($script)
- * @method Editor onUploadXhrSuccess($script)
+ * @method $this onClose($script)
+ * @method $this onClosed($script)
+ * @method $this onCreate($script)
+ * @method $this onDisplayOrder($script)
+ * @method $this onEdit($script)
+ * @method $this onInitCreate($script)
+ * @method $this onInitEdit($script)
+ * @method $this onInitEditor($script)
+ * @method $this onInitRemove($script)
+ * @method $this onInitSubmit($script)
+ * @method $this onOpen($script)
+ * @method $this onOpened($script)
+ * @method $this onPostCreate($script)
+ * @method $this onPostEdit($script)
+ * @method $this onPostRemove($script)
+ * @method $this onPostSubmit($script)
+ * @method $this onPostUpload($script)
+ * @method $this onPreBlur($script)
+ * @method $this onPreBlurCancelled($script)
+ * @method $this onPreClose($script)
+ * @method $this onPreCreate($script)
+ * @method $this onPreEdit($script)
+ * @method $this onPreOpen($script)
+ * @method $this onPreOpenCancelled($script)
+ * @method $this onPreRemove($script)
+ * @method $this onPreSubmit($script)
+ * @method $this onPreSubmitCancelled($script)
+ * @method $this onPreUpload($script)
+ * @method $this onPreUploadCancelled($script)
+ * @method $this onProcessing($script)
+ * @method $this onRemove($script)
+ * @method $this onSetData($script)
+ * @method $this onSubmitComplete($script)
+ * @method $this onSubmitError($script)
+ * @method $this onSubmitSuccess($script)
+ * @method $this onSubmitUnsuccessful($script)
+ * @method $this onUploadXhrError($script)
+ * @method $this onUploadXhrSuccess($script)
  */
 trait HasEvents
 {
     /**
      * Magic method handler for editor events.
      *
-     * @param string $name
-     * @param mixed $arguments
+     * @param  string  $method
+     * @param  array{0: string}  $parameters
      * @return $this
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        if (Str::startsWith($name, 'on')) {
-            $event = Str::camel(substr($name, 2, strlen($name) - 2));
+        if (Str::startsWith($method, 'on')) {
+            $event = Str::camel(substr($method, 2, strlen($method) - 2));
 
-            return $this->on($event, $arguments[0]);
+            return $this->on($event, $parameters[0]);
         }
 
-        return parent::__call($name, $arguments);
+        return parent::__call($method, $parameters);
     }
 
     /**
      * Add Editor event listener scripts.
      *
-     * @param string $event
-     * @param string $script
+     * @param  string  $event
+     * @param  mixed  $script
      * @return $this
      * @see https://editor.datatables.net/reference/event
      */
-    public function on($event, $script)
+    public function on(string $event, mixed $script): static
     {
-        $this->attributes['events'][] = [
+        $this->events[] = [
             'event' => $event,
             'script' => value($script),
         ];

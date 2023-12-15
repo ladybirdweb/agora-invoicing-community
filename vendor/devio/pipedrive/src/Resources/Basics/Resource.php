@@ -89,7 +89,7 @@ abstract class Resource
     /**
      * Update an entity by ID.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $values
 	 * @return Response
      */
@@ -103,7 +103,7 @@ abstract class Resource
     /**
      * Delete an entity by ID.
      *
-     * @param $id
+     * @param int $id
 	 * @return Response
      */
     public function delete($id)
@@ -137,7 +137,7 @@ abstract class Resource
     /**
      * Check if the method is enabled for use.
      *
-     * @param $method
+     * @param string $method
      * @return bool
      */
     public function isEnabled($method)
@@ -146,8 +146,8 @@ abstract class Resource
             return false;
         }
 
-        // First we will make sure the method only belongs to this abtract class
-        // as this does not have to interfiere with methods described in child
+        // First we will make sure the method only belongs to this abstract class
+        // as this does not have to interfere with methods described in child
         // classes. We can now check if it is found in the enabled property.
         if (! in_array($method, get_class_methods(get_class()))) {
             return true;
@@ -159,7 +159,7 @@ abstract class Resource
     /**
      * Check if the method is disabled for use.
      *
-     * @param $method
+     * @param string $method
      * @return bool
      */
     public function isDisabled($method)
@@ -208,8 +208,8 @@ abstract class Resource
     /**
      * Magic method call.
      *
-     * @param       $method
-     * @param array $args
+     * @param string $method
+     * @param array  $args
      * @return void
      * @throws PipedriveException
      */

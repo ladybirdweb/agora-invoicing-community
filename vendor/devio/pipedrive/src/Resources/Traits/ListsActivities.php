@@ -9,7 +9,7 @@ trait ListsActivities
     /**
      * List the resource activities.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */

@@ -9,7 +9,7 @@ trait ListsUpdates
     /**
      * Get the resource updates.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */

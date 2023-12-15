@@ -28,7 +28,7 @@ class VirtualAccountTest extends TestCase
      */
     public function testCreateVirtualAccount()
     {       
-        $data = $this->api->virtualAccount->create(array('receivers' => array('types' => array('bank_account')),'description' => 'Virtual Account created for Raftar Soft','customer_id' => $this->customerId ,'close_by' => 1681615838,'notes' => array('project_name' => 'Banking Software')));
+        $data = $this->api->virtualAccount->create(array('receivers' => array('types' => array('bank_account')),'description' => 'Virtual Account created for Raftar Soft','customer_id' => $this->customerId ,'close_by' => strtotime('+16 minutes', time()), 'notes' => array('project_name' => 'Banking Software')));
 
         $this->assertTrue(is_array($data->toArray()));
 

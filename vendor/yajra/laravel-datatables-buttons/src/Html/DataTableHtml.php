@@ -10,43 +10,37 @@ use Yajra\DataTables\Contracts\DataTableHtmlBuilder;
  */
 abstract class DataTableHtml implements DataTableHtmlBuilder
 {
-    /**
-     * @var \Yajra\DataTables\Html\Builder
-     */
-    protected $htmlBuilder;
+    protected ?Builder $htmlBuilder = null;
 
-    /**
-     * @return \Yajra\DataTables\Html\Builder
-     */
-    public static function make()
+    public static function make(): Builder
     {
         if (func_get_args()) {
             return (new static(...func_get_args()))->handle();
         }
 
-        return app(static::class)->handle();
+        /** @var static $html */
+        $html = app(static::class);
+
+        return $html->handle();
     }
 
     /**
-     * @param  string  $name
-     * @param  mixed  $arguments
-     * @return mixed
+     * @param  string  $method
+     * @param  mixed  $parameters
+     * @return \Yajra\DataTables\Html\Builder
      *
      * @throws \Exception
      */
-    public function __call($name, $arguments)
+    public function __call(string $method, $parameters)
     {
-        if (method_exists($this->getHtmlBuilder(), $name)) {
-            return $this->getHtmlBuilder()->{$name}(...$arguments);
+        if (method_exists($this->getHtmlBuilder(), $method)) {
+            return $this->getHtmlBuilder()->{$method}(...$parameters);
         }
 
-        throw new BadMethodCallException("Method {$name} does not exists");
+        throw new BadMethodCallException("Method {$method} does not exists");
     }
 
-    /**
-     * @return \Yajra\DataTables\Html\Builder
-     */
-    protected function getHtmlBuilder()
+    protected function getHtmlBuilder(): Builder
     {
         if ($this->htmlBuilder) {
             return $this->htmlBuilder;
@@ -55,11 +49,7 @@ abstract class DataTableHtml implements DataTableHtmlBuilder
         return $this->htmlBuilder = app(Builder::class);
     }
 
-    /**
-     * @param  mixed  $builder
-     * @return static
-     */
-    public function setHtmlBuilder($builder)
+    public function setHtmlBuilder(Builder $builder): static
     {
         $this->htmlBuilder = $builder;
 

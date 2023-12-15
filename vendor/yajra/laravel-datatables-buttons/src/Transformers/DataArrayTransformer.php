@@ -4,18 +4,19 @@ namespace Yajra\DataTables\Transformers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Yajra\DataTables\Html\Column;
 
 class DataArrayTransformer
 {
     /**
-     * Transform row data by columns definition.
+     * Transform row data by column's definition.
      *
      * @param  array  $row
-     * @param  mixed  $columns
+     * @param  array|Collection<array-key, Column>  $columns
      * @param  string  $type
      * @return array
      */
-    public function transform(array $row, $columns, $type = 'printable')
+    public function transform(array $row, array|Collection $columns, string $type = 'printable'): array
     {
         if ($columns instanceof Collection) {
             return $this->buildColumnByCollection($row, $columns, $type);
@@ -28,27 +29,37 @@ class DataArrayTransformer
      * Transform row column by collection.
      *
      * @param  array  $row
-     * @param  \Illuminate\Support\Collection  $columns
+     * @param  Collection<array-key, Column>  $columns
      * @param  string  $type
      * @return array
      */
-    protected function buildColumnByCollection(array $row, Collection $columns, $type = 'printable')
+    protected function buildColumnByCollection(array $row, Collection $columns, string $type = 'printable'): array
     {
         $results = [];
-        foreach ($columns->all() as $column) {
+        $columns->each(function (Column $column) use ($row, $type, &$results) {
             if ($column[$type]) {
-                $title = $column['title'];
-                $data  = Arr::get($row, $column['data']);
-                if ($type == 'exportable') {
-                    $title    = $this->decodeContent($title);
-                    $dataType = gettype($data);
-                    $data     = $this->decodeContent($data);
-                    settype($data, $dataType);
+                $title = $column->title;
+                if (is_array($column->data)) {
+                    $key = $column->data['filter'] ?? $column->name ?? '';
+                } else {
+                    $key = $column->data ?? $column->name;
                 }
 
-                $results[$title] = $data;
+                $data = Arr::get($row, $key) ?? '';
+
+                if ($type == 'exportable') {
+                    $title = $this->decodeContent($title);
+                    $data = is_array($data) ? json_encode($data) : $this->decodeContent($data);
+                }
+
+                if (isset($column->exportRender)) {
+                    $callback = $column->exportRender;
+                    $results[$title] = $callback($row, $data);
+                } else {
+                    $results[$title] = $data;
+                }
             }
-        }
+        });
 
         return $results;
     }
@@ -56,17 +67,21 @@ class DataArrayTransformer
     /**
      * Decode content to a readable text value.
      *
-     * @param  string  $data
-     * @return string
+     * @param  mixed  $data
+     * @return mixed
      */
-    protected function decodeContent($data)
+    protected function decodeContent(mixed $data): mixed
     {
-        try {
-            $decoded = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
-
-            return str_replace("\xc2\xa0", ' ', $decoded);
-        } catch (\Throwable $e) {
-            return $data;
+        if (is_bool($data)) {
+            return $data ? 'True' : 'False';
         }
+
+        if (is_string($data)) {
+            $decoded = html_entity_decode(trim(strip_tags($data)), ENT_QUOTES, 'UTF-8');
+
+            return (string) str_replace("\xc2\xa0", ' ', $decoded);
+        }
+
+        return $data;
     }
 }

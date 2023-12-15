@@ -1,6 +1,52 @@
 Changelog
 =========
 
+2.0.9
+-----
+
+### Overview of changes
+- Hotfix: Rollback changes from PR [#657]. [#839] Props [@tomsommer][gh-tomsommer] & [@laszlof][gh-laszlof]
+
+[#839]: https://github.com/WordPress/Requests/pull/839
+
+2.0.8
+-----
+
+### Overview of changes
+- Update bundled certificates as of 2023-08-22. [#823]
+- Fixed: only force close cURL connection when needed (cURL < 7.22). [#656], [#657] Props [@mircobabini][gh-mircobabini]
+- Composer: updated list of suggested PHP extensions to enable. [#821]
+- README: add information about the PSR-7/PSR-18 wrapper for Requests. [#827]
+
+[#656]: https://github.com/WordPress/Requests/pull/656
+[#657]: https://github.com/WordPress/Requests/pull/657
+[#821]: https://github.com/WordPress/Requests/pull/821
+[#823]: https://github.com/WordPress/Requests/pull/823
+[#827]: https://github.com/WordPress/Requests/pull/827
+
+2.0.7
+-----
+
+### Overview of changes
+- Update bundled certificates as of 2023-05-30. [#809]
+
+[#809]: https://github.com/WordPress/Requests/pull/809
+
+2.0.6
+-----
+
+### Overview of changes
+- Update bundled certificates as of 2023-01-10. [#791]
+- Fix typo in deprecation notice. [#785] Props [@costdev][gh-costdev]
+- Minor internal improvements for passing the correct type to function calls. [#779]
+- Confirmed compatibility with PHP 8.2.
+    No changes were needed, so Request 2.0.1 and higher can be considered compatible with PHP 8.2.
+- Various documentation improvements and other general housekeeping.
+
+[#779]: https://github.com/WordPress/Requests/pull/779
+[#785]: https://github.com/WordPress/Requests/pull/785
+[#791]: https://github.com/WordPress/Requests/pull/791
+
 2.0.5
 -----
 
@@ -977,8 +1023,10 @@ Initial release!
 [gh-jrfnl]: https://github.com/jrfnl
 [gh-KasperFranz]: https://github.com/KasperFranz
 [gh-kwuerl]: https://github.com/kwuerl
+[gh-laszlof]: https://github.com/laszlof
 [gh-laurentmartelli]: https://github.com/laurentmartelli
 [gh-mbabker]: https://github.com/mbabker
+[gh-mircobabini]: https://github.com/mircobabini
 [gh-mishan]: https://github.com/mishan
 [gh-ntwb]: https://github.com/ntwb
 [gh-ocean90]: https://github.com/ocean90
@@ -1000,6 +1048,7 @@ Initial release!
 [gh-TimothyBJacobs]: https://github.com/TimothyBJacobs
 [gh-tnorthcutt]: https://github.com/tnorthcutt
 [gh-todeveni]: https://github.com/todeveni
+[gh-tomsommer]: https://github.com/tomsommer
 [gh-tonebender]: https://github.com/tonebender
 [gh-twdnhfr]: https://github.com/twdnhfr
 [gh-TysonAndre]: https://github.com/TysonAndre

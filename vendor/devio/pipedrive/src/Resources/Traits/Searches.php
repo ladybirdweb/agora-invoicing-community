@@ -7,8 +7,8 @@ use Devio\Pipedrive\Http\Response;
 trait Searches
 {
     /**
-     * @param       $term
-     * @param array $fields
+     * @param string $term
+     * @param array  $fields
      *
      * @return Response
      */

@@ -7,7 +7,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer;
@@ -49,7 +49,7 @@ class Runner
     /**
      * Run the PHPCS script.
      *
-     * @return array
+     * @return int
      */
     public function runPHPCS()
     {
@@ -151,7 +151,7 @@ class Runner
     /**
      * Run the PHPCBF script.
      *
-     * @return array
+     * @return int
      */
     public function runPHPCBF()
     {
@@ -595,7 +595,7 @@ class Runner
      * @param string $file    The path of the file that raised the error.
      * @param int    $line    The line number the error was raised at.
      *
-     * @return void
+     * @return bool
      * @throws \PHP_CodeSniffer\Exceptions\RuntimeException
      */
     public function handleErrors($code, $message, $file, $line)
@@ -652,6 +652,39 @@ class Runner
             }
         } catch (\Exception $e) {
             $error = 'An error occurred during processing; checking has been aborted. The error message was: '.$e->getMessage();
+
+            // Determine which sniff caused the error.
+            $sniffStack = null;
+            $nextStack  = null;
+            foreach ($e->getTrace() as $step) {
+                if (isset($step['file']) === false) {
+                    continue;
+                }
+
+                if (empty($sniffStack) === false) {
+                    $nextStack = $step;
+                    break;
+                }
+
+                if (substr($step['file'], -9) === 'Sniff.php') {
+                    $sniffStack = $step;
+                    continue;
+                }
+            }
+
+            if (empty($sniffStack) === false) {
+                if (empty($nextStack) === false
+                    && isset($nextStack['class']) === true
+                    && substr($nextStack['class'], -5) === 'Sniff'
+                ) {
+                    $sniffCode = Common::getSniffCode($nextStack['class']);
+                } else {
+                    $sniffCode = substr(strrchr(str_replace('\\', '/', $sniffStack['file']), '/'), 1);
+                }
+
+                $error .= sprintf(PHP_EOL.'The error originated in the %s sniff on line %s.', $sniffCode, $sniffStack['line']);
+            }
+
             $file->addErrorOnLine($error, 1, 'Internal.Exception');
         }//end try
 

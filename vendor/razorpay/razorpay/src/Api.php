@@ -4,7 +4,7 @@ namespace Razorpay\Api;
 
 class Api
 {
-    protected static $baseUrl = 'https://api.razorpay.com/v1/';
+    protected static $baseUrl = 'https://api.razorpay.com';
 
     protected static $key = null;
 
@@ -16,7 +16,7 @@ class Api
      */
     public static $appsDetails = array();
 
-    const VERSION = '2.8.5';
+    const VERSION = '2.8.7';
 
     /**
      * @param string $key
@@ -84,8 +84,8 @@ class Api
         return self::$secret;
     }
 
-    public static function getFullUrl($relativeUrl)
+    public static function getFullUrl($relativeUrl, $apiVersion = "v1")
     {
-        return self::getBaseUrl() . $relativeUrl;
+        return self::getBaseUrl() . "/". $apiVersion . "/". $relativeUrl;
     }
 }

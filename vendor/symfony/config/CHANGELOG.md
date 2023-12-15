@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+7.0
+---
+
+ * Require explicit argument when calling `NodeBuilder::setParent()`
+
+6.3
+---
+
+ * Allow enum values in `EnumNode`
+
 6.2
 ---
 

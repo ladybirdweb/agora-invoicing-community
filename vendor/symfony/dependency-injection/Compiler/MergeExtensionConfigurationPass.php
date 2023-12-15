@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class MergeExtensionConfigurationPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $parameters = $container->getParameterBag()->all();
         $definitions = $container->getDefinitions();
@@ -106,7 +106,7 @@ class MergeExtensionConfigurationParameterBag extends EnvPlaceholderParameterBag
         $this->mergeEnvPlaceholders($parameterBag);
     }
 
-    public function freezeAfterProcessing(Extension $extension, ContainerBuilder $container)
+    public function freezeAfterProcessing(Extension $extension, ContainerBuilder $container): void
     {
         if (!$config = $extension->getProcessedConfigs()) {
             // Extension::processConfiguration() wasn't called, we cannot know how configs were merged
@@ -165,12 +165,12 @@ class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
         throw new LogicException(sprintf('You cannot add compiler pass "%s" from extension "%s". Compiler passes must be registered before the container is compiled.', get_debug_type($pass), $this->extensionClass));
     }
 
-    public function registerExtension(ExtensionInterface $extension)
+    public function registerExtension(ExtensionInterface $extension): void
     {
         throw new LogicException(sprintf('You cannot register extension "%s" from "%s". Extensions must be registered before the container is compiled.', get_debug_type($extension), $this->extensionClass));
     }
 
-    public function compile(bool $resolveEnvPlaceholders = false)
+    public function compile(bool $resolveEnvPlaceholders = false): void
     {
         throw new LogicException(sprintf('Cannot compile the container in extension "%s".', $this->extensionClass));
     }

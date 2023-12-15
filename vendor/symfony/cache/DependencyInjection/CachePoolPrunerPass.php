@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class CachePoolPrunerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('console.command.cache_pool_prune')) {
             return;

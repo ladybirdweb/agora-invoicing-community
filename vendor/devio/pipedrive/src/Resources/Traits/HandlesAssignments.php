@@ -9,7 +9,7 @@ trait HandlesAssignments
     /**
      * Get the resource assignments.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */
@@ -23,8 +23,8 @@ trait HandlesAssignments
     /**
      * Add a new assignment to the resource.
      *
-     * @param $id
-     * @param $user_id
+     * @param int $id
+     * @param int $user_id
      * @return Response
      */
     public function addAssignment($id, $user_id)
@@ -35,8 +35,8 @@ trait HandlesAssignments
     /**
      * Delete an assignemt from the resource.
      *
-     * @param $id
-     * @param $user_id
+     * @param int $id
+     * @param int $user_id
      * @return Response
      */
     public function deleteAssignment($id, $user_id)

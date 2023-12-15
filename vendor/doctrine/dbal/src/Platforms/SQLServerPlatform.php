@@ -14,6 +14,7 @@ use Doctrine\DBAL\Schema\Sequence;
 use Doctrine\DBAL\Schema\SQLServerSchemaManager;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Deprecations\Deprecation;
 use InvalidArgumentException;
 
@@ -49,7 +50,7 @@ use const PREG_OFFSET_CAPTURE;
 class SQLServerPlatform extends AbstractPlatform
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getCurrentDateSQL()
     {
@@ -57,7 +58,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getCurrentTimeSQL()
     {
@@ -76,7 +77,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function getDateArithmeticIntervalExpression($date, $operator, $interval, $unit)
     {
@@ -135,7 +136,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function supportsSchemas()
     {
@@ -143,7 +144,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @deprecated
      */
@@ -189,7 +190,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @internal The method should be only used from within the {@see AbstractSchemaManager} class hierarchy.
      */
@@ -206,7 +207,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getSequenceNextValSQL($sequence)
     {
@@ -857,7 +858,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function getRenameIndexSQL($oldIndexName, Index $index, $tableName)
     {
@@ -1315,7 +1316,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function getBinaryTypeDeclarationSQLSnippet($length, $fixed/*, $lengthOmitted = false*/)
     {
@@ -1334,7 +1335,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @deprecated
      */
@@ -1517,36 +1518,36 @@ class SQLServerPlatform extends AbstractPlatform
     protected function initializeDoctrineTypeMappings()
     {
         $this->doctrineTypeMapping = [
-            'bigint'           => 'bigint',
-            'binary'           => 'binary',
-            'bit'              => 'boolean',
-            'blob'             => 'blob',
-            'char'             => 'string',
-            'date'             => 'date',
-            'datetime'         => 'datetime',
-            'datetime2'        => 'datetime',
-            'datetimeoffset'   => 'datetimetz',
-            'decimal'          => 'decimal',
-            'double'           => 'float',
-            'double precision' => 'float',
-            'float'            => 'float',
-            'image'            => 'blob',
-            'int'              => 'integer',
-            'money'            => 'integer',
-            'nchar'            => 'string',
-            'ntext'            => 'text',
-            'numeric'          => 'decimal',
-            'nvarchar'         => 'string',
-            'real'             => 'float',
-            'smalldatetime'    => 'datetime',
-            'smallint'         => 'smallint',
-            'smallmoney'       => 'integer',
-            'text'             => 'text',
-            'time'             => 'time',
-            'tinyint'          => 'smallint',
-            'uniqueidentifier' => 'guid',
-            'varbinary'        => 'binary',
-            'varchar'          => 'string',
+            'bigint'           => Types::BIGINT,
+            'binary'           => Types::BINARY,
+            'bit'              => Types::BOOLEAN,
+            'blob'             => Types::BLOB,
+            'char'             => Types::STRING,
+            'date'             => Types::DATE_MUTABLE,
+            'datetime'         => Types::DATETIME_MUTABLE,
+            'datetime2'        => Types::DATETIME_MUTABLE,
+            'datetimeoffset'   => Types::DATETIMETZ_MUTABLE,
+            'decimal'          => Types::DECIMAL,
+            'double'           => Types::FLOAT,
+            'double precision' => Types::FLOAT,
+            'float'            => Types::FLOAT,
+            'image'            => Types::BLOB,
+            'int'              => Types::INTEGER,
+            'money'            => Types::INTEGER,
+            'nchar'            => Types::STRING,
+            'ntext'            => Types::TEXT,
+            'numeric'          => Types::DECIMAL,
+            'nvarchar'         => Types::STRING,
+            'real'             => Types::FLOAT,
+            'smalldatetime'    => Types::DATETIME_MUTABLE,
+            'smallint'         => Types::SMALLINT,
+            'smallmoney'       => Types::INTEGER,
+            'text'             => Types::TEXT,
+            'time'             => Types::TIME_MUTABLE,
+            'tinyint'          => Types::SMALLINT,
+            'uniqueidentifier' => Types::GUID,
+            'varbinary'        => Types::BINARY,
+            'varchar'          => Types::STRING,
         ];
     }
 
@@ -1575,7 +1576,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @internal The method should be only used from within the {@see AbstractPlatform} class hierarchy.
      */
@@ -1659,7 +1660,7 @@ class SQLServerPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @internal The method should be only used from within the {@see AbstractPlatform} class hierarchy.
      */

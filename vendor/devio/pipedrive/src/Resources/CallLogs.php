@@ -12,7 +12,7 @@ class CallLogs extends Resource
     /**
      * Upload a recording file (audio) to a callLog
      *
-     * @param $id
+     * @param int $id
      * @param \SplFileInfo $file
      * @return Response
      */

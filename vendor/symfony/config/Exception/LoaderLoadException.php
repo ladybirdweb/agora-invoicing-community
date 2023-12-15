@@ -76,7 +76,7 @@ class LoaderLoadException extends \Exception
         parent::__construct($message, $code, $previous);
     }
 
-    protected function varToString(mixed $var)
+    protected function varToString(mixed $var): string
     {
         if (\is_object($var)) {
             return sprintf('Object(%s)', $var::class);

@@ -66,13 +66,14 @@ class WorkflowDumpCommand extends Command
         }
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
                 new InputArgument('name', InputArgument::REQUIRED, 'A workflow name'),
                 new InputArgument('marking', InputArgument::IS_ARRAY, 'A marking (a list of places)'),
                 new InputOption('label', 'l', InputOption::VALUE_REQUIRED, 'Label a graph'),
+                new InputOption('with-metadata', null, InputOption::VALUE_NONE, 'Include the workflow\'s metadata in the dumped graph', null),
                 new InputOption('dump-format', null, InputOption::VALUE_REQUIRED, 'The dump format ['.implode('|', self::DUMP_FORMAT_OPTIONS).']', 'dot'),
             ])
             ->setHelp(<<<'EOF'
@@ -90,8 +91,6 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $workflowName = $input->getArgument('name');
-
-        $workflow = null;
 
         if (isset($this->workflows)) {
             if (!$this->workflows->has($workflowName)) {
@@ -136,10 +135,9 @@ EOF
 
         $options = [
             'name' => $workflowName,
+            'with-metadata' => $input->getOption('with-metadata'),
             'nofooter' => true,
-            'graph' => [
-                'label' => $input->getOption('label'),
-            ],
+            'label' => $input->getOption('label'),
         ];
         $output->writeln($dumper->dump($definition, $marking, $options));
 

@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceExce
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -49,20 +50,22 @@ class_exists(ArgumentServiceLocator::class);
  */
 class Container implements ContainerInterface, ResetInterface
 {
-    protected $parameterBag;
-    protected $services = [];
-    protected $privates = [];
-    protected $fileMap = [];
-    protected $methodMap = [];
-    protected $factories = [];
-    protected $aliases = [];
-    protected $loading = [];
-    protected $resolving = [];
-    protected $syntheticIds = [];
+    protected ParameterBagInterface $parameterBag;
+    protected array $services = [];
+    protected array $privates = [];
+    protected array $fileMap = [];
+    protected array $methodMap = [];
+    protected array $factories = [];
+    protected array $aliases = [];
+    protected array $loading = [];
+    protected array $resolving = [];
+    protected array $syntheticIds = [];
 
     private array $envCache = [];
     private bool $compiled = false;
     private \Closure $getEnv;
+
+    private static \Closure $make;
 
     public function __construct(ParameterBagInterface $parameterBag = null)
     {
@@ -77,11 +80,14 @@ class Container implements ContainerInterface, ResetInterface
      *  * Parameter values are resolved;
      *  * The parameter bag is frozen.
      */
-    public function compile()
+    public function compile(): void
     {
         $this->parameterBag->resolve();
 
-        $this->parameterBag = new FrozenParameterBag($this->parameterBag->all());
+        $this->parameterBag = new FrozenParameterBag(
+            $this->parameterBag->all(),
+            $this->parameterBag instanceof ParameterBag ? $this->parameterBag->allDeprecated() : []
+        );
 
         $this->compiled = true;
     }
@@ -105,11 +111,9 @@ class Container implements ContainerInterface, ResetInterface
     /**
      * Gets a parameter.
      *
-     * @return array|bool|string|int|float|\UnitEnum|null
-     *
      * @throws ParameterNotFoundException if the parameter is not defined
      */
-    public function getParameter(string $name)
+    public function getParameter(string $name): array|bool|string|int|float|\UnitEnum|null
     {
         return $this->parameterBag->get($name);
     }
@@ -119,7 +123,7 @@ class Container implements ContainerInterface, ResetInterface
         return $this->parameterBag->has($name);
     }
 
-    public function setParameter(string $name, array|bool|string|int|float|\UnitEnum|null $value)
+    public function setParameter(string $name, array|bool|string|int|float|\UnitEnum|null $value): void
     {
         $this->parameterBag->set($name, $value);
     }
@@ -130,13 +134,13 @@ class Container implements ContainerInterface, ResetInterface
      * Setting a synthetic service to null resets it: has() returns false and get()
      * behaves in the same way as if the service was never created.
      */
-    public function set(string $id, ?object $service)
+    public function set(string $id, ?object $service): void
     {
         // Runs the internal initializer; used by the dumped container to include always-needed files
         if (isset($this->privates['service_container']) && $this->privates['service_container'] instanceof \Closure) {
             $initialize = $this->privates['service_container'];
             unset($this->privates['service_container']);
-            $initialize();
+            $initialize($this);
         }
 
         if ('service_container' === $id) {
@@ -188,7 +192,6 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @throws ServiceCircularReferenceException When a circular reference is detected
      * @throws ServiceNotFoundException          When the service is not defined
-     * @throws \Exception                        if an exception has been thrown when the service has been resolved
      *
      * @see Reference
      */
@@ -196,7 +199,7 @@ class Container implements ContainerInterface, ResetInterface
     {
         return $this->services[$id]
             ?? $this->services[$id = $this->aliases[$id] ?? $id]
-            ?? ('service_container' === $id ? $this : ($this->factories[$id] ?? $this->make(...))($id, $invalidBehavior));
+            ?? ('service_container' === $id ? $this : ($this->factories[$id] ?? self::$make ??= self::make(...))($this, $id, $invalidBehavior));
     }
 
     /**
@@ -204,41 +207,41 @@ class Container implements ContainerInterface, ResetInterface
      *
      * As a separate method to allow "get()" to use the really fast `??` operator.
      */
-    private function make(string $id, int $invalidBehavior)
+    private static function make(self $container, string $id, int $invalidBehavior): ?object
     {
-        if (isset($this->loading[$id])) {
-            throw new ServiceCircularReferenceException($id, array_merge(array_keys($this->loading), [$id]));
+        if (isset($container->loading[$id])) {
+            throw new ServiceCircularReferenceException($id, array_merge(array_keys($container->loading), [$id]));
         }
 
-        $this->loading[$id] = true;
+        $container->loading[$id] = true;
 
         try {
-            if (isset($this->fileMap[$id])) {
-                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $this->load($this->fileMap[$id]);
-            } elseif (isset($this->methodMap[$id])) {
-                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $this->{$this->methodMap[$id]}();
+            if (isset($container->fileMap[$id])) {
+                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $container->load($container->fileMap[$id]);
+            } elseif (isset($container->methodMap[$id])) {
+                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $container->{$container->methodMap[$id]}($container);
             }
         } catch (\Exception $e) {
-            unset($this->services[$id]);
+            unset($container->services[$id]);
 
             throw $e;
         } finally {
-            unset($this->loading[$id]);
+            unset($container->loading[$id]);
         }
 
         if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
             if (!$id) {
                 throw new ServiceNotFoundException($id);
             }
-            if (isset($this->syntheticIds[$id])) {
+            if (isset($container->syntheticIds[$id])) {
                 throw new ServiceNotFoundException($id, null, null, [], sprintf('The "%s" service is synthetic, it needs to be set at boot time before it can be used.', $id));
             }
-            if (isset($this->getRemovedIds()[$id])) {
+            if (isset($container->getRemovedIds()[$id])) {
                 throw new ServiceNotFoundException($id, null, null, [], sprintf('The "%s" service or alias has been removed or inlined when the container was compiled. You should either make it public, or stop using the container directly and use dependency injection instead.', $id));
             }
 
             $alternatives = [];
-            foreach ($this->getServiceIds() as $knownId) {
+            foreach ($container->getServiceIds() as $knownId) {
                 if ('' === $knownId || '.' === $knownId[0]) {
                     continue;
                 }
@@ -270,7 +273,7 @@ class Container implements ContainerInterface, ResetInterface
         return isset($this->services[$id]);
     }
 
-    public function reset()
+    public function reset(): void
     {
         $services = $this->services + $this->privates;
         $this->services = $this->factories = $this->privates = [];
@@ -323,7 +326,7 @@ class Container implements ContainerInterface, ResetInterface
     /**
      * Creates a service by requiring its factory file.
      */
-    protected function load(string $file)
+    protected function load(string $file): mixed
     {
         return require $file;
     }
@@ -354,7 +357,11 @@ class Container implements ContainerInterface, ResetInterface
             $prefix = 'string';
             $localName = $name;
         }
+
         $processor = $processors->has($prefix) ? $processors->get($prefix) : new EnvVarProcessor($this);
+        if (false === $i) {
+            $prefix = '';
+        }
 
         $this->resolving[$envName] = true;
         try {
@@ -379,13 +386,13 @@ class Container implements ContainerInterface, ResetInterface
             return false !== $registry ? $this->{$registry}[$id] ?? null : null;
         }
         if (false !== $registry) {
-            return $this->{$registry}[$id] ??= $load ? $this->load($method) : $this->{$method}();
+            return $this->{$registry}[$id] ??= $load ? $this->load($method) : $this->{$method}($this);
         }
         if (!$load) {
-            return $this->{$method}();
+            return $this->{$method}($this);
         }
 
-        return ($factory = $this->factories[$id] ?? $this->factories['service_container'][$id] ?? null) ? $factory() : $this->load($method);
+        return ($factory = $this->factories[$id] ?? $this->factories['service_container'][$id] ?? null) ? $factory($this) : $this->load($method);
     }
 
     private function __clone()

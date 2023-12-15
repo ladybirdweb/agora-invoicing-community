@@ -41,7 +41,7 @@ class ServiceLocatorArgument implements ArgumentInterface
         return $this->values;
     }
 
-    public function setValues(array $values)
+    public function setValues(array $values): void
     {
         $this->values = $values;
     }

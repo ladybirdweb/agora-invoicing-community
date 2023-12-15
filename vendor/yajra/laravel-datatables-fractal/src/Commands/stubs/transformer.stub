@@ -11,7 +11,7 @@ class DummyClass extends TransformerAbstract
      * @param \App\Dummy $dummy
      * @return array
      */
-    public function transform(Dummy $dummy)
+    public function transform(Dummy $dummy): array
     {
         return [
             'id' => (int) $dummy->id,

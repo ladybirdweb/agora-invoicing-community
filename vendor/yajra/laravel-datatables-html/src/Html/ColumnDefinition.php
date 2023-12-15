@@ -2,16 +2,54 @@
 
 namespace Yajra\DataTables\Html;
 
-use Illuminate\Support\Fluent;
-
-class ColumnDefinition extends Fluent
+/**
+ * @see https://datatables.net/reference/option/columnDefs
+ */
+class ColumnDefinition extends Column
 {
-    use HasOptions;
-
-    public function targets($value)
+    /**
+     * @param  array  $attributes
+     */
+    public function __construct($attributes = [])
     {
-        $this->attributes['targets'] = (array) $value;
+        parent::__construct($attributes);
+
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @param  array|string|int  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/columnDefs.targets
+     */
+    public function targets(array|string|int $value): static
+    {
+        $this->attributes['targets'] = $value;
 
         return $this;
+    }
+
+    /**
+     * @param  array  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/columns
+     */
+    public function columns(array $value): static
+    {
+        $this->attributes['columns'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+
+        unset($array['attributes']);
+
+        return $array;
     }
 }

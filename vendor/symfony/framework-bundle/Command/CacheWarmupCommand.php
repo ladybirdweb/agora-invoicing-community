@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Dumper\Preloader;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
+use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 
 /**
  * Warmup the cache.
@@ -39,7 +40,7 @@ class CacheWarmupCommand extends Command
         $this->cacheWarmer = $cacheWarmer;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
@@ -65,10 +66,16 @@ EOF
         if (!$input->getOption('no-optional-warmers')) {
             $this->cacheWarmer->enableOptionalWarmers();
         }
+        $cacheDir = $kernel->getContainer()->getParameter('kernel.cache_dir');
 
-        $preload = $this->cacheWarmer->warmUp($cacheDir = $kernel->getContainer()->getParameter('kernel.cache_dir'));
+        if ($kernel instanceof WarmableInterface) {
+            $kernel->warmUp($cacheDir);
+        }
 
-        if ($preload && file_exists($preloadFile = $cacheDir.'/'.$kernel->getContainer()->getParameter('kernel.container_class').'.preload.php')) {
+        $preload = $this->cacheWarmer->warmUp($cacheDir);
+
+        $buildDir = $kernel->getContainer()->getParameter('kernel.build_dir');
+        if ($preload && $cacheDir === $buildDir && file_exists($preloadFile = $buildDir.'/'.$kernel->getContainer()->getParameter('kernel.container_class').'.preload.php')) {
             Preloader::append($preloadFile, $preload);
         }
 

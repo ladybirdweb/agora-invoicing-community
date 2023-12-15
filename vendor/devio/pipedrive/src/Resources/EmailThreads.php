@@ -17,7 +17,7 @@ class EmailThreads extends Resource
     /**
      * Get the messages inside a thread.
      *
-     * @param       $id
+     * @param int   $id
      * @param array $options
      * @return Response
      */

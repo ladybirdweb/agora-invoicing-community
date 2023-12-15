@@ -9,7 +9,7 @@ trait ListsAttachedFiles
     /**
      * Get the resource attached files.
      *
-     * @param       $id      The resource id
+     * @param int   $id      The resource id
      * @param array $options Extra parameters
      * @return Response
      */

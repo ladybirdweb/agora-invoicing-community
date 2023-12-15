@@ -15,9 +15,9 @@ class ButtonsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'datatables');
 
         $this->publishAssets();
 
@@ -27,25 +27,25 @@ class ButtonsServiceProvider extends ServiceProvider
     /**
      * Publish datatables assets.
      */
-    protected function publishAssets()
+    protected function publishAssets(): void
     {
         $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('datatables-buttons.php'),
+            __DIR__.'/config/config.php' => config_path('datatables-buttons.php'),
         ], 'datatables-buttons');
 
         $this->publishes([
-            __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
+            __DIR__.'/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
         ], 'datatables-buttons');
 
         $this->publishes([
-            __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
+            __DIR__.'/resources/views' => base_path('/resources/views/vendor/datatables'),
         ], 'datatables-buttons');
     }
 
     /**
      * Register datatables commands.
      */
-    protected function registerCommands()
+    protected function registerCommands(): void
     {
         $this->commands(DataTablesMakeCommand::class);
         $this->commands(DataTablesScopeCommand::class);
@@ -57,11 +57,14 @@ class ButtonsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'datatables-buttons');
+        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'datatables-buttons');
 
         $this->app->register(HtmlServiceProvider::class);
-        $this->app->register(ExcelServiceProvider::class);
+
+        if (class_exists(ExcelServiceProvider::class)) {
+            $this->app->register(ExcelServiceProvider::class);
+        }
     }
 }

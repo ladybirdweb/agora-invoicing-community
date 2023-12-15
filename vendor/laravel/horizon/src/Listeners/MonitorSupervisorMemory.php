@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Listeners;
 
 use Laravel\Horizon\Events\SupervisorLooped;
+use Laravel\Horizon\Events\SupervisorOutOfMemory;
 
 class MonitorSupervisorMemory
 {
@@ -17,6 +18,8 @@ class MonitorSupervisorMemory
         $supervisor = $event->supervisor;
 
         if ($supervisor->memoryUsage() > $supervisor->options->memory) {
+            event(new SupervisorOutOfMemory($supervisor));
+
             $supervisor->terminate(12);
         }
     }

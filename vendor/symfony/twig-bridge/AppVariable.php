@@ -13,10 +13,11 @@ namespace Symfony\Bridge\Twig;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 /**
  * Exposes some Symfony parameters and services as an "app" global variable.
@@ -29,25 +30,49 @@ class AppVariable
     private RequestStack $requestStack;
     private string $environment;
     private bool $debug;
+    private LocaleSwitcher $localeSwitcher;
+    private array $enabledLocales;
 
+    /**
+     * @return void
+     */
     public function setTokenStorage(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * @return void
+     */
     public function setRequestStack(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * @return void
+     */
     public function setEnvironment(string $environment)
     {
         $this->environment = $environment;
     }
 
+    /**
+     * @return void
+     */
     public function setDebug(bool $debug)
     {
         $this->debug = $debug;
+    }
+
+    public function setLocaleSwitcher(LocaleSwitcher $localeSwitcher): void
+    {
+        $this->localeSwitcher = $localeSwitcher;
+    }
+
+    public function setEnabledLocales(array $enabledLocales): void
+    {
+        $this->enabledLocales = $enabledLocales;
     }
 
     /**
@@ -93,7 +118,7 @@ class AppVariable
     /**
      * Returns the current session.
      */
-    public function getSession(): ?Session
+    public function getSession(): ?SessionInterface
     {
         if (!isset($this->requestStack)) {
             throw new \RuntimeException('The "app.session" variable is not available.');
@@ -127,6 +152,24 @@ class AppVariable
         return $this->debug;
     }
 
+    public function getLocale(): string
+    {
+        if (!isset($this->localeSwitcher)) {
+            throw new \RuntimeException('The "app.locale" variable is not available.');
+        }
+
+        return $this->localeSwitcher->getLocale();
+    }
+
+    public function getEnabled_locales(): array
+    {
+        if (!isset($this->enabledLocales)) {
+            throw new \RuntimeException('The "app.enabled_locales" variable is not available.');
+        }
+
+        return $this->enabledLocales;
+    }
+
     /**
      * Returns some or all the existing flash messages:
      *  * getFlashes() returns all the flash messages
@@ -140,6 +183,12 @@ class AppVariable
                 return [];
             }
         } catch (\RuntimeException) {
+            return [];
+        }
+
+        // In 7.0 (when symfony/http-foundation: 6.4 is required) this can be updated to
+        // check if the session is an instance of FlashBagAwareSessionInterface
+        if (!method_exists($session, 'getFlashBag')) {
             return [];
         }
 

@@ -27,7 +27,7 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInterface, ResettableInterface
 {
-    protected $pool;
+    protected AdapterInterface $pool;
     private array $calls = [];
 
     public function __construct(AdapterInterface $pool)
@@ -192,7 +192,7 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    public function reset()
+    public function reset(): void
     {
         if ($this->pool instanceof ResetInterface) {
             $this->pool->reset();
@@ -211,12 +211,12 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    public function getCalls()
+    public function getCalls(): array
     {
         return $this->calls;
     }
 
-    public function clearCalls()
+    public function clearCalls(): void
     {
         $this->calls = [];
     }
@@ -226,7 +226,7 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         return $this->pool;
     }
 
-    protected function start(string $name)
+    protected function start(string $name): TraceableAdapterEvent
     {
         $this->calls[] = $event = new TraceableAdapterEvent();
         $event->name = $name;

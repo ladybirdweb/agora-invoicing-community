@@ -13,25 +13,25 @@ class DummyClass extends DataTableHtml
     /**
      * Build the html builder.
      *
-     * @return \Yajra\DataTables\Html\Builder
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): Builder
     {
         return $this->setTableId('DummyTableId')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('DummyDOM')
+                    //->dom('DummyDOM')
                     ->orderBy(1)
-                    ->buttons(
+                    ->selectStyleSingle()
+                    ->buttons([
                         DummyButtons
-                    );
+                    ]);
     }
 
     /**
-     * @return array
+     * Get the dataTable columns definition.
      */
-    protected function getColumns()
+    public function getColumns(): array
     {
         return [
             Column::computed('action')

@@ -30,8 +30,8 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterface
 {
-    protected $logger;
-    protected $stopwatch;
+    protected ?LoggerInterface $logger;
+    protected Stopwatch $stopwatch;
 
     /**
      * @var \SplObjectStorage<WrappedListener, array{string, string}>|null
@@ -51,17 +51,17 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
         $this->requestStack = $requestStack;
     }
 
-    public function addListener(string $eventName, callable|array $listener, int $priority = 0)
+    public function addListener(string $eventName, callable|array $listener, int $priority = 0): void
     {
         $this->dispatcher->addListener($eventName, $listener, $priority);
     }
 
-    public function addSubscriber(EventSubscriberInterface $subscriber)
+    public function addSubscriber(EventSubscriberInterface $subscriber): void
     {
         $this->dispatcher->addSubscriber($subscriber);
     }
 
-    public function removeListener(string $eventName, callable|array $listener)
+    public function removeListener(string $eventName, callable|array $listener): void
     {
         if (isset($this->wrappedListeners[$eventName])) {
             foreach ($this->wrappedListeners[$eventName] as $index => $wrappedListener) {
@@ -73,12 +73,12 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
             }
         }
 
-        return $this->dispatcher->removeListener($eventName, $listener);
+        $this->dispatcher->removeListener($eventName, $listener);
     }
 
-    public function removeSubscriber(EventSubscriberInterface $subscriber)
+    public function removeSubscriber(EventSubscriberInterface $subscriber): void
     {
-        return $this->dispatcher->removeSubscriber($subscriber);
+        $this->dispatcher->removeSubscriber($subscriber);
     }
 
     public function getListeners(string $eventName = null): array
@@ -214,7 +214,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
         return array_merge(...array_values($this->orphanedEvents));
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->callStack = null;
         $this->orphanedEvents = [];
@@ -235,14 +235,14 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
     /**
      * Called before dispatching the event.
      */
-    protected function beforeDispatch(string $eventName, object $event)
+    protected function beforeDispatch(string $eventName, object $event): void
     {
     }
 
     /**
      * Called after dispatching the event.
      */
-    protected function afterDispatch(string $eventName, object $event)
+    protected function afterDispatch(string $eventName, object $event): void
     {
     }
 
@@ -329,7 +329,6 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
         $result = [];
 
         $allListeners = new \ReflectionProperty(EventDispatcher::class, 'listeners');
-        $allListeners->setAccessible(true);
 
         foreach ($allListeners->getValue($this->dispatcher) as $eventName => $listenersByPriority) {
             foreach ($listenersByPriority as $priority => $listeners) {

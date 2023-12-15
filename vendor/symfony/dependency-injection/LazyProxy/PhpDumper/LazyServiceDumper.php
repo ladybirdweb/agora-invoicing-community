@@ -69,7 +69,7 @@ final class LazyServiceDumper implements DumperInterface
         $instantiation = 'return';
 
         if ($definition->isShared()) {
-            $instantiation .= sprintf(' $this->%s[%s] =', $definition->isPublic() && !$definition->isPrivate() ? 'services' : 'privates', var_export($id, true));
+            $instantiation .= sprintf(' $container->%s[%s] =', $definition->isPublic() && !$definition->isPrivate() ? 'services' : 'privates', var_export($id, true));
         }
 
         $asGhostObject = str_contains($factoryCode, '$proxy');
@@ -78,22 +78,18 @@ final class LazyServiceDumper implements DumperInterface
         if (!$asGhostObject) {
             return <<<EOF
                     if (true === \$lazyLoad) {
-                        $instantiation \$this->createProxy('$proxyClass', fn () => \\$proxyClass::createLazyProxy(fn () => $factoryCode));
+                        $instantiation \$container->createProxy('$proxyClass', static fn () => \\$proxyClass::createLazyProxy(static fn () => $factoryCode));
                     }
 
 
             EOF;
         }
 
-        if (preg_match('/^\$this->\w++\(\$proxy\)$/', $factoryCode)) {
-            $factoryCode = substr_replace($factoryCode, '(...)', -8);
-        } else {
-            $factoryCode = sprintf('fn ($proxy) => %s', $factoryCode);
-        }
+        $factoryCode = sprintf('static fn ($proxy) => %s', $factoryCode);
 
         return <<<EOF
                 if (true === \$lazyLoad) {
-                    $instantiation \$this->createProxy('$proxyClass', fn () => \\$proxyClass::createLazyGhost($factoryCode));
+                    $instantiation \$container->createProxy('$proxyClass', static fn () => \\$proxyClass::createLazyGhost($factoryCode));
                 }
 
 
@@ -124,7 +120,7 @@ final class LazyServiceDumper implements DumperInterface
                 if (!interface_exists($tag['interface']) && !class_exists($tag['interface'], false)) {
                     throw new InvalidArgumentException(sprintf('Invalid definition for service "%s": several "proxy" tags found but "%s" is not an interface.', $id ?? $definition->getClass(), $tag['interface']));
                 }
-                if (!is_a($class->name, $tag['interface'], true)) {
+                if ('object' !== $definition->getClass() && !is_a($class->name, $tag['interface'], true)) {
                     throw new InvalidArgumentException(sprintf('Invalid "proxy" tag for service "%s": class "%s" doesn\'t implement "%s".', $id ?? $definition->getClass(), $definition->getClass(), $tag['interface']));
                 }
                 $interfaces[] = new \ReflectionClass($tag['interface']);
@@ -137,7 +133,7 @@ final class LazyServiceDumper implements DumperInterface
         }
 
         try {
-            return (\PHP_VERSION_ID >= 80200 && $class?->isReadOnly() ? 'readonly ' : '').'class '.$proxyClass.ProxyHelper::generateLazyProxy($class, $interfaces);
+            return ($class?->isReadOnly() ? 'readonly ' : '').'class '.$proxyClass.ProxyHelper::generateLazyProxy($class, $interfaces);
         } catch (LogicException $e) {
             throw new InvalidArgumentException(sprintf('Cannot generate lazy proxy for service "%s".', $id ?? $definition->getClass()), 0, $e);
         }
@@ -145,10 +141,11 @@ final class LazyServiceDumper implements DumperInterface
 
     public function getProxyClass(Definition $definition, bool $asGhostObject, \ReflectionClass &$class = null): string
     {
-        $class = new \ReflectionClass($definition->getClass());
+        $class = 'object' !== $definition->getClass() ? $definition->getClass() : 'stdClass';
+        $class = new \ReflectionClass($class);
 
-        return preg_replace('/^.*\\\\/', '', $class->name)
+        return preg_replace('/^.*\\\\/', '', $definition->getClass())
             .($asGhostObject ? 'Ghost' : 'Proxy')
-            .ucfirst(substr(hash('sha256', $this->salt.'+'.$class->name), -7));
+            .ucfirst(substr(hash('sha256', $this->salt.'+'.$class->name.'+'.serialize($definition->getTag('proxy'))), -7));
     }
 }

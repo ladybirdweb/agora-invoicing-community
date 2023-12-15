@@ -25,6 +25,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ExtensionPass implements CompilerPassInterface
 {
+    /**
+     * @return void
+     */
     public function process(ContainerBuilder $container)
     {
         if (!class_exists(Packages::class)) {
@@ -41,6 +44,12 @@ class ExtensionPass implements CompilerPassInterface
 
         if (!class_exists(Yaml::class)) {
             $container->removeDefinition('twig.extension.yaml');
+        }
+
+        if (!$container->has('asset_mapper')) {
+            // edge case where AssetMapper is installed, but not enabled
+            $container->removeDefinition('twig.extension.importmap');
+            $container->removeDefinition('twig.runtime.importmap');
         }
 
         $viewDir = \dirname((new \ReflectionClass(\Symfony\Bridge\Twig\Extension\FormExtension::class))->getFileName(), 2).'/Resources/views';

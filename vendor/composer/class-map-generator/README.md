@@ -29,7 +29,7 @@ If all you want is to scan a directory and extract a classmap with all
 classes/interfaces/traits/enums mapped to their paths, you can simply use:
 
 
-```
+```php
 use Composer\ClassMapGenerator\ClassMapGenerator;
 
 $map = ClassMapGenerator::createMap('path/to/scan');
@@ -41,7 +41,7 @@ foreach ($map as $symbol => $path) {
 For more advanced usage, you can instantiate a generator object and call scanPaths one or more time
 then call getClassMap to get a ClassMap object containing the resulting map + eventual warnings.
 
-```
+```php
 use Composer\ClassMapGenerator\ClassMapGenerator;
 
 $generator = new ClassMapGenerator;

@@ -12,128 +12,123 @@ namespace Yajra\DataTables\Html\Options\Plugins;
 trait RowGroup
 {
     /**
-     * Set rowGroup option value.
-     *
-     * @param bool|array $value
-     * @return $this
-     * @see https://datatables.net/reference/option/rowGroup
-     */
-    public function rowGroup($value = true)
-    {
-        $this->attributes['rowGroup'] = $value;
-
-        return $this;
-    }
-
-    /**
      * Set rowGroup className option value.
      *
-     * @param string $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.className
      */
-    public function rowGroupUpdate($value = 'group')
+    public function rowGroupUpdate(string $value = 'group'): static
     {
-        $this->attributes['rowGroup']['className'] = $value;
+        return $this->rowGroup(['className' => $value]);
+    }
 
-        return $this;
+    /**
+     * Set rowGroup option value.
+     *
+     * @param  array|bool  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/rowGroup
+     */
+    public function rowGroup(array|bool $value = true): static
+    {
+        return $this->setPluginAttribute('rowGroup', $value);
     }
 
     /**
      * Set rowGroup dataSrc option value.
      *
-     * @param mixed $value
+     * @param  array|int|string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.dataSrc
      */
-    public function rowGroupDataSrc($value = 0)
+    public function rowGroupDataSrc(array|int|string $value = 0): static
     {
-        $this->attributes['rowGroup']['dataSrc'] = $value;
-
-        return $this;
+        return $this->rowGroup(['dataSrc' => $value]);
     }
 
     /**
      * Set rowGroup emptyDataGroup option value.
      *
-     * @param mixed $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.emptyDataGroup
      */
-    public function rowGroupEmptyDataGroup($value = 'No Group')
+    public function rowGroupEmptyDataGroup(string $value = 'No Group'): static
     {
-        $this->attributes['rowGroup']['emptyDataGroup'] = $value;
-
-        return $this;
+        return $this->rowGroup(['emptyDataGroup' => $value]);
     }
 
     /**
      * Set rowGroup enable option value.
      *
-     * @param bool $value
+     * @param  bool  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.enable
      */
-    public function rowGroupEnable(bool $value = true)
+    public function rowGroupEnable(bool $value = true): static
     {
-        $this->attributes['rowGroup']['enable'] = $value;
-
-        return $this;
+        return $this->rowGroup(['enable' => $value]);
     }
 
     /**
      * Set rowGroup endClassName option value.
      *
-     * @param mixed $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.endClassName
      */
-    public function rowGroupEndClassName($value = 'group-end')
+    public function rowGroupEndClassName(string $value = 'group-end'): static
     {
-        $this->attributes['rowGroup']['endClassName'] = $value;
-
-        return $this;
+        return $this->rowGroup(['endClassName' => $value]);
     }
 
     /**
      * Set rowGroup endRender option value.
      *
-     * @param mixed $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.endRender
      */
-    public function rowGroupEndRender($value)
+    public function rowGroupEndRender(string $value): static
     {
-        $this->attributes['rowGroup']['endRender'] = $value;
-
-        return $this;
+        return $this->rowGroup(['endRender' => $value]);
     }
 
     /**
      * Set rowGroup startClassName option value.
      *
-     * @param mixed $value
+     * @param  string  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.startClassName
      */
-    public function rowGroupStartClassName($value = 'group-start')
+    public function rowGroupStartClassName(string $value = 'group-start'): static
     {
-        $this->attributes['rowGroup']['startClassName'] = $value;
-
-        return $this;
+        return $this->rowGroup(['startClassName' => $value]);
     }
 
     /**
      * Set rowGroup startRender option value.
      *
-     * @param mixed $value
+     * @param  string|null  $value
      * @return $this
      * @see https://datatables.net/reference/option/rowGroup.startRender
      */
-    public function rowGroupStartRender($value)
+    public function rowGroupStartRender(string $value = null): static
     {
-        $this->attributes['rowGroup']['startRender'] = $value;
+        return $this->rowGroup(['startRender' => $value]);
+    }
 
-        return $this;
+    /**
+     * @param  string|null  $key
+     * @return mixed
+     */
+    public function getRowGroup(string $key = null): mixed
+    {
+        if (is_null($key)) {
+            return $this->attributes['rowGroup'] ?? true;
+        }
+
+        return $this->attributes['rowGroup'][$key] ?? false;
     }
 }

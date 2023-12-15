@@ -2,14 +2,7 @@
 
 namespace CraigPaul\Mail;
 
-use function array_filter;
-use function array_map;
-use function array_merge;
 use Illuminate\Http\Client\Factory as Http;
-use function implode;
-use function in_array;
-use function json_decode;
-use const JSON_OBJECT_AS_ARRAY;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mailer\Header\TagHeader;
@@ -19,6 +12,15 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\MessageConverter;
 use Symfony\Component\Mime\RawMessage;
+
+use function array_filter;
+use function array_map;
+use function array_merge;
+use function implode;
+use function in_array;
+use function json_decode;
+
+use const JSON_OBJECT_AS_ARRAY;
 
 class PostmarkTransport implements TransportInterface
 {
@@ -36,6 +38,7 @@ class PostmarkTransport implements TransportInterface
     public function __construct(
         protected Http $http,
         protected ?string $messageStreamId,
+        protected array $options,
         protected string $token,
     ) {
     }
@@ -49,6 +52,7 @@ class PostmarkTransport implements TransportInterface
         $email = MessageConverter::toEmail($sentMessage->getOriginalMessage());
 
         $response = $this->http
+            ->withOptions($this->options)
             ->acceptJson()
             ->withHeaders([
                 'X-Postmark-Server-Token' => $this->getServerToken($email),

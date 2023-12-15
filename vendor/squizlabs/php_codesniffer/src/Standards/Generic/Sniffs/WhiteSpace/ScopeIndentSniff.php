@@ -4,7 +4,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\WhiteSpace;
@@ -80,7 +80,7 @@ class ScopeIndentSniff implements Sniff
      * This is a cached copy of the public version of this var, which
      * can be set in a ruleset file, and some core ignored tokens.
      *
-     * @var int[]
+     * @var array<int|string, bool>
      */
     private $ignoreIndentation = [];
 
@@ -1090,8 +1090,11 @@ class ScopeIndentSniff implements Sniff
             if ($tokens[$i]['code'] === T_CONSTANT_ENCAPSED_STRING
                 || $tokens[$i]['code'] === T_DOUBLE_QUOTED_STRING
             ) {
-                $i = $phpcsFile->findNext($tokens[$i]['code'], ($i + 1), null, true);
-                $i--;
+                $nextNonTextString = $phpcsFile->findNext($tokens[$i]['code'], ($i + 1), null, true);
+                if ($nextNonTextString !== false) {
+                    $i = ($nextNonTextString - 1);
+                }
+
                 continue;
             }
 

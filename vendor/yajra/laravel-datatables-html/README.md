@@ -1,6 +1,6 @@
 # Laravel DataTables Html Plugin.
 
-[![Laravel 5.4+](https://img.shields.io/badge/Laravel-5.4+-orange.svg)](http://laravel.com)
+[![Laravel 10.x](https://img.shields.io/badge/Laravel-10.x-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-html.svg)](https://packagist.org/packages/yajra/laravel-datatables-html)
 ![Build Status](https://github.com/yajra/laravel-datatables-html/workflows/tests/badge.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables-html/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yajra/laravel-datatables-html/?branch=master)
@@ -10,20 +10,53 @@
 This package is a plugin of [Laravel DataTables](https://github.com/yajra/laravel-datatables) for generating dataTables script using PHP.
 
 ## Requirements
-- [Laravel 5.4+](https://github.com/laravel/framework)
-- [Laravel DataTables v7.x|v8.x|9.x](https://github.com/yajra/laravel-datatables)
+
+- [Laravel 10.x](https://github.com/laravel/framework)
+- [Laravel DataTables](https://github.com/yajra/laravel-datatables)
 
 ## Documentations
+
 - [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
-## Quick Installation
-`composer require yajra/laravel-datatables-html:^4.0`
+## Laravel Version Compatibility
 
-#### Service Provider (Optional on Laravel 5.5+)
-`Yajra\DataTables\HtmlServiceProvider::class`
+| Laravel       | Package |
+|:--------------|:--------|
+| 8.x and below | 4.x     |
+| 9.x           | 9.x     |
+| 10.x          | 10.x    |
+
+## Quick Installation
+
+`composer require yajra/laravel-datatables-html:^10`
+
+#### Setup scripts with ViteJS
+
+Set the default javascript type to `module` by setting `Builder::useVite()` in the `AppServiceProvider`.
+
+```php
+namespace App\Providers;
+
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
+use Yajra\DataTables\Html\Builder;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Paginator::useBootstrapFive();
+        Builder::useVite();
+    }
+}
+```
 
 #### Publish Assets (Optional)
+
 `$ php artisan vendor:publish --tag=datatables-html`
 
 And that's it! Start building out some awesome DataTables!

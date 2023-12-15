@@ -38,7 +38,7 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
     use ContractsTrait;
     use LoggerAwareTrait;
 
-    public const TAGS_PREFIX = "\0tags\0";
+    public const TAGS_PREFIX = "\1tags\1";
 
     private array $deferred = [];
     private AdapterInterface $pool;
@@ -279,7 +279,7 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return $this->pool instanceof PruneableInterface && $this->pool->prune();
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->commit();
         $this->knownTagVersions = [];
@@ -292,7 +292,7 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
 
-    public function __wakeup()
+    public function __wakeup(): void
     {
         throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }

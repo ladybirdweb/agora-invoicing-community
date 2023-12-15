@@ -41,7 +41,7 @@ class Compiler
         return $this->serviceReferenceGraph;
     }
 
-    public function addPass(CompilerPassInterface $pass, string $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0)
+    public function addPass(CompilerPassInterface $pass, string $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0): void
     {
         $this->passConfig->addPass($pass, $type, $priority);
     }
@@ -49,7 +49,7 @@ class Compiler
     /**
      * @final
      */
-    public function log(CompilerPassInterface $pass, string $message)
+    public function log(CompilerPassInterface $pass, string $message): void
     {
         if (str_contains($message, "\n")) {
             $message = str_replace("\n", "\n".$pass::class.': ', trim($message));
@@ -66,7 +66,7 @@ class Compiler
     /**
      * Run the Compiler and process all Passes.
      */
-    public function compile(ContainerBuilder $container)
+    public function compile(ContainerBuilder $container): void
     {
         try {
             foreach ($this->passConfig->getPasses() as $pass) {

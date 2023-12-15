@@ -23,9 +23,11 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ResolveHotPathPass extends AbstractRecursivePass
 {
+    protected bool $skipScalars = true;
+
     private array $resolvedIds = [];
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         try {
             parent::process($container);

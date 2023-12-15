@@ -11,10 +11,14 @@
 
 namespace Symfony\Component\Templating\Helper;
 
+trigger_deprecation('symfony/templating', '6.4', '"%s" is deprecated since version 6.4 and will be removed in 7.0. Use Twig instead.', SlotsHelper::class);
+
 /**
  * SlotsHelper manages template slots.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @deprecated since Symfony 6.4, use Twig instead
  */
 class SlotsHelper extends Helper
 {
@@ -26,6 +30,8 @@ class SlotsHelper extends Helper
      *
      * This method starts an output buffer that will be
      * closed when the stop() method is called.
+     *
+     * @return void
      *
      * @throws \InvalidArgumentException if a slot with the same name is already started
      */
@@ -44,6 +50,8 @@ class SlotsHelper extends Helper
 
     /**
      * Stops a slot.
+     *
+     * @return void
      *
      * @throws \LogicException if no slot has been started
      */
@@ -76,6 +84,8 @@ class SlotsHelper extends Helper
 
     /**
      * Sets a slot value.
+     *
+     * @return void
      */
     public function set(string $name, string $content)
     {

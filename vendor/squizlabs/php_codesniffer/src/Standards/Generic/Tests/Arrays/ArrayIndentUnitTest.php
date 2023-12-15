@@ -4,7 +4,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Tests\Arrays;
@@ -45,6 +45,14 @@ class ArrayIndentUnitTest extends AbstractSniffUnitTest
             88  => 1,
             98  => 1,
             110 => 1,
+            119 => 1,
+            126 => 1,
+            127 => 1,
+            133 => 1,
+            141 => 1,
+            142 => 1,
+            143 => 1,
+            149 => 1,
         ];
 
     }//end getErrorList()

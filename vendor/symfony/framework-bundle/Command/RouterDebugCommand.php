@@ -22,7 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\HttpKernel\Debug\FileLinkFormatter;
+use Symfony\Component\ErrorHandler\ErrorRenderer\FileLinkFormatter;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -50,13 +50,14 @@ class RouterDebugCommand extends Command
         $this->fileLinkFormatter = $fileLinkFormatter;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
                 new InputArgument('name', InputArgument::OPTIONAL, 'A route name'),
                 new InputOption('show-controllers', null, InputOption::VALUE_NONE, 'Show assigned controllers in overview'),
-                new InputOption('format', null, InputOption::VALUE_REQUIRED, 'The output format (txt, xml, json, or md)', 'txt'),
+                new InputOption('show-aliases', null, InputOption::VALUE_NONE, 'Show aliases in overview'),
+                new InputOption('format', null, InputOption::VALUE_REQUIRED, sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())), 'txt'),
                 new InputOption('raw', null, InputOption::VALUE_NONE, 'To output raw route(s)'),
             ])
             ->setHelp(<<<'EOF'
@@ -80,9 +81,7 @@ EOF
         $routes = $this->router->getRouteCollection();
         $container = null;
         if ($this->fileLinkFormatter) {
-            $container = function () {
-                return $this->getContainerBuilder($this->getApplication()->getKernel());
-            };
+            $container = fn () => $this->getContainerBuilder($this->getApplication()->getKernel());
         }
 
         if ($name) {
@@ -94,6 +93,7 @@ EOF
                     'format' => $input->getOption('format'),
                     'raw_text' => $input->getOption('raw'),
                     'show_controllers' => $input->getOption('show-controllers'),
+                    'show_aliases' => $input->getOption('show-aliases'),
                     'output' => $io,
                 ]);
 
@@ -122,6 +122,7 @@ EOF
                 'format' => $input->getOption('format'),
                 'raw_text' => $input->getOption('raw'),
                 'show_controllers' => $input->getOption('show-controllers'),
+                'show_aliases' => $input->getOption('show-aliases'),
                 'output' => $io,
                 'container' => $container,
             ]);
@@ -151,8 +152,7 @@ EOF
         }
 
         if ($input->mustSuggestOptionValuesFor('format')) {
-            $helper = new DescriptorHelper();
-            $suggestions->suggestValues($helper->getFormats());
+            $suggestions->suggestValues($this->getAvailableFormatOptions());
         }
     }
 
@@ -166,5 +166,10 @@ EOF
         }
 
         return $foundRoutes;
+    }
+
+    private function getAvailableFormatOptions(): array
+    {
+        return (new DescriptorHelper())->getFormats();
     }
 }

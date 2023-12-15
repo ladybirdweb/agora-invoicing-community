@@ -2,8 +2,8 @@
 
 namespace Yajra\DataTables\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class TransformerMakeCommand extends GeneratorCommand
 {
@@ -33,14 +33,13 @@ class TransformerMakeCommand extends GeneratorCommand
     /**
      * Replace the class name for the given stub.
      *
-     * @param string $stub Contents of the stub
-     * @param string $name The class name
-     *
+     * @param  string  $stub  Contents of the stub
+     * @param  string  $name  The class name
      * @return string
      */
-    protected function replaceClass($stub, $name)
+    protected function replaceClass($stub, $name): string
     {
-        $stub = parent::replaceClass($stub, $name . 'Transformer');
+        $stub = parent::replaceClass($stub, $name.'Transformer');
         $stub = str_replace('Dummy', ucfirst($this->argument('name')), $stub);
         $stub = str_replace('dummy', lcfirst($this->argument('name')), $stub);
 
@@ -57,21 +56,20 @@ class TransformerMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         return $this->argument('include') ?
-            __DIR__ . '/stubs/transformer.inc.stub' :
-            __DIR__ . '/stubs/transformer.stub';
+            __DIR__.'/stubs/transformer.inc.stub' :
+            __DIR__.'/stubs/transformer.stub';
     }
 
     /**
      * Get the default namespace for the class.
      *
-     * @param string $rootNamespace The root namespace
-     *
+     * @param  string  $rootNamespace  The root namespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace): string
     {
         return $rootNamespace.'\Transformers';
     }
@@ -79,11 +77,10 @@ class TransformerMakeCommand extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param string $name Name of the class with namespace
-     *
+     * @param  string  $name  Name of the class with namespace
      * @return string
      */
-    protected function getPath($name)
+    protected function getPath($name): string
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 

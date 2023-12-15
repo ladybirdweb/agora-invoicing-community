@@ -14,10 +14,14 @@ namespace Symfony\Component\Templating\Loader;
 use Symfony\Component\Templating\Storage\Storage;
 use Symfony\Component\Templating\TemplateReferenceInterface;
 
+trigger_deprecation('symfony/templating', '6.4', '"%s" is deprecated since version 6.4 and will be removed in 7.0. Use Twig instead.', ChainLoader::class);
+
 /**
  * ChainLoader is a loader that calls other loaders to load templates.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @deprecated since Symfony 6.4, use Twig instead
  */
 class ChainLoader extends Loader
 {
@@ -33,6 +37,9 @@ class ChainLoader extends Loader
         }
     }
 
+    /**
+     * @return void
+     */
     public function addLoader(LoaderInterface $loader)
     {
         $this->loaders[] = $loader;

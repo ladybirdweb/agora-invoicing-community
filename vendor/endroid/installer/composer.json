@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "composer-plugin-api": "^2.0"
     },
     "require-dev": {
         "composer/composer": "^2.0",
-        "endroid/quality": "dev-master"
+        "endroid/quality": "dev-main"
     },
     "suggest": {
         "roave/security-advisories": "Avoids installation of package versions with vulnerabilities"

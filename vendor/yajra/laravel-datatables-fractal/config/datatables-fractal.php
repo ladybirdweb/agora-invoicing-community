@@ -4,7 +4,7 @@ return [
     /*
      * Request key name to parse includes on fractal.
      */
-    'includes'   => 'include',
+    'includes' => 'include',
 
     /*
      * Default fractal serializer.

@@ -1,0 +1,17 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - src
+
+    level: max
+
+    ignoreErrors:
+        - '#Parameter \#1 \$callback of method Illuminate\\Container\\Container::call\(\) expects \(callable\(\): mixed\)\|string*#'
+
+    excludePaths:
+        - tests
+
+    checkMissingIterableValueType: false

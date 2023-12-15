@@ -33,7 +33,7 @@ class Webhooks extends Resource
     /**
      * Get the entity details by ID.
      *
-     * @param $id   Entity ID to find.
+     * @param int $id   Entity ID to find.
      * @return \Devio\Pipedrive\Http\Response|void
      * @throws PipedriveException
      */
@@ -44,7 +44,7 @@ class Webhooks extends Resource
 
     /**
      * Update an entity by ID.
-     * @param $id
+     * @param int   $id
      * @param array $values
      *
      * @return \Devio\Pipedrive\Http\Response|void

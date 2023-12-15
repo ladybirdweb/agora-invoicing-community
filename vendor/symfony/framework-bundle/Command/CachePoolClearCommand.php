@@ -19,6 +19,7 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\CacheClearer\Psr6CacheClearer;
@@ -45,12 +46,14 @@ final class CachePoolClearCommand extends Command
         $this->poolNames = $poolNames;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
-                new InputArgument('pools', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'A list of cache pools or cache pool clearers'),
+                new InputArgument('pools', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'A list of cache pools or cache pool clearers'),
             ])
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Clear all cache pools')
+            ->addOption('exclude', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A list of cache pools or cache pool clearers to exclude')
             ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command clears the given cache pools or cache pool clearers.
 
@@ -67,7 +70,25 @@ EOF
         $pools = [];
         $clearers = [];
 
-        foreach ($input->getArgument('pools') as $id) {
+        $poolNames = $input->getArgument('pools');
+        $excludedPoolNames = $input->getOption('exclude');
+        if ($input->getOption('all')) {
+            if (!$this->poolNames) {
+                throw new InvalidArgumentException('Could not clear all cache pools, try specifying a specific pool or cache clearer.');
+            }
+
+            if (!$excludedPoolNames) {
+                $io->comment('Clearing all cache pools...');
+            }
+
+            $poolNames = $this->poolNames;
+        } elseif (!$poolNames) {
+            throw new InvalidArgumentException('Either specify at least one pool name, or provide the --all option to clear all pools.');
+        }
+
+        $poolNames = array_diff($poolNames, $excludedPoolNames);
+
+        foreach ($poolNames as $id) {
             if ($this->poolClearer->hasPool($id)) {
                 $pools[$id] = $id;
             } else {

@@ -499,6 +499,48 @@ $api->customer->fetch($customerId)->tokens()->delete($tokenId);
 ```
 -------------------------------------------------------------------------------------------------------
 
+## Using Card Number/ Tokenised Card Number
+
+```php
+$api->card->requestCardReference(array("number" =>"4854980604708430"));
+```
+**Parameters:**
+
+| Name        | Type    | Description                                                                  |
+|-------------|---------|------------------------------------------------------------------------------|
+| number* | string | The card number whose PAR or network reference id should be retrieved. |
+| tokenised  | string | Determines if the card is saved as a token. Possible value is `true` or `false` |
+
+**Response:**
+```json
+{
+  "network": "Visa",
+  "payment_account_reference": "V0010013819231376539033235990",
+  "network_reference_id": null
+}
+```
+-------------------------------------------------------------------------------------------------------
+
+## Using Razporpay token
+
+```php
+$api->card->requestCardReference(array("token" =>"token_4lsdksD31GaZ09"));
+```
+**Parameters:**
+
+| Name        | Type    | Description                                                                  |
+|-------------|---------|------------------------------------------------------------------------------|
+| token* | string | The token whose PAR or network reference id should be retrieved.|
+
+**Response:**
+```json
+{
+  "network": "Visa",
+  "payment_account_reference": "V0010013819231376539033235990",
+  "network_reference_id": null
+}
+```
+-------------------------------------------------------------------------------------------------------
 **PN: * indicates mandatory fields**
 <br>
 <br>

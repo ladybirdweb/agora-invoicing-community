@@ -9,26 +9,31 @@ trait HasEditor
     /**
      * Collection of Editors.
      *
-     * @var null|Editor
+     * @var array
      */
-    protected $editors = [];
+    protected array $editors = [];
 
     /**
      * Attach multiple editors to builder.
      *
-     * @param array|mixed ...$editors
+     * @param  array|mixed  ...$editors
      * @return $this
      * @see https://editor.datatables.net/
-     * @throws \Exception
      */
-    public function editors(...$editors)
+    public function editors(...$editors): static
     {
         if (is_array($editors[0])) {
             $editors = $editors[0];
         }
 
+        $this->editors = [];
+
         foreach ($editors as $editor) {
-            $this->editor($editor);
+            if ($editor instanceof Editor) {
+                $this->editor($editor);
+            } else {
+                $this->editor(new Editor($editor));
+            }
         }
 
         return $this;
@@ -37,16 +42,24 @@ trait HasEditor
     /**
      * Integrate with DataTables Editor.
      *
-     * @param array|Editor $fields
+     * @param  Editor  $editor
      * @return $this
      * @see https://editor.datatables.net/
-     * @throws \Exception
      */
-    public function editor($fields)
+    public function editor(Editor $editor): static
     {
-        $this->setTemplate($this->config->get('datatables-html.editor', 'datatables::editor'));
+        /** @var string $template */
+        $template = $this->config->get('datatables-html.editor', 'datatables::editor');
 
-        $editor = $this->newEditor($fields);
+        $this->setTemplate($template);
+
+        if (! $editor->table) {
+            $editor->table('#'.$this->getTableAttribute('id'));
+        }
+
+        if (! $editor->ajax) {
+            $editor->ajax($this->getAjaxUrl());
+        }
 
         $this->editors[] = $editor;
 
@@ -54,34 +67,9 @@ trait HasEditor
     }
 
     /**
-     * @param array|Editor $fields
-     * @return array|Editor
-     * @throws \Exception
+     * @return array
      */
-    protected function newEditor($fields)
-    {
-        if ($fields instanceof Editor) {
-            $editor = $fields;
-        } else {
-            $editor = new Editor;
-            $editor->fields($fields);
-        }
-
-        if (! $editor->table) {
-            $editor->table('#' . $this->getTableAttribute('id'));
-        }
-
-        if (! $editor->ajax) {
-            $editor->ajax($this->getAjaxUrl());
-        }
-
-        return $editor;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getEditors()
+    public function getEditors(): array
     {
         return $this->editors;
     }

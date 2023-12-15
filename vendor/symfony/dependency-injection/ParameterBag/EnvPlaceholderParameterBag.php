@@ -41,14 +41,14 @@ class EnvPlaceholderParameterBag extends ParameterBag
                     return $placeholder; // return first result
                 }
             }
-            if (!preg_match('/^(?:[-.\w\\\\]*+:)*+\w++$/', $env)) {
+            if (!preg_match('/^(?:[-.\w\\\\]*+:)*+\w*+$/', $env)) {
                 throw new InvalidArgumentException(sprintf('Invalid %s name: only "word" characters are allowed.', $name));
             }
             if ($this->has($name) && null !== ($defaultValue = parent::get($name)) && !\is_string($defaultValue)) {
                 throw new RuntimeException(sprintf('The default value of an env() parameter must be a string or null, but "%s" given to "%s".', get_debug_type($defaultValue), $name));
             }
 
-            $uniqueName = md5($name.'_'.self::$counter++);
+            $uniqueName = hash('xxh128', $name.'_'.self::$counter++);
             $placeholder = sprintf('%s_%s_%s', $this->getEnvPlaceholderUniquePrefix(), strtr($env, ':-.\\', '____'), $uniqueName);
             $this->envPlaceholders[$env][$placeholder] = $placeholder;
 
@@ -66,7 +66,7 @@ class EnvPlaceholderParameterBag extends ParameterBag
         if (!isset($this->envPlaceholderUniquePrefix)) {
             $reproducibleEntropy = unserialize(serialize($this->parameters));
             array_walk_recursive($reproducibleEntropy, function (&$v) { $v = null; });
-            $this->envPlaceholderUniquePrefix = 'env_'.substr(md5(serialize($reproducibleEntropy)), -16);
+            $this->envPlaceholderUniquePrefix = 'env_'.substr(hash('xxh128', serialize($reproducibleEntropy)), -16);
         }
 
         return $this->envPlaceholderUniquePrefix;
@@ -87,7 +87,7 @@ class EnvPlaceholderParameterBag extends ParameterBag
         return $this->unusedEnvPlaceholders;
     }
 
-    public function clearUnusedEnvPlaceholders()
+    public function clearUnusedEnvPlaceholders(): void
     {
         $this->unusedEnvPlaceholders = [];
     }
@@ -95,7 +95,7 @@ class EnvPlaceholderParameterBag extends ParameterBag
     /**
      * Merges the env placeholders of another EnvPlaceholderParameterBag.
      */
-    public function mergeEnvPlaceholders(self $bag)
+    public function mergeEnvPlaceholders(self $bag): void
     {
         if ($newPlaceholders = $bag->getEnvPlaceholders()) {
             $this->envPlaceholders += $newPlaceholders;
@@ -117,7 +117,7 @@ class EnvPlaceholderParameterBag extends ParameterBag
     /**
      * Maps env prefixes to their corresponding PHP types.
      */
-    public function setProvidedTypes(array $providedTypes)
+    public function setProvidedTypes(array $providedTypes): void
     {
         $this->providedTypes = $providedTypes;
     }
@@ -132,7 +132,7 @@ class EnvPlaceholderParameterBag extends ParameterBag
         return $this->providedTypes;
     }
 
-    public function resolve()
+    public function resolve(): void
     {
         if ($this->resolved) {
             return;

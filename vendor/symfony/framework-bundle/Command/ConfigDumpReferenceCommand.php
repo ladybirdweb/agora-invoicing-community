@@ -23,8 +23,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Extension\ConfigurationExtensionInterface;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -39,15 +37,18 @@ use Symfony\Component\Yaml\Yaml;
 #[AsCommand(name: 'config:dump-reference', description: 'Dump the default configuration for an extension')]
 class ConfigDumpReferenceCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
+        $commentedHelpFormats = array_map(fn ($format) => sprintf('<comment>%s</comment>', $format), $this->getAvailableFormatOptions());
+        $helpFormats = implode('", "', $commentedHelpFormats);
+
         $this
             ->setDefinition([
                 new InputArgument('name', InputArgument::OPTIONAL, 'The Bundle name or the extension alias'),
                 new InputArgument('path', InputArgument::OPTIONAL, 'The configuration option path'),
-                new InputOption('format', null, InputOption::VALUE_REQUIRED, 'The output format (yaml or xml)', 'yaml'),
+                new InputOption('format', null, InputOption::VALUE_REQUIRED, sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())), 'yaml'),
             ])
-            ->setHelp(<<<'EOF'
+            ->setHelp(<<<EOF
 The <info>%command.name%</info> command dumps the default configuration for an
 extension/bundle.
 
@@ -56,9 +57,8 @@ Either the extension alias or bundle name can be used:
   <info>php %command.full_name% framework</info>
   <info>php %command.full_name% FrameworkBundle</info>
 
-With the <info>--format</info> option specifies the format of the configuration,
-this is either <comment>yaml</comment> or <comment>xml</comment>.
-When the option is not provided, <comment>yaml</comment> is used.
+The <info>--format</info> option specifies the format of the configuration,
+these are "{$helpFormats}".
 
   <info>php %command.full_name% FrameworkBundle --format=xml</info>
 
@@ -81,14 +81,7 @@ EOF
 
         if (null === $name = $input->getArgument('name')) {
             $this->listBundles($errorIo);
-
-            $kernel = $this->getApplication()->getKernel();
-            if ($kernel instanceof ExtensionInterface
-                && ($kernel instanceof ConfigurationInterface || $kernel instanceof ConfigurationExtensionInterface)
-                && $kernel->getAlias()
-            ) {
-                $errorIo->table(['Kernel Extension'], [[$kernel->getAlias()]]);
-            }
+            $this->listNonBundleExtensions($errorIo);
 
             $errorIo->comment([
                 'Provide the name of a bundle as the first argument of this command to dump its default configuration. (e.g. <comment>config:dump-reference FrameworkBundle</comment>)',
@@ -145,7 +138,7 @@ EOF
                 break;
             default:
                 $io->writeln($message);
-                throw new InvalidArgumentException('Only the yaml and xml formats are supported.');
+                throw new InvalidArgumentException(sprintf('Supported formats are "%s".', implode('", "', $this->getAvailableFormatOptions())));
         }
 
         $io->writeln(null === $path ? $dumper->dump($configuration, $extension->getNamespace()) : $dumper->dumpAtPath($configuration, $path));
@@ -156,6 +149,7 @@ EOF
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestArgumentValuesFor('name')) {
+            $suggestions->suggestValues($this->getAvailableExtensions());
             $suggestions->suggestValues($this->getAvailableBundles());
         }
 
@@ -164,13 +158,24 @@ EOF
         }
     }
 
+    private function getAvailableExtensions(): array
+    {
+        $kernel = $this->getApplication()->getKernel();
+
+        $extensions = [];
+        foreach ($this->getContainerBuilder($kernel)->getExtensions() as $alias => $extension) {
+            $extensions[] = $alias;
+        }
+
+        return $extensions;
+    }
+
     private function getAvailableBundles(): array
     {
         $bundles = [];
 
         foreach ($this->getApplication()->getKernel()->getBundles() as $bundle) {
             $bundles[] = $bundle->getName();
-            $bundles[] = $bundle->getContainerExtension()->getAlias();
         }
 
         return $bundles;

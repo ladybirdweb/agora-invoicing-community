@@ -66,7 +66,17 @@ return static function (ContainerConfigurator $container) {
             ->private()
             ->tag('cache.pool')
 
+        ->set('cache.asset_mapper')
+            ->parent('cache.system')
+            ->private()
+            ->tag('cache.pool')
+
         ->set('cache.messenger.restart_workers_signal')
+            ->parent('cache.app')
+            ->private()
+            ->tag('cache.pool')
+
+        ->set('cache.scheduler')
             ->parent('cache.app')
             ->private()
             ->tag('cache.pool')

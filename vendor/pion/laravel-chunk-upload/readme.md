@@ -8,7 +8,7 @@
 
 ## Introduction
 
-> Supports Laravel from 5.2 to 7 (covered by integration tests on all versions).
+> Supports Laravel from 5.2 to 9 (covered by integration tests for 7/8/9 versions).
 
 Easy to use service/library for chunked upload with supporting multiple JS libraries on top of Laravel's file upload with low memory footprint in mind. 
 
@@ -43,7 +43,7 @@ Setup consists of 3 steps:
 | Library | Wiki | single & chunk upload | simultaneous uploads | In [example project](https://github.com/pionl/laravel-chunk-upload-example) | Author |
 |---- |----|----|----| ---- | ---- |
 | [resumable.js](https://github.com/23/resumable.js) | [Wiki](https://github.com/pionl/laravel-chunk-upload/wiki/resumable-js) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | [@pionl](https://github.com/pionl) |
-| [DropZone](https://gitlab.com/meno/dropzone/) | [Wiki](https://github.com/pionl/laravel-chunk-upload/wiki/dropzone) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | [@pionl](https://github.com/pionl) |
+| [DropZone](https://github.com/dropzone/dropzone) | [Wiki](https://github.com/pionl/laravel-chunk-upload/wiki/dropzone) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | [@pionl](https://github.com/pionl) |
 | [jQuery-File-Upload](https://github.com/blueimp/jQuery-File-Upload) | [Wiki](https://github.com/pionl/laravel-chunk-upload/wiki/jquery-file-upload)  | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: | [@pionl](https://github.com/pionl) |
 | [Plupload](https://github.com/moxiecode/plupload) | [Wiki](https://github.com/pionl/laravel-chunk-upload/wiki/plupload) | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | [@pionl](https://github.com/pionl) |
 | [simple uploader](https://github.com/simple-uploader) | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | [@dyktek](https://github.com/dyktek) |
@@ -69,14 +69,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute changes. All contri
 
 > Laravel 5/6 should be still supported but we are not testing them via automation sccripts
 
-| Version | PHP         |
-| ------- | ----------- | 
-| 9.*     | 8.1-node-17 |
-| 9.*     | 8.0-node-17 |
-| 8.*     | 8.1-node-17 |
-| 8.*     | 8.0-node-17 |
-| 8.*     | 7.4-node-17 |
-| 7.*     | 7.4-node-17 |
+| Version | PHP           |
+|---------|---------------| 
+| 10.*    | 8.1, 8.2      |
+| 9.*     | 8.0, 8.1      |
+| 8.*     | 7.4, 8.0, 8.1 |
+| 7.*     | 7.4           |
 
 
 

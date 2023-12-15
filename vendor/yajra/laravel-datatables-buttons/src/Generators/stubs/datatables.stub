@@ -8,57 +8,53 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Html\Editor\Editor;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
 
 class DummyClass extends DataTable
 {
     /**
-     * Build DataTable class.
+     * Build the DataTable class.
      *
-     * @param mixed $query Results from query() method.
-     * @return \Yajra\DataTables\DataTableAbstract
+     * @param QueryBuilder $query Results from query() method.
      */
-    public function dataTable($query)
+    public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return datatables()
-            ->eloquent($query)
-            ->addColumn('action', 'DummyAction');
+        return (new EloquentDataTable($query))
+            ->addColumn('action', 'DummyAction')
+            ->setRowId('id');
     }
 
     /**
-     * Get query source of dataTable.
-     *
-     * @param \DummyModel $model
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Get the query source of dataTable.
      */
-    public function query(ModelName $model)
+    public function query(ModelName $model): QueryBuilder
     {
         return $model->newQuery();
     }
 
     /**
-     * Optional method if you want to use html builder.
-     *
-     * @return \Yajra\DataTables\Html\Builder
+     * Optional method if you want to use the html builder.
      */
-    public function html()
+    public function html(): HtmlBuilder
     {
         return $this->builder()
                     ->setTableId('DummyTableId')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('DummyDOM')
+                    //->dom('DummyDOM')
                     ->orderBy(1)
-                    ->buttons(
+                    ->selectStyleSingle()
+                    ->buttons([
                         DummyButtons
-                    );
+                    ]);
     }
 
     /**
-     * Get columns.
-     *
-     * @return array
+     * Get the dataTable columns definition.
      */
-    protected function getColumns()
+    public function getColumns(): array
     {
         return [
             Column::computed('action')
@@ -71,11 +67,9 @@ class DummyClass extends DataTable
     }
 
     /**
-     * Get filename for export.
-     *
-     * @return string
+     * Get the filename for export.
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'DummyFilename_' . date('YmdHis');
     }

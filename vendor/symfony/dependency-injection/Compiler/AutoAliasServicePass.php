@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
  */
 class AutoAliasServicePass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         foreach ($container->findTaggedServiceIds('auto_alias') as $serviceId => $tags) {
             foreach ($tags as $tag) {

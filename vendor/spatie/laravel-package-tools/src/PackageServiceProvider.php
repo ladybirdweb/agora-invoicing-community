@@ -68,6 +68,14 @@ abstract class PackageServiceProvider extends ServiceProvider
                 ], "{$this->packageView($this->package->viewNamespace)}-views");
             }
 
+            if ($this->package->hasInertiaComponents) {
+                $packageDirectoryName = Str::of($this->packageView($this->package->viewNamespace))->studly()->remove('-')->value();
+
+                $this->publishes([
+                    $this->package->basePath('/../resources/js/Pages') => base_path("resources/js/Pages/{$packageDirectoryName}"),
+                ], "{$this->packageView($this->package->viewNamespace)}-inertia-components");
+            }
+
             $now = Carbon::now();
             foreach ($this->package->migrationFileNames as $migrationFileName) {
                 $filePath = $this->package->basePath("/../database/migrations/{$migrationFileName}.php");
@@ -102,6 +110,10 @@ abstract class PackageServiceProvider extends ServiceProvider
 
         if (! empty($this->package->commands)) {
             $this->commands($this->package->commands);
+        }
+
+        if (! empty($this->package->consoleCommands) && $this->app->runningInConsole()) {
+            $this->commands($this->package->consoleCommands);
         }
 
         if ($this->package->hasTranslations) {

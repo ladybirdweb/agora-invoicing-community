@@ -12,72 +12,75 @@ namespace Yajra\DataTables\Html\Options\Plugins;
 trait FixedHeader
 {
     /**
-     * Set fixedHeader option value.
-     *
-     * @param bool|array $value
-     * @return $this
-     * @see https://datatables.net/reference/option/fixedHeader
-     */
-    public function fixedHeader($value = true)
-    {
-        $this->attributes['fixedHeader'] = $value;
-
-        return $this;
-    }
-
-    /**
      * Set fixedHeader footer option value.
      *
-     * @param bool $value
+     * @param  bool  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedHeader.footer
      */
-    public function fixedHeaderFooter(bool $value = true)
+    public function fixedHeaderFooter(bool $value = true): static
     {
-        $this->attributes['fixedHeader']['footer'] = $value;
+        return $this->fixedHeader(['footer' => $value]);
+    }
 
-        return $this;
+    /**
+     * Set fixedHeader option value.
+     *
+     * @param  array|bool  $value
+     * @return $this
+     * @see https://datatables.net/reference/option/fixedHeader
+     */
+    public function fixedHeader(array|bool $value = true): static
+    {
+        return  $this->setPluginAttribute('fixedHeader', $value);
     }
 
     /**
      * Set fixedHeader footerOffset option value.
      *
-     * @param int $value
+     * @param  int  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedHeader.footerOffset
      */
-    public function fixedHeaderFooterOffset(int $value = 0)
+    public function fixedHeaderFooterOffset(int $value = 0): static
     {
-        $this->attributes['fixedHeader']['footerOffset'] = $value;
-
-        return $this;
+        return $this->fixedHeader(['footerOffset' => $value]);
     }
 
     /**
      * Set fixedHeader header option value.
      *
-     * @param bool $value
+     * @param  bool  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedHeader.header
      */
-    public function fixedHeaderHeader(bool $value = true)
+    public function fixedHeaderHeader(bool $value = true): static
     {
-        $this->attributes['fixedHeader']['header'] = $value;
-
-        return $this;
+        return $this->fixedHeader(['header' => $value]);
     }
 
     /**
      * Set fixedHeader headerOffset option value.
      *
-     * @param int $value
+     * @param  int  $value
      * @return $this
      * @see https://datatables.net/reference/option/fixedHeader.headerOffset
      */
-    public function fixedHeaderHeaderOffset(int $value = 0)
+    public function fixedHeaderHeaderOffset(int $value = 0): static
     {
-        $this->attributes['fixedHeader']['headerOffset'] = $value;
+        return $this->fixedHeader(['headerOffset' => $value]);
+    }
 
-        return $this;
+    /**
+     * @param  string|null  $key
+     * @return mixed
+     */
+    public function getFixedHeader(string $key = null): mixed
+    {
+        if (is_null($key)) {
+            return $this->attributes['fixedHeader'] ?? true;
+        }
+
+        return $this->attributes['fixedHeader'][$key] ?? false;
     }
 }

@@ -35,6 +35,7 @@ class YourPackageServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->publishConfigFile()
+                    ->publishAssets()
                     ->publishMigrations()
                     ->copyAndRegisterServiceProviderInApp()
                     ->askToStarRepoOnGitHub();
@@ -215,6 +216,36 @@ $package
     });
 ```
 
+### Working with inertia components
+
+Any `.vue` or `.jsx` files your package provides, should be placed in the `<package root>/resources/js/Pages` directory.
+
+You can register these components with the `hasInertiaComponents` command.
+
+```php
+$package
+    ->name('your-package-name')
+    ->hasInertiaComponents();
+```
+
+This will register your components with Laravel.
+
+The user should publish the inertia components manually or using the [installer-command](#adding-an-installer-command) in order to use them.
+
+If you have an inertia component `<package root>/resources/js/Pages/myComponent.vue`, you can use it like
+this: `Inertia::render('YourPackageName/myComponent')`. Of course, you can also use subdirectories to organise your components.
+
+#### Publishing inertia components
+
+Calling `hasInertiaComponents` will also make inertia components publishable. Users of your package will be able to publish the views with this
+command:
+
+```bash
+php artisan vendor:publish --tag=your-package-name-inertia-components
+```
+
+Also, the inertia components are available in a convenient way with your package [installer-command](#adding-an-installer-command)
+
 ### Working with translations
 
 Any translations your package provides, should be placed in the `<package root>/resources/lang/<language-code>`
@@ -356,7 +387,7 @@ When your package is installed into an app, running this command...
 php artisan vendor:publish --tag=your-package-name-provider
 ```
 
-... will copy `/resources/stubs/{$nameOfYourServiceProvider}.php` in your package
+... will copy `/resources/stubs/{$nameOfYourServiceProvider}.php.stub` in your package
 to `app/Providers/{$nameOfYourServiceProvider}.php` in the app of the user.
 
 ### Registering commands
@@ -407,6 +438,7 @@ class YourPackageServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->publishConfigFile()
+                    ->publishAssets()
                     ->publishMigrations()
                     ->askToRunMigrations()
                     ->copyAndRegisterServiceProviderInApp()
@@ -425,6 +457,7 @@ php artisan your-package-name:install
 Using the code above, that command will:
 
 - publish the config file
+- publish the assets
 - publish the migrations
 - copy the `/resources/stubs/MyProviderName.php.stub` from your package to `app/Providers/MyServiceProviderName.php`, and also register that
   provider in `config/app.php`
@@ -445,9 +478,10 @@ public function configurePackage(Package $package): void
         ->hasInstallCommand(function(InstallCommand $command) {
             $command
                 ->startWith(function(InstallCommand $command) {
-                    $command->info('Hello, and welcome to my great new package!')
+                    $command->info('Hello, and welcome to my great new package!');
                 })
                 ->publishConfigFile()
+                ->publishAssets()
                 ->publishMigrations()
                ->askToRunMigrations()
                 ->copyAndRegisterServiceProviderInApp()

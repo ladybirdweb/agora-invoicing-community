@@ -22,7 +22,7 @@ abstract class Entity extends Resource
     /**
      * List the resource associated emails.
      *
-     * @param       $id
+     * @param  int  $id
      * @param array $options
      * @return Response
      */
@@ -36,8 +36,8 @@ abstract class Entity extends Resource
     /**
      * Add a follower to a resource.
      *
-     * @param $id
-     * @param $user_id
+     * @param int $id
+     * @param int $user_id
      * @return Response
      */
     public function addFollower($id, $user_id)
@@ -48,8 +48,8 @@ abstract class Entity extends Resource
     /**
      * Delete a follower from a resource.
      *
-     * @param $id
-     * @param $follower_id
+     * @param int $id
+     * @param int $follower_id
      * @return Response
      */
     public function deleteFollower($id, $follower_id)
@@ -60,8 +60,8 @@ abstract class Entity extends Resource
     /**
      * Merge a resource with another.
      *
-     * @param $id
-     * @param $merge_with_id
+     * @param int $id
+     * @param int $merge_with_id
      * @return Response
      */
     public function merge($id, $merge_with_id)

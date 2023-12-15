@@ -2,14 +2,12 @@
 
 namespace Yajra\DataTables\Html;
 
-use Collective\Html\HtmlBuilder;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use Yajra\DataTables\Utilities\Helper;
 
 class Builder
 {
@@ -22,62 +20,62 @@ class Builder
     use Columns\Checkbox;
 
     // Select plugin constants.
-    const SELECT_STYLE_API         = 'api';
-    const SELECT_STYLE_SINGLE      = 'single';
-    const SELECT_STYLE_MULTI       = 'multi';
-    const SELECT_STYLE_OS          = 'os';
+    const SELECT_STYLE_API = 'api';
+    const SELECT_STYLE_SINGLE = 'single';
+    const SELECT_STYLE_MULTI = 'multi';
+    const SELECT_STYLE_OS = 'os';
     const SELECT_STYLE_MULTI_SHIFT = 'multi+shift';
-    const SELECT_ITEMS_ROW         = 'row';
-    const SELECT_ITEMS_COLUMN      = 'column';
-    const SELECT_ITEMS_CELL        = 'cell';
+    const SELECT_ITEMS_ROW = 'row';
+    const SELECT_ITEMS_COLUMN = 'column';
+    const SELECT_ITEMS_CELL = 'cell';
 
     /**
-     * @var Collection
+     * The default type to use for the DataTables javascript.
      */
-    public $collection;
+    protected static string $jsType = 'text/javascript';
 
     /**
-     * @var Repository
+     * @var Collection<int, \Yajra\DataTables\Html\Column>
      */
-    public $config;
+    public Collection $collection;
 
     /**
-     * @var Factory
+     * @var array<string, string|null>
      */
-    public $view;
-
-    /**
-     * @var HtmlBuilder
-     */
-    public $html;
-
-    /**
-     * @var array
-     */
-    protected $tableAttributes = [];
+    protected array $tableAttributes = [];
 
     /**
      * @var string
      */
-    protected $template = '';
+    protected string $template = '';
 
     /**
      * @var array
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
-     * @param Repository $config
-     * @param Factory $view
-     * @param HtmlBuilder $html
+     * @var string|array
      */
-    public function __construct(Repository $config, Factory $view, HtmlBuilder $html)
+    protected string|array $ajax = '';
+
+    /**
+     * @var array
+     */
+    protected array $additionalScripts = [];
+
+    /**
+     * @param  Repository  $config
+     * @param  Factory  $view
+     * @param  HtmlBuilder  $html
+     */
+    public function __construct(public Repository $config, public Factory $view, public HtmlBuilder $html)
     {
-        $this->config = $config;
-        $this->view = $view;
-        $this->html = $html;
+        /** @var array $defaults */
+        $defaults = $this->config->get('datatables-html.table', []);
+
         $this->collection = new Collection;
-        $this->tableAttributes = $this->config->get('datatables-html.table', []);
+        $this->tableAttributes = $defaults;
         $this->attributes = [
             'serverSide' => true,
             'processing' => true,
@@ -85,33 +83,49 @@ class Builder
     }
 
     /**
+     * Set the default type to module for the DataTables javascript.
+     */
+    public static function useVite(): void
+    {
+        static::$jsType = 'module';
+    }
+
+    /**
+     * Set the default type to text/javascript for the DataTables javascript.
+     */
+    public static function useWebpack(): void
+    {
+        static::$jsType = 'text/javascript';
+    }
+
+    /**
      * Generate DataTable javascript.
      *
-     * @param  null $script
-     * @param  array $attributes
+     * @param  string|null  $script
+     * @param  array  $attributes
      * @return \Illuminate\Support\HtmlString
-     * @throws \Exception
      */
-    public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
+    public function scripts(string $script = null, array $attributes = []): HtmlString
     {
         $script = $script ?: $this->generateScripts();
-        $attributes = $this->html->attributes($attributes);
+        $attributes = $this->html->attributes(
+            array_merge($attributes, ['type' => $attributes['type'] ?? static::$jsType])
+        );
 
-        return new HtmlString("<script{$attributes}>{$script}</script>\n");
+        return new HtmlString("<script{$attributes}>$script</script>");
     }
 
     /**
      * Get generated raw scripts.
      *
      * @return \Illuminate\Support\HtmlString
-     * @throws \Exception
      */
-    public function generateScripts()
+    public function generateScripts(): HtmlString
     {
         $parameters = $this->generateJson();
 
         return new HtmlString(
-            sprintf($this->template(), $this->getTableAttribute('id'), $parameters)
+            trim(sprintf($this->template(), $this->getTableAttribute('id'), $parameters))
         );
     }
 
@@ -120,9 +134,22 @@ class Builder
      *
      * @return string
      */
-    public function generateJson()
+    public function generateJson(): string
     {
         return $this->parameterize($this->getOptions());
+    }
+
+    /**
+     * Generate DataTables js parameters.
+     *
+     * @param  array  $attributes
+     * @return string
+     */
+    public function parameterize(array $attributes = []): string
+    {
+        $parameters = (new Parameters($attributes))->toArray();
+
+        return Helper::toJsonScript($parameters);
     }
 
     /**
@@ -130,7 +157,7 @@ class Builder
      *
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return array_merge(
             $this->attributes, [
@@ -146,91 +173,48 @@ class Builder
     }
 
     /**
-     * Generate DataTables js parameters.
-     *
-     * @param  array $attributes
-     * @return string
-     */
-    public function parameterize($attributes = [])
-    {
-        $parameters = (new Parameters($attributes))->toArray();
-
-        $values = [];
-        $replacements = [];
-
-        foreach (Arr::dot($parameters) as $key => $value) {
-            if ($this->isCallbackFunction($value, $key)) {
-                $values[] = trim($value);
-                Arr::set($parameters, $key, '%' . $key . '%');
-                $replacements[] = '"%' . $key . '%"';
-            }
-        }
-
-        $new = [];
-        foreach ($parameters as $key => $value) {
-            Arr::set($new, $key, $value);
-        }
-
-        $json = json_encode($new);
-
-        $json = str_replace($replacements, $values, $json);
-
-        return $json;
-    }
-
-    /**
-     * Check if given key & value is a valid callback js function.
-     *
-     * @param string $value
-     * @param string $key
-     * @return bool
-     */
-    protected function isCallbackFunction($value, $key)
-    {
-        if (empty($value)) {
-            return false;
-        }
-
-        $callbacks = $this->config->get('datatables-html.callback', ['$', '$.', 'function']);
-
-        return Str::startsWith(trim($value), $callbacks) || Str::contains($key, 'editor');
-    }
-
-    /**
      * Get javascript template to use.
      *
      * @return string
      */
-    protected function template()
+    protected function template(): string
     {
-        $template = $this->template ?: $this->config->get('datatables-html.script', 'datatables::script');
+        /** @var view-string $configTemplate */
+        $configTemplate = $this->config->get('datatables-html.script', 'datatables::script');
 
-        return $this->view->make($template, ['editors' => $this->editors])->render();
+        $template = $this->template ?: $configTemplate;
+
+        return $this->view->make($template, ['editors' => $this->editors, 'scripts' => $this->additionalScripts])->render();
     }
 
     /**
      * Generate DataTable's table html.
      *
-     * @param array $attributes
-     * @param bool $drawFooter
-     * @param bool $drawSearch
+     * @param  array  $attributes
+     * @param  bool  $drawFooter
+     * @param  bool  $drawSearch
      * @return \Illuminate\Support\HtmlString
      */
-    public function table(array $attributes = [], $drawFooter = false, $drawSearch = false)
+    public function table(array $attributes = [], bool $drawFooter = false, bool $drawSearch = false): HtmlString
     {
         $this->setTableAttributes($attributes);
 
         $th = $this->compileTableHeaders();
         $htmlAttr = $this->html->attributes($this->tableAttributes);
 
-        $tableHtml = '<table ' . $htmlAttr . '>';
-        $searchHtml = $drawSearch ? '<tr class="search-filter">' . implode('',
-                $this->compileTableSearchHeaders()) . '</tr>' : '';
-        $tableHtml .= '<thead><tr>' . implode('', $th) . '</tr>' . $searchHtml . '</thead>';
+        $tableHtml = '<table'.$htmlAttr.'>';
+        $searchHtml = $drawSearch
+                ? '<tr class="search-filter">'.implode('', $this->compileTableSearchHeaders()).'</tr>'
+                : '';
+
+        $tableHtml .= '<thead'.($this->theadClass ?? '').'>';
+        $tableHtml .= '<tr>'.implode('', $th).'</tr>'.$searchHtml.'</thead>';
+
         if ($drawFooter) {
             $tf = $this->compileTableFooter();
-            $tableHtml .= '<tfoot><tr>' . implode('', $tf) . '</tr></tfoot>';
+            $tableHtml .= '<tfoot><tr>'.implode('', $tf).'</tr></tfoot>';
         }
+
         $tableHtml .= '</table>';
 
         return new HtmlString($tableHtml);
@@ -239,10 +223,10 @@ class Builder
     /**
      * Configure DataTable's parameters.
      *
-     * @param  array $attributes
+     * @param  array  $attributes
      * @return $this
      */
-    public function parameters(array $attributes = [])
+    public function parameters(array $attributes = []): static
     {
         $this->attributes = array_merge($this->attributes, $attributes);
 
@@ -250,12 +234,22 @@ class Builder
     }
 
     /**
-     * Set custom javascript template.
+     * Generate scripts that set the dataTables options into a variable.
      *
-     * @param string $template
      * @return $this
      */
-    public function setTemplate($template)
+    public function asOptions(): static
+    {
+        return $this->setTemplate('datatables::options');
+    }
+
+    /**
+     * Set custom javascript template.
+     *
+     * @param  string  $template
+     * @return $this
+     */
+    public function setTemplate(string $template): static
     {
         $this->template = $template;
 
@@ -263,39 +257,56 @@ class Builder
     }
 
     /**
-     * Make a data script to be appended on ajax request of dataTables.
-     *
-     * @param array $data
-     * @return string
-     */
-    protected function makeDataScript(array $data)
-    {
-        $script = '';
-        foreach ($data as $key => $value) {
-            $dataValue = $this->isCallbackFunction($value, $key) ? $value : "'{$value}'";
-            $script .= PHP_EOL . "data.{$key} = {$dataValue};";
-        }
-
-        return $script;
-    }
-
-    /**
-     * Generate scripts that sets the dataTables options into a variable.
-     *
-     * @return $this
-     */
-    public function asOptions()
-    {
-        return $this->setTemplate('datatables::options');
-    }
-
-    /**
      * Wrap dataTable scripts with a function.
      *
      * @return $this
      */
-    public function asFunction()
+    public function asFunction(): static
     {
         return $this->setTemplate('datatables::function');
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param  string  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getAttribute(string $key, mixed $default = ''): mixed
+    {
+        return $this->attributes[$key] ?? $default;
+    }
+
+    /**
+     * @param  string|null  $key
+     * @return array|string
+     */
+    public function getAjax(string $key = null): array|string
+    {
+        if (! is_null($key)) {
+            return $this->ajax[$key] ?? '';
+        }
+
+        return $this->ajax;
+    }
+
+    /**
+     * Add additional scripts to the DataTables JS initialization.
+     *
+     * @param  string  $view
+     * @return $this
+     */
+    public function addScript(string $view): static
+    {
+        $this->additionalScripts[] = $view;
+
+        return $this;
     }
 }

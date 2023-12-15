@@ -9,9 +9,9 @@ trait FindsByName
     /**
      * Find an element by name.
      *
-     * @param       $term
-     * @param array $options
-     * @deprecated  Use search method instead
+     * @param string $term
+     * @param array  $options
+     * @deprecated   Use search method instead
 	 * @return Response
      */
     public function findByName($term, $options = [])

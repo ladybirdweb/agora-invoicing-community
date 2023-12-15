@@ -14,16 +14,17 @@
             "role": "Developer"
         }
     ],
-    "require": {
-        "php": "^8.0.2",
-        "illuminate/support": "^9.0",
-        "doctrine/dbal": "^3.3",
-        "nesbot/carbon": "^2.0"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^7.0",
-        "phpunit/phpunit": "^9.0"
-    },
+"require": {
+    "php": "^8.0.2",
+    "laravel/framework": "^10.0",
+    "illuminate/support": "^10.0",
+    "doctrine/dbal": "^3.3",
+    "nesbot/carbon": "^2.0"
+},
+"require-dev": {
+    "orchestra/testbench": "^8.0",
+    "phpunit/phpunit": "^9.5"
+},
     "autoload": {
         "psr-0": {
             "ShvetsGroup\\LaravelEmailDatabaseLog\\": "src/"

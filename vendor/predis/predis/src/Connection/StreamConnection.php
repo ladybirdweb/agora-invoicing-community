@@ -231,7 +231,9 @@ class StreamConnection extends AbstractConnection
             foreach ($this->initCommands as $command) {
                 $response = $this->executeCommand($command);
 
-                if ($response instanceof ErrorResponseInterface) {
+                if ($response instanceof ErrorResponseInterface && $command->getId() === 'CLIENT') {
+                    // Do nothing on CLIENT SETINFO command failure
+                } elseif ($response instanceof ErrorResponseInterface) {
                     $this->onConnectionError("`{$command->getId()}` failed: {$response->getMessage()}", 0);
                 }
             }
@@ -244,7 +246,10 @@ class StreamConnection extends AbstractConnection
     public function disconnect()
     {
         if ($this->isConnected()) {
-            fclose($this->getResource());
+            $resource = $this->getResource();
+            if (is_resource($resource)) {
+                fclose($resource);
+            }
             parent::disconnect();
         }
     }

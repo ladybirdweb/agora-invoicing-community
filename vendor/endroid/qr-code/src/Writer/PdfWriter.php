@@ -17,8 +17,9 @@ final class PdfWriter implements WriterInterface
     public const WRITER_OPTION_PDF = 'fpdf';
     public const WRITER_OPTION_X = 'x';
     public const WRITER_OPTION_Y = 'y';
+    public const WRITER_OPTION_LINK = 'link';
 
-    public function write(QrCodeInterface $qrCode, LogoInterface|null $logo = null, LabelInterface|null $label = null, array $options = []): ResultInterface
+    public function write(QrCodeInterface $qrCode, LogoInterface $logo = null, LabelInterface $label = null, array $options = []): ResultInterface
     {
         $matrixFactory = new MatrixFactory();
         $matrix = $matrixFactory->create($qrCode);
@@ -97,6 +98,11 @@ final class PdfWriter implements WriterInterface
             $fpdf->SetXY($x, $y + $matrix->getOuterSize() + $labelSpace - 25);
             $fpdf->SetFont('Helvetica', '', $label->getFont()->getSize());
             $fpdf->Cell($matrix->getOuterSize(), 0, $label->getText(), 0, 0, 'C');
+        }
+
+        if (isset($options[self::WRITER_OPTION_LINK])) {
+            $link = $options[self::WRITER_OPTION_LINK];
+            $fpdf->Link($x, $y, $x + $matrix->getOuterSize(), $y + $matrix->getOuterSize(), $link);
         }
 
         return new PdfResult($matrix, $fpdf);

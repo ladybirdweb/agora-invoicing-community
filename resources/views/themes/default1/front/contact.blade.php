@@ -118,10 +118,6 @@ $address = preg_replace("/^\R+|\R+\z/", '', $set->address);
 
 <hr>
 
-<hr>
-
-        <hr>
-
       <!--  <h4 class="heading-primary">Business <strong>Hours</strong></h4>
                             <ul class="list list-icons list-dark mt-4">
                                 <li><i class="far fa-clock"></i> Monday to Friday 09:30AM to 06:30PM IST</li>

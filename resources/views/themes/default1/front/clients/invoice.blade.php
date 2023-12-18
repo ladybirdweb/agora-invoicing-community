@@ -40,6 +40,13 @@
         td a {
         margin-top: 5px; 
         }
+        
+        [name="invoice-table_length"] {
+        background-color: white;
+        height: 32px;
+        padding: 4px;
+        border-radius: 4px;
+    }
 </style>
     @auth
         @php

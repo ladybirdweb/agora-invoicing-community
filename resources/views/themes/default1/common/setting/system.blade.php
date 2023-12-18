@@ -156,6 +156,21 @@ System Setting
                         </td>
 
                     </tr>
+
+                    <tr>
+
+                        <td><b>{!! Form::label('knowledge_base_url','Knowledge Base URL') !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('knowledge_base_url') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control']) !!}
+                                
+
+                            </div>
+                        </td>
+
+                    </tr>
              
             </div>
             <div class="col-md-6">

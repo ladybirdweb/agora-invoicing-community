@@ -122,7 +122,7 @@ class BaseOrderController extends ExtendedOrderController
 
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
-                $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key,$admin);
+                $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key, $admin);
             }
 
             if (emailSendingStatus()) {
@@ -183,7 +183,7 @@ class BaseOrderController extends ExtendedOrderController
             }
             $days = null;
             $status = Product::find($product);
-            if ($status->status && !$admin) {
+            if ($status->status && ! $admin) {
                 if (\Session::get('planDays') == 'monthly') {
                     $days = $this->plan->where('product', $product)->whereIn('days', [30, 31])->first();
                 } elseif (\Session::get('planDays') == 'freeTrial') {
@@ -338,7 +338,7 @@ class BaseOrderController extends ExtendedOrderController
 
         $template = $templates->where('type', $temp_id)->first();
 
-        $knowledgeBaseUrl = $setting->company_url;
+        $knowledgeBaseUrl = $setting->knowledge_base_url;
 
         $orderHeading = ($value != '4') ? 'Download' : 'Order';
         $orderUrl = ($value != '4') ? $downloadurl : url('my-order/'.$orderid);

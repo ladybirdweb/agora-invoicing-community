@@ -4,10 +4,14 @@
 $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScripts = ''; 
 $scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
-
 foreach($scripts as $script) {
-    $everyPageScripts .= $script->script;
+    if (strpos($script->script, '<script>') === false && strpos($script->script, '</script>') === false) {
+        $everyPageScripts .= "<script>{$script->script}</script>";
+    } else {
+        $everyPageScripts .= $script->script;
+    }
 }
+?>
 ?>
 <style type="text/css">
     /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */

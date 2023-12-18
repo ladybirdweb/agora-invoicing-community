@@ -330,7 +330,7 @@ class BaseOrderController extends ExtendedOrderController
 
         $template = $templates->where('type', $temp_id)->first();
 
-        $knowledgeBaseUrl = $setting->company_url;
+        $knowledgeBaseUrl = $setting->knowledge_base_url;
 
         $orderHeading = ($value != '4') ? 'Download' : 'Order';
         $orderUrl = ($value != '4') ? $downloadurl : url('my-order/'.$orderid);

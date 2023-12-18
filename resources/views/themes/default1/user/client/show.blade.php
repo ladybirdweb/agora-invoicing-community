@@ -368,11 +368,6 @@ User
                                         <li class="list-group-item">
                                             <b>{{Lang::get('message.role')}}</b>: <span class="pull-right clientrole" style="float:right;"></span>
                                         </li>
-
-                                        <li class="list-group-item">
-                                            <b>{{Lang::get('message.currency')}}</b>: <span class="pull-right clientcurrency" style="float:right;"></span>
-                                        </li>
-
                                         <li class="list-group-item">
                                             <b>Company Type</b>: <span class="pull-right clientcompany" style="float:right;"></span>
                                         </li>

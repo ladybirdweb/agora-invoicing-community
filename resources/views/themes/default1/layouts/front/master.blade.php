@@ -927,7 +927,7 @@ $days = $pay->where('product','117')->value('days');
     setInterval(refreshToken, 360000); // 1 hour
 
     function refreshToken(){
-        $.post('refresh-csrf').done(function(data){
+        $.get('refresh-csrf').done(function(data){
             csrfToken = data; // the new token
         });
     }

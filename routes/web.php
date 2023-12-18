@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('create/tenant/purchase', [Tenancy\CloudExtraActivities::class, 'storeTenantTillPurchase']);
 
 // VisitStats::routes();
-Route::post('refresh-csrf', function () {
+Route::get('refresh-csrf', function () {
     return response()->json([
         'token' => csrf_token(), ],
         200);
@@ -136,6 +136,8 @@ Route::middleware('installAgora')->group(function () {
     Route::patch('my-profile', [Front\ClientController::class, 'postProfile']);
     Route::patch('my-password', [Front\ClientController::class, 'postPassword']);
     Route::get('paynow/{id}', [Front\CheckoutController::class, 'payNow']);
+
+
 
     Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getVersionList'])->name('get-versions');
     Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getGithubVersionList'])->name('get-github-versions');

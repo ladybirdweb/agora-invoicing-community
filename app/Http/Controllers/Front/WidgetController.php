@@ -134,7 +134,9 @@ class WidgetController extends Controller
                 throw new \Exception('Allow Mailchimp textbox can be selected as Yes only for one of the footers. It has alrerady been selected for a footer. Please change it to No to activate mailchimp for this footer.');
             }
             $widget = $this->widget->where('id', $id)->first();
-            $widget->fill($request->input())->save();
+            $widget->fill($request->input());
+            $widget->allow_tweets = 0;
+            $widget->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

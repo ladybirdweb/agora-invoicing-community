@@ -50,21 +50,7 @@ Edit Widget
                 $mail = ['class' => 'form-control','disabled' => 'true' , 'title' => 'Cofigure your mailchimp in settings to access'];
                 $twitter = ['class' => 'form-control','disabled' => 'true', 'title' => 'Configure your tweets in settings to access'];
                 
-                ?>
-
-                    
-                  
-                    <div class="col-md-4 form-group {{ $errors->has('allow_tweets') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('allow_tweets',Lang::get('message.allow_tweets'),['class'=>'required']) !!}
-                        {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,($twitterStatus) ? ['class' => 'form-control'] : $twitter) !!}
-
-                    </div>
-                  
-        
-
-                   
-                   
+                ?>                   
                    <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}

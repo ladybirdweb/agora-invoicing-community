@@ -74,29 +74,14 @@ Edit
                         {!! Form::text('google_analytics_tag',null,['class' => 'form-control']) !!}
                     </div>
 
-                   
-
-                   
-
-
                 </div>
-
-
-
 
                 <div class="row">
-                    <div class="col-md-12 form-group">
-
-           
-
-                        {!! Form::label('data',Lang::get('message.content'),['class'=>'required']) !!}
-                        {!! Form::textarea('script',null,['class'=>'form-control','id'=>'textarea']) !!}
-
-                    </div>
-
-
-                </div>
-
+    <div class="col-md-12 form-group">
+        {!! Form::label('data', Lang::get('message.content'), ['class' => 'required', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => trans('message.tooltip_js_code')]) !!}
+        {!! Form::textarea('script',null,['class'=>'form-control','id'=>'textarea']) !!}
+</div>
+</div>
             </div>
 
         </div>

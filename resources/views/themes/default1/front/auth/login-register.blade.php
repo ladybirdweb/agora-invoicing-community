@@ -37,9 +37,14 @@ $everyPageScripts = '';
 $scripts = \App\Model\Common\ChatScript::where('on_registration', 1)->get();
 
 foreach($scripts as $script) {
-    $everyPageScripts .= $script->script;
+    if (strpos($script->script, '<script>') === false && strpos($script->script, '</script>') === false) {
+        $everyPageScripts .= "<script>{$script->script}</script>";
+    } else {
+        $everyPageScripts .= $script->script;
+    }
 }
 ?>
+    <style>
   .bootstrap-select.btn-group .btn .filter-option 
   {
       font-weight: normal;

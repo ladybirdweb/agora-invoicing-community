@@ -1,5 +1,70 @@
 <!DOCTYPE html>
 <html>
+<?php 
+$setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScripts = ''; 
+$scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
+foreach($scripts as $script) {
+    if (strpos($script->script, '<script>') === false && strpos($script->script, '</script>') === false) {
+        $everyPageScripts .= "<script>{$script->script}</script>";
+    } else {
+        $everyPageScripts .= $script->script;
+    }
+}
+?>
+?>
+<style type="text/css">
+    /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */
+    .dataTables_wrapper {
+        overflow-x: auto;
+    }
+
+    .highlight-button {
+        background-color: #0088CC;
+        color: white !important;
+        font-weight: bold;
+    }
+    .highlight {
+        border: 2px solid;
+        border-radius: 5px;
+        padding: 8px;
+        transition: background-color 0.3s;
+        height: 90%;
+    }
+    .highlight:hover {
+        background-color: blue;
+        color: white;
+    }
+
+    label.required:after {
+        color: red;
+     }
+.highlight:hover {
+    background-color: blue;
+    color: white;
+}
+
+.custom-line {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+}
+#validationMessage {
+  position: absolute;
+  top: 80px; /* Adjust this value to align the error message properly */
+  margin-left:32px;
+  left: 0;
+  font-size: 12px;
+  color: red;
+}
+
+  .breadcrumb > li + li:before {
+        content: "\3e" !important;
+    }
+</style>
+       
+
+
 <head>
     <style>
         .list-styled.columns-lg-2.px-2 li a {

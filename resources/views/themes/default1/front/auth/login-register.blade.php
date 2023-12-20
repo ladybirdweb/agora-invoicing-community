@@ -43,7 +43,6 @@ foreach($scripts as $script) {
     }
 }
 ?>
-?>
     <style>
   .bootstrap-select.btn-group .btn .filter-option 
   {

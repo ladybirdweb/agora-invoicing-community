@@ -12,7 +12,6 @@ foreach($scripts as $script) {
     }
 }
 ?>
-?>
 <style type="text/css">
     /*for making datatable side scrollable whenever it has way too many columns for screen to accomodate   */
     .dataTables_wrapper {

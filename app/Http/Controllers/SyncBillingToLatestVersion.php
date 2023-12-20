@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Common\Setting;
+use App\Model\Mailjob\QueueService;
 use Artisan;
 use Config;
 use DB;
@@ -34,6 +35,7 @@ class SyncBillingToLatestVersion
             $this->cacheDbVersion();
             $this->clearViewCache();
             $this->clearConfig();
+            isInstall() && $this->restartHorizon();
         } catch (Exception $ex) {
             if (! isInstall()) {
                 //if system is not installed chances are logs tables are not present
@@ -160,6 +162,16 @@ class SyncBillingToLatestVersion
     private function clearConfig()
     {
         Artisan::call('config:clear');
+        $this->handleArtisanLogs();
+    }
+
+    private function restartHorizon()
+    {
+        if (QueueService::where('status', 1)->value('short_name') != 'redis') {
+            return;
+        }
+
+        Artisan::call('horizon:terminate');
         $this->handleArtisanLogs();
     }
 }

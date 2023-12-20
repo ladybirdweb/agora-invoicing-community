@@ -144,7 +144,7 @@ class WidgetController extends Controller
             }
             $widget = $this->widget->where('id', $id)->first();
             $widget->fill($request->input());
-           // Keeping allow_tweets set to 0 ensures that Twitter integration is disabled. If there's a future need to enable tweet fetching, it can be set to 1, and vice versa.
+            // Keeping allow_tweets set to 0 ensures that Twitter integration is disabled. If there's a future need to enable tweet fetching, it can be set to 1, and vice versa.
             $widget->allow_tweets = 0;
             $widget->save();
 

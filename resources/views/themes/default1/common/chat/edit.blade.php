@@ -77,12 +77,20 @@ Edit
                 </div>
 
                 <div class="row">
-    <div class="col-md-12 form-group">
-        {!! Form::label('data', Lang::get('message.content'), ['class' => 'required', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => trans('message.tooltip_js_code')]) !!}
-        {!! Form::textarea('script',null,['class'=>'form-control','id'=>'textarea']) !!}
+    <div class="col-md-12 form-group ">
+        {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
+
+        <i class="fas fa-question-circle m-0" 
+           style="font-size: small; color: #3c8dbc; cursor: help"
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="{{ trans('message.tooltip_js_code') }}"
+        ></i>
+
+        {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
+    </div>
 </div>
-</div>
-            </div>
+
 
         </div>
         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>Update</button>

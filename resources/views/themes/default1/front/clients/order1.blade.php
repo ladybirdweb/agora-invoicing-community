@@ -42,9 +42,11 @@ active
                             <div class="row">
 
                                 <div class="col">
+                                    <div class="row">
 
-
-                                                <table id="order-table"class="table table-striped table-bordered">
+                                    <div class="col pb-3">
+                                    <div class="table-responsive">
+                                    <table id="order-table" class="table table-striped table-bordered mw-auto">
                                                  <thead><tr>
                                                 <th>Product Name</th>
                                                 <th>Purchase Date</th>
@@ -55,6 +57,9 @@ active
                                                 <th>Action</th>
                                             </tr></thead>
                                             </table>
+                                            </div>
+                                            </div>
+                                            </div>
                                 </div>
                             </div>
                         </div>

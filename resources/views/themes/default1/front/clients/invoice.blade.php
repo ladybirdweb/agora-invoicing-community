@@ -117,7 +117,7 @@
                             <div class="row">
 
                                 <div class="col">
-
+                                    <div class="table-responsive">
 
                                                 <table id="invoice-table" class="table table-striped table-bordered">
                                                 <thead>
@@ -132,6 +132,7 @@
                                                     <th>Action</th>
                                                 </tr> </thead>
                                             </table>
+                                            </div>
                                 </div>
                             </div>
                         </div>

@@ -128,11 +128,10 @@ class PageController extends Controller
             $this->page->parent_page_id = $request->input('parent_page_id');
             $this->page->type = $request->input('type');
             $this->page->content = $request->input('content');
-          
-                $this->page->save();
 
-                return redirect()->back()->with('success', trans('message.saved-successfully'));
-    
+            $this->page->save();
+
+            return redirect()->back()->with('success', trans('message.saved-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

@@ -295,14 +295,12 @@
                                         <p>{{Lang::get('message.all-pages')}}</p>
                                     </a>
                                 </li>
-                                @if($page_count <= 2)
                                 <li class="nav-item">
                                     <a href="{{url('pages/create')}}" class="nav-link" id="all_new_page">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
                                 </li>
-                                @endif
 
                                  <li class="nav-item">
                                     <a href="{{url('demo/page')}}" class="nav-link" id="demo_page">

@@ -75,24 +75,20 @@ Edit
                     </div>
 
                 </div>
+                <div class="col-md-12 form-group ">
+    {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
 
-                <div class="row">
-    <div class="col-md-12 form-group ">
-        {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
 
-        <i class="fas fa-question-circle m-0" 
-           style="font-size: small; color: #3c8dbc; cursor: help"
-           data-toggle="tooltip" 
-           data-placement="top" 
-           title="{{ trans('message.tooltip_js_code') }}"
-        ></i>
+    <i class="fas fa-question-circle  icon-custom-top " 
+       style="font-size: small; color: #3c8dbc; cursor: help;"
+       data-toggle="tooltip" 
+       data-placement="top" 
+       title="{{ trans('message.tooltip_js_code') }}"
+    ></i>
 
-        {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
-    </div>
+    {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
 </div>
 
-
-        </div>
         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>Update</button>
 
     </div>
@@ -134,4 +130,13 @@ Edit
     })
     })
 </script>
+<style>
+    .icon-custom-top {
+    font-size: small;
+    color: #3c8dbc;
+    cursor: help;
+    margin-top: 1px; /* Adjust the value as needed */
+    vertical-align: text-top;
+}
+</style>
 @stop

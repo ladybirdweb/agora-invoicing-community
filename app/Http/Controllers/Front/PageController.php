@@ -115,6 +115,7 @@ class PageController extends Controller
     public function store(PageRequest $request)
     {
         try {
+            $pages_count = count($this->page->all());
             $url = $request->input('url');
             if ($request->input('type') == 'contactus') {
                 $url = url('/contact-us');
@@ -126,10 +127,13 @@ class PageController extends Controller
             $this->page->parent_page_id = $request->input('parent_page_id');
             $this->page->type = $request->input('type');
             $this->page->content = $request->input('content');
+            if ($pages_count <= 2) {
+                $this->page->save();
 
-            $this->page->save();
-
-            return redirect()->back()->with('success', trans('message.saved-successfully'));
+                return redirect()->back()->with('success', trans('message.saved-successfully'));
+            } else {
+                return redirect()->back()->with('fails', trans('message.limit_exceed'));
+            }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

@@ -132,7 +132,7 @@ $social = App\Model\Common\SocialMedia::get();
 
                         <div class="header-row">
 
-                            <div class="header-logo p-relative top-30 m-0" style="width: 320px;height: 150px;text-align: center;">
+                            <div id="main-logo" class="header-logo p-relative top-sm-40 top-30 m-0" style="width: 250px;height: 150px;text-align: center;">
 
                                 <a href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
@@ -313,12 +313,27 @@ $social = App\Model\Common\SocialMedia::get();
                                                 <a class="nav-link {{ Request::is('login') ? 'active' : '' }}" href="{{url('login')}}">Sign Up</a>
                                             </li>
                                             @endif
+                                                <?php
+                                            $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
+                                            $Demo_page = App\Demo_page::first();
+                                            ?>
+                                            @if($cloud == 1)
+                                            <li class="demo-icons">
+                                                 <a class="nav-link open-createTenantDialog" id="startFreeTrialBtn">START FREE TRIAL</a>
+                                            </li>
+                                            @endif
+                                            </li>
+                                             @if($Demo_page->status)
+                                            <li class="demo-icons">
+                                                <a class="nav-link" id="demo-req">REQUEST FOR DEMO</a>
+                                            </li>
+                                            @endif
                                         </ul>
                                         </nav>
                                         </div>
 
                                 <div class="header-nav-features header-nav-features-no-border header-nav-features-lg-show-border order-1 order-lg-2 me-2 me-lg-0">
-                                    <div class="header-nav-feature header-nav-features-cart d-inline-flex ms-2">
+                                    <div class="header-nav-feature header-nav-features-cart d-inline-flex ms-2 mx-3">
                                         <a href="{{ url('show/cart') }}" class="header-nav-features-toggle text-decoration-none">
                                             <span class="text-dark opacity-8 font-weight-bold text-color-hover-primary"> Cart</span>
                                             <img src="{{asset('client/porto/fonts/icon-cart.svg')}}" width="14" alt="" class="header-nav-top-icon-img">
@@ -409,14 +424,11 @@ $social = App\Model\Common\SocialMedia::get();
                                         </button>
                                     </div>
                                 </div>
-                                <?php
-                                $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
-                                $Demo_page = App\Demo_page::first();
-                                ?>
+                            
 
-                                <div class="vr opacity-2 ms-auto d-none d-xl-inline-block"></div>
+                               <div class="vr opacity-2 ms-auto d-none d-lg-inline-block"></div>
 
-                                <div class="px-4 d-none d-xxl-inline-block ws-nowrap">
+                                <div class="px-4 d-none d-lg-inline-block ws-nowrap">
                                     @if($cloud == 1)
                                     <a class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2 open-createTenantDialog" id="startFreeTrialBtn" style="color: white;">START FREE TRIAL</a>
                                     @endif

@@ -615,8 +615,9 @@ $price = $order->price_override;
                     </div>
 
                     <div class="tab-pane tab-pane-navigation" id="invoice" role="tabpanel">
+                        <div class="table-responsive">
 
-                    <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                    <table id="showorder-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
                         <thead>
                         <tr>
                             <th>Number</th>
@@ -628,12 +629,14 @@ $price = $order->price_override;
                         </tr>
                         </thead>
                     </table>
+                    </div>
 
 
                     </div>
 
                     <div class="tab-pane tab-pane-navigation" id="receipt" role="tabpanel">
-                     <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                         <div class="table-responsive">
+                     <table id="showpayment-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
                         <thead>
                         <tr>
                             <th>Invoice No</th>
@@ -644,6 +647,7 @@ $price = $order->price_override;
                         </tr>
                         </thead>
                     </table>
+                    </div>
                 </div>
 
                     <div class="tab-pane tab-pane-navigation" id="cloud" role="tabpanel">

@@ -7,11 +7,13 @@
 }
 </style>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
-$everyPageScript = '';
+$everyPageScripts = '';
 $scripts = \App\Model\Common\ChatScript::get();
-foreach($scripts as $script) {
-    $everyPageScripts .= $script->script;
-}
+foreach($scripts as $script)
+    if($script->on_every_page == 1) {
+        $everyPageScript = $script->script;
+    }
+
 ?>
 
 
@@ -943,7 +945,7 @@ $(document).ready(function() {
 
     $.ajax({
         type: 'GET',
-        url: "{{route('twitter')}}",
+        url: "{{url('twitter')}}",
         dataType: "html",
         success: function (returnHTML) {
             $('.twitter').html(returnHTML);
@@ -1083,10 +1085,13 @@ domainInput.addEventListener("input", function() {
 @yield('script')
 
 <!--Start of Tawk.to Script-->
-{!! $everyPageScripts !!}
-
 <!--Start of Tawk.to Script-->
 
+<script type="text/javascript">
+    {!! html_entity_decode($everyPageScript) !!}
+
+
+</script>
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
        
         <script type="text/javascript">

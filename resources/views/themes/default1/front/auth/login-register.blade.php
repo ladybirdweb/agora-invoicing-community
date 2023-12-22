@@ -31,6 +31,15 @@ Sign in or Register
 
     ?>
     <style>
+<?php 
+$setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScripts = ''; 
+$scripts = \App\Model\Common\ChatScript::where('on_registration', 1)->get();
+
+foreach($scripts as $script) {
+    $everyPageScripts .= $script->script;
+}
+?>
   .bootstrap-select.btn-group .btn .filter-option 
   {
       font-weight: normal;

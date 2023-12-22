@@ -9,11 +9,6 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScript = '';
 $scripts = \App\Model\Common\ChatScript::get();
-foreach($scripts as $script)
-    if($script->on_every_page == 1) {
-        $everyPageScript = $script->script;
-    }
-
 foreach($scripts as $script) {
     $everyPageScripts .= $script->script;
 }

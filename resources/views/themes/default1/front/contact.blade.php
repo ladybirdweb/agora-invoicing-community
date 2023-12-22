@@ -112,7 +112,7 @@ $address = preg_replace("/^\R+|\R+\z/", '', $set->address);
 
                         <ul class="list list-icons list-icons-style-2 mt-2">
 
-                            <li><i class="fas fa-map-marker-alt top-6"></i> <strong class="text-dark">Address:</strong> {{$set->address}},{{$set->city}},{{$state}},{{$country}},{{$set->zip}}.</li>
+                            <li><i class="fas fa-map-marker-alt top-6"></i> <strong class="text-dark">Address:</strong> {{ $address }}<br>{{ implode(', ', array_filter([$set->city, $state, $country, $set->zip])) }}</li>
 
                             <li><i class="fas fa-phone top-6"></i> <strong class="text-dark">Phone:</strong> +</b>{{$set->phone_code}} {{$set->phone}}</li>
 

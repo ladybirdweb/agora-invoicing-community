@@ -941,18 +941,6 @@ $(document).ready(function() {
     });
 });
 
-
-
-    $.ajax({
-        type: 'GET',
-        url: "{{url('twitter')}}",
-        dataType: "html",
-        success: function (returnHTML) {
-            $('.twitter').html(returnHTML);
-
-        }
-    });
-
     function removeItem(id) {
         $.ajax({
             type: "post",

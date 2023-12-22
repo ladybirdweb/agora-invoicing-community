@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
 
+        $this->call([PricingTemplateSeeder::class]);
+        $this->command->info('Pricing Template Table Seeded!');
+
 
     }
 
@@ -824,12 +827,6 @@ class TemplateTableSeeder extends Seeder
 
 
 }
-        
-    
-
-
-    
-
 class PricingTemplateSeeder extends Seeder
 {
     public function run()

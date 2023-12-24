@@ -421,75 +421,71 @@ class ClientController extends BaseClientController
      * @param  type  $invoiceid
      * @return type
      */
-
-
-     public function getVersionList(Request $request,$productid, $clientid, $invoiceid)
-     {
-        
-         try {
+    public function getVersionList(Request $request, $productid, $clientid, $invoiceid)
+    {
+        try {
             $searchValue = $request->input('search.value');
-             $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
-             $order = Order::where('invoice_id', '=', $invoice_id)->first();
-             $order_id = $order->id;
-     
-             $versions = ProductUpload::where('product_id', $productid)
-                 ->select(
-                     'id',
-                     'product_id',
-                     'version',
-                     'title',
-                     'description',
-                     'file',
-                     'created_at'
-                 )
-                 ->latest();
-               //  dd($versions);
-                // ->get();
-                //->orderBy('created_at', 'desc')
-                if ($searchValue) {
-                    $versions->where(function ($query) use ($searchValue) {
-                        $query->where('version', 'LIKE', '%' . $searchValue . '%')
-                            ->orWhere('title', 'LIKE', '%' . $searchValue . '%')
-                            ->orWhere('description', 'LIKE', '%' . $searchValue . '%');
-                    });
-                }
-     
-             $updatesEndDate = Subscription::select('update_ends_at')
-                 ->where('product_id', $productid)
-                 ->where('order_id', $order_id)
-                 ->first();
-     
-             $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
-     
-             return \DataTables::of($versions)
-                 ->addColumn('id', function ($version) {
-                     return ucfirst($version->id);
-                 })
-                 ->addColumn('version', function ($version) {
-                     return ucfirst($version->version);
-                 })
-                 ->addColumn('title', function ($version) {
-                     return ucfirst($version->title);
-                 })
-                 ->addColumn('description', function ($version) {
-                     return ucfirst($version->description);
-                 })
-                 ->addColumn('file', function ($version) use ($downloadPermission, $updatesEndDate, $productid, $clientid, $invoiceid) {
-                     if ($updatesEndDate) {
-                         if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
-                             return $this->whenDownloadTillExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
-                         } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {
-                             return $this->whenDownloadExpiresAfterExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
-                         }
-                     }
-                 })
-                 ->rawColumns(['version', 'title', 'description', 'file'])
-                 ->make(true);
-         } catch (Exception $ex) {
-             echo $ex->getMessage();
-         }
-     }
-     
+            $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
+            $order = Order::where('invoice_id', '=', $invoice_id)->first();
+            $order_id = $order->id;
+
+            $versions = ProductUpload::where('product_id', $productid)
+                ->select(
+                    'id',
+                    'product_id',
+                    'version',
+                    'title',
+                    'description',
+                    'file',
+                    'created_at'
+                )
+                ->latest();
+            //  dd($versions);
+            // ->get();
+            //->orderBy('created_at', 'desc')
+            if ($searchValue) {
+                $versions->where(function ($query) use ($searchValue) {
+                    $query->where('version', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('title', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('description', 'LIKE', '%'.$searchValue.'%');
+                });
+            }
+
+            $updatesEndDate = Subscription::select('update_ends_at')
+                ->where('product_id', $productid)
+                ->where('order_id', $order_id)
+                ->first();
+
+            $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
+
+            return \DataTables::of($versions)
+                ->addColumn('id', function ($version) {
+                    return ucfirst($version->id);
+                })
+                ->addColumn('version', function ($version) {
+                    return ucfirst($version->version);
+                })
+                ->addColumn('title', function ($version) {
+                    return ucfirst($version->title);
+                })
+                ->addColumn('description', function ($version) {
+                    return ucfirst($version->description);
+                })
+                ->addColumn('file', function ($version) use ($downloadPermission, $updatesEndDate, $productid, $clientid, $invoiceid) {
+                    if ($updatesEndDate) {
+                        if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
+                            return $this->whenDownloadTillExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
+                        } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {
+                            return $this->whenDownloadExpiresAfterExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
+                        }
+                    }
+                })
+                ->rawColumns(['version', 'title', 'description', 'file'])
+                ->make(true);
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
 
     /**
      * Get list of all the versions from Github.

@@ -524,7 +524,7 @@ class ClientController extends AdvanceSearchController
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
-              )->when($request->company, function ($query) use ($request) {
+            )->when($request->company, function ($query) use ($request) {
                 $query->where('company', 'LIKE', '%'.$request->company.'%');
             })->when($request->country, function ($query) use ($request) {
                 $query->where('country', $request->country);
@@ -539,7 +539,7 @@ class ClientController extends AdvanceSearchController
             })->when($request->salesmanager, function ($query) use ($request) {
                 $query->where('manager', $request->salesmanager);
             });
-            
+
         $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
 
         return $baseQuery;

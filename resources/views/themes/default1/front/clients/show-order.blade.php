@@ -67,15 +67,15 @@
             border-radius: 34px;
         }
 
-.slider.round:before {
-  border-radius: 50%;
-}
-.scrollit {
-    overflow:scroll;
-    height:600px;
-}
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .scrollit {
+            overflow:scroll;
+            height:600px;
+        }
 
-    .horizontal-images {
+        .horizontal-images {
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -86,47 +86,47 @@
             margin-right: 5px;
         }
         .custom-close {
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        width: 30px;
-        height: 30px;
-        background-color: red;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 20px;
-      }
-      .alert.alert-danger .close {
-        position: absolute;
-        top: 0;
-        right: 0;
-}
-    .modal {
-        z-index: 1050; 
-    }
-    
-    .modal-backdrop.show {
-        z-index: 1040;
-    }
-    .order-table{
-        border: none;
-    }
-    .plan-features strong {
-   color: #000 !important;
-}
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+        }
+        .alert.alert-danger .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .modal {
+            z-index: 1050;
+        }
 
-</style>
-@if(Auth::check())
+        .modal-backdrop.show {
+            z-index: 1040;
+        }
+        .order-table{
+            border: none;
+        }
+        .plan-features strong {
+            color: #000 !important;
+        }
+
+    </style>
+    @if(Auth::check())
         <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
     @else
-         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
     @endif
-     <li class="active text-dark">Order Details</li>
+    <li class="active text-dark">Order Details</li>
 @stop
 <?php
 
@@ -258,111 +258,82 @@ $price = $order->price_override;
 
 
 
-        <div class="container pt-3 pb-2">
-            <div id="alertMessage-2"></div>
-            <div id="error-1"></div>
-            <div id="response1"></div>
+    <div class="container pt-3 pb-2">
+        <div id="alertMessage-2"></div>
+        <div id="error-1"></div>
+        <div id="response1"></div>
 
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
 
-                <div class="col-lg-12 alert bg-color-light-scale-2">
+            <div class="col-lg-12 alert bg-color-light-scale-2">
 
-                    <div class="d-flex flex-column flex-md-row justify-content-between plan-features">
+                <div class="d-flex flex-column flex-md-row justify-content-between plan-features">
 
-                        <div class="text-center">
+                    <div class="text-center">
                             <span>
                                 <strong>Order Number</strong> <br>
                                 #{{$order->number}}
                             </span>
-                        </div>
-                        <div class="text-center mt-4 mt-md-0">
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
                             <span>
                                 <strong>Date</strong> <br>
                                 {!! getDateHtml($order->created_at) !!}
                             </span>
-                        </div>
-                        <div class="text-center mt-4 mt-md-0">
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
                             <span>
                                 <strong>Status</strong><br>
                                 {{$order->order_status}}
                             </span>
-                        </div>
-                        <div class="text-center mt-4 mt-md-0">
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
                             <span>
                                 <strong>Expiry Date</strong><br>
                                 {!! getDateHtml($subscription->update_ends_at) !!}
                             </span>
-                        </div>
                     </div>
-
                 </div>
+
             </div>
+        </div>
 
-            <div class="row pt-2">
+        <div class="row pt-2">
 
-                <div class="col-lg-3 mt-4 mt-lg-0">
-            @php
-                if($order->order_status!='Terminated'){
-                    $navigations = [
-                         ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
-                         //['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                    ];
-                    }
-                else{
-                     $navigations = [
-                         ['id'=>'license-details', 'name'=>'Order Terminated','active'=>1, 'slot'=>'license','icon'=>'fas fa-warning'],
-                         ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                         ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                         ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                    ];
-                }
-                    if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated'){
-                        $navigations[]=['id'=>'Cloud-Settings', 'name' => 'Cloud Settings','slot'=>'cloud','icon'=>'fas fa-cloud'];
-                    }
+            <div class="col-lg-3 mt-4 mt-lg-0">
 
-                    if ($price == '0' && !in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated') {
-                        $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                    }
-                    elseif($price != '0' && $order->order_status!='Terminated')
-                    {
-                      $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
-                    }
-            @endphp
+                <aside class="sidebar mt-2 mb-5">
 
-                    <aside class="sidebar mt-2 mb-5">
+                    <ul class="nav nav-list flex-column">
 
-                        <ul class="nav nav-list flex-column">
+                        <li class="nav-item">
 
-                            <li class="nav-item">
+                            <a class="nav-link active" href="#license" data-bs-toggle="tab" data-hash data-hash-offset="0"
+                               data-hash-offset-lg="120" data-hash-delay="500">License Details
+                            </a>
+                        </li>
 
-                                <a class="nav-link active" href="#license" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">License Details
-                                </a>
-                            </li>
+                        <li class="nav-item">
 
-                            <li class="nav-item">
+                            <a class="nav-link" href="#users" data-bs-toggle="tab" data-hash data-hash-offset="0"
+                               data-hash-offset-lg="120" data-hash-delay="500">User Details
+                            </a>
+                        </li>
 
-                                <a class="nav-link" href="#users" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">User Details
-                                </a>
-                            </li>
+                        <li class="nav-item">
 
-                            <li class="nav-item">
+                            <a class="nav-link" href="#invoice" data-bs-toggle="tab" data-hash data-hash-offset="0"
+                               data-hash-offset-lg="120" data-hash-delay="500">Invoice List
+                            </a>
+                        </li>
 
-                                <a class="nav-link" href="#invoice" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Invoice List
-                                </a>
-                            </li>
+                        <li class="nav-item">
 
-                            <li class="nav-item">
-
-                                <a class="nav-link" href="#receipt" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Payment Receipts
-                                </a>
-                            </li>
-                            @if($product->type == '4' && $order->order_status!='Terminated')
+                            <a class="nav-link" href="#receipt" data-bs-toggle="tab" data-hash data-hash-offset="0"
+                               data-hash-offset-lg="120" data-hash-delay="500">Payment Receipts
+                            </a>
+                        </li>
+                        @if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated')
 
                             <li class="nav-item">
 
@@ -370,9 +341,9 @@ $price = $order->price_override;
                                    data-hash-offset-lg="120" data-hash-delay="500">Cloud Settings
                                 </a>
                             </li>
-                            @endif
+                        @endif
 
-                            @if($price == '0' && $product->type != '4' && $order->order_status!='Terminated')
+                        @if($price == '0' && !in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated')
 
                             <li class="nav-item">
 
@@ -380,33 +351,34 @@ $price = $order->price_override;
                                    data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
-                            @elseif($price != '0' && $order->order_status!='Terminated')
+                        @elseif($price != '0' && $order->order_status!='Terminated')
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
                                    data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
-                            @endif
-                        </ul>
-                    </aside>
-                </div>
+                        @endif
+                    </ul>
+                </aside>
+            </div>
 
-                <div class="col-lg-9 mt-2">
-                    @if($order->order_status != 'Terminated')
-                    <?php
-                    $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
-                    $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
-                    ?>
-                     @if(!empty($terminatedOrderId))
-                                <p class="order-links">
-                                    Order: <b>{{$order->number}}</b>
-                                    has been generated because order: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a> was terminated.
-                                </p>
-                         @endif
+            <div class="col-lg-9 mt-2">
+                @if($order->order_status != 'Terminated')
+                        <?php
+                        $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
+                        $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
+                        ?>
+                    @if(!empty($terminatedOrderId))
+                        <p class="order-links">
+                            Order: <b>{{$order->number}}</b>
+                            has been generated because order: <a class="order-link" href="{{$terminatedOrderId}}">{{$terminatedOrderNumber}}</a> was terminated.
+                        </p>
+                    @endif
                     <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
 
-                        <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
+
+                    <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
 
 
                         <div class="row">
@@ -425,29 +397,29 @@ $price = $order->price_override;
 
                                     <div class="col-sm-7">
                                         <span id="serialKey">{{$order->serial_key}}</span>
-                                        
-                                       <a href="#" class="btn btn-light-scale-2 text-black btn-sm ms-4" id="copyButton" data-bs-toggle="tooltip" title="Copy">
-                                        <i class="fas fa-copy"></i>
-                                    </a>
-                                    
-                                    <span id="copiedMessage" class="hidden">Copied</span>
 
-                                         @if ($licenseStatus == 1)
+                                        <a href="#" class="btn btn-light-scale-2 text-black btn-sm ms-4" id="copyButton" data-bs-toggle="tooltip" title="Copy">
+                                            <i class="fas fa-copy"></i>
+                                        </a>
+
+                                        <span id="copiedMessage" class="hidden">Copied</span>
+
+                                        @if ($licenseStatus == 1)
                                             @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
 
-                                             <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
-                                             @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
-                                             <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                    @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
+                                                        <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
-                                             @elseif(in_array($product->id,cloudPopupProducts()) && $price != '0')
-                                             <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                            @elseif($product->type == '4' && $price != '0')
+                                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
 
-                                             @endif
+                                                                    @endif
 
-                                                <i class="fas fa-id-card-alt"></i>
-                                            </a>
-                                        @endif
+                                                                    <i class="fas fa-id-card-alt"></i>
+                                                                </a>
+                                            @endif
                                     </div>
                                 </div>
 
@@ -483,322 +455,282 @@ $price = $order->price_override;
 
                                     <div class="col-sm-7">
 
-                                       {!! $date !!}
+                                        {!! $date !!}
                                     </div>
                                 </div>
 
                                 <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
                                 <div class="table-responsive">
-                                <table class="table">
+                                    <table class="table">
 
-                                    <thead>
-                                    <tr>
+                                        <thead>
+                                        <tr>
 
-                                    <th>Installation Path</th>
-                                    @if(!in_array($product->id,cloudPopupProducts()))
-                                        <th>Installation IP</th>
+                                            <th>Installation Path</th>
+                                            @if(!in_array($product->id,cloudPopupProducts()))
+                                                <th>Installation IP</th>
+                                            @endif
+                                            <th>Current Version </th>
+                                            <th>  Last Active</th>
 
-                                    @endif
-                                    <th>Current Version </th>
-                                    <th>  Last Active</th>
+                                        </tr></thead>
 
-                                </tr></thead>
+                                        <tbody>
+                                        @foreach($installationDetails['installed_path'] as $key => $ins)
+                                                <?php
+                                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
 
-                            <tr>
-                                <td><b>Update Expiry Date:</b></td>
-                                <td>{!! $date !!}</td>
-                                <td></td>
-                            </tr>
+                                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
 
-                            @if($order->license_mode=='File')
-                                <tr>
-                                    <td><b>Localized License:</b></td>
-                                    <td>
-                                        <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
-                                    </td>
-                                    <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
-                                        <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
-                                    </td>
-                                </tr>
-                            @endif
+                                                if($productversion) {
 
-                            </tbody>
+                                                    $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                                                }
 
-                        </table>
-                        <script src="{{asset('common/js/licCode.js')}}"></script>
-
-
-                        <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-
-                            <thead>
-                            <tr>
-
-                                <th>Installation Path</th>
-                                @if(!in_array($product->id,cloudPopupProducts()))
-                                    <th>Installation IP</th>
-                                @endif
-                                <th>Current Version </th>
-                                <th>  Last Active</th>
-
-                            </tr></thead>
-                            <tbody>
-                            @foreach($installationDetails['installed_path'] as $key => $ins)
-
-                                <?php
-                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
-
-                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
-
-                                if($productversion) {
-
-                                    $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
-                                }
-
-                                $active = !empty($ins)?true:false;
+                                                $active = !empty($ins)?true:false;
 
 
 
-                                ?>
-                                <tr>
-                                    <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                    @if(!in_array($product->id,cloudPopupProducts()))
-                                        <td>{{$installationDetails['installed_ip'][$key]}}</td>
-                                    @endif
-                                    @if($productversion)
-                                        @if($productversion < $Latestversion)
-                                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                                                </label>{{$productversion->version}}</span></td>
-                                        @else
-                                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                                                </label>{{$productversion->version}}</span></td>
-                                        @endif
+                                                ?>
+                                            <tr>
+                                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
+                                                @if(!in_array($product->id,cloudPopupProducts()))
+                                                    <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                                                @endif
+                                                @if($productversion)
+                                                    @if($productversion < $Latestversion)
+                                                        <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                                                            </label>{{$productversion->version}}</span></td>
+                                                    @else
+                                                        <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                                                            </label>{{$productversion->version}}</span></td>
+                                                    @endif
 
-                                    @endif
-                                    @if($productversion)
-                                        <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
-                                    @endif
-                                    @if($active == true)
-                                        <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                                            </label>Active</span></td>
-                                    @else
-                                        <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                                            </label>Inactive</span></td>
-                                    @endif
+                                                @endif
+                                                @if($productversion)
+                                                    <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
+                                                @endif
+                                                @if($active == true)
+                                                    <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                                                        </label>Active</span></td>
+                                                @else
+                                                    <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                                                        </label>Inactive</span></td>
+                                                @endif
 
 
-                                </tr>
-                            @endforeach
+                                            </tr>
+                                        @endforeach
 
-                            </tbody>
-                                </table></div>
+                                        </tbody>
+                                    </table></div>
 
                             </div>
                         </div>
                     </div>
-                    @endif
+                @endif
 
-                    <div class="tab-pane tab-pane-navigation" id="users" role="tabpanel">
+                <div class="tab-pane tab-pane-navigation" id="users" role="tabpanel">
 
-                        <div class="row">
+                    <div class="row">
 
-                            <div class="col">
+                        <div class="col">
 
-                                <div class="row align-items-center">
+                            <div class="row align-items-center">
 
-                                    <div class="col-sm-5">
+                                <div class="col-sm-5">
 
-                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
 
-                                            <span class="mb-2 font-weight-bold">Name:</span>
-                                        </div>
+                                        <span class="mb-2 font-weight-bold">Name:</span>
                                     </div>
-
-                                    <div class="col-sm-7">{{ucfirst($user->first_name)}}</div>
                                 </div>
 
-                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="col-sm-7">{{ucfirst($user->first_name)}}</div>
+                            </div>
 
-                                <div class="row align-items-center">
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
-                                    <div class="col-sm-5">
+                            <div class="row align-items-center">
 
-                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                <div class="col-sm-5">
 
-                                            <span class="mb-2 font-weight-bold">Email:</span>
-                                        </div>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Email:</span>
                                     </div>
-
-                                    <div class="col-sm-7">{{$user->email}}</div>
                                 </div>
 
-                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="col-sm-7">{{$user->email}}</div>
+                            </div>
 
-                                <div class="row align-items-center">
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
-                                    <div class="col-sm-5">
+                            <div class="row align-items-center">
 
-                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                <div class="col-sm-5">
 
-                                            <span class="mb-2 font-weight-bold">Mobile:</span>
-                                        </div>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Mobile:</span>
                                     </div>
-
-                                    <div class="col-sm-7">@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</div>
                                 </div>
 
-                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="col-sm-7">@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</div>
+                            </div>
 
-                                <div class="row align-items-center">
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
-                                    <div class="col-sm-5">
+                            <div class="row align-items-center">
 
-                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                <div class="col-sm-5">
 
-                                            <span class="mb-2 font-weight-bold">Address:</span>
-                                        </div>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Address:</span>
                                     </div>
-
-                                    <div class="col-sm-7">{{$user->address}}</div>
                                 </div>
 
-                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="col-sm-7">{{$user->address}}</div>
+                            </div>
 
-                                <div class="row align-items-center">
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
-                                    <div class="col-sm-5">
+                            <div class="row align-items-center">
 
-                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                <div class="col-sm-5">
 
-                                            <span class="mb-2 font-weight-bold">Country:</span>
-                                        </div>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Country:</span>
                                     </div>
-
-                                    <div class="col-sm-7">{{getCountryByCode($user->country)}}</div>
                                 </div>
+
+                                <div class="col-sm-7">{{getCountryByCode($user->country)}}</div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="tab-pane tab-pane-navigation" id="invoice" role="tabpanel">
-                        <div class="table-responsive">
-
-                    <table id="showorder-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
-                        <thead>
-                        <tr>
-                            <th>Number</th>
-                            <th>Product</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                    </table>
-                    </div>
-
-
-                    </div>
-
-                    <div class="tab-pane tab-pane-navigation" id="receipt" role="tabpanel">
-                         <div class="table-responsive">
-                     <table id="showpayment-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
-                        <thead>
-                        <tr>
-                            <th>Invoice No</th>
-                            <th>Total</th>
-                            <th>Method</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                        </tr>
-                        </thead>
-                    </table>
                     </div>
                 </div>
 
-                    <div class="tab-pane tab-pane-navigation" id="cloud" role="tabpanel">
+                <div class="tab-pane tab-pane-navigation" id="invoice" role="tabpanel">
+                    <div class="table-responsive">
 
-                        <div class="row pb-4">
+                        <table id="showorder-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
+                            <thead>
+                            <tr>
+                                <th>Number</th>
+                                <th>Product</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
 
-                            <div class="col-7"></div>
 
-                            <div class="col-5">
+                </div>
 
-                                <div class="text-end">
+                <div class="tab-pane tab-pane-navigation" id="receipt" role="tabpanel">
+                    <div class="table-responsive">
+                        <table id="showpayment-table" class="table table-striped table-bordered mw-auto" cellspacing="0" width="100%" styleClass="borderless">
+                            <thead>
+                            <tr>
+                                <th>Invoice No</th>
+                                <th>Total</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
 
-                                    <span class="font-weight-normal text-4">Plan Expiry : <strong class="font-weight-bold">{!! getDateHtml($subscription->ends_at) !!}</strong> </span>
+                <div class="tab-pane tab-pane-navigation" id="cloud" role="tabpanel">
+
+                    <div class="row pb-4">
+
+                        <div class="col-7"></div>
+
+                        <div class="col-5">
+
+                            <div class="text-end">
+
+                                <span class="font-weight-normal text-4">Plan Expiry : <strong class="font-weight-bold">{!! getDateHtml($subscription->ends_at) !!}</strong> </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-6 mb-5 mb-lg-0">
+
+                            <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer" data-bs-toggle="modal" data-bs-target="#cloudDomainModal">
+
+                                <div class="card-body p-relative zindex-1 p-3">
+
+                                    <div class="feature-box feature-box-style-6 text-center d-block">
+
+                                        <div class="feature-box-icon justify-content-center">
+
+                                            <i class="fas fa-globe text-primary"></i>
+                                        </div>
+                                        <?php
+                                        $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
+                                            ->where('installation_path','!=',cloudCentralDomain())->latest()->value('installation_path');
+                                        ?>
+
+                                        <div class="feature-box-info">
+
+                                            <h4 class="text-4 mt-3 mb-2 text-color-grey">Change Cloud Domain</h4>
+
+                                            <p class="mb-2"><strong class="text-black text-2">Current domain:</strong> {{$installation_path}}</p>
+
+                                            <p class="mb-0 text-2">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="col-lg-6 mb-5 mb-lg-0">
 
-                            <div class="col-lg-6 mb-5 mb-lg-0">
+                            <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer" data-bs-toggle="modal" data-bs-target="#numberOfAgentsModal">
 
-                                <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer" data-bs-toggle="modal" data-bs-target="#cloudDomainModal">
+                                <div class="card-body p-relative zindex-1 p-3">
 
-                                    <div class="card-body p-relative zindex-1 p-3">
+                                    <div class="feature-box feature-box-style-6 text-center d-block">
 
-                                        <div class="feature-box feature-box-style-6 text-center d-block">
+                                        <div class="feature-box-icon justify-content-center">
 
-                                            <div class="feature-box-icon justify-content-center">
+                                            <i class="fas fa-users text-primary"></i>
+                                        </div>
 
-                                                <i class="fas fa-globe text-primary"></i>
-                                            </div>
+                                        <div class="feature-box-info">
                                             <?php
-                                            $installation_path=\App\Model\Order\InstallationDetail::where('order_id',$id)
-                                                ->where('installation_path','!=','billing.faveocloud.com')->latest()->value('installation_path');
+                                            $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
                                             ?>
 
-                                            <div class="feature-box-info">
+                                            <h4 class="text-4 mt-3 mb-2 text-color-grey">Increase/Decrease Agents</h4>
 
-                                                <h4 class="text-4 mt-3 mb-2 text-color-grey">Change Cloud Domain</h4>
+                                            <p class="mb-2"><strong class="text-black text-2">Current number of agents: </strong>{{$latestAgents}}</p>
 
-                                                <p class="mb-2"><strong class="text-black text-2">Current domain:</strong> {{$installation_path}}</p>
-
-                                                <p class="mb-0 text-2">Click here to start customising your cloud domain. Please note that there will be a short 5-minute downtime while we work our magic</p>
-                                            </div>
+                                            <p class="mb-0 text-2">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-lg-6 mb-5 mb-lg-0">
-
-                                <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer" data-bs-toggle="modal" data-bs-target="#numberOfAgentsModal">
-
-                                    <div class="card-body p-relative zindex-1 p-3">
-
-                                        <div class="feature-box feature-box-style-6 text-center d-block">
-
-                                            <div class="feature-box-icon justify-content-center">
-
-                                                <i class="fas fa-users text-primary"></i>
-                                            </div>
-
-                                            <div class="feature-box-info">
-                                                <?php 
-                                                    $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
-                                                    ?>
-
-                                                <h4 class="text-4 mt-3 mb-2 text-color-grey">Increase/Decrease Agents</h4>
-
-                                                <p class="mb-2"><strong class="text-black text-2">Current number of agents: </strong>{{$latestAgents}}</p>
-
-                                                <p class="mb-0 text-2">Update your agent count by clicking here. Upgrades incur costs, and downgrades in between billing cycles aren't refunded.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                             <?php
-                            $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
-                            $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
-                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
-                            ?>
-                            @if(strpos($planName,'free')==false)
+                        </div>
+                        <?php
+                        $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
+                        $planName = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                        $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->latest()->value('add_price');
+                        ?>
+                        @if(strpos($planName,'free')==false)
 
                             <div class="col-lg-6 mb-5 mb-lg-0 mt-3">
 
@@ -825,17 +757,17 @@ $price = $order->price_override;
                                     </div>
                                 </div>
                             </div>
-                             @else
+                        @else
                             <h6 class="mb-1"><i>Current Plan: {{$planName}}</i></h6>
-                             @endif
+                        @endif
 
 
-                        </div>
                     </div>
-                   
+                </div>
 
-                    <div class="tab-pane tab-pane-navigation" id="auto-renew" role="tabpanel">
-                        @if($gateways)
+
+                <div class="tab-pane tab-pane-navigation" id="auto-renew" role="tabpanel">
+                    @if($gateways)
 
                         <div class="row pt-5">
 
@@ -854,12 +786,12 @@ $price = $order->price_override;
                                 </div>
                             </div>
                         </div>
-                        @else
+                    @else
                         <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
 
-                        @endif
+                    @endif
 
-                          @if($statusAutorenewal == 1)
+                    @if($statusAutorenewal == 1)
                         <div class="row">
 
                             <div class="col-8" id="updateButton">
@@ -873,260 +805,259 @@ $price = $order->price_override;
 
                         </div>
                     @endif
-
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="autorenewModal" tabindex="-1" role="dialog" aria-labelledby="autorenewModalLabel" aria-hidden="true">
+    <div class="modal fade" id="autorenewModal" tabindex="-1" role="dialog" aria-labelledby="autorenewModalLabel" aria-hidden="true">
 
-            <div class="modal-dialog">
+        <div class="modal-dialog">
 
-                <div class="modal-content">
+            <div class="modal-content">
 
-                    <div class="modal-header">
+                <div class="modal-header">
 
-                        <h4 class="modal-title" id="autorenewModalLabel">Auto Renewal</h4>
+                    <h4 class="modal-title" id="autorenewModalLabel">Auto Renewal</h4>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
 
-                    <div class="modal-body">
+                <div class="modal-body">
 
-                        <div class="row">
+                    <div class="row">
 
-                            <div class="form-group col">
+                        <div class="form-group col">
 
-                                <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
+                            <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
 
-                                <div class="custom-select-1">
-                                    <select class="form-select form-control h-auto py-2" data-msg-required="Please select a city." name="city" required>
-                                        <option value="">Select</option>
-                                        <option value="1">Razorpay</option>
-                                        <option value="2">Stripe</option>
-                                    </select>
-                                </div>
+                            <div class="custom-select-1">
+                                <select class="form-select form-control h-auto py-2" data-msg-required="Please select a city." name="city" required>
+                                    <option value="">Select</option>
+                                    <option value="1">Razorpay</option>
+                                    <option value="2">Stripe</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="modal-footer">
+                <div class="modal-footer">
 
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
 
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                    </div>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
+    <div class="modal fade" id="cloudDomainModal" tabindex="-1" role="dialog" aria-labelledby="cloudDomainModalLabel" aria-hidden="true">
 
-            <div class="modal-dialog">
+        <div class="modal-dialog">
 
-                <div class="modal-content">
+            <div class="modal-content">
 
-                    <div class="modal-header">
+                <div class="modal-header">
 
-                        <h4 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h4>
+                    <h4 class="modal-title" id="cloudDomainModalLabel">Change Cloud Domain</h4>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
 
-                    <div class="modal-body">
+                <div class="modal-body">
                     <div id="success-domain"></div>
                     <div id="failure-domain"></div>
 
-                        <p>If you wish to purchase a domain, you can <a href="https://store.ladybirdwebhost.com/" target="_blank">Click here.</a>And after the domain is set up, you will have to point your CNAME to our cloud <a href="https://docs.faveohelpdesk.com/docs/helper/cname/" target="_blank">Learn more.</a></p>
+                    <p>If you wish to purchase a domain, you can <a href="https://store.ladybirdwebhost.com/" target="_blank">Click here.</a>And after the domain is set up, you will have to point your CNAME to our cloud <a href="https://docs.faveohelpdesk.com/docs/helper/cname/" target="_blank">Learn more.</a></p>
 
-                        <p class="text-black"><strong>Current Cloud Domain:</strong> {{$installation_path}}</p>
+                    <p class="text-black"><strong>Current Cloud Domain:</strong> {{$installation_path}}</p>
 
-                        <div class="row">
+                    <div class="row">
 
-                            <div class="form-group col">
+                        <div class="form-group col">
 
-                                <label class="form-label">Enter your new domain name <span class="text-danger"> *</span></label>
+                            <label class="form-label">Enter your new domain name <span class="text-danger"> *</span></label>
 
-                                <div class="input-group mb-3">
+                            <div class="input-group mb-3">
 
-                                    <input type="text" class="form-control col col-2 rounded-1" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
-                                    <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="billing.custom.com" required>
+                                <input type="text" class="form-control col col-2 rounded-1" value="https://" disabled="true" style="background-color: lightslategray; color:white;">
+                                <input type="text" class="form-control col-10" id="clouduserdomain" autocomplete="off" placeholder="billing.custom.com" required>
 
-                                </div>
                             </div>
-                            <script>
-                        $(document).ready(function() {
-                            var orderId = {{$id}};
-                            $.ajax({
-                                data: {'orderId' : orderId},
-                                url: '{{url("/api/takeCloudDomain")}}',
-                                method: 'POST',
-                                dataType: 'json',
-                                success: function(data) {
-                                    $('#clouduserdomainfill').html('Current cloud domain: <a href="' + data.data + '">' + data.data + '</a>');
-                                },
-                                error: function(error) {
-                                    console.error('Error:', error);
-                                }
+                        </div>
+                        <script>
+                            $(document).ready(function() {
+                                var orderId = {{$id}};
+                                $.ajax({
+                                    data: {'orderId' : orderId},
+                                    url: '{{url("/api/takeCloudDomain")}}',
+                                    method: 'POST',
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        $('#clouduserdomainfill').html('Current cloud domain: <a href="' + data.data + '">' + data.data + '</a>');
+                                    },
+                                    error: function(error) {
+                                        console.error('Error:', error);
+                                    }
+                                });
                             });
-                        });
-                    </script>
+                        </script>
 
-                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+                        <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
-                    <div class="loader-wrapper" style="display: none; background: white; height: 100%;" >
-                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+                        <div class="loader-wrapper" style="display: none; background: white; height: 100%;" >
+                            <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
 
-                    </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="modal-footer">
+                <div class="modal-footer">
 
-                        <button type="button" id="changeDomain" class="btn btn-primary"><i class="fas fa-globe"></i> Change Domain</button>
-                    </div>
+                    <button type="button" id="changeDomain" class="btn btn-primary"><i class="fas fa-globe"></i> Change Domain</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
-            <?php 
-                $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
-            ?>
+    <div class="modal fade" id="numberOfAgentsModal" tabindex="-1" role="dialog" aria-labelledby="numberOfAgentsModalLabel" aria-hidden="true">
+        <?php
+        $latestAgents   = ltrim(substr($order->serial_key, 12),'0');
+        ?>
 
-            <div class="modal-dialog">
+        <div class="modal-dialog">
 
-                <div class="modal-content">
+            <div class="modal-content">
 
-                    <div class="modal-header">
+                <div class="modal-header">
 
-                        <h4 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h4>
+                    <h4 class="modal-title" id="numberOfAgentsModalLabel">Change Number of Agents</h4>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
 
-                    <div class="modal-body">
-                        <div id="response-agent"></div>
-                        <div id="failure-agent"></div>
-                        <?php
-                            $country_idagnt = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('country_id');
-                            $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country_idagnt)->latest()->value('add_price');
-                            if(!$ExistingPlanPirce){
-                                $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',0)->latest()->value('add_price');
-                            }
-                            ?>
+                <div class="modal-body">
+                    <div id="response-agent"></div>
+                    <div id="failure-agent"></div>
+                    <?php
+                    $country_idagnt = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('country_id');
+                    $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country_idagnt)->latest()->value('add_price');
+                    if(!$ExistingPlanPirce){
+                        $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',0)->latest()->value('add_price');
+                    }
+                    ?>
 
-                        <p class="text-black"><strong>Current number of agents:</strong> {{$latestAgents}}</p>
+                    <p class="text-black"><strong>Current number of agents:</strong> {{$latestAgents}}</p>
 
-                        <p class="text-black"><strong>Price per agent: </strong>{!! currencyFormat($ExistingPlanPirce,getCurrencyForClient(\Auth::user()->country),true) !!}</p>
+                    <p class="text-black"><strong>Price per agent: </strong>{!! currencyFormat($ExistingPlanPirce,getCurrencyForClient(\Auth::user()->country),true) !!}</p>
 
-                        <div class="row">
+                    <div class="row">
 
 
-                                <label class="text-black"><strong>Choose your desired number of agents <span class="text-danger"></strong> *</span></label>
+                        <label class="text-black"><strong>Choose your desired number of agents <span class="text-danger"></strong> *</span></label>
 
-                                <div class="quantity">
-                                {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'numberAGt', 'min' => '1', 'placeholder' => '']) !!}
+                        <div class="quantity">
+                            {!! Form::number('number', null, ['class' => 'form-control', 'id' => 'numberAGt', 'min' => '1', 'placeholder' => '']) !!}
                         </div>
                         <br><br>
 
                         <div class="col-12">
                             <p class="text-black" id="pricetopaid" style="display: none;"><strong>Price to be paid:</strong> <span id="pricetopay" class="pricetopay"></span></p>
                         </div>
-                    <div class="overlay" style="display: none;"></div> <!-- Add this line -->
+                        <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
-                    <div class="loader-wrapper" style="display: none; background: white;" >
-                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+                        <div class="loader-wrapper" style="display: none; background: white;" >
+                            <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
 
-                    </div>
-                            </div>
                         </div>
-                   
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-primary" id="agentNumber"><i class="fas fa-users"></i> Update Agents</button>
                     </div>
                 </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" id="agentNumber"><i class="fas fa-users"></i> Update Agents</button>
+                </div>
             </div>
-            </div>
-            
+        </div>
+    </div>
 
-        <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
 
-            <div class="modal-dialog">
+    <div class="modal fade" id="cloudPlanModal" tabindex="-1" role="dialog" aria-labelledby="cloudPlanModalLabel" aria-hidden="true">
 
-                <div class="modal-content">
+        <div class="modal-dialog">
 
-                    <div class="modal-header">
+            <div class="modal-content">
 
-                        <h4 class="modal-title" id="cloudPlanModalLabel">Upgrade or downgrade your cloud plan</h4>
+                <div class="modal-header">
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
+                    <h4 class="modal-title" id="cloudPlanModalLabel">Upgrade or downgrade your cloud plan</h4>
 
-                    <div class="modal-body">
-                         <div id="response-upgrade"></div>
-                         <div id="failure-upgrade"></div>
-                        <?php
-                        // Retrieve the plans data as before
-                        $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
-                            ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
-                            ->where('plans.product','!=',$product->id)
-                            ->where('products.type',4)
-                            ->where('products.can_modify_agent',1)
-                            ->where('plan_prices.renew_price','!=','0')
-                            ->pluck('plans.name', 'plans.id')
-                            ->toArray();
-                        $planIds = array_keys($plans);
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
 
-                        $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+                <div class="modal-body">
+                    <div id="response-upgrade"></div>
+                    <div id="failure-upgrade"></div>
+                    <?php
+                    // Retrieve the plans data as before
+                    $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                        ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                        ->where('plans.product','!=',$product->id)
+                        ->where('products.type',4)
+                        ->where('products.can_modify_agent',1)
+                        ->where('plan_prices.renew_price','!=','0')
+                        ->pluck('plans.name', 'plans.id')
+                        ->toArray();
+                    $planIds = array_keys($plans);
 
+                    $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+
+                    $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
+                        ->where('country_id',$countryids->country_id)
+                        ->where('currency',getCurrencyForClient(\Auth::user()->country))
+                        ->latest()
+                        ->pluck('renew_price', 'plan_id')
+                        ->toArray();
+
+                    if(empty($renewalPrices)){
                         $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                            ->where('country_id',$countryids->country_id)
+                            ->where('country_id',0)
                             ->where('currency',getCurrencyForClient(\Auth::user()->country))
                             ->latest()
                             ->pluck('renew_price', 'plan_id')
                             ->toArray();
+                    }
 
-                        if(empty($renewalPrices)){
-                            $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                                ->where('country_id',0)
-                                ->where('currency',getCurrencyForClient(\Auth::user()->country))
-                                ->latest()
-                                ->pluck('renew_price', 'plan_id')
-                                ->toArray();
-                        }
-
-                        foreach ($plans as $planId => $planName) {
-                            if (isset($renewalPrices[$planId])) {
-                                if(in_array($product->id,cloudPopupProducts())) {
-                                    $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
-                                }
+                    foreach ($plans as $planId => $planName) {
+                        if (isset($renewalPrices[$planId])) {
+                            if(in_array($product->id,cloudPopupProducts())) {
+                                $plans[$planId] .= " (Plan price-per agent: " . currencyFormat($renewalPrices[$planId], getCurrencyForClient(\Auth::user()->country), true) . ")";
                             }
                         }
-                        // Add more cloud IDs until we have a generic way to differentiate
-                        if(in_array($product->id,cloudPopupProducts())){
-                            $plans = array_filter($plans, function ($value) {
-                                return stripos($value, 'free') === false;
-                            });
-                        }
+                    }
+                    // Add more cloud IDs until we have a generic way to differentiate
+                    if(in_array($product->id,cloudPopupProducts())){
+                        $plans = array_filter($plans, function ($value) {
+                            return stripos($value, 'free') === false;
+                        });
+                    }
 
 
-                        $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
-                        $planNameReal = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
-                        ?>
+                    $planIdOld = \App\Model\Product\Subscription::where('order_id',$id)->value('plan_id');
+                    $planNameReal = \App\Model\Payment\Plan::where('id',$planIdOld)->value('name');
+                    ?>
 
 
-                        <p class="text-black"><strong>Current Plan: </strong>{{$planNameReal}}</p>
+                    <p class="text-black"><strong>Current Plan: </strong>{{$planNameReal}}</p>
 
-                        <div class="row">
+                    <div class="row">
 
-                            <div class="form-group col">
+                        <div class="form-group col">
 
-                                <label class="text-black"><strong>Select a new plan</strong> <span class="text-danger"> *</span></label>
+                            <label class="text-black"><strong>Select a new plan</strong> <span class="text-danger"> *</span></label>
 
-                                <div class="custom-select-1">
+                            <div class="custom-select-1">
 
                                 {!! Form::select('plan', ['' => 'Select'] + $plans, null, ['class' => 'form-control upgrade-select', 'onchange' => 'getPrice(this.value)']) !!}
 
@@ -1140,10 +1071,10 @@ $price = $order->price_override;
                         <p class="text-black" id="upgrade2" style="display: none;" ><strong>Price to be paid: </strong><span id="priceToPay" class="priceToPay" ></span></p>
                         <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
-                    <div class="loader-wrapper" style="display: none; background: white;" >
-                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+                        <div class="loader-wrapper" style="display: none; background: white;" >
+                            <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
 
-                    </div>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -1157,143 +1088,143 @@ $price = $order->price_override;
 
 
 
-          <div class="modal fade" id="renewal-modal" tabindex="-1" role="dialog" aria-labelledby="autorenewModalLabel" aria-hidden="true">
+    <div class="modal fade" id="renewal-modal" tabindex="-1" role="dialog" aria-labelledby="autorenewModalLabel" aria-hidden="true">
 
-            <div class="modal-dialog">
+        <div class="modal-dialog">
 
-                <div class="modal-content">
+            <div class="modal-content">
 
-                    <div class="modal-header">
+                <div class="modal-header">
 
-                        <h4 class="modal-title" id="autorenewModalLabel">Auto Renewal</h4>
+                    <h4 class="modal-title" id="autorenewModalLabel">Auto Renewal</h4>
 
-                        <button type="button" class="btn-close"  id="srclose" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <div class="row">
-
-                            <div class="form-group col">
-
-                                <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
-
-                                <div class="custom-select-1">
-                                     <select name=""  id="sel-payment" class="form-control" >
-                                <option value="" disabled selected>Choose your option</option>
-                                 @foreach($gateways as $key =>  $gateway)
-                                <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
-                                    @endforeach
-                                <!-- <option value="razorpay">Razorpay</option> -->
-                               </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-light"  id="srclose" data-bs-dismiss="modal">Close</button>
-
-                        <button type="button" id="payment"  class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                    </div>
+                    <button type="button" class="btn-close"  id="srclose" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-            </div>
-        </div>
-        </div>
 
-
-    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true" onclick="refreshPage()">&times;</button>
-                <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">Stripe payment</h4>
-                <div class="horizontal-images">
-                    <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
-                    <img class="img-responsive" src="https://pngimg.com/d/mastercard_PNG23.png">
-                    <img class="img-responsive" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2lfp0fkZmeGd6aCOzuIBC1QDTvcyGcM6OGQ&usqp=CAU">
-                </div>
-            </div>
-           <div id="alertMessage-2"></div>
-            <div id="error-1"></div>
-            <div class="col-md-12 ">
                 <div class="modal-body">
-                    <form id="valid-modal">
-                        <div id="payment-element">
-                            <!-- Information or instructions -->
-                            <div class="form-group row">
-                                <div class="col-md-12 alert alert-info">
-                                Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,Auth::user()->currency)}}, which will be automatically reversed within a week.
-                                </div>
-                            </div>
-                            <!-- Card No. input -->
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <input id="card_no" type="tel" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
-                                    @error('card_no')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- Exp. Month and Exp. Year inputs -->
-                            <div class="form-group row">
-                                <div class="col-md-6">
-                                    <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
-                                    @error('exp_month')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(20)" autofocus>
-                                    @error('exp_year')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- CVV input -->
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
-                                    @error('cvv')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- Amount input -->
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
-                                    @error('amount')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- Pay button -->
-                            <div class="form-group row mb-0">
-                                <div class="col-md-12">
-                                    <button type="button" id="pay" class="btn btn-primary btn-block">
-                                        {{ __('PAY NOW') }}
-                                    </button>
-                                </div>
+
+                    <div class="row">
+
+                        <div class="form-group col">
+
+                            <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
+
+                            <div class="custom-select-1">
+                                <select name=""  id="sel-payment" class="form-control" >
+                                    <option value="" disabled selected>Choose your option</option>
+                                    @foreach($gateways as $key =>  $gateway)
+                                        <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                                    @endforeach
+                                    <!-- <option value="razorpay">Razorpay</option> -->
+                                </select>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-light"  id="srclose" data-bs-dismiss="modal">Close</button>
+
+                    <button type="button" id="payment"  class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    </div>
+
+
+    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true" onclick="refreshPage()">&times;</button>
+                    <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">Stripe payment</h4>
+                    <div class="horizontal-images">
+                        <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
+                        <img class="img-responsive" src="https://pngimg.com/d/mastercard_PNG23.png">
+                        <img class="img-responsive" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2lfp0fkZmeGd6aCOzuIBC1QDTvcyGcM6OGQ&usqp=CAU">
+                    </div>
+                </div>
+                <div id="alertMessage-2"></div>
+                <div id="error-1"></div>
+                <div class="col-md-12 ">
+                    <div class="modal-body">
+                        <form id="valid-modal">
+                            <div id="payment-element">
+                                <!-- Information or instructions -->
+                                <div class="form-group row">
+                                    <div class="col-md-12 alert alert-info">
+                                        Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,Auth::user()->currency)}}, which will be automatically reversed within a week.
+                                    </div>
+                                </div>
+                                <!-- Card No. input -->
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <input id="card_no" type="tel" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
+                                        @error('card_no')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- Exp. Month and Exp. Year inputs -->
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
+                                        @error('exp_month')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(20)" autofocus>
+                                        @error('exp_year')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- CVV input -->
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
+                                        @error('cvv')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- Amount input -->
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                        @error('amount')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- Pay button -->
+                                <div class="form-group row mb-0">
+                                    <div class="col-md-12">
+                                        <button type="button" id="pay" class="btn btn-primary btn-block">
+                                            {{ __('PAY NOW') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -1314,126 +1245,126 @@ $price = $order->price_override;
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script>
-   function refreshPage() {
-            location.reload(); 
+        function refreshPage() {
+            location.reload();
         }
-        
-$(document).ready(function() {
-    $("#valid-modal").validate({
-        rules: {
-            card_no: {
-                required: true,
-                digits: true,
-                minlength: 15,
-                maxlength: 16,
-            },
-            exp_month: {
-                required: true,
-                digits: true,
-                minlength: 2,
-                maxlength: 2,
-                range: [1, 12] 
-            },
-            exp_year: {
-                required: true,
-                digits: true,
-                minlength: 2,
-                maxlength: 2,
-                notPastYear: true
-            },
-            cvv: {
-                required: true,
-                digits: true,
-                rangelength: [3, 4] 
-            }
-        },
-        messages: {
-            card_no: {
-                required: "Card number is required",
-                digits: "Please enter digits only",
-                minlength: "Card number must be at least 15 digits",
-                maxlength: "Card number cannot exceed 16 digits"
-            },
-            exp_month: {
-                required: "Expiration month is required",
-                digits: "Please enter digits only",
-                minlength: "Expiration month must be 2 digits",
-                maxlength: "Expiration month must be 2 digits",
-                range: "Expiration month cannot exceed 12"
-            },
-            exp_year: {
-                required: "Expiration year is required",
-                digits: "Please enter digits only",
-                minlength: "Expiration year must be 2 digits",
-                maxlength: "Expiration year must be 2 digits",
-                notPastYear: "Expiration year cannot be in the past"
-            },
-            cvv: {
-                required: "CVV is required",
-                digits: "Please enter digits only",
-                rangelength: "CVV must be either 3 or 4 digits"
-            }
-        },
-        errorElement: "span",
-        errorPlacement: function(error, element) {
-            error.addClass("invalid-feedback");
-            error.insertAfter(element);
-        },
-        highlight: function(element, errorClass, validClass) {
-            $(element).addClass("is-invalid").removeClass("is-valid");
-        },
-        unhighlight: function(element, errorClass, validClass) {
-            $(element).removeClass("is-invalid").addClass("is-valid");
+
+        $(document).ready(function() {
+            $("#valid-modal").validate({
+                rules: {
+                    card_no: {
+                        required: true,
+                        digits: true,
+                        minlength: 15,
+                        maxlength: 16,
+                    },
+                    exp_month: {
+                        required: true,
+                        digits: true,
+                        minlength: 2,
+                        maxlength: 2,
+                        range: [1, 12]
+                    },
+                    exp_year: {
+                        required: true,
+                        digits: true,
+                        minlength: 2,
+                        maxlength: 2,
+                        notPastYear: true
+                    },
+                    cvv: {
+                        required: true,
+                        digits: true,
+                        rangelength: [3, 4]
+                    }
+                },
+                messages: {
+                    card_no: {
+                        required: "Card number is required",
+                        digits: "Please enter digits only",
+                        minlength: "Card number must be at least 15 digits",
+                        maxlength: "Card number cannot exceed 16 digits"
+                    },
+                    exp_month: {
+                        required: "Expiration month is required",
+                        digits: "Please enter digits only",
+                        minlength: "Expiration month must be 2 digits",
+                        maxlength: "Expiration month must be 2 digits",
+                        range: "Expiration month cannot exceed 12"
+                    },
+                    exp_year: {
+                        required: "Expiration year is required",
+                        digits: "Please enter digits only",
+                        minlength: "Expiration year must be 2 digits",
+                        maxlength: "Expiration year must be 2 digits",
+                        notPastYear: "Expiration year cannot be in the past"
+                    },
+                    cvv: {
+                        required: "CVV is required",
+                        digits: "Please enter digits only",
+                        rangelength: "CVV must be either 3 or 4 digits"
+                    }
+                },
+                errorElement: "span",
+                errorPlacement: function(error, element) {
+                    error.addClass("invalid-feedback");
+                    error.insertAfter(element);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass("is-invalid").addClass("is-valid");
+                }
+            });
+
+            var $form = $("#submit_total");
+            var $cardNo = $("#card_no");
+            var $expMonth = $("#exp_month");
+            var $expYear = $("#exp_year");
+            var $cvv = $("#cvv");
+            var $payButton = $("#pay");
+
+            $form.on("submit", function(event) {
+                // Check if each field is valid
+                var isCardNoValid = $cardNo.valid();
+                var isExpMonthValid = $expMonth.valid();
+                var isExpYearValid = $expYear.valid();
+                var isCvvValid = $cvv.valid();
+
+                if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
+                    $payButton.prop("disabled", true);
+                    $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
+                } else {
+                    event.preventDefault();
+                }
+            });
+
+            $.validator.addMethod("notPastYear", function(value, element) {
+                var currentYear = new Date().getFullYear() % 100;
+                var enteredYear = parseInt(value, 10);
+                return enteredYear >= currentYear;
+            }, "Expiration year cannot be in the past");
+        });
+
+
+        function validateForm() {
+            var isValid = $("#valid-modal").valid();
+            var isCardNoValid = $('#card_no').valid();
+            var isExpMonthValid = $('#exp_month').valid();
+            var isExpYearValid = $('#exp_year').valid();
+            var isCvvValid = $('#cvv').valid();
+
+            return isValid && isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid;
         }
-    });
 
-    var $form = $("#submit_total");
-    var $cardNo = $("#card_no");
-    var $expMonth = $("#exp_month");
-    var $expYear = $("#exp_year");
-    var $cvv = $("#cvv");
-    var $payButton = $("#pay");
-
-    $form.on("submit", function(event) {
-        // Check if each field is valid
-        var isCardNoValid = $cardNo.valid();
-        var isExpMonthValid = $expMonth.valid();
-        var isExpYearValid = $expYear.valid();
-        var isCvvValid = $cvv.valid();
-
-        if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
-            $payButton.prop("disabled", true);
-            $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
-        } else {
-            event.preventDefault();
-        }
-    });
-
-    $.validator.addMethod("notPastYear", function(value, element) {
-        var currentYear = new Date().getFullYear() % 100;
-        var enteredYear = parseInt(value, 10);
-        return enteredYear >= currentYear;
-    }, "Expiration year cannot be in the past");
-});
-
-
-    function validateForm() {
-        var isValid = $("#valid-modal").valid();
-        var isCardNoValid = $('#card_no').valid();
-        var isExpMonthValid = $('#exp_month').valid();
-        var isExpYearValid = $('#exp_year').valid();
-        var isCvvValid = $('#cvv').valid();
-
-        return isValid && isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid;
-    }
-
-</script>
+    </script>
     <script type="text/javascript">
 
         $('#srclose').click(function()
-                 {
-                 location.reload();
-                 });
+        {
+            location.reload();
+        });
         // $('#strclose').click(function()
         //          {
         //          location.reload();
@@ -1512,73 +1443,73 @@ $(document).ready(function() {
 
         });
 
-function cardUpdate() {
-    $('#renewal-modal').modal('show');
-    var id = $('#order').val();
-    $('#payment').on('click', function () {
-        var pay = $('#sel-payment').val();
-        if (pay == null) {
-            $("#payment").html("<i class='fa fa-check'></i> Validate");
-            $('#payerr').show();
-            $('#payerr').html("Please Select the Payment");
-            $('#payerr').focus();
-            $('#sel-payment').css("border-color", "red");
-            $('#payerr').css({ "color": "red" });
-            return false;
-        }
-        if (pay == 'stripe') {
-            $('#renewal-modal').modal('hide');
-            $('#stripe-Modal').modal('show');
+        function cardUpdate() {
+            $('#renewal-modal').modal('show');
+            var id = $('#order').val();
+            $('#payment').on('click', function () {
+                var pay = $('#sel-payment').val();
+                if (pay == null) {
+                    $("#payment").html("<i class='fa fa-check'></i> Validate");
+                    $('#payerr').show();
+                    $('#payerr').html("Please Select the Payment");
+                    $('#payerr').focus();
+                    $('#sel-payment').css("border-color", "red");
+                    $('#payerr').css({ "color": "red" });
+                    return false;
+                }
+                if (pay == 'stripe') {
+                    $('#renewal-modal').modal('hide');
+                    $('#stripe-Modal').modal('show');
 
-            $('#pay').on('click', function () {
-                var isValid = validateForm();
-                if (isValid) {
-                    $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
-                    $.ajax({
-                        url: '{{url("strRenewal-enable")}}',
-                        type: 'POST',
-                        data: {
-                            "order_id": id,
-                            "card_no": $('#card_no').val(),
-                            "exp_month": $('#exp_month').val(),
-                            "exp_year": $('#exp_year').val(),
-                            "cvv": $('#password').val(),
-                            "amount": $('#amount').val(),
-                            "_token": "{!! csrf_token() !!}",
-                        },
-                        success: function (response) {
-                            $('#stripe-Modal').modal('hide');
-                            $('#alertMessage-2').show();
-                            $('#updateButton').show();
-                            var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
-                            $('#alertMessage-2').html(result + ".");
-                            $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                            
-                        },
-                      error: function (data) {
-                        var errorMessage = data.responseJSON.result;
-                        $('#stripe-Modal').modal('show');
-                        $("#pay").attr('disabled', false);
-                        $("#pay").html("Pay now");
-                        $('html, body').animate({ scrollTop: 0 }, 500);
-                        var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                        $('#error-1').show();
-                        document.getElementById('error-1').innerHTML = html;
-                    }
+                    $('#pay').on('click', function () {
+                        var isValid = validateForm();
+                        if (isValid) {
+                            $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
+                            $.ajax({
+                                url: '{{url("strRenewal-enable")}}',
+                                type: 'POST',
+                                data: {
+                                    "order_id": id,
+                                    "card_no": $('#card_no').val(),
+                                    "exp_month": $('#exp_month').val(),
+                                    "exp_year": $('#exp_year').val(),
+                                    "cvv": $('#password').val(),
+                                    "amount": $('#amount').val(),
+                                    "_token": "{!! csrf_token() !!}",
+                                },
+                                success: function (response) {
+                                    $('#stripe-Modal').modal('hide');
+                                    $('#alertMessage-2').show();
+                                    $('#updateButton').show();
+                                    var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
+                                    $('#alertMessage-2').html(result + ".");
+                                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+
+                                },
+                                error: function (data) {
+                                    var errorMessage = data.responseJSON.result;
+                                    $('#stripe-Modal').modal('show');
+                                    $("#pay").attr('disabled', false);
+                                    $("#pay").html("Pay now");
+                                    $('html, body').animate({ scrollTop: 0 }, 500);
+                                    var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                                    $('#error-1').show();
+                                    document.getElementById('error-1').innerHTML = html;
+                                }
+                            });
+                        }
                     });
+                } else if (pay == 'razorpay') {
+                    $('#renewal-modal').modal('hide');
+                    rzp.open();
+                    e.preventDefault();
                 }
             });
-        } else if (pay == 'razorpay') {
-            $('#renewal-modal').modal('hide');
-            rzp.open();
-            e.preventDefault();
         }
-    });
-}
     </script>
-      <script type="text/javascript">
+    <script type="text/javascript">
 
-           $('#showpayment-table').DataTable({
+        $('#showpayment-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -1665,7 +1596,7 @@ function cardUpdate() {
         });
 
 
-            $("#reissueLic").click(function(){
+        $("#reissueLic").click(function(){
             if ($('#domainRes').val() == 1) {
                 var oldDomainId = $(this).attr('data-id');
                 $("#orderId").val(oldDomainId);
@@ -1750,7 +1681,7 @@ function cardUpdate() {
         });
 
 
-      $(document).ready(function() {
+        $(document).ready(function() {
             $('#changeDomain').on('click', function() {
                 $('#changeDomain').attr('disabled',true);
                 $('#changeDomain').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
@@ -1809,7 +1740,7 @@ function cardUpdate() {
             });
         });
 
-       $(document).ready(function() {
+        $(document).ready(function() {
             $('#agentNumber').on('click', function() {
                 $('#agentNumber').attr('disbaled',true);
                 $('#agentNumber').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
@@ -1858,8 +1789,8 @@ function cardUpdate() {
             });
         });
 
- </script>
-  <script>
+    </script>
+    <script>
         function getPrice(val) {
             $('.loader-wrapper').show();
             $('.overlay').show(); // Show the overlay
@@ -1885,10 +1816,10 @@ function cardUpdate() {
 
     </script>
 
-  <script type="text/javascript">
-      
+    <script type="text/javascript">
 
-          $(document).ready(function() {
+
+        $(document).ready(function() {
             $('#upgradedowngrade').on('click', function() {
                 alert("btu");
                 $('#upgradedowngrade').attr('disabled',true);
@@ -1943,71 +1874,71 @@ function cardUpdate() {
                 });
             });
         });
-  </script>
-<script>
-    $(document).ready(function() {
-        $('.upgrade-select').on('change', function() {
-            var selectedPlanId = $(this).val();
-            if (selectedPlanId !== '') {
-                $('#upgrade1, #upgrade2, #upgrade3').show();
-            } else {
-                $('#upgrade1, #upgrade2, #upgrade3').hide();
-            }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.upgrade-select').on('change', function() {
+                var selectedPlanId = $(this).val();
+                if (selectedPlanId !== '') {
+                    $('#upgrade1, #upgrade2, #upgrade3').show();
+                } else {
+                    $('#upgrade1, #upgrade2, #upgrade3').hide();
+                }
+            });
         });
-    });
-    
-    
-  $(document).ready(function() {
-        $('#numberAGt').on('input', function() {
-            var enteredValue = $(this).val();
-            if (enteredValue !== '') {
-                $('#pricetopaid').show();
-            } else {
-                $('#pricetopaid').hide();
-            }
+
+
+        $(document).ready(function() {
+            $('#numberAGt').on('input', function() {
+                var enteredValue = $(this).val();
+                if (enteredValue !== '') {
+                    $('#pricetopaid').show();
+                } else {
+                    $('#pricetopaid').hide();
+                }
+            });
         });
-    });
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const copyButton = document.getElementById('copyButton');
-    const serialKey = document.getElementById('serialKey').innerText;
-    const copiedMessage = document.getElementById('copiedMessage');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButton = document.getElementById('copyButton');
+            const serialKey = document.getElementById('serialKey').innerText;
+            const copiedMessage = document.getElementById('copiedMessage');
 
-    copyButton.addEventListener('click', () => {
-        const textarea = document.createElement('textarea');
-        textarea.value = serialKey;
+            copyButton.addEventListener('click', () => {
+                const textarea = document.createElement('textarea');
+                textarea.value = serialKey;
 
-        document.body.appendChild(textarea);
+                document.body.appendChild(textarea);
 
-        textarea.select();
+                textarea.select();
 
-        document.execCommand('copy');
+                document.execCommand('copy');
 
-        document.body.removeChild(textarea);
+                document.body.removeChild(textarea);
 
-        const tooltip = new bootstrap.Tooltip(copyButton);
-        copyButton.removeAttribute('title');
+                const tooltip = new bootstrap.Tooltip(copyButton);
+                copyButton.removeAttribute('title');
 
 
-        copiedMessage.classList.remove('hidden');
-        setTimeout(() => copiedMessage.classList.add('hidden'), 2000); 
-    });
-});
-</script>
+                copiedMessage.classList.remove('hidden');
+                setTimeout(() => copiedMessage.classList.add('hidden'), 2000);
+            });
+        });
+    </script>
 
-<style>
-    .hidden {
-        display: none;
-    }
+    <style>
+        .hidden {
+            display: none;
+        }
         #copiedMessage {
-        position: absolute;
-        top: -30px; 
-        left: 45%;
-        color: green;
+            position: absolute;
+            top: -30px;
+            left: 45%;
+            color: green;
 
-    }
-</style>
+        }
+    </style>
 
 
 

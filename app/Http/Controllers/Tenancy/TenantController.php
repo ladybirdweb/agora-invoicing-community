@@ -301,17 +301,17 @@ class TenantController extends Controller
                 $result->message = str_replace('You will receive password on your registered email', '', $result->message);
                 $userData = $result->message.'<br><br> Email:'.' '.$userEmail.'<br>'.'Password:'.' '.$result->password;
 
-                    $replace = [
-                        'message' => $userData,
-                        'product' => $order[0]->product()->value('name'),
-                        'name' => $userFirstName.' '.$userLastName,
-                        'contact' => $contact['contact'],
-                        'logo' => $contact['logo'],
-                        'title' => $settings->title,
-                        'company_email' => $settings->company_email,
-                        'reply_email' => $settings->company_email,
+                $replace = [
+                    'message' => $userData,
+                    'product' => $order[0]->product()->value('name'),
+                    'name' => $userFirstName.' '.$userLastName,
+                    'contact' => $contact['contact'],
+                    'logo' => $contact['logo'],
+                    'title' => $settings->title,
+                    'company_email' => $settings->company_email,
+                    'reply_email' => $settings->company_email,
 
-                    ];
+                ];
 
                 $this->prepareMessages($faveoCloud, $userEmail, true);
                 $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $replace, $type);
@@ -410,6 +410,7 @@ class TenantController extends Controller
         try {
             $cloud = new FaveoCloud;
             $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cloud_cname' => $request->input('cloud_cname')]);
+
             // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {

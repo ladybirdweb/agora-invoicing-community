@@ -999,10 +999,10 @@ class CloudExtraActivities extends Controller
         if (! empty($geo)) {
             CloudDataCenters::create([
                 'cloud_countries' => $countryName,
-                'cloud_state'  => $state,
-                'cloud_city'   => $city,
-                'latitude'    => $geo['latitude'],
-                'longitude'   => $geo['longitude'],
+                'cloud_state' => $state,
+                'cloud_city' => $city,
+                'latitude' => $geo['latitude'],
+                'longitude' => $geo['longitude'],
             ]);
 
             return redirect()->back()->with('success', trans('message.saved_data_center'));

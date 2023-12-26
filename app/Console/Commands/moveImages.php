@@ -30,12 +30,12 @@ class moveImages extends Command
     {
         // Define the source directories and corresponding destination directories
         $directories = [
-            public_path('admin/images')       => storage_path('app/public/admin/images'),
-            public_path('client/images')      => storage_path('app/public/client/images'),
-            public_path('common/images')      => storage_path('app/public/common/images'),
-            public_path('images')             => storage_path('app/public/images'),
-            public_path('installer/img')      => storage_path('app/public/installer/img'),
-            public_path('lb-faveo')           => storage_path('app/public/lb-faveo'),
+            public_path('admin/images') => storage_path('app/public/admin/images'),
+            public_path('client/images') => storage_path('app/public/client/images'),
+            public_path('common/images') => storage_path('app/public/common/images'),
+            public_path('images') => storage_path('app/public/images'),
+            public_path('installer/img') => storage_path('app/public/installer/img'),
+            public_path('lb-faveo') => storage_path('app/public/lb-faveo'),
         ];
 
         foreach ($directories as $sourceDirectory => $destinationDirectory) {

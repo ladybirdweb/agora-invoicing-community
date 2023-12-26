@@ -114,7 +114,7 @@ class RenewController extends BaseRenewController
             }
             $orderid = \DB::table('order_invoice_relations')->where('invoice_id', $invoice->id)->value('order_id');
             if (Session::has('plan_id')) {
-                Subscription::where('order_id', $orderid)->update(['plan_id'=>Session::get('plan_id')]);
+                Subscription::where('order_id', $orderid)->update(['plan_id' => Session::get('plan_id')]);
             }
             // $id = Session::get('subscription_id');
             // $planid = Session::get('plan_id');
@@ -275,7 +275,7 @@ class RenewController extends BaseRenewController
             }
             $renew = $this->renewBySubId($id, $planid, $payment_method, $cost, $code = '', true, $agents);
 
-            Subscription::where('order_id', $order_id)->update(['plan_id'=>$planid]);
+            Subscription::where('order_id', $order_id)->update(['plan_id' => $planid]);
 
             if ($renew) {
                 return redirect()->back()->with('success', 'Renewed Successfully');
@@ -422,7 +422,7 @@ class RenewController extends BaseRenewController
         $data = ['number_of_agents' => $numberOfAgents];
         $response = $client->request(
             'POST',
-            'https://'.$domain.'/api/agent-check', ['form_params'=>$data]
+            'https://'.$domain.'/api/agent-check', ['form_params' => $data]
         );
         $response = explode('{', (string) $response->getBody());
 

@@ -253,7 +253,7 @@ class LoginController extends Controller
                 $price = $price * $content->attributes->agents;
             }
             \Cart::update($content->id, [
-                'price'      => $price,
+                'price' => $price,
                 'attributes' => [
                     'currency' => getCurrencyForClient(\Auth::user()->country),
                     'symbol' => \App\Model\Payment\Currency::where('code', getCurrencyForClient(\Auth::user()->country))->value('symbol'),

@@ -75,6 +75,7 @@ class ClientController extends AdvanceSearchController
     public function getClients(Request $request)
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
+
         // dd($baseQuery->get()->last());
         return DataTables::of($baseQuery)
                         ->orderColumn('name', '-id $1')
@@ -242,9 +243,9 @@ class ClientController extends AdvanceSearchController
                 'town' => $request->input('town'),
                 'country' => strtoupper($request->input('country')),
                 'state' => $request->input('state'),
-                'zip' =>  $request->input('zip'),
+                'zip' => $request->input('zip'),
                 'timezone_id' => $request->input('timezone_id'),
-                'mobile_code' =>  $mobile_code,
+                'mobile_code' => $mobile_code,
                 'mobile' => $request->input('mobile'),
                 'skype' => $request->input('skype'),
                 'manager' => $request->input('manager'),
@@ -395,6 +396,7 @@ class ClientController extends AdvanceSearchController
         try {
             $user = $this->user->where('id', $id)->first();
             $user->fill($request->input())->save();
+
             // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

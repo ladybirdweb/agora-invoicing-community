@@ -691,14 +691,14 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
     'create_in_progress' => 'Your Custom cloud has begun it\'s self creation and will be completed in few minutes, and you shall be notified in your registered email with username and password. if you fail to receive it feel free to contact our support team. <a href="https://support.faveohelpdesk.com">Raise a ticket here!</a>',
-    'something_bad'    =>'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact our <a href="https://support.faveohelpdesk.com">Support Center</a>',
+    'something_bad' => 'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact our <a href="https://support.faveohelpdesk.com">Support Center</a>',
     'cloud_info' => 'Welcome to Faveo! You can deploy your free trial cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
-    'cloud_live_info'=> 'Welcome to Faveo! You can deploy your cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
+    'cloud_live_info' => 'Welcome to Faveo! You can deploy your cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
 
     'cname' => 'Uh-oh! It seems your domain\'s DNS CNAME record isn\'t pointing to our cloud. To continue with your intended action, kindly double-check and make sure the CNAME record is set up correctly. If you need more guidance, you can check out our <a href="https://docs.faveohelpdesk.com/docs/helper/cname">helpful guide here</a>.',
     'cloud_heading' => 'Let\'s create your Faveo cloud instance together!',
     'cloud_field_label' => 'Enter your desired cloud domain name',
-    'cloud_price' =>'Price per agent',
+    'cloud_price' => 'Price per agent',
 
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',
@@ -707,7 +707,7 @@ return [
     'cloud_domain_change' => 'Great news! Your Cloud Domain has been successfully changed. Please be aware that there will be a brief downtime of approximately 5 minutes to apply these changes. Thank you for your patience!',
     'limit_is_up' => 'It has come to our notice that you have crossed the free trial limit, please delete your existing instances to proceed further.',
     'too_long' => 'That seems to be a large domain, Please try creating with lesser number of characters.',
-    'cloud_created_successfully' =>' You will receive the login credentials on your registered email',
+    'cloud_created_successfully' => ' You will receive the login credentials on your registered email',
     'add-demo' => 'Demo Page',
     'remove_coupon' => 'Coupon Code has been removed Successfully',
     'no_product' => 'No coupon applied. Cannot remove coupon code.',

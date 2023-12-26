@@ -38,7 +38,7 @@ class CloudExtraActivities extends Controller
         $data = ['number_of_agents' => $numberOfAgents];
         $response = $client->request(
             'POST',
-            'https://'.$domain.'/api/agent-check', ['form_params'=>$data]
+            'https://'.$domain.'/api/agent-check', ['form_params' => $data]
         );
         $response = explode('{', (string) $response->getBody());
 
@@ -59,7 +59,7 @@ class CloudExtraActivities extends Controller
         $company = substr(strtolower($company), 0, 28);
 
         // Output the modified company value
-        return response()->json(['data'=> $company]);
+        return response()->json(['data' => $company]);
     }
 
     public function orderDomainCloudAutofill(Request $request)
@@ -67,10 +67,10 @@ class CloudExtraActivities extends Controller
         // Output the modified domain value
         $installtion_path = InstallationDetail::where('order_id', $request->orderId)->where('installation_path', '!=', 'billing.faveocloud.com')->latest()->value('installation_path');
         if (! empty($installtion_path)) {
-            return response()->json(['data'=> $installtion_path]);
+            return response()->json(['data' => $installtion_path]);
         }
 
-        return response()->json(['data'=> '']);
+        return response()->json(['data' => '']);
     }
 
     public function getUpgradeCost(Request $request)
@@ -116,7 +116,7 @@ class CloudExtraActivities extends Controller
             if ($newDomain === $currentDomain) {
                 return errorResponse(trans('message.nothing_changed'));
             }
-            $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'lic_code'=> $request->get('lic_code'), 'product_id' => $request->product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
+            $data = ['currentDomain' => $currentDomain, 'newDomain' => $newDomain, 'lic_code' => $request->get('lic_code'), 'product_id' => $request->product_id, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
             $dns_record = dns_get_record($newDomain, DNS_CNAME);
             if (! strpos($newDomain, 'faveocloud.com')) {
                 if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
@@ -465,7 +465,7 @@ class CloudExtraActivities extends Controller
                             $formattedPay = currencyFormat($pay, getCurrencyForClient(\Auth::user()->country), true);
                             if (! $payUpdate->isEmpty()) {
                                 $pay = $pay + round($discount);
-                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
+                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit' => $pay]);
 
                                 $messageAdmin = 'An amount of '.$formattedValue.' has been added to the existing balance due to a product downgrade. You can view the details of the downgraded order here: '.
                                     '<a href="'.config('app.url').'/orders/'.$orderId.'">'.$orderNumber.'</a>.';
@@ -473,8 +473,8 @@ class CloudExtraActivities extends Controller
                                 $messageClient = 'An amount of '.$formattedValue.' has been added to your existing balance due to a product downgrade. You can view the details of the downgraded order here: '.
                                     '<a href="'.config('app.url').'/my-order/'.$orderId.'">'.$orderNumber.'</a>.';
 
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
                             } else {
                                 \Session::put('discount', round($discount));
                                 (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id, [0 => 'Credit Balance'], 'Credit Balance', Carbon::now(), $price, null, round($discount), 'pending');
@@ -500,7 +500,7 @@ class CloudExtraActivities extends Controller
 
                             if (! $payUpdate->isEmpty()) {
                                 $pay = $pay + round($discount);
-                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit'=>$pay]);
+                                Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->update(['amt_to_credit' => $pay]);
 
                                 $messageAdmin = 'An amount of '.$formattedValue.' has been added to the existing balance due to an order downgrade. You can view the details of the downgraded order here: '.
                                     '<a href="'.config('app.url').'/orders/'.$orderId.'">'.$orderNumber.'</a>.';
@@ -508,8 +508,8 @@ class CloudExtraActivities extends Controller
                                 $messageClient = 'An amount of '.$formattedValue.' has been added to your existing balance due to an order downgrade. You can view the details of the downgraded order here: '.
                                     '<a href="'.config('app.url').'/my-order/'.$orderId.'">'.$orderNumber.'</a>.';
 
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-                                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
                             } else {
                                 \Session::put('discount', round($discount));
                                 (new ExtendedBaseInvoiceController())->multiplePayment(\Auth::user()->id, [0 => 'Credit Balance'], 'Credit Balance', Carbon::now(), $price, null, round($discount), 'pending');
@@ -608,7 +608,7 @@ class CloudExtraActivities extends Controller
 
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
         $token = str_random(32);
-        $data = ['licenseCode' => $licenseCode, 'installation_path' => $installationPath, 'product_id' => $productID, 'old_lic_code'=> $oldLicenseCode, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
+        $data = ['licenseCode' => $licenseCode, 'installation_path' => $installationPath, 'product_id' => $productID, 'old_lic_code' => $oldLicenseCode, 'app_key' => $keys->app_key, 'token' => $token, 'timestamp' => time()];
         $encodedData = http_build_query($data);
         $client = new Client();
         $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
@@ -626,9 +626,9 @@ class CloudExtraActivities extends Controller
 
         $orderId = \Session::get('upgradeorderId');
 
-        Order::where('id', $orderId)->update(['order_status'=>'Terminated']);
+        Order::where('id', $orderId)->update(['order_status' => 'Terminated']);
 
-        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id'=> $orderId, 'upgraded_order_id' => \Session::get('upgradeNewActiveOrder')]);
+        \DB::table('terminated_order_upgrade')->insert(['terminated_order_id' => $orderId, 'upgraded_order_id' => \Session::get('upgradeNewActiveOrder')]);
 
         \Session::forget('upgradeDowngradeProduct');
         \Session::forget('upgradeOldLicense');
@@ -655,8 +655,8 @@ class CloudExtraActivities extends Controller
     {
         if ($request->has('isChecked')) {
             ($request->input('isChecked') == 'true') ?
-                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>1]) :
-                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
+                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance' => 1]) :
+                \DB::table('users')->where('id', \Auth::user()->id)->update(['billing_pay_balance' => 0]);
         }
 
         return response()->json(['message' => 'Your a developer that\'s why you\'re checking this']);
@@ -691,7 +691,7 @@ class CloudExtraActivities extends Controller
                 Payment::where('user_id', \Auth::user()->id)
                     ->where('payment_status', 'pending')->where('amt_to_credit', $discount)
                     ->where('payment_method', 'Credit Balance')
-                    ->latest()->update(['payment_status'=>'success']);
+                    ->latest()->update(['payment_status' => 'success']);
 
                 $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
                 $formattedValue = currencyFormat($discount, getCurrencyForClient(\Auth::user()->country), true);
@@ -708,8 +708,8 @@ class CloudExtraActivities extends Controller
                     '<a href="'.config('app.url').'/my-order/'.$oldOrderId.'">'.$oldOrderNumber.'</a>.'.' You can also view details of the downgraded order here: '.
                     '<a href="'.config('app.url').'/my-order/'.$newOrderId.'">'.$newOrderNumber.'</a>.';
 
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-                \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+                \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
 
                 \Session::forget('discount');
             }
@@ -833,7 +833,7 @@ class CloudExtraActivities extends Controller
                     }
                 }
             }
-            $items = ['priceoldplan'=>currencyFormat($priceRemaining, $currencyNew['currency'], true), 'pricenewplan'=>currencyFormat($priceToBePaid, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat(abs($price), $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
+            $items = ['priceoldplan' => currencyFormat($priceRemaining, $currencyNew['currency'], true), 'pricenewplan' => currencyFormat($priceToBePaid, $currencyNew['currency'], true), 'price_to_be_paid' => currencyFormat(abs($price), $currencyNew['currency'], true), 'discount' => currencyFormat($discount, $currencyNew['currency'], true), 'priceperagent' => currencyFormat($pricePerAgent, $currencyNew['currency'], true)];
 
             return $items;
         } catch(\Exception $e) {
@@ -872,7 +872,7 @@ class CloudExtraActivities extends Controller
                 $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->where('country_id', 0)->value('add_price');
             }
             if (empty($newAgents)) {
-                return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> 0, 'priceToPay'=>0];
+                return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice' => 0, 'priceToPay' => 0];
             }
             if ($newAgents > $oldAgents) {
                 if (Carbon::now() >= $ends_at) {
@@ -914,11 +914,11 @@ class CloudExtraActivities extends Controller
                 }
             }
 
-            return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice'=> currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay'=>currencyFormat($price, $currency['currency'], true)];
+            return ['pricePerAgent' => currencyFormat($base_price, $currency['currency'], true), 'totalPrice' => currencyFormat($base_price * $newAgents, $currency['currency'], true), 'priceToPay' => currencyFormat($price, $currency['currency'], true)];
         } catch(\Exception $e) {
             app('log')->error($e->getMessage());
 
-            return ['pricePerAgent' => 'NaN', 'totalPrice'=> 'NaN', 'priceToPay'=>'NaN'];
+            return ['pricePerAgent' => 'NaN', 'totalPrice' => 'NaN', 'priceToPay' => 'NaN'];
         }
     }
 
@@ -940,7 +940,7 @@ class CloudExtraActivities extends Controller
         $data = ['domain' => $domain, 'key' => $keys->app_key];
         $response = $client->request(
             'POST',
-            $this->cloud->cloud_central_domain.'/checkDomain', ['form_params'=>$data]
+            $this->cloud->cloud_central_domain.'/checkDomain', ['form_params' => $data]
         );
         $response = explode('{', (string) $response->getBody());
 

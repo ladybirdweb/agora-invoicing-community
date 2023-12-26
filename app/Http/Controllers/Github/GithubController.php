@@ -85,6 +85,7 @@ class GithubController extends Controller
             $data_string = json_encode($data);
             $method = 'PUT';
             $auth = $this->github_api->postCurl($url, $data_string, $method);
+
             //dd($auth['hashed_token']);
             return $auth['hashed_token'];
             //dd($auth);
@@ -125,6 +126,7 @@ class GithubController extends Controller
                 $release = $this->latestRelese($owner, $repo);
                 //dd($release);
             }
+
             //            dd($release);
             return $release;
 

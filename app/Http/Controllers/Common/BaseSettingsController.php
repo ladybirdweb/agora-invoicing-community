@@ -261,6 +261,7 @@ class BaseSettingsController extends PaymentSettingsController
         $allStatus->cloud_mail_status = $request->cloud_cron ? $request->cloud_cron : 0;
         $allStatus->save();
         $this->saveConditions();
+
         /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }

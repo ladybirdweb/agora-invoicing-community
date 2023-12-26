@@ -90,6 +90,7 @@ class WidgetController extends Controller
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
             $twitterStatus = StatusSetting::pluck('twitter_status')->first();
             $widget = $this->widget->where('id', $id)->first();
+
             //dd($widget);
             return view('themes.default1.front.widgets.edit', compact('widget', 'mailchimpStatus', 'twitterStatus'));
         } catch (\Exception $ex) {

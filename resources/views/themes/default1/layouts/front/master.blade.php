@@ -540,7 +540,7 @@ $days = $pay->where('product','117')->value('days');
 
                     <div class="modal-header">
 
-                        <h4 class="modal-title" id="trialModalLabel">Let's create your Faveo cloud instance together!</h4>
+                        <h4 class="modal-title" id="trialModalLabel">{{optional(cloudPopUpDetails())->cloud_top_message}}</h4>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
@@ -557,7 +557,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <div class="form-group col">
 
-                                    <label class="form-label">Enter your desired cloud domain name</label>
+                                    <label class="form-label">{!! optional(cloudPopUpDetails())->cloud_label_field !!}</label>
 
                                     <div class="input-group mb-2">
 
@@ -572,7 +572,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <div class="form-group col">
 
-                                    <label class="form-label">{!!cloudPopUpDetails()->cloud_label_radio !!}</label>
+                                    <label class="form-label">{!!optional(cloudPopUpDetails())->cloud_label_radio !!}</label>
 
                                     <br>
                                     <?php $cloudProducts = \App\Model\Product\CloudProducts::get(); ?>
@@ -648,7 +648,7 @@ $days = $pay->where('product','117')->value('days');
             <div class="modal-content">
                 {!! Form::open() !!}
                 <div class="modal-header">
-                    <h4 class="modal-title">{{cloudPopUpDetails()->cloud_top_message}}</h4>
+                    <h4 class="modal-title">{{optional(cloudPopUpDetails())->cloud_top_message}}</h4>
                 </div>
 
                 <div class="modal-body">
@@ -662,7 +662,7 @@ $days = $pay->where('product','117')->value('days');
                         <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                             <input type="hidden" id="orderNo" name="order" value="117">
                             <div class="form-group">
-                                <label><b>{!! cloudPopUpDetails()->cloud_label_field !!}</b></label>
+                                <label><b>{!! optional(cloudPopUpDetails())->cloud_label_field !!}</b></label>
                                 <div class="input-group mb-2">
                                     <input type="hidden"  name="order" id="orderId"/>
                                     <input type="text" name="domain" autocomplete="off" id="userdomainPurchase" class="form-control col col-7 rounded-0" placeholder="Domain" required>

@@ -48,6 +48,7 @@ class AddonController extends Controller
         try {
             $product = $this->product->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();
+
             //dd($subscription);
             return view('themes.default1.product.addon.create', compact('product', 'subscription'));
         } catch (\Exception $ex) {

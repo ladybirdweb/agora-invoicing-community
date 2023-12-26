@@ -128,7 +128,7 @@ class CartController extends BaseCartController
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
                 $qty = $quantity != null ? $quantity : 1;
                 $currency = userCurrencyAndPrice('', $plan);
-                // $this->checkProductsHaveSimilarCurrency($currency['currency']);
+            // $this->checkProductsHaveSimilarCurrency($currency['currency']);
             } else {
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
@@ -142,7 +142,7 @@ class CartController extends BaseCartController
             $agents = $agtQty != null ? $agtQty : 0;
 
             $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
-                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents, 'domain'=> $domain], 'associatedModel' => $product];
+                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents, 'domain' => $domain], 'associatedModel' => $product];
 
             return $items;
         } catch (\Exception $e) {

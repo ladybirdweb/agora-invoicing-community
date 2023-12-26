@@ -7,6 +7,7 @@ use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use Yajra\DataTables\DataTables;
+use Illuminate\Http\Request;
 
 class AdminOrderInvoiceController extends Controller
 {
@@ -143,7 +144,7 @@ class AdminOrderInvoiceController extends Controller
                         ->make(true);
     }
 
-    public function getOrderDetail($id)
+    public function getOrderDetail(Request $request,$id)
     {
         $order = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
@@ -209,6 +210,19 @@ class AdminOrderInvoiceController extends Controller
                             style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'date', 'product', 'number', 'version', 'expiry', 'status', 'action'])
+                        ->filter(function ($query) use ($request) {
+                            // Handle search term
+                            if ($request->has('search') && !empty($request->input('search')['value'])) {
+                                $searchValue = $request->input('search')['value'];
+                                $query->where(function ($subquery) use ($searchValue) {
+                                    // Add your specific search conditions here
+                                    // For example:
+                                    $subquery->where('orders.number', 'like', "%{$searchValue}%")
+                                        ->orWhere('products.name', 'like', "%{$searchValue}%");
+                                });
+                            }
+                        })
+                
                         ->make(true);
     }
 

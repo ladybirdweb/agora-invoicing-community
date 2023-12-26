@@ -48,7 +48,7 @@ class PageRequest extends FormRequest
     public function messages()
     {
         return[
-            'created_at.required'           => 'Publish Date is required',
+            'created_at.required' => 'Publish Date is required',
         ];
     }
 }

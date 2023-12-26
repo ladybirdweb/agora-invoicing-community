@@ -127,12 +127,12 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $template = $templates->where('type', $temp_id)->first();
         $type = '';
         $replace = [
-            'name'       => $user->first_name.' '.$user->last_name,
-            'number'     => $number,
-            'address'    => $user->address,
+            'name' => $user->first_name.' '.$user->last_name,
+            'number' => $number,
+            'address' => $user->address,
             'invoiceurl' => $invoiceurl,
-            'content'    => $this->invoiceContent($invoiceid),
-            'currency'   => $this->currency($invoiceid),
+            'content' => $this->invoiceContent($invoiceid),
+            'currency' => $this->currency($invoiceid),
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
             'reply_email' => $setting->company_email,

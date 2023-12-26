@@ -21,8 +21,8 @@ class PageControllerTest extends TestCase
         $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user);
         $response = $this->post('/pages', [
-            'name'=>'demo',
-            'slug'=> 'demopass',
+            'name' => 'demo',
+            'slug' => 'demopass',
             'url' => 'http://demo.com',
             'content' => 'Here the new page created',
         ]);
@@ -34,21 +34,21 @@ class PageControllerTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user);
-        $page = FrontendPage::create(['name'=>'demo',
-            'slug'=> 'demopass',
+        $page = FrontendPage::create(['name' => 'demo',
+            'slug' => 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
             'content' => 'Here the new page created', ]);
 
         $response = $this->post('/pages', [
-            'id'=> $page->id,
-            'name'=>'demo',
-            'slug'=> 'demopass',
+            'id' => $page->id,
+            'name' => 'demo',
+            'slug' => 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
             'content' => 'Here the new page created',
         ]);
-        $this->assertDatabaseHas('frontend_pages', ['name'=>'demo']);
+        $this->assertDatabaseHas('frontend_pages', ['name' => 'demo']);
     }
 
     public function test_plansYear_returnstatus200()

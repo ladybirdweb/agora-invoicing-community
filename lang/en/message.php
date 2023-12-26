@@ -738,7 +738,7 @@ return [
     'not_allowed_domain' => 'Oops! It seems like you entered an invalid domain format that is not allowed on the internet. Please enter a valid domain name to continue.',
     'agent_zero' => 'It looks like you\'ve selected zero agents. Please choose a valid number of agents to continue.',
     'cloud_cname' => 'Cloud Cname Record',
-    'pop_delete'  => 'Product configuration was deleted.',
+    'pop_delete' => 'Product configuration was deleted.',
     'saved_products' => 'Product configuration was saved and applied successfully',
     'saved_data_center' => 'Data center details were saved successfully',
     'no_lat_or_long' => 'Latitude and longitude was not found for this location',

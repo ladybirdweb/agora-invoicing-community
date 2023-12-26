@@ -208,6 +208,7 @@ class Kernel extends ConsoleKernel
             }
         } catch (\Exception $e) {
             $this->prepareMessages($domain, $counter, $user);
+
             // The domain is not reachable or the SSL certificate is invalid.
             return false;
         }

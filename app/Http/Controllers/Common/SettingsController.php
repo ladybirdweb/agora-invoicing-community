@@ -272,6 +272,7 @@ class SettingsController extends BaseSettingsController
         try {
             $set = $settings->find(1);
             $template = new Template();
+
             //$templates = $template->lists('name', 'id')->toArray();
             return view('themes.default1.common.setting.template', compact('set', 'template'));
         } catch (\Exception $ex) {

@@ -490,7 +490,7 @@ class CronController extends BaseCronController
                         $secret = ApiKey::pluck('rzp_secret')->first();
                         $api = new Api($key_id, $secret);
 
-                        $invoiceCount = $api->invoice->all(['subscription_id'=> $subscriptionId]);
+                        $invoiceCount = $api->invoice->all(['subscription_id' => $subscriptionId]);
                         if ($invoiceCount['count'] > 99) {
                             $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
                         }
@@ -603,16 +603,16 @@ class CronController extends BaseCronController
                     'total_count' => 100,
                     'quantity' => 1,
                     'expire_by' => Carbon::parse($update_end)->addDays(1)->timestamp,
-                    'start_at' =>  Carbon::parse($update_end)->addDays(round((int) $days))->timestamp,
+                    'start_at' => Carbon::parse($update_end)->addDays(round((int) $days))->timestamp,
 
                     'customer_notify' => 1,
-                    'addons' => [['item'=>[
+                    'addons' => [['item' => [
                         'name' => $product_name,
                         'amount' => round((int) $cost) * 100,
                         'currency' => $currency]]],
-                    'notify_info'=>[
+                    'notify_info' => [
                         'notify_phone' => $user->mobile,
-                        'notify_email'=> $user->email,
+                        'notify_email' => $user->email,
                     ]]);
                 Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscriptionLink['id'], 'autoRenew_status' => 'Pending']);
             }

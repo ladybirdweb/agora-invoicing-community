@@ -224,12 +224,12 @@ class TenantController extends Controller
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => $userId, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$userEmail, 'userId'=>$userId, 'timestamp'=>time(), 'product'=>$product, 'product_id'=>$order[0]->product()->value('id')];
+            $data = ['domain' => $faveoCloud, 'app_key' => $keys->app_key, 'token' => $token, 'lic_code' => $licCode, 'username' => $userEmail, 'userId' => $userId, 'timestamp' => time(), 'product' => $product, 'product_id' => $order[0]->product()->value('id')];
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
                 'POST',
-                $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
             );
 
             $response = explode('{', (string) $response->getBody());
@@ -409,6 +409,7 @@ class TenantController extends Controller
             $cloud = new FaveoCloud;
             $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cron_server_url' => $request->input('cron_server_url'),
                 'cron_server_key' => $request->input('cron_server_key'), ]);
+
             // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
@@ -485,7 +486,7 @@ class TenantController extends Controller
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
 
-        return ['message' => 'success', 'update'=>'License installations removed'];
+        return ['message' => 'success', 'update' => 'License installations removed'];
     }
 
     private function prepareMessages($domain, $user, $success = false)

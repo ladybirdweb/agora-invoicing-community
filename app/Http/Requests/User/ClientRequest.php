@@ -65,7 +65,7 @@ class ClientRequest extends Request
     {
         return[
             'state.required_if' => 'The state field is required when country is India.',
-            'zip.regex'=> 'The zip/postal code in invalid',
+            'zip.regex' => 'The zip/postal code in invalid',
 
         ];
     }

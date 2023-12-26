@@ -316,7 +316,7 @@ $days = $pay->where('product','117')->value('days');
                                                     ?>
                                                     @if($cloud == 1)
                                                         <li class="demo-icons">
-                                                            <a class="nav-link open-createTenantDialog" id="startFreeTrialBtn">START FREE TRIAL</a>
+                                                            <a class="nav-link open-createTenantDialog startFreeTrialBtn">START FREE TRIAL</a>
                                                         </li>
                                                         @endif
                                                         </li>
@@ -427,7 +427,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <div class="px-4 d-none d-lg-inline-block ws-nowrap">
                                     @if($cloud == 1)
-                                        <a class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2 open-createTenantDialog" id="startFreeTrialBtn" style="color: white;">START FREE TRIAL</a>
+                                        <a class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2 open-createTenantDialog startFreeTrialBtn" style="color: white;">START FREE TRIAL</a>
                                     @endif
                                     @if($Demo_page->status)
                                         <a id="demo-req" class="btn border-0 px-4 py-2 line-height-9 btn-primary" style="color: white;">REQUEST FOR DEMO</a>
@@ -1301,7 +1301,7 @@ $days = $pay->where('product','117')->value('days');
             }
 
             // Attach a click event handler to the "START FREE TRIAL" button
-            $('#startFreeTrialBtn').on('click', function () {
+            $('.startFreeTrialBtn').on('click', function () {
                 // If the button is clicked, open the free trial dialog
                 openFreeTrialDialog();
             });
@@ -1309,7 +1309,7 @@ $days = $pay->where('product','117')->value('days');
             // If not authenticated, redirect to the login/register page only if localStorage indicates a click
             var freeTrialClicked = localStorage.getItem('freeTrialClicked');
             // Attach a click event handler to the "START FREE TRIAL" button
-            $('#startFreeTrialBtn').on('click', function () {
+            $('.startFreeTrialBtn').on('click', function () {
                 // If not authenticated, remember that the button was clicked
                 localStorage.setItem('freeTrialClicked', 'true');
                 var message = "Please log in to start your free trial. If you don't have an account, you can register here!";

@@ -6,6 +6,7 @@ use App\Model\Common\TemplateType;
 use App\Model\Common\Template;
 use App\Model\Common\PricingTemplate;
 use App\Model\Front\Widgets;
+use App\Model\Mailjob\ExpiryMailDay;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Widgets::where('type','footer4')->delete();
-
+          
+       
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
 
@@ -49,6 +51,8 @@ class TemplateTableSeeder extends Seeder
 {
     public function run()
     {
+       
+
       Template::where('id',2)->update(['reply_to' => '{{reply_email}}','data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
         <tbody>
         <tr>

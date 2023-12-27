@@ -116,55 +116,12 @@ active
                         <li class="mb-0 mt-2 text-4"><b class="text-dark">GSTIN:</b> #{{$set->gstin}}</li>
                         @endif
                         @if($set->cin_no)
-                             <div class="bill-data text-right">
-                                <p class="mb-0">
-                                    <span class="text-dark">CIN:</span>
-                                    <span class="value">#{{$set->cin_no}}</span>
-                                </p>
-                            </div>
-                             @endif
-                        </div>
-                    </div>
-                </header>
-
-                <div class="bill-info"  id="invoice-section">
-                    <div class="row" style="margin-top: 25px">
-                        <div class="col-md-6">
-                            <div class="bill-to">
-                                <p class="h5 mb-1 text-dark font-weight-semibold">To:</p>
-                                <address>
-                                    <strong>{{$user->first_name}} {{$user->last_name}}</strong><br>
-                                    @if($user->address)
-                                        {{$user->address}}<br/>
-                                    @endif
-                                    {{$user->town}}<br/>
-                                    @if(key_exists('name',getStateByCode($user->state)))
-                                        {{getStateByCode($user->state)['name']}}
-                                    @endif
-                                    {{$user->zip}}<br/>
-                                    Country: {{getCountryByCode($user->country)}}<br/>
-                                    Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
-                                    Email: {{$user->email}}
-                                </address>
-                                @if($user->gstin)
-                            <div class="bill-data">
-                                <p class="mb-0">
-                                    <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$user->gstin}}</span>
-                                </p>
-                            </div>
-                            @endif <br>
-                            </div>
-                        </div>
-                        
-                        
-                        
 
                         <li class="mb-0 text-4"><b class="text-dark">CIN:</b> #{{$set->cin_no}}</li>
                         @endif
                     </ul>
                 </div>
-
+                <div class="bill-info" id="invoice-section">
                 <div class="col-lg-6 mb-4 mb-lg-0">
 
                     <h2 class="text-color-dark font-weight-bold text-4 mb-1">To</h2>
@@ -387,26 +344,13 @@ active
 
             </div>
         </div>
-    </section>
-    </div>
-
-
-<script type="text/javascript">
-    @if(isset($redirectUrl))
-    <script>
-        window.location.href = "{{ url($redirectUrl) }}";
-        window.onload = function() {
-            window.scrollTo(0, document.body.scrollHeight);
-        };
-
-        function refreshPage() {
+<script>
+  function refreshPage() {
     // Wait for 3 seconds (3000 milliseconds) before refreshing the page
     setTimeout(function() {
       // Reload the current page
       location.reload();
     }, 4000); // 3000 milliseconds = 3 seconds
   }
-    </script>
-@endif
 </script>
 @stop

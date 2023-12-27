@@ -44,7 +44,7 @@
         <!-- Custom css/js -->
         <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
-        <!--<script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>-->
+        <script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>
         <script src="{{asset('https://code.jquery.com/jquery-3.5.1.min.js')}}"></script>
         <script>
         $(function () {
@@ -458,7 +458,7 @@
 
     <!-- jQuery -->
     <!-- jQuery UI 1.11.4 -->
-    <!--<script src="{{asset('admin/js-1/jquery-ui.min.js')}}"></script>-->
+    <script src="{{asset('admin/js-1/jquery-ui.min.js')}}"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
@@ -476,7 +476,7 @@
     <!-- jQuery Knob Chart -->
     <script src="{{asset('admin/plugins-1/jquery.knob.min.js')}}"></script>
     <!-- daterangepicker -->
-    <!--<script src="{{asset('admin/plugins-1/moment.min.js')}}"></script>-->
+    <script src="{{asset('admin/plugins-1/moment.min.js')}}"></script>
     <script src="{{asset('admin/plugins-1/daterangepicker.js')}}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{asset('admin/plugins-1/tempusdominus-bootstrap-4.min.js')}}"></script>
@@ -497,7 +497,7 @@
 {{-------------------------------------Custom---------------------------------------------------------}}
     <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
-    <!--<script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>-->
+    <script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>
 
     <script src="{{asset('admin/plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>
     <!-- <script src="{{asset('plugins/jquery-file-upload/main.js')}}"></script> -->

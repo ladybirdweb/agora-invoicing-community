@@ -369,13 +369,14 @@ Checkout
                                         </td>
                                     </tr>
                                       @endif
+                                        @endif
                                              {!! Form::hidden('invoice_id',$invoice->id) !!}
                                              {!! Form::hidden('cost',$invoice->grand_total) !!}
                                     </tbody>
                                 </table>
                             </div>
                             <button type="submit" id="proceed" class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3">Proceed <i class="fas fa-arrow-right ms-2"></i></button>
-                           @endif
+                         
                              {!! Form::close() !!}
                         </div>
                     </div>

@@ -1815,13 +1815,46 @@ $price = $order->price_override;
 
 
     </script>
+    
+       <script>
+
+        $(document).ready(function () {
+            $('#numberAGt').on('input', function () {
+                $(this).prop("disabled", true);
+                $('#agentNumber').attr('disabled',true);
+                var selectedNumber = $(this).val();
+                var oldAgents = '{{$latestAgents}}';
+                var orderId = '{{$id}}';
+                $('.loader-wrapper').show();
+                $('.overlay').show(); // Show the overlay
+                $('.modal-body').css('pointer-events', 'none');
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{url('get-agent-inc-dec-cost')}}",
+                    data: { 'number': selectedNumber, 'oldAgents':  oldAgents, 'orderId' : orderId},
+                    success: function (data) {
+                        // Update the other fields based on the API response
+                        $('#priceagent').text(data.pricePerAgent);
+                        $('#Totalprice').val(data.totalPrice);
+                        $('#pricetopay').text(data.priceToPay);
+                        $('#agentNumber').attr('disabled',false);
+                        $('.loader-wrapper').hide();
+                        $('.overlay').hide(); // Hide the overlay
+                        $('.modal-body').css('pointer-events', 'auto');
+                    },
+                });
+                $(this).prop("disabled", false);
+
+            });
+        });
+    </script>
 
     <script type="text/javascript">
 
 
         $(document).ready(function() {
             $('#upgradedowngrade').on('click', function() {
-                alert("btu");
                 $('#upgradedowngrade').attr('disabled',true);
                 $('#upgradedowngrade').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
                 $('.loader-wrapper').show();

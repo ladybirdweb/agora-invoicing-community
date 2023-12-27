@@ -143,9 +143,9 @@ class TemplateTableSeeder extends Seeder
         </tr>
         </tbody>
         </table>
-        <p><a class="moz-txt-link-abbreviated" href="{{erialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your License Code.</p>
-        <p><a class="moz-txt-link-abbreviated" href="{{knowledge_base}}/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
-        <p>Click below to login to your Control Panel to view the invoice or to pay for any pending invoice.</p>
+        <p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener noreferrer">Click Here</a> to get your License Code.</p>
+        
+        <p><a class="moz-txt-link-abbreviated" href="{{knowledge_base}}"> Refer To Our Knowledge Base</a> for further installation assistance</p> <p>Click below to login to your Control Panel to view the invoice or to pay for any pending invoice.</p>
         </td>
         <td style="background: #fff; border-right: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
         </tr>

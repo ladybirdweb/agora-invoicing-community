@@ -916,6 +916,7 @@ class ClientController extends BaseClientController
 
         return view('themes.default1.front.clients.index', compact('pendingInvoicesCount', 'ordersCount', 'renewalCount'));
     }
+
     /**
      * Delete an invoice and its related records based on specific conditions.
      *

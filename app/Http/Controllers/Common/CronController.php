@@ -467,16 +467,18 @@ class CronController extends BaseCronController
         return StatusSetting::value('invoice_deletion_status') == 1;
     }
 
-    private function getOldInvoices($days)
+     private function getOldInvoices($days)
     {
-        $date = Carbon::now()->subDays($days);
+        $date = Carbon::now()->subDays($days)->toDateString();
+
         $oldInvoices = Invoice::where('status', 'pending')
-        ->where('date', '<=', $date)
-        ->with(['invoiceItem', 'orderRelation'])
-        ->get();
+            ->whereDate('date', '<=', $date)
+            ->with(['invoiceItem', 'orderRelation'])
+            ->get();
 
         return $oldInvoices;
     }
+
 
     private function canDeleteInvoice($invoice)
     {

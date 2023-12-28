@@ -210,15 +210,18 @@ class AdminOrderInvoiceController extends Controller
                             style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'date', 'product', 'number', 'version', 'expiry', 'status', 'action'])
-                        ->filter(function ($query) use ($request) {
-                            if ($request->has('search') && !empty($request->input('search')['value'])) {
-                                $searchValue = $request->input('search')['value'];
-                                $query->where(function ($subquery) use ($searchValue) {
-                                    $subquery->where('orders.number', 'like', "%{$searchValue}%")
-                                        ->orWhere('products.name', 'like', "%{$searchValue}%");
-                                });
-                            }
-                        })
+                      
+->filter(function ($query) use ($request) {
+    if ($request->has('search') && !empty($request->input('search')['value'])) {
+        $searchValue = $request->input('search')['value'];
+        $query->where(function ($subquery) use ($searchValue) {
+            $subquery->where('orders.number', 'like', "%{$searchValue}%")
+                     ->orWhere('products.name', 'like', "%{$searchValue}%")
+                     ->orWhere('subscriptions.version', 'like', "%{$searchValue}%")
+                     ->orWhere('orders.order_status', 'like', "%{$searchValue}%");
+        });
+    }
+})
                         ->make(true);
     }
 

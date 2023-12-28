@@ -538,7 +538,9 @@ class ClientController extends AdvanceSearchController
                 $query->where('account_manager', $request->actmanager);
             })->when($request->salesmanager, function ($query) use ($request) {
                 $query->where('manager', $request->salesmanager);
-            });     
+            });
+
+                    
         $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
 
         return $baseQuery;

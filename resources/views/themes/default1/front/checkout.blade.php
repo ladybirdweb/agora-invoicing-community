@@ -376,6 +376,18 @@ $cartSubtotalWithoutCondition = 0;
                                         </td>
                                     </tr>
                                 {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
+                                
+                                 @if(\Session::has('priceRemaining'))
+                                    <tr>
+                                        <td class="border-top-0">
+                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
+                                    <input type="checkbox" id="billing-temp-balance" class="checkbox" checked disabled>
+                                   Total Credits remaining on your current plan: 
+                                    </strong></td>
+                                     <td class=" align-top border-top-0">
+                                            <span class="amount font-weight-medium text-color-grey">   {{currencyFormat(\Session::get('priceRemaining'),$code = $item->attributes->currency)}}
+                                            </span></td></tr>
+                                @endif
 
                                     @if(Cart::getTotal()>0) 
                                     <?php
@@ -427,13 +439,6 @@ $cartSubtotalWithoutCondition = 0;
                                         </td>
                                         @endif
                                     </tr>
-                             
-                                             <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
-                                                <td>
-                                                 <input type="checkbox" id="billing-temp-balance" class="checkbox" checked disabled>
-                                                <label for="billing-pay-balance" class="checkbox-label" disabled><b>Total Credits remaining on your current plan: {{currencyFormat(\Session::get('priceRemaining'),$code = $item->attributes->currency)}}</b></label>
-                                            </td>
-                                            </tr>
                                           
                                                   
                                     <tr class="payment-methods">

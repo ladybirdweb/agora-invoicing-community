@@ -184,8 +184,7 @@ Checkout
                                          <?php
                                         $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
                                         ?>
-                                       <td class="border-top-0">
-                                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
+                                       <td class="align-top border-top-0"><span class="amount font-weight-medium text-color-dark">
                                                                 {!! $bifurcateTax['html'] !!}
                                                             </span>
                                                         </td>
@@ -294,7 +293,7 @@ Checkout
                                             $cartTotal = $invoice->grand_total;
                                         }
                                         ?>
-                                            <td class="text-end">
+                                            <td class="text-end" id="balance-content" >
                                             <strong><span class="amount text-color-grey text-5">{{ currencyFormat($cartTotal, $code = $currency) }}</span></strong>
                                         </td>
                                     </tr>
@@ -328,7 +327,7 @@ Checkout
 
                                                         <input class="form-check-input mt-1" type="checkbox" id="billing-pay-balance" name="agree" id="tabContent9Checkbox" data-msg-required="You must agree before submiting." checked>
                                                         @else
-                                                         <input class="form-check-input mt-1" type="checkbox" id="billing-pay-balance" name="agree" id="tabContent9Checkbox" data-msg-required="You must agree before submiting." checked>
+                                                         <input class="form-check-input mt-1" type="checkbox" id="billing-pay-balance" name="agree" id="tabContent9Checkbox" data-msg-required="You must agree before submiting.">
                                                         @endif
 
                                                         <label class="form-check-label" for="tabContent9Checkbox">

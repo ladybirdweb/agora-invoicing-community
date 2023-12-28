@@ -530,7 +530,31 @@ $price = $order->price_override;
                             </div>
                         </div>
                     </div>
-                @endif
+                     @else
+                  <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
+                        <?php
+                        $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
+                        foreach ($idOrdert as $ordt) {
+                            $newOrders[] = \App\Model\Order\Order::where('id', $ordt->upgraded_order_id)->get();
+                        }
+                        ?>
+
+                        @foreach($newOrders as $newOrder)
+                            <div class="termination-message">
+                                <p class="termination-notice"><b>Important: Termination Notice</b></p>
+                                <p class="termination-description">
+                                    The order you had placed has been terminated. Consequently, the features and licenses associated with this order are no longer accessible.
+                                </p>
+                                <p class="order-links">
+                                    The terminated order: <b>{{$order->number}}</b>
+                                    has been upgraded to the new order: <a class="order-link" href="{{$newOrder[0]->id}}">{{$newOrder[0]->number}}</a>.
+                                </p>
+                            </div>
+
+                        @endforeach
+</div>
+
+                                  @endif
 
                 <div class="tab-pane tab-pane-navigation" id="users" role="tabpanel">
 

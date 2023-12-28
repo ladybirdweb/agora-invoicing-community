@@ -99,6 +99,11 @@ $cartSubtotalWithoutCondition = 0;
 
                                         Quantity
                                     </th>
+                                    
+                                    <th class="product-agent text-uppercase" width="">
+
+                                        Agents
+                                    </th>
 
                                     <th class="product-subtotal text-uppercase " width="">
 
@@ -152,17 +157,14 @@ $cartSubtotalWithoutCondition = 0;
                                     $cont = new \App\Http\Controllers\Product\ProductController();
                                     $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
                                     ?>
-                                    @if(!$isAgentAllowed)
 
                                     <td class="product-quantity">
 
                                         <span class="amount font-weight-medium text-color-grey">{{$item->quantity}}</span>
                                     </td>
-                                    @else
                                      <td class="product-agents">
                                     {{($item->attributes->agents)?$item->attributes->agents:'Unlimited'}}
                                 </td>
-                                @endif
 
                                     <td class="product-subtotal ">
 
@@ -276,8 +278,8 @@ $cartSubtotalWithoutCondition = 0;
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                                                         ?>
-                                                        <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong>
+                                                        <td class=" align-top border-top-0">
+                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}</strong>
 
                                                         </td>
                                                         <td class=" align-top border-top-0">
@@ -319,13 +321,21 @@ $cartSubtotalWithoutCondition = 0;
                                                     <th><strong class="d-block text-color-dark line-height-1 font-weight-semibold">Balance</strong></th>
                                                     <td class=" align-top border-top-0">
                                                     <span class="amount font-weight-medium text-color-grey">
+                       
 
                                                             <?php
+                                                          $amt_to_credit = \DB::table('payments')
+                                                                ->where('user_id', \Auth::user()->id)
+                                                                ->where('payment_method','Credit Balance')
+                                                                ->where('payment_status','success')
+                                                                ->where('amt_to_credit','!=',0)
+                                                                ->value('amt_to_credit');
                                                             if (\Cart::getTotal() <= $amt_to_credit) {
                                                                 $cartTotal = \Cart::getTotal();
                                                             } else {
                                                                 $cartTotal = $amt_to_credit;
                                                             }
+
                                                             ?>
                                                         -{{$dd=currencyFormat($cartTotal, $item->attributes->currency)}}
                                                     </span>
@@ -369,7 +379,7 @@ $cartSubtotalWithoutCondition = 0;
                                                 $cartTotal = \Cart::getTotal();
                                             }
                                             ?>
-                                        <td class="">
+                                        <td class="" id="balance-content">
                                             <strong><span class="amount text-color-grey text-5">
                                                 {{ currencyFormat($cartTotal, $code = $item->attributes->currency) }}
                                             </span></strong>
@@ -398,13 +408,7 @@ $cartSubtotalWithoutCondition = 0;
                                      @if($gateways)
 
                                     <tr class="total">
-                                         <?php $amt_to_credit = \DB::table('payments')
-                                        ->where('user_id', \Auth::user()->id)
-                                        ->where('payment_method','Credit Balance')
-                                        ->where('payment_status','success')
-                                        ->where('amt_to_credit','!=',0)
-                                        ->value('amt_to_credit');
-                                        ?>
+                                  
                                         @if($amt_to_credit)
 
                                         <td colspan="2">

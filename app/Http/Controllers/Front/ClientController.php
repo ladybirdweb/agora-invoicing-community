@@ -427,11 +427,10 @@ class ClientController extends BaseClientController
      * @param  type  $invoiceid
      * @return type
      */
-    public function getVersionList(Request $request,$productid, $clientid, $invoiceid)
+    public function getVersionList(Request $request, $productid, $clientid, $invoiceid)
     {
-
         try {
-           $searchValue = $request->input('search.value');
+            $searchValue = $request->input('search.value');
             $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
             $order_id = $order->id;
@@ -447,13 +446,13 @@ class ClientController extends BaseClientController
                     'created_at'
                 )
                 ->latest();
-               if ($searchValue) {
-                   $versions->where(function ($query) use ($searchValue) {
-                       $query->where('version', 'LIKE', '%' . $searchValue . '%')
-                           ->orWhere('title', 'LIKE', '%' . $searchValue . '%')
-                           ->orWhere('description', 'LIKE', '%' . $searchValue . '%');
-                   });
-               }
+            if ($searchValue) {
+                $versions->where(function ($query) use ($searchValue) {
+                    $query->where('version', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('title', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('description', 'LIKE', '%'.$searchValue.'%');
+                });
+            }
 
             $updatesEndDate = Subscription::select('update_ends_at')
                 ->where('product_id', $productid)
@@ -490,6 +489,7 @@ class ClientController extends BaseClientController
             echo $ex->getMessage();
         }
     }
+
     /**
      * Get list of all the versions from Github.
      *

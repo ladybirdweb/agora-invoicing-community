@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        .list-styled.columns-lg-2.px-2 li a {
-            color: #777 !important; /* Set the anchor text color to black */
-        }
-    </style>
-    <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
-    $everyPageScripts = '';
-    $scripts = \App\Model\Common\ChatScript::get();
-    foreach($scripts as $script)
-        if($script->on_every_page == 1) {
-            $everyPageScript = $script->script;
-        }
-    $dataCenters = \App\Model\CloudDataCenters::all();
-    ?>
-            <!-- Basic -->
+
+<style>
+.list-styled.columns-lg-2.px-2 li a {
+    color: #777 !important; /* Set the anchor text color to black */
+}
+</style>
+<?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
+$everyPageScripts = '';
+$scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
+foreach($scripts as $script) {
+    if (strpos($script->script, '<script>') === false && strpos($script->script, '</script>') === false) {
+        $everyPageScripts .= "<script>{$script->script}</script>";
+    } else {
+        $everyPageScripts .= $script->script;
+    }
+}
+?>
+
+
+    <!-- Basic -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -1108,9 +1113,9 @@ $days = $pay->where('product','117')->value('days');
 @yield('script')
 
 <!--Start of Tawk.to Script-->
+{!! $everyPageScripts !!}
 <!--Start of Tawk.to Script-->
 
-   {!! $everyPageScripts !!}
 
 
 

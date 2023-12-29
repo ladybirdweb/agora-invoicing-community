@@ -356,13 +356,16 @@ class ClientController extends BaseClientController
                      })
                     ->addColumn('Action', function ($model) {
                         $status = $model->status;
+                        $deleteButton = '';
                         $payment = '';
                         if ($status != 'Success' && $model->grand_total > 0) {
                             $payNowButton = '<a href="'.url('paynow/'.$model->id).'" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to pay"><i class="fa fa-credit-card"></i></a>';
+                            if(!$model->orderRelation()->exists()){
                             $deleteButton = '<a class="btn btn-light-scale-2 btn-sm text-dark delete-btn" id="iconStyle" data-id="'.$model->id.'" data-toggle="tooltip" data-placement="top" title="Click here to delete"><i class="fa fa-trash"></i></a>';
-
+                            }
                             return $payNowButton.' '.$deleteButton;
                         }
+
 
                         return '<p><a href='.url('my-invoice/'.$model->id).
                         " class='btn btn-light-scale-2 btn-sm text-dark' id='iconStyle' data-toggle='tooltip' data-placement='top' title='Click her to view'><i class='fa fa-eye'></i></a>".$payment.'</p>';

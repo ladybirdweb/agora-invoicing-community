@@ -9,11 +9,12 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScripts = '';
 $scripts = \App\Model\Common\ChatScript::get();
+
 foreach($scripts as $script)
     if($script->on_every_page == 1) {
-        $everyPageScript = $script->script;
+        $everyPageScripts .= $script->script;
     }
-
+   
 ?>
 
 
@@ -1075,11 +1076,10 @@ domainInput.addEventListener("input", function() {
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
 
-<script type="text/javascript">
-    {!! html_entity_decode($everyPageScript) !!}
+   {!! $everyPageScripts !!}
 
 
-</script>
+
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
        
         <script type="text/javascript">

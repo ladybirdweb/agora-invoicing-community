@@ -192,8 +192,7 @@ foreach($scripts as $script) {
 
                                 <div class="custom-control custom-checkbox" style="padding-right: 100px;">
 
-                                    <input type="checkbox" class="custom-control-input" id="rememberme">
-
+                                    {!! Form::checkbox('remember', '1', false, ['class' => 'custom-control-input', 'id' => 'rememberme']) !!}
                                     <label class="form-label custom-control-label cur-pointer text-2" for="rememberme">Remember Me</label>
                                 </div>
                             </div>

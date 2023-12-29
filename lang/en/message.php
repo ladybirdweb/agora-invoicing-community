@@ -754,4 +754,5 @@ return [
     'cloud_label_field' => 'Label for the domain field',
     'cloud_top_message' => 'Heading for the popup',
 
+    'tooltip_js_code' => 'Enter your JavaScript code in the box below. Remember, you can include <script> at the beginning and </script> at the end, or omit them entirely. The system will handle the formatting accordingly. Just choose one approach to avoid any issues.',
 ];

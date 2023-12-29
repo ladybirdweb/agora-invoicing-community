@@ -432,82 +432,64 @@ class ClientController extends BaseClientController
      * @param  type  $invoiceid
      * @return type
      */
-    public function getVersionList($productid, $clientid, $invoiceid)
+    public function getVersionList(Request $request, $productid, $clientid, $invoiceid)
     {
         try {
-            $versions = ProductUpload::where('product_id', $productid)
-            ->select(
-                'id',
-                'product_id',
-                'version',
-                'title',
-                'description',
-                'file',
-                'created_at'
-            )->get();
-            $countVersions = count($versions);
-            $countExpiry = 0;
+            $searchValue = $request->input('search.value');
             $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
-
             $order_id = $order->id;
-            $updatesEndDate = Subscription::select('update_ends_at')
-                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
-            if ($updatesEndDate) {
-                foreach ($versions as $version) {
-                    if ($version->created_at->toDateTimeString()
-                    < $updatesEndDate->update_ends_at || $updatesEndDate->update_ends_at == '0000-00-00 00:00:00') {
-                        $countExpiry = $countExpiry + 1;
-                    }
-                }
+
+            $versions = ProductUpload::where('product_id', $productid)
+                ->select(
+                    'id',
+                    'product_id',
+                    'version',
+                    'title',
+                    'description',
+                    'file',
+                    'created_at'
+                )
+                ->latest();
+            if ($searchValue) {
+                $versions->where(function ($query) use ($searchValue) {
+                    $query->where('version', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('title', 'LIKE', '%'.$searchValue.'%')
+                        ->orWhere('description', 'LIKE', '%'.$searchValue.'%');
+                });
             }
 
-            return \DataTables::of(ProductUpload::where('product_id', $productid)
-            ->select(
-                'id',
-                'product_id',
-                'version',
-                'title',
-                'description',
-                'file',
-                'created_at'
-            ))
-                            ->addColumn('id', function ($versions) {
-                                return ucfirst($versions->id);
-                            })
-                            ->addColumn('version', function ($versions) {
-                                return ucfirst($versions->version);
-                            })
-                            ->addColumn('title', function ($versions) {
-                                return ucfirst($versions->title);
-                            })
-                            ->addColumn('description', function ($versions) {
-                                return ucfirst($versions->description);
-                            })
-                            ->addColumn('file', function ($versions) use ($countExpiry, $countVersions, $clientid, $invoiceid, $productid) {
-                                $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
-                                $order = Order::where('invoice_id', '=', $invoice_id)->first();
-                                $order_id = $order->id;
-                                $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
-                                $updateEndDate = Subscription::select('update_ends_at')
-                                ->where('product_id', $productid)->where('order_id', $order_id)->first();
+            $updatesEndDate = Subscription::select('update_ends_at')
+                ->where('product_id', $productid)
+                ->where('order_id', $order_id)
+                ->first();
 
-                                //if product has Update expiry date ie subscription is generated
-                                if ($updateEndDate) {
-                                    if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
-                                        //Perpetual download till expiry permission selected
-                                        $getDownload = $this->whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid);
+            $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
 
-                                        return $getDownload;
-                                    } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {//When download retires after subscription
-                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updateEndDate, $productid, $versions, $clientid, $invoiceid);
-
-                                        return $getDownload;
-                                    }
-                                }
-                            })
-                            ->rawColumns(['version', 'title', 'description', 'file'])
-                            ->make(true);
+            return \DataTables::of($versions)
+                ->addColumn('id', function ($version) {
+                    return ucfirst($version->id);
+                })
+                ->addColumn('version', function ($version) {
+                    return ucfirst($version->version);
+                })
+                ->addColumn('title', function ($version) {
+                    return ucfirst($version->title);
+                })
+                ->addColumn('description', function ($version) {
+                    return ucfirst($version->description);
+                })
+                ->addColumn('file', function ($version) use ($downloadPermission, $updatesEndDate, $productid, $clientid, $invoiceid) {
+                    if ($updatesEndDate) {
+                        if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
+                            return $this->whenDownloadTillExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
+                        } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {
+                            return $this->whenDownloadExpiresAfterExpiry($updatesEndDate, $productid, $version, $clientid, $invoiceid);
+                        }
+                    }
+                })
+                ->rawColumns(['version', 'title', 'description', 'file'])
+                ->make(true);
         } catch (Exception $ex) {
             echo $ex->getMessage();
         }

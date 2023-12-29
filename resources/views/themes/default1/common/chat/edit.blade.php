@@ -75,7 +75,7 @@ Edit
                     </div>
 
                     </div>
-                <div class="col-md-12 form-group ">
+                    <div class="col-md-12 form-group ">
     {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
 
 
@@ -88,31 +88,6 @@ Edit
 
     {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
 </div>
-
-                   
-
-
-                </div>
-
-
-
-
-                <div class="row">
-                    <div class="col-md-12 form-group">
-
-           
-
-                        {!! Form::label('data',Lang::get('message.content'),['class'=>'required']) !!}
-                        {!! Form::textarea('script',null,['class'=>'form-control','id'=>'textarea']) !!}
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </div>
         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>Update</button>
 
     </div>

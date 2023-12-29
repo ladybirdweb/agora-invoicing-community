@@ -74,7 +74,20 @@ Edit
                         {!! Form::text('google_analytics_tag',null,['class' => 'form-control']) !!}
                     </div>
 
-                   
+                    </div>
+                <div class="col-md-12 form-group ">
+    {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
+
+
+    <i class="fas fa-question-circle  icon-custom-top " 
+       style="font-size: small; color: #3c8dbc; cursor: help;"
+       data-toggle="tooltip" 
+       data-placement="top" 
+       title="{{ trans('message.tooltip_js_code') }}"
+    ></i>
+
+    {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
+</div>
 
                    
 

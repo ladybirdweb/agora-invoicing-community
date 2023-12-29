@@ -562,6 +562,9 @@ foreach($scripts as $script) {
         }
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
+    <!--Start of Tawk.to Script-->
+{!! $everyPageScripts !!}
+<!--End of Tawk.to Script-->
 
     <script type="text/javascript">
 

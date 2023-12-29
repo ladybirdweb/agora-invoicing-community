@@ -1173,14 +1173,10 @@ $days = $pay->where('product','117')->value('days');
 </script>
 @yield('script')
 
+
 <!--Start of Tawk.to Script-->
-<!--Start of Tawk.to Script-->
-
-<script type="text/javascript">
-    {!! html_entity_decode($everyPageScript) !!}
-
-
-</script>
+{!! $everyPageScripts !!}
+<!--End of Tawk.to Script-->
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
 
     <script type="text/javascript">

@@ -8,13 +8,14 @@
 </style>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $everyPageScripts = '';
-$scripts = \App\Model\Common\ChatScript::get();
-
-foreach($scripts as $script)
-    if($script->on_every_page == 1) {
+$scripts = \App\Model\Common\ChatScript::where('on_every_page', 1)->get();
+foreach($scripts as $script) {
+    if (strpos($script->script, '<script>') === false && strpos($script->script, '</script>') === false) {
+        $everyPageScripts .= "<script>{$script->script}</script>";
+    } else {
         $everyPageScripts .= $script->script;
     }
-   
+}
 ?>
 
 
@@ -1074,9 +1075,9 @@ domainInput.addEventListener("input", function() {
 @yield('script')
 
 <!--Start of Tawk.to Script-->
+{!! $everyPageScripts !!}
 <!--Start of Tawk.to Script-->
 
-   {!! $everyPageScripts !!}
 
 
 

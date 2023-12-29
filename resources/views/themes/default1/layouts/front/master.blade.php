@@ -15,8 +15,6 @@
         }
     $dataCenters = \App\Model\CloudDataCenters::all();
     ?>
-
-
             <!-- Basic -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1112,11 +1110,10 @@ $days = $pay->where('product','117')->value('days');
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
 
-<script type="text/javascript">
-    {!! html_entity_decode($everyPageScript) !!}
+   {!! $everyPageScripts !!}
 
 
-</script>
+
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
 
     <script type="text/javascript">

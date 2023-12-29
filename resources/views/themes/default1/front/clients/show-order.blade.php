@@ -408,16 +408,16 @@ $price = $order->price_override;
                                             @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
 
                                                 <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-
+                                                  <i class="fas fa-id-card-alt"></i>
                                                     @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
                                                         <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-
+                                                          <i class="fas fa-id-card-alt"></i>
                                                             @elseif($product->type == '4' && $price != '0')
                                                                 <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-
+                                                                 <i class="fas fa-id-card-alt"></i>
                                                                     @endif
 
-                                                                    <i class="fas fa-id-card-alt"></i>
+                                                                   
                                                                 </a>
                                             @endif
                                     </div>

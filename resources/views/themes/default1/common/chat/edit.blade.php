@@ -96,6 +96,14 @@ Edit
 
 
 {!! Form::close() !!}
+<style>
+    .tooltip {
+    background-color: #000; 
+    color: #fff; 
+    border: 1px solid #000;
+}
+
+</style>
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';

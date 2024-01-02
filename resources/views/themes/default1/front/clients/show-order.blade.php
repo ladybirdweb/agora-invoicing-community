@@ -298,6 +298,36 @@ $price = $order->price_override;
             </div>
         </div>
 
+                    <!-- Modal for Localized License domain-->
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="GET" action="{{url('uploadFile')}}">
+                                {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                                    <input type="text" class="form-control" id="recipient-name" placeholder="https://faveohelpdesk.com/public" name="domain" value="" onkeydown="return event.key != 'Enter';">
+                                    {{Form::hidden('orderNo', $order->number)}}
+                                    {{Form::hidden('userId',$user->id)}}
+                                    <br>
+                                    <div class="modal-footer">
+                                        <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                                        @if((!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt')) || $order->is_downloadable==0)
+                                            <button type="submit" id="domainSave" class="done btn btn-primary" {{$order->where('number',$order->number)->update(['is_downloadable'=> 1])}}><i class="fas fa-save"></i>&nbsp;Done</button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <div class="row pt-2">
 
             <div class="col-lg-3 mt-4 mt-lg-0">
@@ -459,6 +489,29 @@ $price = $order->price_override;
                                     </div>
                                 </div>
 
+                                @if($order->license_mode=='File')
+                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="row align-items-center">
+
+                                    <div class="col-sm-5">
+
+                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                            <span class="mb-2 font-weight-bold">Localized License:</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-7">
+
+                                     <button class="btn btn-dark mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
+                                     <a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-dark mb-2 btn-sm" onclick="refreshPage()">Download License Key</button></a>
+                                     <i class="fa fa-info ml-2" data-bs-toggle="tooltip" title="It is mandatory to download both files in order for licensing to work. Please place these files in Public\Script\Signature in faveo." >{!!tooltip('Edit')!!}</i>
+
+
+                                    </div>
+                                </div>
+                                @endif
+
                                 <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
                                 <div class="table-responsive">
@@ -484,9 +537,8 @@ $price = $order->price_override;
                                                 $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
 
                                                 if($productversion) {
-
-                                                    $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                                                    $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
+                                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
                                                 }
 
                                                 $active = !empty($ins)?true:false;
@@ -507,6 +559,7 @@ $price = $order->price_override;
                                                         <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
                                                             </label>{{$productversion->version}}</span></td>
                                                     @endif
+
 
                                                 @endif
                                                 @if($productversion)
@@ -1983,6 +2036,13 @@ $price = $order->price_override;
             });
         });
     </script>
+    <script>
+  function refreshPage() {
+    setTimeout(function() {
+      location.reload();
+    }, 500); 
+  }
+</script>
 
     <style>
         .hidden {

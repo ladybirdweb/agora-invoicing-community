@@ -109,7 +109,8 @@ class ProductController extends BaseProductController
     {
         try {
             $data = $request->input('value');
-            return view('themes.default1.product.product.index',compact('data'));
+
+            return view('themes.default1.product.product.index', compact('data'));
         } catch (\Exception $e) {
             return redirect('/')->with('fails', $e->getMessage());
         }
@@ -123,21 +124,20 @@ class ProductController extends BaseProductController
     public function getProducts(Request $request)
     {
         try {
-            if($request->input('value') == 'totalSoldProduct'){
-            $orderStatus = 'executed'; // Define the order status
+            if ($request->input('value') == 'totalSoldProduct') {
+                $orderStatus = 'executed'; // Define the order status
 
-            $new_product = Product::leftJoin('license_types', 'products.type', '=', 'license_types.id')
-                ->select('products.id', 'products.name as product', 'products.type', 'products.image', 'products.group', 'products.image', 'license_types.name')
-                ->whereExists(function ($query) use ($orderStatus) {
-                    $query->select(\DB::raw(1))
-                        ->from('orders')
-                        ->whereColumn('orders.product', 'products.id')
-                        ->where('orders.order_status', $orderStatus);
-                });
-            }
-            else{
-            $new_product = Product::leftJoin('license_types', 'products.type', '=', 'license_types.id')
-                ->select('products.id', 'products.name as product', 'products.type', 'products.image', 'products.group', 'products.image', 'license_types.name');
+                $new_product = Product::leftJoin('license_types', 'products.type', '=', 'license_types.id')
+                    ->select('products.id', 'products.name as product', 'products.type', 'products.image', 'products.group', 'products.image', 'license_types.name')
+                    ->whereExists(function ($query) use ($orderStatus) {
+                        $query->select(\DB::raw(1))
+                            ->from('orders')
+                            ->whereColumn('orders.product', 'products.id')
+                            ->where('orders.order_status', $orderStatus);
+                    });
+            } else {
+                $new_product = Product::leftJoin('license_types', 'products.type', '=', 'license_types.id')
+                    ->select('products.id', 'products.name as product', 'products.type', 'products.image', 'products.group', 'products.image', 'license_types.name');
             }
 
             return DataTables::of($new_product)
@@ -199,6 +199,7 @@ class ProductController extends BaseProductController
                             ->make(true);
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

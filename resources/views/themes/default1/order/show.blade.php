@@ -395,8 +395,8 @@ input:checked + .slider:before {
                         $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
 
                         if($productversion) {
-                            $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
-                            $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                            $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
+                            $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
                         }
                        
                         $active = !empty($ins)?true:false ;
@@ -418,6 +418,7 @@ input:checked + .slider:before {
                             <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
                             </label>{{$productversion->version}}</span></td>
                             @endif
+
                             
                             @endif
                             @if($productversion)

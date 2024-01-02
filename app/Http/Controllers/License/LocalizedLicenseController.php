@@ -172,6 +172,9 @@ class LocalizedLicenseController extends Controller
                 $orderNo = $request->input('orderNo');
                 $licenseCode = Order::where('number', $orderNo)->value('serial_key');
                 $id = Order::where('number', $orderNo)->value('id');
+                $productId = DB::table('subscriptions')->where('order_id', $id)->value('product_id');
+                $Latestversion = DB::table('product_uploads')->where('product_id', $productId)->latest()->value('version');
+
                 $licenseExpiry = DB::table('subscriptions')->where('order_id', $id)->value('ends_at');
                 $updatesExpiry = DB::table('subscriptions')->where('order_id', $id)->value('update_ends_at');
                 $supportExpiry = DB::table('subscriptions')->where('order_id', $id)->value('support_ends_at');
@@ -190,7 +193,8 @@ class LocalizedLicenseController extends Controller
                 } else {
                     $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
                 }
-                DB::table('installation_details')->insertOrIgnore(['installation_path' => $domain, 'order_id' => $id, 'last_active' => date('Y-m-d')]);
+                $currentDateTime = now();
+                DB::table('installation_details')->insertOrIgnore(['installation_path' => $domain, 'order_id' => $id, 'last_active' => date('Y-m-d'),'version' => $Latestversion]);
                 $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);
 
                 $userData = '<root_url>'.$domain.'</root_url><license_code>'.$licenseCode.'</license_code><license_expiry>'.$licenseExpiry.'</license_expiry><updates_expiry>'.$updatesExpiry.'</updates_expiry><support_expiry>'.$supportExpiry.'</support_expiry>';

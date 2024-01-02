@@ -119,8 +119,8 @@ Dashboard
              </div>
         </div>
         @php
-        $startDate = new Carbon\Carbon('-30 days');
-        $endDate = Carbon\Carbon::now();
+        $startDate = date('m/d/Y', strtotime('-1 months'));
+        $endDate = date('m/d/Y');
         @endphp
 
         <div class="col-lg-4 col-xs-6">
@@ -143,13 +143,20 @@ Dashboard
 
 
 <div class="row">
+    <?php
+    $url = 'clients?' .
+       'reg_from=' . $startDate . '&' .
+       'mobile_verified=1&active=1&
+       reg_till=' . $endDate;
+    ?>
 
     {{-- Recently Registered Users --}}
     @component('mini_views.card', [
-           'title'=> 'Recently Registered Users',
+           'title'=> 'Recently Registered Users(Past 30 Days)',
            'layout' => 'custom',
            'collection'=> $users,
-            'linkLeft'=> ['View All Users' => url('clients')],
+           'linkLeft'=> ['View All' => url($url)],
+
            'linkRight'=> ['Create New User' => url('clients/create')]
     ])
         <ul class="users-list clearfix">
@@ -191,7 +198,7 @@ Dashboard
            'layout' => 'table',
            'collection'=> $invoices,
            'columns'=> ['Invoice No', 'Total', 'User', 'Paid', 'Balance', 'Status'],
-            'linkLeft'=> ['View All Invoice' => url('invoices')],
+            'linkLeft'=> ['View All' => url('invoices?from='.$startDate.'&till='.$endDate)],
            'linkRight'=> ['Generate New Invoice' => url('invoice/generate')]
     ])
 
@@ -226,7 +233,7 @@ Dashboard
             'collection'=> $expiredSubscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Passed', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expired' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate.'&renewal=expired_subscription&product_id=paid')]
+            'linkLeft'=> ['View All' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate.'&renewal=expired_subscription&product_id=paid')]
      ])
 
          @foreach($expiredSubscriptions as $element)
@@ -247,7 +254,7 @@ Dashboard
             'collection'=> $subscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Left', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?from='.$currentDate.'&till='.$expiringSubscriptionDate.'&renewal=expiring_subscription&product_id=paid')]
+            'linkLeft'=> ['View All' => url('orders?from='.$currentDate.'&till='.$expiringSubscriptionDate.'&renewal=expiring_subscription&product_id=paid')]
      ])
 
          @foreach($subscriptions as $element)
@@ -302,7 +309,7 @@ Dashboard
             'layout' => 'table',
             'collection'=> $recentOrders,
             'columns'=> ['Order No', 'Product', 'Date', 'User'],
-             'linkLeft'=> ['View All Orders' => url('orders')],
+             'linkLeft'=> ['View All Paid Orders    ' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate.'&product_id=paid')],
             'linkRight'=> ['Place New Order' => url('invoice/generate')]
      ])
 
@@ -326,7 +333,7 @@ Dashboard
            'layout' => 'list',
            'collection'=> $productSoldInLast30Days,
            'columns'=> ['Order No', 'Item', 'Date', 'Client'],
-            'linkLeft'=> ['View All Orders' => url('orders')],
+            'linkLeft'=> ['View All Orders' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate)],
            'linkRight'=> ['Place New Order' => url('invoice/generate')]
     ])
 
@@ -348,12 +355,13 @@ Dashboard
         @endforeach
     @endcomponent
 
+
     {{-- Total Sold Products --}}
     @component('mini_views.card', [
            'title'=> 'Total Sold Products',
            'layout' => 'list',
            'collection'=> $allSoldProducts,
-           'linkLeft'=> ['View All Products' => url('products')],
+           'linkLeft'=> ['View All Sold Products' => url('products?value=totalSoldProduct')],
            'linkRight'=> ['Create New Product' => url('products/create')]
     ])
         @foreach($allSoldProducts as $element)

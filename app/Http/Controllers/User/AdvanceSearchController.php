@@ -13,22 +13,11 @@ class AdvanceSearchController extends AdminOrderInvoiceController
      */
     public function getregFromTill($join, $reg_from, $reg_till)
     {
-        if ($reg_from) {
-            $fromdate = date_create($reg_from);
+        if ($reg_from && $reg_till) {
+            $fromDateStart = date_create($reg_from)->format('Y-m-d') . ' 00:00:00';
+            $tillDateEnd = date_create($reg_till)->format('Y-m-d') . ' 23:59:59';
 
-            $from = date_format($fromdate, 'Y-m-d H:m:i');
-            $tills = date('Y-m-d H:m:i');
-            $cont = new \App\Http\Controllers\Order\OrderSearchController();
-            $tillDate = $cont->getTillDate($from, $reg_till, $tills);
-            $join = $join->whereBetween('created_at', [$from, $tillDate]);
-        }
-        if ($reg_till) {
-            $tilldate = date_create($reg_till);
-            $till = date_format($tilldate, 'Y-m-d H:m:i');
-            $froms = User::first()->created_at;
-            $cont = new \App\Http\Controllers\Order\OrderSearchController();
-            $fromDate = $cont->getFromDate($reg_from, $froms);
-            $join = $join->whereBetween('created_at', [$fromDate, $till]);
+            $join = $join->whereBetween('created_at', [$fromDateStart, $tillDateEnd]);
         }
 
         return $join;

@@ -49,7 +49,7 @@ class ClientController extends AdvanceSearchController
      */
     public function index(Request $request)
     {
-        $validator = \Validator::make($request->all(), [
+       $validator = \Validator::make($request->all(), [
             'reg_from' => 'nullable',
             'reg_till' => 'nullable|after:reg_from',
 
@@ -74,7 +74,9 @@ class ClientController extends AdvanceSearchController
      */
     public function getClients(Request $request)
     {
+
         $baseQuery = $this->getBaseQueryForUserSearch($request);
+
         // dd($baseQuery->get()->last());
         return DataTables::of($baseQuery)
                         ->orderColumn('name', '-id $1')
@@ -518,12 +520,14 @@ class ClientController extends AdvanceSearchController
     private function getBaseQueryForUserSearch(Request $request)
     {
         $baseQuery = User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
-            ->select('id', 'first_name', 'last_name', 'email',
-                \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
-                \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
-                'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
-            )->when($request->company, function ($query) use ($request) {
-                $query->where('company', 'LIKE', '%'.$request->company.'%');
+        ->select('id', 'first_name', 'last_name', 'email',
+            \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
+            \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
+            'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
+        );
+            // Apply other conditions based on the request
+          $baseQuery = $baseQuery->when($request->company, function ($query) use ($request) {
+            $query->where('company', 'LIKE', '%' . $request->company . '%');
             })->when($request->country, function ($query) use ($request) {
                 $query->where('country', $request->country);
             })->when($request->industry, function ($query) use ($request) {
@@ -536,10 +540,20 @@ class ClientController extends AdvanceSearchController
                 $query->where('account_manager', $request->actmanager);
             })->when($request->salesmanager, function ($query) use ($request) {
                 $query->where('manager', $request->salesmanager);
+            })->when($request->filled('mobile_verified'), function ($query) use ($request) {
+                $query->where('mobile_verified', $request->mobile_verified);
+            })
+            ->when($request->filled('active'), function ($query) use ($request) {
+                $query->where('active', $request->active);
+            })
+            ->when($request->filled('is_2fa_enabled'), function ($query) use ($request) {
+                $query->where('is_2fa_enabled', $request->is_2fa_enabled);
             });
 
-        $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
+            $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
+        
 
         return $baseQuery;
+
     }
 }

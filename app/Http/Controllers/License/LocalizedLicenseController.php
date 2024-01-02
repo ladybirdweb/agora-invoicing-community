@@ -193,7 +193,6 @@ class LocalizedLicenseController extends Controller
                 } else {
                     $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
                 }
-                $currentDateTime = now();
                 DB::table('installation_details')->insertOrIgnore(['installation_path' => $domain, 'order_id' => $id, 'last_active' => date('Y-m-d'), 'version' => $Latestversion]);
                 $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);
 

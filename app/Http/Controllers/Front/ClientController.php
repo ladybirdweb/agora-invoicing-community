@@ -27,7 +27,7 @@ use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use Validator; 
+use Validator;
 
 class ClientController extends BaseClientController
 {

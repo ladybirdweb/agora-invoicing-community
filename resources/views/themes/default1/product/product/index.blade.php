@@ -57,12 +57,13 @@ Products
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
+        var data  = '';
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
               order: [[ 0, "desc" ]],
               ajax: {
-            "url":  '{!! route('get-products') !!}',
+             "url":  '{!! route('get-products',"value=$data") !!}',
                error: function(xhr) {
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')

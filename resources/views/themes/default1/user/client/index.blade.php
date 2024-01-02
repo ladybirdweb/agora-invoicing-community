@@ -155,7 +155,25 @@ Users
                                     @endif
                                 @endforeach
                             </select>
-                        </div>                </div>
+                        </div>  
+
+                         <div class="col-md-3 form-group">
+                            <!-- first name -->
+                            {!! Form::label('Mobile Status','Mobile Status') !!}
+                            {!! Form::select('mobile_verified',[null => 'Choose']+ ['1'=>'Active', '0'=>'Inactive'], $request->mobile_verified, ['class' => 'form-control','id'=>'mobile_verified']) !!}
+                        </div> 
+
+                         <div class="col-md-3 form-group">
+                            <!-- first name -->
+                            {!! Form::label('Email Status','Email Status') !!}
+                            {!! Form::select('active',[null => 'Choose']+ ['1'=>'Active', '0'=>'Inactive'], $request->active, ['class' => 'form-control','id'=>'active']) !!}
+                        </div> 
+                         <div class="col-md-3 form-group">
+                            <!-- first name -->
+                            {!! Form::label('2faStatus','2FA Status') !!}
+                            {!! Form::select('is_2fa_enabled',[null => 'Choose']+ ['1'=>'Enabled', '0'=>'Disabled'], $request->is_2fa_enabled, ['class' => 'form-control','id'=>'is_2fa_enabled']) !!}
+                        </div>   
+                        </div>
                 <!-- /.card-body -->
                     <button name="Search" type="submit" id="search"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
@@ -234,7 +252,7 @@ Users
                 stateSave: false,
                 order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]],
                 ajax: {
-                  "url": '{!! route('get-clients', "company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager") !!}',
+                  "url": '{!! route('get-clients', "company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager&active=$request->active&mobile_verified=$request->mobile_verified&is_2fa_enabled=$request->is_2fa_enabled") !!}',
                   error: function(xhr) {
                     if (xhr.status == 401) {
                       alert('Your session has expired. Please login again to continue.')
@@ -370,6 +388,10 @@ Users
           
             $('#actmanager').val('').trigger('change');
             $('#salesmanager').val('').trigger('change');
+
+            $('#mobile_verified').val('').trigger('change');
+            $('#active').val('').trigger('change');
+            $('#is_2fa_enabled').val('').trigger('change');
 
              $('#reservationdate_from').datetimepicker('clear');
              $('#reservationdate').datetimepicker('clear');

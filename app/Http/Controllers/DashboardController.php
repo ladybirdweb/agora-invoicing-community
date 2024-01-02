@@ -180,15 +180,26 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get the list of previous 20 registered users.
+     * Get the list of previous month registered users.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllUsers()
+     public function getAllUsers()
     {
-        return User::orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
+        $dateBefore = Carbon::now()->subDays(31)->startOfDay()->setTime(12, 0, 0);
+
+        $today = Carbon::now()->endOfDay();
+        $fromDateStart = date_create($dateBefore)->format('Y-m-d') . ' 00:00:00';
+        $tillDateEnd = date_create($today)->format('Y-m-d') . ' 23:59:59';
+
+
+        $todayInclusive = Carbon::now()->endOfDay()->second(59);
+
+        return User::orderBy('created_at', 'desc')
+            ->where('active', 1)
+            ->where('mobile_verified', 1)
             ->select('id', 'first_name', 'last_name', 'user_name', 'profile_pic', 'email', 'created_at')
-            ->take(20)
+            ->whereBetween('users.created_at', [$fromDateStart, $tillDateEnd])
             ->get();
     }
 
@@ -258,36 +269,39 @@ class DashboardController extends Controller
      */
     public function getExpiringSubscriptions($past30Days = false)
     {
-        $today = Carbon::now()->toDateTimeString();
+        $today = now()->toDateTimeString();
 
         $baseQuery = Subscription::with('user:id,first_name,last_name,email,user_name')
             ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
             ->join('products', 'products.id', '=', 'orders.product')
             ->select('subscriptions.id', 'products.id as product_id', 'orders.number as order_number', 'orders.id as order_id',
                 'products.name as product_name', 'subscriptions.update_ends_at as subscription_ends_at', 'user_id')
-            ->where('price_override', '>', 0)
-            ->orderBy('subscription_ends_at', 'asc')
-            ->groupBy('subscriptions.id');
+            ->where('price_override', '>', 0);
 
         if ($past30Days) {
-            $baseQuery->where('update_ends_at', '<', $today)
-                ->where('update_ends_at', '>=', (new Carbon('-30 days'))->toDateTimeString());
+            $baseQuery->whereBetween('update_ends_at', [now()->subDays(30)->toDateTimeString(), $today]);
         } else {
-            $baseQuery->where('update_ends_at', '>', $today)
-                ->where('update_ends_at', '<=', (new Carbon('+30 days'))->toDateTimeString());
+            $baseQuery->whereBetween('update_ends_at', [$today, now()->addDays(30)->toDateTimeString()]);
         }
 
-        return $baseQuery->get()->map(function ($element) {
-            $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '.User::onlyTrashed()->find($element->user_id)->last_name;
-            $element->client_profile_link = \Config('app.url').'/clients/'.$element->user_id;
-            $element->order_link = \Config('app.url').'/orders/'.$element->order_id;
-            $element->days_difference = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
+        $baseQuery->orderByDesc('subscription_ends_at')
+            ->groupBy('subscriptions.id');
+
+        $subscriptions = $baseQuery->get()->map(function ($element) {
+            $element->client_name = $element->user ? $element->user->first_name . ' ' . $element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name . ' ' . User::onlyTrashed()->find($element->user_id)->last_name;
+            $element->client_profile_link = config('app.url') . '/clients/' . $element->user_id;
+            $element->order_link = config('app.url') . '/orders/' . $element->order_id;
+            $element->days_difference = date_diff(now(), new DateTime($element->subscription_ends_at))->format('%a days');
             $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
             unset($element->user);
 
             return $element;
         });
+
+        return $subscriptions;
     }
+
+
 
     /**
      * List of Invoices of past 30 ays.
@@ -304,7 +318,6 @@ class DashboardController extends Controller
             ->select('invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'invoices.status',
                 \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code')
             ->where('invoices.created_at', '>', $dateBefore)
-            ->where('invoices.grand_total', '>', 0)
             ->groupBy('invoices.id')
             ->orderBy('invoices.created_at', 'desc')
             ->get()->map(function ($element) {

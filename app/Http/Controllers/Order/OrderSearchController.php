@@ -44,8 +44,10 @@ class OrderSearchController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
 
-            return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
-             $baseQuery;
+            return in_array($request->renewal, ['expiring_subscription', 'expired_subscription'])
+            ? $baseQuery->orderBy('subscriptions.update_ends_at', 'desc')
+            : $baseQuery;
+
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -249,23 +251,18 @@ class OrderSearchController extends Controller
             $till = Carbon::parse($till)->endOfDay();
             $fromdate = date_create($from);
 
-            $from = date_format($fromdate, 'Y-m-d H:m:i');
-            $tills = date('Y-m-d H:m:i');
+            $from = date_format($fromdate, 'Y-m-d H:i:s');
+            $tills = date('Y-m-d H:i:s');
 
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween($subFrom, [$from, $tillDate]);
 
-            return $join;
+            return ['join' => $join, 'from' => $from, 'till' => $tillDate];
         }
+
+        return ['join' => $join, 'from' => null, 'till' => null];
     }
 
-    /**
-     * Searches for Order Till Date.
-     *
-     * @param  string  $expiry  The Order Till Date
-     * @param  object  $join
-     * @return Query
-     */
     public function orderTill($from, $till, $join, $request)
     {
         $subTo = $request->renewal ? 'subscriptions.update_ends_at' : 'orders.created_at';
@@ -273,14 +270,17 @@ class OrderSearchController extends Controller
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
             $tilldate = date_create($till);
-            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $till = date_format($tilldate, 'Y-m-d H:i:s');
             $froms = Order::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween($subTo, [$fromDate, $till]);
 
-            return $join;
+            return ['join' => $join, 'from' => $fromDate, 'till' => $till];
         }
+
+        return ['join' => $join, 'from' => null, 'till' => null];
     }
+
 
     /**
      * Searches for Domain.

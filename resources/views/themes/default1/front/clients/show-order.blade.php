@@ -2040,7 +2040,7 @@ $price = $order->price_override;
   function refreshPage() {
     setTimeout(function() {
       location.reload();
-    }, 500); 
+    }, 1000); 
   }
 </script>
 

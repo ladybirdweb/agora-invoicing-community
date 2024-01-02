@@ -217,10 +217,10 @@ class BaseCronController extends Controller
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'deletionDate' => ($product_type == '4') ? $deletionDate : '',
             'product_type' => ($product_type == '4') ? 'Deletion Date' : '',
-            'expiry'       => $end,
-            'product'      => $product,
-            'number'       => $order->number,
-            'url'          => url('my-orders'),
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number,
+            'url' => url('my-orders'),
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
             'reply_email' => $setting->company_email,
@@ -317,7 +317,7 @@ class BaseCronController extends Controller
             'number' => $order->number,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
-            'url'   => url('my-orders'),
+            'url' => url('my-orders'),
             'reply_email' => $setting->company_email,
         ];
         $type = '';

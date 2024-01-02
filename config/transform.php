@@ -171,7 +171,7 @@ return[
     'payment_successfull' => [
         'name' => '{{name}}',
         'product' => '{{product}}',
-        'total' =>'{{total}}',
+        'total' => '{{total}}',
         'number' => '{{number}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',

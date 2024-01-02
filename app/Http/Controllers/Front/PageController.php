@@ -825,8 +825,8 @@ class PageController extends Controller
             $apiKeys = StatusSetting::value('recaptcha_status');
             $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
             $this->validate($request, [
-                'name'    => 'required',
-                'email'   => 'required|email',
+                'name' => 'required',
+                'email' => 'required|email',
                 'message' => 'required',
                 'g-recaptcha-response' => $captchaRule.'captcha',
             ],

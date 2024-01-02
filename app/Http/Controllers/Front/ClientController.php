@@ -99,7 +99,7 @@ class ClientController extends BaseClientController
                     'user_id' => \Auth::user()->id,
                     'customer_id' => $payment['customer']['id'],
                     'payment_method' => 'stripe',
-                    'order_id' =>  $orderid,
+                    'order_id' => $orderid,
                 ];
                 Auto_renewal::create($customer_details);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
@@ -174,7 +174,7 @@ class ClientController extends BaseClientController
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $api = new Api($rzp_key, $rzp_secret);
-                $pause = $api->subscription->fetch($subscription->subscribe_id)->pause(['pause_at'=>'now']);
+                $pause = $api->subscription->fetch($subscription->subscribe_id)->pause(['pause_at' => 'now']);
                 if ($pause['status'] == 'paused') {
                     Subscription::where('order_id', $orderid)->update(['rzp_subscription' => '0']);
                 }
@@ -204,7 +204,7 @@ class ClientController extends BaseClientController
             if (isset($subscription->subscribe_id) && $subscription->subscribe_id != null && $subscription->subscribe_id != '') {
                 $subscribe = $api->subscription->fetch($subscription->subscribe_id);
                 if (isset($subscribe) && $subscribe['status'] == 'paused') {
-                    $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at'=>'now']);
+                    $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at' => 'now']);
                     if ($data['status'] == 'active') {
                         subscription::where('order_id', $orderid)->update(['rzp_subscription' => '1', 'is_subscribed' => '1']);
                     }
@@ -220,7 +220,7 @@ class ClientController extends BaseClientController
                     'user_id' => \Auth::user()->id,
                     'customer_id' => $response['id'],
                     'payment_method' => 'razorpay',
-                    'order_id' =>  $orderid,
+                    'order_id' => $orderid,
                 ];
                 Auto_renewal::create($customer_details);
 

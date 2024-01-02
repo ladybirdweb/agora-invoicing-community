@@ -94,7 +94,7 @@ class RazorpayController extends Controller
                     $oldLicense = \Session::get('oldLicense');
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
-                    Invoice::where('id', $invoice->id)->update(['status'=> 'success']);
+                    Invoice::where('id', $invoice->id)->update(['status' => 'success']);
                     if ($invoice->grand_total) {
                         SettingsController::sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
@@ -194,8 +194,8 @@ class RazorpayController extends Controller
         $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
         if ($amt_to_credit) {
             $amt_to_credit = $amt_to_credit - $invoice->billing_pay;
-            Payment::where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit'=>$amt_to_credit]);
-            User::where('id', \Auth::user()->id)->update(['billing_pay_balance'=>0]);
+            Payment::where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit' => $amt_to_credit]);
+            User::where('id', \Auth::user()->id)->update(['billing_pay_balance' => 0]);
             $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
             $formattedValue = currencyFormat($invoice->billing_pay, $invoice->currency, true);
             $messageAdmin = 'The payment balance of '.$formattedValue.' has been utilized or adjusted with this invoice.'.
@@ -206,8 +206,8 @@ class RazorpayController extends Controller
                 ' You can view the details of the invoice '.
                 '<a href="'.config('app.url').'/my-invoice/'.$invoice->id.'">'.$invoice->number.'</a>.';
 
-            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageAdmin, 'role'=>'admin', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-            \DB::table('credit_activity')->insert(['payment_id'=>$payment_id, 'text'=>$messageClient, 'role'=>'user', 'created_at'=>\Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+            \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
+            \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
             if ($invoice->billing_pay) {
                 Payment::create([
                     'invoice_id' => $invoice->id,

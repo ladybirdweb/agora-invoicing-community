@@ -2,7 +2,7 @@
 
 return [
     'default' => [
-        'size'   => 80,
+        'size' => 80,
         'default' => 'identicon',
         'maxRating' => 'g',
         'fallback' => 'mm',
@@ -12,10 +12,10 @@ return [
         'forceExtension' => 'jpg',
     ],
     'small-secure' => [
-        'size'   => 30,
+        'size' => 30,
         'secure' => true,
     ],
     'medium' => [
-        'size'   => 150,
+        'size' => 150,
     ],
 ];

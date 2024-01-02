@@ -98,17 +98,17 @@ class ClientControllerTest extends DBTestCase
 
     public function test_Admin_Can_Add_User_successfully()
     {
-        $admin = User::factory()->create(['role'=>'admin']);
+        $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
         $response = $this->call('POST', url('clients'), [
-            'first_name'=>'Abc',
+            'first_name' => 'Abc',
             'user_name' => 'demopass',
             'active' => '1',
             'mobile_verified' => 1,
-            'last_name'=>'Xyz',
-            'company'=> 'demo',
-            'country'=>'IN',
-            'email'=>'test@test.com',
+            'last_name' => 'Xyz',
+            'company' => 'demo',
+            'country' => 'IN',
+            'email' => 'test@test.com',
             'state' => 'karnataka',
             'timezone_id' => '79',
             'mobile' => '9898789887',

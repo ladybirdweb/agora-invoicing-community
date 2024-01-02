@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Traits;
-use Carbon\Carbon;
+
 use App\Model\Order\Invoice;
 use Illuminate\Http\Request;
 
@@ -13,19 +13,18 @@ trait CoupCodeAndInvoiceSearch
 {
     public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
     {
-     $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id')
-        ->select(
-            'invoices.id',
-            'first_name',
-            'invoices.created_at',
-            'invoices.date',
-            'invoices.currency',
-            'user_id',
-            'invoices.grand_total',
-            'number',
-            'status'
-        );
-
+        $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id')
+           ->select(
+               'invoices.id',
+               'first_name',
+               'invoices.created_at',
+               'invoices.date',
+               'invoices.currency',
+               'user_id',
+               'invoices.grand_total',
+               'number',
+               'status'
+           );
 
         $this->name($name, $join);
         $this->invoice_no($invoice_no, $join);
@@ -33,9 +32,8 @@ trait CoupCodeAndInvoiceSearch
         $this->searchcurrency($currency, $join);
         $this->invoice_from($from, $till, $join);
         $this->till_date($till, $from, $join);
-    
 
-    return $join;
+        return $join;
     }
 
     public function name($name, $join)

@@ -369,7 +369,7 @@ $(document).ready(function() {
     $('#act_inst').val('');
     $('#renewal').val('');
 
-    $('#product_id').val(initialProductValue);
+    $('#product_id').val('');
 
     $('#version-list').val('');
 

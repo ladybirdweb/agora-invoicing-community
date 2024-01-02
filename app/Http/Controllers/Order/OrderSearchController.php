@@ -47,7 +47,6 @@ class OrderSearchController extends Controller
             return in_array($request->renewal, ['expiring_subscription', 'expired_subscription'])
             ? $baseQuery->orderBy('subscriptions.update_ends_at', 'desc')
             : $baseQuery;
-
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -280,7 +279,6 @@ class OrderSearchController extends Controller
 
         return ['join' => $join, 'from' => null, 'till' => null];
     }
-
 
     /**
      * Searches for Domain.

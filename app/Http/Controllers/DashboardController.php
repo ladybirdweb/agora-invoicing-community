@@ -184,14 +184,13 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-     public function getAllUsers()
+    public function getAllUsers()
     {
         $dateBefore = Carbon::now()->subDays(31)->startOfDay()->setTime(12, 0, 0);
 
         $today = Carbon::now()->endOfDay();
-        $fromDateStart = date_create($dateBefore)->format('Y-m-d') . ' 00:00:00';
-        $tillDateEnd = date_create($today)->format('Y-m-d') . ' 23:59:59';
-
+        $fromDateStart = date_create($dateBefore)->format('Y-m-d').' 00:00:00';
+        $tillDateEnd = date_create($today)->format('Y-m-d').' 23:59:59';
 
         $todayInclusive = Carbon::now()->endOfDay()->second(59);
 
@@ -288,9 +287,9 @@ class DashboardController extends Controller
             ->groupBy('subscriptions.id');
 
         $subscriptions = $baseQuery->get()->map(function ($element) {
-            $element->client_name = $element->user ? $element->user->first_name . ' ' . $element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name . ' ' . User::onlyTrashed()->find($element->user_id)->last_name;
-            $element->client_profile_link = config('app.url') . '/clients/' . $element->user_id;
-            $element->order_link = config('app.url') . '/orders/' . $element->order_id;
+            $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '.User::onlyTrashed()->find($element->user_id)->last_name;
+            $element->client_profile_link = config('app.url').'/clients/'.$element->user_id;
+            $element->order_link = config('app.url').'/orders/'.$element->order_id;
             $element->days_difference = date_diff(now(), new DateTime($element->subscription_ends_at))->format('%a days');
             $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
             unset($element->user);
@@ -300,8 +299,6 @@ class DashboardController extends Controller
 
         return $subscriptions;
     }
-
-
 
     /**
      * List of Invoices of past 30 ays.

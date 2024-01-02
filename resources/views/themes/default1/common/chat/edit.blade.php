@@ -79,12 +79,9 @@ Edit
     {!! Form::label('data', Lang::get('message.content'), ['class' => 'required']) !!}
 
 
-    <i class="fas fa-question-circle  icon-custom-top " 
-       style="font-size: small; color: #3c8dbc; cursor: help;"
-       data-toggle="tooltip" 
-       data-placement="top" 
-       title="{{ trans('message.tooltip_js_code') }}"
-    ></i>
+    <span class="tooltip-icon" style="color: #007bff;" data-toggle="tooltip" data-placement="top" title="{{ trans('message.tooltip_js_code') }}">
+  <i class="fas fa-question-circle"></i>
+</span>
 
     {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
 </div>
@@ -96,14 +93,20 @@ Edit
 
 
 {!! Form::close() !!}
-<style>
-    .tooltip {
-    background-color: #000; 
-    color: #fff; 
-    border: 1px solid #000;
-}
 
-</style>
+<script>
+    /*when the admin lte and bootstrap gets upgrade the below code for tooltip-inner code need to be removed*/
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+    <style>
+        .tooltip-inner {
+            background-color: black;
+            color: #fff; /* Change this to the desired text color */
+        }
+    </style>
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';

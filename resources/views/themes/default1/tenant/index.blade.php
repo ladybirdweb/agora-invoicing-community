@@ -81,8 +81,8 @@
 
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}"><i class="fa fa-home"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url('settings') }}"><i class="fa fa-cog"></i> Settings</a></li>
+            <li class="breadcrumb-item"><a href="{{ url('/') }}"> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url('settings') }}"> Settings</a></li>
             <li class="breadcrumb-item active">Cloud Hub</li>
         </ol>
     </div>
@@ -637,6 +637,16 @@
         });
 
 
+    </script>
+    <script>
+        $('ul.nav-sidebar a').filter(function() {
+            return this.id == 'setting';
+        }).addClass('active');
+
+        // for treeview
+        $('ul.nav-treeview a').filter(function() {
+            return this.id == 'setting';
+        }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
     </script>
 
 @stop

@@ -1,4 +1,4 @@
-<a href="#renew" <?php if(\Cart::getContent()->isNotEmpty()) {?> class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Make sure the cart is empty to Renew your product" onclick="return false" <?php } else {?> class="btn btn-light-scale-2 btn-sm text-dark" <?php } ?> data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh" data-toggle="tooltip" title="Click here to renew"></i>&nbsp;</a>
+<a href="#renew" <?php if(\Cart::getContent()->isNotEmpty()) {?> class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Make sure the cart is empty to Renew your product" onclick="return false" <?php } else {?> class="btn btn-light-scale-2 btn-sm text-dark" <?php } ?> data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh" @if( \Cart::getContent()->isEmpty()) data-toggle="tooltip" title="Click here to renew" @endif></i>&nbsp;</a>
 <div class="modal fade" id="renew{{$id}}" tabindex="-1" role="dialog" aria-labelledby="renewModalLabel" aria-hidden="true">
 
                             <div class="modal-dialog">

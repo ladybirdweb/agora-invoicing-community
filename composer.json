@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "ext-pcntl": "*",
         "anhskohbo/no-captcha": "^3.4",
         "arcanedev/log-viewer": "^10.0",

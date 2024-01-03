@@ -10,6 +10,7 @@ use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -20,7 +21,6 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Session;
-use App\Model\Order\OrderInvoiceRelation;
 
 class RenewController extends BaseRenewController
 {
@@ -355,6 +355,7 @@ class RenewController extends BaseRenewController
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);
             $invoiceid = $items->invoice_id;
             $this->setSession($id, $planid);
+
             return redirect('paynow/'.$invoiceid);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

@@ -20,6 +20,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Session;
+use App\Model\Order\OrderInvoiceRelation;
 
 class RenewController extends BaseRenewController
 {
@@ -316,12 +317,9 @@ class RenewController extends BaseRenewController
         $existingUnpaidInvoice = $this->checkExistingUnpaidInvoice($subscription, $request->input('plan'));
         if ($existingUnpaidInvoice) {
             return redirect('my-invoice/'.$existingUnpaidInvoice->invoice_id.'#invoice-section')
-                ->with('warning', 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again');
+                ->with('warning', trans('message.existings_invoice'));
         }
 
-        if (\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
-            throw new \Exception('Permission denied. Invalid modification of data');
-        }
         $this->validate($request, [
             'plan' => 'required',
             'code' => 'exists:promotions,code',
@@ -357,7 +355,6 @@ class RenewController extends BaseRenewController
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);
             $invoiceid = $items->invoice_id;
             $this->setSession($id, $planid);
-
             return redirect('paynow/'.$invoiceid);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -366,8 +363,12 @@ class RenewController extends BaseRenewController
 
     private function checkExistingUnpaidInvoice($subscription, $planId)
     {
-        $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) {
-            $query->where('is_renewed', 1)->where('status', 'pending');
+        $invoice_id = OrderInvoiceRelation::where('order_id', $subscription->order_id)->latest()->value('invoice_id');
+
+        $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) use ($invoice_id) {
+            $query->where('invoice_id', $invoice_id)
+                ->where('is_renewed', 1)
+                ->where('status', 'pending');
         })
             ->latest('created_at')
             ->first();

@@ -25,6 +25,11 @@ active
 <style>
 [type=search] {
         padding-right: 20px !important;
+         margin-right: -189px
+}
+#order-table_paginate{
+        margin-right: -205px;
+
 }
 </style>
 

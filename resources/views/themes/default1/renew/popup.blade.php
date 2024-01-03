@@ -94,16 +94,24 @@
                                             @endif
 
                                             <p class="text-black"><strong>Price to be paid:</strong><span id="price" class="price"></span></p>
+                                            
+                                            
 
                                     
                                     </div>
+                                        <div class="loader-wrapper" style="display: none; background: white;" >
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+                    
+                                    </div>
+                     
 
                                     <div class="modal-footer">
 
                                         <button type="button" class="btn btn-light closebutton" id="closebutton" data-dismiss="modal">Close</button>
 
-                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" id="saveRenew">Save</button>
+                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" id="saveRenew">Renew</button>
                                     </div>
+                                 
                                 </div>
                                  {!! Form::close()  !!} 
                             </div>
@@ -203,7 +211,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 300px;
+        height: 500px;
         background: rgba(0, 0, 0, 0.5);
         display: flex;
         justify-content: center;

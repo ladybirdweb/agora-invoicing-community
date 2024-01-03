@@ -119,6 +119,20 @@
         .plan-features strong {
             color: #000 !important;
         }
+        
+        [type=search] {
+            padding-right: 20px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            margin-left: 3px;
+            background-color: transparent;
+}
+        }
+        #showpayment-table_paginate{
+        margin-right: -20px !important;
+
+}
 
     </style>
     @if(Auth::check())
@@ -298,35 +312,35 @@ $price = $order->price_override;
             </div>
         </div>
 
-        <!-- Modal for Localized License domain-->
+                    <!-- Modal for Localized License domain-->
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET" action="{{url('uploadFile')}}">
-                            {!! csrf_field() !!}
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">Domain Name:</label>
-                                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveohelpdesk.com/public" name="domain" value="" onkeydown="return event.key != 'Enter';">
-                                {{Form::hidden('orderNo', $order->number)}}
-                                {{Form::hidden('userId',$user->id)}}
-                                <br>
-                                <div class="modal-footer">
-                                    <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
-                                    @if((!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt')) || $order->is_downloadable==0)
-                                        <button type="submit" id="domainSave" class="done btn btn-primary" {{$order->where('number',$order->number)->update(['is_downloadable'=> 1])}}><i class="fas fa-save"></i>&nbsp;Done</button>
-                                    @endif
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="GET" action="{{url('uploadFile')}}">
+                                {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                                    <input type="text" class="form-control" id="recipient-name" placeholder="https://faveohelpdesk.com/public" name="domain" value="" onkeydown="return event.key != 'Enter';">
+                                    {{Form::hidden('orderNo', $order->number)}}
+                                    {{Form::hidden('userId',$user->id)}}
+                                    <br>
+                                    <div class="modal-footer">
+                                        <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                                        @if((!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt')) || $order->is_downloadable==0)
+                                            <button type="submit" id="domainSave" class="done btn btn-primary" {{$order->where('number',$order->number)->update(['is_downloadable'=> 1])}}><i class="fas fa-save"></i>&nbsp;Done</button>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         <div class="row pt-2">
 
@@ -395,10 +409,10 @@ $price = $order->price_override;
 
             <div class="col-lg-9 mt-2">
                 @if($order->order_status != 'Terminated')
-                    <?php
-                    $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
-                    $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
-                    ?>
+                        <?php
+                        $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
+                        $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
+                        ?>
                     @if(!empty($terminatedOrderId))
                         <p class="order-links">
                             Order: <b>{{$order->number}}</b>
@@ -438,16 +452,16 @@ $price = $order->price_override;
                                             @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
 
                                                 <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                                    <i class="fas fa-id-card-alt"></i>
+                                                  <i class="fas fa-id-card-alt"></i>
                                                     @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
                                                         <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                                            <i class="fas fa-id-card-alt"></i>
+                                                          <i class="fas fa-id-card-alt"></i>
                                                             @elseif($product->type == '4' && $price != '0')
                                                                 <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
-                                                                    <i class="fas fa-id-card-alt"></i>
+                                                                 <i class="fas fa-id-card-alt"></i>
                                                                     @endif
 
-
+                                                                   
                                                                 </a>
                                             @endif
                                     </div>
@@ -490,26 +504,26 @@ $price = $order->price_override;
                                 </div>
 
                                 @if($order->license_mode=='File')
-                                    <div class="row"><div class="col"><hr class="solid my-3"></div></div>
-                                    <div class="row align-items-center">
+                                <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <div class="row align-items-center">
 
-                                        <div class="col-sm-5">
+                                    <div class="col-sm-5">
 
-                                            <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                        <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
 
-                                                <span class="mb-2 font-weight-bold">Localized License:</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-7">
-
-                                            <button class="btn btn-dark mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
-                                            <a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-dark mb-2 btn-sm" onclick="refreshPage()">Download License Key</button></a>
-                                            <i class="fa fa-info ml-2" data-bs-toggle="tooltip" title="It is mandatory to download both files in order for licensing to work. Please place these files in Public\Script\Signature in faveo." >{!!tooltip('Edit')!!}</i>
-
-
+                                            <span class="mb-2 font-weight-bold">Localized License:</span>
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-7">
+
+                                     <button class="btn btn-dark mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
+                                     <a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-dark mb-2 btn-sm" onclick="refreshPage()">Download License Key</button></a>
+                                     <i class="fa fa-info ml-2" data-bs-toggle="tooltip" title="It is mandatory to download both files in order for licensing to work. Please place these files in Public\Script\Signature in faveo." >{!!tooltip('Edit')!!}</i>
+
+
+                                    </div>
+                                </div>
                                 @endif
 
                                 <div class="row"><div class="col"><hr class="solid my-3"></div></div>
@@ -531,21 +545,21 @@ $price = $order->price_override;
 
                                         <tbody>
                                         @foreach($installationDetails['installed_path'] as $key => $ins)
-                                            <?php
-                                            $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
+                                                <?php
+                                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
 
-                                            $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+                                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
 
-                                            if($productversion) {
-                                                $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
-                                                $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
-                                            }
+                                                if($productversion) {
+                                                    $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
+                                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
+                                                }
 
-                                            $active = !empty($ins)?true:false;
+                                                $active = !empty($ins)?true:false;
 
 
 
-                                            ?>
+                                                ?>
                                             <tr>
                                                 <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
                                                 @if(!in_array($product->id,cloudPopupProducts()))
@@ -583,8 +597,8 @@ $price = $order->price_override;
                             </div>
                         </div>
                     </div>
-                @else
-                    <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
+                     @else
+                  <div class="tab-pane tab-pane-navigation active" id="license" role="tabpanel">
                         <?php
                         $idOrdert  = \DB::table('terminated_order_upgrade')->where('terminated_order_id',$order->id)->get();
                         foreach ($idOrdert as $ordt) {
@@ -605,9 +619,9 @@ $price = $order->price_override;
                             </div>
 
                         @endforeach
-                    </div>
+</div>
 
-                @endif
+                                  @endif
 
                 <div class="tab-pane tab-pane-navigation" id="users" role="tabpanel">
 
@@ -1153,12 +1167,13 @@ $price = $order->price_override;
 
                         </div>
                     </div>
+                     </div>
 
                     <div class="modal-footer">
 
-                        <button type="button" class="btn btn-primary" id="upgradedowngrade"><i class="fas fa-users"></i> Update Agents</button>
+                        <button type="button" class="btn btn-primary" id="upgradedowngrade"><i class="fas fa-cloud-upload-alt"></i> Change Plan</button>
                     </div>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -1892,8 +1907,8 @@ $price = $order->price_override;
 
 
     </script>
-
-    <script>
+    
+       <script>
 
         $(document).ready(function () {
             $('#numberAGt').on('input', function () {
@@ -2037,12 +2052,12 @@ $price = $order->price_override;
         });
     </script>
     <script>
-        function refreshPage() {
-            setTimeout(function() {
-                location.reload();
-            }, 1000);
-        }
-    </script>
+  function refreshPage() {
+    setTimeout(function() {
+      location.reload();
+    }, 1000); 
+  }
+</script>
 
     <style>
         .hidden {

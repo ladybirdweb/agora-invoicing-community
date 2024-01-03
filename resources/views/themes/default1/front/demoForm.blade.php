@@ -97,7 +97,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                         <label class="form-label mb-1 text-2">Message <span class="text-danger"> *</span></label>
 
-                                   <textarea maxlength="5000" data-msg-required="Please enter your message." rows="10" class="form-control" name="message" id="message" required></textarea>
+                                   <textarea maxlength="5000" data-msg-required="Please enter your message." rows="3" class="form-control" name="message" id="message" required></textarea>
                                     </div>
                                 </div>
 

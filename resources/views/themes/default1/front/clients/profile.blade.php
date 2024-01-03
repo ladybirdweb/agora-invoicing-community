@@ -294,7 +294,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('old_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password']) !!}
+                                            {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password','required' => 'required']) !!}
                                              <h6 id="oldpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -302,7 +302,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('new_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">New Password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password']) !!}
+                                            {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password','required' => 'required']) !!}
 
                                          <h6 id="newpasswordcheck"></h6>
                                         </div>
@@ -311,7 +311,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Confirm password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password']) !!}
+                                            {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password','required' => 'required']) !!}
                                             <h6 id ="confirmpasswordcheck"></h6>
                                         </div>
                                     </div>

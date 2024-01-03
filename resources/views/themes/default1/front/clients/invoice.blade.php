@@ -24,6 +24,12 @@
    <style>
         [type=search] {
             padding-right: 20px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            margin-left: 3px;
+            background-color: transparent;
+}
         }
         #myModal {
             position: absolute;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\v3_0_6;
+namespace Database\Seeders\v4_0_0;
 use Illuminate\Database\Seeder;
 use App\Model\Common\TemplateType;
 use App\Model\Common\Template;

@@ -853,7 +853,7 @@ $days = $pay->where('product','117')->value('days');
 
                             All Rights Reserved. Powered by
 
-                            &nbsp;<a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold" target="_blank">Faveo</a>
+                            <a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold" target="_blank">Faveo</a>
                         </p>
                     </div>
                 </div>

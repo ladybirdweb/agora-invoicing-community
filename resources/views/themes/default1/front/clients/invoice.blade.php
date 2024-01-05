@@ -139,7 +139,8 @@
                                                     <th>Paid</th>
                                                     <th>Balance</th>
                                                     <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 122px;">Action</th>
+
                                                 </tr> </thead>
                                             </table>
                                             </div>

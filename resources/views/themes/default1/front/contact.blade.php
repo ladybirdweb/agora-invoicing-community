@@ -53,14 +53,14 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col-lg-6">
 
-                                <label class="form-label mb-1 text-2">Your Name <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">Name <span class="text-color-danger">*</span></label>
 
                                 <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="name" id="name" required>
                             </div>
 
                             <div class="form-group col-lg-6">
 
-                                <label class="form-label mb-1 text-2">Your E-mail Address <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">E-mail Address <span class="text-color-danger">*</span></label>
 
                                 <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" required>
                             </div>

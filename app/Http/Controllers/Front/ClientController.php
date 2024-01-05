@@ -357,19 +357,23 @@ class ClientController extends BaseClientController
                     ->addColumn('Action', function ($model) {
                         $status = $model->status;
                         $deleteButton = '';
+                        $payNowButton = '';
                         $payment = '';
+                        $viewButton = '<a href="' . url('my-invoice/'.$model->id) . '" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to view"><i class="fa fa-eye"></i></a>';
+                    
                         if ($status != 'Success' && $model->grand_total > 0) {
                             $payNowButton = '<a href="'.url('paynow/'.$model->id).'" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to pay"><i class="fa fa-credit-card"></i></a>';
-                            if (! $model->orderRelation()->exists()) {
+                    
+                            if (!$model->orderRelation()->exists()) {
                                 $deleteButton = '<a class="btn btn-light-scale-2 btn-sm text-dark delete-btn" id="iconStyle" data-id="'.$model->id.'" data-toggle="tooltip" data-placement="top" title="Click here to delete"><i class="fa fa-trash"></i></a>';
                             }
-
-                            return $payNowButton.' '.$deleteButton;
+                    
+                            return $payNowButton . ' ' . $deleteButton . ' ' . $viewButton;
                         }
-
-                        return '<p><a href='.url('my-invoice/'.$model->id).
-                        " class='btn btn-light-scale-2 btn-sm text-dark' id='iconStyle' data-toggle='tooltip' data-placement='top' title='Click her to view'><i class='fa fa-eye'></i></a>".$payment.'</p>';
+                    
+                        return $viewButton . $payment;
                     })
+
                      ->filterColumn('number', function ($query, $keyword) {
                          $sql = 'invoices.number like ?';
                          $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -585,7 +589,6 @@ class ClientController extends BaseClientController
                         ->orderColumn('products.name', '-orders.id $1')
                         ->orderColumn('date', '-orders.id $1')
                         ->orderColumn('orders.number', '-orders.id $1')
-                        ->orderColumn('version', '-orders.id $1')
                         ->orderColumn('agents', '-orders.id $1')
                         ->orderColumn('expiry', '-orders.id $1')
 
@@ -610,9 +613,7 @@ class ClientController extends BaseClientController
             Terminated</span>';
                                 }
                             })
-                            ->addColumn('version', function ($model) {
-                                return getVersionAndLabel($model->version, $model->product_id, 'badge');
-                            })
+
                             ->addColumn('agents', function ($model) {
                                 $license = substr($model->serial_key, 12, 16);
                                 if ($license == '0000') {
@@ -675,7 +676,7 @@ class ClientController extends BaseClientController
                                  $sql = 'orders.number like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
-                            ->rawColumns(['id', 'product_name', 'date', 'number', 'version', 'agents', 'expiry', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'date', 'number','agents', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());

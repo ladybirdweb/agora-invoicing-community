@@ -25,12 +25,9 @@ active
 <style>
 [type=search] {
         padding-right: 20px !important;
-         margin-right: -189px
 }
-#order-table_paginate{
-        margin-right: -205px;
 
-}
+
 </style>
 
       <div class="row pt-2">
@@ -38,7 +35,7 @@ active
             @include('themes.default1.front.clients.navbar')
 
 
-                <div class="col-lg-9">
+                <div class="col-lg-10">
 
                    <div class="tab-pane tab-pane-navigation active" id="invoices" role="tabpanel">
 
@@ -56,7 +53,6 @@ active
                                                 <th>Product Name</th>
                                                 <th>Purchase Date</th>
                                                 <th>Order No</th>
-                                                <th>Version</th>
                                                 <th>Agents</th>
                                                 <th>Expiry Date</th>
                                                 <th>Action</th>
@@ -105,7 +101,6 @@ active
                  {data: 'product_name', name: 'products.name'},
                  {data: 'date', name: 'date'},
                  {data: 'number', name: 'orders.number'},
-                 {data: 'version', name: 'version'},
                  {data: 'agents', name: 'agents'},
                  {data: 'expiry', name: 'expiry'},
               

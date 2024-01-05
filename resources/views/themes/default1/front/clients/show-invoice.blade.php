@@ -121,7 +121,7 @@ active
                         @endif
                     </ul>
                 </div>
-                <div class="bill-info" id="invoice-section">
+              
                 <div class="col-lg-6 mb-4 mb-lg-0">
 
                     <h2 class="text-color-dark font-weight-bold text-4 mb-1">To</h2>
@@ -144,7 +144,7 @@ active
         </ul>
                 </div>
             </div>
-
+             <div class="bill-info" id="invoice-section">
             <div class="card p-3 mt-3">
 
                 <div class="table-responsive">

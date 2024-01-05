@@ -584,10 +584,10 @@ $days = $pay->where('product','117')->value('days');
                                     <br>
                                     <?php $cloudProducts = \App\Model\Product\CloudProducts::get(); ?>
                                     @foreach($cloudProducts as $cloudProduct)
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check-inline">
                                         <label class="form-check-label">
-                                            {!! \DB::table('products')->where('id',$cloudProduct->cloud_product)->value('name') !!}
                                             <input type="radio" name="option" class="product" value="{!! $cloudProduct->cloud_product_key !!}" checked>
+                                            {!! \DB::table('products')->where('id',$cloudProduct->cloud_product)->value('name') !!}
                                         </label>
                                     </div>
                                     @endforeach
@@ -678,7 +678,6 @@ $days = $pay->where('product','117')->value('days');
                                 </div>
                                 <p id="validationMessagePurchase"></p>
                             </div>
-                            <div class="text-center">
                                 <div class="row data-center">
                                     <div class="col col-12">
                                         @if($dataCenters->count()==1)
@@ -704,7 +703,6 @@ $days = $pay->where('product','117')->value('days');
                                         @endif
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>

@@ -53,16 +53,16 @@ class AdminOrderInvoiceController extends Controller
                                      return '--';
                                  }
                              } else {
-                                  $allOrders = $model->order()->select('id', 'number')->get();
-                                $orderLinks = []; // Using an array to store links
-                                
-                                foreach ($allOrders as $order) {
-                                    $orderLinks[] = $order->getOrderLink($order->id, 'orders');
-                                }
-                                
-                                $orderArray = implode(', ', $orderLinks); // Joining the links into a single string
+                                 $allOrders = $model->order()->select('id', 'number')->get();
+                                 $orderLinks = []; // Using an array to store links
 
-                                return $orderArray;
+                                 foreach ($allOrders as $order) {
+                                     $orderLinks[] = $order->getOrderLink($order->id, 'orders');
+                                 }
+
+                                 $orderArray = implode(', ', $orderLinks); // Joining the links into a single string
+
+                                 return $orderArray;
                              }
                          })
                         ->addColumn('total', function ($model) {

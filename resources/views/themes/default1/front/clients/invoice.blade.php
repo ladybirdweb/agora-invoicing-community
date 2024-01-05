@@ -40,8 +40,7 @@
             height: 500px;
         }
         #invoice-table td {
-            padding: 0px; 
-            text-align: center;
+            padding-left: 10px; 
         }
         td a {
         margin-top: 5px; 

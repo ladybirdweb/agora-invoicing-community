@@ -5,6 +5,9 @@
         .list-styled.columns-lg-2.px-2 li a {
             color: #777 !important; /* Set the anchor text color to black */
         }
+        .product-thumbnail-remove, .btn-remove{
+            cursor: pointer;
+        }
     </style>
   <html>
 <?php 
@@ -154,7 +157,7 @@ $days = $pay->where('product','117')->value('days');
                                 @if($set->phone != NULL)
                                     <div class="d-none d-lg-inline-block ps-1">
 
-                                        <a class="text-color-default text-color-hover-primary text-2" href="tel:{{$set->phone}}">
+                                        <a class="text-color-default text-color-hover-primary text-2" href="tel: +{{$set->phone_code}} {{$set->phone}}">
 
                                             <i class="fas fa-phone text-4 p-relative top-2"></i> &nbsp;+{{$set->phone_code}} {{$set->phone}}
                                         </a>
@@ -358,7 +361,7 @@ $days = $pay->where('product','117')->value('days');
                                                                 ?>
                                                             <li class="item">
                                                                 <a href="#" data-bs-toggle="tooltip" title="{{ $product->name }}" class="product-image">
-                                                                    <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                                                                    <img src="{{ $product->image }}" alt="{{ $product->name }}"  width="70">
                                                                 </a>
                                                                 <div class="product-details">
                                                                     <p class="product-name">
@@ -850,7 +853,7 @@ $days = $pay->where('product','117')->value('days');
 
                             All Rights Reserved. Powered by
 
-                            &nbsp;<a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}"alt="Ladybird"></a>
+                            &nbsp;<a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold" target="_blank">Faveo</a>
                         </p>
                     </div>
                 </div>
@@ -880,7 +883,6 @@ $days = $pay->where('product','117')->value('days');
 
 <!--<script src="{{asset('client/js/bootstrap.min.js')}}"></script>-->
 <script src="{{asset('client/js/common.min.js')}}"></script>
-<!--<script src="{{asset('client/js/jquery.validation.min.js')}}"></script>-->
 <script src="{{asset('client/js/jquery.easy-pie-chart.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.gmap.min.js')}}"></script>
 <script src="{{asset('client/js/jquery.lazyload.min.js')}}"></script>
@@ -941,7 +943,7 @@ $days = $pay->where('product','117')->value('days');
                 // Invalid email format
                 $('#mailchimp-message').html('<br><div class="alert alert-danger">Please enter a valid email address.</div>');
                 $('#mailchimp-message').show();
-                $('#mailchimp-message').slideUp(5000);
+                $('#mailchimp-message').slideUp(20000);
                 return;
             }
 
@@ -956,7 +958,7 @@ $days = $pay->where('product','117')->value('days');
                     $('#mailchimp-message').show();
                     var result = '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + '.</div>';
                     $('#mailchimp-message').html(result + ".");
-                    $('#mailchimp-message').slideUp(5000);
+                    $('#mailchimp-message').slideUp(20000);
                 },
                 error: function(response) {
                     $("#mailchimp-subscription").html("Go");
@@ -966,7 +968,7 @@ $days = $pay->where('product','117')->value('days');
                         var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.</div>';
                         $('#mailchimp-message').html(html);
                         $('#mailchimp-message').show();
-                        $('#mailchimp-message').slideUp(5000);
+                        $('#mailchimp-message').slideUp(20000);
                     } else {
                         var myJSON = response.responseJSON.errors;
                         var html = '<br><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
@@ -976,7 +978,7 @@ $days = $pay->where('product','117')->value('days');
                         html += '</ul></div>';
                         $('#mailchimp-message').html(html);
                         $('#mailchimp-message').show();
-                        $('#mailchimp-message').slideUp(5000);
+                        $('#mailchimp-message').slideUp(20000);
                     }
                 }
             });

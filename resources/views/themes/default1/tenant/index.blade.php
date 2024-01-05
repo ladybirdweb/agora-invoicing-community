@@ -259,6 +259,7 @@
                           <div class="form-group">
                               <!-- Select Field 1 -->
                               <select id="cloud_countries" name="cloud_countries" class="form-control select2">
+                                  <option value="">Choose</option>
                                   @foreach($countries as $country)
                                       <option value="{!! strtolower($country->country_code_char2) !!}">{{$country->nicename}}</option>
                                   @endforeach
@@ -272,8 +273,8 @@
                           ?>
                           {!! Form::label('cloud_state', Lang::get('message.cloud_state'), ['class' => 'required']) !!}
                           <div class="form-group">
+                              
                               <select id="cloud_state" name="cloud_state" class="form-control">
-
                               </select>
                           </div>
                       </div>

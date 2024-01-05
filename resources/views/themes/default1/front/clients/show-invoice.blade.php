@@ -24,6 +24,9 @@ Invoice
     .invoice-table{
         border: none;
     }
+    .table th{
+        border-top: unset !important;
+    }
 </style>
 @section('nav-invoice')
 active
@@ -219,7 +222,7 @@ active
 
                                     <th>Subtotal</th>
 
-                                    <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
+                                    <td  style="border-top: unset !important;">{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                 </tr>
                                 @if($invoice->credits)
                                         <tr>

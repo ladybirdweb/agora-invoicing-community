@@ -169,6 +169,9 @@ main
 .plan-features p{
     margin-top: 100px !important;
 }
+.box-shadow-6:not(.box-shadow-hover) {
+     box-shadow: unset; 
+}
 
 </style>
 

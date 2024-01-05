@@ -133,6 +133,9 @@
         margin-right: -20px !important;
 
 }
+    .table th{
+        border-top: unset !important;
+    }
 
     </style>
     @if(Auth::check())

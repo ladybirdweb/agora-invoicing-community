@@ -103,7 +103,6 @@ Route::middleware('installAgora')->group(function () {
     Route::post('contact-us', [Front\PageController::class, 'postContactUs']);
     Route::post('remove-coupon', [Front\CartController::class, 'removeCoupon']);
 
-    Route::get('demo-request', [Front\PageController::class, 'viewDemoReq'])->withoutMiddleware(['auth']);
     Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
 
     /*

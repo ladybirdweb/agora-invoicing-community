@@ -162,13 +162,13 @@ class TenantController extends Controller
                     if (empty($order_id) || empty($order_number)) {
                         return "<p><button data-toggle='modal'
                 data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
-                class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
+                class='btn btn-sm btn-dark btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
                     }
 
                     return "<p><button data-toggle='modal'
                 data-id='".$model->id."' data-name='' onclick=\"deleteTenant('".$model->id."','".$order_number."')\" id='delten".$model->id."'
-                class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
+                class='btn btn-sm btn-dark btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
                 })
                 ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action'])

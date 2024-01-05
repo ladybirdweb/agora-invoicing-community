@@ -310,10 +310,13 @@ class ClientController extends BaseClientController
                                 }
                             } else {
                                 $allOrders = $model->order()->select('id', 'number')->get();
-                                $orderArray = '';
-                                foreach ($allOrders as $orders) {
-                                    $orderArray .= $orders->getOrderLink($orders->id, 'my-order');
+                                $orderLinks = []; // Using an array to store links
+                                
+                                foreach ($allOrders as $order) {
+                                    $orderLinks[] = $order->getOrderLink($order->id, 'my-order');
                                 }
+                                
+                                $orderArray = implode(', ', $orderLinks); // Joining the links into a single string
 
                                 return $orderArray;
                             }

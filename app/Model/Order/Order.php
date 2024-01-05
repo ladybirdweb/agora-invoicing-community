@@ -156,7 +156,7 @@ class Order extends BaseModel
         $link = '--';
         $order = Order::where('id', $orderId)->select('id', 'number')->first();
         if ($order) {
-            $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>&nbsp;';
+            $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>';
         }
 
         return $link;

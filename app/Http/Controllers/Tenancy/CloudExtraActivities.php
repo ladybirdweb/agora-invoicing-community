@@ -970,7 +970,7 @@ class CloudExtraActivities extends Controller
             ->addColumn('action', function ($model) {
                 return "<p><button data-toggle='modal'
                 data-id='".$model->id."' data-name='' onclick=\"popProduct('".$model->id."')\" id='delpop".$model->id."'
-                class='btn btn-sm btn-danger btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
+                class='btn btn-sm btn-dark btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
             })
             ->rawColumns(['Cloud Product', 'Cloud free plan', 'Cloud product key', 'action'])

@@ -119,7 +119,7 @@
             
 
 
-                <div class="col-lg-9">
+                <div class="col-lg-10">
 
                    <div class="tab-pane tab-pane-navigation active" id="invoices" role="tabpanel">
 

@@ -8,7 +8,7 @@ function redirectOnClick($route) {
 }
 @endphp
 
-<div class="col-lg-3 mt-4 mt-lg-0">
+<div class="col-lg-2 mt-4 mt-lg-0">
     <aside class="sidebar mt-2 mb-5">
         <ul class="nav nav-list flex-column">
             <li class="nav-item">

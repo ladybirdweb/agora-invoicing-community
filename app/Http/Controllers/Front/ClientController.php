@@ -359,19 +359,19 @@ class ClientController extends BaseClientController
                         $deleteButton = '';
                         $payNowButton = '';
                         $payment = '';
-                        $viewButton = '<a href="' . url('my-invoice/'.$model->id) . '" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to view"><i class="fa fa-eye"></i></a>';
-                    
+                        $viewButton = '<a href="'.url('my-invoice/'.$model->id).'" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to view"><i class="fa fa-eye"></i></a>';
+
                         if ($status != 'Success' && $model->grand_total > 0) {
                             $payNowButton = '<a href="'.url('paynow/'.$model->id).'" class="btn btn-light-scale-2 btn-sm text-dark" id="iconStyle" data-toggle="tooltip" data-placement="top" title="Click here to pay"><i class="fa fa-credit-card"></i></a>';
-                    
-                            if (!$model->orderRelation()->exists()) {
+
+                            if (! $model->orderRelation()->exists()) {
                                 $deleteButton = '<a class="btn btn-light-scale-2 btn-sm text-dark delete-btn" id="iconStyle" data-id="'.$model->id.'" data-toggle="tooltip" data-placement="top" title="Click here to delete"><i class="fa fa-trash"></i></a>';
                             }
-                    
-                            return $payNowButton . ' ' . $deleteButton . ' ' . $viewButton;
+
+                            return $payNowButton.' '.$deleteButton.' '.$viewButton;
                         }
-                    
-                        return $viewButton . $payment;
+
+                        return $viewButton.$payment;
                     })
 
                      ->filterColumn('number', function ($query, $keyword) {
@@ -676,7 +676,7 @@ class ClientController extends BaseClientController
                                  $sql = 'orders.number like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
-                            ->rawColumns(['id', 'product_name', 'date', 'number','agents', 'expiry', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'date', 'number', 'agents', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());

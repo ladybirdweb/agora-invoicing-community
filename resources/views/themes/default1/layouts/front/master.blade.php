@@ -8,6 +8,8 @@
         .product-thumbnail-remove, .btn-remove{
             cursor: pointer;
         }
+
+   
     </style>
   <html>
 <?php 
@@ -516,19 +518,22 @@ $days = $pay->where('product','117')->value('days');
                 </div>
 
             @endif
-            @if (count($errors) > 0)
-
+            @if ($errors->any())
                 <div class="alert alert-danger alert-dismissable" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{!! $error !!}</li>
-                        @endforeach
-                    </ul>
+                    
+                    @if ($errors->count() > 1)
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{!! $error !!}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        {!! $errors->first() !!}
+                    @endif
                 </div>
-
             @endif
+
 
             @include('themes.default1.front.domain')
             @yield('content')
@@ -796,7 +801,7 @@ $days = $pay->where('product','117')->value('days');
                                     <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
                                         <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
                                             <div class="input-group">
-                                                <input class="form-control bg-light border" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
+                                                <input class="form-control bg-light border newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email" style="border-color: yellow;">
                                                 <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
                                             </div>
                                         </form>
@@ -925,6 +930,24 @@ $days = $pay->where('product','117')->value('days');
 
 
 <script>
+    // Use event delegation to immediately remove 'is-invalid' class
+$(document).on('addClass', '.newsletterEmail', function() {
+    $(this).removeClass('is-invalid');
+});
+
+
+    $(document).ready(function() {
+        var emailInput = $('.newsletterEmail'); 
+
+        emailInput.on('focus', function() {
+            $(this).removeClass('is-invalid is-valid');
+        });
+
+        emailInput.on('input', function() {
+            $(this).removeClass('is-invalid is-valid');
+        });
+    });
+
 
 
     $(document).ready(function() {
@@ -944,6 +967,7 @@ $days = $pay->where('product','117')->value('days');
                 $('#mailchimp-message').html('<br><div class="alert alert-danger">Please enter a valid email address.</div>');
                 $('#mailchimp-message').show();
                 $('#mailchimp-message').slideUp(20000);
+                emailInput.removeClass('is-invalid is-valid');
                 return;
             }
 

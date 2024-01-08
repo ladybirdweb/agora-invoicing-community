@@ -160,6 +160,7 @@ System Setting
                     <tr>
 
                         <td><b>{!! Form::label('knowledge_base_url','Knowledge Base URL') !!}</b></td>
+                        <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="The URL provides detailed assistance for installation"></i>
                         <td>
                             <div class="form-group {{ $errors->has('knowledge_base_url') ? 'has-error' : '' }}">
 
@@ -579,6 +580,11 @@ System Setting
             }
         });
     }
+
+      $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
 </script>
 
 

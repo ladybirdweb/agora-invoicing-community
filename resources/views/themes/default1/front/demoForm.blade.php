@@ -78,23 +78,6 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                     <div class="form-group col">
 
-                                        <label class="form-label">Product</label>
-
-                                        <div class="custom-select-1">
-
-                                            <select id="demoType" name="product" class="form-control">
-                                            <option value="online">Select</option>
-                                            <option value="ServiceDesk">ServiceDesk</option>
-                                            <option value="HelpDesk">HelpDesk</option>
-                                        </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="form-group col">
-
                                         <label class="form-label mb-1 text-2">Message <span class="text-danger"> *</span></label>
 
                                    <textarea maxlength="5000" data-msg-required="Please enter your message." rows="3" class="form-control" name="message" id="message" required></textarea>

@@ -1219,7 +1219,7 @@ $price = $order->price_override;
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-light"  id="srclose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light"  onclick="refreshPage()" data-bs-dismiss="modal">Close</button>
 
                     <button type="button" id="payment"  class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
@@ -2060,6 +2060,24 @@ $price = $order->price_override;
       location.reload();
     }, 1000); 
   }
+</script>
+
+<script>
+    let hash = window.location.hash;
+
+    if (hash !== '') {
+        $('.nav-link').removeClass('active');
+        $('.tab-pane').removeClass('active show');
+
+        $(`a[href="${hash}"]`).addClass('active');
+        $(hash).addClass('active show');
+    }
+
+    $('.nav-link').on('click', function(e) {
+        e.preventDefault();
+        let hash = $(this).attr('href');
+        window.location.hash = hash;
+    });
 </script>
 
     <style>

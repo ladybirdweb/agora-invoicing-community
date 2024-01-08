@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('create/tenant/purchase', [Tenancy\CloudExtraActivities::class, 'storeTenantTillPurchase']);
 
 // VisitStats::routes();
-Route::get('refresh-csrf', function () {
+Route::post('refresh-csrf', function () {
     return response()->json([
         'token' => csrf_token(), ],
         200);

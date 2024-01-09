@@ -889,7 +889,7 @@ class PageController extends Controller
         try {
             // Check if the honeypot field is filled
             if ($request->input('honeypot_field') !== '') {
-                return redirect()->back()->with('fails','Suspicious activity detected.');
+                return redirect()->back()->with('fails', 'Suspicious activity detected.');
             }
             $contact = getContactData();
             $apiKeys = StatusSetting::value('recaptcha_status');

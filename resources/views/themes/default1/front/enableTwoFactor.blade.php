@@ -49,7 +49,7 @@ main
 
                                 <div class="custom-control custom-checkbox">
 
-                                    <label class="custom-control-label text-2">Having problems? <a href="{{'recovery-code'}}" >Login using recovery code</a></label>
+                                    <label style="position: absolute;left: 0px;">Having problems? <a href="{{'recovery-code'}}" >Login using recovery code</a></label>
                                 </div>
                                   @endif
                             </div>

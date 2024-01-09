@@ -262,7 +262,7 @@ class BaseClientController extends Controller
         < $updateEndDate->update_ends_at) {
             return '<p><a href='.url('download/'.$productid.'/'
             .$clientid.'/'.$invoiceid.'/'.$versions->id).
-            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            " class='btn btn-light-scale-2 btn-sm text-dark download-btn'><i class='fa fa-download'>
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
        </p>';
@@ -277,7 +277,7 @@ class BaseClientController extends Controller
         if ($countExpiry == $countVersions) {
             return '<p><a href='.url('download/'.$productid.'/'
             .$clientid.'/'.$invoiceid.'/'.$versions->id).
-            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            " class='btn btn-light-scale-2 btn-sm text-dark download-btn'><i class='fa fa-download'>
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
        </p>';

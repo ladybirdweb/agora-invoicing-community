@@ -61,6 +61,8 @@
                 <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script type="text/javascript">
+
+
                      function hideModals(){
                         $('#list').modal('hide');
                         }
@@ -136,5 +138,7 @@
     $(function () {
     $('[data-toggle="popover"]').popover()
     })
+
+
 </script>
 

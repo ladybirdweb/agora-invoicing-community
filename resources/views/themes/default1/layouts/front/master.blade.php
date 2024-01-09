@@ -8,9 +8,10 @@
         .product-thumbnail-remove, .btn-remove{
             cursor: pointer;
         }
-
-   
-    </style>
+    .page-transition-active {
+    opacity: 1 !important; /* Setting the opacity to 1 for full visibility */
+}
+</style>
   <html>
 <?php 
  $dataCenters = \App\Model\CloudDataCenters::all();
@@ -107,7 +108,7 @@ $pay = new \App\Model\Payment\Plan();
 $days = $pay->where('product','117')->value('days');
 ?>
 @include('themes.default1.front.demoForm')
-<body data-plugin-page-transition>
+<body>
 <?php
 $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
@@ -801,7 +802,7 @@ $days = $pay->where('product','117')->value('days');
                                     <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
                                         <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
                                             <div class="input-group">
-                                                <input class="form-control bg-light border newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email" style="border-color: yellow;">
+                                                <input class="form-control bg-light border newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
                                                 <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
                                             </div>
                                         </form>
@@ -911,6 +912,7 @@ $days = $pay->where('product','117')->value('days');
 
 
 <script type="text/javascript">
+
     var csrfToken = $('[name="csrf_token"]').attr('content');
 
     setInterval(refreshToken, 360000); // 1 hour
@@ -930,44 +932,29 @@ $days = $pay->where('product','117')->value('days');
 
 
 <script>
-    // Use event delegation to immediately remove 'is-invalid' class
-$(document).on('addClass', '.newsletterEmail', function() {
-    $(this).removeClass('is-invalid');
-});
 
 
     $(document).ready(function() {
-        var emailInput = $('.newsletterEmail'); 
-
-        emailInput.on('focus', function() {
-            $(this).removeClass('is-invalid is-valid');
-        });
+        var emailInput = $('.newsletterEmail');
 
         emailInput.on('input', function() {
             $(this).removeClass('is-invalid is-valid');
         });
-    });
+        
+         $('#newsletterForm').submit(function(e) {
+            e.preventDefault(); 
 
+            emailInput.removeClass('is-invalid is-valid'); 
 
-
-    $(document).ready(function() {
-        $('#newsletterForm').submit(function(e) {
-            e.preventDefault(); // Prevent default form submission
-
-            var emailInput = $('#newsletterEmail');
-            emailInput.removeClass('is-invalid is-valid'); // Remove the classes
 
             var email = emailInput.val();
 
-            // Regular expression for email validation
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailRegex.test(email)) {
-                // Invalid email format
                 $('#mailchimp-message').html('<br><div class="alert alert-danger">Please enter a valid email address.</div>');
                 $('#mailchimp-message').show();
                 $('#mailchimp-message').slideUp(20000);
-                emailInput.removeClass('is-invalid is-valid');
                 return;
             }
 

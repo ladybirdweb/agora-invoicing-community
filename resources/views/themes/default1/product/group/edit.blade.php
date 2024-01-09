@@ -117,7 +117,7 @@ Edit Group
 
                            <div class="form-group">
                             <div class="col-md-4">
-                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
                              @if($template->id == $selectedTemplate)
                              <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" checked style="text-align: center;">

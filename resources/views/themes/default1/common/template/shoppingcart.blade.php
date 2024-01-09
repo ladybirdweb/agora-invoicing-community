@@ -120,8 +120,9 @@ main
             width: 100%;
             text-align: center; 
         }
-        .stylePlan {
-           width: 100%;
+
+         .stylePlan {
+           width: auto;
            text-align: center;
           }
 
@@ -172,6 +173,23 @@ main
 .box-shadow-6:not(.box-shadow-hover) {
      box-shadow: unset; 
 }
+.price.text-color-primary {
+    font-size: 50px !important;
+}
+
+.center-templates {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* Firefox-only CSS */
+@-moz-document url-prefix() {
+    /* Firefox-specific CSS rules here */
+    .pricing-block .plan-price .price-label {
+        margin-bottom: 20px;
+    }
+}
+
 
 </style>
 
@@ -273,6 +291,15 @@ main
       });
     }
   });
+  
+  
+$(document).ready(function() {
+    var numberOfTemplates = $('.owl-carousel.nav-outside .owl-item').length;
+    if (numberOfTemplates < 3) {
+        $('.owl-carousel.nav-outside').addClass('center-templates');
+    }
+});
+
 
 </script>
 @stop

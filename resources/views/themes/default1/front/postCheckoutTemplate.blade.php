@@ -97,7 +97,7 @@
          @if($show)
 @if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
 
- <a style="position: relative;left: 200px;" onclick="refreshPage()"  href="{{ url("product/download/$order->product/$invoice->number") }}"  class="btn btn-dark btn-modern text-uppercase text-3 py-3"><i class="fa fa-download"> </i>  Download the Latest Version here</a>
+ <a style="position: relative;left: 200px;"  href="{{ url("product/download/$order->product/$invoice->number") }}"  class="btn btn-dark btn-modern text-uppercase text-3 py-3"><i class="fa fa-download"> </i>  Download the Latest Version here</a>
 @else
 
 @endif
@@ -113,13 +113,4 @@ function openModal(orderNumber) {
 $('#tenant .modal-body').text('Order Number: ' + orderNumber);
 $('#tenant').modal('show');
 }
-</script>
-<script>
-  function refreshPage() {
-    // Wait for 3 seconds (3000 milliseconds) before refreshing the page
-    setTimeout(function() {
-      // Reload the current page
-      location.reload();
-    }, 4000); // 3000 milliseconds = 3 seconds
-  }
 </script>

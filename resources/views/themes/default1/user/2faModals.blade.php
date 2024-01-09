@@ -294,7 +294,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
         <div class="col-md-2"><b>Recovery Code:</b></div>
          <div class="col-md-4">
          
-           <input type="text" id="newrecoverycode" readonly="readonly" class="form-control">
+           <input type="text" id="newrecoverycode" readonly="readonly" class="form-control" style="height: 40px;">
 
 
          </div>
@@ -312,7 +312,7 @@ $user = DB::table('users')->where('id',Auth::id())->first();
 
                 @component('mini_views.copied_flash_text',[
                                 'navigations'=>[
-                                   [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>' <span style="margin-left:50px;margin-top:5px; pointer-events: initial; cursor: pointer; display: block;" id="copyNewCodeBtn" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                   [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>' <span class="btn btn-light-scale-2 text-black btn-sm ms-4" style="margin-top:5px; pointer-events: initial; cursor: pointer; display: block;position: absolute;right: 150px;" id="copyNewCodeBtn" data-bs-toggle="tooltip" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                    ]
                                   
                                ])

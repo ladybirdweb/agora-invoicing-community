@@ -887,6 +887,10 @@ class PageController extends Controller
     public function postDemoReq(Request $request)
     {
         try {
+            // Check if the honeypot field is filled
+            if ($request->input('honeypot_field') !== '') {
+                return redirect()->back()->with('fails','Suspicious activity detected.');
+            }
             $contact = getContactData();
             $apiKeys = StatusSetting::value('recaptcha_status');
             $captchaRule = $apiKeys ? 'required|' : 'sometimes|';

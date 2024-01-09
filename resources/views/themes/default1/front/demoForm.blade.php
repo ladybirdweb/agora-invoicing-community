@@ -14,7 +14,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
             {!! Form::open(['url'=>'demo-request','method' => 'post']) !!}
             @endif
 
-
+            @csrf 
             <div class="modal-content">
 
                 <div class="modal-header">
@@ -82,6 +82,12 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                    <textarea maxlength="5000" data-msg-required="Please enter your message." rows="3" class="form-control" name="message" id="message" required></textarea>
                                     </div>
+                                </div>
+                                
+                                  <!-- Honeypot fields (hidden) -->
+                                <div style="display: none;">
+                                    <label>Leave this field empty</label>
+                                    <input type="text" name="honeypot_field" value="">
                                 </div>
 
                                 @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')

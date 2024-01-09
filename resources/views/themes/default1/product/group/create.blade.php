@@ -116,7 +116,7 @@ Create Group
                            <div class="form-group">
                             
                             <div class="col-md-4">
-                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
                             <input type="radio" name= 'pricing_templates_id' value='{{$template->id}}' style="text-align: center;">
                             {{$template->name}}

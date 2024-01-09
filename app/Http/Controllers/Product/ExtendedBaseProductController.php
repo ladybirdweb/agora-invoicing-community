@@ -186,7 +186,6 @@ class ExtendedBaseProductController extends Controller
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $e) {
-            // dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

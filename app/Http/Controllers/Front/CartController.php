@@ -194,6 +194,7 @@ class CartController extends BaseCartController
 
     private function checkUnpaidInvoices($item)
     {
+        if(\Auth::check()) {
         $unpaidInvoice = Invoice::where('user_id', \Auth::user()->id)
             ->where('is_renewed', 0)
             ->where('status', 'pending')
@@ -206,6 +207,7 @@ class CartController extends BaseCartController
             Cart::clear($item->id);
 
             return $unpaidInvoice;
+        }
         }
 
         return null;

@@ -366,11 +366,11 @@ class RenewController extends BaseRenewController
     {
         $invoice_id = OrderInvoiceRelation::where('order_id', $subscription->order_id)->latest()->value('invoice_id');
 
-        $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) use ($invoice_id,$planId) {
+        $latestInvoiceItem = InvoiceItem::whereHas('invoice', function ($query) use ($invoice_id, $planId) {
             $query->where('invoice_id', $invoice_id)
                 ->where('is_renewed', 1)
                 ->where('status', 'pending')
-                ->where('plan_id',$planId);
+                ->where('plan_id', $planId);
         })
             ->latest('created_at')
             ->first();

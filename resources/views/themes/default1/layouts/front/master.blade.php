@@ -11,6 +11,17 @@
     .page-transition-active {
     opacity: 1 !important; /* Setting the opacity to 1 for full visibility */
 }
+.custom-input {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 11.2px 16px;
+    color: #777;
+}
+
+.custom-input:focus {
+    border-color: #777;
+    outline: none; 
+}
 </style>
   <html>
 <?php 
@@ -798,11 +809,11 @@ $days = $pay->where('product','117')->value('days');
                     $mailchimpSection = '';
                     if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
                         // Mailchimp Subscription Form
-                        $mailchimpSection .= '<div id="mailchimp-message"></div>
+                        $mailchimpSection .= '<div id="mailchimp-message" style="width: 93%;"></div>
                                     <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
                                         <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
                                             <div class="input-group">
-                                                <input class="form-control bg-light border newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
+                                                <input class="custom-input newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
                                                 <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
                                             </div>
                                         </form>
@@ -937,59 +948,49 @@ $days = $pay->where('product','117')->value('days');
     $(document).ready(function() {
         var emailInput = $('.newsletterEmail');
 
-        emailInput.on('input', function() {
-            $(this).removeClass('is-invalid is-valid');
-        });
-        
-         $('#newsletterForm').submit(function(e) {
+        $('#newsletterForm').submit(function(e) {
             e.preventDefault(); 
-
-            emailInput.removeClass('is-invalid is-valid'); 
-
-
             var email = emailInput.val();
 
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailRegex.test(email)) {
-                $('#mailchimp-message').html('<br><div class="alert alert-danger">Please enter a valid email address.</div>');
-                $('#mailchimp-message').show();
-                $('#mailchimp-message').slideUp(20000);
+                $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                 return;
             }
 
-            $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i> Please Wait...");
+            $('#mailchimp-subscription').html("Wait...");
 
             $.ajax({
                 type: 'POST',
                 url: '{{url("mail-chimp/subcribe")}}',
                 data: {'email': email, '_token': "{!! csrf_token() !!}"},
                 success: function(data) {
+                     emailInput.val('');
                     $("#mailchimp-subscription").html("Go");
                     $('#mailchimp-message').show();
-                    var result = '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + '.</div>';
+                    var result = '<br><div class="alert alert-success"><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + ' <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
                     $('#mailchimp-message').html(result + ".");
-                    $('#mailchimp-message').slideUp(20000);
                 },
                 error: function(response) {
+                     emailInput.val('');
                     $("#mailchimp-subscription").html("Go");
 
                     if (response.status == 400) {
                         var myJSON = response.responseJSON.message;
-                        var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.</div>';
+                        var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
                         $('#mailchimp-message').html(html);
-                        $('#mailchimp-message').show();
-                        $('#mailchimp-message').slideUp(20000);
+                         $('#mailchimp-message').show();
                     } else {
+                        emailInput.val('');
                         var myJSON = response.responseJSON.errors;
-                        var html = '<br><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
+                        var html = '<br><button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
                         for (var key in myJSON) {
                             html += '<li>' + myJSON[key][0] + '</li>';
                         }
                         html += '</ul></div>';
                         $('#mailchimp-message').html(html);
                         $('#mailchimp-message').show();
-                        $('#mailchimp-message').slideUp(20000);
                     }
                 }
             });

@@ -470,8 +470,15 @@ class PageController extends Controller
             // $data = PricingTemplate::findorFail($templateid)->data;
             $headline = ProductGroup::findorFail($groupid)->headline;
             $tagline = ProductGroup::findorFail($groupid)->tagline;
-            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
-            ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
+            $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupid)
+            ->where('hidden', '!=', 1)
+            ->join('plans', 'products.id', '=', 'plans.product')
+            ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
+            ->where('plan_prices.currency', '=', $currencyAndSymbol)
+            ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
+            ->orderBy('created_at','ASC')
+            ->select('products.*', 'plan_prices.add_price')
+            ->get();
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
             $products = Product::all();

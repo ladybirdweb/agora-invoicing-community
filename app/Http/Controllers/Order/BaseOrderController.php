@@ -348,7 +348,7 @@ class BaseOrderController extends ExtendedOrderController
             'number' => $order->number,
             'expiry' => $end,
             'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-            'knowledge_base' => $knowledgeBaseUrl,
+            'knowledge_base' => empty($knowledgeBaseUrl) ? 'javascript:void(0);' : $knowledgeBaseUrl,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
             'reply_email' => $setting->company_email, ];

@@ -476,7 +476,7 @@ class PageController extends Controller
             ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
             ->where('plan_prices.currency', '=', $currencyAndSymbol)
             ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
-            ->orderBy('created_at','ASC')
+            ->orderBy('created_at', 'ASC')
             ->select('products.*', 'plan_prices.add_price')
             ->get();
             $trasform = [];

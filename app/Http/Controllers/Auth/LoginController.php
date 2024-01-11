@@ -86,16 +86,17 @@ class LoginController extends Controller
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
         $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
-        
+
         if ($auth) {
-        if (\Auth::user()->is_2fa_enabled == 1 && \Auth::user()->remember_token == null) {
-            $userId = \Auth::user()->id;
-            \Auth::logout();
-            $request->session()->put('2fa:user:id', $userId);
-            return redirect('2fa/validate');
+            if (\Auth::user()->is_2fa_enabled == 1 && \Auth::user()->remember_token == null) {
+                $userId = \Auth::user()->id;
+                \Auth::logout();
+                $request->session()->put('2fa:user:id', $userId);
+
+                return redirect('2fa/validate');
+            }
         }
-        }
-        
+
         if (! $auth) { //Check for correct email
             $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
             $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
@@ -123,7 +124,7 @@ class LoginController extends Controller
                 return redirect('verify')->with('user', $user);
             }
         }
-     
+
         $this->convertCart();
 
         activity()->log('Logged In');

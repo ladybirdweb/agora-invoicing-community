@@ -82,6 +82,8 @@ class Google2FAController extends Controller
         //get user id and create cache key
         $google2fa = new Google2FA();
         $userId = $request->session()->pull('2fa:user:id');
+        $remember = $request->session()->pull('remember:user:id');
+
         $this->user = User::findorFail($userId);
 
         $secret = Crypt::decrypt($this->user->google2fa_secret);
@@ -96,7 +98,7 @@ class Google2FAController extends Controller
 
                 return redirect('password/reset/'.$token);
             }
-            \Auth::loginUsingId($userId);
+            \Auth::loginUsingId($userId,$remember);
 
             $this->convertCart();
 

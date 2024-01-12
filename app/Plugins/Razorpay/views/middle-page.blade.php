@@ -55,7 +55,7 @@ if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance') && $r
 
 if ($currency == 'INR'){
 $orderData = [
-'receipt'         => 3456,
+'receipt'         => '3456',
 'amount'          => round($cartTotal*100), // 2000 rupees in paise
 
 'currency'        => 'INR',
@@ -309,7 +309,7 @@ $json = json_encode($data);
                                                         $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                                                         ?>
                                                         <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}
+                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $bifurcateTax['html'] !!}
                                             </strong>
                                         </td>
                                                        <td class="text-end align-top border-top-0">
@@ -352,7 +352,7 @@ $json = json_encode($data);
                                                      @foreach(\Cart::getConditionsByType('fee') as $fee)
                                                      <tr>
                                                          <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $fee->getName() !!}
+                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $fee->getName() !!}
                                             </strong>
                                         </td>
                                                           <td class="text-end align-top border-top-0">
@@ -610,13 +610,13 @@ $json = json_encode($data);
                                             $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
                                             ?>
                                             <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}
+                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $bifurcateTax['html'] !!}
 
 
 
                                             </strong>
                                         </td>
-                                           <td class="text-end align-top border-top-0">
+                                            <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">
                                                
                                                 {!! $bifurcateTax['tax'] !!}

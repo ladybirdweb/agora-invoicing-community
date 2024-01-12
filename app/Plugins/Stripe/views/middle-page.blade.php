@@ -258,9 +258,9 @@ $currency = $invoice->currency;
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                                                         ?>
-                                                        <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}
-                                            </strong>
+                                                         <td class=" align-top border-top-0">
+                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}
+                                            </span>
                                         </td>
                                                        <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">
@@ -280,9 +280,9 @@ $currency = $invoice->currency;
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
                                                         ?>
-                                                        <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
-                                            {!! $bifurcateTax['html'] !!}</strong></td>
+                                                         <td class=" align-top border-top-0">
+                                                      <span class="amount font-weight-medium text-color-dark">
+                                            {!! $bifurcateTax['html'] !!}</span></td>
                                                         <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">
                                                          {!! $bifurcateTax['tax'] !!}
@@ -559,12 +559,12 @@ $currency = $invoice->currency;
                                              <?php
                                             $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
                                             ?>
-                                            <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}
+                                            <td class=" align-top border-top-0">
+                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}
 
 
 
-                                            </strong>
+                                            </span>
                                         </td>
                                            <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">

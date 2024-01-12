@@ -98,7 +98,7 @@ class Google2FAController extends Controller
 
                 return redirect('password/reset/'.$token);
             }
-            \Auth::loginUsingId($userId,$remember);
+            \Auth::loginUsingId($userId, $remember);
 
             $this->convertCart();
 

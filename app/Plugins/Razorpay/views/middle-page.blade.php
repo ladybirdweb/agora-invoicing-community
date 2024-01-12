@@ -67,7 +67,7 @@ $orderData = [
 } else {
 
  $orderData = [
-'receipt'         => 3456,
+'receipt'         => '3456',
 'amount'          =>  round($cartTotal*100), // 2000 rupees in paise
 
 'currency'        => $currency,

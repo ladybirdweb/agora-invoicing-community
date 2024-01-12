@@ -26,9 +26,6 @@ active
 [type=search] {
         padding-right: 20px !important;
 }
-.table th{
-    width: 122px;
-}
 
 </style>
 

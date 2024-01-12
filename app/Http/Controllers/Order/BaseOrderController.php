@@ -331,11 +331,11 @@ class BaseOrderController extends ExtendedOrderController
         $template = $templates->where('type', $temp_id)->first();
 
         $knowledgeBaseUrl = $setting->knowledge_base_url;
-        
-         $knowledgeBaseUrlFinal = $knowledgeBaseUrl == null ?
+
+        $knowledgeBaseUrlFinal = $knowledgeBaseUrl == null ?
         '<p>Refer To Our Knowledge Base for further installation assistance</p>
         <p>Click below to login to your Control Panel to view the invoice or to pay for any pending invoice.</p>' :
-        '<p><a class="moz-txt-link-abbreviated" href="' . $knowledgeBaseUrl . '/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
+        '<p><a class="moz-txt-link-abbreviated" href="'.$knowledgeBaseUrl.'/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
         <p>Click below to login to your Control Panel to view the invoice or to pay for any pending invoice.</p>';
 
         $orderHeading = ($value != '4') ? 'Download' : 'Order';

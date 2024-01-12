@@ -472,19 +472,18 @@ class PageController extends Controller
             $tagline = ProductGroup::findorFail($groupid)->tagline;
             $currencyAndSymbol = '';
             if (! \Auth::user()) {
-                    $location = getLocation();
-                    $country = findCountryByGeoip($location['iso_code']);
-                    $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('country_id');
-                    $currencyAndSymbol = getCurrencyForClient($country);
-                }
-                if (\Auth::user()) {
+                $location = getLocation();
+                $country = findCountryByGeoip($location['iso_code']);
+                $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('country_id');
+                $currencyAndSymbol = getCurrencyForClient($country);
+            }
+            if (\Auth::user()) {
+                $country = \DB::table('users')->where('id', \Auth::user()->id)->value('country');
 
-                    $country = \DB::table('users')->where('id', \Auth::user()->id)->value('country');
-                    
-                    $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('country_id');
+                $countryids = \App\Model\Common\Country::where('country_code_char2', $country)->value('country_id');
 
-                    $currencyAndSymbol = getCurrencyForClient($country);
-                }
+                $currencyAndSymbol = getCurrencyForClient($country);
+            }
             $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupid)
             ->where('hidden', '!=', 1)
             ->join('plans', 'products.id', '=', 'plans.product')

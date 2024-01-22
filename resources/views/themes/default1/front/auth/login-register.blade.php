@@ -1702,7 +1702,7 @@ foreach($scripts as $script) {
                 });
             },
             initialCountry: "auto",
-            separateDialCode: false,
+            separateDialCode: true,
         });
         var reset = function() {
             errorMsg.innerHTML = "";
@@ -1788,7 +1788,7 @@ foreach($scripts as $script) {
             // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
             placeholderNumberType: "MOBILE",
             // preferredCountries: ['cn', 'jp'],
-            separateDialCode: false,
+            separateDialCode: true,
 
             utilsScript: "{{asset('js/intl/js/utils.js')}}"
         });

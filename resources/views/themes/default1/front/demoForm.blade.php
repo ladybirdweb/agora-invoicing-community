@@ -65,9 +65,9 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
 
                                         <label class="form-label mb-1 text-2">Mobile <span class="text-danger"> *</span></label>
 
-                                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
+                                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenDemo','name'=>'country_code']) !!}
                                         <input class="form-control input-lg" id="mobilenumdemo" name="Mobile" type="tel" required>
-                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_codeDemo']) !!}
                                         <span id="valid-msgdemo" class="hide"></span>
                                         <span id="error-msgdemo" class="hide"></span>
                                         <span id="mobile_codecheckdemo"></span>
@@ -123,6 +123,9 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
         return true;
     }
 }
+
+
+
 
     </script>
 

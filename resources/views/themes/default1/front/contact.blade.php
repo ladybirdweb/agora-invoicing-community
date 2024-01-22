@@ -74,7 +74,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenco','name'=>'country_code']) !!}
                                 <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel">
-                                {!! Form::hidden('mobile_code',null,['class'=>'form-control text-3 h-auto py-2','disabled','id'=>'mobile_code']) !!}
+                                {!! Form::hidden('mobile_code',null,['class'=>'form-control text-3 h-auto py-2','disabled','id'=>'mobile_codecon']) !!}
                                 <span id="valid-msgcon" class="hide"></span>
                                 <span id="error-msgcon" class="hide"></span>
                                 <span id="mobile_codecheckcon"></span>
@@ -163,7 +163,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                 });
             },
             initialCountry: "auto",
-            separateDialCode: false,
+            separateDialCode: true,
             utilsScript: "{{asset('js/intl/js/utils.js')}}"
         });
         var reset = function() {
@@ -218,9 +218,12 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
             }
         });
 
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
+               $('form').on('submit', function (e) {
+                var selectedCountry = demotelInput.intlTelInput('getSelectedCountryData');
+                var countryCode = '+' + selectedCountry.dialCode;
+                $('#mobile_code_hiddenco').val(countryCode);
+        
+                });
 
 </script>
 @endif

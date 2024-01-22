@@ -1209,8 +1209,11 @@ $days = $pay->where('product','117')->value('days');
             }
         });
 
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+       $('form').on('submit', function (e) {
+        var selectedCountry = demotelInput.intlTelInput('getSelectedCountryData');
+        var countryCode = '+' + selectedCountry.dialCode;
+        $('#mobile_code_hiddenDemo').val(countryCode);
+
         });
 
         $(document).ready(function() {

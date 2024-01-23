@@ -102,13 +102,25 @@ main
                                 <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
 
                                  <label for="mobile" class="required">Mobile</label><br />
-                                  <input type="text" class="form-control form-control-lg text-4 phonecode"  name="mobile" value="{{$user ->  mobile}}" id="u_mobile">
+                                <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
+                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
+                                  <input type="text" class="form-control form-control-lg text-4 phonecode"  name="mobile" value="{{$user->mobile}}" id="u_mobile" style="right: 12px;">
+                                   <span id="valid-msgve" class="hide"></span>
+                                <span id="error-msgve" class="hide"></span>
+
+                                <span id="mobilecheck"></span>
                                  @else
                                  <input type="hidden" name="countryCode" id="u_code">
                                 <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
 
                                   <label for="mobile" class="required">Mobile</label><br />
+                                <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
+                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
                                    <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" id="u_mobile">
+                                    <span id="valid-msgve" class="hide"></span>
+                                <span id="error-msgve" class="hide"></span>
+
+                                <span id="mobilecheck"></span>
 
                                 @endif
                                 <h6 id="mobcheck"></h6>
@@ -161,10 +173,14 @@ main
                                 <p class="text-2">You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
 
                                 <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
-
+                                <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
+                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
                                 <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" value="{{$user-> mobile}}" id="u_mobile" type="tel">
                                 <input type="hidden" name="oldemail" value="{{$user->mobile}}" id="oldnumber">
-                                <h6 id="mobilecheck"></h6>
+                                <span id="valid-msgve" class="hide"></span>
+                                <span id="error-msgve" class="hide"></span>
+
+                                <span id="mobilecheck"></span>
                                 <div class="clear"></div>
                                 <div class="form-group col"><button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" id="sendOTPmail" ng-click="sendOTPmail()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send </button></div>
                             </div>
@@ -241,7 +257,7 @@ main
                         $("#sendOTP").html("Send OTP");
                         $('#error1').css('color', 'red');
                         $.each(data.errors, function(idx, topic) {
-                            res += '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            res += '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                         });
                         $('#error1').html(res);
                     })
@@ -252,39 +268,39 @@ main
             $scope.resendOTP = function() {
                 $scope.showOTP = false;
             }
-            $scope.submitOTP = function(x) {
-                $('#verifyotp').hide();
-                if (verify_otpverify_check()) {
-                    $("#verifyOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
-                    $scope.newObj['otp'] = x;
-                    $http({
-                        url: '{{url("otp/verify")}}',
-                        method: "POST",
-                        params: $scope.newObj
-                    }).success(function(data) {
-                        window.location.href = 'login';
-                        // $scope.proceedo=data.proceed;
-                        // $scope.msg2 = true;
-                        $("#verifyOTP").html("Verify OTP");
-                        var result = '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> </strong>' + data.message + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                        $('#alertMessage1').html(result);
-                        $('#alertMessage1').css('color', 'green');
-
-                    }).error(function(data, status) {
-                        $scope.msg2 = true;
-                        var res = "";
-                        $("#verifyOTP").html("Verify OTP");
-                        $('#alertMessage1').hide();
-                        $('#error1').css('color', 'red');
-                        // var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+data.errors+'!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                        $.each(data.errors, function(idx, topic) {
-                            res += '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                        });
-                        $('#error1').html(res);
-
-                    })
+                $scope.submitOTP = function(x) {
+                    $('#verifyotp').hide();
+                    if (verify_otpverify_check()) {
+                        $("#verifyOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                        $scope.newObj['otp'] = x;
+                        $http({
+                            url: '{{url("otp/verify")}}',
+                            method: "POST",
+                            params: $scope.newObj
+                        }).success(function(data) {
+                            window.location.href = 'login';
+                            // $scope.proceedo=data.proceed;
+                            // $scope.msg2 = true;
+                            $("#verifyOTP").html("Verify OTP");
+                            var result = '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> </strong>' + data.message + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            $('#alertMessage1').html(result);
+                            $('#alertMessage1').css('color', 'green');
+    
+                        }).error(function(data, status) {
+                            $scope.msg2 = true;
+                            var res = "";
+                            $("#verifyOTP").html("Verify OTP");
+                            $('#alertMessage1').hide();
+                            $('#error1').css('color', 'red');
+                            // var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+data.errors+'!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            $.each(data.errors, function(idx, topic) {
+                                res += '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                            });
+                            $('#error1').html(res);
+    
+                        })
+                    }
                 }
-            }
             $scope.sendEmail = function() {
                 $('#mailcheck').hide();
 
@@ -313,7 +329,7 @@ main
                         var res = "";
                         $('#email1').css('color', 'red');
                         $.each(data, function(idx, topic) {
-                            res += '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '</div>';
+                            res += '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '</div>';
                         });
                         $('#snap1').hide();
                         $('#email1').html(res);
@@ -420,6 +436,7 @@ main
             var userNumber = $('#u_mobile').val();
             if (userNumber.length < 5) {
                 $('#mobilecheck').show();
+                $('#mobcheck').hide();
                 $('#mobilecheck').html("Please Enter Your Mobile No.");
                 $('#mobilecheck').focus();
                 $('#u_mobile').css("border-color", "red");
@@ -466,6 +483,7 @@ main
             var userNumber = $('#u_mobile').val();
             if (userNumber.length < 5) {
                 $('#mobcheck').show();
+                $('#mobilecheck').hide();
                 $('#mobcheck').html("Please Enter Your Mobile No.");
                 $('#mobcheck').focus();
                 $('#u_mobile').css("border-color", "red");
@@ -507,55 +525,97 @@ main
     <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
 
     <script type="text/javascript">
-        // $(document).ready(function() {
-        //     var telInput = $(".phonecode");
-        //     let currentCountry = "";
-        //     telInput.intlTelInput({
-        //         initialCountry: "auto",
-        //         geoIpLookup: function(callback) {
-        //             $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        //                 var countryCode = (resp && resp.country) ? resp.country : "";
-        //                 currentCountry = countryCode.toLowerCase()
-        //                 callback(countryCode);
-        //             });
-        //         },
-        //         separateDialCode: true,
-        //         utilsScript: "{{asset('js/intl/js/utils.js')}}",
-        //     });
-        //     setTimeout(() => {
-        //         telInput.intlTelInput("setCountry", currentCountry);
-        //     }, 500)
-        //     $('.intl-tel-input').css('width', '100%');
-        // });
         $(document).ready(function() {
-  var telInput = $(".phonecode");
-  var currentCountry = "";
+      var vetelInput = $("#u_mobile");
+      var currentCountry = "";
+       errorMsgve = document.querySelector("#error-msgve"),
+        validMsgve = document.querySelector("#valid-msgve"),
+        addressDropdownve = $("#country");
+        var errorMapve = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
-  telInput.intlTelInput({
-    initialCountry: "auto",
+  vetelInput.intlTelInput({
+ 
     geoIpLookup: function(callback) {
       $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        var countryCode = (resp && resp.country) ? resp.country : "";
-        currentCountry = countryCode.toLowerCase();
-        callback(countryCode);
+        var vecountryCode = (resp && resp.country) ? resp.country : "";
+        currentCountry = vecountryCode.toLowerCase();
+        callback(vecountryCode);
       });
     },
+    initialCountry: "auto",
     separateDialCode: true,
     utilsScript: "{{asset('js/intl/js/utils.js')}}",
   });
+  
+   var resetve = function() {
+            errorMsgve.innerHTML = "";
+            errorMsgve.classList.add("hide");
+            validMsgve.classList.add("hide");
+        };
+        
+                vetelInput.on('blur', function () {
+            resetve();
+            if ($.trim(vetelInput.val())) {
+                if (vetelInput.intlTelInput("isValidNumber")) {
+                    $('#u_mobile').css("border-color","");
+                    $("#error-msgve").html('');
+                    errorMsgve.classList.add("hide");
+                    $('#sendOTPmail').attr('disabled',false);
+                    $('#sendOTP').attr('disabled',false);
+                } else {
+                    var errorCodeve = vetelInput.intlTelInput("getValidationError");
+                    errorMsgve.innerHTML = errorMapve[errorCodeve];
+                    $('#mobile_codecheckve').html("");
 
-  setTimeout(function() {
-    telInput.intlTelInput("setCountry", currentCountry);
-  }, 500);
+                    $('#u_mobile').css("border-color","red");
+                    $('#error-msgve').css({"color":"red","margin-top":"5px"});
+                    errorMsgve.classList.remove("hide");
+                    $('#sendOTPmail').attr('disabled',true);
+                     $('#sendOTP').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdownve.change(function() {
+            vetelInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(vetelInput.val())) {
+                if (vetelInput.intlTelInput("isValidNumber")) {
+                    $('#u_mobile').css("border-color","");
+                    $("#error-msgve").html('');
+                    errorMsgve.classList.add("hide");
+                    $('#sendOTPmail').attr('disabled',false);
+                    $('#sendOTP').attr('disabled',false);
+                } else {
+                    var errorCodeve = vetelInput.intlTelInput("getValidationError");
+                    errorMsgve.innerHTML = errorMapve[errorCodeve];
+                    $('#mobile_codecheckve').html("");
+
+                    $('#u_mobile').css("border-color","red");
+                    $('#error-msgve').css({"color":"red","margin-top":"5px"});
+                    errorMsgve.classList.remove("hide");
+                    $('#sendOTPmail').attr('disabled',true);
+                    $('#sendOTP').attr('disabled',true);
+                }
+            }
+        });
+
+      setTimeout(function() {
+        vetelInput.intlTelInput("setCountry", currentCountry);
+      }, 500);
 
   // Add change event handler to update hidden field with the selected country code
-  telInput.on("countrychange", function(e, countryData) {
+  vetelInput.on("countrychange", function(e, countryData) {
     var countryCode = countryData.dialCode;
     $("#u_code").val(countryCode);
   });
 
   $('.intl-tel-input').css('width', '100%');
 });
+
+
+
 
     </script>
     <script>
@@ -609,7 +669,7 @@ main
                     },
                     error: function(data) {
                         $("$verifyOtp").attr('disabled', false)
-                        var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <br><ul>';
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <br><ul>';
                         $("#verifyOtp").html("Verify OTP");
                         for (var key in data.responseJSON.errors) {
                             html += '<li>' + data.responseJSON.errors[key][0] + '</li>'

@@ -19,6 +19,10 @@ To run Agora your host just needs a couple of things:
   * PHP Extensions: Mcrypt, OpenSSL, Mbstring, Tokenizer
   * Web Server Extension: Pretty URLs or Search Engine Friendly URLs have to be enabled in your web server configuration
 
+Installation Guide
+--------------------------
+The installation steps for Agora is same as that of Faveo. Please refer to our <a href="https://docs.faveohelpdesk.com/" target="_blank">Installation Guide</a> for steps.
+
 Credits
 --------------------------
   * Laravel Framework
@@ -27,11 +31,6 @@ Credits
 Agora Features
 --------------------------
 https://github.com/ladybirdweb/agorainvoicing/wiki/Agora-Features
-
-Faveo Probe
---------------------------
-Helps verify whether your server can run Faveo or not. 
-<a href="https://github.com/ladybirdweb/faveo-probe" target="_blank">Download here</a>
 
 Error Reporting
 --------------------------

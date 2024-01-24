@@ -103,7 +103,7 @@ main
 
                                  <label for="mobile" class="required">Mobile</label><br />
                                 <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
-                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
+                                <input class="form-control form-control input-lg" value="{{$user->country}}"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
                                   <input type="text" class="form-control form-control-lg text-4 phonecode"  name="mobile" value="{{$user->mobile}}" id="u_mobile" style="right: 12px;">
                                    <span id="valid-msgve" class="hide"></span>
                                 <span id="error-msgve" class="hide"></span>
@@ -115,7 +115,7 @@ main
 
                                   <label for="mobile" class="required">Mobile</label><br />
                                 <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
-                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
+                                <input class="form-control form-control input-lg" value="{{$user->country}}"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
                                    <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" id="u_mobile">
                                     <span id="valid-msgve" class="hide"></span>
                                 <span id="error-msgve" class="hide"></span>
@@ -174,7 +174,7 @@ main
 
                                 <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
                                 <input id="mobile_code_hiddenve" name="mobile_codeve" type="hidden">
-                                <input class="form-control form-control input-lg"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
+                                <input class="form-control form-control input-lg" value="{{$user->country}}"  id="verify_country_codeve" name="verify_country_codeve" type="hidden">
                                 <input type="text" class="form-control form-control-lg text-4 phonecode" name="mobile" value="{{$user-> mobile}}" id="u_mobile" type="tel">
                                 <input type="hidden" name="oldemail" value="{{$user->mobile}}" id="oldnumber">
                                 <span id="valid-msgve" class="hide"></span>
@@ -527,26 +527,30 @@ main
     <script type="text/javascript">
         $(document).ready(function() {
       var vetelInput = $("#u_mobile");
+      var userCountryCode = $("#verify_country_codeve").val();
       var currentCountry = "";
        errorMsgve = document.querySelector("#error-msgve"),
         validMsgve = document.querySelector("#valid-msgve"),
         addressDropdownve = $("#country");
         var errorMapve = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-
-  vetelInput.intlTelInput({
- 
-    geoIpLookup: function(callback) {
-      $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        var vecountryCode = (resp && resp.country) ? resp.country : "";
-        currentCountry = vecountryCode.toLowerCase();
-        callback(vecountryCode);
+    
+      vetelInput.intlTelInput({
+     
+        geoIpLookup: function(callback) {
+          $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+            var vecountryCode = (resp && resp.country) ? resp.country : "";
+            if (userCountryCode){
+                vecountryCode = userCountryCode;
+            }
+            currentCountry = vecountryCode.toLowerCase();
+            callback(vecountryCode);
+            
+          });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('js/intl/js/utils.js')}}",
       });
-    },
-    initialCountry: "auto",
-    separateDialCode: true,
-    utilsScript: "{{asset('js/intl/js/utils.js')}}",
-  });
-  
    var resetve = function() {
             errorMsgve.innerHTML = "";
             errorMsgve.classList.add("hide");
@@ -599,17 +603,14 @@ main
                     $('#sendOTP').attr('disabled',true);
                 }
             }
-        });
+        })
+        
 
       setTimeout(function() {
         vetelInput.intlTelInput("setCountry", currentCountry);
       }, 500);
 
-  // Add change event handler to update hidden field with the selected country code
-  vetelInput.on("countrychange", function(e, countryData) {
-    var countryCode = countryData.dialCode;
-    $("#u_code").val(countryCode);
-  });
+
 
   $('.intl-tel-input').css('width', '100%');
 });

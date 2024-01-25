@@ -344,7 +344,6 @@ var countryData = $.fn.intlTelInput.getCountryData(),
    errorMsg = document.querySelector("#error-msg"),
     validMsg = document.querySelector("#valid-msg"),
   addressDropdown = $("#country");
-  var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 // init plugin
 telInput.intlTelInput({
    separateDialCode: true,
@@ -369,7 +368,7 @@ $.each(countryData, function(i, country) {
 telInput.on("countrychange", function(e, countryData) {
   addressDropdown.val(countryData.iso2);
 });
-    telInput.on('blur', function () {
+    telInput.on('input blur', function () {
       reset();
         if ($.trim(telInput.val())) {
             if (telInput.intlTelInput("isValidNumber")) {
@@ -377,11 +376,10 @@ telInput.on("countrychange", function(e, countryData) {
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+              errorMsg.classList.remove("hide");
+              errorMsg.innerHTML = "Please enter a valid number";
              $('#mobile_code').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }
@@ -397,11 +395,10 @@ addressDropdown.change(function() {
               errorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+              errorMsg.classList.remove("hide");
+              errorMsg.innerHTML = "Please enter a valid number";
              $('#mobile_code').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }

@@ -461,7 +461,7 @@ foreach($scripts as $script) {
                         <div class="form-row">
                             <div class="form-group col">
                                 <input id="mobile_code_hidden" name="mobile_code" type="hidden">
-                                <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                <input class="form-control form-control input-lg" value=""  id="verify_country_code" name="verify_country_code" type="hidden">
                                 <label for="mobile" class="required">Mobile</label><br/>
                                 <input type="hidden" id="mobstatusConfirm" value="{{$status->msg91_status}}">
                                 <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
@@ -816,7 +816,7 @@ foreach($scripts as $script) {
 
             var userNumber = $('#verify_number').val();
             if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
-                if (userNumber.length < 5){
+                if (userNumber.length < 1){
                     $('#conmobile').show();
                     $('#conmobile').html("Please Enter Your Mobile No.");
                     $('#conmobile').focus();
@@ -1682,7 +1682,6 @@ foreach($scripts as $script) {
             errorMsg = document.querySelector("#error-msg"),
             validMsg = document.querySelector("#valid-msg"),
             addressDropdown = $("#country");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
         telInput.intlTelInput({
             geoIpLookup: function (callback) {
@@ -1702,7 +1701,7 @@ foreach($scripts as $script) {
 
         $('.intl-tel-input').css('width', '100%');
 
-        telInput.on('blur', function () {
+        telInput.on('input blur', function () {
             reset();
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
@@ -1711,13 +1710,11 @@ foreach($scripts as $script) {
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
+                    errorMsg.classList.remove("hide");
+                    errorMsg.innerHTML = "Please enter a valid number";
 
                     $('#mobilenum').css("border-color","red");
                     $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
             }
@@ -1734,13 +1731,10 @@ foreach($scripts as $script) {
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
-
+                    errorMsg.classList.remove("hide");
+                    errorMsg.innerHTML = "Please enter a valid number";
                     $('#mobilenum').css("border-color","red");
                     $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
             }
@@ -1757,7 +1751,6 @@ foreach($scripts as $script) {
         addressDropdown = $("#country");
         errorMsg1 = document.querySelector("#error-msg1"),
             validMsg1 = document.querySelector("#valid-msg1");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
         tel.intlTelInput({
             // allowDropdown: false,
             // autoHideDialCode: false,
@@ -1789,10 +1782,11 @@ foreach($scripts as $script) {
         };
 
         addressDropdown.change(function() {
+            
             tel.intlTelInput("setCountry", $(this).val());
         });
 
-        tel.on('blur', function () {
+        tel.on('input blur', function () {
             reset();
             if ($.trim(tel.val())) {
                 if (tel.intlTelInput("isValidNumber")) {
@@ -1800,17 +1794,25 @@ foreach($scripts as $script) {
                     validMsg1.classList.remove("hide");
                     $('#sendOtp').attr('disabled',false);
                 } else {
-                    var errorCode = tel.intlTelInput("getValidationError");
-                    errorMsg1.innerHTML = errorMap[errorCode];
-                    $('#conmobile').html("");
 
+                    errorMsg1.classList.remove("hide");
+                    errorMsg1.innerHTML = "Please enter a valid number";
                     $('.phone').css("border-color","red");
                     $('#error-msg1').css({"color":"red","margin-top":"5px"});
-                    errorMsg1.classList.remove("hide");
                     $('#sendOtp').attr('disabled',true);
                 }
             }
         });
+        
+         
+      tel.on("countrychange", function(e, countryData) {
+                var countryCodeLog = countryData.dialCode;
+            $("#verify_country_code").val(countryCodeLog);
+          });  
+
+        $('.intl-tel-input').css('width', '100%');
+        
+       
 
 
     </script>

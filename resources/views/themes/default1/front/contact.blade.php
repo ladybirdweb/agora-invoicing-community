@@ -174,7 +174,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
         $('.intl-tel-input').css('width', '100%');
 
-        telInput.on('blur', function () {
+        telInput.on('input blur', function () {
             reset();
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
@@ -183,13 +183,10 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheckcon').html("");
-
+                    errorMsg.classList.remove("hide");
+                    errorMsg.innerHTML = "Please enter a valid number";
                     $('#mobilenumcon').css("border-color","red");
                     $('#error-msgcon').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
             }
@@ -206,13 +203,10 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
                 } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheckcon').html("");
-
+                    errorMsg.classList.remove("hide");
+                    errorMsg.innerHTML = "Please enter a valid number";
                     $('#mobilenumcon').css("border-color","red");
                     $('#error-msgcon').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
                 }
             }

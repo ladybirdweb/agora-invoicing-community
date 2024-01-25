@@ -343,7 +343,7 @@ User
                                             <b>Business</b>: <span class="pull-right clientbusiness" style="float:right;"></span>
                                         </li>
                                         <li class="list-group-item">
-                                            <b>{{Lang::get('message.mobile')}}</b>: <span class="clientmobile" style="float:right;">  @if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</span>
+                                            <b>{{Lang::get('message.mobile')}}</b>: <span class="clientmobile" style="float:right;">  @if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif&nbsp;{{$client->mobile}}</span>
                                         </li>
                                         <li class="list-group-item">
                                             <b>{{Lang::get('message.address')}}</b>: <span class="pull-right clientaddress" style="float:right;"></span>

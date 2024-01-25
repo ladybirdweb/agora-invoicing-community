@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Validator;
+use App\Model\Common\Country;
 
 class AuthController extends BaseAuthController
 {
@@ -126,7 +127,9 @@ class AuthController extends BaseAuthController
             'mobile' => 'required|numeric',
         ]);
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('id', $request->id)->update(['mobile' => $newNumber]);
+        $newCode = ltrim($request->code, '0');
+        $newCountry = Country::where('phonecode',$newCode)->value('country_code_char2');
+        User::where('id', $request->id)->update(['mobile' => $newNumber,'mobile_code' => $newCode,'country' => $newCountry ]);
         try {
             $code = $request->input('code');
             $mobile = ltrim($request->input('mobile'), '0');

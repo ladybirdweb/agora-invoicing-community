@@ -106,7 +106,9 @@ class BaseAuthController extends Controller
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber]);
+        $newCode = ltrim($request->code, '0');
+        $newCountry = Country::where('phonecode',$newCode)->value('country_code_char2');
+        User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber,'mobile_code' => $newCode,'country' => $newCountry]);
 
         try {
             $code = $request->input('code');
@@ -280,7 +282,7 @@ class BaseAuthController extends Controller
     {
         $attempt = $user->verificationAttempts->first();
 
-        if ($attempt->email_attempt) {
+        if ($attempt && $attempt->email_attempt) {
             $attempt->email_attempt = $attempt->email_attempt + 1;
             $attempt->save();
         } else {
@@ -292,7 +294,7 @@ class BaseAuthController extends Controller
     {
         $mobileAttempt = $user->verificationAttempts->first();
 
-        if ($mobileAttempt->mobile_attempt) {
+        if ($mobileAttempt && $mobileAttempt->mobile_attempt) {
             $mobileAttempt->mobile_attempt = $mobileAttempt->mobile_attempt + 1;
             $mobileAttempt->save();
         } else {

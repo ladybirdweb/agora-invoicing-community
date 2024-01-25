@@ -311,7 +311,7 @@ Edit User
          telInput.intlTelInput("setCountry", currentCountry);
     },500)
     $('.intl-tel-input').css('width', '100%');
-    telInput.on('blur', function () {
+    telInput.on('input blur', function () {
       reset();
         if ($.trim(telInput.val())) {
             if (telInput.intlTelInput("isValidNumber")) {
@@ -319,11 +319,10 @@ Edit User
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+            errorMsg.classList.remove("hide");
+             errorMsg.innerHTML = "Please enter a valid number";
              $('#mobile_code').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }
@@ -337,11 +336,10 @@ Edit User
               errorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+             errorMsg.classList.remove("hide");
+             errorMsg.innerHTML = "Please enter a valid number";
              $('#mobile_code').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }

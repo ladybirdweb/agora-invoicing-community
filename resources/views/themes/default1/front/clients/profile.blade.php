@@ -251,7 +251,10 @@ input:checked + .slider:before {
                                      <div class="form-group row {{ $errors->has('=country') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">Country</label>
                                         <div class="col-lg-9">
-                                         {!! Form::text('country',$selectedCountry,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
+                                            {!! Form::text('country', $selectedCountry, [ 'class' => 'form-control input-lg','onChange' => 'getCountryAttr(this.value);','readonly' => 'readonly','title' => 'Contact admin to update your country','data-toggle' => 'tooltip',
+                                             'data-placement' => 'top'
+                                             ]) !!}
+
                                             {!! Form::hidden('country',null,['class' => 'form-control input-lg', 'id'=>'country']) !!}
                                          <h6 id="countryCheck"></h6>
 
@@ -540,7 +543,7 @@ input:checked + .slider:before {
          intelInput.intlTelInput("setCountry", currentCountry);
     },500)
      $('.intl-tel-input').css('width', '100%');
-    intelInput.on('blur', function () {
+    intelInput.on('input blur', function () {
         reset();
         if ($.trim(intelInput.val())) {
             if (intelInput.intlTelInput("isValidNumber")) {
@@ -548,11 +551,10 @@ input:checked + .slider:before {
               provalidMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var inerrorCode = intelInput.intlTelInput("getValidationError");
-             proerrorMsg.innerHTML = inerrorMap[inerrorCode];
+            proerrorMsg.classList.remove("hide");
+             proerrorMsg.innerHTML = "Please enter a valid number";
              $('#incode').css("border-color","red");
              $('#inerror-msg').css({"color":"red","margin-top":"5px"});
-             proerrorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }
@@ -567,11 +569,10 @@ input:checked + .slider:before {
               proerrorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var inerrorCode = intelInput.intlTelInput("getValidationError");
-             proerrorMsg.innerHTML = inerrorMap[errorCode];
+            proerrorMsg.classList.remove("hide");
+             proerrorMsg.innerHTML = "Please enter a valid number";
              $('#incode').css("border-color","red");
              $('#inerror-msg').css({"color":"red","margin-top":"5px"});
-             proerrorMsg.classList.remove("hide");
              $('#submit').attr('disabled',true);
             }
         }

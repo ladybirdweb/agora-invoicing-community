@@ -434,7 +434,7 @@ main
         });
         function verify_number_check() {
             var userNumber = $('#u_mobile').val();
-            if (userNumber.length < 5) {
+            if (userNumber.length < 1) {
                 $('#mobilecheck').show();
                 $('#mobcheck').hide();
                 $('#mobilecheck').html("Please Enter Your Mobile No.");
@@ -481,7 +481,7 @@ main
         });
         function verify_mobnumber_check() {
             var userNumber = $('#u_mobile').val();
-            if (userNumber.length < 5) {
+            if (userNumber.length < 1) {
                 $('#mobcheck').show();
                 $('#mobilecheck').hide();
                 $('#mobcheck').html("Please Enter Your Mobile No.");
@@ -532,7 +532,7 @@ main
        errorMsgve = document.querySelector("#error-msgve"),
         validMsgve = document.querySelector("#valid-msgve"),
         addressDropdownve = $("#country");
-        var errorMapve = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+    
     
       vetelInput.intlTelInput({
      
@@ -551,31 +551,29 @@ main
         separateDialCode: true,
         utilsScript: "{{asset('js/intl/js/utils.js')}}",
       });
-   var resetve = function() {
+            var resetve = function() {
             errorMsgve.innerHTML = "";
             errorMsgve.classList.add("hide");
             validMsgve.classList.add("hide");
         };
         
-                vetelInput.on('blur', function () {
+                vetelInput.on('input blur', function () {
             resetve();
             if ($.trim(vetelInput.val())) {
                 if (vetelInput.intlTelInput("isValidNumber")) {
+                    console.log("valif");
                     $('#u_mobile').css("border-color","");
                     $("#error-msgve").html('');
                     errorMsgve.classList.add("hide");
                     $('#sendOTPmail').attr('disabled',false);
                     $('#sendOTP').attr('disabled',false);
                 } else {
-                    var errorCodeve = vetelInput.intlTelInput("getValidationError");
-                    errorMsgve.innerHTML = errorMapve[errorCodeve];
-                    $('#mobile_codecheckve').html("");
-
+                    errorMsgve.classList.remove("hide");
+                    errorMsgve.innerHTML = "Please enter a valid number";
                     $('#u_mobile').css("border-color","red");
                     $('#error-msgve').css({"color":"red","margin-top":"5px"});
-                    errorMsgve.classList.remove("hide");
                     $('#sendOTPmail').attr('disabled',true);
-                     $('#sendOTP').attr('disabled',true);
+                    $('#sendOTP').attr('disabled',true);
                 }
             }
         });
@@ -592,13 +590,10 @@ main
                     $('#sendOTPmail').attr('disabled',false);
                     $('#sendOTP').attr('disabled',false);
                 } else {
-                    var errorCodeve = vetelInput.intlTelInput("getValidationError");
-                    errorMsgve.innerHTML = errorMapve[errorCodeve];
-                    $('#mobile_codecheckve').html("");
-
+                    errorMsgve.classList.remove("hide");
+                    errorMsgve.innerHTML = "Please enter a valid number";
                     $('#u_mobile').css("border-color","red");
                     $('#error-msgve').css({"color":"red","margin-top":"5px"});
-                    errorMsgve.classList.remove("hide");
                     $('#sendOTPmail').attr('disabled',true);
                     $('#sendOTP').attr('disabled',true);
                 }
@@ -610,10 +605,28 @@ main
         vetelInput.intlTelInput("setCountry", currentCountry);
       }, 500);
 
+        $('form').on('submit', function (e) {
+        var selectedCountryData = vetelInput.intlTelInput("getSelectedCountryData");
+
+        var selectedDialCodeDiv = $('.selected-dial-code');
+        if (selectedDialCodeDiv.length > 0) {
+            var dialCodeFromDiv = selectedDialCodeDiv.text().trim();
+
+            $('input[id=u_code]').val(dialCodeFromDiv);
+        } else {
+            console.error("Error: Could not find or retrieve dial code from the div.");
+        }
+    });
 
 
-  $('.intl-tel-input').css('width', '100%');
-});
+
+      vetelInput.on("countrychange", function(e, countryData) {
+            var countryCode = countryData.dialCode;
+            $("#u_code").val(countryCode);
+          });
+        $('.intl-tel-input').css('width', '100%');
+        
+        });
 
 
 

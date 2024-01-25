@@ -1138,13 +1138,10 @@ $days = $pay->where('product','117')->value('days');
 @if(request()->path() !== 'my-profile' && request()->path() !== 'verify')
 
     <script type="text/javascript">
-
-
         var demotelInput = $('#mobilenumdemo'),
             errorMsgdemo = document.querySelector("#error-msgdemo"),
             validMsgdemo = document.querySelector("#valid-msgdemo"),
             addressDropdowndemo = $("#country");
-        var errorMapdemo = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
         demotelInput.intlTelInput({
             geoIpLookup: function (callback) {
@@ -1165,22 +1162,20 @@ $days = $pay->where('product','117')->value('days');
 
         $('.intl-tel-input').css('width', '100%');
 
-        demotelInput.on('blur', function () {
+        demotelInput.on('input blur', function () {
             resetdemo();
             if ($.trim(demotelInput.val())) {
+
                 if (demotelInput.intlTelInput("isValidNumber")) {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
                     $('#demoregister').attr('disabled',false);
                 } else {
-                    var errorCodedemo = demotelInput.intlTelInput("getValidationError");
-                    errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
-                    $('#mobile_codecheckdemo').html("");
-
+                    errorMsgdemo.classList.remove("hide");
+                    errorMsgdemo.innerHTML = "Please enter a valid number";
                     $('#mobilenumdemo').css("border-color","red");
                     $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
-                    errorMsgdemo.classList.remove("hide");
                     $('#demoregister').attr('disabled',true);
                 }
             }
@@ -1197,13 +1192,10 @@ $days = $pay->where('product','117')->value('days');
                     errorMsgdemo.classList.add("hide");
                     $('#demoregister').attr('disabled',false);
                 } else {
-                    var errorCodedemo = demotelInput.intlTelInput("getValidationError");
-                    errorMsgdemo.innerHTML = errorMapdemo[errorCodedemo];
-                    $('#mobile_codecheckdemo').html("");
-
+                    errorMsgdemo.classList.remove("hide");
+                    errorMsgdemo.innerHTML = "Please enter a valid number";
                     $('#mobilenumdemo').css("border-color","red");
                     $('#error-msgdemo').css({"color":"red","margin-top":"5px"});
-                    errorMsgdemo.classList.remove("hide");
                     $('#demoregister').attr('disabled',true);
                 }
             }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
+use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
@@ -12,7 +13,6 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Validator;
-use App\Model\Common\Country;
 
 class AuthController extends BaseAuthController
 {
@@ -128,8 +128,8 @@ class AuthController extends BaseAuthController
         ]);
         $newNumber = ltrim($request->newnumber, '0');
         $newCode = ltrim($request->code, '0');
-        $newCountry = Country::where('phonecode',$newCode)->value('country_code_char2');
-        User::where('id', $request->id)->update(['mobile' => $newNumber,'mobile_code' => $newCode,'country' => $newCountry ]);
+        $newCountry = Country::where('phonecode', $newCode)->value('country_code_char2');
+        User::where('id', $request->id)->update(['mobile' => $newNumber, 'mobile_code' => $newCode, 'country' => $newCountry]);
         try {
             $code = $request->input('code');
             $mobile = ltrim($request->input('mobile'), '0');

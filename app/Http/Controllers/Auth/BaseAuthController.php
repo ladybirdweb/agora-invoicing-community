@@ -106,7 +106,7 @@ class BaseAuthController extends Controller
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        $newCode = ltrim($request->code, '0');
+        $newCode = $request->code;
         $newCountry = Country::where('phonecode', $newCode)->value('country_code_char2');
         User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber, 'mobile_code' => $newCode, 'country' => $newCountry]);
 

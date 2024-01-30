@@ -128,7 +128,7 @@ class AuthController extends BaseAuthController
         ]);
         $newNumber = ltrim($request->newnumber, '0');
         $newCode = $request->code;
-        $newCountry = Country::where('phonecode', $newCode)->value('country_code_char2');
+        $newCountry = $this->getNewCountry($newCode);
         User::where('id', $request->id)->update(['mobile' => $newNumber, 'mobile_code' => $newCode, 'country' => $newCountry]);
         try {
             $code = $request->input('code');

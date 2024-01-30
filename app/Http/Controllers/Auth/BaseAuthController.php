@@ -15,11 +15,11 @@ use Illuminate\Support\Str;
 
 class BaseAuthController extends Controller
 {
-    
     protected function getNewCountry($newCode)
     {
         return Country::where('phonecode', $newCode)->value('country_code_char2');
     }
+
     //Required Fields for Zoho
     public function reqFields($user, $email)
     {

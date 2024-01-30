@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
-use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;

@@ -15,6 +15,11 @@ use Illuminate\Support\Str;
 
 class BaseAuthController extends Controller
 {
+    
+    protected function getNewCountry($newCode)
+    {
+        return Country::where('phonecode', $newCode)->value('country_code_char2');
+    }
     //Required Fields for Zoho
     public function reqFields($user, $email)
     {
@@ -107,7 +112,7 @@ class BaseAuthController extends Controller
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
         $newCode = $request->code;
-        $newCountry = Country::where('phonecode', $newCode)->value('country_code_char2');
+        $newCountry = $this->getNewCountry($newCode);
         User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber, 'mobile_code' => $newCode, 'country' => $newCountry]);
 
         try {

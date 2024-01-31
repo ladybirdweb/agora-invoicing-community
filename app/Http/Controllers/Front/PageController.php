@@ -18,6 +18,8 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use App\Http\Requests\Front\ContactRequest;
+
 
 class PageController extends Controller
 {
@@ -839,26 +841,10 @@ class PageController extends Controller
         return $result;
     }
 
-    public function postContactUs(Request $request)
+    public function postContactUs(ContactRequest $request)
     {
         try {
             $contact = getContactData();
-            $apiKeys = StatusSetting::value('recaptcha_status');
-            $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
-            $this->validate($request, [
-                'conName' => 'required',
-                'email' => 'required|email',
-                'conmessage' => 'required',
-                'Mobile' => 'required',
-                'country_code' => 'required',
-                'congg-recaptcha-response-1' => "$captchaRule|captcha",
-
-            ],
-                [
-                    'congg-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-                    'congg-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
-                ]);
-
             // Check if the honeypot field is filled
             if ($request->input('conatcthoneypot_field') !== '') {
                 return response()->json(['error' => 'Spam detected.'], 403);
@@ -966,7 +952,7 @@ class PageController extends Controller
         }
     }
 
-    public function postDemoReq(Request $request)
+    public function postDemoReq(ContactRequest $request)
     {
         try {
             // Check if the honeypot field is filled
@@ -974,22 +960,6 @@ class PageController extends Controller
                 return response()->json(['error' => 'Spam detected.'], 403);
             }
             $contact = getContactData();
-            $apiKeys = StatusSetting::value('recaptcha_status');
-            $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-            $this->validate($request, [
-                'demoname' => 'required',
-                'demoemail' => 'required|email',
-                'country_code' => 'required',
-                'Mobile' => 'required',
-                'demomessage' => 'required',
-                'demo-recaptcha-response-1' => $captchaRule.'captcha',
-            ],
-
-                [
-                    'demo-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-                    'demo-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
-                ]);
-
             $isSpam = $this->detectSpam($request->input('demoemail'), $request->input('demomessage'));
 
             if ($isSpam) {

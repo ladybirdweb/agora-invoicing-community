@@ -199,13 +199,30 @@ $(document).ready(function() {
                 }, 5000);
 
             },
-            error: function(xhr, status, error) {
-                $("#demoregister").attr('disabled',false);
+            error: function(response) {
+                $("#demoregister").attr('disabled', false);
                 $("#demoregister").html("Send Message");
-                var errorResponse = JSON.parse(xhr.responseText);
-                $('#demoerrorMessage').html('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + errorResponse.error + '</div>');
+            
+                var errorMessageHtml = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+                
+                if (response.responseJSON && response.responseJSON.errors) {
 
+                    for (var key in response.responseJSON.errors) {
+                        errorMessageHtml += '<li>' + response.responseJSON.errors[key][0] + '</li>';
+                    }
+            
+                    errorMessageHtml += '</ul>';
+                } else if (response.responseJSON && response.responseJSON.message) {
+                    errorMessageHtml += response.responseJSON.message;
+                }
+            
+                errorMessageHtml += '</div>';
+            
+                $('#demoerrorMessage').html(errorMessageHtml);
             }
+
+
+
         });
         
     });

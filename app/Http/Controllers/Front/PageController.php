@@ -839,7 +839,6 @@ class PageController extends Controller
         return $result;
     }
 
-   
     public function postContactUs(Request $request)
     {
         try {
@@ -855,23 +854,21 @@ class PageController extends Controller
                 'congg-recaptcha-response-1' => "$captchaRule|captcha",
 
             ],
-             [
-            'congg-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-            'congg-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
-            ]);
+                [
+                    'congg-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+                    'congg-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
+                ]);
 
-                
-                
             // Check if the honeypot field is filled
             if ($request->input('conatcthoneypot_field') !== '') {
                 return response()->json(['error' => 'Spam detected.'], 403);
             }
-            
+
             $isSpam = $this->detectSpam($request->input('email'), $request->input('message'));
-            
+
             if ($isSpam) {
-            return response()->json(['error' => 'Spam detected.'], 403);
-           }
+                return response()->json(['error' => 'Spam detected.'], 403);
+            }
             $set = new \App\Model\Common\Setting();
             $set = $set->findOrFail(1);
 
@@ -904,58 +901,58 @@ class PageController extends Controller
             }
 
             return response()->json(['message' => 'Your message was sent successfully. Thanks.'], 200);
-
         } catch (\Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 500);
-
         }
     }
-    
-    
-        private function detectSpam($email, $message)
-        {
-            if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message)) {
-                return true; 
-            }
-            if ($this->containsSpamKeywords($message)) {
+
+    private function detectSpam($email, $message)
+    {
+        if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message)) {
+            return true;
+        }
+        if ($this->containsSpamKeywords($message)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function containsExcessivePunctuation($text)
+    {
+        if (preg_match('/!{5,}/', $text)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function containsExcessiveCaps($text)
+    {
+        $uppercaseCount = preg_match_all('/[A-Z]/', $text);
+        $lowercaseCount = preg_match_all('/[a-z]/', $text);
+        $totalCharacters = $uppercaseCount + $lowercaseCount;
+        if ($totalCharacters > 0) {
+            $percentageCaps = ($uppercaseCount / $totalCharacters) * 100;
+            if ($percentageCaps > 50) {
                 return true;
             }
-        
-            return false;
         }
-        
-        private function containsExcessivePunctuation($text)
-        {
-            if (preg_match('/!{5,}/', $text)) {
+
+        return false;
+    }
+
+    private function containsSpamKeywords($text)
+    {
+        $spamKeywords = ['viagra', 'casino', 'lottery', 'free money', 'enlargement', 'promotions'];
+        foreach ($spamKeywords as $keyword) {
+            if (stripos($text, $keyword) !== false) {
                 return true;
             }
-            return false;
         }
-        
-        private function containsExcessiveCaps($text)
-        {
-            $uppercaseCount = preg_match_all('/[A-Z]/', $text);
-            $lowercaseCount = preg_match_all('/[a-z]/', $text);
-            $totalCharacters = $uppercaseCount + $lowercaseCount;
-            if ($totalCharacters > 0) {
-                $percentageCaps = ($uppercaseCount / $totalCharacters) * 100;
-                if ($percentageCaps > 50) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        private function containsSpamKeywords($text)
-        {
-            $spamKeywords = ['viagra', 'casino', 'lottery', 'free money', 'enlargement','promotions'];
-            foreach ($spamKeywords as $keyword) {
-                if (stripos($text, $keyword) !== false) {
-                    return true;
-                }
-            }
-            return false;
-        }
+
+        return false;
+    }
 
     public function viewDemoReq()
     {
@@ -987,17 +984,17 @@ class PageController extends Controller
                 'demomessage' => 'required',
                 'demo-recaptcha-response-1' => $captchaRule.'captcha',
             ],
-            
-            [
-            'demo-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-            'demo-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
-            ]);
-            
+
+                [
+                    'demo-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+                    'demo-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
+                ]);
+
             $isSpam = $this->detectSpam($request->input('demoemail'), $request->input('demomessage'));
-            
+
             if ($isSpam) {
-            return response()->json(['error' => 'Spam detected.'], 403);
-           }
+                return response()->json(['error' => 'Spam detected.'], 403);
+            }
 
             $set = new \App\Model\Common\Setting();
             $set = $set->findOrFail(1);
@@ -1031,9 +1028,8 @@ class PageController extends Controller
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->SendEmail($set->email, $set->company_email, $template->data, $templatename, $replace, $type);
             }
+
             return response()->json(['message' => 'Your message was sent successfully. Thanks.'], 200);
-
-
         } catch (\Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 500);
         }

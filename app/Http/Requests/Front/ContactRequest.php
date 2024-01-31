@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Front;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Model\Common\StatusSetting;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ContactRequest extends FormRequest
 {
@@ -22,9 +22,9 @@ class ContactRequest extends FormRequest
      */
     public function rules(): array
     {
-          $apiKeys = StatusSetting::value('recaptcha_status');
-          $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
-         if ($this->is('contact-us')) {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
+        if ($this->is('contact-us')) {
             return [
                 'conName' => 'required',
                 'email' => 'required|email',
@@ -44,6 +44,7 @@ class ContactRequest extends FormRequest
             ];
         }
     }
+
     public function messages()
     {
         return[

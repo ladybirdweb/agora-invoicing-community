@@ -7,6 +7,7 @@ use App\DefaultPage;
 use App\Demo_page;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Front\ContactRequest;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Common\StatusSetting;
@@ -18,8 +19,6 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use App\Http\Requests\Front\ContactRequest;
-
 
 class PageController extends Controller
 {

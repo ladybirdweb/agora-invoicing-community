@@ -33,6 +33,8 @@ $state = \DB::table('states_subdivisions')->where('state_subdivision_code',$set-
 $country = \DB::table('countries')->where('country_code_char2',$set->country)->value('country_name');
 
 ?>
+<div id="successMessage"></div>
+<div id="errorMessage"></div>
 
         <div class="container">
 
@@ -42,11 +44,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                     <p class="mb-4">Feel free to ask for details, don't save any questions!</p>
 
-                     @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                        {!! Form::open(['url'=>'contact-us','method' => 'post','onsubmit'=>'return Recaptcha()']) !!}
-                        @else
-                        {!! Form::open(['url'=>'contact-us','method' => 'post']) !!}
-                        @endif
+                     <form id="contactForm" method="post">
 
 
                         <div class="row">
@@ -55,7 +53,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 <label class="form-label mb-1 text-2">Name <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="name" id="name" required>
+                                <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="conName" id="conName" required>
                             </div>
 
                             <div class="form-group col-lg-6">
@@ -73,7 +71,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                                 <label class="form-label mb-1 text-2">Mobile <span class="text-color-danger">*</span></label>
 
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenco','name'=>'country_code']) !!}
-                                <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel">
+                                <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel" required>
                                 {!! Form::hidden('mobile_code',null,['class'=>'form-control text-3 h-auto py-2','disabled','id'=>'mobile_codecon']) !!}
                                 <span id="valid-msgcon" class="hide"></span>
                                 <span id="error-msgcon" class="hide"></span>
@@ -87,23 +85,31 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 <label class="form-label mb-1 text-2">Message <span class="text-color-danger">*</span></label>
 
-                                <textarea maxlength="5000" data-msg-required="Please enter your message." rows="8" class="form-control text-3 h-auto py-2" name="message" id="message" required></textarea>
+                                <textarea maxlength="5000" data-msg-required="Please enter your message." rows="8" class="form-control text-3 h-auto py-2" name="conmessage" id="conmessage" required></textarea>
                             </div>
                         </div>
-                                  @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                {!! NoCaptcha::renderJs() !!}
-                                {!! NoCaptcha::display(['id' => 'Contactrecaptcha']) !!}
-                                <div class="verification"></div><br>
+                         <!-- Honeypot fields (hidden) -->
+                                <div style="display: none;">
+                                    <label>Leave this field empty</label>
+                                    <input type="text" name="conatcthoneypot_field" value="">
+                                </div>
+                                
+                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                                 {!! NoCaptcha::display(['id' => 'g-recaptcha-1', 'data-callback' => 'onRecaptcha']) !!}
+                                <input type="hidden" id="congg-recaptcha-response-1" name="congg-recaptcha-response-1">
+                                <div class="robot-verification" id="captcha"></div>
+                                <span id="captchacheck"></span>
                                 @endif
+                                <br>
 
                         <div class="row">
 
                             <div class="form-group col">
 
-                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading...">Send Message</button>
+                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading..." id="contactSubmit">Send Message</button>
                             </div>
                         </div>
-                    {!! Form::close() !!}
+                    </form>
                 </div>
 
 
@@ -129,21 +135,45 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
         </div>
 @stop
 @section('script')
-     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-        <script>
-      function Recaptcha() {
-    var input = $("#Contactrecaptcha :input[name='g-recaptcha-response']");
-            console.log(input.val());
-            if(input.val() == null || input.val()==""){
-                $('.verification').empty()
-                $('.verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
-                return false;
-            }
-            else{
-                return true;
-            }
-}
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+
+    <script>
+        ///////////////////////////////////////////////////////////////////////////////
+        ///Google Recaptcha
+        function recaptchaCallback() {
+            document.querySelectorAll('.g-recaptcha-1').forEach(function (el) {
+                grecaptcha.render(el);
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
+    </script>
+        <script>
+      var recaptchaValid = false;
+        function onRecaptcha(response) {
+        if (response === '') {
+            recaptchaValid = false; 
+        } else {
+            recaptchaValid = true; 
+            $('#congg-recaptcha-response-1').val(response);
+        }
+        }
+    
+         function validateRecaptcha() {
+                 var recaptchaResponse = $('#congg-recaptcha-response-1').val();
+
+                if (recaptchaResponse === '') {
+                    $('#captchacheck').show();
+                    $('#captchacheck').html("Robot verification failed, please try again.");
+                    $('#captchacheck').focus();
+                    $('#captcha').css("border-color", "red");
+                    $('#captchacheck').css({"color": "red", "margin-top": "5px"});
+                    return false;
+                } else {
+                    $('#captchacheck').hide();
+                    return true;
+                }
+         }
     </script>
 @if(request()->path() === 'contact-us')
 <script type="text/javascript">
@@ -221,4 +251,64 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
 </script>
 @endif
+<script>
+$(document).ready(function() {
+    $('#contactForm').submit(function(event) {
+        event.preventDefault(); 
+
+
+       var formData = {
+            "conName": $('#conName').val(),
+            "email": $('#email').val(),
+            "country_code": $('#mobile_code_hiddenco').val().replace(/\s/g, ''),
+            "Mobile": $('#mobilenumcon').val().replace(/[\. ,:-]+/g, ''),
+            "conmessage": $('#conmessage').val(),
+            "conatcthoneypot_field": $('input[name=conatcthoneypot_field]').val(),
+            "congg-recaptcha-response-1": $('#congg-recaptcha-response-1').val(),
+            "_token": "{{ csrf_token() }}"
+        };
+        
+        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
+        if (recaptchaEnabled == 1) {
+            if (!validateRecaptcha()) {
+                $("#contactSubmit").attr('disabled', false);
+                $("#contactSubmit").html("Send Message");
+                return;
+            }
+        }
+        $('#successMessage').empty();
+        $('#errorMessage').empty();
+        $("#contactSubmit").attr('disabled',true);
+        $("#contactSubmit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     
+        $.ajax({
+            type: 'POST',
+            url: 'contact-us',
+            data: formData,
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $("#contactSubmit").attr('disabled',false);
+                $("#contactSubmit").html("Send Message");
+                $('#successMessage').html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.message + '</div>');
+                $('#contactForm')[0].reset();
+                setTimeout(function() {
+                    window.location.reload();
+                }, 5000);
+
+            },
+            error: function(xhr, status, error) {
+                $("#contactSubmit").attr('disabled',false);
+                $("#contactSubmit").html("Send Message");
+                var errorResponse = JSON.parse(xhr.responseText);
+                $('#errorMessage').html('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + errorResponse.error + '</div>');
+
+            }
+        });
+        
+    });
+});
+</script>
 @stop

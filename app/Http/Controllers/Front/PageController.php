@@ -839,31 +839,48 @@ class PageController extends Controller
         return $result;
     }
 
+   
     public function postContactUs(Request $request)
     {
         try {
             $contact = getContactData();
             $apiKeys = StatusSetting::value('recaptcha_status');
-            $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+            $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
             $this->validate($request, [
-                'name' => 'required',
+                'conName' => 'required',
                 'email' => 'required|email',
-                'message' => 'required',
-                'g-recaptcha-response' => $captchaRule.'captcha',
-            ],
-                [
-                    'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-                ]);
+                'conmessage' => 'required',
+                'Mobile' => 'required',
+                'country_code' => 'required',
+                'congg-recaptcha-response-1' => "$captchaRule|captcha",
 
+            ],
+             [
+            'congg-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+            'congg-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
+            ]);
+
+                
+                
+            // Check if the honeypot field is filled
+            if ($request->input('conatcthoneypot_field') !== '') {
+                return response()->json(['error' => 'Spam detected.'], 403);
+            }
+            
+            $isSpam = $this->detectSpam($request->input('email'), $request->input('message'));
+            
+            if ($isSpam) {
+            return response()->json(['error' => 'Spam detected.'], 403);
+           }
             $set = new \App\Model\Common\Setting();
             $set = $set->findOrFail(1);
 
             $template_type = TemplateType::where('name', 'contact_us')->value('id');
             $template = Template::where('type', $template_type)->first();
             $replace = [
-                'name' => $request->input('name'),
+                'name' => $request->input('conName'),
                 'email' => $request->input('email'),
-                'message' => $request->input('message'),
+                'message' => $request->input('conmessage'),
                 'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
                 'ip_address' => $request->ip(),
                 'title' => $set->title,
@@ -886,12 +903,59 @@ class PageController extends Controller
                 $mail->SendEmail($set->email, $set->company_email, $template->data, $template->name, $replace, $type);
             }
 
-            //$this->templateController->SendEmail($from, $to, $data, $subject);
-            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
+            return response()->json(['message' => 'Your message was sent successfully. Thanks.'], 200);
+
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return response()->json(['error' => $ex->getMessage()], 500);
+
         }
     }
+    
+    
+        private function detectSpam($email, $message)
+        {
+            if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message)) {
+                return true; 
+            }
+            if ($this->containsSpamKeywords($message)) {
+                return true;
+            }
+        
+            return false;
+        }
+        
+        private function containsExcessivePunctuation($text)
+        {
+            if (preg_match('/!{5,}/', $text)) {
+                return true;
+            }
+            return false;
+        }
+        
+        private function containsExcessiveCaps($text)
+        {
+            $uppercaseCount = preg_match_all('/[A-Z]/', $text);
+            $lowercaseCount = preg_match_all('/[a-z]/', $text);
+            $totalCharacters = $uppercaseCount + $lowercaseCount;
+            if ($totalCharacters > 0) {
+                $percentageCaps = ($uppercaseCount / $totalCharacters) * 100;
+                if ($percentageCaps > 50) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private function containsSpamKeywords($text)
+        {
+            $spamKeywords = ['viagra', 'casino', 'lottery', 'free money', 'enlargement','promotions'];
+            foreach ($spamKeywords as $keyword) {
+                if (stripos($text, $keyword) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     public function viewDemoReq()
     {
@@ -910,16 +974,30 @@ class PageController extends Controller
         try {
             // Check if the honeypot field is filled
             if ($request->input('honeypot_field') !== '') {
-                return redirect()->back()->with('fails', 'Suspicious activity detected.');
+                return response()->json(['error' => 'Spam detected.'], 403);
             }
             $contact = getContactData();
             $apiKeys = StatusSetting::value('recaptcha_status');
             $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
             $this->validate($request, [
-                'name' => 'required',
+                'demoname' => 'required',
                 'demoemail' => 'required|email',
-                'g-recaptcha-response' => $captchaRule.'captcha',
+                'country_code' => 'required',
+                'Mobile' => 'required',
+                'demomessage' => 'required',
+                'demo-recaptcha-response-1' => $captchaRule.'captcha',
+            ],
+            
+            [
+            'demo-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+            'demo-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
             ]);
+            
+            $isSpam = $this->detectSpam($request->input('demoemail'), $request->input('demomessage'));
+            
+            if ($isSpam) {
+            return response()->json(['error' => 'Spam detected.'], 403);
+           }
 
             $set = new \App\Model\Common\Setting();
             $set = $set->findOrFail(1);
@@ -927,9 +1005,9 @@ class PageController extends Controller
             $template_type = TemplateType::where('name', 'demo_request')->value('id');
             $template = Template::where('type', $template_type)->first();
             $replace = [
-                'name' => $request->input('name'),
+                'name' => $request->input('demoname'),
                 'email' => $request->input('demoemail'),
-                'message' => $request->input('message'),
+                'message' => $request->input('demomessage'),
                 'mobile' => $request->input('country_code').' '.$request->input('Mobile'),
                 'ip_address' => $request->ip(),
                 'title' => $set->title,
@@ -953,10 +1031,11 @@ class PageController extends Controller
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->SendEmail($set->email, $set->company_email, $template->data, $templatename, $replace, $type);
             }
+            return response()->json(['message' => 'Your message was sent successfully. Thanks.'], 200);
 
-            return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
+
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return response()->json(['error' => $ex->getMessage()], 500);
         }
     }
 

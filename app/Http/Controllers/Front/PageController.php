@@ -896,12 +896,13 @@ class PageController extends Controller
         if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message) || $this->containsSpamKeywords($message)) {
             return true;
         }
+
         return false;
     }
 
     private function containsExcessivePunctuation($text)
     {
-        return (bool)preg_match('/!{5,}/', $text);
+        return (bool) preg_match('/!{5,}/', $text);
     }
 
     private function containsExcessiveCaps($text)

@@ -893,23 +893,15 @@ class PageController extends Controller
 
     private function detectSpam($email, $message)
     {
-        if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message)) {
+        if ($this->containsExcessivePunctuation($message) || $this->containsExcessiveCaps($message) || $this->containsSpamKeywords($message)) {
             return true;
         }
-        if ($this->containsSpamKeywords($message)) {
-            return true;
-        }
-
         return false;
     }
 
     private function containsExcessivePunctuation($text)
     {
-        if (preg_match('/!{5,}/', $text)) {
-            return true;
-        }
-
-        return false;
+        return (bool)preg_match('/!{5,}/', $text);
     }
 
     private function containsExcessiveCaps($text)

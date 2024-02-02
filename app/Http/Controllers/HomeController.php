@@ -354,12 +354,11 @@ class HomeController extends BaseHomeController
         }
 
         try {
-            $title = !$request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
+            $title = ! $request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
 
-            $id    = $request->input('id');
+            $id = $request->input('id');
 
             $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->orWhere('id', $id)->select('id')->first();
-
 
             if ($request->has('version')) {
                 if ($product) {
@@ -418,9 +417,9 @@ class HomeController extends BaseHomeController
             return response()->json(compact('error'));
         }
         try {
-            $title = !$request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
+            $title = ! $request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
 
-            $id    = $request->input('id');
+            $id = $request->input('id');
 
             $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->orWhere('id', $id)->select('id')->first();
             /**
@@ -507,7 +506,7 @@ class HomeController extends BaseHomeController
 
     private function changeProductName($title)
     {
-        return match($title) {
+        return match ($title) {
             'Test HelpDesk Company' => 'Test HelpDesk Enterprise',
             'Test HelpDesk Enterprise' => 'Test HelpDesk Enterprise Pro',
             'Test HelpDesk Company (Recurring)' => 'Test HelpDesk Enterprise (Recurring)',

@@ -324,11 +324,11 @@ class HomeController extends BaseHomeController
             $faveo_encrypted_order_number = $request->input('order_number');
             $faveo_serial_key = $request->input('serial_key');
             $orderSerialKey = $order->where('number', $faveo_encrypted_order_number)
-                    ->value('serial_key');
+                ->value('serial_key');
 
             $this_order = $order
-                     ->where('number', $faveo_encrypted_order_number)
-                    ->first();
+                ->where('number', $faveo_encrypted_order_number)
+                ->first();
             if ($this_order && $orderSerialKey == $faveo_serial_key) {
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
@@ -354,9 +354,14 @@ class HomeController extends BaseHomeController
         }
 
         try {
-            $title = $request->input('title');
+            $title = !$request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
+
+            $id    = $request->input('id');
+
+            $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->orWhere('id', $id)->select('id')->first();
+
+
             if ($request->has('version')) {
-                $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
                 if ($product) {
                     /**
                      * PLEASE NOTE (documenting updates in the logic change).
@@ -385,7 +390,6 @@ class HomeController extends BaseHomeController
                 }
             } else {//For older clients in which version is not sent as parameter
                 // $product = $product->where('name', $title)->first();
-                $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
                 if ($product) {
                     $productId = $product->id;
                     $product = ProductUpload::where('product_id', $productId)->where('is_restricted', 1)->orderBy('id', 'asc')->first();
@@ -414,8 +418,11 @@ class HomeController extends BaseHomeController
             return response()->json(compact('error'));
         }
         try {
-            $title = $request->input('title');
-            $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
+            $title = !$request->has('id') ? $this->changeProductName($request->input('title')) : $request->input('title');
+
+            $id    = $request->input('id');
+
+            $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->orWhere('id', $id)->select('id')->first();
             /**
              * PLEASE NOTE (documenting updates in the logic change).
              *
@@ -496,5 +503,25 @@ class HomeController extends BaseHomeController
 
             return response()->json($message);
         }
+    }
+
+    private function changeProductName($title)
+    {
+        return match($title) {
+            'Test HelpDesk Company' => 'Test HelpDesk Enterprise',
+            'Test HelpDesk Enterprise' => 'Test HelpDesk Enterprise Pro',
+            'Test HelpDesk Company (Recurring)' => 'Test HelpDesk Enterprise (Recurring)',
+            'Test ServiceDesk Company' => 'Test ServiceDesk Enterprise',
+            'Test ServiceDesk Enterprise' => 'Test ServiceDesk Enterprise Pro',
+            'Test ServiceDesk Company (Recurring)' => 'Test ServiceDesk Enterprise (Recurring)',
+
+            'HelpDesk Company' => 'HelpDesk Enterprise',
+            'HelpDesk Enterprise' => 'HelpDesk Enterprise Pro',
+            'HelpDesk Company (Recurring)' => 'HelpDesk Enterprise (Recurring)',
+            'ServiceDesk Company' => 'ServiceDesk Enterprise',
+            'ServiceDesk Enterprise' => 'ServiceDesk Enterprise Pro',
+            'ServiceDesk Company (Recurring)' => 'ServiceDesk Enterprise (Recurring)',
+            default => $title
+        };
     }
 }

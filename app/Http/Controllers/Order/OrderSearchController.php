@@ -151,6 +151,7 @@ class OrderSearchController extends Controller
      */
     public function allInstallations($allInstallation, $join)
     {
+       // dd($allInstallation,$join);
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
@@ -169,7 +170,6 @@ class OrderSearchController extends Controller
                     $q->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at')->where('subscriptions.updated_at', '>', $minus30Day);
                 });
             }
-
             return $baseQuery;
         }
     }
@@ -250,18 +250,23 @@ class OrderSearchController extends Controller
             $till = Carbon::parse($till)->endOfDay();
             $fromdate = date_create($from);
 
-            $from = date_format($fromdate, 'Y-m-d H:i:s');
-            $tills = date('Y-m-d H:i:s');
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
 
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween($subFrom, [$from, $tillDate]);
 
-            return ['join' => $join, 'from' => $from, 'till' => $tillDate];
+            return $join;
         }
-
-        return ['join' => $join, 'from' => null, 'till' => null];
     }
 
+    /**
+     * Searches for Order Till Date.
+     *
+     * @param  string  $expiry  The Order Till Date
+     * @param  object  $join
+     * @return Query
+     */
     public function orderTill($from, $till, $join, $request)
     {
         $subTo = $request->renewal ? 'subscriptions.update_ends_at' : 'orders.created_at';
@@ -269,15 +274,13 @@ class OrderSearchController extends Controller
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
             $tilldate = date_create($till);
-            $till = date_format($tilldate, 'Y-m-d H:i:s');
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Order::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween($subTo, [$fromDate, $till]);
 
-            return ['join' => $join, 'from' => $fromDate, 'till' => $till];
+            return $join;
         }
-
-        return ['join' => $join, 'from' => null, 'till' => null];
     }
 
     /**

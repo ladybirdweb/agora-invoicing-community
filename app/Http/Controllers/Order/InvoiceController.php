@@ -155,11 +155,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
-         ->orderColumn('number', '-invoices.date ASC')
-         ->orderColumn('user_id', '-invoices.date ASC')
-         ->orderColumn('date', '-invoices.date ASC')
-         ->orderColumn('status', '-invoices.date ASC')
-         ->orderColumn('grand_total', '-invoices.date ASC')
+         ->orderColumn('number', '-invoices.date $1')
+         ->orderColumn('user_id', '-invoices.date $1')
+         ->orderColumn('date', '-invoices.date $1')
+         ->orderColumn('status', '-invoices.date $1')
+         ->orderColumn('grand_total', '-invoices.date $1')
+         ->orderColumn('action', '-invoices.date $1')
          ->addColumn('checkbox', function ($model) {
              return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

@@ -192,21 +192,26 @@ Dashboard
         </ul>
     @endcomponent
 
+
     {{-- Recent Invoices(Past 30 Days) --}}
     @component('mini_views.card', [
            'title'=> 'Recent Invoices(Past 30 Days)',
            'layout' => 'table',
            'collection'=> $invoices,
-           'columns'=> ['Invoice No', 'Total', 'User', 'Paid', 'Balance', 'Status'],
+           'columns'=> ['Invoice No', 'Total', 'User','Date', 'Paid', 'Balance', 'Status'],
             'linkLeft'=> ['View All' => url('invoices?from='.$startDate.'&till='.$endDate)],
            'linkRight'=> ['Generate New Invoice' => url('invoice/generate')]
     ])
 
         @foreach($invoices as $element)
+            <?php
+            $date = getDateHtml($element->date);
+            ?>
             <tr>
                 <td><a href="{{url('invoices/show?invoiceid='.$element->invoice_id)}}">{{$element->invoice_number}}</a></td>
                 <td>{{$element->grand_total}}</td>
                 <td><a href="{{'clients/'.$element->user_id}}">{{ $element->client_name }}</a></td>
+                <td>{!! $date !!}</td>
                 <td>{{$element->paid}}  </td>
                 <td>
                     <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
@@ -285,7 +290,7 @@ Dashboard
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
             'columns'=> ['User', 'Version', 'Product', 'Expiry'],
-            'linkLeft'=> ['View All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&expiryTill=$expiringSubscriptionDate&act_inst=paid_ins&sort_field=4&sort_order=desc"],
+            'linkLeft'=> ['View All' => url('orders')."?product_id=paid&act_inst=paid_ins&renewal=expired_subscription&version=Outdated"],
             'linkRight'=> ['Create New Product' => url('products/create')]
      ])
          @foreach($clientsUsingOldVersion as $element)

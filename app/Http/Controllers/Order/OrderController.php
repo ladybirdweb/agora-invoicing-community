@@ -187,7 +187,7 @@ class OrderController extends BaseOrderController
             ->addColumn('update_ends_at', function ($model) {
                 $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
 
-                return getExpiryLabel($ends_at);
+                return getDateHtml($ends_at);
             })
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);

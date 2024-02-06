@@ -318,7 +318,7 @@ class DashboardController extends Controller
             ->leftJoin('currencies', 'invoices.currency', '=', 'currencies.code')
             ->leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
             ->select('invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'invoices.status',
-                \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code','invoices.date')
+                \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code', 'invoices.date')
             ->whereBetween('invoices.date', [$fromDateStart, $tillDateEnd])
 
             ->groupBy('invoices.id')

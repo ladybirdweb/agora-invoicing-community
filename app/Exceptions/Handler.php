@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
      * @param  Exception  $exception  Exception instance
      * @return void
      */
-    protected function reportToBugsnag(Exception $exception)
+    protected function reportToBugsnag(Throwable $exception)
     {
         // Check bugsnag reporting is active
         if (config('app.bugsnag_reporting')) {

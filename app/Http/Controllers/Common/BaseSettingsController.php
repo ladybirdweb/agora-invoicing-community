@@ -125,6 +125,7 @@ class BaseSettingsController extends PaymentSettingsController
             $till = $this->getDateFormat($till);
             $froms = Activity::first()->created_at;
             $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
+            dd($till)
             $join = $join->whereBetween('created_at', [$fromDate, $till]);
         }
         if ($delFrom) {

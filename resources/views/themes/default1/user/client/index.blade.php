@@ -293,7 +293,7 @@ Users
                 },
                 "fnPreDrawCallback": function(oSettings) {
                   var urlParams = new URLSearchParams(window.location.search);
-                  var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry');
+                  var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry') || urlParams.has('reg_from') || urlParams.has('reg_till');
                   if (hasSearchParams) {
                     $("#advance-search").css('display','block');
                     $('#tip-search').attr('title', 'Collapse');

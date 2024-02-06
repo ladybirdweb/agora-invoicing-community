@@ -151,7 +151,7 @@ class OrderSearchController extends Controller
      */
     public function allInstallations($allInstallation, $join)
     {
-       // dd($allInstallation,$join);
+        // dd($allInstallation,$join);
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
@@ -170,6 +170,7 @@ class OrderSearchController extends Controller
                     $q->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at')->where('subscriptions.updated_at', '>', $minus30Day);
                 });
             }
+
             return $baseQuery;
         }
     }

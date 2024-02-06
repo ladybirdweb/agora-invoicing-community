@@ -24,16 +24,17 @@ trait CoupCodeAndInvoiceSearch
                'invoices.grand_total',
                'number',
                'status'
-           )->orderBy('date','desc');
+           )->orderBy('date', 'desc');
 
         $this->name($name, $join);
         $this->invoice_no($invoice_no, $join);
         $this->status($status, $join);
         $this->searchcurrency($currency, $join);
-        $this->invoiceFromTo($join,$from,$till);
+        $this->invoiceFromTo($join, $from, $till);
 
         return $join;
     }
+
     public function invoiceFromTo($join, $reg_from, $reg_till)
     {
         if ($reg_from && $reg_till) {
@@ -45,6 +46,7 @@ trait CoupCodeAndInvoiceSearch
 
         return $join;
     }
+
     public function name($name, $join)
     {
         if ($name) {

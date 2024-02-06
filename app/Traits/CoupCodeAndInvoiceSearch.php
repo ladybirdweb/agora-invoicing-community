@@ -24,18 +24,27 @@ trait CoupCodeAndInvoiceSearch
                'invoices.grand_total',
                'number',
                'status'
-           );
+           )->orderBy('date','desc');
 
         $this->name($name, $join);
         $this->invoice_no($invoice_no, $join);
         $this->status($status, $join);
         $this->searchcurrency($currency, $join);
-        $this->invoice_from($from, $till, $join);
-        $this->till_date($till, $from, $join);
+        $this->invoiceFromTo($join,$from,$till);
 
         return $join;
     }
+    public function invoiceFromTo($join, $reg_from, $reg_till)
+    {
+        if ($reg_from && $reg_till) {
+            $fromDateStart = date_create($reg_from)->format('Y-m-d').' 00:00:00';
+            $tillDateEnd = date_create($reg_till)->format('Y-m-d').' 23:59:59';
 
+            $join = $join->whereBetween('date', [$fromDateStart, $tillDateEnd]);
+        }
+
+        return $join;
+    }
     public function name($name, $join)
     {
         if ($name) {
@@ -79,7 +88,7 @@ trait CoupCodeAndInvoiceSearch
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
             $tillDate = $this->getTillDate($from, $till, $tills);
-            $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+            $join = $join->whereBetween('invoices.date', [$from, $tillDate]);
 
             return $join;
         }
@@ -92,9 +101,9 @@ trait CoupCodeAndInvoiceSearch
         if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
-            $froms = Invoice::first()->created_at;
+            $froms = Invoice::first()->date;
             $fromDate = $this->getFromDate($from, $froms);
-            $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
+            $join = $join->whereBetween('invoices.date', [$fromDate, $till]);
 
             return $join;
         }

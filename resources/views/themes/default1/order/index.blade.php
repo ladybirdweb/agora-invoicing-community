@@ -100,26 +100,20 @@ Orders
             </div>
             <?php
              $selectedVersions = \App\Model\Product\Subscription::where('product_id',$request->product_id)->select('version')->get();
-
             ?>
             {!! Form::hidden('select',$request->version,['class' => 'form-control','id'=>'select']) !!}
              <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('version','Version') !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                          <select name="version" id="version-list" class="form-control">
-                        @if(old('version') != null)
-                             @foreach($selectedVersions as $key=>$version)
-                             @if (Request::old('version') == $version->version)
-                             <option value="{{old('version')}}" selected>{{$version->version}}</option>
-                             @endif
-                             @endforeach
-                             @else
-                      
-                            <option value="">Choose A Product</option>
-                            @endif
 
-                        </select>
+                         <select name="version" id="version-list" class="form-control">
+                        <option value="">Choose A Product</option>
+                        @if ($request->version != null)
+                        <option value="{{ $request->version }}" selected>{{ $request->version }}</option>
+                        @endif
+                    </select>
+
 
                     </div>
                 </div>

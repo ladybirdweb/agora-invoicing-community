@@ -268,7 +268,7 @@ class DashboardController extends Controller
      */
     public function getExpiringSubscriptions($past30Days = false)
     {
-        $today = now()->toDateTimeString();
+        $today = Carbon::now()->endOfDay();
 
         $baseQuery = Subscription::with('user:id,first_name,last_name,email,user_name')
             ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
@@ -282,7 +282,6 @@ class DashboardController extends Controller
         } else {
             $baseQuery->whereBetween('update_ends_at', [$today, now()->addDays(30)->toDateTimeString()]);
         }
-
         $baseQuery->orderByDesc('subscription_ends_at')
             ->groupBy('subscriptions.id');
 
@@ -307,16 +306,23 @@ class DashboardController extends Controller
      */
     public function getRecentInvoices()
     {
-        $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
+        $dateBefore = Carbon::now()->subDays(31)->startOfDay()->setTime(12, 0, 0);
+
+        $today = Carbon::now()->endOfDay();
+        $fromDateStart = date_create($dateBefore)->format('Y-m-d').' 00:00:00';
+        $tillDateEnd = date_create($today)->format('Y-m-d').' 23:59:59';
+
+        $todayInclusive = Carbon::now()->endOfDay()->second(59);
 
         return Invoice::with('user:id,first_name,last_name,email,user_name')
             ->leftJoin('currencies', 'invoices.currency', '=', 'currencies.code')
             ->leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
             ->select('invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'invoices.status',
-                \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code')
-            ->where('invoices.created_at', '>', $dateBefore)
+                \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code','invoices.date')
+            ->whereBetween('invoices.date', [$fromDateStart, $tillDateEnd])
+
             ->groupBy('invoices.id')
-            ->orderBy('invoices.created_at', 'desc')
+            ->orderBy('invoices.date', 'desc')
             ->get()->map(function ($element) {
                 $element->balance = (int) ($element->grand_total - $element->paid);
                 $element->status = getStatusLabel($element->status);
@@ -340,24 +346,28 @@ class DashboardController extends Controller
      */
     private function getClientsUsingOldVersions()
     {
-        $date = new Carbon('-30 days');
-        $next30Days = new Carbon('+30 days');
+        $last365Days = Carbon::now()->subDays(366)->startOfDay()->setTime(12, 0, 0);
+
         $latestVersion = (string) Subscription::orderBy('version', 'desc')->value('version');
+        $today = Carbon::now()->endOfDay();
+        $fromDateStart = date_create($last365Days)->format('Y-m-d').' 00:00:00';
+        $tillDateEnd = date_create($today)->format('Y-m-d').' 23:59:59';
+        $date = new Carbon('-30 days');
 
         // query the latest version and query for rest of the versions
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
-            ->where('price_override', '>', 0)
             ->where('subscriptions.updated_at', '>', $date)
-            ->where('subscriptions.update_ends_at', '<', $next30Days)
+            ->where('subscriptions.update_ends_at', '<', $today)
             ->where('subscriptions.version', '<', $latestVersion)
+            ->whereBetween('subscriptions.update_ends_at', [$fromDateStart, $tillDateEnd])
             ->where('subscriptions.version', '!=', null)
             ->where('subscriptions.version', '!=', '')
             ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name', 'products.id as product_id',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
             ->orderBy('subscription_ends_at', 'desc')
-            ->take(30)->get()->map(function ($element) {
+            ->get()->map(function ($element) {
                 $element->subscription_ends_at = $element->subscription_ends_at;
                 $appUrl = \Config::get('app.url');
                 $clientProfileUrl = $appUrl.'/clients/'.$element->client_id;

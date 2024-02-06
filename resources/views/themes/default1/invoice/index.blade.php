@@ -206,7 +206,7 @@ Invoices
           var invoiceTable = $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: true, // Change stateSave to true
+            stateSave: false, // Change stateSave to true
             order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]], // Change the default order if needed
 
             ajax: {

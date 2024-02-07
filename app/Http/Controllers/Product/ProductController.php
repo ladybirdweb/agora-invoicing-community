@@ -198,8 +198,6 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

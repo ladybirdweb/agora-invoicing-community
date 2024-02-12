@@ -95,35 +95,36 @@ class ClientControllerTest extends DBTestCase
         $users = $methodResponse->get();
         $this->assertEquals('+1 9087654321', $users->first()->mobile);
     }
+
     public function test_getBaseQueryForUserSearch_whenMobilestatusIsPresentInTheRequest_filtersResultByThatMobilestatus()
     {
-         $request = new Request(['mobile_verified' => 1]);
-         $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
-         $users = $methodResponse->get();
-         $this->assertEquals(1, $users->count());
-         $firstUser = $users->first();
-         $this->assertTrue($firstUser->mobile_verified == 1);
+        $request = new Request(['mobile_verified' => 1]);
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
+        $users = $methodResponse->get();
+        $this->assertEquals(1, $users->count());
+        $firstUser = $users->first();
+        $this->assertTrue($firstUser->mobile_verified == 1);
     }
+
     public function test_getBaseQueryForUserSearch_whenEmailstatusIsPresentInTheRequest_filtersResultByThatEmailstatus()
     {
-         $request = new Request(['active' => 1]);
-         $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
-         $users = $methodResponse->get();
-         $this->assertEquals(1, $users->count());
-         $firstUser = $users->first();
-         $this->assertTrue($firstUser->active == 1);
+        $request = new Request(['active' => 1]);
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
+        $users = $methodResponse->get();
+        $this->assertEquals(1, $users->count());
+        $firstUser = $users->first();
+        $this->assertTrue($firstUser->active == 1);
     }
 
     public function test_getBaseQueryForUserSearch_when2FAstatusIsPresentInTheRequest_filtersResultByThat2FAstatus()
     {
-         $request = new Request(['is_2fa_enabled' => 0]);
-         $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
-         $users = $methodResponse->get();
-         $this->assertEquals(1, $users->count());
-         $firstUser = $users->first();
-         $this->assertTrue($firstUser->is_2fa_enabled == 0);
+        $request = new Request(['is_2fa_enabled' => 0]);
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getBaseQueryForUserSearch', [$request]);
+        $users = $methodResponse->get();
+        $this->assertEquals(1, $users->count());
+        $firstUser = $users->first();
+        $this->assertTrue($firstUser->is_2fa_enabled == 0);
     }
-
 
     public function test_Admin_Can_Add_User_successfully()
     {

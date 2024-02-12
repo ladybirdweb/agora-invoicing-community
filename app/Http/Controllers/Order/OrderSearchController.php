@@ -151,7 +151,6 @@ class OrderSearchController extends Controller
      */
     public function allInstallations($allInstallation, $join)
     {
-        // dd($allInstallation,$join);
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();

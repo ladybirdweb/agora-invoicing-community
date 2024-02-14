@@ -346,34 +346,22 @@ class DashboardController extends Controller
      */
     private function getClientsUsingOldVersions()
     {
-        $last365Days = Carbon::now()->subDays(366)->startOfDay()->setTime(12, 0, 0);
-
         $latestVersion = (string) Subscription::orderBy('version', 'desc')->value('version');
-        $today = Carbon::now()->endOfDay();
-        $fromDateStart = date_create($last365Days)->format('Y-m-d').' 00:00:00';
-        $tillDateEnd = date_create($today)->format('Y-m-d').' 23:59:59';
-        $date = new Carbon('-30 days');
+        $baseQuery = $this->getBaseQueryForOrders()->where('price_override', '>', 0)
+        ->where('subscriptions.version', '<', $latestVersion)->
+        orderBy('subscriptions.created_at', 'desc')
+        ->get();
+        return $baseQuery;
 
-        // query the latest version and query for rest of the versions
+    }
+        private function getBaseQueryForOrders()
+    {
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
-            ->where('subscriptions.updated_at', '>', $date)
-            ->where('subscriptions.update_ends_at', '<', $today)
-            ->where('subscriptions.version', '<', $latestVersion)
-            ->whereBetween('subscriptions.update_ends_at', [$fromDateStart, $tillDateEnd])
-            ->where('subscriptions.version', '!=', null)
-            ->where('subscriptions.version', '!=', '')
+            ->leftJoin('installation_details', 'orders.id', '=', 'installation_details.order_id')
             ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name', 'products.id as product_id',
-                'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
-            ->orderBy('subscription_ends_at', 'desc')
-            ->get()->map(function ($element) {
-                $element->subscription_ends_at = $element->subscription_ends_at;
-                $appUrl = \Config::get('app.url');
-                $clientProfileUrl = $appUrl.'/clients/'.$element->client_id;
-                $element->client_name = "<a href=$clientProfileUrl>$element->client_name</a>";
-
-                return $element;
-            });
-    }
+                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at'
+            )->groupBy('orders.number');
+    }   
 }

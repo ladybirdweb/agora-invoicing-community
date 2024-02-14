@@ -69,42 +69,42 @@ class OrderSearchController extends Controller
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id', 'installation_details.installation_path'
             )->groupBy('orders.number');
     }
-        public function getProductVersions(Request $request, $productId)
-        {
-            try {
-                $selectedId = $request->select_id;
-                $id = $productId;
-                $options = '';
-        
-                $options .= '<option value="">Choose</option>';
-        
-                $selectedLatest = ($selectedId == 'Latest') ? 'selected' : '';
-                $options .= '<option value="Latest" ' . $selectedLatest . '>Latest</option>';
-        
-                $selectedOutdated = ($selectedId == 'Outdated') ? 'selected' : '';
-                $options .= '<option value="Outdated" ' . $selectedOutdated . '>Outdated</option>';
-        
-                if (($productId !== 'paid') && ($productId !== 'unpaid')) {
-                    $allVersions = Subscription::where('product_id', $productId)
-                        ->where('product_id', '!=', 0)
-                        ->where('version', '!=', '')
-                        ->whereNotNull('version')
-                        ->orderBy('version', 'desc')
-                        ->groupBy('version')
-                        ->get();
-        
-                    foreach ($allVersions as $version) {
-                        $selected = ($selectedId == $version->version) ? 'selected' : '';
-                                $options .= '<option value="' . $version->version . '" ' . $selected . '>' . $version->version . '</option>';
-                    }
-                }
-        
-                return $options;
-            } catch (\Exception $ex) {
-                return "<option value=''>Problem while loading</option>";
-            }
-        }
 
+    public function getProductVersions(Request $request, $productId)
+    {
+        try {
+            $selectedId = $request->select_id;
+            $id = $productId;
+            $options = '';
+
+            $options .= '<option value="">Choose</option>';
+
+            $selectedLatest = ($selectedId == 'Latest') ? 'selected' : '';
+            $options .= '<option value="Latest" '.$selectedLatest.'>Latest</option>';
+
+            $selectedOutdated = ($selectedId == 'Outdated') ? 'selected' : '';
+            $options .= '<option value="Outdated" '.$selectedOutdated.'>Outdated</option>';
+
+            if (($productId !== 'paid') && ($productId !== 'unpaid')) {
+                $allVersions = Subscription::where('product_id', $productId)
+                    ->where('product_id', '!=', 0)
+                    ->where('version', '!=', '')
+                    ->whereNotNull('version')
+                    ->orderBy('version', 'desc')
+                    ->groupBy('version')
+                    ->get();
+
+                foreach ($allVersions as $version) {
+                    $selected = ($selectedId == $version->version) ? 'selected' : '';
+                    $options .= '<option value="'.$version->version.'" '.$selected.'>'.$version->version.'</option>';
+                }
+            }
+
+            return $options;
+        } catch (\Exception $ex) {
+            return "<option value=''>Problem while loading</option>";
+        }
+    }
 
     /**
      * Searches for order for selected versions.

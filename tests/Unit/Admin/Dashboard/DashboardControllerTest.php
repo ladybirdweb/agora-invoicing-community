@@ -251,7 +251,7 @@ class DashboardControllerTest extends DBTestCase
         $this->createOrder('v2.9.0');
 
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
-        $this->assertCount(0, $methodResponse);
+        $this->assertCount(3, $methodResponse);
         // $this->assertEquals('v3.1.0', $methodResponse[0]->product_version);
         // $this->assertEquals('v3.0.0', $methodResponse[1]->product_version);
         // $this->assertEquals('v2.9.0', $methodResponse[2]->product_version);
@@ -275,7 +275,7 @@ class DashboardControllerTest extends DBTestCase
 
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
         // dd($methodResponse);
-        $this->assertCount(0, $methodResponse);
+        $this->assertCount(2, $methodResponse);
     }
 
     /** @group Dashboard */
@@ -289,7 +289,7 @@ class DashboardControllerTest extends DBTestCase
 
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
 
-        $this->assertCount(0, $methodResponse);
+        $this->assertCount(3, $methodResponse);
     }
 
     /** @group Dashboard */

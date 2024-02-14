@@ -98,24 +98,19 @@ Orders
                 {!! Form::label('renewal','Subscriptions') !!}
                 {!! Form::select('renewal',[null => 'Choose']+ $renewal, $request->renewal, ['class' => 'form-control','id'=>'renewal']) !!}
             </div>
-            <?php
-             $selectedVersions = \App\Model\Product\Subscription::where('product_id',$request->product_id)->select('version')->get();
-            ?>
-            {!! Form::hidden('select',$request->version,['class' => 'form-control','id'=>'select']) !!}
-             <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                        <!-- name -->
-                        {!! Form::label('version','Version') !!}
-                        <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-
-                         <select name="version" id="version-list" class="form-control">
-                        <option value="">Choose A Product</option>
-                        @if ($request->version != null)
-                        <option value="{{ $request->version }}" selected>{{ $request->version }}</option>
-                        @endif
-                    </select>
 
 
-                    </div>
+
+        {!! Form::hidden('select', $request->version, ['class' => 'form-control', 'id' => 'select']) !!}
+        <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+            <!-- name -->
+            {!! Form::label('version', 'Version') !!}
+            <select name="version" id="version-list" class="form-control">
+        
+                    <option value="">Choose A Product</option>
+            </select>
+        </div>
+
                 </div>
 
            <div class='row'>
@@ -372,4 +367,5 @@ $(document).ready(function() {
   });
 });
 </script>
+
 @stop

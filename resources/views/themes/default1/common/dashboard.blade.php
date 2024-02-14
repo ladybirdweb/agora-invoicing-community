@@ -152,7 +152,7 @@ Dashboard
 
     {{-- Recently Registered Users --}}
     @component('mini_views.card', [
-           'title'=> 'Recently Registered Users(Past 30 Days)',
+           'title'=> 'Recently Registered Users with Mobile and Email Activation (Past 30 Days)',
            'layout' => 'custom',
            'collection'=> $users,
            'linkLeft'=> ['View All' => url($url)],
@@ -290,7 +290,7 @@ Dashboard
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
             'columns'=> ['User', 'Version', 'Product', 'Expiry'],
-            'linkLeft'=> ['View All' => url('orders')."?product_id=paid&act_inst=paid_ins&renewal=expired_subscription&version=Outdated"],
+            'linkLeft'=> ['View All' => url('orders')."?product_id=paid&version=Outdated"],
             'linkRight'=> ['Create New Product' => url('products/create')]
      ])
          @foreach($clientsUsingOldVersion as $element)

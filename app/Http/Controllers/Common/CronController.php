@@ -544,7 +544,7 @@ class CronController extends BaseCronController
                 $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
                 $user = \DB::table('users')->where('id', $userid)->first();
-                $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
+                $payment_details = Auto_renewal::where('user_id', $userid)->latest()->first(['customer_id', 'payment_intent_id']);
                 $planid = Plan::where('product', $product_details->id)->value('id');
                 $cost = ($product_details->type == '4') ? $oldinvoice->grand_total : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
                 //razorpay sunscription status
@@ -589,6 +589,14 @@ class CronController extends BaseCronController
                     } else {
                         $unit_cost = round((int) $cost + 1) * 100;
                     }
+                    \Stripe\Stripe::setApiKey($stripeSecretKey);
+                    $stripe = new \Stripe\StripeClient($stripeSecretKey);
+                    $paymentMethod = \Stripe\PaymentMethod::retrieve($payment_details->payment_intent_id);
+     
+                    $stripe->customers->update(
+                        $paymentMethod->customer,
+                        ['invoice_settings' => ['default_payment_method' => $paymentMethod->id]]
+                    );
 
                     //create product
                     $product = $stripe->products->create([
@@ -609,7 +617,7 @@ class CronController extends BaseCronController
                     //CREATE SUBSCRIPTION
 
                     $stripe_subscription = $stripe->subscriptions->create([
-                        'customer' => $customer_id,
+                        'customer' => $paymentMethod->customer,
                         'items' => [
                             ['price' => $price_id],
                         ],

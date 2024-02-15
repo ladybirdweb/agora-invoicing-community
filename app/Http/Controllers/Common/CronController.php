@@ -592,7 +592,7 @@ class CronController extends BaseCronController
                     \Stripe\Stripe::setApiKey($stripeSecretKey);
                     $stripe = new \Stripe\StripeClient($stripeSecretKey);
                     $paymentMethod = \Stripe\PaymentMethod::retrieve($payment_details->payment_intent_id);
-     
+
                     $stripe->customers->update(
                         $paymentMethod->customer,
                         ['invoice_settings' => ['default_payment_method' => $paymentMethod->id]]

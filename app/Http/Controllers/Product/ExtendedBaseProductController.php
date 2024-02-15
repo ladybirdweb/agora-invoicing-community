@@ -8,9 +8,9 @@ use App\Model\Order\Invoice;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use App\ReleaseType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\ReleaseType;
 
 class ExtendedBaseProductController extends Controller
 {
@@ -20,7 +20,7 @@ class ExtendedBaseProductController extends Controller
         // ->select('id', 'product_id', 'title', 'description', 'version', 'file');
 
         $new_upload = ProductUpload::leftJoin('products', 'products.id', '=', 'product_uploads.product_id')
-                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'product_uploads.id', 'product_uploads.product_id','product_uploads.release_type_id')
+                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'product_uploads.id', 'product_uploads.product_id', 'product_uploads.release_type_id')
                       ->where('product_id', '=', $id);
 
         return \DataTables::of($new_upload)
@@ -50,7 +50,8 @@ class ExtendedBaseProductController extends Controller
             return $model->file;
         })
         ->addColumn('releasetype', function ($model) {
-            $type = ReleaseType::where('id',$model->release_type_id)->value('type');
+            $type = ReleaseType::where('id', $model->release_type_id)->value('type');
+
             return $type ? $type : '--';
         })
         ->addColumn('action', function ($model) {
@@ -74,7 +75,7 @@ class ExtendedBaseProductController extends Controller
             $sql = 'product_uploads.file like ?';
             $query->whereRaw($sql, ["%{$keyword}%"]);
         })
-        ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file','releasetype', 'action'])
+        ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'releasetype', 'action'])
         ->make(true);
     }
 

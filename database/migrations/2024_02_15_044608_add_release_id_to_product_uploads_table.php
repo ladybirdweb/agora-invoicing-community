@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('product_uploads', function (Blueprint $table) {
             $table->foreignId('release_type_id')->nullable()->default(null)->constrained('release_types')->onDelete('cascade');
-
         });
     }
 

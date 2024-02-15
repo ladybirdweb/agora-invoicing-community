@@ -136,6 +136,7 @@
     .table th{
         border-top: unset !important;
     }
+    
 
     </style>
     @if(Auth::check())
@@ -1229,7 +1230,7 @@ $price = $order->price_override;
     </div>
 
 
-    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static" aria-hidden="true" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1320,6 +1321,25 @@ $price = $order->price_override;
             </div>
         </div>
     </div>
+        <div class="modal fade" id="confirmStripe" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="autorenewModalLabel">Payment Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input class="hidden" id="orderID" value={{$id}}>
+                            <p style="color: #333;">Do not refresh or go back.Please complete the process by clicking <strong style="font-weight: bold;">Finish</strong> to complete the payment process.</p>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirmStripePayment" class="btn btn-primary" data-bs-dismiss="modal">Finish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 
@@ -1541,6 +1561,7 @@ $price = $order->price_override;
         function cardUpdate() {
             $('#renewal-modal').modal('show');
             var id = $('#order').val();
+            var domain = window.location.href;
             $('#payment').on('click', function () {
                 var pay = $('#sel-payment').val();
                 if (pay == null) {
@@ -1573,12 +1594,22 @@ $price = $order->price_override;
                                     "_token": "{!! csrf_token() !!}",
                                 },
                                 success: function (response) {
+                                    if(response.type == 'success'){
                                     $('#stripe-Modal').modal('hide');
                                     $('#alertMessage-2').show();
                                     $('#updateButton').show();
                                     var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                                     $('#alertMessage-2').html(result + ".");
                                     $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                                    setTimeout(function() {
+                                    window.location.href = domain;
+                                    }, 3000);
+
+                                    }
+                                    else{
+                                    window.location.href = response;
+                                    }
+                                   
 
                                 },
                                 error: function (data) {
@@ -2078,6 +2109,68 @@ $price = $order->price_override;
         let hash = $(this).attr('href');
         window.location.hash = hash;
     });
+</script>
+
+<script>
+function openModalIfQueryParamExists() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentIntent = urlParams.get('payment_intent');
+    if (paymentIntent) {
+        $('#confirmStripe').modal({ backdrop: 'static', keyboard: false }).modal('show');
+    }
+}
+
+$(document).ready(function() {
+    openModalIfQueryParamExists();
+    $('#confirmStripe').on('hidden.bs.modal', function () {
+    $(this).data('bs.modal')._config.backdrop = true;
+    });
+});
+
+</script>
+
+
+<script>
+$(document).ready(function() {
+    $('#confirmStripePayment').click(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentIntent = urlParams.get('payment_intent');
+        const orderId = $('#orderID').val();
+        var currentUrl = window.location.origin + window.location.pathname;
+        var newUrl = currentUrl + '#auto-renew';
+
+        $.ajax({
+            url: "{{ url('stripeUpdatePayment/confirm') }}",
+            method: 'POST',
+            data: { payment_intent: paymentIntent,orderId: orderId },
+            success: function(response) {
+                $('#confirmStripe').modal('hide');
+                $('#alertMessage-2').show();
+                $('#updateButton').show();
+                $('html, body').animate({ scrollTop: 0 }, 500);
+                var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
+                $('#alertMessage-2').html(result + ".");
+                setTimeout(function() {
+                    window.location.href = newUrl; 
+                }, 3000);
+            },
+               error: function(xhr, status, error) {
+                var errorMessage = 'Something went wrong. Try with a different payment method.';
+                $('#confirmStripe').modal('hide');
+                $('html, body').animate({ scrollTop: 0 }, 500);
+                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' + errorMessage + ' <br><ul>';
+                $('#error-1').show();
+                document.getElementById('error-1').innerHTML = html;
+                setTimeout(function() {
+                    window.location.href = newUrl; 
+                }, 3000);
+            }
+
+        });
+    });
+});
+
+
 </script>
 
     <style>

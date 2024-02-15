@@ -162,6 +162,7 @@ class RazorpayController extends Controller
 
     public function getViewMessageAfterPayment($invoice, $state, $currency)
     {
+
         $orders = Order::where('invoice_id', $invoice->id)->get();
         $invoiceItems = InvoiceItem::where('invoice_id', $invoice->id)->get();
 
@@ -220,4 +221,29 @@ class RazorpayController extends Controller
             }
         }
     }
+   public function afterPayment(Request $request)
+    {
+        try{
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $invoice = \Session::get('invoice');
+        $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
+        if($paymentIntent->status === 'succeeded'){
+        $status = $paymentIntent->status; 
+        $details = $paymentIntent['charges']['data'][0]->payment_method_details->card;
+        $invoice_item =  $invoice->invoiceItem()->get();
+        return view('themes.default1.front.stripeModalConfirm',compact('status','details','invoice','invoice_item'));
+        }else{
+        $control = new \App\Http\Controllers\Order\RenewController();
+        if ($control->checkRenew($invoice->is_renewed) != true) {
+            return redirect('checkout')->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+        } else {
+            return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+        }
+        }
+        }
+        catch (\Exception $e) {
+        return redirect('checkout')->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+        }
+}
 }

@@ -11,4 +11,4 @@ Route::get('update-api-key/payment-gateway/stripe', 'App\Plugins\Stripe\Controll
 // Route::post('stripe', 'App\Plugins\Stripe\Controllers\SettingsController@stripePost')->name('stripe.post');
 Route::get('stripe', 'App\Plugins\Stripe\Controllers\ProcessController@payWithStripe')->name('stripform');
 Route::post('stripe', 'App\Plugins\Stripe\Controllers\SettingsController@postPaymentWithStripe')->name('paywithstripe');
-Route::post('final/stripe','App\Plugins\Stripe\Controllers\SettingsController@final')->name('final');
+Route::post('final/stripe', 'App\Plugins\Stripe\Controllers\SettingsController@final')->name('final');

@@ -9,10 +9,9 @@ class ReleaseType extends Model
 {
     use HasFactory;
 
-     public $timestamps = true;
+    public $timestamps = true;
 
-     protected $table = 'release_types';
+    protected $table = 'release_types';
 
-     protected $fillable = ['type'];
-
+    protected $fillable = ['type'];
 }

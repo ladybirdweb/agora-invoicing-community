@@ -8,7 +8,7 @@ class ProductUpload extends Model
 {
     protected $table = 'product_uploads';
 
-    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted'];
+    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted','release_type_id'];
 
     public function product()
     {
@@ -23,5 +23,10 @@ class ProductUpload extends Model
     public function getDependenciesAttribute($value)
     {
         return json_decode($value);
+    }
+
+    public function releaseType()
+    {
+        return $this->belongsTo(ReleaseType::class, 'release_type_id');
     }
 }

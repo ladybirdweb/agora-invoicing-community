@@ -441,6 +441,7 @@ Edit Product
                         <th>Title</th>
                         <th style="width:210px;">Description</th>
                         <th>Version</th>
+                        <th>ReleaseType</th>
                         <th>File</th>
                         <th>Action</th>
                         </tr></thead>
@@ -596,6 +597,7 @@ Edit Product
                 {data: 'title', name: 'title'},
                 {data: 'description', name: 'description'},
                 {data: 'version', name: 'version'},
+                {data: 'releasetype', name: 'releasetype'},
                 {data: 'file', name: 'file'},
                 {data: 'action', name: 'action'}
             ],

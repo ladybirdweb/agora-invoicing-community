@@ -80,52 +80,29 @@ class ClientController extends BaseClientController
         $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
+        $orderid = $request->get('order_id');
+
         $validation = [
             'card_no' => 'required',
             'exp_month' => 'required',
             'exp_year' => 'required',        ];
 
         $this->validate($request, $validation);
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $orderid = $request->get('order_id');
-        try {
-            $controller = new SettingsController();
-            $payment = $this->stripePay($request);
-
-            if ($payment['charge']['status']) {
-                $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
-                $number = Invoice::where('id', $invoice_id)->value('number');
-                $customer_details = [
-                    'user_id' => \Auth::user()->id,
-                    'customer_id' => $payment['customer']['id'],
-                    'payment_method' => 'stripe',
-                    'order_id' => $orderid,
-                ];
-                Auto_renewal::create($customer_details);
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
-
-                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
-
-                $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
-
-                return response()->json($response);
-            }
-        } catch(\Exception $ex) {
-            $result = $ex->getMessage();
-            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
-
-            return response()->json(compact('result'), 500);
-        }
-    }
-
-    public function stripePay($request)
-    {
-        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        
+         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = Stripe::make($stripeSecretKey);
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
         $amount = 1;
         $currency = \Auth::user()->currency;
 
-        $token = $stripe->tokens()->create([
+        $customer = \Stripe\Customer::create([
+        'name' => \Auth::user()->first_name . ' ' . \Auth::user()->last_name,
+
+        'email' => \Auth::user()->email, 
+       ]);
+
+        $paymentMethod = \Stripe\PaymentMethod::create([
+            'type' => 'card',
             'card' => [
                 'number' => $request->get('card_no'),
                 'exp_month' => $request->get('exp_month'),
@@ -133,34 +110,59 @@ class ClientController extends BaseClientController
                 'cvc' => $request->get('cvv'),
             ],
         ]);
+        
 
-        if (! isset($token['id'])) {
-            \Session::put('error', 'The Stripe Token was not generated correctly');
-
-            return redirect()->route('stripform');
-        }
-        $customer = $stripe->customers()->create([
-            'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-            'email' => \Auth::user()->email,
-            'address' => [
-                'line1' => \Auth::user()->address,
-                'postal_code' => \Auth::user()->zip,
-                'city' => \Auth::user()->town,
-                'state' => \Auth::user()->state,
-                'country' => \Auth::user()->country,
-            ],
-        ]);
-
-        $stripeCustomerId = $customer['id'];
-        $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
-        $charge = $stripe->charges()->create([
-            'customer' => $customer['id'],
+         $intent = \Stripe\PaymentIntent::create([
+            'amount' => intval($amount * 100), 
             'currency' => $currency,
-            'amount' => $amount,
-            'description' => 'Add in wallet',
-        ]);
+            'payment_method' => $paymentMethod['id'],
+            'customer' => $customer['id'],
+            'confirmation_method' => 'automatic',
+            'setup_future_usage' => 'off_session',
 
-        return ['charge' => $charge, 'customer' => $customer];
+        ]);
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $confirm = $stripe->paymentIntents->confirm(
+          $intent['id'],
+          [
+            'payment_method' => $paymentMethod['id'],
+            'return_url' => 'https://qa.faveodemo.com/sowmya/agora-invoicing-community/public/my-order/' . $orderid . '#auto-renew',
+          ]
+        );
+        
+        $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
+        if($paymentIntent->status == 'requires_action')
+        {
+        $redirectUrl = $paymentIntent->next_action->redirect_to_url->url;
+        return $redirectUrl;
+        }
+        elseif($confirm->status === 'succeeded')
+        {
+            $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+            $number = Invoice::where('id', $invoice_id)->value('number');
+            $customer_details = [
+                    'user_id' => \Auth::user()->id,
+                    'customer_id' => $customer['id'],
+                    'payment_method' => 'stripe',
+                    'order_id' => $orderid,
+                    'payment_intent_id' => $paymentMethod['id']
+                ];
+            Auto_renewal::create($customer_details);
+            Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
+            $mail = new \App\Http\Controllers\Common\PhpMailController();   
+
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
+
+            $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+            return ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+
+        }   
+    
+    }
+
+    public function stripePay($request,$orderid)
+    {
+       
     }
 
     public function disableAutorenewalStatus(Request $request)
@@ -952,5 +954,40 @@ class ClientController extends BaseClientController
 
         $invoice->delete();
         \Session::forget('invoice');
+    }
+    
+    public function stripeUpdatePayment(Request $request)
+    {
+    try{
+       $orderid = $request->input('orderId');
+       $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+       $stripe = new \Stripe\StripeClient($stripeSecretKey);
+       $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
+       if($paymentIntent->status === 'succeeded'){
+        $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+        $number = Invoice::where('id', $invoice_id)->value('number');
+        $customer_details = [
+        'user_id' => \Auth::user()->id,
+        'customer_id' => $paymentIntent->customer,
+        'payment_method' => 'stripe',
+        'order_id' => $orderid,
+        'payment_intent_id' => $paymentIntent->payment_method
+        ];
+        Auto_renewal::create($customer_details);
+        Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
+        $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+        return response()->json($response);
+        }
+        else{
+        $response = ['type' => 'fails', 'message' => 'Something went wrong.'];
+        return response()->json(compact('response'), 500); 
+        }
+        }catch(\Exception $ex){
+        $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
+        $errorMessage = 'Something went wrong. Try with a different payment method.';
+        return response()->json(['error' => $errorMessage], 500);
+        }
     }
 }

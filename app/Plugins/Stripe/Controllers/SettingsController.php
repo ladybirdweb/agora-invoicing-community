@@ -119,113 +119,65 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function postPaymentWithStripe(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
+public function postPaymentWithStripe(Request $request)
+{
+    $validator = Validator::make($request->all(), []);
+    $validation = [
+        'card_no' => 'required',
+        'exp_month' => 'required',
+        'exp_year' => 'required',
+        'cvv' => 'required',
+    ];
+
+    $this->validate($request, $validation);
+
+    try {
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+
+        $invoice = \Session::get('invoice');
+        $amount = rounding(\Cart::getTotal()) ?: rounding(\Session::get('totalToBePaid'));
+        $currency = strtolower($invoice->currency);
+        
+        $customer = \Stripe\Customer::create([
+        'name' => \Auth::user()->first_name . ' ' . \Auth::user()->last_name,
+
+        'email' => \Auth::user()->email, 
+       ]);
+       
+
+
+       $paymentMethod = \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'number' => $request->get('card_no'),
+                'exp_month' => $request->get('exp_month'),
+                'exp_year' => $request->get('exp_year'),
+                'cvc' => $request->get('cvv'),
+            ],
         ]);
-        $input = $request->all();
-        $validation = [
-            'card_no' => 'required',
-            'exp_month' => 'required',
-            'exp_year' => 'required',
-            'cvv' => 'required',
-        ];
+        
 
-        $this->validate($request, $validation);
+         $intent = \Stripe\PaymentIntent::create([
+            'amount' => intval($amount * 100), 
+            'currency' => $currency,
+            'payment_method' => $paymentMethod['id'],
+            'customer' => $customer['id'],
+            'confirmation_method' => 'automatic',
+            'setup_future_usage' => 'off_session',
 
-        try {
-            $invoice = \Session::get('invoice');
-            // $invoiceTotal = \Session::get('totalToBePaid');
-            $amount = rounding(\Cart::getTotal());
-            if (! $amount) {//During renewal
-                $amount = rounding(\Session::get('totalToBePaid'));
-            }
-            $currency = strtolower($invoice->currency);
+        ]);
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $confirm = $stripe->paymentIntents->confirm(
+          $intent['id'],
+          [
+            'payment_method' => $paymentMethod['id'],
+            'return_url' => 'https://qa.faveodemo.com/sowmya/agora-invoicing-community/public/confirm/payment',
+          ]
+        );
 
-            $strCharge = $this->stripePay($request);
-            if ($strCharge && $strCharge['charge']['status'] == 'succeeded') {
-                $stripeCustomerId = $strCharge['customer']['id'];
-                $user = User::find($invoice->user_id);
-
-                //Change order Status as Success if payment is Successful
-                $stateCode = \Auth::user()->state;
-                $cont = new \App\Http\Controllers\RazorpayController();
-                $state = $cont->getState($stateCode);
-                $currency = Currency::where('code', $currency)->pluck('symbol')->first();
-
-                $control = new \App\Http\Controllers\Order\RenewController();
-                $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
-                //After Regular Payment
-                if ($control->checkRenew($invoice->is_renewed) === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {
-                    $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                    $checkout_controller->checkoutAction($invoice);
-
-                    $this->doTheDeed($invoice);
-
-                    if (! empty($invoice->cloud_domain)) {
-                        $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', cloudPopupProducts())->value('number');
-                        (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
-                    }
-
-                    $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-                    $status = $view['status'];
-                    $message = $view['message'];
-                } elseif ($cloud->checkAgentAlteration()) {
-                    if (\Session::has('agentIncreaseDate')) {
-                        $control->successRenew($invoice);
-                        \Session::forget('agentIncreaseDate');
-                    }
-
-                    $subId = \Session::get('AgentAlteration'); // use if needed in future
-                    $newAgents = \Session::get('newAgents');
-                    $orderId = \Session::get('orderId');
-                    $installationPath = \Session::get('installation_path');
-                    $productId = \Session::get('product_id');
-                    $oldLicense = \Session::get('oldLicense');
-                    $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice);
-                    Invoice::where('id', $invoice->id)->update(['status' => 'success']);
-                    if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
-                    }
-                    $this->doTheDeed($invoice);
-                    $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
-                    $status = $view['status'];
-                    $message = $view['message'];
-                    $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
-                } elseif ($cloud->checkUpgradeDowngrade()) {
-                    $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                    $checkout_controller->checkoutAction($invoice);
-                    $oldLicense = \Session::get('upgradeOldLicense');
-                    $installationPath = \Session::get('upgradeInstallationPath');
-                    $productId = \Session::get('upgradeProductId');
-                    $licenseCode = \Session::get('upgradeSerialKey');
-                    $this->doTheDeed($invoice);
-                    $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
-                    $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-                    $status = $view['status'];
-                    $message = $view['message'];
-                } else {
-                    //Afer Renew
-                    $control->successRenew($invoice);
-                    $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice);
-                    if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
-                    }
-                    $this->doTheDeed($invoice);
-                    if (\Session::has('AgentAlterationRenew')) {
-                        $newAgents = \Session::get('newAgentsRenew');
-                        $orderId = \Session::get('orderIdRenew');
-                        $installationPath = \Session::get('installation_pathRenew');
-                        $productId = \Session::get('product_idRenew');
-                        $oldLicense = \Session::get('oldLicenseRenew');
-                        $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
-                    }
-                    $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
-                    $status = $view['status'];
-                    $message = $view['message'];
-                }
+        if ($confirm->status === 'succeeded') {
+           $result = $this->processPaymentSuccess($invoice, $currency);
                 \Session::forget('items');
                 \Session::forget('code');
                 \Session::forget('codevalue');
@@ -233,11 +185,15 @@ class SettingsController extends Controller
                 \Session::forget('invoice');
                 \Session::forget('cart_currency');
                 \Cart::removeCartCondition('Processing fee');
+                return redirect('checkout')->with($result['status'], $result['message']);
 
-                return redirect('checkout')->with($status, $message);
-            } else {
-                return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
-            }
+
+
+        } else {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
+            $redirectUrl = $paymentIntent->next_action->redirect_to_url->url;
+            return redirect()->away($redirectUrl);
+        }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             $control = new \App\Http\Controllers\Order\RenewController();
             if ($control->checkRenew($invoice->is_renewed) != true) {
@@ -256,60 +212,8 @@ class SettingsController extends Controller
         } catch (\Exception $e) {
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
-    }
+}
 
-    public function stripePay($request)
-    {
-        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-        $stripe = Stripe::make($stripeSecretKey);
-
-        if (\Session::get('invoice')) {
-            $invoice = \Session::get('invoice');
-            // $invoiceTotal = \Session::get('totalToBePaid');
-            $amount = rounding(\Cart::getTotal());
-            if (! $amount) {//During renewal
-                $amount = rounding(\Session::get('totalToBePaid'));
-            }
-            $currency = strtolower($invoice->currency);
-        }
-
-        $token = $stripe->tokens()->create([
-            'card' => [
-                'number' => $request->get('card_no'),
-                'exp_month' => $request->get('exp_month'),
-                'exp_year' => $request->get('exp_year'),
-                'cvc' => $request->get('cvv'),
-            ],
-        ]);
-
-        if (! isset($token['id'])) {
-            \Session::put('error', 'The Stripe Token was not generated correctly');
-
-            return redirect()->route('stripform');
-        }
-        $customer = $stripe->customers()->create([
-            'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-            'email' => \Auth::user()->email,
-            'address' => [
-                'line1' => \Auth::user()->address,
-                'postal_code' => \Auth::user()->zip,
-                'city' => \Auth::user()->town,
-                'state' => \Auth::user()->state,
-                'country' => \Auth::user()->country,
-            ],
-        ]);
-
-        $stripeCustomerId = $customer['id'];
-        $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
-        $charge = $stripe->charges()->create([
-            'customer' => $customer['id'],
-            'currency' => $currency,
-            'amount' => $amount,
-            'description' => 'Add in wallet',
-        ]);
-
-        return ['charge' => $charge, 'customer' => $customer];
-    }
 
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
@@ -375,4 +279,122 @@ class SettingsController extends Controller
             }
         }
     }
+    
+    public function final(Request $request)
+    {
+       try{
+       $paymentintent = $request->input('payment_intent');
+       $invoice =Invoice::find($request->input('invoice'));
+       $amount = rounding(\Cart::getTotal());
+        if (! $amount) {
+        $amount = rounding(\Session::get('totalToBePaid'));
+        }
+        $currency = strtolower($invoice->currency);
+        if($paymentintent === "succeeded"){
+        $amount = rounding(\Cart::getTotal()) ?: rounding(\Session::get('totalToBePaid'));
+        $currency = strtolower($invoice->currency);
+        $result = $this->processPaymentSuccess($invoice, $currency);
+
+        \Session::forget('items');
+        \Session::forget('code');
+        \Session::forget('codevalue');
+        \Session::forget('totalToBePaid');
+        \Session::forget('invoice');
+        \Session::forget('cart_currency');
+        \Cart::removeCartCondition('Processing fee');
+
+        return redirect('checkout')->with($result['status'], $result['message']);
+        } else {
+            return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
+        }
+        } catch (\Exception $e) {
+            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+        }
+    }
+    
+    
+private function processPaymentSuccess($invoice, $currency)
+{
+    try{
+    $user = User::find($invoice->user_id);
+    $stateCode = \Auth::user()->state;
+    $cont = new \App\Http\Controllers\RazorpayController();
+    $state = $cont->getState($stateCode);
+    $currency = Currency::where('code', $currency)->pluck('symbol')->first();
+
+    $control = new \App\Http\Controllers\Order\RenewController();
+    $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
+    // After Regular Payment
+    if ($control->checkRenew($invoice->is_renewed) === false && $invoice->is_renewed == 0 && !$cloud->checkUpgradeDowngrade()) {
+        $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+        $checkout_controller->checkoutAction($invoice);
+
+        $this->doTheDeed($invoice);
+
+        if (!empty($invoice->cloud_domain)) {
+            $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', cloudPopupProducts())->value('number');
+            (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
+        }
+
+        $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+    } elseif ($cloud->checkAgentAlteration()) {
+        if (\Session::has('agentIncreaseDate')) {
+            $control->successRenew($invoice);
+            \Session::forget('agentIncreaseDate');
+        }
+
+        $subId = \Session::get('AgentAlteration');
+        $newAgents = \Session::get('newAgents');
+        $orderId = \Session::get('orderId');
+        $installationPath = \Session::get('installation_path');
+        $productId = \Session::get('product_id');
+        $oldLicense = \Session::get('oldLicense');
+        $payment = new \App\Http\Controllers\Order\InvoiceController();
+        $payment->postRazorpayPayment($invoice);
+        Invoice::where('id', $invoice->id)->update(['status' => 'success']);
+        if ($invoice->grand_total && emailSendingStatus()) {
+            $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
+        }
+        $this->doTheDeed($invoice);
+        $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
+        $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+    } elseif ($cloud->checkUpgradeDowngrade()) {
+        $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+        $checkout_controller->checkoutAction($invoice);
+        $oldLicense = \Session::get('upgradeOldLicense');
+        $installationPath = \Session::get('upgradeInstallationPath');
+        $productId = \Session::get('upgradeProductId');
+        $licenseCode = \Session::get('upgradeSerialKey');
+        $this->doTheDeed($invoice);
+        $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
+        $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+    } else {
+        $control->successRenew($invoice);
+        $payment = new \App\Http\Controllers\Order\InvoiceController();
+        $payment->postRazorpayPayment($invoice);
+        if ($invoice->grand_total && emailSendingStatus()) {
+            $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
+        }
+        $this->doTheDeed($invoice);
+        if (\Session::has('AgentAlterationRenew')) {
+            $newAgents = \Session::get('newAgentsRenew');
+            $orderId = \Session::get('orderIdRenew');
+            $installationPath = \Session::get('installation_pathRenew');
+            $productId = \Session::get('product_idRenew');
+            $oldLicense = \Session::get('oldLicenseRenew');
+            $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+        }
+        $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
+    }
+
+    return [
+        'status' => $view['status'],
+        'message' => $view['message'],
+    ];
+    }catch (\Exception $e) {
+    return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+    }
+
+}  
+
 }

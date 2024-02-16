@@ -2112,47 +2112,41 @@ $(document).ready(function() {
 </script>
 
 <script>
-function openModalIfQueryParamExists() {
+
+$(document).ready(function() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentIntent = urlParams.get('payment_intent');
     if (paymentIntent) {
-        $('#confirmStripe').modal({ backdrop: 'static', keyboard: false }).modal('show');
+        openModalIfQueryParamExists();
+        
     }
-}
-
-$(document).ready(function() {
-    openModalIfQueryParamExists();
-    $('#confirmStripe').on('hidden.bs.modal', function () {
-    $(this).data('bs.modal')._config.backdrop = true;
-    });
 });
 
 </script>
 
 
 <script>
-$(document).ready(function() {
-    $('#confirmStripePayment').click(function() {
+       function openModalIfQueryParamExists() {
         const urlParams = new URLSearchParams(window.location.search);
         const paymentIntent = urlParams.get('payment_intent');
         const orderId = $('#orderID').val();
         var currentUrl = window.location.origin + window.location.pathname;
         var newUrl = currentUrl + '#auto-renew';
-
         $.ajax({
             url: "{{ url('stripeUpdatePayment/confirm') }}",
             method: 'POST',
             data: { payment_intent: paymentIntent,orderId: orderId },
             success: function(response) {
                 $('#confirmStripe').modal('hide');
-                $('#alertMessage-2').show();
-                $('#updateButton').show();
                 $('html, body').animate({ scrollTop: 0 }, 500);
+                $('#alertMessage-2').show();
+                
                 var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                 $('#alertMessage-2').html(result + ".");
+                $('#updateButton').show();
                 setTimeout(function() {
                     window.location.href = newUrl; 
-                }, 3000);
+                }, 5000);
             },
                error: function(xhr, status, error) {
                 var errorMessage = 'Something went wrong. Try with a different payment method.';
@@ -2163,12 +2157,13 @@ $(document).ready(function() {
                 document.getElementById('error-1').innerHTML = html;
                 setTimeout(function() {
                     window.location.href = newUrl; 
-                }, 3000);
+                }, 5000);
             }
 
         });
-    });
-});
+       
+    }
+    
 
 
 </script>

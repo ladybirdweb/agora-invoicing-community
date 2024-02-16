@@ -357,28 +357,28 @@ $price = $order->price_override;
                         <li class="nav-item">
 
                             <a class="nav-link active" href="#license" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">License Details
+                               data-hash-offset-lg="500" data-hash-delay="100">License Details
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#users" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">User Details
+                               data-hash-offset-lg="500" data-hash-delay="100">User Details
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#invoice" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">Invoice List
+                               data-hash-offset-lg="500" data-hash-delay="500">Invoice List
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#receipt" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">Payment Receipts
+                               data-hash-offset-lg="500" data-hash-delay="500">Payment Receipts
                             </a>
                         </li>
                         @if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated')
@@ -386,7 +386,7 @@ $price = $order->price_override;
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#cloud" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Cloud Settings
+                                   data-hash-offset-lg="500" data-hash-delay="500">Cloud Settings
                                 </a>
                             </li>
                         @endif
@@ -396,14 +396,14 @@ $price = $order->price_override;
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
+                                   data-hash-offset-lg="500" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
                         @elseif($price != '0' && $order->order_status!='Terminated')
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
+                                   data-hash-offset-lg="500" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
                         @endif
@@ -2112,47 +2112,41 @@ $price = $order->price_override;
 </script>
 
 <script>
-function openModalIfQueryParamExists() {
+
+$(document).ready(function() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentIntent = urlParams.get('payment_intent');
     if (paymentIntent) {
-        $('#confirmStripe').modal({ backdrop: 'static', keyboard: false }).modal('show');
+        openModalIfQueryParamExists();
+        
     }
-}
-
-$(document).ready(function() {
-    openModalIfQueryParamExists();
-    $('#confirmStripe').on('hidden.bs.modal', function () {
-    $(this).data('bs.modal')._config.backdrop = true;
-    });
 });
 
 </script>
 
 
 <script>
-$(document).ready(function() {
-    $('#confirmStripePayment').click(function() {
+       function openModalIfQueryParamExists() {
         const urlParams = new URLSearchParams(window.location.search);
         const paymentIntent = urlParams.get('payment_intent');
         const orderId = $('#orderID').val();
         var currentUrl = window.location.origin + window.location.pathname;
         var newUrl = currentUrl + '#auto-renew';
-
         $.ajax({
             url: "{{ url('stripeUpdatePayment/confirm') }}",
             method: 'POST',
             data: { payment_intent: paymentIntent,orderId: orderId },
             success: function(response) {
                 $('#confirmStripe').modal('hide');
-                $('#alertMessage-2').show();
-                $('#updateButton').show();
                 $('html, body').animate({ scrollTop: 0 }, 500);
+                $('#alertMessage-2').show();
+                
                 var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                 $('#alertMessage-2').html(result + ".");
+                $('#updateButton').show();
                 setTimeout(function() {
                     window.location.href = newUrl; 
-                }, 3000);
+                }, 5000);
             },
                error: function(xhr, status, error) {
                 var errorMessage = 'Something went wrong. Try with a different payment method.';
@@ -2163,12 +2157,13 @@ $(document).ready(function() {
                 document.getElementById('error-1').innerHTML = html;
                 setTimeout(function() {
                     window.location.href = newUrl; 
-                }, 3000);
+                }, 5000);
             }
 
         });
-    });
-});
+       
+    }
+    
 
 
 </script>

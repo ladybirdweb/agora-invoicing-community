@@ -2,8 +2,9 @@
       <?php
       $currency = $invoice->currency;
       $date = getDateHtml($invoiceItem->created_at);
-      ?>
+      $apiKey = \App\ApiKey::value('stripe_secret');
 
+      ?>
 
       @endforeach
         <div class="container py-4">
@@ -18,56 +19,64 @@
 
                         <div class="card-body text-center">
 
-                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i> Thank You. Your Order has been received.</p><a>{{\Auth::user()->email}}</a>
+                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i> Thank You. Your Order has been received.</p>
                         </div>
                     </div>
-                           @foreach($orders as $order)
-                  <?php
-                  $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
-                  $cont = new \App\Http\Controllers\License\LicensePermissionsController();
-                  $downloadPermission = $cont->getPermissionsForProduct($order->product);
-                  ?>
-
-
-
-                    <div class="d-flex flex-column flex-md-row justify-content-between py-3 px-4 my-4">
-
+             @php
+                $cont = new \App\Http\Controllers\License\LicensePermissionsController();
+            @endphp
+            
+            <div class="my-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between py-3 px-4">
+                    <div class="text-center">
+                        <span><strong class="text-color-dark">Order Number</strong></span>
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
+                        <span><strong class="text-color-dark">Date</strong></span>
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
+                        <span><strong class="text-color-dark">Total</strong></span>
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
+                        <span><strong class="text-color-dark">Payment Method</strong></span>
+                    </div>
+                    <div class="text-center mt-4 mt-md-0">
+                        <span><strong class="text-color-dark">File</strong></span>
+                    </div>
+                    
+                </div>
+            
+                @foreach($orders as $order)
+                    @php
+                        $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
+                        $downloadPermission = $cont->getPermissionsForProduct($order->product);
+                        $orderTotal = $order->price_override;
+                    @endphp
+            
+                    <div class="d-flex flex-column flex-md-row justify-content-between py-3 px-4">
                         <div class="text-center">
-                            <span><strong class="text-color-dark">
-                                Order Number </strong><br>
-                                {{$order->number}}
-                            </span>
+                            <span>{{$order->number}}</span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span> <strong class="text-color-dark">
-                                Date </strong><br>
-                               {!! $date !!}
-                            </span>
+                            <span>{!! $date !!}</span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span><strong class="text-color-dark">
-                                Email</strong> <br>
-                                {{\Auth::user()->email}}
-                            </span>
+                            <span style="position: absolute;left: 50%;">{{currencyFormat($orderTotal, $currency)}}</span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                              <?php
-                              $orderTotal = $order->price_override;
-                              ?>
-                            <span><strong class="text-color-dark">
-                                Total </strong><br>
-                                {{currencyFormat($orderTotal,$code = $currency)}}
-                            </span>
+                            <span>{{Session::get('payment_method')}}</span>
                         </div>
                         <div class="text-center mt-4 mt-md-0">
-                            <span>  <strong class="text-color-dark">
-                                Payment Method</strong> <br>
-                              {{Session::get('payment_method')}}
+                            <span>
+                            <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" aria-label="Click here to download" data-bs-original-title="Click here to download"><i class="fa fa-download"> </i></a>
                             </span>
                         </div>
                     </div>
-
-                    <div class="card border-width-3 border-radius-0 border-color-hover-dark mb-4">
+                @endforeach
+            </div>
+            
+            
+               <div class="card border-width-3 border-radius-0 border-color-hover-dark mb-4">
 
                         <div class="card-body">
 
@@ -82,10 +91,14 @@
                                         <strong class="text-color-dark">Product</strong>
                                     </td>
                                 </tr>
+                                @foreach($orders as $order)
+                                <?php
+                                 $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
+                                ?>
 
                                 <tr>
                                     <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$product->name}} <span class="product-qty">x{{$order->qty}}</span></strong>
+                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$product->name}} <span class="product-qty">x {{$order->qty}}</span></strong>
                                     </td>
                                      <?php
                                     $orderTotal = $order->price_override;
@@ -94,6 +107,8 @@
                                         <span class="amount font-weight-medium text-color-grey">{{currencyFormat($orderTotal,$code = $currency)}}</span>
                                     </td>
                                 </tr>
+                               
+                                @endforeach
 
 
                                 <tr class="total">
@@ -104,20 +119,16 @@
                                     $orderTotal = $order->price_override;
                                     ?>
                                     <td class="text-end">
-                                        <strong class="text-color-dark"><span class="amount text-color-dark text-5">{{currencyFormat($orderTotal,$code = $currency)}}</span></strong>
+                                        <strong class="text-color-dark"><span class="amount text-color-dark text-5">{{currencyFormat($invoice->grand_total,$code = $currency)}}</span></strong>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    @if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
+            
 
-                        <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-dark btn-modern text-uppercase text-3 py-3" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
-                        @else
-
-                  @endif
-                  @endforeach
+                  
                 </div>
                 
             </div>
@@ -136,4 +147,6 @@ $('#tenant .modal-body').text('Order Number: ' + orderNumber);
 $('#tenant').modal('show');
 }
 </script>
+
+
 

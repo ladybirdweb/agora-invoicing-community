@@ -44,36 +44,25 @@ Cart
                         <form method="post" action="">
 
                             <div class="table-responsive">
+
+                                @php
+                                $isAgentAllowed = false;
+                                $isAllowedtoEdit = false;
+
+                                foreach ($cartCollection as $item) {
+                                    // Your existing logic to calculate $isAgentAllowed and $isAllowedtoEdit
+                                    // This part should remain the same as in your original code
+                                    $cont = new \App\Http\Controllers\Product\ProductController();
+                                    $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
+                                    $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
+
+                                    break;
+                                }
+                                @endphp
                                
 
                                 <table class="shop_table cart">
-                                     @forelse($cartCollection as $item)
-                                    @php
-                                                if(\Auth::check()) {
-                                                Cart::clearItemConditions($item->id);
-                                                if(\Session::has('code')) {
-                                                \Session::forget('code');
-                                                \Session::forget('usage');
-                                                 $cartcont = new \App\Http\Controllers\Front\CartController();
-                                                 \Cart::update($item->id, [
-                                                  'price'      => $cartcont->planCost($item->id, \Auth::user()->id),
-                                                ]);
-                                              }
-
-
-                                              }
-                                                 $cartTotal += $item->getPriceSum();;
-                                                  $domain = [];
-
-                                                  if ($item->associatedModel->require_domain) {
-                                                      $domain[$key] = $item->associatedModel->id;
-                                                      $productName = $item->associatedModel->name;
-
-                                                  }
-                                                  $cont = new \App\Http\Controllers\Product\ProductController();
-                                                  $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
-                                                  $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
-                                            @endphp
+                            
 
                                     <thead>
 
@@ -113,6 +102,33 @@ Cart
                                             </th>
                                         </tr>
                                     </thead>
+                                             @forelse($cartCollection as $item)
+                                    @php
+                                                if(\Auth::check()) {
+                                                Cart::clearItemConditions($item->id);
+                                                if(\Session::has('code')) {
+                                                \Session::forget('code');
+                                                \Session::forget('usage');
+                                                 $cartcont = new \App\Http\Controllers\Front\CartController();
+                                                 \Cart::update($item->id, [
+                                                  'price'      => $cartcont->planCost($item->id, \Auth::user()->id),
+                                                ]);
+                                              }
+
+
+                                              }
+                                                 $cartTotal += $item->getPriceSum();;
+                                                  $domain = [];
+
+                                                  if ($item->associatedModel->require_domain) {
+                                                      $domain[$key] = $item->associatedModel->id;
+                                                      $productName = $item->associatedModel->name;
+
+                                                  }
+                                                  $cont = new \App\Http\Controllers\Product\ProductController();
+                                                  $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
+                                                  $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
+                                            @endphp
 
                                     <tbody>
 
@@ -194,8 +210,9 @@ Cart
                                                </span>
                                             </td>
                                         </tr>
-                                        @endforeach 
+                                       
                                     </tbody>
+                                     @endforeach 
                                       
                                 </table>
 

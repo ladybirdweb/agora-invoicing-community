@@ -22,12 +22,10 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
-use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use Validator;
 
 class ClientController extends BaseClientController
 {
@@ -78,47 +76,44 @@ class ClientController extends BaseClientController
     public function enableAutorenewalStatus(Request $request)
     {
         try {
-        $amount = 1;
-        $currency = \Auth::user()->currency;
-        $orderid = $request->get('order_id');
-        $url = url('my-order/' . $orderid . '#auto-renew');
-        $controller = new SettingsController();
-        $confirm = $controller->handlePayment($request,$amount,$currency,$url);
-        $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
+            $amount = 1;
+            $currency = \Auth::user()->currency;
+            $orderid = $request->get('order_id');
+            $url = url('my-order/'.$orderid.'#auto-renew');
+            $controller = new SettingsController();
+            $confirm = $controller->handlePayment($request, $amount, $currency, $url);
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
 
-        if($confirm->status == 'requires_action')
-        {
-        $redirectUrl = $paymentIntent->next_action->redirect_to_url->url;
-        return $redirectUrl;
-        }
-        elseif($confirm->status === 'succeeded')
-        {
-            $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
-            $number = Invoice::where($paymentIntent->customerid)->value('number');
-            $customer_details = [
+            if ($confirm->status == 'requires_action') {
+                $redirectUrl = $paymentIntent->next_action->redirect_to_url->url;
+
+                return $redirectUrl;
+            } elseif ($confirm->status === 'succeeded') {
+                $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+                $number = Invoice::where($paymentIntent->customerid)->value('number');
+                $customer_details = [
                     'user_id' => \Auth::user()->id,
                     'customer_id' => $paymentIntent->customer,
                     'payment_method' => 'stripe',
                     'order_id' => $orderid,
-                    'payment_intent_id' => $paymentIntent->payment_method
+                    'payment_intent_id' => $paymentIntent->payment_method,
                 ];
-            Auto_renewal::create($customer_details);
-            Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
-            $mail = new \App\Http\Controllers\Common\PhpMailController();   
+                Auto_renewal::create($customer_details);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
 
-            $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
 
-            $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+                $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
 
-            return ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
-           
-        } 
-        }catch(\Exception $ex) {
+                return ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+            }
+        } catch(\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
-
-     }
+    }
 
     public function enableRzpStatus(Request $request)
     {
@@ -883,39 +878,41 @@ class ClientController extends BaseClientController
         $invoice->delete();
         \Session::forget('invoice');
     }
-    
+
     public function stripeUpdatePayment(Request $request)
     {
-    try{
-       $orderid = $request->input('orderId');
-       $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-       $stripe = new \Stripe\StripeClient($stripeSecretKey);
-       $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
-       if($paymentIntent->status === 'succeeded'){
-        $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
-        $number = Invoice::where('id', $invoice_id)->value('number');
-        $customer_details = [
-        'user_id' => \Auth::user()->id,
-        'customer_id' => $paymentIntent->customer,
-        'payment_method' => 'stripe',
-        'order_id' => $orderid,
-        'payment_intent_id' => $paymentIntent->payment_method
-        ];
-        Auto_renewal::create($customer_details);
-        Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
-        $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
-        return response()->json($response);
-        }
-        else{
-        $response = ['type' => 'fails', 'message' => 'Something went wrong.'];
-        return response()->json(compact('response'), 500); 
-        }
-        }catch(\Exception $ex){
-        $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
-        $errorMessage = 'Something went wrong. Try with a different payment method.';
-        return response()->json(['error' => $errorMessage], 500);
+        try {
+            $orderid = $request->input('orderId');
+            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+            $stripe = new \Stripe\StripeClient($stripeSecretKey);
+            $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
+            if ($paymentIntent->status === 'succeeded') {
+                $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+                $number = Invoice::where('id', $invoice_id)->value('number');
+                $customer_details = [
+                    'user_id' => \Auth::user()->id,
+                    'customer_id' => $paymentIntent->customer,
+                    'payment_method' => 'stripe',
+                    'order_id' => $orderid,
+                    'payment_intent_id' => $paymentIntent->payment_method,
+                ];
+                Auto_renewal::create($customer_details);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
+                $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
+
+                return response()->json($response);
+            } else {
+                $response = ['type' => 'fails', 'message' => 'Something went wrong.'];
+
+                return response()->json(compact('response'), 500);
+            }
+        } catch(\Exception $ex) {
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $request->amount, 'Payment method updated');
+            $errorMessage = 'Something went wrong. Try with a different payment method.';
+
+            return response()->json(['error' => $errorMessage], 500);
         }
     }
 }

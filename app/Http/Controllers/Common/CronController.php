@@ -584,8 +584,7 @@ class CronController extends BaseCronController
                     \Stripe\Stripe::setApiKey($stripeSecretKey);
                     $stripe = new \Stripe\StripeClient($stripeSecretKey);
                     $paymentMethod = \Stripe\PaymentMethod::retrieve($payment_details->payment_intent_id);
-                    
-     
+
                     $stripe->customers->update(
                         $paymentMethod->customer,
                         ['invoice_settings' => ['default_payment_method' => $paymentMethod->id]]
@@ -610,11 +609,11 @@ class CronController extends BaseCronController
                     //CREATE SUBSCRIPTION
 
                     $stripe_subscription = $stripe->paymentIntents->create([
-                        'amount' => $unit_cost, 
+                        'amount' => $unit_cost,
                         'currency' => $currency,
                         'customer' => $paymentMethod->customer,
                         'payment_method' => $paymentMethod->id,
-                        'off_session' => true, 
+                        'off_session' => true,
                         'confirm' => true,
                         'description' => 'Test payment',
                     ]);
@@ -1008,26 +1007,27 @@ class CronController extends BaseCronController
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
         $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
     }
-    public function calculateUnitCost($currency, $cost) {
-    $decimalPlaces = [
-        'BIF' => 0, 'CLP' => 0, 'DJF' => 0, 'GNF' => 0, 'JPY' => 0,
-        'KMF' => 0, 'KRW' => 0, 'MGA' => 0, 'PYG' => 0, 'RWF' => 0,
-        'UGX' => 0, 'VND' => 0, 'VUV' => 0, 'XAF' => 0, 'XOF' => 0,
-        'XPF' => 0, 'BHD' => 3, 'JOD' => 3, 'KWD' => 3, 'OMR' => 3,
-        'TND' => 3
-    ];
 
-    $decimalPlacesForCurrency = $decimalPlaces[$currency] ?? 2;
+    public function calculateUnitCost($currency, $cost)
+    {
+        $decimalPlaces = [
+            'BIF' => 0, 'CLP' => 0, 'DJF' => 0, 'GNF' => 0, 'JPY' => 0,
+            'KMF' => 0, 'KRW' => 0, 'MGA' => 0, 'PYG' => 0, 'RWF' => 0,
+            'UGX' => 0, 'VND' => 0, 'VUV' => 0, 'XAF' => 0, 'XOF' => 0,
+            'XPF' => 0, 'BHD' => 3, 'JOD' => 3, 'KWD' => 3, 'OMR' => 3,
+            'TND' => 3,
+        ];
 
-    if ($decimalPlacesForCurrency === 0) {
-        $unit_cost = round((int) $cost + 1);
-    } elseif ($decimalPlacesForCurrency === 3) {
-        $unit_cost = round((int) $cost + 1) * 1000;
-    } else {
-        $unit_cost = round((int) $cost + 1) * 100;
+        $decimalPlacesForCurrency = $decimalPlaces[$currency] ?? 2;
+
+        if ($decimalPlacesForCurrency === 0) {
+            $unit_cost = round((int) $cost + 1);
+        } elseif ($decimalPlacesForCurrency === 3) {
+            $unit_cost = round((int) $cost + 1) * 1000;
+        } else {
+            $unit_cost = round((int) $cost + 1) * 100;
+        }
+
+        return $unit_cost;
     }
-
-    return $unit_cost;
-   }
-
 }

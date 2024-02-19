@@ -278,9 +278,9 @@ class DashboardController extends Controller
             ->where('price_override', '>', 0);
 
         if ($past30Days) {
-            $baseQuery->whereBetween('update_ends_at', [now()->subMonth()->toDateTimeString(), $today]);
+            $baseQuery->whereBetween('update_ends_at', [now()->subDays(30)->toDateTimeString(), $today]);
         } else {
-            $baseQuery->whereBetween('update_ends_at', [$today, now()->addMonth()->toDateTimeString()]);
+            $baseQuery->whereBetween('update_ends_at', [$today, now()->addDays(30)->toDateTimeString()]);
         }
         $baseQuery->orderByDesc('subscription_ends_at')
             ->groupBy('subscriptions.id');

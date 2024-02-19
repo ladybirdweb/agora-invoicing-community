@@ -115,6 +115,33 @@ class ClientController extends BaseClientController
         }
     }
 
+    public function disableAutorenewalStatus(Request $request)
+    {
+        try {
+            $orderid = $request->get('order_id');
+            $userid = Subscription::where('order_id', $orderid)->value('user_id');
+            $user = User::find($userid);
+            $subscription = Subscription::where('order_id', $orderid)->first();
+            if ($subscription->rzp_subscription == '1') {
+                $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+                $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+                $api = new Api($rzp_key, $rzp_secret);
+                $pause = $api->subscription->fetch($subscription->subscribe_id)->pause(['pause_at' => 'now']);
+                if ($pause['status'] == 'paused') {
+                    Subscription::where('order_id', $orderid)->update(['rzp_subscription' => '0']);
+                }
+            }
+            Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0']);
+            $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
+
+            return response()->json($response);
+        } catch(\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
+        }
+    }
+
     public function enableRzpStatus(Request $request)
     {
         try {

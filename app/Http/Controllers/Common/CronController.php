@@ -580,19 +580,12 @@ class CronController extends BaseCronController
                     $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
                     $cost = Invoice::where('id', $invoice->invoice_id)->value('grand_total');
                     $currency = Invoice::where('id', $invoice->invoice_id)->value('currency');
-                    $zero_decimalCurrency = ['BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'];
-                    $three_decimalCurrency = ['BHD', 'JOD', 'KWD', 'OMR', 'TND'];
-                    if (in_array($currency, $three_decimalCurrency)) {
-                        $unit_cost = round((int) $cost + 1) * 1000;
-                    } elseif (in_array($currency, $zero_decimalCurrency)) {
-                        $unit_cost = round((int) $cost + 1);
-                    } else {
-                        $unit_cost = round((int) $cost + 1) * 100;
-                    }
+                    $unit_cost = $this->calculateUnitCost($currency, $cost);
                     \Stripe\Stripe::setApiKey($stripeSecretKey);
                     $stripe = new \Stripe\StripeClient($stripeSecretKey);
                     $paymentMethod = \Stripe\PaymentMethod::retrieve($payment_details->payment_intent_id);
-
+                    
+     
                     $stripe->customers->update(
                         $paymentMethod->customer,
                         ['invoice_settings' => ['default_payment_method' => $paymentMethod->id]]
@@ -616,12 +609,16 @@ class CronController extends BaseCronController
 
                     //CREATE SUBSCRIPTION
 
-                    $stripe_subscription = $stripe->subscriptions->create([
+                    $stripe_subscription = $stripe->paymentIntents->create([
+                        'amount' => $unit_cost, 
+                        'currency' => $currency,
                         'customer' => $paymentMethod->customer,
-                        'items' => [
-                            ['price' => $price_id],
-                        ],
+                        'payment_method' => $paymentMethod->id,
+                        'off_session' => true, 
+                        'confirm' => true,
+                        'description' => 'Test payment',
                     ]);
+
                     if ($stripe_subscription['status'] == 'active') {
                         //Afer Renew
                         Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripe_subscription['id'], 'autoRenew_status' => 'Success']);
@@ -1011,4 +1008,26 @@ class CronController extends BaseCronController
         $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
         $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
     }
+    public function calculateUnitCost($currency, $cost) {
+    $decimalPlaces = [
+        'BIF' => 0, 'CLP' => 0, 'DJF' => 0, 'GNF' => 0, 'JPY' => 0,
+        'KMF' => 0, 'KRW' => 0, 'MGA' => 0, 'PYG' => 0, 'RWF' => 0,
+        'UGX' => 0, 'VND' => 0, 'VUV' => 0, 'XAF' => 0, 'XOF' => 0,
+        'XPF' => 0, 'BHD' => 3, 'JOD' => 3, 'KWD' => 3, 'OMR' => 3,
+        'TND' => 3
+    ];
+
+    $decimalPlacesForCurrency = $decimalPlaces[$currency] ?? 2;
+
+    if ($decimalPlacesForCurrency === 0) {
+        $unit_cost = round((int) $cost + 1);
+    } elseif ($decimalPlacesForCurrency === 3) {
+        $unit_cost = round((int) $cost + 1) * 1000;
+    } else {
+        $unit_cost = round((int) $cost + 1) * 100;
+    }
+
+    return $unit_cost;
+   }
+
 }

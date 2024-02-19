@@ -59,13 +59,13 @@
                                 {{Session::get('payment_method')}}
                             </span>
                         </div>
+                        @if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
                         <div class="text-center mt-4 mt-md-0">
                             <span><strong class="text-color-dark">
                                 Total</strong> <br>
                                 {{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}
                             </span>
                         </div>
-
                     </div>
             
 

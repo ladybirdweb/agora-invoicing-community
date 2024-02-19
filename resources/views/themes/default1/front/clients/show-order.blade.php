@@ -1589,7 +1589,7 @@ $price = $order->price_override;
                                     "card_no": $('#card_no').val(),
                                     "exp_month": $('#exp_month').val(),
                                     "exp_year": $('#exp_year').val(),
-                                    "cvv": $('#password').val(),
+                                    "cvv": $('#cvv').val(),
                                     "amount": $('#amount').val(),
                                     "_token": "{!! csrf_token() !!}",
                                 },
@@ -1614,7 +1614,7 @@ $price = $order->price_override;
                                 },
                                 error: function (data) {
                                     var errorMessage = data.responseJSON.result;
-                                    $('#stripe-Modal').modal('show');
+                                    $('#stripe-Modal').modal('hide');
                                     $("#pay").attr('disabled', false);
                                     $("#pay").html("Pay now");
                                     $('html, body').animate({ scrollTop: 0 }, 500);

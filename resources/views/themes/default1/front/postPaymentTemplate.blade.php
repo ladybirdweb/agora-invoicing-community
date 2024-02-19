@@ -66,11 +66,13 @@
                         <div class="text-center mt-4 mt-md-0">
                             <span>{{Session::get('payment_method')}}</span>
                         </div>
+                        @if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
                         <div class="text-center mt-4 mt-md-0">
                             <span>
                             <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" aria-label="Click here to download" data-bs-original-title="Click here to download"><i class="fa fa-download"> </i></a>
                             </span>
                         </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -147,6 +149,12 @@ $('#tenant .modal-body').text('Order Number: ' + orderNumber);
 $('#tenant').modal('show');
 }
 </script>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
 
 
 

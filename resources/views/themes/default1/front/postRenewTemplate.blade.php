@@ -34,22 +34,18 @@
                         </div>
                         <div class="text-center mt-4 mt-md-0">
                             <span><strong class="text-color-dark">
-                                Email</strong> <br>
-                                {{\Auth::user()->email}}
+                                Payment Method </strong><br>
+                                {{Session::get('payment_method')}}
                             </span>
                         </div>
+      
                         <div class="text-center mt-4 mt-md-0">
                             <span><strong class="text-color-dark">
                                 Total </strong><br>
                                 {{currencyFormat($invoiceItem->subtotal,$code = $currency)}}
                             </span>
                         </div>
-                        <div class="text-center mt-4 mt-md-0">
-                            <span><strong class="text-color-dark">
-                                Payment Method </strong><br>
-                                {{Session::get('payment_method')}}
-                            </span>
-                        </div>
+                     
                     </div>
 
                     <div class="card border-width-3 border-radius-0 border-color-hover-dark mb-4">
@@ -70,7 +66,7 @@
 
                                 <tr>
                                     <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x{{$invoiceItem->quantity}}</span></strong>
+                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x {{$invoiceItem->quantity}}</span></strong>
                                     </td>
                                     <td class="text-end align-top">
                                         <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span>

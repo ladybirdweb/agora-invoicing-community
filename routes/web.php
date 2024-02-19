@@ -107,7 +107,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('confirm/payment', [RazorpayController::class, 'afterPayment']);
     Route::post('stripeUpdatePayment/confirm', [Front\ClientController::class, 'stripeUpdatePayment']);
 
-
     /*
      * Front Client Pages
      */

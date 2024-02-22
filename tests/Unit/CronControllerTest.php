@@ -68,6 +68,7 @@ class CronControllerTest extends DBTestCase
         $response = (new CronController())->postRazorpayPayment($invoiceItem, $payment_method);
         $this->assertEquals('success', $response->payment_status);
     }
+
     public function test_calculateUnitCost_withTwodecimal_currency()
     {
         $currency = 'INR';
@@ -75,14 +76,16 @@ class CronControllerTest extends DBTestCase
         $response = (new CronController())->calculateUnitCost($currency, $cost);
         $this->assertEquals(10100, $response);
     }
-      public function test_calculateUnitCost_withThreedecimal_currency()
+
+    public function test_calculateUnitCost_withThreedecimal_currency()
     {
         $currency = 'BHD';
         $cost = '100';
         $response = (new CronController())->calculateUnitCost($currency, $cost);
         $this->assertEquals(101000, $response);
     }
-      public function test_calculateUnitCost_withZerodecimal_currency()
+
+    public function test_calculateUnitCost_withZerodecimal_currency()
     {
         $currency = 'JPY';
         $cost = '100';

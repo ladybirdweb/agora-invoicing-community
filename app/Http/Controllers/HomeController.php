@@ -379,7 +379,12 @@ class HomeController extends BaseHomeController
                      * details of only those versions which are greater than current version else empty version details.
                      */
                     $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
-                    $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')->get()->filter(function ($newVersion) use ($currenctVersion) {
+                    $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')
+                        ->where('is_pre_release', 0)
+                        ->when($request->input('is_pre_release'), function ($q) {
+                            $q->orWhere('is_pre_release', 1);
+                        })
+                        ->get()->filter(function ($newVersion) use ($currenctVersion) {
                         return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
                     })->sortBy('version', SORT_NATURAL)->toArray();
 
@@ -439,7 +444,12 @@ class HomeController extends BaseHomeController
              * to compares all these version with current version and if it finds a first greater version than current
              * version then it updates returns "updates available" else "no updates available".
              */
-            $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)->orderBy('id', 'desc')->pluck('version')->toArray();
+            $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)
+                ->where('is_pre_release', 0)
+                ->when($request->input('is_pre_release'), function ($q) {
+                    $q->orWhere('is_pre_release', 1);
+                })
+                ->orderBy('id', 'desc')->pluck('version')->toArray();
             $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
             $message = ['status' => '', 'message' => 'no-new-version-available'];
             foreach ($allVersions as $version) {

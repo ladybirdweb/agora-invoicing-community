@@ -257,6 +257,7 @@ class SettingsController extends Controller
             return redirect()->route('checkout');
         } catch (\Exception $e) {
             dd($e);
+
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }
@@ -264,11 +265,11 @@ class SettingsController extends Controller
     public function stripePay($request)
     {
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-         $stripe = Stripe::make($stripeSecretKey);
+        $stripe = Stripe::make($stripeSecretKey);
         // $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
         if (\Session::get('invoice')) {
-            $invoice = \Session::get('invoice');    
+            $invoice = \Session::get('invoice');
             // $invoiceTotal = \Session::get('totalToBePaid');
             $amount = rounding(\Cart::getTotal());
             if (! $amount) {//During renewal

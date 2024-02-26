@@ -385,8 +385,8 @@ class HomeController extends BaseHomeController
                             $q->orWhere('is_pre_release', 1);
                         })
                         ->get()->filter(function ($newVersion) use ($currenctVersion) {
-                        return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
-                    })->sortBy('version', SORT_NATURAL)->toArray();
+                            return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
+                        })->sortBy('version', SORT_NATURAL)->toArray();
 
                     $message = ['version' => array_values($inBetweenVersions)];
                 } else {

@@ -16,12 +16,16 @@
     border-radius: 4px;
     padding: 11.2px 16px;
     color: #777;
+    width: 84%;
+
 }
 
 .custom-input:focus {
     border-color: #777;
     outline: none; 
 }
+
+
 </style>
   <html>
 <?php 
@@ -107,6 +111,9 @@ foreach($scripts as $script) {
         #footer h1, #footer h2, #footer h3, #footer h4, #footer h5, #footer h6
         {
             color: black !important;
+        }
+        html .border-color-hover-dark:hover {
+            border-color: lightgrey !important;
         }
     </style>
 
@@ -809,7 +816,7 @@ $days = $pay->where('product','117')->value('days');
                     $mailchimpSection = '';
                     if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
                         // Mailchimp Subscription Form
-                        $mailchimpSection .= '<div id="mailchimp-message" style="width: 93%;"></div>
+                        $mailchimpSection .= '<div id="mailchimp-message" style="width: 100%;"></div>
                                     <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
                                         <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
                                             <div class="input-group">

@@ -7,7 +7,7 @@
                     <div class="card border-width-3 border-radius-0 border-color-success">
 
                         <div class="card-body text-center">
-                                  <?php
+                                <?php
                                 $currency = $invoice->currency;
                                 $cont = new \App\Http\Controllers\License\LicensePermissionsController();
                                 $downloadPermission = $cont->getPermissionsForProduct($product->id);
@@ -70,7 +70,7 @@
 
                                 <tr>
                                     <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x{{$invoiceItem->quantity}}</span></strong>
+                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x {{$invoiceItem->quantity}}</span></strong>
                                     </td>
                                     <td class="text-end align-top">
                                         <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span>

@@ -50,6 +50,12 @@
    .img-fluid{
        max-width: 300px !important;
    }
+     .border-top{
+            border-bottom: 0.5px solid #000;
+            border-color: lightgrey;
+
+        }
+     
 
     </style>
 <script src="https://js.stripe.com/v3/"></script>
@@ -62,6 +68,10 @@
             margin-right: 5px;
             margin-top: 2px;
         }
+    .heading {
+        font-size: 14px;
+    }
+
 </style>
 <?php
  $taxAmt = 0;
@@ -91,31 +101,23 @@ $currency = $invoice->currency;
                                             &nbsp;
                                         </th>
 
-                                        <th class="product-name text-uppercase" width="">
+                                        <th class="product-name text-uppercase heading" width="">
 
                                             Product
 
                                         </th>
-                                        <th class="product-invoice text-uppercase" width="">
+                                     
 
-                                            Invoice
-                                        </th>
-
-                                        <th class="product-price text-uppercase" width="">
-
-                                            Version
-                                        </th>
-
-                                        <th class="product-quantity text-uppercase" width="">
+                                        <th class="product-quantity text-uppercase heading" width="">
 
                                             Quantity
                                         </th>
-                                         <th class="product-agent text-uppercase" width="">
+                                         <th class="product-agent text-uppercase heading" width="">
 
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase">
+                                        <th class="product-subtotal text-uppercase heading">
 
                                             Total
                                         </th>
@@ -135,7 +137,7 @@ $currency = $invoice->currency;
 
                                             <div class="product-thumbnail-wrapper">
 
-                                                <a  onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product">
+                                                <a  onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product" style="top: -15px;right: 15px;">
 
                                                     <i class="fas fa-times"></i>
                                                 </a>
@@ -149,29 +151,9 @@ $currency = $invoice->currency;
 
                                         <td class="product-name">
 
-                                            <span class="font-weight-semi-bold text-color-dark"> {{$item->name}}</span>
+                                            <span class="font-weight-semi-bold text-color-dark" style="font-family: Arial;"> {{$item->name}}</span>
                                         </td>
-                                        <td class="product-invoice">
-
-                                            <span class="font-weight-semi-bold text-color-dark">
-                                            <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
-
-                                            </span>
-                                        </td>
-                              
-
-
-                                        <td class="product-price">
-
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                    @if($item->associatedModel->version)
-                                                    {{$item->associatedModel->version}}
-                                                    @else
-                                                    Not available
-                                                    @endif
-                                            </span>
-                                        </td>
-
+                            
                                         <td class="product-quantity">
 
                                             <span class="amount font-weight-medium text-color-grey">{{$item->quantity}}</span>
@@ -186,11 +168,11 @@ $currency = $invoice->currency;
                                         <td class="product-subtotal">
                                             @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
 
-                                            <span class="amount text-color-dark font-weight-bold text-4">
+                                            <span class="amount text-color-dark font-weight-bold text-4" style="font-family: Arial;">
                                                 {{currencyFormat($item->quantity * \Session::get('togglePrice'),$code = $item->attributes->currency)}}
                                             </span>
                                             @else
-                                            <span class="amount text-color-dark font-weight-bold text-4">
+                                            <span class="amount text-color-dark font-weight-bold text-4" style="font-family: Arial;">
                                                 {{currencyFormat($item->quantity * $item->price,$code = $item->attributes->currency)}}
                                             </span>
                                             @endif
@@ -219,7 +201,7 @@ $currency = $invoice->currency;
 
                                     <tbody>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
@@ -254,43 +236,48 @@ $currency = $invoice->currency;
 
 
                                                      @if($tax->getName()!= 'null')
-                                                    <tr class="Taxes">
-                                                        <?php
-                                                        $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                   <?php
+                                                        $bifurcateTax = bifurcateTax($tax->getName(), $tax->getValue(), $item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                         <td class=" align-top border-top-0">
-                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}
-                                            </span>
-                                        </td>
-                                                       <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
+                                                    
+                                                
+                                                   @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
                                                     </tr>
+                                                  @endforeach
                                                     @endif
                                                     @endforeach
 
                                                     @else
                                                     @foreach(Cart::getContent() as $tax)
                                                     @if($tax->conditions)
-                                                    <tr class="Taxes">
-                                                        <?php
+                                                      <?php
                                                         $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
+
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                         <td class=" align-top border-top-0">
-                                                      <span class="amount font-weight-medium text-color-dark">
-                                            {!! $bifurcateTax['html'] !!}</span></td>
-                                                        <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
+                                                    
+                                                  @if (strpos($bifurcateTax['html'], 'null') === false)
+                                                   @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
                                                     </tr>
+                                                  @endforeach
+                                                  @endif
                                              
                                                     @endif
                                                     
@@ -398,31 +385,23 @@ $currency = $invoice->currency;
                                             &nbsp;
                                         </th>
 
-                                        <th class="product-name text-uppercase" width="">
+                                        <th class="product-name text-uppercase heading" width="">
 
                                             Product
 
                                         </th>
-                                        <th class="product-invoice text-uppercase" width="">
+                                     
 
-                                            Invoice
-                                        </th>
-
-                                        <th class="product-price text-uppercase" width="">
-
-                                            Version
-                                        </th>
-
-                                        <th class="product-quantity text-uppercase" width="">
+                                        <th class="product-quantity text-uppercase heading" width="">
 
                                             Quantity
                                         </th>
-                                         <th class="product-agent text-uppercase" width="">
+                                         <th class="product-agent text-uppercase heading" width="">
 
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase" width="">
+                                        <th class="product-subtotal text-uppercase heading" width="">
 
                                             Total
                                         </th>
@@ -455,26 +434,7 @@ $currency = $invoice->currency;
 
                                             <span class="font-weight-semi-bold text-color-dark">{{$item->product_name}}</span>
                                         </td>
-                                        <td class="product-invoice">
-
-                                            <span class="font-weight-semi-bold text-color-dark">
-                                            <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
-
-                                            </span>
-                                        </td>
-                              
-
-
-                                        <td class="product-price">
-
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                       @if($product->version)
-                                                    {{$product->version}}
-                                                    @else 
-                                                    Not available
-                                                    @endif
-                                            </span>
-                                        </td>
+        
 
                                         <td class="product-quantity">
 
@@ -489,7 +449,7 @@ $currency = $invoice->currency;
 
                                         <td class="product-subtotal">
 
-                                            <span class="amount text-color-dark font-weight-bold text-4">
+                                            <span class="amount text-color-dark font-weight-bold text-3">
                                                 {{currencyFormat($item->regular_price,$code = $currency)}}
                                             </span>
 
@@ -518,7 +478,7 @@ $currency = $invoice->currency;
 
                                     <tbody>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
@@ -555,25 +515,23 @@ $currency = $invoice->currency;
                                     @if ($taxDetails[0]!= 'null')
                                                                 
                                                            
-                                        <tr>
                                              <?php
                                             $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
-                                            ?>
-                                            <td class=" align-top border-top-0">
-                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}
-
-
-
-                                            </span>
-                                        </td>
-                                           <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                               
-                                                {!! $bifurcateTax['tax'] !!}
-                                            </span>
-
-                                            </td>
-                                        </tr>
+                                            $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
+                                                        ?>
+                                                    
+                                                
+                                                   @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                  @endforeach
                                  
                                    
                                         @endif

@@ -125,17 +125,17 @@ input:checked + .slider:before {
 
                             <li class="nav-item">
 
-                                <a class="nav-link active" id="profile_detail" href="#profile" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="120" data-hash-delay="500">My Profile</a>
+                                <a class="nav-link active" id="profile_detail" href="#profile" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">My Profile</a>
                             </li>
 
                             <li class="nav-item">
 
-                                <a class="nav-link" id="change_password" href="#password" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="120" data-hash-delay="500">Change Password</a>
+                                <a class="nav-link" id="change_password" href="#password" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">Change Password</a>
                             </li>
 
                             <li class="nav-item">
 
-                                <a class="nav-link" id="two_fa" href="#twofa" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="120" data-hash-delay="500">Setup 2 Step Verification</a>
+                                <a class="nav-link" id="two_fa" href="#twofa" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">Setup 2 Step Verification</a>
                             </li>
                         </ul>
                     </aside>

@@ -21,6 +21,7 @@ Cart
 
 
 
+
 @section('content')
 
 
@@ -72,7 +73,7 @@ Cart
                                                 &nbsp;
                                             </th>
 
-                                            <th class="product-name text-uppercase" width="">
+                                            <th class="product-name text-uppercase" width="" style="font-family: Arial;">
 
                                                 Product
 
@@ -138,7 +139,7 @@ Cart
 
                                                 <div class="product-thumbnail-wrapper" style="width: 100px;">
 
-                                                    <a onclick="removeItem('{{$item->id}}');"class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product">
+                                                    <a onclick="removeItem('{{$item->id}}');"class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product" style="top: -15px;">
 
                                                         <i class="fas fa-times"></i>
                                                     </a>
@@ -206,7 +207,7 @@ Cart
 
                                             <td class="product-subtotal">
 
-                                                <span class="amount text-color-dark font-weight-bold text-4">                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
+                                                <span class="amount text-color-dark font-weight-bold text-4" style="font-family: Arial;">                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
                                                </span>
                                             </td>
                                         </tr>
@@ -239,7 +240,7 @@ Cart
                                             <tr class="total">
 
                                                 <td>
-                                                    <strong class="text-color-dark text-3-5">Total</strong>
+                                                    <strong class="text-color-dark text-3-5" style="font-family: Arial;">Total</strong>
                                                 </td>
 
                                                 <td class="text-end">
@@ -258,7 +259,7 @@ Cart
                                             <form action="{{url('cart/clear')}}" method="post">
                                             {{ csrf_field() }}
 
-                                             <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern text-2 text-uppercase">Clear Cart</button></a>
+                                             <a href="{{url('cart/clear')}}"><button class="btn btn-light btn-modern text-2 text-uppercase" style="background: #F4F4F4;">Clear Cart</button></a>
                                             </form>
                                         </div>
                                     </div>
@@ -266,9 +267,9 @@ Cart
                                     <div class="col-md-auto px-0">
                                         @if(count($domain)>0)
 
-                                       <a href="#domain" data-toggle="modal" data-target="#domain" class="btn btn-dark btn-modern text-2 text-uppercase">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
+                                       <a href="#domain" data-toggle="modal" data-target="#domain" class="btn btn-dark btn-modern text-2 text-uppercase checkout">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
                                          @else
-                                         <a href="{{url('checkout')}}" class="btn btn-dark btn-modern text-2 text-uppercase">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
+                                         <a href="{{url('checkout')}}" class="btn btn-dark btn-modern text-2 text-uppercase checkout">Checkout <i class="fas fa-arrow-right ms-2"></i></a>
                                           @endif
                                     </div>
                                 </div>
@@ -279,9 +280,7 @@ Cart
                 @else
                    <div class="featured-boxes">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="featured-box featured-box-primary align-left mt-sm">
-                                <div class="box-content" style="border: none;">
+                        <div class="col-md-12" style="text-align: center;">
 
                                     <div class="col-md-offset-5">
                                         <p class="text-black">There are no items in this cart.</p>
@@ -299,9 +298,7 @@ Cart
                                                     <a href="{{url('login')}}" class="btn border-0 px-4 py-2 line-height-9 btn-tertiary me-2">CONTINUE SHOPPING
                                                         @endif
                                                     </a>
-                                    </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>

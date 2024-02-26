@@ -18,6 +18,14 @@
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
+<style type="text/css">
+     .border-top{
+            border-bottom: 0.5px solid #000;
+            border-color: lightgrey;
+
+        }
+
+</style>
 <?php
 $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
@@ -146,15 +154,7 @@ $json = json_encode($data);
                                             Product
 
                                         </th>
-                                        <th class="product-invoice text-uppercase" width="">
-
-                                            Invoice
-                                        </th>
-
-                                        <th class="product-price text-uppercase" width="">
-
-                                            Version
-                                        </th>
+                                    
 
                                         <th class="product-quantity text-uppercase" width="">
 
@@ -165,7 +165,7 @@ $json = json_encode($data);
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase text-end" width="">
+                                        <th class="product-subtotal text-uppercase" width="">
 
                                             Total
                                         </th>
@@ -185,7 +185,7 @@ $json = json_encode($data);
 
                                             <div class="product-thumbnail-wrapper">
 
-                                                <a  onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product">
+                                                <a  onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove"  data-bs-toggle="tooltip" title="Remove Product" style="top: -15px;left: 70px;">
 
                                                     <i class="fas fa-times"></i>
                                                 </a>
@@ -201,26 +201,7 @@ $json = json_encode($data);
 
                                             <span class="font-weight-semi-bold text-color-dark"> {{$item->name}}</span>
                                         </td>
-                                        <td class="product-invoice">
-
-                                            <span class="font-weight-semi-bold text-color-dark">
-                                            <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
-
-                                            </span>
-                                        </td>
-                              
-
-
-                                        <td class="product-price">
-
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                    @if($item->associatedModel->version)
-                                                    {{$item->associatedModel->version}}
-                                                    @else
-                                                    Not available
-                                                    @endif
-                                            </span>
-                                        </td>
+                             
 
                                         <td class="product-quantity">
 
@@ -233,7 +214,7 @@ $json = json_encode($data);
                                         </td>
 
 
-                                        <td class="product-subtotal">
+                                        <td class="product-subtotal" style="font-family: Arial;">
                                             @if(\Session::has('togglePrice') && $item->id == \Session::get('productid'))
 
                                             <span class="amount text-color-dark font-weight-bold text-4">
@@ -269,7 +250,7 @@ $json = json_encode($data);
 
                                     <tbody>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
@@ -300,47 +281,46 @@ $json = json_encode($data);
 
                                                    @if(count(\Cart::getConditionsByType('tax')) == 1)
                                                     @foreach(\Cart::getConditionsByType('tax') as $tax)
-
-
-
-                                                     @if($tax->getName()!= 'null')
-                                                    <tr class="Taxes">
-                                                        <?php
-                                                        $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                    @if($tax->getName()!= 'null')
+                                                    <?php
+                                                        $bifurcateTax = bifurcateTax($tax->getName(), $tax->getValue(), $item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                        <td class="border-top-0">
-                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $bifurcateTax['html'] !!}
-                                            </strong>
-                                        </td>
-                                                       <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
+                                                     @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th class=""><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
                                                     </tr>
+                                                  @endforeach
                                                     @endif
                                                     @endforeach
 
                                                     @else
                                                     @foreach(Cart::getContent() as $tax)
                                                     @if($tax->conditions)
-                                                    <tr class="Taxes">
-                                                        <?php
+                                                    <?php
                                                         $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
+
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                        <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
-                                            {!! $bifurcateTax['html'] !!}</strong></td>
-                                                        <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
+                                                        @if (strpos($bifurcateTax['html'], 'null') === false)
+                                                     @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th class=""><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
                                                     </tr>
+                                                  @endforeach
+                                                  @endif
                                              
                                                     @endif
                                                     
@@ -350,7 +330,7 @@ $json = json_encode($data);
 
                                                     @if(count(\Cart::getConditionsByType('fee')))
                                                      @foreach(\Cart::getConditionsByType('fee') as $fee)
-                                                     <tr>
+                                                     <tr class="border-top">
                                                          <td class="border-top-0">
                                             <strong class="d-block text-color-dark font-weight-semibold">{!! $fee->getName() !!}
                                             </strong>
@@ -448,31 +428,23 @@ $json = json_encode($data);
                                             &nbsp;
                                         </th>
 
-                                        <th class="product-name text-uppercase" width="">
+                                        <th class="product-name text-uppercase heading" width="">
 
                                             Product
 
                                         </th>
-                                        <th class="product-invoice text-uppercase" width="">
+                              
 
-                                            Invoice
-                                        </th>
-
-                                        <th class="product-price text-uppercase" width="">
-
-                                            Version
-                                        </th>
-
-                                        <th class="product-quantity text-uppercase" width="">
+                                        <th class="product-quantity text-uppercase heading" width="">
 
                                             Quantity
                                         </th>
-                                         <th class="product-agent text-uppercase" width="">
+                                         <th class="product-agent text-uppercase heading" width="">
 
                                             Agents
                                         </th>
 
-                                        <th class="product-subtotal text-uppercase text-end" width="">
+                                        <th class="product-subtotal text-uppercase heading" width="">
 
                                             Total
                                         </th>
@@ -505,26 +477,7 @@ $json = json_encode($data);
 
                                             <span class="font-weight-semi-bold text-color-dark">{{$item->product_name}}</span>
                                         </td>
-                                        <td class="product-invoice">
-
-                                            <span class="font-weight-semi-bold text-color-dark">
-                                            <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
-
-                                            </span>
-                                        </td>
-                              
-
-
-                                        <td class="product-price">
-
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                       @if($product->version)
-                                                    {{$product->version}}
-                                                    @else 
-                                                    Not available
-                                                    @endif
-                                            </span>
-                                        </td>
+                           
 
                                         <td class="product-quantity">
 
@@ -539,7 +492,7 @@ $json = json_encode($data);
 
                                         <td class="product-subtotal">
 
-                                            <span class="amount text-color-dark font-weight-bold text-4">
+                                            <span class="amount text-color-dark font-weight-bold text-3">
                                                 {{currencyFormat($item->regular_price,$code = $currency)}}
                                             </span>
 
@@ -568,7 +521,7 @@ $json = json_encode($data);
 
                                     <tbody>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
@@ -605,26 +558,23 @@ $json = json_encode($data);
                                     @if ($taxDetails[0]!= 'null')
                                                                 
                                                            
-                                        <tr>
                                              <?php
                                             $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
-                                            ?>
-                                            <td class="border-top-0">
-                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $bifurcateTax['html'] !!}
-
-
-
-                                            </strong>
-                                        </td>
-                                            <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                               
-                                                {!! $bifurcateTax['tax'] !!}
-                                            </span>
-
-                                            </td>
-                                        </tr>
-                                 
+                                           $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
+                                                        ?>
+                                                    
+                                                
+                                                   @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0 border-bottom">
+                                                        <th><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <td data-title="CGST" class="text-end align-top border-top-0">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                  @endforeach
                                    
                                         @endif
                                         @endforeach

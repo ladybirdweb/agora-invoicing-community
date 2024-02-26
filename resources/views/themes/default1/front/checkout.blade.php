@@ -25,12 +25,12 @@ Checkout
     }
     .remove-icon {
         position: absolute;
-        top: 20%;
+        top: 23.5%;
         left: 76%; 
         margin-left: 5px; 
         font-size: 17px;
         background: none;
-       border: none;
+        border: none;
 
         }
         .fa-1x {
@@ -38,6 +38,18 @@ Checkout
             margin-right: 3.4px;
         }
 
+        #balance-content{
+            color: black;
+            font-weight: bolder;
+            font-size: 15px;
+        }
+     
+ 
+       
+       .shop_table th {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 17px 10px;
+        }
  </style>
         <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
 @else
@@ -90,10 +102,6 @@ $cartSubtotalWithoutCondition = 0;
 
                                     </th>
 
-                                    <th class="product-price text-uppercase" width="">
-
-                                        Version
-                                    </th>
 
                                     <th class="product-quantity text-uppercase" width="">
 
@@ -112,7 +120,7 @@ $cartSubtotalWithoutCondition = 0;
                                 </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody class="border-top">
                                      {{Cart::removeCartCondition('Processing fee')}}
                                         @forelse($content as $item)
                                        
@@ -127,7 +135,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                         <div class="product-thumbnail-wrapper" style="width: 100px;">
 
-                                            <a onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove" data-bs-toggle="tooltip" title="Remove Product">
+                                            <a onclick="removeItem('{{$item->id}}');" class="product-thumbnail-remove" data-bs-toggle="tooltip" title="Remove Product" style="top: -15px;">
 
                                                 <i class="fas fa-times"></i>
                                             </a>
@@ -144,15 +152,7 @@ $cartSubtotalWithoutCondition = 0;
                                         <span class="font-weight-semi-bold text-color-dark">{{$item->name}}</span>
                                     </td>
 
-                                    <td class="product-price">
-
-                                        <span class="amount font-weight-medium text-color-grey">     
-                                            @if($item->associatedModel->version)
-                                            {{$item->associatedModel->version}}
-                                            @else
-                                            Not available
-                                            @endif</span>
-                                    </td>
+ 
                                     <?php
                                     $cont = new \App\Http\Controllers\Product\ProductController();
                                     $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
@@ -192,7 +192,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                     ?>
 
-                                    <span class="amount text-color-dark font-weight-bold text-4">
+                                    <span class="amount text-color-dark font-weight-bold text-4" style="font-family: Arial;">
 
                                            @if ($item->conditions && $item->conditions->getType() === 'coupon')
                                            <?php
@@ -215,7 +215,28 @@ $cartSubtotalWithoutCondition = 0;
                             </table>
                         </div>
                     </form>
+                    <br>
+                    @if(Cart::getTotal()>0)
+                    <tr>
+                        <td colspan="2" class="border-top-0">
+
+
+                                <div class="col-md-auto px-0 mb-3 mb-md-0">
+                                    {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
+
+                                    <div class="d-flex align-items-center">
+
+                                        <input type="text" class="form-control h-auto line-height-1 py-3" name="coupon"  placeholder="Coupon Code" / style="width: 250px;">
+
+                                        <button type="submit" class="btn btn-light btn-modern text-color-dark bg-color-light-scale-2 text-color-hover-light bg-color-hover-dark text-uppercase text-3 font-weight-bold border-0 ws-nowrap btn-px-4 py-3 ms-2">Apply</button>
+                                    </div>
+                                    {!! Form::close() !!}
+                                </div>
+                        </td>
+                    </tr>
+                    @endif
                 </div>
+
 
                 <div class="col-lg-5 position-relative">
 
@@ -231,9 +252,9 @@ $cartSubtotalWithoutCondition = 0;
 
                                     <tbody>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
+                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold bo">Cart Subtotal</strong>
                                         </td>
                                         <td class=" align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">                                
@@ -243,7 +264,7 @@ $cartSubtotalWithoutCondition = 0;
                                     </tr>
                                     @if(Session::has('code'))
 
-                                     <tr>
+                                     <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Discount</strong>
                                         </td>
@@ -261,12 +282,13 @@ $cartSubtotalWithoutCondition = 0;
                                             </span>
                                                  <form action="{{ url('remove-coupon') }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="remove-icon" title="Click to remove">
+                                                <button type="submit" class="remove-icon" data-toggle="tooltip" title="Click to remove">
                                                     <i class="fas fa-times-circle"></i>
                                                 </button>
                                             </form>
                                         </td>
                                     </tr>
+
                                     @endif
 
 
@@ -274,44 +296,50 @@ $cartSubtotalWithoutCondition = 0;
                                                     @foreach(\Cart::getConditions() as $tax)
 
                                                      @if($tax->getName()!= 'null')
-                                                    <tr class="Taxes">
-                                                        <?php
-                                                        $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                      <?php
+                                                        $bifurcateTax = bifurcateTax($tax->getName(), $tax->getValue(), $item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                        <td class=" align-top border-top-0">
-                                                      <span class="amount font-weight-medium text-color-dark">{!! $bifurcateTax['html'] !!}</strong>
-
+                                                    
+                                                
+                                                   @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0">
+                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <td data-title="CGST">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
                                                         </td>
-                                                        <td class=" align-top border-top-0">
-                                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
                                                     </tr>
+                                                  @endforeach
+
+
+
+
                                                     @endif
                                                     @endforeach
 
                                                     @else
                                                     @foreach(Cart::getContent() as $tax)
                                                     @if($tax->conditions->getName() != 'null')
-                                                    <tr class="Taxes">
                                                         <?php
                                                         $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
+                                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                       <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $bifurcateTax['html'] !!}</strong>
-
+                                                       @foreach($partsHtml as $index => $part)
+                                                    <tr class="Taxes border-top-0">
+                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <td data-title="CGST">
+                                                            <span class="align-top border-top-0">
+                                                                <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                            </span>
                                                         </td>
-                                                        <td class=" align-top border-top-0">
-                                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $bifurcateTax['tax'] !!}
-                                                     </span>
-                                                      </td>
-                                                      
-                                                       
                                                     </tr>
+                                                  @endforeach
+                                                       
+
                                                     @endif
                                                     
                                                     @endforeach
@@ -343,25 +371,6 @@ $cartSubtotalWithoutCondition = 0;
                                                 </tr>
 
 
-                                 @if(Cart::getTotal()>0)
-                                    <tr>
-                                        <td colspan="2" class="border-top-0">
-
-
-                                                <div class="col-md-auto px-0 mb-3 mb-md-0">
-                                                    {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-
-                                                    <div class="d-flex align-items-center">
-
-                                                        <input type="text" class="form-control h-auto line-height-1 py-3" name="coupon"  placeholder="Coupon Code" / style="width: 250px;">
-
-                                                        <button type="submit" class="btn btn-light btn-modern text-color-dark bg-color-light-scale-2 text-color-hover-light bg-color-hover-primary text-uppercase text-3 font-weight-bold border-0 ws-nowrap btn-px-4 py-3 ms-2">Apply</button>
-                                                    </div>
-                                                    {!! Form::close() !!}
-                                                </div>
-                                        </td>
-                                    </tr>
-                                    @endif
 
                                     <tr class="total">
 

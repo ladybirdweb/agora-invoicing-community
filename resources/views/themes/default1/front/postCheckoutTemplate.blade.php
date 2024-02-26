@@ -9,9 +9,9 @@
                         <div class="card-body text-center">
                             @if($show)
 
-                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Your Payment has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></p>
+                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Thank You. Your Order has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></p>
                             @else
-                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Your Payment has been received.</p>
+                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Thank You. Your Order has been received.</p>
                             @endif
                         </div>
                     </div>
@@ -71,7 +71,7 @@
 
                                 <tr>
                                     <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold"> {{$product->name}}<span class="product-qty">x{{$items[0]->quantity}}</span></strong>
+                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold"> {{$product->name}} <span class="product-qty">x {{$items[0]->quantity}}</span></strong>
                                     </td>
                                     <td class="text-end align-top">
                                         <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</span>

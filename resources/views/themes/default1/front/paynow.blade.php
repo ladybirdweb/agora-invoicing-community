@@ -13,6 +13,13 @@ Checkout
 @endif
  <li class="active text-dark">Checkout</li>
 @stop
+<style type="text/css">
+   
+       .shop_table th {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 17px 10px;
+        }
+</style>
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
@@ -61,11 +68,6 @@ Checkout
 
                                     </th>
 
-                                    <th class="product-price text-uppercase" >
-
-                                        Version
-                                    </th>
-
                                     <th class="product-quantity text-uppercase" >
 
                                         Quantity
@@ -111,15 +113,6 @@ Checkout
                                         <span class="font-weight-semi-bold text-color-dark">{{$item->product_name}}</span>
                                     </td>
 
-                                    <td class="product-price">
-
-                                        <span class="amount font-weight-medium text-color-grey">   
-                                            @if($product->version)
-                                            {{$product->version}}
-                                            @else 
-                                            Not available
-                                            @endif</span>
-                                    </td>
 
                                     <td class="product-quantity">
 
@@ -132,7 +125,7 @@ Checkout
 
                                     <td class="product-subtotal text-end">
 
-                                        <span class="amount text-color-dark font-weight-bold text-4">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
+                                        <span class="amount text-color-dark font-weight-bold text-3">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -160,7 +153,7 @@ Checkout
                                 $subtotal = array_sum($subtotals);
                                 ?>
 
-                                    <tr>
+                                    <tr class="border-top">
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Cart Subtotal</strong>
                                         </td>
@@ -180,23 +173,22 @@ Checkout
                                   @if ($taxDetails[0]!= 'null')
                                                             
                                                        
-                                    <tr>
                                          <?php
                                         $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                        $partsHtml = explode('<br>', $bifurcateTax['html']);
+                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
                                         ?>
-                                       <td class="align-top border-top-0"><span class="amount font-weight-medium text-color-dark">
-                                                                {!! $bifurcateTax['html'] !!}
-                                                            </span>
-                                                        </td>
-                                        <td class="text-end align-top border-top-0"><span class="amount font-weight-medium text-color-grey">
-                                           
-                                            {!! $bifurcateTax['tax'] !!}
-                                        </span>
-
-                                        </td>
-                                    </tr>
-                             
-                               
+                                      @foreach($partsHtml as $index => $part)
+                                        <tr class="Taxes border-top-0">
+                                            <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                            <td data-title="CGST">
+                                                <span class="align-top border-top-0">
+                                                    <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                      @endforeach
+                   
                                     @endif
                                     @endforeach
 
@@ -529,8 +521,15 @@ function getGateway(element) {
         width: 100%;
         padding-bottom: 3px;
     }
+   #balance-content{
+    font-weight: bolder;
+    color: black;
+   }
+ .border-top{
+            border-bottom: 0.5px solid #000;
+            border-color: lightgrey;
 
-
+        }
 
 </style>
 @endsection

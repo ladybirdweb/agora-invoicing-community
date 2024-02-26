@@ -179,7 +179,7 @@ Invoice
                                              <td>{{currencyFormat($invoice->credits,$code=$symbol)}} (Credits)</td>
                                          </tr>
                                      @endif
-                                      @if($invoice->discount)
+                                      @if($invoice->coupon_code && $invoice->discount)
                                   <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 @endif

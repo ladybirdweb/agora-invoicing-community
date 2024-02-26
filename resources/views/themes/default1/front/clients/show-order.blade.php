@@ -356,28 +356,28 @@ $price = $order->price_override;
                         <li class="nav-item">
 
                             <a class="nav-link active" href="#license" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">License Details
+                               data-hash-offset-lg="500" data-hash-delay="500">License Details
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#users" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">User Details
+                               data-hash-offset-lg="500" data-hash-delay="500">User Details
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#invoice" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">Invoice List
+                               data-hash-offset-lg="500" data-hash-delay="500">Invoice List
                             </a>
                         </li>
 
                         <li class="nav-item">
 
                             <a class="nav-link" href="#receipt" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                               data-hash-offset-lg="120" data-hash-delay="500">Payment Receipts
+                               data-hash-offset-lg="500" data-hash-delay="500">Payment Receipts
                             </a>
                         </li>
                         @if(in_array($product->id,cloudPopupProducts()) && $order->order_status!='Terminated')
@@ -385,7 +385,7 @@ $price = $order->price_override;
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#cloud" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Cloud Settings
+                                   data-hash-offset-lg="500" data-hash-delay="500">Cloud Settings
                                 </a>
                             </li>
                         @endif
@@ -395,14 +395,14 @@ $price = $order->price_override;
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
+                                   data-hash-offset-lg="500" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
                         @elseif($price != '0' && $order->order_status!='Terminated')
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
-                                   data-hash-offset-lg="120" data-hash-delay="500">Auto Renewal
+                                   data-hash-offset-lg="500" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
                         @endif
@@ -2063,8 +2063,8 @@ $price = $order->price_override;
 </script>
 
 <script>
+$(document).ready(function() {
     let hash = window.location.hash;
-
     if (hash !== '') {
         $('.nav-link').removeClass('active');
         $('.tab-pane').removeClass('active show');
@@ -2074,11 +2074,14 @@ $price = $order->price_override;
     }
 
     $('.nav-link').on('click', function(e) {
-        e.preventDefault();
         let hash = $(this).attr('href');
-        window.location.hash = hash;
+        history.replaceState(null, null, hash);
     });
+});
 </script>
+
+
+
 
     <style>
         .hidden {

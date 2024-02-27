@@ -77,6 +77,8 @@
  $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
 $currency = $invoice->currency;
+
+$feeAmount = intval(ceil($invoice->grand_total*0.01));
 ?>
 @if($regularPayment)
  <div role="main" class="main">
@@ -244,8 +246,15 @@ $currency = $invoice->currency;
                                                     
                                                 
                                                    @foreach($partsHtml as $index => $part)
+                                                   @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <th class="d-block font-weight-medium text-color-grey ">{{ $cgst }}
+                                                            <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -267,9 +276,16 @@ $currency = $invoice->currency;
                                                         ?>
                                                     
                                                   @if (strpos($bifurcateTax['html'], 'null') === false)
-                                                   @foreach($partsHtml as $index => $part)
+                                                     @foreach($partsHtml as $index => $part)
+                                                   @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <th class="d-block font-weight-semibold text-color-grey ">{{ $cgst }}
+                                                            <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -289,12 +305,13 @@ $currency = $invoice->currency;
                                                      @foreach(\Cart::getConditionsByType('fee') as $fee)
                                                      <tr>
                                                          <td class="border-top-0">
-                                            <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{!! $fee->getName() !!}
+                                            <strong class="d-block text-color-grey  font-weight-semibold">{!! $fee->getName() !!}
+                                                <label style="font-size: 12px;font-weight: normal;">({!! $fee->getValue() !!})</label>
                                             </strong>
                                         </td>
                                                           <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $fee->getValue() !!}
+                                                         {{currencyFormat($feeAmount,$code = $item->attributes->currency)}}
                                                      </span>
                                                       </td>
                                                      </tr>
@@ -522,9 +539,16 @@ $currency = $invoice->currency;
                                                         ?>
                                                     
                                                 
-                                                   @foreach($partsHtml as $index => $part)
+                                                    @foreach($partsHtml as $index => $part)
+                                                   @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
+                                                        <th class="d-block font-weight-semibold text-color-grey ">{{ $cgst }}
+                                                            <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -582,12 +606,13 @@ $currency = $invoice->currency;
                                         @foreach(\Cart::getConditionsByType('fee') as $fee)
                                             <tr>
                                                  <td class="border-top-0">
-                                            <strong class="text-color-dark">{!! $fee->getName() !!}</strong><br/>
-
+                                            <strong class="text-color-grey font-weight-semibold">{!! $fee->getName() !!}</strong>
+                                             <label style="font-size: 12px;font-weight: normal;">({!! $fee->getValue() !!})</label>
                                                 </td>
                                                 <td class="border-top-0 text-end">
                                             <span class="amount font-weight-medium">
-                                                    {!! $fee->getValue() !!}
+                                                    {{currencyFormat($feeAmount,$code = $currency)}}
+
                                                 </span>
                                                 </td>
                                             </tr>

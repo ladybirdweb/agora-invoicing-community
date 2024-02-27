@@ -256,7 +256,7 @@ $cartSubtotalWithoutCondition = 0;
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold bo">Cart Subtotal</strong>
                                         </td>
-                                        <td class=" align-top border-top-0">
+                                        <td class=" align-top border-top-0 text-end">
                                             <span class="amount font-weight-medium text-color-grey">                                
                                             {{currencyFormat($cartSubtotalWithoutCondition,$code = $item->attributes->currency)}}
                                            </span>
@@ -268,7 +268,7 @@ $cartSubtotalWithoutCondition = 0;
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Discount</strong>
                                         </td>
-                                        <td class=" align-top border-top-0">
+                                        <td class=" align-top border-top-0 text-end">
                                             <span class="amount font-weight-medium text-color-grey">
                                                  <?php
                                             if (strpos(\Session::get('codevalue'), '%') == true) {
@@ -304,9 +304,17 @@ $cartSubtotalWithoutCondition = 0;
                                                     
                                                 
                                                    @foreach($partsHtml as $index => $part)
+                                                    @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0">
-                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
-                                                        <td data-title="CGST">
+                                                        <th class="d-block  line-height-1 font-weight-semibold text-color-grey ">{{ $cgst }}
+                                                            <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </th>
+
+                                                        <td data-title="CGST" class="text-end">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
                                                             </span>
@@ -328,10 +336,18 @@ $cartSubtotalWithoutCondition = 0;
                                                         $partsHtml = explode('<br>', $bifurcateTax['html']);
                                                         $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
-                                                       @foreach($partsHtml as $index => $part)
+                                                      @foreach($partsHtml as $index => $part)
+                                                    @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0">
-                                                        <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
-                                                        <td data-title="CGST">
+                                                        <th class="d-block  line-height-1 font-weight-semibold text-color-grey ">{{ $cgst }}  
+                                                            <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </th>
+
+                                                        <td data-title="CGST" class="text-end">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
                                                             </span>
@@ -347,7 +363,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                                  <tr id="balance-row" class="cart-subtotal" style="color: indianred; display: none;">
                                                     <th><strong class="d-block text-color-dark line-height-1 font-weight-semibold">Balance</strong></th>
-                                                    <td class=" align-top border-top-0">
+                                                    <td class=" align-top border-top-0 text-end">
                                                     <span class="amount font-weight-medium text-color-grey">
                        
 
@@ -388,7 +404,7 @@ $cartSubtotalWithoutCondition = 0;
                                                 $cartTotal = \Cart::getTotal();
                                             }
                                             ?>
-                                        <td class="" id="balance-content">
+                                        <td class="text-end" id="balance-content">
                                             <strong><span class="amount text-color-grey text-5">
                                                 {{ currencyFormat($cartTotal, $code = $item->attributes->currency) }}
                                             </span></strong>
@@ -403,7 +419,7 @@ $cartSubtotalWithoutCondition = 0;
                                     <input type="checkbox" id="billing-temp-balance" class="checkbox" checked disabled>
                                    Total Credits remaining on your current plan: 
                                     </strong></td>
-                                     <td class=" align-top border-top-0">
+                                     <td class=" align-top border-top-0 text-end">
                                             <span class="amount font-weight-medium text-color-grey">   {{currencyFormat(\Session::get('priceRemaining'),$code = $item->attributes->currency)}}
                                             </span></td></tr>
                                 @endif

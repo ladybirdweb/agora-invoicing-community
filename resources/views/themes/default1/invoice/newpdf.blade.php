@@ -168,12 +168,12 @@
                         <!-- accepted payments column -->
             
                         <div class="col-6"></div>
-                        <div class="col-6" style="width: 50%;margin-left: 45%">
+                        <div class="col-6" style="width: 50%;margin-left: 50%">
                               <div class="table-responsive">
                                  <table class="table">
                                      <tr>
                                          <th>Subtotal:</th>
-                                         <td>{{currencyFormat($item->subtotal,$code=$symbol)}}</td>
+                                         <td">{{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                      </tr>
                                      <?php
                                     $invoice = \DB::table('invoices')->where('id',$item->invoice_id)->first();
@@ -214,26 +214,41 @@
                                                  <?php
                                                 $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],$symbol, \Auth::user()->state, $taxAmt);
                                                 ?>
-                                                <th>
-
-                                                    <strong>{!! $bifurcateTax['html'] !!}</strong>
-
-
-                                                </th>
-                                                <td>
-                                                   
-                                                    {!! $bifurcateTax['tax'] !!}
-
-                                                </td>
+                                                 @foreach(explode('<br>', $bifurcateTax['html']) as $index => $part)
+                                    <tr>
+                                        <th>
+                                            <strong>
+                                                <?php
+                                                $parts = explode('@', $part);
+                                                $cgst = $parts[0];
+                                                $percentage = $parts[1];
+                                                ?>
+                                                <span class="font-weight-bold text-color-grey">{{ $cgst }}</span>
+                                                <span style="font-weight: normal;color: grey;">({{ $percentage }})</span><br>
+                                            </strong>
+                                        </th>
+                                        <td class="text-color-grey moveright">
+                                            <?php
+                                            $taxParts = explode('<br>', $bifurcateTax['tax']);
+                                            echo $taxParts[$index]; // Output tax amount corresponding to current index
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                             </tr>
                                      
                                        
                                     @endif
                                      @endforeach
-                                     @if($invoice->processing_fee != null && $invoice->processing_fee != '0%')
+                                    <?php
+                                    $feeAmount = intval(ceil($invoice->grand_total * 0.99 / 100));
+                                    ?>
+
+
+                                @if($invoice->processing_fee != null && $invoice->processing_fee != '0%')
                                 <tr>
-                                    <th>Processing fee</th>
-                                    <td>{{$invoice->processing_fee}}</td>
+                                    <th class="font-weight-bold text-color-grey">Processing fee <span style="font-weight: normal;">({{$invoice->processing_fee}})</span></th>
+                                    <td class="text-color-grey">{{currencyFormat($feeAmount,$code = $symbol)}}</td>
                                 </tr>
                                 @endif
                                     <tr>

@@ -27,6 +27,13 @@ Invoice
     .table th{
         border-top: unset !important;
     }
+    .moveleft{
+        position: relative;
+        left: 35px;
+    }
+    .table tr{
+        line-height: 25px;
+    }
 </style>
 @section('nav-invoice')
 active
@@ -143,7 +150,11 @@ active
                         {{$user->zip}}<br/>
                         Country: {{getCountryByCode($user->country)}}<br/>
                         Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
-                        Email: {{$user->email}}
+                        Email: {{$user->email}}<br />
+                        @if($user->gstin)
+                            <b>GSTIN:</b>  &nbsp; #{{$user->gstin}}
+                            <br>
+                            @endif
         </ul>
                 </div>
             </div>
@@ -211,10 +222,11 @@ active
                         <div class="table-responsive">
 
                             <table class="table h6 text-dark">
-                               
+
                               
                                
                                 @foreach($items as $item)
+                               @if($item->regular_price > 0)
                                  
 
                                 <tbody>
@@ -222,7 +234,7 @@ active
 
                                     <th>Subtotal</th>
 
-                                    <td  style="border-top: unset !important;">{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
+                                    <td class="moveleft"  style="border-top: unset !important;">{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                 </tr>
                                 @if($invoice->credits)
                                         <tr>
@@ -233,7 +245,7 @@ active
                                 @if($invoice->coupon_code && $invoice->discount)
                                 <tr>
                                     <th>Discount</th>
-                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
+                                    <td class="moveleft">{{currencyFormat($invoice->discount,$code=$symbol)}} ({{$invoice->coupon_code}})</td>
                                 </tr>
                                 @endif
 
@@ -251,40 +263,59 @@ active
                                     $taxDetails = explode('@', $tax);
                                     ?>
                                     @if ($taxDetails[0]!= 'null')
-                                            
+
                                        
-                                            <tr>
-                                                 <?php
-                                                $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                   <tr>
+                                    <?php
+                                    $bifurcateTax = bifurcateTax($taxDetails[0], $taxDetails[1], \Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                    ?>
+                                    @foreach(explode('<br>', $bifurcateTax['html']) as $index => $part)
+                                    <tr>
+                                        <th>
+                                            <strong>
+                                                <?php
+                                                $parts = explode('@', $part);
+                                                $cgst = $parts[0];
+                                                $percentage = $parts[1];
                                                 ?>
-                                                <th>
+                                                <span class="font-weight-bold text-color-grey">{{ $cgst }}</span>
+                                                <span style="font-weight: normal;color: grey;">({{ $percentage }})</span><br>
+                                            </strong>
+                                        </th>
+                                        <td class="text-color-grey moveleft">
+                                            <?php
+                                            $taxParts = explode('<br>', $bifurcateTax['tax']);
+                                            echo $taxParts[$index]; // Output tax amount corresponding to current index
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tr>
 
-                                                    <strong>{!! $bifurcateTax['html'] !!}</strong>
 
 
-                                                </th>
-                                                <td>
-                                                   
-                                                    {!! $bifurcateTax['tax'] !!}
-
-                                                </td>
-                                            </tr>
                                      
                                        
                                     @endif
                                     @endforeach
+                                    <?php
+                                    $feeAmount = intval(ceil($invoice->grand_total * 0.99 / 100));
+                                    ?>
+
+
                                 @if($invoice->processing_fee != null && $invoice->processing_fee != '0%')
                                 <tr>
-                                    <th>Processing fee</th>
-                                    <td>{{$invoice->processing_fee}}</td>
+                                    <th class="font-weight-bold text-color-grey">Processing fee <label style="font-weight: normal;">({{$invoice->processing_fee}})</label></th>
+                                    <td class="text-color-grey moveleft">{{currencyFormat($feeAmount,$code = $symbol)}}</td>
                                 </tr>
                                 @endif
-                                <tr class="h4">
+                                <tr class="h6">
 
                                     <th class="border-0">Total</th>
 
-                                    <td class="border-0">{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
+                                    <td class="border-0 moveleft">{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
                                 </tr>
+                                @endif
                                 @endforeach
                                 </tbody>
                             </table>
@@ -320,7 +351,7 @@ active
                         <tr>
                             <td>{!! $DateTime !!}</td>
                             <td>{{$payment->payment_method}}</td>
-                            <td>{{$payment->amount}}</td>
+                            <td>{{currencyFormat($payment->amount,$code = $symbol)}}</td>
                             @if($payment->payment_status == 'success')
                             <td><span class="badge badge-success badge-xs">{{$payment->payment_status}}</span></td>
                             @else

@@ -179,11 +179,18 @@ Checkout
                                                         $taxParts = explode('<br>', $bifurcateTax['tax']);
                                         ?>
                                       @foreach($partsHtml as $index => $part)
+                                      @php
+                                        $parts = explode('@', $part);
+                                        $cgst = $parts[0];
+                                        $percentage = $parts[1]; 
+                                      @endphp
+
                                         <tr class="Taxes border-top-0">
-                                            <th class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</th>
-                                            <td data-title="CGST">
-                                                <span class="align-top border-top-0">
-                                                    <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
+                                            <th ><strong class="d-block text-color-grey font-weight-semibold">{{ $cgst }}<label style="font-size: 12px;font-weight: normal;">&nbsp;&nbsp;({{$percentage}})</label></strong>
+                                            </th>
+                                            <td data-title="CGST" class="text-end">
+                                                <span class=" align-top border-top-0">
+                                                <span class="amount font-weight-medium text-color-grey">{{ $taxParts[$index] }}</span>
                                                 </span>
                                             </td>
                                         </tr>
@@ -351,7 +358,7 @@ Checkout
 
                                                     <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
                                                     <div id="fee" style="display:none;">
-                                                        <p class="text-color-dark text-3-5">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
+                                                        <p class="text-color-dark text-2">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
                                                 </label>
                                                   @endforeach
 

@@ -288,8 +288,17 @@ $json = json_encode($data);
                                                         $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
                                                      @foreach($partsHtml as $index => $part)
+                                                      @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th class=""><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <th class=""><strong class="d-block text-color-grey font-weight-semibold">{{ $cgst }}
+                                                             <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </strong>
+                                                            
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -310,9 +319,18 @@ $json = json_encode($data);
                                                         $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
                                                         @if (strpos($bifurcateTax['html'], 'null') === false)
-                                                     @foreach($partsHtml as $index => $part)
+                                                    @foreach($partsHtml as $index => $part)
+                                                      @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th class=""><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <th class=""><strong class="d-block text-color-grey font-weight-semibold">{{ $cgst }}
+                                                             <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label>
+                                                        </strong>
+                                                            
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -332,12 +350,13 @@ $json = json_encode($data);
                                                      @foreach(\Cart::getConditionsByType('fee') as $fee)
                                                      <tr class="border-top">
                                                          <td class="border-top-0">
-                                            <strong class="d-block text-color-dark font-weight-semibold">{!! $fee->getName() !!}
+                                            <strong class="d-block text-color-grey font-weight-semibold">{!! $fee->getName() !!}
                                             </strong>
                                         </td>
                                                           <td class="text-end align-top border-top-0">
                                             <span class="amount font-weight-medium text-color-grey">
-                                                         {!! $fee->getValue() !!}
+                                                        {!! str_replace('%', '', $fee->getValue()) !!}
+
                                                      </span>
                                                       </td>
                                                      </tr>
@@ -561,13 +580,20 @@ $json = json_encode($data);
                                              <?php
                                             $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
                                            $partsHtml = explode('<br>', $bifurcateTax['html']);
-                                                        $taxParts = explode('<br>', $bifurcateTax['tax']);
+                                            $taxParts = explode('<br>', $bifurcateTax['tax']);
                                                         ?>
                                                     
                                                 
                                                    @foreach($partsHtml as $index => $part)
+                                                    @php
+                                                        $parts = explode('@', $part);
+                                                        $cgst = $parts[0];
+                                                        $percentage = $parts[1]; 
+                                                    @endphp
                                                     <tr class="Taxes border-top-0 border-bottom">
-                                                        <th><strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{ $part }}</strong></th>
+                                                        <th><strong class="d-block text-color-grey line-height-1 font-weight-semibold">{{ $cgst }}
+                                                             <label style="font-size: 12px;font-weight: normal;">({{$percentage}})</label></strong>
+                                                        </th>
                                                         <td data-title="CGST" class="text-end align-top border-top-0">
                                                             <span class="align-top border-top-0">
                                                                 <span class="amount font-weight-medium text-color-grey"></span>{{ $taxParts[$index] }}
@@ -624,12 +650,13 @@ $json = json_encode($data);
                                         @foreach(\Cart::getConditionsByType('fee') as $fee)
                                             <tr>
                                                  <td class="border-top-0">
-                                            <strong class="text-color-dark">{!! $fee->getName() !!}</strong><br/>
+                                            <strong class="text-color-grey font-weight-semibold">{!! $fee->getName() !!}</strong>
+                                            <br/>
 
                                                 </td>
                                                 <td class="border-top-0 text-end">
                                             <span class="amount font-weight-medium">
-                                                    {!! $fee->getValue() !!}
+                                                     {!! str_replace('%', '', $fee->getValue()) !!}
                                                 </span>
                                                 </td>
                                             </tr>

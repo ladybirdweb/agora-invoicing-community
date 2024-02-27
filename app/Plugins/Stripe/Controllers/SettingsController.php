@@ -239,7 +239,6 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            dd($e);
             $control = new \App\Http\Controllers\Order\RenewController();
             if ($control->checkRenew($invoice->is_renewed) != true) {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
@@ -247,7 +246,6 @@ class SettingsController extends Controller
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
             }
@@ -256,8 +254,6 @@ class SettingsController extends Controller
 
             return redirect()->route('checkout');
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }
@@ -266,7 +262,6 @@ class SettingsController extends Controller
     {
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = Stripe::make($stripeSecretKey);
-        // $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
         if (\Session::get('invoice')) {
             $invoice = \Session::get('invoice');

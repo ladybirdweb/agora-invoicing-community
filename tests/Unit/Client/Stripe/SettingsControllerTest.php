@@ -1,19 +1,15 @@
 <?php
 
 namespace Tests\Unit\Client\Stripe;
-use Mockery;
+
 use App\Plugins\Stripe\Controllers\SettingsController;
-use Tests\DBTestCase;
-use Validator;
-use Illuminate\Http\Request;
-use Stripe\PaymentIntent;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use App\ApiKey;
-use Tests\MockStripeClient;
-use Illuminate\Support\Testing\Fakes\PendingFake;
+use Illuminate\Http\Request;
+use Mockery;
+use Tests\DBTestCase;
+
 class SettingsControllerTest extends DBTestCase
 {
-
     // Helper method to set up the mock for the Stripe client
     protected function setupStripeClientMock($expectedArguments, $status)
     {
@@ -21,9 +17,9 @@ class SettingsControllerTest extends DBTestCase
         $stripeClientConstructorMock->shouldReceive('paymentIntents->confirm')
             ->with('payment_intent_id', $expectedArguments)
             ->andReturn(['status' => $status]);
+
         return $stripeClientConstructorMock;
     }
-
 
     // Helper method to set up the mock for the request
     protected function setupRequestMock($requestData)
@@ -34,10 +30,11 @@ class SettingsControllerTest extends DBTestCase
         foreach ($requestData as $key => $value) {
             $requestMock->shouldReceive('get')->with($key)->andReturn($value);
         }
-        \DB::table('api_keys')->where('id',1)->update(['stripe_secret' => 'sk_test_FIPEe0BihQ4Rn2exN1BhOotg']);
-         return $requestMock;
+        \DB::table('api_keys')->where('id', 1)->update(['stripe_secret' => 'sk_test_FIPEe0BihQ4Rn2exN1BhOotg']);
+
+        return $requestMock;
     }
-    
+
     // Helper method to set up the Auth user
     protected function SetAuthUser()
     {
@@ -46,12 +43,11 @@ class SettingsControllerTest extends DBTestCase
             'last_name' => 's',
             'email' => 'sowmi@gmail.com',
         ]);
-        return $user;
 
+        return $user;
     }
 
-
-     // Test case for handling 3DS authentication
+    // Test case for handling 3DS authentication
     public function test_handlePayment_3DS_authentication()
     {
         $requestData = ['card_no' => '4000003560000008', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
@@ -66,7 +62,7 @@ class SettingsControllerTest extends DBTestCase
         $this->assertEquals('https://example.com/return-url', $response->next_action->redirect_to_url->return_url);
     }
 
-     // Test case for handling incorrect card values
+    // Test case for handling incorrect card values
     public function test_handlePayment_return_exception_incorrect_values()
     {
         $requestData = ['card_no' => '12345678953', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
@@ -79,6 +75,4 @@ class SettingsControllerTest extends DBTestCase
         $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
         $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
     }
-
-
 }

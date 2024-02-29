@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('release_types', function (Blueprint $table) {
-             $table->tinyInteger('value')->nullable();
+            $table->tinyInteger('value')->nullable();
         });
     }
 

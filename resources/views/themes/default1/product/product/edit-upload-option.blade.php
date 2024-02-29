@@ -77,8 +77,8 @@ Edit Product Uploads
                     {!! Form::checkbox('is_private',1) !!}
                      </div>
 
-                     <div class="col-md-4 form-group {{ $errors->has('is_private') ? 'has-error' : '' }}">
-                      <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
+                     <div class="col-md-4 form-group {{ $errors->has('is_pre_release') ? 'has-error' : '' }}">
+                      <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept as Pre release, product users won't receive notification for this release.">
                         </label></i>
                                     
                     {!! Form::label('is_pre_release','Pre Release') !!}

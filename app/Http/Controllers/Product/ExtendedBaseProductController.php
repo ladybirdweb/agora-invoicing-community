@@ -20,7 +20,8 @@ class ExtendedBaseProductController extends Controller
         // ->select('id', 'product_id', 'title', 'description', 'version', 'file');
 
         $new_upload = ProductUpload::leftJoin('products', 'products.id', '=', 'product_uploads.product_id')
-                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'product_uploads.id', 'product_uploads.product_id', 'product_uploads.release_type_id')
+                      ->leftJoin('release_types','release_types.value', '=', 'product_uploads.is_pre_release')
+                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'product_uploads.id', 'product_uploads.product_id','product_uploads.is_pre_release','release_types.type','release_types.value')
                       ->where('product_id', '=', $id);
 
         return \DataTables::of($new_upload)
@@ -28,6 +29,7 @@ class ExtendedBaseProductController extends Controller
         ->orderColumn('description', '-product_uploads.id $1')
         ->orderColumn('version', '-product_uploads.id $1')
         ->orderColumn('file', '-product_uploads.id $1')
+        ->orderColumn('releasetype', '-product_uploads.id $1')
         ->addColumn('checkbox', function ($model) {
             return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
         })
@@ -50,9 +52,8 @@ class ExtendedBaseProductController extends Controller
             return $model->file;
         })
         ->addColumn('releasetype', function ($model) {
-            $type = ReleaseType::where('id', $model->release_type_id)->value('type');
-
-            return $type ? $type : '--';
+            $type = ReleaseType::where('value',$model->is_pre_release)->value('type');
+            return $type ?? $type ; '--';
         })
         ->addColumn('action', function ($model) {
             return '<p><a href='.url('edit-upload/'.$model->id).
@@ -71,6 +72,13 @@ class ExtendedBaseProductController extends Controller
             $sql = 'product_uploads.version like ?';
             $query->whereRaw($sql, ["%{$keyword}%"]);
         })
+        ->filterColumn('releasetype', function ($query, $keyword) {
+            $keyword = trim($keyword);
+            $query->where('release_types.type', 'LIKE', "%{$keyword}%");
+        })
+
+
+
         ->filterColumn('file', function ($query, $keyword) {
             $sql = 'product_uploads.file like ?';
             $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -104,7 +112,7 @@ class ExtendedBaseProductController extends Controller
         ]);
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->where('id', $id)->update(['title' => $request->input('title'), 'description' => $request->input('description'), 'version' => $request->input('version'), 'dependencies' => json_encode($request->input('dependencies')), 'is_private' => $request->input('is_private'), 'is_restricted' => $request->input('is_restricted')]);
+            $file_upload->where('id', $id)->update(['title' => $request->input('title'), 'description' => $request->input('description'), 'version' => $request->input('version'), 'dependencies' => json_encode($request->input('dependencies')), 'is_private' => $request->input('is_private'), 'is_restricted' => $request->input('is_restricted'),'is_pre_release' => $request->input('is_pre_release')]);
             $autoUpdateStatus = StatusSetting::pluck('license_status')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;

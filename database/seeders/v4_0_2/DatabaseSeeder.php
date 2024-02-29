@@ -17,14 +17,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        
-        ProductUpload::where('release_type_id',2)->delete();
         ReleaseType::truncate();
         LicenseType::where('id',7)->delete();
 
         $this->call([
             ReleaseTypeSeeder::class,
-            ProductUploadSeeder::class,
             LicenseTypeSeeder::class
         ]);
 
@@ -32,18 +29,7 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-class ProductUploadSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        ProductUpload::whereNull('release_type_id')->update(['release_type_id' => 2]);
-    }
-}
+
 
 class ReleaseTypeSeeder extends Seeder
 {
@@ -54,8 +40,8 @@ class ReleaseTypeSeeder extends Seeder
      */
     public function run()
     {
-        ReleaseType::create(['id' => 1, 'type' => 'Pre release']);
-        ReleaseType::create(['id' => 2, 'type' => 'Latest release']);
+        ReleaseType::create(['id' => 1, 'type' => 'Pre Release','value' => '1']);
+        ReleaseType::create(['id' => 2, 'type' => 'Latest Release','value' => '0']);
     }
 }
 

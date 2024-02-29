@@ -231,12 +231,7 @@ class RazorpayController extends Controller
                 $currency = strtolower($invoice->currency);
                 $controller = new SettingsController();
                 $result = $controller->processPaymentSuccess($invoice, $currency);
-                \Session::forget('items');
-                \Session::forget('code');
-                \Session::forget('codevalue');
-                \Session::forget('totalToBePaid');
-                \Session::forget('invoice');
-                \Session::forget('cart_currency');
+                \Session::forget(['items', 'code', 'codevalue', 'totalToBePaid', 'invoice', 'cart_currency']);
                 \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($result['status'], $result['message']);

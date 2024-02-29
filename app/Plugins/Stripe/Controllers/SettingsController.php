@@ -130,12 +130,7 @@ class SettingsController extends Controller
             $confirm = $this->handlePayment($request, $amount, $currency, $url, $invoice);
             if ($confirm->status === 'succeeded') {
                 $result = $this->processPaymentSuccess($invoice, $currency);
-                \Session::forget('items');
-                \Session::forget('code');
-                \Session::forget('codevalue');
-                \Session::forget('totalToBePaid');
-                \Session::forget('invoice');
-                \Session::forget('cart_currency');
+                \Session::forget(['items', 'code', 'codevalue', 'totalToBePaid', 'invoice', 'cart_currency']);
                 \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($result['status'], $result['message']);
@@ -146,7 +141,6 @@ class SettingsController extends Controller
                 return redirect()->away($redirectUrl);
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            dd($e);
             $control = new \App\Http\Controllers\Order\RenewController();
             if ($control->checkRenew($invoice->is_renewed) != true) {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
@@ -154,7 +148,6 @@ class SettingsController extends Controller
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
             }

@@ -8,7 +8,7 @@ class ProductUpload extends Model
 {
     protected $table = 'product_uploads';
 
-    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted', 'release_type_id', 'is_pre_release'];
+    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted','is_pre_release'];
 
     public function product()
     {
@@ -25,8 +25,5 @@ class ProductUpload extends Model
         return json_decode($value);
     }
 
-    public function releaseType()
-    {
-        return $this->belongsTo(ReleaseType::class, 'release_type_id');
-    }
+
 }

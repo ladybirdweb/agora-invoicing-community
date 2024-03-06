@@ -342,6 +342,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-license-permission', [License\LicensePermissionsController::class, 'getPermissions'])->name('get-license-permission');
     Route::delete('add-permission', [License\LicensePermissionsController::class, 'addPermission'])->name('add-permission');
     Route::get('tick-permission', [License\LicensePermissionsController::class, 'tickPermission'])->name('tick-permission');
+
     /*
      * Order
      */
@@ -363,6 +364,8 @@ Route::middleware('installAgora')->group(function () {
     })->middleware('auth');
     Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
     //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
+    Route::get('get-installation-details/{orderId}', [Order\OrderController::class,'getInstallationDetails']);
+
 
     /*
      * Groups

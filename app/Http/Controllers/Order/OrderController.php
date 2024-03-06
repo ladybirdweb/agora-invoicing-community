@@ -262,7 +262,6 @@ class OrderController extends BaseOrderController
             if ($installationDetails['installed_path'] == null) {
                 $insDetail = InstallationDetail::where('order_id', $orderId)->get();
 
-                // If installation details are found, populate $installationDetails
                 if (! $insDetail->isEmpty()) {
                     $installationDetails['installed_path'] = $insDetail->pluck('installation_path')->toArray();
                     $installationDetails['installed_ip'] = $insDetail->pluck('installation_ip')->toArray();
@@ -387,8 +386,6 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate', 'installationDetails', 'id', 'statusAutorenewal', 'payment_log'));
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

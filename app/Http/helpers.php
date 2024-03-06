@@ -159,30 +159,27 @@ function getExpiryLabel($expiryDate, $badge = 'badge')
     }
 }
 
-function getVersionAndLabel($productVersion, $productId, $badge = 'label')
+function getVersionAndLabel($productVersion, $productId, $badge = 'label', $path = null)
 {
-    $latestVersion = \Cache::remember('latest_'.$productId, 10, function () use ($productId) {
+    $latestVersion = \Cache::remember('latest_' . $productId, 10, function () use ($productId) {
         return ProductUpload::where('product_id', $productId)->latest()->value('version');
     });
-    if ($productVersion) {
-        if ($productVersion < $latestVersion) {
-            return '<span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                 </label>'.$productVersion.'</span>';
-        } else {
-            return '<span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                 </label>'.$productVersion.'</span>';
-        }
+
+    if (!$productVersion && $path) {
+        $installationDetail = InstallationDetail::where('installation_path', 'like', '%' . $path . '%')->orderBy('id', 'desc')->first();
+        $productVersion = $installationDetail ? $installationDetail->version : null;
     }
+
+    $status = $productVersion ? ($productVersion < $latestVersion ? 'warning' : 'success') : '';
+
+    return '<span class="' . $badge . ' ' . $badge . '-' . $status . '"><label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="' . ($productVersion ? ($status == 'warning' ? 'Outdated Version' : 'Latest Version') : '') . '"></label>' . ($productVersion ? $productVersion : '--') . '</span>';
 }
+
 
 function getInstallationDetail($ip)
 {
-    $ip = collect([$ip])->implode('-');
 
-    $ipAndDomain = explode(',', $ip);
-
-    return InstallationDetail::where('installation_path', 'like', '%'.$ipAndDomain[0].'%')
-    ->where('installation_ip', $ipAndDomain)->first();
+    return InstallationDetail::where('installation_path', 'like', '%'.$ip.'%')->first();
 }
 
 function tooltip($tootipText = '')
@@ -528,9 +525,10 @@ function emailSendingStatus()
 function installationStatusLabel($installedPath)
 {
     return $installedPath ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation is inactive'>
                     </label>Inactive</span>";
 }
+
 
 //return root url from long url (http://www.domain.com/path/file.php?aa=xx becomes http://www.domain.com/path/), remove scheme, www. and last slash if needed
 function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_last_slash)

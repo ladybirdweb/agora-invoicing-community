@@ -412,7 +412,6 @@ class LicenseController extends Controller
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
             $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
-
             return $getInstallId;
         } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
@@ -423,6 +422,7 @@ class LicenseController extends Controller
     {
         $installation_domain = [];
         $installation_ip = [];
+        $installation_date = [];
         $details = json_decode($this->searchInstallationId($licenseCode));
 
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
@@ -431,11 +431,13 @@ class LicenseController extends Controller
                     // $installation_domain[] = "<a href=https://$detail->installation_domain target = '_blank'>  "."$detail->installation_domain</a>".' | '.$detail->installation_ip;
                     $installation_domain[] = $detail->installation_domain;
                     $installation_ip[] = $detail->installation_ip;
+                    $installation_date[] = $detail->installation_date;
                 }
             }
         }
 
-        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip];
+
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip,'installation_date' => $installation_date];
     }
 
     //Update  Expiration Date After Renewal

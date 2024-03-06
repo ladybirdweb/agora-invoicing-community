@@ -268,6 +268,8 @@ $price = $order->price_override;
 
 ?>
 
+
+
 @section('content')
     @include('themes.default1.front.clients.reissue-licenseModal')
     @include('themes.default1.front.clients.domainRestriction')
@@ -530,72 +532,20 @@ $price = $order->price_override;
                                 @endif
 
                                 <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                                <br >
 
                                 <div class="table-responsive">
-                                    <table class="table">
-
-                                        <thead>
-                                        <tr>
-
-                                            <th>Installation Path</th>
-                                            @if(!in_array($product->id,cloudPopupProducts()))
-                                                <th>Installation IP</th>
-                                            @endif
-                                            <th>Current Version </th>
-                                            <th>  Last Active</th>
-
-                                        </tr></thead>
-
-                                        <tbody>
-                                        @foreach($installationDetails['installed_path'] as $key => $ins)
-                                                <?php
-                                                $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
-
-                                                $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
-
-                                                if($productversion) {
-                                                    $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
-                                                    $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
-                                                }
-
-                                                $active = !empty($ins)?true:false;
-
-
-
-                                                ?>
-                                            <tr>
-                                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                                @if(!in_array($product->id,cloudPopupProducts()))
-                                                    <td>{{$installationDetails['installed_ip'][$key]}}</td>
-                                                @endif
-                                                @if($productversion)
-                                                    @if($productversion < $Latestversion)
-                                                        <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                                                            </label>{{$productversion->version}}</span></td>
-                                                    @else
-                                                        <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                                                            </label>{{$productversion->version}}</span></td>
-                                                    @endif
-
-
-                                                @endif
-                                                @if($productversion)
-                                                    <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
-                                                @endif
-                                                @if($active == true)
-                                                    <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                                                        </label>Active</span></td>
-                                                @else
-                                                    <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                                                        </label>Inactive</span></td>
-                                                @endif
-
-
-                                            </tr>
-                                        @endforeach
-
-                                        </tbody>
-                                    </table></div>
+                                     <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                                      <thead>
+                                      <tr>
+                                      <th >Installation Path</th>
+                                      <th>Installation IP</th>
+                                      <th>Version </th>
+                                      <th>Last Active</th>
+                                        
+                                    </tr></thead>
+                                    </table>
+                                </div>
 
                             </div>
                         </div>
@@ -2080,6 +2030,56 @@ $price = $order->price_override;
     });
 </script>
 
+                  <script type="text/javascript">
+                          $('#installationDetail-table').DataTable({
+                              processing: true,
+                              serverSide: true,
+                               stateSave: true,
+                                ajax: {
+                              "url":  "{{Url('get-installation-details/'.$order->id)}}",
+                                 error: function(xhr) {
+                                 if(xhr.status == 401) {
+                                  alert('Your session has expired. Please login again to continue.')
+                                  window.location.href = '/login';
+                                 }
+                              }
+
+                              },
+                             
+                              "oLanguage": {
+                                  "sLengthMenu": "_MENU_ Records per page",
+                                  "sSearch"    : "Search: ",
+                                  "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                              },
+                                  columnDefs: [
+                                  { 
+                                      targets: 'no-sort', 
+                                      orderable: false,
+                                      order: []
+                                  }
+                              ],
+
+                              columns: [
+                              
+                                  {data: 'path', name: 'path'},
+                                  {data: 'ip', name: 'ip'},
+                                  {data: 'version', name: 'version'},
+                                  {data: 'active', name: 'active'},
+                                  
+                              ],
+                              "fnDrawCallback": function( oSettings ) {
+                                  $(function () {
+                                      $('[data-toggle="tooltip"]').tooltip({
+                                          container : 'body'
+                                      });
+                                  });
+                                  $('.loader').css('display', 'none');
+                              },
+                              "fnPreDrawCallback": function(oSettings, json) {
+                                  $('.loader').css('display', 'block');
+                              },
+                          });
+                        </script>
     <style>
         .hidden {
             display: none;

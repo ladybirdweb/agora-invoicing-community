@@ -362,8 +362,7 @@ Route::middleware('installAgora')->group(function () {
     })->middleware('auth');
     Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
     //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
-    Route::get('get-installation-details/{orderId}', [Order\OrderController::class,'getInstallationDetails']);
-
+    Route::get('get-installation-details/{orderId}', [Order\OrderController::class, 'getInstallationDetails']);
 
     /*
      * Groups

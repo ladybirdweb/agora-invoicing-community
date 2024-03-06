@@ -161,24 +161,22 @@ function getExpiryLabel($expiryDate, $badge = 'badge')
 
 function getVersionAndLabel($productVersion, $productId, $badge = 'label', $path = null)
 {
-    $latestVersion = \Cache::remember('latest_' . $productId, 10, function () use ($productId) {
+    $latestVersion = \Cache::remember('latest_'.$productId, 10, function () use ($productId) {
         return ProductUpload::where('product_id', $productId)->latest()->value('version');
     });
 
-    if (!$productVersion && $path) {
-        $installationDetail = InstallationDetail::where('installation_path', 'like', '%' . $path . '%')->orderBy('id', 'desc')->first();
+    if (! $productVersion && $path) {
+        $installationDetail = InstallationDetail::where('installation_path', 'like', '%'.$path.'%')->orderBy('id', 'desc')->first();
         $productVersion = $installationDetail ? $installationDetail->version : null;
     }
 
     $status = $productVersion ? ($productVersion < $latestVersion ? 'warning' : 'success') : '';
 
-    return '<span class="' . $badge . ' ' . $badge . '-' . $status . '"><label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="' . ($productVersion ? ($status == 'warning' ? 'Outdated Version' : 'Latest Version') : '') . '"></label>' . ($productVersion ? $productVersion : '--') . '</span>';
+    return '<span class="'.$badge.' '.$badge.'-'.$status.'"><label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="'.($productVersion ? ($status == 'warning' ? 'Outdated Version' : 'Latest Version') : '').'"></label>'.($productVersion ? $productVersion : '--').'</span>';
 }
-
 
 function getInstallationDetail($ip)
 {
-
     return InstallationDetail::where('installation_path', 'like', '%'.$ip.'%')->first();
 }
 
@@ -528,7 +526,6 @@ function installationStatusLabel($installedPath)
                      </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation is inactive'>
                     </label>Inactive</span>";
 }
-
 
 //return root url from long url (http://www.domain.com/path/file.php?aa=xx becomes http://www.domain.com/path/), remove scheme, www. and last slash if needed
 function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_last_slash)

@@ -17,7 +17,10 @@ use App\Model\Product\Subscription;
 use App\Payment_log;
 use App\User;
 use Bugsnag;
+use GuzzleHttp\Client;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends BaseOrderController
 {
@@ -162,10 +165,12 @@ class OrderController extends BaseOrderController
                 return intval($license, 10);
             })
             ->addColumn('number', function ($model) {
-                $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $installationDetails = $cont->searchInstallationPath($model->serial_key, $model->product);
                 $installedPath = InstallationDetail::where('order_id', $model->id)->pluck('Installation_path')->toArray();
+                $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
                 if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
-                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($installedPath);
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel(!empty($installationDetails['installed_path']) ? $installationDetails['installed_path'] : $installedPath);
                 }
                 if ($model->order_status == 'Terminated') {
                     $badge = 'badge';
@@ -246,6 +251,81 @@ class OrderController extends BaseOrderController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+        public function getInstallationDetails($orderId)
+        {
+            try{
+            $order = $this->order->findOrFail($orderId);
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $installationDetails = [];
+
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+               if ($installationDetails['installed_path'] == null) {
+                $insDetail = InstallationDetail::where('order_id', $orderId)->get();
+
+                // If installation details are found, populate $installationDetails
+                if (!$insDetail->isEmpty()) {
+                    $installationDetails['installed_path'] = $insDetail->pluck('installation_path')->toArray();
+                    $installationDetails['installed_ip'] = $insDetail->pluck('installation_ip')->toArray();
+                    $installationDetails['installation_date'] = $insDetail->pluck('created_at')->toArray();
+                }
+            }
+
+            $combinedDetails = array_map(null, 
+                $installationDetails['installed_path'] ?? [], 
+                $installationDetails['installed_ip'] ?? [], 
+                $installationDetails['installation_date'] ?? []
+            );
+              array_multisort(
+                array_column($combinedDetails, 0), SORT_ASC,
+                array_column($combinedDetails, 1), SORT_ASC,
+                array_column($combinedDetails, 2), SORT_ASC 
+            );
+            return \DataTables::of($combinedDetails)
+     
+                ->addColumn('path', function ($details) {
+                    return '<a href="https://' . $details[0] . '" target="_blank">' . $details[0] . '</a>';
+                })
+                ->addColumn('ip', function ($details) {
+                    return $details[1];
+                })
+                ->addColumn('date', function ($details) {
+                    return $details[2];
+                })
+                ->addColumn('version', function ($details) use ($order) {
+                    $version = getInstallationDetail($details[1]);
+                    if ($version) {
+                        $versionLabel = getVersionAndLabel($version->version, $order->product);
+                        return $versionLabel;
+                    } else {
+                       return getVersionAndLabel(null, $order->product, 'label', $details[0]);
+                    }
+                })
+                 ->addColumn('active', function ($details) {         
+                    $version = getInstallationDetail($details[0]);
+                    $dayUtc = new Carbon('-30 days');
+                    $minus30Day = $dayUtc->toDateTimeString();
+                    $sub = null;
+                    if ($version) {
+                        $sub = Subscription::where('order_id', $version->order_id)
+                            ->where('created_at', '!=', 'updated_at')
+                            ->where('updated_at', '>', $minus30Day)
+                            ->first();
+                    }
+                    if ($version && $sub) {
+                        return getDateHtml($version->last_active) . '&nbsp;' . installationStatusLabel($details[0]);
+                    } else {
+                        return getDateHtml($version ? $version->last_active : $details[2]) . '&nbsp;' . installationStatusLabel('');
+                    }
+                })
+
+                ->rawColumns(['path', 'version', 'active','ip'])
+                 ->make(true);
+                 } catch (\Exception $ex) {
+                return redirect()->back()->with('fails', $ex->getMessage());
+                 }
+        }
+
 
     /**
      * Store a newly created resource in storage.
@@ -307,6 +387,7 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate', 'installationDetails', 'id', 'statusAutorenewal', 'payment_log'));
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -8,7 +8,6 @@
 
                         <h4 class="modal-title" id="reissueModalLabel">Are you sure?</h4>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
 
                     <div class="modal-body">
@@ -28,4 +27,5 @@
             </div>
         </div>
 @section('script')
+
 @stop

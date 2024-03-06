@@ -119,9 +119,9 @@ input:checked + .slider:before {
                             </div>
                             <br>
                             <?php
-                                   $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
-                                   $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
-                                   ?>
+                               $terminatedOrderId = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$order->id)->value('terminated_order_id');
+                               $terminatedOrderNumber = \App\Model\Order\Order::where('id',$terminatedOrderId)->value('number');
+                               ?>
                             @if(!empty($terminatedOrderId))
                                 <p class="order-links">
                                     This order <b>{{$order->number}}</b>
@@ -246,32 +246,21 @@ input:checked + .slider:before {
                                                <tbody>
                                                <tr>
                                                    <td><b>License Code:</b></td>
-                                                   <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
+                                                   <td id="" data-type="serialkey">{{($order->serial_key)}}</td>
 
                                                    <td> @component('mini_views.copied_flash_text',
-                                                        ['navigations'=>[['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
-                                    ]
-                                ])
-
-                                                       @endcomponent
+                                                        ['navigations'=>[['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 12px; pointer-events: initial; cursor: pointer; display: inline-block;height: 28px;width: 24px;" id="copyBtn" data-toggle="tooltip"  title="Click to copy to clipboard" class="btn btn-sm btn-secondary btn-xs" style="width:max-content;border:none;margin-left: 20px;"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                                        ]
+                                                        ])                    
+                                                        @endcomponent
+                                                    <button class='class="btn btn-sm btn-secondary btn-xs' style="width:max-content;border:none;margin-left: 20px;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-id-card-alt" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
+                                                     </button>
 
                                                    </td>
+                                                 
                                                </tr>
                                                @if ($licenseStatus)
-                                                   <tr>
 
-                                                       <td>
-                                                           <label name="domain">
-                                                               <b>Licensed Domain:</b>
-                                                       </td>
-                                                       <td contenteditable="false" id="domain">{{$order->domain}}</td>
-
-                                                       <td>
-                                                           <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
-                                                           </button>
-                                                       </td>
-                                                   </tr>
-                                                
 
                                                   
                                                    <tr>
@@ -342,7 +331,7 @@ input:checked + .slider:before {
                                                 </td>
                                                 <td>
                                                 @if($order->license_mode=='File')  
-                                                <button class="btn btn-secondary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"> <span title="Enter client domain and a license file will be downloaded." {!!tooltip('Edit')!!} Enter Domain & Download License File</span></button>
+                                                <button class="btn btn-secondary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"> <span title="Enter client domain and a license file will be downloaded." {!!tooltip('Edit')!!} Enter Domain & Download License File></span></button>
                                                 @endif
                                                </td>
                                                </tr>
@@ -355,7 +344,7 @@ input:checked + .slider:before {
 
            @if($licenseStatus)
             <div class="col-md-12">
-    <div class="card card-secondary card-outline">
+            <div class="card card-secondary card-outline">
        
             <div class="row">
             <div class="card-body table-responsive">
@@ -372,149 +361,20 @@ input:checked + .slider:before {
                        <div class="card-body">
                        <div class="col-md-12">
                          <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                             
-
-                    <thead><tr>
-                        
-                         <th >Installation Path</th>
-
-                        @if(!in_array($order->product,cloudPopupProducts()))
-                        <th>Installation IP</th>
-                        @endif
-                            <th>Current Version </th>
-                            <th>  Last Active</th>
-                            
-                        </tr></thead>
-                          <tbody>
-                      
-                        @foreach($installationDetails['installed_path'] as $key => $ins)
-                        <?php
-                        
-                        $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
-                     
-                        $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
-
-                        if($productversion) {
-                            $date = getTimeInLoggedInUserTimeZone($productversion->last_active, 'M j, Y');
-                            $dateTime = getTimeInLoggedInUserTimeZone($productversion->last_active);
-                        }
-                       
-                        $active = !empty($ins)?true:false ;
-                     
-                       
-                       
-                        ?>
-                            <tr>
-                                <td><a href="https://{{$ins}}" target="_blank">{{$ins}}</a></td>
-                                @if(!in_array($order->product,cloudPopupProducts()))
-
-                                <td>{{$installationDetails['installed_ip'][$key]}}</td>
-                                @endif
-                            @if($productversion)
-                            @if($productversion < $Latestversion)
-                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
-                            </label>{{$productversion->version}}</span></td>
-                            @else
-                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
-                            </label>{{$productversion->version}}</span></td>
-                            @endif
-
-                            
-                            @endif
-                            @if($productversion)
-                            <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
-                            @endif
-                            @if($active == true)
-                            <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label>Active</span></td>
-                            @else
-                            <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                    </label>Inactive</span></td>
-                            @endif
-                            
-                            
-                            </tr>
-                            @endforeach
-                          
-                        </tbody>
-                  
-                        </table>
-
-                          </div>
-      
-
-                          </div>
-
-                </div>
+                        <thead><tr>
+                        <th>Installation Path</th>
+                         <th>Installation IP</th>
+                         <th>Version</th>
+                         <th>Last Active</th>
+                         </tr>
+                    </thead>
+                         </table>
+                         </div>
+                         </div>
+                    </div>
             </div>
           </div>
-        
-        
-
-       <script>
-           $('ul.nav-sidebar a').filter(function() {
-              return this.id == 'all_order';
-          }).addClass('active');
-
-          // for treeview
-          $('ul.nav-treeview a').filter(function() {
-              return this.id == 'all_order';
-          }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-      </script>
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
-
-      <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-      <!--<script type="text/javascript">-->
-      <!--        $('#installationDetail-table').DataTable({-->
-      <!--            processing: true,-->
-      <!--            serverSide: true,-->
-      <!--             stateSave: true,-->
-      <!--              ajax: {-->
-      <!--            "url":  "{{Url('get-installation-details/'.$order->id)}}",-->
-      <!--               error: function(xhr) {-->
-      <!--               if(xhr.status == 401) {-->
-      <!--                alert('Your session has expired. Please login again to continue.')-->
-      <!--                window.location.href = '/login';-->
-      <!--               }-->
-      <!--            }-->
-
-      <!--            },-->
-                 
-      <!--            "oLanguage": {-->
-      <!--                "sLengthMenu": "_MENU_ Records per page",-->
-      <!--                "sSearch"    : "Search: ",-->
-      <!--                "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'-->
-      <!--            },-->
-      <!--                columnDefs: [-->
-      <!--                { -->
-      <!--                    targets: 'no-sort', -->
-      <!--                    orderable: false,-->
-      <!--                    order: []-->
-      <!--                }-->
-      <!--            ],-->
-
-      <!--            columns: [-->
-                  
-      <!--                {data: 'path', name: 'path'},-->
-      <!--                {data: 'ip', name: 'ip'},-->
-      <!--                {data: 'version', name: 'version'},-->
-      <!--                {data: 'active', name: 'active'},-->
-                      
-      <!--            ],-->
-      <!--            "fnDrawCallback": function( oSettings ) {-->
-      <!--                $(function () {-->
-      <!--                    $('[data-toggle="tooltip"]').tooltip({-->
-      <!--                        container : 'body'-->
-      <!--                    });-->
-      <!--                });-->
-      <!--                $('.loader').css('display', 'none');-->
-      <!--            },-->
-      <!--            "fnPreDrawCallback": function(oSettings, json) {-->
-      <!--                $('.loader').css('display', 'block');-->
-      <!--            },-->
-      <!--        });-->
-      <!--      </script>-->
-            
+           
             
           </div>
         </div>
@@ -581,6 +441,59 @@ input:checked + .slider:before {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        
+        
+
+       <script type="text/javascript">
+              $('#installationDetail-table').DataTable({
+                  processing: true,
+                  serverSide: true,
+                   stateSave: true,
+                    ajax: {
+                  "url":  "{{Url('get-installation-details/'.$order->id)}}",
+                     error: function(xhr) {
+                     if(xhr.status == 401) {
+                      alert('Your session has expired. Please login again to continue.')
+                      window.location.href = '/login';
+                     }
+                  }
+
+                  },
+                 
+                  "oLanguage": {
+                      "sLengthMenu": "_MENU_ Records per page",
+                      "sSearch"    : "Search: ",
+                      "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                  },
+                      columnDefs: [
+                      { 
+                          targets: 'no-sort', 
+                          orderable: false,
+                          order: []
+                      }
+                  ],
+
+                  columns: [
+                  
+                      {data: 'path', name: 'path'},
+                      {data: 'ip', name: 'ip'},
+                      {data: 'version', name: 'version'},
+                      {data: 'active', name: 'active'},
+                      
+                  ],
+                  "fnDrawCallback": function( oSettings ) {
+                      $(function () {
+                          $('[data-toggle="tooltip"]').tooltip({
+                              container : 'body'
+                          });
+                      });
+                      $('.loader').css('display', 'none');
+                  },
+                  "fnPreDrawCallback": function(oSettings, json) {
+                      $('.loader').css('display', 'block');
+                  },
+              });
+            </script> 
 <script type="text/javascript">
         $('#editorder-table').DataTable({
             processing: true,

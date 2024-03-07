@@ -11,7 +11,6 @@ use App\Model\Mailjob\CloudEmail as cloudemailsend;
 use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Schema;
 use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel
@@ -92,42 +91,42 @@ class Kernel extends ConsoleKernel
     {
         $env = base_path('.env');
         if (\File::exists($env) && (env('DB_INSTALL') == 1)) {
-                $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
-                $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
-                $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
-                $postExpirystatus = StatusSetting::pluck('post_expirymail')->first();
-                $invoiceDeletionstatus = StatusSetting::pluck('invoice_deletion_status')->first();
-                $delLogDays = ActivityLogDay::pluck('days')->first();
-                if ($delLogDays == null) {
-                    $delLogDays = 99999999;
-                }
-                \Config::set('activitylog.delete_records_older_than_days', $delLogDays);
-                $condition = new \App\Model\Mailjob\Condition();
-                $command = $condition->getConditionValue($task);
-                switch ($task) {
-                    case 'expiryMail':
-                        if ($expiryMailStatus == 1) {
-                            return $this->getCondition($schedule->command('expiry:notification'), $command);
-                        }
+            $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
+            $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
+            $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
+            $postExpirystatus = StatusSetting::pluck('post_expirymail')->first();
+            $invoiceDeletionstatus = StatusSetting::pluck('invoice_deletion_status')->first();
+            $delLogDays = ActivityLogDay::pluck('days')->first();
+            if ($delLogDays == null) {
+                $delLogDays = 99999999;
+            }
+            \Config::set('activitylog.delete_records_older_than_days', $delLogDays);
+            $condition = new \App\Model\Mailjob\Condition();
+            $command = $condition->getConditionValue($task);
+            switch ($task) {
+                case 'expiryMail':
+                    if ($expiryMailStatus == 1) {
+                        return $this->getCondition($schedule->command('expiry:notification'), $command);
+                    }
 
-                    case 'deleteLogs':
-                        if ($logDeleteStatus == 1) {
-                            return $this->getCondition($schedule->command('activitylog:clean'), $command);
-                        }
+                case 'deleteLogs':
+                    if ($logDeleteStatus == 1) {
+                        return $this->getCondition($schedule->command('activitylog:clean'), $command);
+                    }
 
-                    case 'subsExpirymail':
-                        if ($RenewalexpiryMailStatus) {
-                            return $this->getCondition($schedule->command('renewal:notification'), $command);
-                        }
-                    case 'postExpirymail':
-                        if ($postExpirystatus) {
-                            return $this->getCondition($schedule->command('postexpiry:notification'), $command);
-                        }
-                    case 'invoice':
-                        if ($invoiceDeletionstatus) {
-                            return $this->getCondition($schedule->command('invoices:delete'), $command);
-                        }
-                }
+                case 'subsExpirymail':
+                    if ($RenewalexpiryMailStatus) {
+                        return $this->getCondition($schedule->command('renewal:notification'), $command);
+                    }
+                case 'postExpirymail':
+                    if ($postExpirystatus) {
+                        return $this->getCondition($schedule->command('postexpiry:notification'), $command);
+                    }
+                case 'invoice':
+                    if ($invoiceDeletionstatus) {
+                        return $this->getCondition($schedule->command('invoices:delete'), $command);
+                    }
+            }
         }
     }
 

@@ -166,8 +166,8 @@ $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
 $apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
 $api = new Api($rzp_key, $rzp_secret);
-$displayCurrency = \Auth::user()->currency;
-$symbol = \Auth::user()->currency;
+$displayCurrency = getCurrencyForClient(\Auth::user()->country);
+$symbol = getCurrencyForClient(\Auth::user()->country);
 if ($symbol == 'INR'){
 
 
@@ -178,7 +178,7 @@ if ($symbol == 'INR'){
         'receipt'         => '3456',
         'amount'          => round(1.00*100), // 2000 rupees in paise
 
-        'currency'        => \Auth::user()->currency,
+        'currency'        => getCurrencyForClient(\Auth::user()->country),
         'payment_capture' => 0 // auto capture
 
     ];
@@ -197,7 +197,7 @@ if ($symbol == 'INR'){
         'receipt'         => '3456',
         'amount'          =>  round(1.00*100), // 2000 rupees in paise
 
-        'currency'        => \Auth::user()->currency,
+        'currency'        => getCurrencyForClient(\Auth::user()->country),
         'payment_capture' => 0 // auto capture
 
     ];

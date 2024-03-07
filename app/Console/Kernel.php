@@ -92,7 +92,6 @@ class Kernel extends ConsoleKernel
     {
         $env = base_path('.env');
         if (\File::exists($env) && (env('DB_INSTALL') == 1)) {
-            if (Schema::hasColumn('expiry_mail', 'activity_log_delete', 'subs_expirymail', 'post_expirymail', 'days')) {
                 $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
                 $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
                 $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
@@ -129,7 +128,6 @@ class Kernel extends ConsoleKernel
                             return $this->getCondition($schedule->command('invoices:delete'), $command);
                         }
                 }
-            }
         }
     }
 

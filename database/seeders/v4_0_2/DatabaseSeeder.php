@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         <tr>
         <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 5px 0 0 0;">&nbsp;</td>
         <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-        <p>Dear {{title}} Team,<br /><br />Below form was submitted on the website {{request_url}}<br /><br /><b>Name:</b> {{name}}<br /><b>Email:</b> {{email}}<br /><b>Message:</b> {{message}}<br />Mobile: {{mobile}}<br /><b>IP Address:</b> {{ip_address}}<br /><br />Thank You<br />{{title}}</p>
+        <p>Dear {{title}} Team,<br /><br />Below form was submitted on the website {{request_url}}<br /><br /><b>Name:</b> {{name}}<br /><b>Email:</b> {{email}}<br /><b>Message:</b> {{message}}<br /><b>Mobile:</b> {{mobile}}<br /><b>IP Address:</b> {{ip_address}}<br /><br />Thank You<br />{{title}}</p>
         </td>
         <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 0 5px 0 0;">&nbsp;</td>
         </tr>

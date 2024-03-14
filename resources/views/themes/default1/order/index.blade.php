@@ -23,7 +23,7 @@ Orders
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" id="tip-search" title="Collapse"> <i id="search-icon" class="fas fa-minus"></i></button>
-        </div>S
+        </div>
     </div>
     <!-- /.box-header -->
       <div class="card-body" id="advance-search" style="display:none;">
@@ -92,6 +92,7 @@ Orders
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
+                
                 {!! Form::label('renewal','Subscriptions') !!}
                 {!! Form::select('renewal',[null => 'Choose']+ $renewal, $request->renewal, ['class' => 'form-control','id'=>'renewal']) !!}
             </div>
@@ -189,13 +190,9 @@ Orders
 
         $('#tip-search').click(function() {
         if ($('#advance-search').is(':visible')) {
-            // If visible, hide the section and change the icon to plus
-         //   $('#advance-search').slideUp();
             $('#search-icon').removeClass('fa-minus').addClass('fa-plus');
             $(this).attr('title', 'Expand');
         } else {
-            // If hidden, show the section and change the icon to minus
-          //  $('#advance-search').slideDown();
             $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
             $(this).attr('title', 'Collapse');
         }

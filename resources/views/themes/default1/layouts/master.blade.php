@@ -244,7 +244,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('orders')}}" class="nav-link" id="all_order">
+                                    <a href="{{ url('orders?act_inst=paid_ins') }}"class="nav-link" id="all_order">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.all-orders')}}</p>
                                     </a>

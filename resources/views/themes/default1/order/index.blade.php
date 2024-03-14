@@ -22,11 +22,8 @@ Orders
         <h3 class="card-title">Advance Search</h3>
 
         <div class="card-tools">
-
-             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
-                            </button>
-            
-        </div>
+            <button type="button" class="btn btn-tool" id="tip-search" title="Collapse"> <i id="search-icon" class="fas fa-minus"></i></button>
+        </div>S
     </div>
     <!-- /.box-header -->
       <div class="card-body" id="advance-search" style="display:none;">
@@ -187,6 +184,22 @@ Orders
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
+        $('#advance-search').show();
+
+        $('#tip-search').click(function() {
+        if ($('#advance-search').is(':visible')) {
+            // If visible, hide the section and change the icon to plus
+         //   $('#advance-search').slideUp();
+            $('#search-icon').removeClass('fa-minus').addClass('fa-plus');
+            $(this).attr('title', 'Expand');
+        } else {
+            // If hidden, show the section and change the icon to minus
+          //  $('#advance-search').slideDown();
+            $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
+            $(this).attr('title', 'Collapse');
+        }
+    });
         val = $('#product_id').val();
          if(val == '') {
                 $('#version-list').val('Choose a product');

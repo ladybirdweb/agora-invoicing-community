@@ -22,9 +22,12 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Schema;
 use Validator;
-
+use DateTime;
+use App\Traits\Payment\PostPaymentHandle;
 class SettingsController extends Controller
 {
+
+    use PostPaymentHandle;
     public function __construct()
     {
         $this->middleware('auth');
@@ -160,153 +163,8 @@ class SettingsController extends Controller
         }
     }
 
-    public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
-    {
-        $amount = currencyFormat($total, \Auth::user()->currency);
-        $payment = Payment::where('invoice_id', $invoice->id)->first();
-        $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
-        $order = Order::find($orderid);
-        $setting = Setting::find(1);
-        $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$total.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
-        if ($payment) {
-            $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, $exceptionMessage, $amount, $message);
-        }
-    }
-
-    public static function sendPaymentSuccessMailtoAdmin($invoice, $total, $user, $productName)
-    {
-        $amount = currencyFormat($total, \Auth::user()->currency);
-        $payment = Payment::where('invoice_id', $invoice->id)->first();
-        $orderid = OrderInvoiceRelation::where('invoice_id', $invoice->id)->value('order_id');
-        $order = Order::find($orderid);
-        $setting = Setting::find(1);
-        $paymentSuccessdata = 'Payment for '.$productName.' of '.\Auth::user()->currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
-
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful');
-        if ($payment) {
-            $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
-            $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount, $message);
-        }
-    }
-
-    private function doTheDeed($invoice)
-    {
-        $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
-        if ($amt_to_credit) {
-            $amt_to_credit = (int) $amt_to_credit - (int) $invoice->billing_pay;
-            Payment::where('user_id', \Auth::user()->id)->where('payment_method', 'Credit Balance')->where('payment_status', 'success')->update(['amt_to_credit' => $amt_to_credit]);
-            User::where('id', \Auth::user()->id)->update(['billing_pay_balance' => 0]);
-            $payment_id = \DB::table('payments')->where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('id');
-            $formattedValue = currencyFormat($invoice->billing_pay, $invoice->currency, true);
-            $messageAdmin = 'The payment balance of '.$formattedValue.' has been utilized or adjusted with this invoice.'.
-                ' You can view the details of the invoice '.
-                '<a href="'.config('app.url').'/invoices/show?invoiceid='.$invoice->id.'">'.$invoice->number.'</a>.';
-
-            $messageClient = 'The payment balance of '.$formattedValue.' has been utilized or adjusted with this invoice.'.
-                ' You can view the details of the invoice '.
-                '<a href="'.config('app.url').'/my-invoice/'.$invoice->id.'">'.$invoice->number.'</a>.';
-
-            \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-            \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
-            if ($invoice->billing_pay) {
-                Payment::create([
-                    'invoice_id' => $invoice->id,
-                    'user_id' => $invoice->user_id,
-                    'amount' => $invoice->billing_pay,
-                    'payment_method' => 'Credits',
-                    'payment_status' => 'success',
-                    'created_at' => Carbon::now(),
-                ]);
-            }
-        }
-    }
-
-    public function processPaymentSuccess($invoice, $currency)
-    {
-        try {
-            $user = User::find($invoice->user_id);
-            $stateCode = \Auth::user()->state;
-            $cont = new \App\Http\Controllers\RazorpayController();
-            $state = $cont->getState($stateCode);
-            $currency = Currency::where('code', $currency)->pluck('symbol')->first();
-
-            $control = new \App\Http\Controllers\Order\RenewController();
-            $cloud = new \App\Http\Controllers\Tenancy\CloudExtraActivities(new Client, new FaveoCloud());
-            // After Regular Payment
-            if ($control->checkRenew($invoice->is_renewed) === false && $invoice->is_renewed == 0 && ! $cloud->checkUpgradeDowngrade()) {
-                $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                $checkout_controller->checkoutAction($invoice);
-
-                $this->doTheDeed($invoice);
-
-                if (! empty($invoice->cloud_domain)) {
-                    $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', cloudPopupProducts())->value('number');
-                    (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain]));
-                }
-
-                $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-            } elseif ($cloud->checkAgentAlteration()) {
-                if (\Session::has('agentIncreaseDate')) {
-                    $control->successRenew($invoice);
-                    \Session::forget('agentIncreaseDate');
-                }
-
-                $subId = \Session::get('AgentAlteration');
-                $newAgents = \Session::get('newAgents');
-                $orderId = \Session::get('orderId');
-                $installationPath = \Session::get('installation_path');
-                $productId = \Session::get('product_id');
-                $oldLicense = \Session::get('oldLicense');
-                $payment = new \App\Http\Controllers\Order\InvoiceController();
-                $payment->postRazorpayPayment($invoice);
-                Invoice::where('id', $invoice->id)->update(['status' => 'success']);
-                if ($invoice->grand_total && emailSendingStatus()) {
-                    $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
-                }
-                $this->doTheDeed($invoice);
-                $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
-                $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
-            } elseif ($cloud->checkUpgradeDowngrade()) {
-                $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                $checkout_controller->checkoutAction($invoice);
-                $oldLicense = \Session::get('upgradeOldLicense');
-                $installationPath = \Session::get('upgradeInstallationPath');
-                $productId = \Session::get('upgradeProductId');
-                $licenseCode = \Session::get('upgradeSerialKey');
-                $this->doTheDeed($invoice);
-                $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
-                $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
-            } else {
-                $control->successRenew($invoice);
-                $payment = new \App\Http\Controllers\Order\InvoiceController();
-                $payment->postRazorpayPayment($invoice);
-                if ($invoice->grand_total && emailSendingStatus()) {
-                    $this->sendPaymentSuccessMailtoAdmin($invoice, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
-                }
-                $this->doTheDeed($invoice);
-                if (\Session::has('AgentAlterationRenew')) {
-                    $newAgents = \Session::get('newAgentsRenew');
-                    $orderId = \Session::get('orderIdRenew');
-                    $installationPath = \Session::get('installation_pathRenew');
-                    $productId = \Session::get('product_idRenew');
-                    $oldLicense = \Session::get('oldLicenseRenew');
-                    $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
-                }
-                $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
-            }
-
-            return [
-                'status' => $view['status'],
-                'message' => $view['message'],
-            ];
-        } catch (\Exception $e) {
-            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
-        }
-    }
+   
+   
 
     public function handlePayment($request, $amount, $currency, $url, $invoice = null)
     {
@@ -321,14 +179,20 @@ class SettingsController extends Controller
         $this->validate($request, $validation);
         try {
             $cronController = new CronController();
-            $cost = $cronController->calculateUnitCost($currency, $amount);
+            $cost = $this->calculateUnitCost($currency, $amount);
 
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             \Stripe\Stripe::setApiKey($stripeSecretKey);
             $customer = \Stripe\Customer::create([
                 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-
                 'email' => \Auth::user()->email,
+                 'address' => [
+                'line1' => \Auth::user()->address,
+                'postal_code' => \Auth::user()->zip,
+                'city' => \Auth::user()->town,
+                'state' => \Auth::user()->state,
+                'country' => \Auth::user()->country,
+            ],
             ]);
 
             $paymentMethod = \Stripe\PaymentMethod::create([
@@ -348,6 +212,7 @@ class SettingsController extends Controller
                 'customer' => $customer['id'],
                 'confirmation_method' => 'automatic',
                 'setup_future_usage' => 'off_session',
+                'description' => 'payments for the purchased product',
 
             ]);
             $stripe = new \Stripe\StripeClient($stripeSecretKey);
@@ -364,4 +229,44 @@ class SettingsController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+    public function handleStripeAutoPay($stripe_payment_details,$product_details,$unit_cost,$currency,$plan)
+    {
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+
+        $paymentMethod = \Stripe\PaymentMethod::retrieve($stripe_payment_details->payment_intent_id);
+
+       
+        //create product
+        $product = $stripe->products->create([
+            'name' => $product_details->name,
+        ]);
+        $product_id = $product['id'];
+
+        //define product price and recurring interval
+
+        $price = $stripe->prices->create([
+            'unit_amount' => $unit_cost,
+            'currency' => $currency,
+            'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
+            'product' => $product_id,
+        ]);
+        $price_id = $price['id'];
+
+        //CREATE SUBSCRIPTION
+
+        $stripe_subscription = $stripe->subscriptions->create([
+            'customer' => $paymentMethod->customer,
+            'items' => [
+                ['price' => $price_id],
+            ],
+            'default_payment_method' => $paymentMethod->id,
+        ]);
+
+            return $stripe_subscription;
+        
+    }
+
+
 }

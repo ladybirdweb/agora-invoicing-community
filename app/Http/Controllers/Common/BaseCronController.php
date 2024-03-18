@@ -243,7 +243,7 @@ class BaseCronController extends Controller
         $plan_id = Subscription::find($sub);
         $currency = getCurrencyForClient($user->country);
 
-        $renewPrice = PlanPrice::where('plan_id', $plan_id->plan_id)->where('currency',$currency)->value('renew_price');
+        $renewPrice = PlanPrice::where('plan_id', $plan_id->plan_id)->where('currency', $currency)->value('renew_price');
         $expiryDays = ExpiryMailDay::first()->cloud_days;
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -262,7 +262,6 @@ class BaseCronController extends Controller
         $end = date_format($date, 'l, F j, Y ');
         $delDate = strtotime($end.' +'.$expiryDays.' days');
         $deletionDate = date('l, F j, Y', $delDate);
-        
 
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'renewPrice' => currencyFormat($renewPrice, $code = $currency),

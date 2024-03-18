@@ -367,7 +367,7 @@ class CartController extends BaseCartController
                 } else {
                     throw new \Exception('Product cannot be added to cart. No plan exists.');
                 }
-                
+
                 return $cost;
             }
         } catch (\Exception $ex) {

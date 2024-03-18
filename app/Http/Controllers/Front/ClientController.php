@@ -83,7 +83,7 @@ class ClientController extends BaseClientController
             $controller = new SettingsController();
             $confirm = $controller->handlePayment($request, $amount, $currency, $url);
             $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
-            $subscription = Subscription::where('order_id',$orderid)->first();
+            $subscription = Subscription::where('order_id', $orderid)->first();
             if ($confirm->status == 'requires_action') {
                 $redirectUrl = $paymentIntent->next_action->redirect_to_url->url;
 
@@ -99,7 +99,7 @@ class ClientController extends BaseClientController
                     'payment_intent_id' => $paymentIntent->payment_method,
                 ];
                 Auto_renewal::create($customer_details);
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1','autoRenew_status' => '1']);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1', 'autoRenew_status' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
 
                 $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
@@ -128,14 +128,12 @@ class ClientController extends BaseClientController
                 $api = new Api($rzp_key, $rzp_secret);
                 $pause = $api->subscription->fetch($subscription->subscribe_id)->pause();
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0']);
-
-            }elseif($subscription->autoRenew_status && $subscription->is_subscribed){
+            } elseif ($subscription->autoRenew_status && $subscription->is_subscribed) {
                 $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
                 $stripe = new \Stripe\StripeClient($stripeSecretKey);
                 \Stripe\Stripe::setApiKey($stripeSecretKey);
                 $pause = $stripe->subscriptions->cancel($subscription->subscribe_id, []);
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0','autoRenew_status' => '0']);
-
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0', 'autoRenew_status' => '0']);
             }
             $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
 
@@ -166,9 +164,9 @@ class ClientController extends BaseClientController
                         subscription::where('order_id', $orderid)->update(['rzp_subscription' => '3', 'is_subscribed' => '1']);
                     }
                 }
-            }else{
-            $payment = $api->payment->fetch($input['razorpay_payment_id']);
-            $response = $api->payment->fetch($input['razorpay_payment_id']);
+            } else {
+                $payment = $api->payment->fetch($input['razorpay_payment_id']);
+                $response = $api->payment->fetch($input['razorpay_payment_id']);
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
 
@@ -180,13 +178,12 @@ class ClientController extends BaseClientController
                 ];
                 Auto_renewal::create($customer_details);
 
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1','rzp_subscription' => '1']);
-                }
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), null, $amount, 'Payment method updated');
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1', 'rzp_subscription' => '1']);
+            }
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), null, $amount, 'Payment method updated');
 
-                return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
-            
+            return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
         } catch(\Exception $ex) {
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
 
@@ -929,7 +926,7 @@ class ClientController extends BaseClientController
                     'payment_intent_id' => $paymentIntent->payment_method,
                 ];
                 Auto_renewal::create($customer_details);
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1','autoRenew_status' => '1']);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1', 'autoRenew_status' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
                 $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];

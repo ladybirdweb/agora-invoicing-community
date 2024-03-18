@@ -6,28 +6,17 @@ use App\ApiKey;
 use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
-use App\Http\Controllers\Tenancy\TenantController;
-use App\Model\Common\FaveoCloud;
-use App\Model\Common\Setting;
-use App\Model\Order\Invoice;
-use App\Model\Order\Order;
-use App\Model\Order\OrderInvoiceRelation;
-use App\Model\Order\Payment;
-use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
-use App\User;
-use Carbon\Carbon;
+use App\Traits\Payment\PostPaymentHandle;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Schema;
 use Validator;
-use DateTime;
-use App\Traits\Payment\PostPaymentHandle;
+
 class SettingsController extends Controller
 {
-
     use PostPaymentHandle;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -163,9 +152,6 @@ class SettingsController extends Controller
         }
     }
 
-   
-   
-
     public function handlePayment($request, $amount, $currency, $url, $invoice = null)
     {
         $validator = Validator::make($request->all(), []);
@@ -186,13 +172,13 @@ class SettingsController extends Controller
             $customer = \Stripe\Customer::create([
                 'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
                 'email' => \Auth::user()->email,
-                 'address' => [
-                'line1' => \Auth::user()->address,
-                'postal_code' => \Auth::user()->zip,
-                'city' => \Auth::user()->town,
-                'state' => \Auth::user()->state,
-                'country' => \Auth::user()->country,
-            ],
+                'address' => [
+                    'line1' => \Auth::user()->address,
+                    'postal_code' => \Auth::user()->zip,
+                    'city' => \Auth::user()->town,
+                    'state' => \Auth::user()->state,
+                    'country' => \Auth::user()->country,
+                ],
             ]);
 
             $paymentMethod = \Stripe\PaymentMethod::create([
@@ -229,7 +215,8 @@ class SettingsController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    public function handleStripeAutoPay($stripe_payment_details,$product_details,$unit_cost,$currency,$plan)
+
+    public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)
     {
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = new \Stripe\StripeClient($stripeSecretKey);
@@ -237,7 +224,6 @@ class SettingsController extends Controller
 
         $paymentMethod = \Stripe\PaymentMethod::retrieve($stripe_payment_details->payment_intent_id);
 
-       
         //create product
         $product = $stripe->products->create([
             'name' => $product_details->name,
@@ -264,9 +250,6 @@ class SettingsController extends Controller
             'default_payment_method' => $paymentMethod->id,
         ]);
 
-            return $stripe_subscription;
-        
+        return $stripe_subscription;
     }
-
-
 }

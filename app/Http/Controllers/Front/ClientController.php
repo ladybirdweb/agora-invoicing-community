@@ -455,7 +455,8 @@ class ClientController extends BaseClientController
                     'title',
                     'description',
                     'file',
-                    'created_at'
+                    'created_at',
+                    'is_pre_release'
                 )
                 ->latest();
             if ($searchValue) {
@@ -478,10 +479,11 @@ class ClientController extends BaseClientController
                     return ucfirst($version->id);
                 })
                 ->addColumn('version', function ($version) {
-                    return ucfirst($version->version);
+                    return ucfirst($version->version) . ' ' . getPreReleaseStatusLabel($version->is_pre_release);
                 })
                 ->addColumn('title', function ($version) {
-                    return ucfirst($version->title);
+                   return ucfirst($version->title);
+
                 })
                 ->addColumn('description', function ($version) {
                     return ucfirst($version->description);

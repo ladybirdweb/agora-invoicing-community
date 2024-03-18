@@ -619,7 +619,7 @@ function cloudPopupProducts()
     return \App\Model\Product\CloudProducts::pluck('cloud_product')->toArray();
 }
 
-function getPreReleaseStatusLabel($status,$badge = 'badge')
+function getPreReleaseStatusLabel($status, $badge = 'badge')
 {
     switch ($status) {
         case '0':
@@ -627,7 +627,5 @@ function getPreReleaseStatusLabel($status,$badge = 'badge')
 
         case '1':
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Pre Release</span>';
-
-  
     }
 }

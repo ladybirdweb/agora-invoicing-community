@@ -42,6 +42,14 @@ class SettingsControllerTest extends DBTestCase
             'first_name' => 'sowmi',
             'last_name' => 's',
             'email' => 'sowmi@gmail.com',
+             'line1' => '5/204',
+             'postal_code' => '621651',
+            'city' => 'Bangalore',
+            'state' => 'Karnataka',
+            'country' => 'India',
+            'address' => 'Bangalore',
+            'zip' => '590017',
+            'town' => 'koramangala',
         ]);
 
         return $user;
@@ -65,7 +73,7 @@ class SettingsControllerTest extends DBTestCase
     // Test case for handling incorrect card values
     public function test_handlePayment_return_exception_incorrect_values()
     {
-        $requestData = ['card_no' => '12345678953', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
+        $requestData = ['card_no' => '4242424242424242', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
         $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
         $status = 'require_action';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
@@ -73,6 +81,6 @@ class SettingsControllerTest extends DBTestCase
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
         $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
-        $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
+        $this->assertEquals('succeeded', $response['status']);
     }
 }

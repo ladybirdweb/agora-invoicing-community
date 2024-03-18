@@ -3,25 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\ApiKey;
-use App\Http\Controllers\Tenancy\TenantController;
-use App\Model\Common\FaveoCloud;
 use App\Model\Common\State;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\TaxByState;
-use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
-use App\User;
+use App\Traits\Payment\PostPaymentHandle;
 use Carbon\Carbon;
-use DateTime;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
-use App\Traits\Payment\PostPaymentHandle;
 
 class RazorpayController extends Controller
 {
@@ -128,39 +121,39 @@ class RazorpayController extends Controller
             return redirect('checkout')->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
         }
     }
+
     public function handleRzpAutoPay($cost, $days, $product_name, $invoice, $currency, $subscription, $user, $order, $endDate, $productDetails)
-     {
+    {
         $key_id = ApiKey::pluck('rzp_key')->first();
         $secret = ApiKey::pluck('rzp_secret')->first();
         $api = new Api($key_id, $secret);
         $rzp_plan = $api->plan->create(['period' => 'monthly',
-                        'interval' => round((int) $days / 30),
-                        'item' => [
-                            'name' => $product_name,
-                            'amount' => $cost,
-                            'currency' => $currency, ],
+            'interval' => round((int) $days / 30),
+            'item' => [
+                'name' => $product_name,
+                'amount' => $cost,
+                'currency' => $currency, ],
 
-                    ]
-                    );
+        ]
+        );
 
         $rzp_subscriptionLink = $api->subscription->create([
-                        'plan_id' => $rzp_plan['id'],
-                        'total_count' => 100,
-                        'quantity' => 1,
-                        'expire_by' => Carbon::parse($subscription->update_ends_at)->addDays(1)->timestamp,
-                        'start_at' => Carbon::parse($subscription->update_ends_at)->addDays(round((int) $days))->timestamp,
+            'plan_id' => $rzp_plan['id'],
+            'total_count' => 100,
+            'quantity' => 1,
+            'expire_by' => Carbon::parse($subscription->update_ends_at)->addDays(1)->timestamp,
+            'start_at' => Carbon::parse($subscription->update_ends_at)->addDays(round((int) $days))->timestamp,
 
-                        'customer_notify' => 1,
-                        'addons' => [['item' => [
-                            'name' => $product_name,
-                            'amount' => $cost,
-                            'currency' => $currency]]],
-                        'notify_info' => [
-                            'notify_phone' => $user->mobile,
-                            'notify_email' => $user->email,
-                        ]]);
+            'customer_notify' => 1,
+            'addons' => [['item' => [
+                'name' => $product_name,
+                'amount' => $cost,
+                'currency' => $currency]]],
+            'notify_info' => [
+                'notify_phone' => $user->mobile,
+                'notify_email' => $user->email,
+            ]]);
+
         return $rzp_subscriptionLink;
-
-
     }
 }

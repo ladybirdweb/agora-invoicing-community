@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\ApiKey;
-use App\Auto_renewal;
-use App\Http\Controllers\License\LicensePermissionsController;
-use App\Http\Controllers\Order\BaseRenewController;
-use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -14,15 +9,10 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Carbon\Carbon;
-use DateTime;
-use Razorpay\Api\Api;
-use App\Http\Controllers\RazorpayController;
 
 class CronController extends BaseCronController
 {
@@ -63,7 +53,6 @@ class CronController extends BaseCronController
 
         $stripeController = new SettingsController();
         $this->stripeController = $stripeController;
-
     }
 
     public function getExpiredInfoByOrderId($orderid)
@@ -511,5 +500,4 @@ class CronController extends BaseCronController
             $invoice->delete();
         });
     }
-
 }

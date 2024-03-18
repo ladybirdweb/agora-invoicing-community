@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\Subscription\SubscriptionController;
-use App\Http\Controllers\ConcretePostSubscriptionHandleController; // Import the concrete controller
+use App\Http\Controllers\ConcretePostSubscriptionHandleController;
+use App\Http\Controllers\Subscription\SubscriptionController; // Import the concrete controller
 use Illuminate\Console\Command;
 
 class RenewalCron extends Command

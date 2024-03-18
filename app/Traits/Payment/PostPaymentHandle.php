@@ -1,31 +1,22 @@
 <?php
 
 namespace App\Traits\Payment;
-use App\ApiKey;
-use App\Http\Controllers\Common\CronController;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\SyncBillingToLatestVersion;
+
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Plugins\Stripe\Model\StripePayment;
+use App\Model\Product\Product;
 use App\User;
 use Carbon\Carbon;
-use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Schema;
-use Validator;
-use DateTime;
-use App\Model\Order\InvoiceItem;
-use App\Model\Product\Subscription;
-use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
 
 //////////////////////////////////////////////////////////////////////////////
 // Handle the post manual payment
@@ -33,7 +24,7 @@ use App\Model\Product\Product;
 
 trait PostPaymentHandle
 {
-        public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
+    public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
         $amount = currencyFormat($total, \Auth::user()->currency);
         $payment = Payment::where('invoice_id', $invoice->id)->first();
@@ -65,9 +56,6 @@ trait PostPaymentHandle
             $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $order->number, null, $amount, $message);
         }
     }
-
-
-
 
     public function processPaymentSuccess($invoice, $currency)
     {
@@ -154,7 +142,6 @@ trait PostPaymentHandle
 
     public function doTheDeed($invoice)
     {
-
         $amt_to_credit = Payment::where('user_id', \Auth::user()->id)->where('payment_status', 'success')->where('payment_method', 'Credit Balance')->value('amt_to_credit');
         if ($amt_to_credit) {
             $amt_to_credit = (int) $amt_to_credit - (int) $invoice->billing_pay;
@@ -185,7 +172,7 @@ trait PostPaymentHandle
         }
     }
 
-        public function getViewMessageAfterPayment($invoice, $state, $currency)
+    public function getViewMessageAfterPayment($invoice, $state, $currency)
     {
         $orders = Order::where('invoice_id', $invoice->id)->get();
         $invoiceItems = InvoiceItem::where('invoice_id', $invoice->id)->get();
@@ -235,5 +222,4 @@ trait PostPaymentHandle
 
         return $unit_cost;
     }
-   
 }

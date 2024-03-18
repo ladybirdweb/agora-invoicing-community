@@ -2,30 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\ApiKey;
-use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Http\Controllers\Order\BaseRenewController;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
-use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Plugins\Stripe\Controllers\SettingsController;
-use App\User;
 use Carbon\Carbon;
-use DateTime;
-use Razorpay\Api\Api;
-use App\Http\Controllers\RazorpayController;
 
-abstract class PostSubscriptionHandleController {
-
+abstract class PostSubscriptionHandleController
+{
     protected $invoiceModel;
     protected $orderModel;
     protected $statusSettingModel;
@@ -33,7 +22,8 @@ abstract class PostSubscriptionHandleController {
     protected $sub;
     protected $payment;
 
-    public function __construct(Invoice $invoiceModel, Order $orderModel, StatusSetting $statusSettingModel, Plan $plan, Subscription $sub, Payment $payment) {
+    public function __construct(Invoice $invoiceModel, Order $orderModel, StatusSetting $statusSettingModel, Plan $plan, Subscription $sub, Payment $payment)
+    {
         $this->invoiceModel = $invoiceModel;
         $this->orderModel = $orderModel;
         $this->statusSettingModel = $statusSettingModel;
@@ -43,28 +33,37 @@ abstract class PostSubscriptionHandleController {
     }
 
     abstract public function successRenew($invoice, $subscription, $payment_method, $currency);
-    abstract public function getExpiryDate($permissions, $sub, $days);
-    abstract public function getUpdatesExpiryDate($permissions, $sub, $days);
-    abstract public function getSupportExpiryDate($permissions, $sub, $days);
-    abstract public function editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
-    abstract public function postRazorpayPayment($invoice, $payment_method);
-    abstract public function getProcessingFee($paymentMethod, $currency);
-    abstract public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $productName, $template, $order, $payment);
-    abstract public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment);
-    abstract public function calculateUnitCost($currency, $cost);
-    abstract public function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number);
-    
 
+    abstract public function getExpiryDate($permissions, $sub, $days);
+
+    abstract public function getUpdatesExpiryDate($permissions, $sub, $days);
+
+    abstract public function getSupportExpiryDate($permissions, $sub, $days);
+
+    abstract public function editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
+
+    abstract public function postRazorpayPayment($invoice, $payment_method);
+
+    abstract public function getProcessingFee($paymentMethod, $currency);
+
+    abstract public function PaymentSuccessMailtoAdmin($invoice, $total, $user, $productName, $template, $order, $payment);
+
+    abstract public function FailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user, $template, $order, $payment);
+
+    abstract public function calculateUnitCost($currency, $cost);
+
+    abstract public function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number);
 }
 
-class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleController {
-
+class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleController
+{
     public function __construct(Invoice $invoiceModel, Order $orderModel, StatusSetting $statusSettingModel, Plan $plan, Subscription $sub, Payment $payment)
     {
         parent::__construct($invoiceModel, $orderModel, $statusSettingModel, $plan, $sub, $payment);
     }
 
-    public function successRenew($invoice, $subscription, $payment_method, $currency) {
+    public function successRenew($invoice, $subscription, $payment_method, $currency)
+    {
         try {
             $processingFee = $this->getProcessingFee($payment_method, $currency);
             Invoice::where('id', $invoice->invoice_id)->update(['processing_fee' => $processingFee, 'status' => 'success']);
@@ -96,8 +95,9 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         }
     }
 
-    public function getExpiryDate($permissions, $sub, $days) {
-         $expiry_date = '';
+    public function getExpiryDate($permissions, $sub, $days)
+    {
+        $expiry_date = '';
         if ($days > 0 && $permissions == 1) {
             $date = \Carbon\Carbon::parse($sub->ends_at);
             $expiry_date = $date->addDays($days);
@@ -106,7 +106,8 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         return $expiry_date;
     }
 
-    public function getUpdatesExpiryDate($permissions, $sub, $days) {
+    public function getUpdatesExpiryDate($permissions, $sub, $days)
+    {
         $expiry_date = '';
         if ($days > 0 && $permissions == 1) {
             $date = \Carbon\Carbon::parse($sub->update_ends_at);
@@ -116,8 +117,9 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         return $expiry_date;
     }
 
-    public function getSupportExpiryDate($permissions, $sub, $days) {
-         $expiry_date = '';
+    public function getSupportExpiryDate($permissions, $sub, $days)
+    {
+        $expiry_date = '';
         if ($days > 0 && $permissions == 1) {
             $date = \Carbon\Carbon::parse($sub->support_ends_at);
             $expiry_date = $date->addDays($days);
@@ -126,8 +128,8 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         return $expiry_date;
     }
 
-    public function editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry) 
-      {
+    public function editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry)
+    {
         $productId = $sub->product_id;
         $domain = $sub->order->domain;
         $orderNo = $sub->order->number;
@@ -143,7 +145,7 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
 
-   public function postRazorpayPayment($invoice, $payment_method)
+    public function postRazorpayPayment($invoice, $payment_method)
     {
         try {
             $invoice = Invoice::where('id', $invoice->id)->first();
@@ -210,7 +212,7 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
     }
 
-     public function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
+    public function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number)
     {
         $future_expiry = Subscription::find($sub);
         $contact = getContactData();
@@ -269,5 +271,4 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
 
         return $unit_cost;
     }
-
 }

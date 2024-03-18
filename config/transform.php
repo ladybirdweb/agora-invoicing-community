@@ -225,4 +225,17 @@ return[
         'reply_email' => '{{reply_email}}',
     ],
 
+    'stripe_subscription_authentication' => [
+            'name' => '{{name}}',
+            'product' => '{{product}}',
+            'total' => '{{total}}',
+            'contact' => '{{contact}}',
+            'logo' => '{{logo}}',
+            'expiry_date' => '{{expiry_date}}',
+            'reply_email' => '{{reply_email}}',
+            'application_title' => '{{application_title}}',
+            'company_title' => '{{company_title}}',
+            'url' => '{{url}}',
+    ],
+
 ];

@@ -623,7 +623,7 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
 {
     switch ($status) {
         case '0':
-            return '<span class='.'"'.$badge.' '.$badge.'-success">Latest Release</span>';
+            return '<span class='.'"'.$badge.' '.$badge.'-success">Official Release</span>';
 
         case '1':
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Pre Release</span>';

@@ -41,7 +41,7 @@ class ReleaseTypeSeeder extends Seeder
     public function run()
     {
         ReleaseType::create(['id' => 1, 'type' => 'Pre Release','value' => '1']);
-        ReleaseType::create(['id' => 2, 'type' => 'Latest Release','value' => '0']);
+        ReleaseType::create(['id' => 2, 'type' => 'Official Release','value' => '0']);
     }
 }
 

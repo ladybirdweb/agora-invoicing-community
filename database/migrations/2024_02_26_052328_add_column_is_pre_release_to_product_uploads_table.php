@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+       if (! Schema::hasColumn('product_uploads', 'is_pre_release')) {
         Schema::table('product_uploads', function (Blueprint $table) {
             $table->tinyInteger('is_pre_release')->default(0);
         });
+    }
     }
 
     /**

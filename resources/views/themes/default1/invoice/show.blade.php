@@ -2,16 +2,7 @@
 @section('title')
 Invoice
 @stop
-<style type="text/css">
-    .moveright{
-        position: relative;
-        right: 10px;
-    }
-    .table td, .table th{
-        border-top: 0.5px solid #dee2e6 !important;
-    }
 
-</style>
 @section('content-header')
     <div class="col-sm-6">
         <h1>View Invoice</h1>
@@ -27,10 +18,19 @@ Invoice
 
 
 @stop
-<
 
 @section('content')
 
+<style>
+    .moveright{
+        position: relative;
+        right: 50px;
+    }
+    .table td, .table th{
+        border-top: 0.5px solid #dee2e6 !important;
+    }
+
+</style>
     <div class="invoice" style="width: 100%;overflow: hidden;">
         <div class="container-fluid">
 
@@ -57,7 +57,9 @@ Invoice
                                     {{ucfirst($set->company)}}
                                 @endif
 
-                                <small class="float-right">Date: {!! $date !!}</small>
+                                <small class="float-right">Date: {!! $date !!}</small><br>
+                                <small class="float-right">Invoice: #{{$invoice->number}}</small>
+                                  <!--<b>Invoice   #{{$invoice->number}}</b>-->
                             </h4>
                         </div><!-- /.col -->
                     </div>
@@ -109,11 +111,6 @@ Invoice
                             <b>GSTIN:</b>  &nbsp; #{{$user->gstin}}
                             <br>
                             @endif
-                        </div><!-- /.col -->
-                        <div class="col-sm-4 invoice-col" style=" position: relative;
-                        bottom: 20px;left: 250px;">
-                            <b>Invoice   #{{$invoice->number}}</b><br>
-                           
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 
@@ -250,7 +247,7 @@ Invoice
                                        
                                     @endif
                                     <th>Total</th>
-                                    <td class="moveright">{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
+                                    <td class="moveright" style="font-weight: bold;">{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
                                
                             </table>
                             </div>

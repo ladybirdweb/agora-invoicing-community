@@ -102,7 +102,7 @@ class SettingsController extends Controller
             $rzp_secret = $request->input('rzp_secret');
             $api = new Api($rzp_key, $rzp_secret);
             $orderData = [
-                'receipt' => 3456,
+                'receipt' => '3456',
                 'amount' => 2000 * 100, // 2000 rupees in paise
                 'currency' => 'INR',
                 'payment_capture' => 1, // auto capture

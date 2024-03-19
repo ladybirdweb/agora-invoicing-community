@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         if (! Schema::hasColumn('release_types', 'value')) {
-        Schema::table('release_types', function (Blueprint $table) {
-            $table->tinyInteger('value')->nullable();
-        });
-    }
+            Schema::table('release_types', function (Blueprint $table) {
+                $table->tinyInteger('value')->nullable();
+            });
+        }
     }
 
     /**

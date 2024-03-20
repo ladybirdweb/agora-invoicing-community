@@ -933,6 +933,15 @@ function resrictedRelease()
     }
 }
 
+function preRelease()
+{
+    if ($('#pre_release').attr('checked',true)) {
+        $('#pre_release').val('1');
+    } else {
+        $('#pre_release').val('0');
+    }
+}
+
 
  $("#uploadVersion").on('click',function(){
       $("#uploadVersion").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
@@ -944,11 +953,12 @@ function resrictedRelease()
     var dependencies = $('#dependencies').val();
     var private = $('#p_release').val();
     var restricted = $('#r_release').val();
+    var prerelease = $('#pre_release').val();
     $.ajax({
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
        data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
-       'description': description,'dependencies':dependencies,'version':version,'is_private': private,'is_restricted': restricted,'_token': '{!! csrf_token() !!}'},
+       'description': description,'dependencies':dependencies,'version':version,'is_private': private,'is_restricted': restricted,'is_pre_release': prerelease,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
          $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
         $('#alertMessage1').show();

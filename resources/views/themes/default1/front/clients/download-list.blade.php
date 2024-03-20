@@ -6,7 +6,7 @@
 </style>
 <div class="modal fade" id="list" style="overflow-x: auto">
     <div class="modal-dialog">
-        <div class="modal-content" style="width:850px;">
+        <div class="modal-content" style="width:950px;">
              <div class="modal-body" >
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

@@ -65,7 +65,7 @@
             </div>
 
             <div class="row">
-                <div class="form-group col-md-6{{ $errors->has('is_private') ? 'has-error' : '' }}">
+                <div class="form-group col-md-4{{ $errors->has('is_private') ? 'has-error' : '' }}">
                     <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
                         </label></i>
                     <!-- name -->
@@ -73,10 +73,18 @@
                     <input type="checkbox" value="0" name= "is_private" id="p_release" onclick="privateRelease()">
                     
                  </div>
+                   <div class="form-group col-md-4{{ $errors->has('is_pre_release') ? 'has-error' : '' }}">
+                    <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
+                        </label></i>
+                    <!-- name -->
+                    {!! Form::label('is_pre_release','Pre Release') !!}&nbsp;
+                    <input type="checkbox" value="0" name= "is_pre_release" id="pre_release" onclick="preRelease()">
+                    
+                 </div>
 
                      
                  
-              <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
+              <div class="form-group col-md-4{{ $errors->has('version') ? 'has-error' : '' }}">
                     <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If update is kept restricted for this release, product users need to update their versions upto this release first before updating to further releases.">
                         </label></i>
                     {!! Form::label('restrict','Restrict update') !!}&nbsp;

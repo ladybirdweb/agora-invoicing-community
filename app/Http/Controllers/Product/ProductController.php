@@ -227,6 +227,7 @@ class ProductController extends BaseProductController
             $this->product_upload->file = $request->input('filename');
 
             $this->product_upload->is_private = $request->input('is_private');
+            $this->product_upload->is_pre_release = $request->input('is_pre_release');
             $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->dependencies = json_encode($request->input('dependencies'));
 

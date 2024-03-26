@@ -2,24 +2,20 @@
 
 namespace Tests\Unit\Client\Stripe;
 
-use App\Plugins\Stripe\Controllers\SettingsController;
-use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use Illuminate\Http\Request;
-use Mockery;
-use Tests\DBTestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\ApiKey;
-use App\User;
-use App\Model\Product\Product;
+use App\Http\Controllers\RazorpayController;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Product\Subscription;
 use App\Model\Payment\Plan;
-use App\Services\RazorpayService;
-use App\Http\Controllers\RazorpayController;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use App\Plugins\Stripe\Controllers\SettingsController;
+use App\User;
+use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
+use Mockery;
+use Tests\DBTestCase;
 
 class SettingsControllerTest extends DBTestCase
 {
@@ -83,7 +79,7 @@ class SettingsControllerTest extends DBTestCase
         $this->assertEquals('https://example.com/return-url', $response->next_action->redirect_to_url->return_url);
     }
 
-    // Test case for handling Non 3DS card 
+    // Test case for handling Non 3DS card
     public function test_handlePayment_return_non_3ds_values()
     {
         $requestData = ['card_no' => '4242424242424242', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
@@ -97,7 +93,6 @@ class SettingsControllerTest extends DBTestCase
         $this->assertEquals('succeeded', $response['status']);
     }
 
-
     // Test case for handling incorrect card values
     public function test_handlePayment_return_exception_incorrect_values()
     {
@@ -109,7 +104,7 @@ class SettingsControllerTest extends DBTestCase
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
         $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
-         $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
+        $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
     }
 
     // Test case for handling autopay for 3ds with incomplete status
@@ -121,15 +116,14 @@ class SettingsControllerTest extends DBTestCase
         $unitCost = 50;
         $currency = 'INR';
         $plan = (object) ['days' => 30];
-        $expectedArguments = [ 'id' => 'sub_1OyXYHI0SyY30M2QDkWSfCb2',
-            'object' => 'subscription',];
+        $expectedArguments = ['id' => 'sub_1OyXYHI0SyY30M2QDkWSfCb2',
+            'object' => 'subscription', ];
         $status = 'incomplete';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
-        $response = $controller->handleStripeAutoPay($stripePaymentDetails,$productDetails,$unitCost,$currency,$plan);
-         $this->assertEquals($status, $response->status);
-       
+        $response = $controller->handleStripeAutoPay($stripePaymentDetails, $productDetails, $unitCost, $currency, $plan);
+        $this->assertEquals($status, $response->status);
     }
 
     // Test case for handling autopay for non 3ds with active status
@@ -141,51 +135,46 @@ class SettingsControllerTest extends DBTestCase
         $unitCost = 50;
         $currency = 'INR';
         $plan = (object) ['days' => 30];
-        $expectedArguments = [ 'id' => 'sub_1OyXYHI0SyY30M2QDkWSfCb2',
-            'object' => 'subscription',];
+        $expectedArguments = ['id' => 'sub_1OyXYHI0SyY30M2QDkWSfCb2',
+            'object' => 'subscription', ];
         $status = 'active';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
-        $response = $controller->handleStripeAutoPay($stripePaymentDetails,$productDetails,$unitCost,$currency,$plan);
-         $this->assertEquals($status, $response->status);
-       
+        $response = $controller->handleStripeAutoPay($stripePaymentDetails, $productDetails, $unitCost, $currency, $plan);
+        $this->assertEquals($status, $response->status);
     }
 
-
-
-   //Testcase for handle razorpay api for subscription 
-   public function test_handleRzpAutoPay_correctly()
+    //Testcase for handle razorpay api for subscription
+    public function test_handleRzpAutoPay_correctly()
     {
-     $user = User::factory()->create(['id' => mt_rand(1, 999), 'role' => 'user', 'country' => 'IN']);
-     $product = Product::create(['name' => 'Helpdesk']);
+        $user = User::factory()->create(['id' => mt_rand(1, 999), 'role' => 'user', 'country' => 'IN']);
+        $product = Product::create(['name' => 'Helpdesk']);
 
-     $invoice = Invoice::factory()->create(['user_id' => $user->id]);
-     $invoiceItem = InvoiceItem::create(['invoice_id' => $invoice->id, 'product_name' => $product->name]);
-     $order = Order::create(['client' => $user->id, 'order_status' => 'executed',
+        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
+        $invoiceItem = InvoiceItem::create(['invoice_id' => $invoice->id, 'product_name' => $product->name]);
+        $order = Order::create(['client' => $user->id, 'order_status' => 'executed',
             'product' => 'Helpdesk Advance', 'number' => mt_rand(100000, 999999), 'invoice_id' => $invoice->id, ]);
-     $subscription = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v3.0.0','is_subscribed' => '1','autoRenew_status' => '1']);
-     $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
-     \DB::table('api_keys')->where('id', 1)->update(['rzp_key' => 'rzp_test_II2JpRmSmCBOed','rzp_secret' => 'REA3WjmsDgzsTOtqL9NKzj8J']);
+        $subscription = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v3.0.0', 'is_subscribed' => '1', 'autoRenew_status' => '1']);
+        $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
+        \DB::table('api_keys')->where('id', 1)->update(['rzp_key' => 'rzp_test_II2JpRmSmCBOed', 'rzp_secret' => 'REA3WjmsDgzsTOtqL9NKzj8J']);
         // Prepare mock data
         $days = 30;
         $product_name = 'Example Product';
         $cost = 1000;
         $currency = 'INR';
-    
+
         $endDate = date('Y-m-d H:m:i');
         Http::fake([
             'api.razorpay.com/*' => Http::response([
-                "id" => "sub_NqwkfKaNkiuHXG",
-                "entity" => "subscription",
-                "plan_id" => "plan_NqwkeMP7pGGucR",
-                "status" => "created",
+                'id' => 'sub_NqwkfKaNkiuHXG',
+                'entity' => 'subscription',
+                'plan_id' => 'plan_NqwkeMP7pGGucR',
+                'status' => 'created',
             ], 200),
         ]);
         $controller = new RazorpayController();
         $result = $controller->handleRzpAutoPay($cost, $days, $product_name, $invoice, $currency, $subscription, $user, $order, $endDate, $product);
         $this->assertEquals('created', $result['status']);
-     }
-
-
+    }
 }

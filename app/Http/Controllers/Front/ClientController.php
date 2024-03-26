@@ -20,13 +20,13 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\Payment_log;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use App\Payment_log;
 
 class ClientController extends BaseClientController
 {
@@ -128,18 +128,17 @@ class ClientController extends BaseClientController
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $api = new Api($rzp_key, $rzp_secret);
                 $pause = $api->subscription->fetch($subscription->subscribe_id)->cancel();
-                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0','rzp_subscription' => '0']);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0', 'rzp_subscription' => '0']);
             } elseif ($subscription->autoRenew_status && $subscription->is_subscribed && $subscription->subscribe_id) {
                 $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
                 $stripe = new \Stripe\StripeClient($stripeSecretKey);
                 \Stripe\Stripe::setApiKey($stripeSecretKey);
                 $pause = $stripe->subscriptions->cancel($subscription->subscribe_id, []);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0', 'autoRenew_status' => '0']);
+            } else {
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0', 'autoRenew_status' => '0', 'rzp_subscription' => '0']);
             }
-            else{
-             Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0', 'autoRenew_status' => '0','rzp_subscription' =>'0']);
-            }   
-            
+
             $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
 
             return response()->json($response);
@@ -177,7 +176,7 @@ class ClientController extends BaseClientController
             Auto_renewal::create($customer_details);
 
             Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1', 'rzp_subscription' => '1']);
-            
+
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->payment_log(\Auth::user()->email, 'Razorpay', 'success', Order::where('id', $orderid)->value('number'), null, $amount, 'Payment method updated');
 
@@ -730,7 +729,7 @@ class ClientController extends BaseClientController
 
             $status = Subscription::where('order_id', $id)->value('autoRenew_status');
             $currency = getCurrencyForClient(\Auth::user()->country);
-            $amount = currencyFormat(1,$currency);
+            $amount = currencyFormat(1, $currency);
             $payment_log = Payment_log::where('order', $order->number)
             ->where('amount', $amount)
             ->where('payment_type', 'Payment method updated')
@@ -751,7 +750,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id', 'statusAutorenewal', 'status','payment_log','recentPayment')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id', 'statusAutorenewal', 'status', 'payment_log', 'recentPayment')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -929,7 +928,7 @@ class ClientController extends BaseClientController
     {
         try {
             $currency = getCurrencyForClient(\Auth::user()->country);
-            $amount = currencyFormat(1,$currency);
+            $amount = currencyFormat(1, $currency);
             $orderid = $request->input('orderId');
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = new \Stripe\StripeClient($stripeSecretKey);

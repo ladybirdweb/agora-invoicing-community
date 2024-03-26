@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Auto_renewal;
 use App\Http\Requests\Order\OrderRequest;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\InstallationDetail;
@@ -15,10 +14,10 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Payment_log;
 
 class OrderController extends BaseOrderController
 {
@@ -296,7 +295,7 @@ class OrderController extends BaseOrderController
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             $currency = getCurrencyForClient(\Auth::user()->country);
-            $amount = currencyFormat(1,$currency);
+            $amount = currencyFormat(1, $currency);
             $payment_log = Payment_log::where('order', $order->number)
             ->where('amount', $amount)
             ->where('payment_type', 'Payment method updated')

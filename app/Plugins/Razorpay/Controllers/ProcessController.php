@@ -37,18 +37,18 @@ class ProcessController extends Controller
             } else {
                 $invoice->grand_total = \Cart::getTotal();
             }
-            if ($request->input('payment_gateway') == 'Razorpay') {
-                if (! \Schema::hasTable('razorpay')) {
-                    throw new \Exception('Razorpay is not configured');
-                }
-                $stripe = $this->razorpay->where('id', 1)->first();
-                if (! $stripe) {
-                    throw new \Exception('Razorpay Fields not given');
-                }
-                \Session::put('invoice', $invoice);
-                \Session::save();
-                $this->middlePage();
-            }
+            // if ($request->input('payment_gateway') == 'Razorpay') {
+            //     if (! \Schema::hasTable('razorpay')) {
+            //         throw new \Exception('Razorpay is not configured');
+            //     }
+            //     $stripe = $this->razorpay->where('id', 1)->first();
+            //     if (! $stripe) {
+            //         throw new \Exception('Razorpay Fields not given');
+            //     }
+            //     \Session::put('invoice', $invoice);
+            //     \Session::save();
+            //     $this->middlePage();
+            // }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }

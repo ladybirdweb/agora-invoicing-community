@@ -236,6 +236,7 @@ return[
         'application_title' => '{{application_title}}',
         'company_title' => '{{company_title}}',
         'url' => '{{url}}',
+        'number' => '{{number}}',
     ],
 
 ];

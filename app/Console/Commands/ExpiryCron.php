@@ -19,7 +19,7 @@ class ExpiryCron extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Renewal notification for disabled the auto subscription orders';
 
     /**
      * Create a new command instance.

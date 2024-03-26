@@ -186,13 +186,7 @@ if ($symbol == 'INR'){
 
 } else {
 
-    $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
-    $exchange = json_decode(file_get_contents($url));
-
-    $exchangeRate = $exchange->quotes->USDINR;
-    $displayAmount =$exchangeRate * round(1.00*100) ;
-
-
+    $exchangeRate = '';
     $orderData = [
         'receipt'         => '3456',
         'amount'          =>  round(1.00*100), // 2000 rupees in paise
@@ -623,7 +617,7 @@ $price = $order->price_override;
                             </div>
 
                         @endforeach
-</div>
+                       </div>
 
                                   @endif
 
@@ -862,44 +856,85 @@ $price = $order->price_override;
 
 
                 <div class="tab-pane tab-pane-navigation" id="auto-renew" role="tabpanel">
-                    @if($gateways)
+            
+                    <div class="row">
 
-                        <div class="row pt-5">
+                        <div class="col">
 
-                            <div class="d-flex">
+                            <div class="row align-items-center">
 
-                                <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 mt-2">
+                                <div class="col-sm-5">
 
-                                    <span class="">Status of Auto Renewal</span>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Auto renewal:</span>
+                                    </div>
                                 </div>
 
-                                <div class="form-check form-switch">
+                                <div class="col-sm-7">  <div class="form-check form-switch">
 
-                                    <input id="renew" value="{{$statusAutorenewal}}"  name="is_subscribed" class="form-check-input renewcheckbox" style="padding-right: 2rem;padding-left: 2rem;padding-top: 1rem!important;padding-bottom: 1rem!important;" type="checkbox" role="switch">
+                                    <input id="renew" value="{{$statusAutorenewal}}"  name="is_subscribed" class="form-check-input renewcheckbox" style="padding-right: 2rem;padding-top: 1rem!important;padding-bottom: 0rem!important;" type="checkbox" role="switch">
                                     <input type="hidden" name="" id="order" value="{{$id}}">
 
+                                </div></div>
+                            </div>
+
+                        <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Status:</span>
+                                    </div>
                                 </div>
+
+                              <div class="col-sm-7">
+                                @if($statusAutorenewal == 1)
+                                    <span class="text-success font-weight-bold">Active</span>
+                                @else
+                                    <span class="text-danger font-weight-bold">Inactive</span>
+                                @endif
                             </div>
-                        </div>
-                    @else
-                        <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
-
-                    @endif
-
-                    @if($statusAutorenewal == 1)
-                        <div class="row">
-
-                            <div class="col-8" id="updateButton">
-                                <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
-                                <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
-
-                                <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
-
 
                             </div>
 
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @if($statusAutorenewal == 1)
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Payment Gateway:</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-7">{{$payment_log->payment_method}}</div>
+                            </div>
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @endif
+                             @if($statusAutorenewal == 1)
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Subscription Enabled Date:</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-7">{!! getDateHtml($payment_log->date) !!}</div>
+                            </div>
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @endif
+
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -1197,26 +1232,22 @@ $price = $order->price_override;
                     <button type="button" class="btn-close"  id="srclose" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
 
-                <div class="modal-body">
-
+                        <div class="modal-body">
                     <div class="row">
-
                         <div class="form-group col">
-
-                            <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
-
+                            <label class="form-label">Select the payment gateway <span class="text-danger">*</span></label>
                             <div class="custom-select-1">
-                                <select name=""  id="sel-payment" class="form-control" >
-                                    <option value="" disabled selected>Choose your option</option>
-                                    @foreach($gateways as $key =>  $gateway)
-                                        <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                                <select name="" id="sel-payment" class="form-control">
+                                    <option value="" disabled>Choose your option</option>
+                                    @foreach($gateways as $gateway)
+                                        <option value="{{ strtolower($gateway) }}" {{ strtolower($gateway) === strtolower($recentPayment->payment_method) ? 'selected' : '' }}>{{ $gateway }}</option>
                                     @endforeach
-                                    <!-- <option value="razorpay">Razorpay</option> -->
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="modal-footer">
 
@@ -1543,9 +1574,13 @@ $price = $order->price_override;
                         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
                         $('#alertMessage-2').html(result+ ".");
                         $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                        setInterval(function(){
-                            $('#alertMessage-2').slideUp(3000);
-                        }, 4000);
+                       setTimeout(function() {
+                        $('#alertMessage-2').slideUp(3000, function() {
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        });
+                    }, 4000);
                         $('#updateButton').hide();
                     },
                 })
@@ -1602,7 +1637,7 @@ $price = $order->price_override;
                                     $('#alertMessage-2').html(result + ".");
                                     $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                                     setTimeout(function() {
-                                    window.location.href = domain;
+                                        location.reload();
                                     }, 3000);
 
                                     }

@@ -40,5 +40,8 @@ return [
     '{{currency}}' => 'currency information',
     '{{renewPrice}}' => 'renewPrice information',
     '{{exception}}' => 'exception information',
+    '{{expiry_date}}' => 'expiry date for subscription creation link',
+    '{{application_title}}' => 'company\'s application title',
+    '{{company_title}}' => 'company title',
 
 ];

@@ -20,7 +20,7 @@ class RenewalCron extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command for auto renewal';
 
     /**
      * Execute the console command.

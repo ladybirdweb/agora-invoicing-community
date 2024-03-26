@@ -2,14 +2,14 @@
 
 namespace App\Plugins\Stripe\Controllers;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Order\InvoiceItem;
 use App\Model\Product\Product;
+use App\Plugins\Razorpay\Model\RazorpayPayment;
 use App\Plugins\Stripe\Model\StripePayment;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
-use App\Plugins\Razorpay\Model\RazorpayPayment;
-use App\ApiKey;
 
 class ProcessController extends Controller
 {
@@ -52,8 +52,7 @@ class ProcessController extends Controller
                 \Session::put('invoice', $invoice);
                 \Session::save();
                 $this->middlePage($request->input('payment_gateway'));
-            }
-            elseif ($request->input('payment_gateway') == 'Razorpay') {
+            } elseif ($request->input('payment_gateway') == 'Razorpay') {
                 if (! \Schema::hasTable('razorpay')) {
                     throw new \Exception('Razorpay is not configured');
                 }
@@ -101,7 +100,7 @@ class ProcessController extends Controller
                 }
                 \Session::put('totalToBePaid', $amount);
                 \View::addNamespace('plugins', $path);
-                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'creditBalance','gateway','rzp_key', 'rzp_secret', 'apilayer_key'));
+                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'creditBalance', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key'));
             } else {
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
@@ -112,7 +111,7 @@ class ProcessController extends Controller
                 $amount = rounding(\Cart::getTotal());
                 \View::addNamespace('plugins', $path);
 
-                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment','gateway','rzp_key', 'rzp_secret', 'apilayer_key'))->render();
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

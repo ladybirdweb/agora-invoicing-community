@@ -218,45 +218,46 @@ class SettingsController extends Controller
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)
     {
-        try{
-        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-        $stripe = new \Stripe\StripeClient($stripeSecretKey);
-        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        try {
+            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+            $stripe = new \Stripe\StripeClient($stripeSecretKey);
+            \Stripe\Stripe::setApiKey($stripeSecretKey);
 
-        $paymentMethod = \Stripe\PaymentMethod::retrieve($stripe_payment_details->payment_intent_id);
+            $paymentMethod = \Stripe\PaymentMethod::retrieve($stripe_payment_details->payment_intent_id);
 
-        //create product
-        $product = $stripe->products->create([
-            'name' => $product_details->name,
-        ]);
-        $product_id = $product['id'];
+            //create product
+            $product = $stripe->products->create([
+                'name' => $product_details->name,
+            ]);
+            $product_id = $product['id'];
 
-        //define product price and recurring interval
+            //define product price and recurring interval
 
-        $price = $stripe->prices->create([
-            'unit_amount' => $unit_cost,
-            'currency' => $currency,
-            'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
-            'product' => $product_id,
-        ]);
-        $price_id = $price['id'];
+            $price = $stripe->prices->create([
+                'unit_amount' => $unit_cost,
+                'currency' => $currency,
+                'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
+                'product' => $product_id,
+            ]);
+            $price_id = $price['id'];
 
-        //CREATE SUBSCRIPTION
+            //CREATE SUBSCRIPTION
 
-        $stripe_subscription = $stripe->subscriptions->create([
-            'customer' => $paymentMethod->customer,
-            'items' => [
-                ['price' => $price_id],
-            ],
-            'default_payment_method' => $paymentMethod->id,
-        ]);
+            $stripe_subscription = $stripe->subscriptions->create([
+                'customer' => $paymentMethod->customer,
+                'items' => [
+                    ['price' => $price_id],
+                ],
+                'default_payment_method' => $paymentMethod->id,
+            ]);
 
-        return $stripe_subscription;
-       } catch (ApiErrorException $e) {
-        $errorCode = $e->getStripeCode();
-        $errorMessage = $e->getMessage();
-        Log::error("Stripe API Error: $errorCode - $errorMessage");
-        return response()->json(['error' => $errorMessage], 500);
-    }
+            return $stripe_subscription;
+        } catch (ApiErrorException $e) {
+            $errorCode = $e->getStripeCode();
+            $errorMessage = $e->getMessage();
+            Log::error("Stripe API Error: $errorCode - $errorMessage");
+
+            return response()->json(['error' => $errorMessage], 500);
+        }
     }
 }

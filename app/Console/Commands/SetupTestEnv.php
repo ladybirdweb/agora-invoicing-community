@@ -6,10 +6,6 @@ use Artisan;
 use Config;
 use DB;
 use Illuminate\Console\Command;
-use App\Http\Controllers\SyncBillingToLatestVersion;
-use Illuminate\Support\Str;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 class SetupTestEnv extends Command
 {
@@ -146,7 +142,6 @@ class SetupTestEnv extends Command
         \DB::disconnect('mysql');
     }
 
-
     private function handleSeeder()
     {
         $latestVersion = preg_replace('#v\.|v#', '', str_replace('_', '.', Config::get('app.version')));
@@ -164,13 +159,10 @@ class SetupTestEnv extends Command
         }
     }
 
-
-
     private function runSeeder($seederClass)
     {
         Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
         $output = Artisan::output();
         echo "Seeding for $seederClass: $output\n";
     }
-
 }

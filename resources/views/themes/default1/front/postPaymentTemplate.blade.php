@@ -66,6 +66,7 @@
                                 {{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}
                             </span>
                         </div>
+                        @endif
                     </div>
             
 

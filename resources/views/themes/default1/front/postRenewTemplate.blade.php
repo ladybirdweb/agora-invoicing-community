@@ -22,10 +22,16 @@
 
                         <div class="text-center">
                             <span><strong class="text-color-dark">
-                                Order Number</strong> <br>
-                                {!! $order_number !!}
+                                Invoice Number</strong> <br>
+                                {!! $invoice->number !!}
                             </span>
                         </div>
+                            <div class="text-center mt-4 mt-md-0">
+                            <span><strong class="text-color-dark">
+                                Status</strong> <br>
+                                Success
+                            </span>
+                        </div>  
                         <div class="text-center mt-4 mt-md-0">
                             <span> <strong class="text-color-dark">
                                 Date </strong><br>
@@ -38,14 +44,14 @@
                                 {{Session::get('payment_method')}}
                             </span>
                         </div>
-      
+
                         <div class="text-center mt-4 mt-md-0">
                             <span><strong class="text-color-dark">
                                 Total </strong><br>
-                                {{currencyFormat($invoiceItem->subtotal,$code = $currency)}}
+                                {{currencyFormat($invoice->grand_total,$code = $currency)}}
                             </span>
                         </div>
-                     
+
                     </div>
 
                     <div class="card border-width-3 border-radius-0 border-color-hover-dark mb-4">
@@ -64,22 +70,30 @@
                                     </td>
                                 </tr>
 
+
                                 <tr>
-                                    <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x {{$invoiceItem->quantity}}</span></strong>
-                                    </td>
+                                   <td>
+                                    <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$invoiceItem->product_name}} <span class="product-qty">x {{$invoiceItem->quantity}}</span></strong>
+                                    <ul class="wc-item-meta" style="list-style: none; padding: 0;">
+                                        <li style="display: inline-block;"><strong class="wc-item-meta-label">Order Number:</strong> <p style="display: inline;">{{ $order_number }}</p></li>
+                                    </ul> 
+                                </td>
+
                                     <td class="text-end align-top">
-                                        <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span>
+                                        <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span><br>
+
                                     </td>
+
                                 </tr>
-  
+                               
+                            
 
                                 <tr class="total">
                                     <td>
                                         <strong class="text-color-dark text-3-5">Total</strong>
                                     </td>
                                     <td class="text-end">
-                                        <strong class="text-color-dark"><span class="amount text-color-dark text-5">{{currencyFormat($invoiceItem->subtotal,$code = $currency)}}</span></strong>
+                                        <strong class="text-color-dark"><span class="amount text-color-dark text-5">{{currencyFormat($invoice->grand_total,$code = $currency)}}</span></strong>
                                     </td>
                                 </tr>
                                 </tbody>

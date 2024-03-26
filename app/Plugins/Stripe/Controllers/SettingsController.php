@@ -218,6 +218,7 @@ class SettingsController extends Controller
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)
     {
+        try{
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = new \Stripe\StripeClient($stripeSecretKey);
         \Stripe\Stripe::setApiKey($stripeSecretKey);
@@ -251,5 +252,11 @@ class SettingsController extends Controller
         ]);
 
         return $stripe_subscription;
+       } catch (ApiErrorException $e) {
+        $errorCode = $e->getStripeCode();
+        $errorMessage = $e->getMessage();
+        Log::error("Stripe API Error: $errorCode - $errorMessage");
+        return response()->json(['error' => $errorMessage], 500);
+    }
     }
 }

@@ -691,8 +691,6 @@ class SettingsController extends BaseSettingsController
 
                 ->make(true);
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

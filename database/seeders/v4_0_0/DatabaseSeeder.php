@@ -40,7 +40,10 @@ class TemplateTypeTableSeeder extends Seeder
 {
     public function run()
     {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         TemplateType::whereIn('id', [21, 22])->delete();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
 
         TemplateType::create(['id' => 21, 'name' => 'contact_us']);
         TemplateType::create(['id' => 22, 'name' => 'demo_request']);
@@ -835,7 +838,10 @@ class PricingTemplateSeeder extends Seeder
 {
     public function run()
     {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
        PricingTemplate::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
 
         PricingTemplate::create(['id' => 1,'data' => '<div class="">
         <div class="card border-radius-0 bg-color-light box-shadow-6 anim-hover-translate-top-10px transition-3ms">

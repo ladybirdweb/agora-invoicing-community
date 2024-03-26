@@ -6,6 +6,10 @@ use Artisan;
 use Config;
 use DB;
 use Illuminate\Console\Command;
+use App\Http\Controllers\SyncBillingToLatestVersion;
+use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class SetupTestEnv extends Command
 {
@@ -62,7 +66,8 @@ class SetupTestEnv extends Command
 
         echo "\nRunning seeders!\n";
 
-        Artisan::call('db:seed', ['--class' => "Database\Seeders\\v2_0_0\DatabaseSeeder", '--force' => true]);
+        // Run seeders
+        $this->handleSeeder();
 
         echo Artisan::output();
 
@@ -140,4 +145,32 @@ class SetupTestEnv extends Command
         // populated
         \DB::disconnect('mysql');
     }
+
+
+    private function handleSeeder()
+    {
+        $latestVersion = preg_replace('#v\.|v#', '', str_replace('_', '.', Config::get('app.version')));
+        $seedersPath = database_path('seeders');
+        $seederVersions = scandir($seedersPath);
+        $seederVersions = array_filter($seederVersions, function ($dir) {
+            return preg_match('/^v\d+_\d+_\d+$/', $dir);
+        });
+        natsort($seederVersions);
+        foreach ($seederVersions as $version) {
+            if (version_compare($version, $latestVersion, '<=')) {
+                $seederClass = "Database\\Seeders\\$version\\DatabaseSeeder";
+                $this->runSeeder($seederClass);
+            }
+        }
+    }
+
+
+
+    private function runSeeder($seederClass)
+    {
+        Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
+        $output = Artisan::output();
+        echo "Seeding for $seederClass: $output\n";
+    }
+
 }

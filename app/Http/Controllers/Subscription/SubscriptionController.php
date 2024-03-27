@@ -146,9 +146,8 @@ class SubscriptionController extends Controller
                 //Create subscription status enabled users
                 $this->createSubscriptionsForEnabledUsers($stripe_payment_details, $product_details, $unit_cost, $currency, $plan, $subscription, $invoice, $order, $user, $cost, $end);
             }
-           } catch (\Exception $ex) {
-                $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
-
+        } catch (\Exception $ex) {
+            $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
         }
     }
 
@@ -157,7 +156,7 @@ class SubscriptionController extends Controller
         return $productDetails->type == '4' && $price == '0';
     }
 
-    public function mailSendToActiveStripeSubscription($subscription,$product_details, $unit_cost, $currency, $plan, $url, $user)
+    public function mailSendToActiveStripeSubscription($subscription, $product_details, $unit_cost, $currency, $plan, $url, $user)
     {
         $contact = getContactData();
         //check in the settings
@@ -173,7 +172,7 @@ class SubscriptionController extends Controller
         $today = new DateTime();
         $today->modify('+1 day');
         $expiry_date = $today->format('d M Y');
-        $order = Order::where('id',$subscription->order_id)->first();
+        $order = Order::where('id', $subscription->order_id)->first();
 
         $replace = [
             'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
@@ -370,7 +369,7 @@ class SubscriptionController extends Controller
         $url = $latestInvoice->hosted_invoice_url;
 
         if ($url) {
-            $this->mailSendToActiveStripeSubscription($subscription,$product_details, $cost, $currency, $plan, $url, $user);
+            $this->mailSendToActiveStripeSubscription($subscription, $product_details, $cost, $currency, $plan, $url, $user);
             Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripeResponse->id, 'autoRenew_status' => '2']);
         }
     }

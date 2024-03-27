@@ -251,14 +251,14 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
     }
 
-        public function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
-       {
+    public function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
+    {
         $contact = getContactData();
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings::find(1);
 
-        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => '0', 'is_subscribed' => '0','rzp_subscription' => '0']);
+        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => '0', 'is_subscribed' => '0', 'rzp_subscription' => '0']);
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);

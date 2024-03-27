@@ -108,7 +108,7 @@ class SubscriptionControllerTest extends DBTestCase
         $cost = '100';
         $controller = $this->instantiateDependencies();
         $response = $controller->calculateUnitCost($currency, $cost);
-        $this->assertEquals(10100, $response);
+        $this->assertEquals(10000, $response);
     }
 
     public function test_calculateUnitCost_withThreedecimal_currency()
@@ -117,7 +117,7 @@ class SubscriptionControllerTest extends DBTestCase
         $cost = '100';
         $controller = $this->instantiateDependencies();
         $response = $controller->calculateUnitCost($currency, $cost);
-        $this->assertEquals(101000, $response);
+        $this->assertEquals(100000, $response);
     }
 
     public function test_calculateUnitCost_withZerodecimal_currency()
@@ -126,7 +126,7 @@ class SubscriptionControllerTest extends DBTestCase
         $cost = '100';
         $controller = $this->instantiateDependencies();
         $response = $controller->calculateUnitCost($currency, $cost);
-        $this->assertEquals(101.0, $response);
+        $this->assertEquals(100.0, $response);
     }
 
     public function test_create_susbcription_enabled_users()

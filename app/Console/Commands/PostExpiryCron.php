@@ -19,7 +19,7 @@ class PostExpiryCron extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Renewal notification for all expired orders';
 
     /**
      * Execute the console command.

@@ -706,11 +706,17 @@ input:checked + .slider:before {
 
 
                                         </label></td></tr>
-                                    @if($subscription->is_subscribed && $payment_details)
-                                    <tr><td><b>{{$payment_details == 'stripe' ? 'Customer id' : 'Payment id'}}:</b></td><td>{{$payment_details->customer_id}}</td></tr>
-                                    <tr><td><b>Payment Method:</b></td><td>{{ucfirst($payment_details->payment_method)}}</td></tr>
+                                    @if($subscription->is_subscribed && $payment_log)
+                                     <tr><td><b>Status:</b></td><td>
+                                     <span class="text-success font-weight-bold">Active</span>
+                                     </td></tr>
+                                    <tr><td><b>Payment Method:</b></td><td>{{ucfirst($payment_log->payment_method)}}</td></tr>
   
-                                    <tr><td><b>Payment updated date:</b></td><td>{{$payment_details->created_at->format('M j, Y')}}</td></tr>
+                                    <tr><td><b>Subscription Start Date:</b></td><td>{!! getDateHtml($payment_log->date) !!}</td></tr>
+                                    @else
+                                    <tr><td><b>Status:</b></td><td>
+                                     <span class="text-danger font-weight-bold">Inactive</span>
+                                     </td></tr>
                                     @endif
 
                                 </tbody>

@@ -7,15 +7,11 @@
                     <div class="card border-width-3 border-radius-0 border-color-success">
 
                         <div class="card-body text-center">
-                            @if($show)
 
-                            <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Thank You. Your Order has been received. A confirmation Mail has been sent to you on <a>{{\Auth::user()->email}}</a></p>
-                            @else
                             <p class="text-color-dark font-weight-bold text-4-5 mb-0"><i class="fas fa-check text-color-success me-1"></i>Thank You. Your Order has been received.</p>
-                            @endif
                         </div>
                     </div>
-                    @foreach($orders as $order)
+                @foreach($orders as $order)
                 <?php
                 $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
                 $cont = new \App\Http\Controllers\License\LicensePermissionsController();
@@ -27,8 +23,8 @@
 
                         <div class="text-center">
                             <span><strong class="text-color-dark">
-                                Order Number </strong><br>
-                                {{$orderNumber}}
+                                Invoice Number </strong><br>
+                                {{$invoice->number}}
                             </span>
                         </div>
      
@@ -69,14 +65,33 @@
                                     </td>
                                 </tr>
 
+                                          @foreach($orders as $order)
+                                <?php
+                                 $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
+                                ?>
+
                                 <tr>
-                                    <td>
-                                        <strong class="d-block text-color-dark line-height-1 font-weight-semibold"> {{$product->name}} <span class="product-qty">x {{$items[0]->quantity}}</span></strong>
-                                    </td>
+                                   <td>
+                                    <strong class="d-block text-color-dark line-height-1 font-weight-semibold">{{$product->name}} <span class="product-qty">x {{$order->qty}}</span></strong>
+                                    <ul class="wc-item-meta" style="list-style: none; padding: 0;">
+                                        <li style="display: inline-block;"><strong class="wc-item-meta-label">Order Number:</strong> <p style="display: inline;">{{$order->number}}</p></li>
+                                    </ul> 
+                                </td>
+
+                                    <?php
+                                    $orderTotal = $order->price_override;
+                                    ?>
                                     <td class="text-end align-top">
-                                        <span class="amount font-weight-medium text-color-grey">{{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</span>
+                                        <span class="amount font-weight-medium text-color-grey">{{currencyFormat($orderTotal,$code = $invoice->currency)}}</span><br>
+                                        @if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
+                      
+                                            <a href="{{ url("product/download/$order->product/$invoice->number") }}" class="btn btn-light-scale-2 btn-sm text-dark" data-toggle="tooltip" aria-label="Click here to download" data-bs-original-title="Click here to download"><i class="fa fa-download"> </i></a>
+                                           
+                                        @endif
                                     </td>
                                 </tr>
+                               
+                                @endforeach
 
                                 <tr class="total">
                                     <td>
@@ -94,14 +109,7 @@
             </div>
 
         </div>
-         @if($show)
-@if($downloadPermission['downloadPermission'] == 1 && !in_array($product->id,cloudPopupProducts()))
 
- <a style="position: relative;left: 200px;"  href="{{ url("product/download/$order->product/$invoice->number") }}"  class="btn btn-dark btn-modern text-uppercase text-3 py-3"><i class="fa fa-download"> </i>  Download the Latest Version here</a>
-@else
-
-@endif
- @endif
         <script>
 function deploy(button) {
 var orderNumber = button.value;

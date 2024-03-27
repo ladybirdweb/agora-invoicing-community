@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-    Stripe
+    {{$gateway}}
 @stop
 @section('page-heading')
     Place Order
@@ -14,7 +14,7 @@
 @else
      <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
 @endif
- <li class="active text-dark">Stripe</li>
+ <li class="active text-dark">{{$gateway}}</li>
 @stop
  <style>
         .horizontal-images {
@@ -73,12 +73,113 @@
     }
 
 </style>
+
 <?php
  $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
 $currency = $invoice->currency;
 
 $feeAmount = intval(ceil($invoice->grand_total*0.01));
+?>
+<?php
+$taxAmt = 0;
+$cartSubtotalWithoutCondition = 0;
+ 
+use Razorpay\Api\Api;
+ $merchant_orderid= generateMerchantRandomString();  
+
+function generateMerchantRandomString($length = 10) {
+$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$charactersLength = strlen($characters);
+$randomString = '';
+for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
+}
+return $randomString;
+}
+ $api = new Api($rzp_key, $rzp_secret);
+$currency = $invoice->currency;
+if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance') && $regularPayment) {
+    $amt_to_credit = \DB::table('payments')
+    ->where('user_id', \Auth::user()->id)
+    ->where('payment_method','Credit Balance')
+    ->where('payment_status','success')
+    ->where('amt_to_credit','!=',0)
+    ->value('amt_to_credit');
+    if ($invoice->grand_total <= $amt_to_credit) {
+        $cartTotal = 0;
+    } else {
+        $cartTotal = $invoice->grand_total - $amt_to_credit;
+    }
+} else {
+    $cartTotal = $invoice->grand_total;
+}
+
+
+if ($currency == 'INR'){
+$orderData = [
+'receipt'         => '3456',
+'amount'          => round($cartTotal*100), // 2000 rupees in paise
+
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+ 
+];
+
+
+} else {
+
+ $orderData = [
+'receipt'         => '3456',
+'amount'          =>  round($cartTotal*100), // 2000 rupees in paise
+
+'currency'        => $currency,
+'payment_capture' => 0 // auto capture
+     
+];
+}
+$razorpayOrder = $api->order->create($orderData);
+$razorpayOrderId = $razorpayOrder['id'];
+
+
+
+
+$data = [
+    "key"               => $rzp_key,
+    "name"              => 'Faveo Helpdesk',
+     "prefill"=> [
+        "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
+        "email"=>      \Auth::user()->email,
+    ],
+    "description"       =>  'Order for Invoice No' .-$invoice->number,
+    "notes"             => [
+    "First Name"         => \Auth::user()->first_name,
+    "Last Name"         =>  \Auth::user()->last_name,
+    "Company Name"      => \Auth::user()->company,
+    "Address"           =>  \Auth::user()->address,
+    "Email"             =>  \Auth::user()->email,
+    "Country"           =>  \Auth::user()->country,
+    "State"             => \Auth::user()->state,
+    "City"              => \Auth::user()->town,
+    "Zip"               => \Auth::user()->zip,
+    "Amount Paid"       => $cartTotal*100,
+
+
+
+    "merchant_order_id" =>  $merchant_orderid,
+    ],
+    "theme"             => [
+    "color"             => "#F37254"
+    ],
+    "order_id"          => $razorpayOrderId,
+];
+
+
+$json = json_encode($data);
+
+
+
+
 ?>
 @if($regularPayment)
  <div role="main" class="main">
@@ -309,12 +410,20 @@ $feeAmount = intval(ceil($invoice->grand_total*0.01));
                                                 <label style="font-size: 12px;font-weight: normal;">({!! $fee->getValue() !!})</label>
                                             </strong>
                                         </td>
-                                                          <td class="text-end align-top border-top-0">
-                                            <span class="amount font-weight-medium text-color-grey">
-                                                         {{currencyFormat($feeAmount,$code = $item->attributes->currency)}}
-                                                     </span>
-                                                      </td>
-                                                     </tr>
+                                         @if($fee->getValue() === '0%')
+                                                    <td class="text-end align-top border-top-0">
+                                                        <span class="amount font-weight-medium text-color-grey">
+                                                            0
+                                                        </span>
+                                                    </td>
+                                                @else
+                                                    <td class="text-end align-top border-top-0">
+                                                        <span class="amount font-weight-medium text-color-grey">
+                                                            {{ currencyFormat($feeAmount, $code = $item->attributes->currency) }}
+                                                        </span>
+                                                    </td>
+                                                @endif
+                                           </tr>
                                                      @endforeach
                                                     @endif
                                      @if(\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance'))
@@ -369,8 +478,8 @@ $feeAmount = intval(ceil($invoice->grand_total*0.01));
                                     </tbody>
                                 </table>
 
+                              <input type="submit" name="submit" value="Place Your Order And Pay" id="{{ strtolower($gateway) === 'stripe' ? 'stripe-button1' : 'rzp-button1' }}" class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3" data-loading-text="Loading...">
 
-                                <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1"  class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3" data-loading-text="Loading...">
 
                             </div>
                         </div>
@@ -609,12 +718,19 @@ $feeAmount = intval(ceil($invoice->grand_total*0.01));
                                             <strong class="text-color-grey font-weight-semibold">{!! $fee->getName() !!}</strong>
                                              <label style="font-size: 12px;font-weight: normal;">({!! $fee->getValue() !!})</label>
                                                 </td>
-                                                <td class="border-top-0 text-end">
-                                            <span class="amount font-weight-medium">
-                                                    {{currencyFormat($feeAmount,$code = $currency)}}
-
+                                              @if($fee->getValue() === '0%')
+                                            <td class="align-top border-top-0">
+                                                <span class="amount font-weight-medium text-color-grey">
+                                                    0
                                                 </span>
-                                                </td>
+                                            </td>
+                                        @else
+                                            <td class="text-end align-top border-top-0">
+                                                <span class="amount font-weight-medium text-color-grey">
+                                                    {{ currencyFormat($feeAmount, $code = $item->attributes->currency) }}
+                                                </span>
+                                            </td>
+                                        @endif
                                             </tr>
                                         @endforeach
                                     @endif
@@ -631,9 +747,9 @@ $feeAmount = intval(ceil($invoice->grand_total*0.01));
                                     </tr>
                                     </tbody>
                                 </table>
+                              <input type="submit" name="submit" value="Place Your Order And Pay" id="{{ strtolower($gateway) === 'stripe' ? 'stripe-button1' : 'rzp-button1' }}" class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3" data-loading-text="Loading...">
 
-                                 <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1"  class="btn btn-dark btn-modern w-100 text-uppercase text-3 py-3" data-loading-text="Loading...">
-                                                             </div>
+                            </div>
                         </div>
                     </div>
 
@@ -880,6 +996,57 @@ $(function() {
     }
   
 });
+</script>
+
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <form name='razorpayform' action="{!!url('payment/'.$invoice->id)!!}" method="POST">
+      {{ csrf_field() }}
+ <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
+<!--<form name='razorpayform' action="verify.php" method="POST">                                -->
+<input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+<input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
+
+
+</form>
+
+ <script>
+
+    // Checkout details as a json
+var options = <?php echo $json; ?>
+
+
+/**
+ * The entire list of Checkout fields is available at
+ * https://docs.razorpay.com/docs/checkout-form#checkout-fields
+ */
+options.handler = function (response){
+    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+   
+    document.razorpayform.submit();
+};
+
+// Boolean whether to show image inside a white frame. (default: true)
+options.theme.image_padding = false;
+
+options.modal = {
+    ondismiss: function() {
+    },
+    // Boolean indicating whether pressing escape key 
+    // should close the checkout form. (default: true)
+    escape: true,
+    // Boolean indicating whether clicking translucent blank
+    // space outside checkout form should close the form. (default: false)
+    backdropclose: false
+};
+
+var rzp = new Razorpay(options);
+
+document.getElementById('rzp-button1').onclick = function(e){
+    
+    rzp.open();
+    e.preventDefault();
+}
 </script>
 
 

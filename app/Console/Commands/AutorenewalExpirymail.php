@@ -19,7 +19,7 @@ class AutorenewalExpirymail extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Renewal notifications for auto renewal enabled orders';
 
     /**
      * Execute the console command.

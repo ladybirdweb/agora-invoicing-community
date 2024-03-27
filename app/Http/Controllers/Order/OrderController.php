@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Auto_renewal;
 use App\Http\Requests\Order\OrderRequest;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\InstallationDetail;
@@ -15,6 +14,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -294,12 +294,18 @@ class OrderController extends BaseOrderController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            $payment_details = Auto_renewal::where('user_id', $user->id)->where('order_id', $id)->latest()->first();
+            $currency = getCurrencyForClient(\Auth::user()->country);
+            $amount = currencyFormat(1, $currency);
+            $payment_log = Payment_log::where('order', $order->number)
+            ->where('amount', $amount)
+            ->where('payment_type', 'Payment method updated')
+            ->orderBy('id', 'desc')
+            ->first();
 
             $statusAutorenewal = Subscription::where('order_id', $id)->value('is_subscribed');
 
             return view('themes.default1.order.show',
-                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate', 'installationDetails', 'id', 'statusAutorenewal', 'payment_details'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate', 'installationDetails', 'id', 'statusAutorenewal', 'payment_log'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

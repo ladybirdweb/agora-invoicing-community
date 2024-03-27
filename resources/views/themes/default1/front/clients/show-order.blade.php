@@ -136,6 +136,7 @@
     .table th{
         border-top: unset !important;
     }
+    
 
     </style>
     @if(Auth::check())
@@ -165,8 +166,8 @@ $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
 $apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
 $api = new Api($rzp_key, $rzp_secret);
-$displayCurrency = \Auth::user()->currency;
-$symbol = \Auth::user()->currency;
+$displayCurrency = getCurrencyForClient(\Auth::user()->country);
+$symbol = getCurrencyForClient(\Auth::user()->country);
 if ($symbol == 'INR'){
 
 
@@ -177,7 +178,7 @@ if ($symbol == 'INR'){
         'receipt'         => '3456',
         'amount'          => round(1.00*100), // 2000 rupees in paise
 
-        'currency'        => \Auth::user()->currency,
+        'currency'        => getCurrencyForClient(\Auth::user()->country),
         'payment_capture' => 0 // auto capture
 
     ];
@@ -185,18 +186,12 @@ if ($symbol == 'INR'){
 
 } else {
 
-    $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
-    $exchange = json_decode(file_get_contents($url));
-
-    $exchangeRate = $exchange->quotes->USDINR;
-    $displayAmount =$exchangeRate * round(1.00*100) ;
-
-
+    $exchangeRate = '';
     $orderData = [
         'receipt'         => '3456',
         'amount'          =>  round(1.00*100), // 2000 rupees in paise
 
-        'currency'        => \Auth::user()->currency,
+        'currency'        => getCurrencyForClient(\Auth::user()->country),
         'payment_capture' => 0 // auto capture
 
     ];
@@ -622,7 +617,7 @@ $price = $order->price_override;
                             </div>
 
                         @endforeach
-</div>
+                       </div>
 
                                   @endif
 
@@ -861,44 +856,85 @@ $price = $order->price_override;
 
 
                 <div class="tab-pane tab-pane-navigation" id="auto-renew" role="tabpanel">
-                    @if($gateways)
+            
+                    <div class="row">
 
-                        <div class="row pt-5">
+                        <div class="col">
 
-                            <div class="d-flex">
+                            <div class="row align-items-center">
 
-                                <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 mt-2">
+                                <div class="col-sm-5">
 
-                                    <span class="">Status of Auto Renewal</span>
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Auto renewal:</span>
+                                    </div>
                                 </div>
 
-                                <div class="form-check form-switch">
+                                <div class="col-sm-7">  <div class="form-check form-switch">
 
-                                    <input id="renew" value="{{$statusAutorenewal}}"  name="is_subscribed" class="form-check-input renewcheckbox" style="padding-right: 2rem;padding-left: 2rem;padding-top: 1rem!important;padding-bottom: 1rem!important;" type="checkbox" role="switch">
+                                    <input id="renew" value="{{$statusAutorenewal}}"  name="is_subscribed" class="form-check-input renewcheckbox" style="padding-right: 2rem;padding-top: 1rem!important;padding-bottom: 0rem!important;" type="checkbox" role="switch">
                                     <input type="hidden" name="" id="order" value="{{$id}}">
 
+                                </div></div>
+                            </div>
+
+                        <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Status:</span>
+                                    </div>
                                 </div>
+
+                              <div class="col-sm-7">
+                                @if($statusAutorenewal == 1)
+                                    <span class="text-success font-weight-bold">Active</span>
+                                @else
+                                    <span class="text-danger font-weight-bold">Inactive</span>
+                                @endif
                             </div>
-                        </div>
-                    @else
-                        <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
-
-                    @endif
-
-                    @if($statusAutorenewal == 1)
-                        <div class="row">
-
-                            <div class="col-8" id="updateButton">
-                                <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
-                                <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
-
-                                <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
-
 
                             </div>
 
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @if($statusAutorenewal == 1)
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Payment Gateway:</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-7">{{$payment_log->payment_method}}</div>
+                            </div>
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @endif
+                             @if($statusAutorenewal == 1)
+                            <div class="row align-items-center">
+
+                                <div class="col-sm-5">
+
+                                    <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+
+                                        <span class="mb-2 font-weight-bold">Subscription Enabled Date:</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-7">{!! getDateHtml($payment_log->date) !!}</div>
+                            </div>
+                            <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+                            @endif
+
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -1196,26 +1232,22 @@ $price = $order->price_override;
                     <button type="button" class="btn-close"  id="srclose" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
 
-                <div class="modal-body">
-
+                        <div class="modal-body">
                     <div class="row">
-
                         <div class="form-group col">
-
-                            <label class="form-label">Select the payment gateway <span class="text-danger"> *</span></label>
-
+                            <label class="form-label">Select the payment gateway <span class="text-danger">*</span></label>
                             <div class="custom-select-1">
-                                <select name=""  id="sel-payment" class="form-control" >
-                                    <option value="" disabled selected>Choose your option</option>
-                                    @foreach($gateways as $key =>  $gateway)
-                                        <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                                <select name="" id="sel-payment" class="form-control">
+                                    <option value="" disabled>Choose your option</option>
+                                    @foreach($gateways as $gateway)
+                                        <option value="{{ strtolower($gateway) }}" {{ strtolower($gateway) === strtolower($recentPayment->payment_method) ? 'selected' : '' }}>{{ $gateway }}</option>
                                     @endforeach
-                                    <!-- <option value="razorpay">Razorpay</option> -->
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="modal-footer">
 
@@ -1229,7 +1261,7 @@ $price = $order->price_override;
     </div>
 
 
-    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static" aria-hidden="true" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1320,6 +1352,25 @@ $price = $order->price_override;
             </div>
         </div>
     </div>
+        <div class="modal fade" id="confirmStripe" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="autorenewModalLabel">Payment Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input class="hidden" id="orderID" value={{$id}}>
+                            <p style="color: #333;">Do not refresh or go back.Please complete the process by clicking <strong style="font-weight: bold;">Finish</strong> to complete the payment process.</p>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirmStripePayment" class="btn btn-primary" data-bs-dismiss="modal">Finish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 
@@ -1523,9 +1574,13 @@ $price = $order->price_override;
                         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
                         $('#alertMessage-2').html(result+ ".");
                         $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                        setInterval(function(){
-                            $('#alertMessage-2').slideUp(3000);
-                        }, 4000);
+                       setTimeout(function() {
+                        $('#alertMessage-2').slideUp(3000, function() {
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        });
+                    }, 4000);
                         $('#updateButton').hide();
                     },
                 })
@@ -1541,6 +1596,7 @@ $price = $order->price_override;
         function cardUpdate() {
             $('#renewal-modal').modal('show');
             var id = $('#order').val();
+            var domain = window.location.href;
             $('#payment').on('click', function () {
                 var pay = $('#sel-payment').val();
                 if (pay == null) {
@@ -1568,22 +1624,32 @@ $price = $order->price_override;
                                     "card_no": $('#card_no').val(),
                                     "exp_month": $('#exp_month').val(),
                                     "exp_year": $('#exp_year').val(),
-                                    "cvv": $('#password').val(),
+                                    "cvv": $('#cvv').val(),
                                     "amount": $('#amount').val(),
                                     "_token": "{!! csrf_token() !!}",
                                 },
                                 success: function (response) {
+                                    if(response.type == 'success'){
                                     $('#stripe-Modal').modal('hide');
                                     $('#alertMessage-2').show();
                                     $('#updateButton').show();
                                     var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
                                     $('#alertMessage-2').html(result + ".");
                                     $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 3000);
+
+                                    }
+                                    else{
+                                    window.location.href = response;
+                                    }
+                                   
 
                                 },
                                 error: function (data) {
                                     var errorMessage = data.responseJSON.result;
-                                    $('#stripe-Modal').modal('show');
+                                    $('#stripe-Modal').modal('hide');
                                     $("#pay").attr('disabled', false);
                                     $("#pay").html("Pay now");
                                     $('html, body').animate({ scrollTop: 0 }, 500);
@@ -2080,8 +2146,62 @@ $(document).ready(function() {
 });
 </script>
 
+<script>
+
+$(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentIntent = urlParams.get('payment_intent');
+    if (paymentIntent) {
+        openModalIfQueryParamExists();
+        
+    }
+});
+
+</script>
 
 
+<script>
+       function openModalIfQueryParamExists() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentIntent = urlParams.get('payment_intent');
+        const orderId = $('#orderID').val();
+        var currentUrl = window.location.origin + window.location.pathname;
+        var newUrl = currentUrl + '#auto-renew';
+        $.ajax({
+            url: "{{ url('stripeUpdatePayment/confirm') }}",
+            method: 'POST',
+            data: { payment_intent: paymentIntent,orderId: orderId },
+            success: function(response) {
+                $('#confirmStripe').modal('hide');
+                $('html, body').animate({ scrollTop: 0 }, 500);
+                $('#alertMessage-2').show();
+                
+                var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
+                $('#alertMessage-2').html(result + ".");
+                $('#updateButton').show();
+                setTimeout(function() {
+                    window.location.href = newUrl; 
+                }, 5000);
+            },
+               error: function(xhr, status, error) {
+                var errorMessage = 'Something went wrong. Try with a different payment method.';
+                $('#confirmStripe').modal('hide');
+                $('html, body').animate({ scrollTop: 0 }, 500);
+                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' + errorMessage + ' <br><ul>';
+                $('#error-1').show();
+                document.getElementById('error-1').innerHTML = html;
+                setTimeout(function() {
+                    window.location.href = newUrl; 
+                }, 5000);
+            }
+
+        });
+       
+    }
+    
+
+
+</script>
 
     <style>
         .hidden {

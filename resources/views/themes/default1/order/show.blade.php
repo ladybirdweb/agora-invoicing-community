@@ -707,9 +707,16 @@ input:checked + .slider:before {
 
                                         </label></td></tr>
                                     @if($subscription->is_subscribed && $payment_log)
+                                     <tr><td><b>Status:</b></td><td>
+                                     <span class="text-success font-weight-bold">Active</span>
+                                     </td></tr>
                                     <tr><td><b>Payment Method:</b></td><td>{{ucfirst($payment_log->payment_method)}}</td></tr>
   
                                     <tr><td><b>Subscription Start Date:</b></td><td>{!! getDateHtml($payment_log->date) !!}</td></tr>
+                                    @else
+                                    <tr><td><b>Status:</b></td><td>
+                                     <span class="text-danger font-weight-bold">Inactive</span>
+                                     </td></tr>
                                     @endif
 
                                 </tbody>

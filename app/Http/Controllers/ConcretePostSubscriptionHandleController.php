@@ -53,6 +53,8 @@ abstract class PostSubscriptionHandleController
     abstract public function calculateUnitCost($currency, $cost);
 
     abstract public function sendPaymentSuccessMail($sub, $currency, $total, $user, $product, $number);
+
+    abstract public function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment);
 }
 
 class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleController
@@ -249,6 +251,46 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
     }
 
+        public function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice, $payment)
+       {
+        $contact = getContactData();
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings::find(1);
+
+        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => '0', 'is_subscribed' => '0','rzp_subscription' => '0']);
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->payment_failed;
+
+        $template = $templates->where('id', $temp_id)->first();
+        $url = url("autopaynow/$invoice->invoice_id");
+        $type = '';
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'product' => $product_details->name,
+            'total' => currencyFormat($total, $code = $currency),
+            'number' => $number,
+            'expiry' => date('d-m-Y', strtotime($end)),
+            'exception' => $exceptionMessage,
+            'url' => $url,
+            'contact' => $contact['contact'],
+            'logo' => $contact['logo'],
+            'reply_email' => $setting->company_email, ];
+        $type = '';
+
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+
+        $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
+        $this->FailedPaymenttoAdmin($invoice, $total, $product_details->name, $exceptionMessage, $user, $template->name, $order, $payment);
+    }
+
     public function calculateUnitCost($currency, $cost)
     {
         $decimalPlaces = [
@@ -262,11 +304,11 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
         $decimalPlacesForCurrency = $decimalPlaces[$currency] ?? 2;
 
         if ($decimalPlacesForCurrency === 0) {
-            $unit_cost = round((int) $cost + 1);
+            $unit_cost = round((int) $cost);
         } elseif ($decimalPlacesForCurrency === 3) {
-            $unit_cost = round((int) $cost + 1) * 1000;
+            $unit_cost = round((int) $cost) * 1000;
         } else {
-            $unit_cost = round((int) $cost + 1) * 100;
+            $unit_cost = round((int) $cost) * 100;
         }
 
         return $unit_cost;

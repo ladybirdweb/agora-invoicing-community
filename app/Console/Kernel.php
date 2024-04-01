@@ -46,17 +46,7 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
-        $schedule->call(function () {
-            $lockFilePath = storage_path('renewal.lock');
-
-            if (! file_exists($lockFilePath)) {
-                file_put_contents($lockFilePath, '');
-
-                \Artisan::call('renewal:cron');
-
-                unlink($lockFilePath);
-            }
-        })->daily()->name('renewalCron');
+        $schedule->command('renewal:cron')->everyFiveMinutes();
 
         $this->execute($schedule, 'subsExpirymail');
         $this->execute($schedule, 'postExpirymail');

@@ -114,8 +114,7 @@ if (\App\User::where('id',\Auth::user()->id)->value('billing_pay_balance') && $r
 } else {
     $cartTotal = $invoice->grand_total;
 }
-
-
+$cartTotal = intval($cartTotal);
 if ($currency == 'INR'){
 $orderData = [
 'receipt'         => '3456',

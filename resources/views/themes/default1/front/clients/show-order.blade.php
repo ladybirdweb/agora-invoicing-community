@@ -1282,7 +1282,7 @@ $price = $order->price_override;
                                 <!-- Information or instructions -->
                                 <div class="form-group row">
                                     <div class="col-md-12 alert alert-info">
-                                        Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,Auth::user()->currency)}}, which will be automatically reversed within a week.
+                                        Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}}, which will be automatically reversed within a week.
                                     </div>
                                 </div>
                                 <!-- Card No. input -->
@@ -1329,7 +1329,7 @@ $price = $order->price_override;
                                 <!-- Amount input -->
                                 <div class="form-group row">
                                     <div class="col-md-12">
-                                        <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
                                         @error('amount')
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

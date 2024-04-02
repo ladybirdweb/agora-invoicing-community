@@ -294,7 +294,7 @@ class OrderController extends BaseOrderController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            $currency = getCurrencyForClient(\Auth::user()->country);
+            $currency = getCurrencyForClient($user->country);
             $amount = currencyFormat(1, $currency);
             $payment_log = Payment_log::where('order', $order->number)
             ->where('amount', $amount)

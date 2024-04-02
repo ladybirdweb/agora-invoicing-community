@@ -313,7 +313,6 @@ class SubscriptionController extends Controller
         $subscriptionStatus = \Stripe\Subscription::retrieve($subscription->subscribe_id);
         $latestInvoiceId = $subscriptionStatus->latest_invoice;
         $latestInvoice = \Stripe\Invoice::retrieve($latestInvoiceId);
-   
 
         if ($latestInvoice->status != 'paid') {
             return;
@@ -326,7 +325,7 @@ class SubscriptionController extends Controller
         if (! $createdDate->eq($today) && ! $createdDate->eq($yesterday)) {
             return;
         }
-        $invoiceCost = $this->calculateReverseUnitCost($currency,$latestInvoice->amount);
+        $invoiceCost = $this->calculateReverseUnitCost($currency, $latestInvoice->amount);
         $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
         $sub = $this->PostSubscriptionHandle->successRenew($invoice, $subscription, 'stripe', $currency);
         $this->PostSubscriptionHandle->postRazorpayPayment($invoice, 'stripe');
@@ -364,9 +363,9 @@ class SubscriptionController extends Controller
                 break;
             }
         }
-        
+
         if ($recentInvoice) {
-            $invoiceCost = $this->calculateReverseUnitCost($currency,$invoice->amount);
+            $invoiceCost = $this->calculateReverseUnitCost($currency, $invoice->amount);
             $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
             $this->PostSubscriptionHandle->successRenew($invoiceItem, $subscription, 'Razorpay', $invoice->currency);
             $this->PostSubscriptionHandle->postRazorpayPayment($invoiceItem, 'Razorpay');
@@ -431,6 +430,7 @@ class SubscriptionController extends Controller
             $this->PostSubscriptionHandle->PaymentSuccessMailtoAdmin($invoice, $cost, $user, $product_details->name, $template = null, $order, $payment_method);
         }
     }
+
     public function calculateReverseUnitCost($currency, $cost)
     {
         $decimalPlaces = [

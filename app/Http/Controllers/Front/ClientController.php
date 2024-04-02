@@ -83,6 +83,7 @@ class ClientController extends BaseClientController
             $url = url('my-order/'.$orderid.'#auto-renew');
             $controller = new SettingsController();
             $confirm = $controller->handlePayment($request, $amount, $currency, $url);
+
             $paymentIntent = \Stripe\PaymentIntent::retrieve($confirm['id']);
             $subscription = Subscription::where('order_id', $orderid)->first();
             if ($confirm->status == 'requires_action') {
@@ -90,6 +91,10 @@ class ClientController extends BaseClientController
 
                 return $redirectUrl;
             } elseif ($confirm->status === 'succeeded') {
+                $refund = \Stripe\Refund::create([
+                    'payment_intent' => $confirm['id'],
+                    'amount' => $confirm['amount'],
+                    ]);
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where($paymentIntent->customerid)->value('number');
                 $customer_details = [
@@ -110,9 +115,11 @@ class ClientController extends BaseClientController
                 return ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
             }
         } catch(\Exception $ex) {
-            $result = [$ex->getMessage()];
-
-            return response()->json(compact('result'), 500);
+            $result = $ex->getMessage();
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
+            $errorMessage = 'Something went wrong. Try with a different payment method.';
+            return response()->json(['error' => $errorMessage], 500);
         }
     }
 
@@ -143,8 +150,7 @@ class ClientController extends BaseClientController
 
             return response()->json($response);
         } catch(\Exception $ex) {
-            $result = [$ex->getMessage()];
-
+            $result = $ex->getMessage();
             return response()->json(compact('result'), 500);
         }
     }
@@ -164,6 +170,9 @@ class ClientController extends BaseClientController
 
             $payment = $api->payment->fetch($input['razorpay_payment_id']);
             $response = $api->payment->fetch($input['razorpay_payment_id']);
+            $capture = $api->payment->fetch($response->id)->capture(array("amount"=> $response->amount));
+            $refund = $api->payment->fetch($response->id)->refund(array("amount"=> $response->amount, "speed"=>"normal"));
+
             $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
             $number = Invoice::where('id', $invoice_id)->value('number');
 
@@ -182,8 +191,9 @@ class ClientController extends BaseClientController
 
             return redirect()->back()->with('success', 'Your card details are updated successfully and the amount will be automatically reversed within a week');
         } catch(\Exception $ex) {
+            $result = $ex->getMessage();
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
-
             return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
         }
     }
@@ -934,6 +944,10 @@ class ClientController extends BaseClientController
             $stripe = new \Stripe\StripeClient($stripeSecretKey);
             $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
             if ($paymentIntent->status === 'succeeded') {
+                $refund = $stripe->refunds->create([
+                    'payment_intent' => $paymentIntent->id,
+                    'amount' => $paymentIntent->amount,
+                    ]);
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
                 $customer_details = [
@@ -956,7 +970,8 @@ class ClientController extends BaseClientController
                 return response()->json(compact('response'), 500);
             }
         } catch(\Exception $ex) {
-            $result = [$ex->getMessage()];
+            $result = $ex->getMessage();
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
             $errorMessage = 'Something went wrong. Try with a different payment method.';
 

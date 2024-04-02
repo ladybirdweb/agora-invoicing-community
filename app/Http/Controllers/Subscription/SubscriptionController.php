@@ -151,6 +151,7 @@ class SubscriptionController extends Controller
                 }
             }
         } catch (\Exception $ex) {
+            dd($ex);
             $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
         }
     }
@@ -312,6 +313,7 @@ class SubscriptionController extends Controller
         $subscriptionStatus = \Stripe\Subscription::retrieve($subscription->subscribe_id);
         $latestInvoiceId = $subscriptionStatus->latest_invoice;
         $latestInvoice = \Stripe\Invoice::retrieve($latestInvoiceId);
+   
 
         if ($latestInvoice->status != 'paid') {
             return;
@@ -324,7 +326,8 @@ class SubscriptionController extends Controller
         if (! $createdDate->eq($today) && ! $createdDate->eq($yesterday)) {
             return;
         }
-
+        $invoiceCost = $this->calculateReverseUnitCost($currency,$latestInvoice->amount);
+        $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
         $sub = $this->PostSubscriptionHandle->successRenew($invoice, $subscription, 'stripe', $currency);
         $this->PostSubscriptionHandle->postRazorpayPayment($invoice, 'stripe');
 
@@ -361,7 +364,10 @@ class SubscriptionController extends Controller
                 break;
             }
         }
+        
         if ($recentInvoice) {
+            $invoiceCost = $this->calculateReverseUnitCost($currency,$invoice->amount);
+            $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
             $this->PostSubscriptionHandle->successRenew($invoiceItem, $subscription, 'Razorpay', $invoice->currency);
             $this->PostSubscriptionHandle->postRazorpayPayment($invoiceItem, 'Razorpay');
             $this->PostSubscriptionHandle->sendPaymentSuccessMail($subscription->id, $currency, $cost, $user, $product_name, $order->number);
@@ -424,5 +430,27 @@ class SubscriptionController extends Controller
             $this->PostSubscriptionHandle->sendPaymentSuccessMail($sub, $currency, $cost, $user, $product_details->name, $order->number);
             $this->PostSubscriptionHandle->PaymentSuccessMailtoAdmin($invoice, $cost, $user, $product_details->name, $template = null, $order, $payment_method);
         }
+    }
+    public function calculateReverseUnitCost($currency, $cost)
+    {
+        $decimalPlaces = [
+            'BIF' => 0, 'CLP' => 0, 'DJF' => 0, 'GNF' => 0, 'JPY' => 0,
+            'KMF' => 0, 'KRW' => 0, 'MGA' => 0, 'PYG' => 0, 'RWF' => 0,
+            'UGX' => 0, 'VND' => 0, 'VUV' => 0, 'XAF' => 0, 'XOF' => 0,
+            'XPF' => 0, 'BHD' => 3, 'JOD' => 3, 'KWD' => 3, 'OMR' => 3,
+            'TND' => 3,
+        ];
+
+        $decimalPlacesForCurrency = $decimalPlaces[$currency] ?? 2;
+
+        if ($decimalPlacesForCurrency === 0) {
+            $unit_cost = round((int) $cost);
+        } elseif ($decimalPlacesForCurrency === 3) {
+            $unit_cost = round((int) $cost) / 1000;
+        } else {
+            $unit_cost = round((int) $cost) / 100;
+        }
+
+        return $unit_cost;
     }
 }

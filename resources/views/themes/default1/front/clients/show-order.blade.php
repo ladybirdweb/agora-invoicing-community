@@ -1240,7 +1240,7 @@ $price = $order->price_override;
                                 <select name="" id="sel-payment" class="form-control">
                                     <option value="" disabled>Choose your option</option>
                                     @foreach($gateways as $gateway)
-                                        <option value="{{ strtolower($gateway) }}" {{ strtolower($gateway) === strtolower($recentPayment->payment_method) ? 'selected' : '' }}>{{ $gateway }}</option>
+                                    <option value="{{ strtolower($gateway) }}" {{ $recentPayment && strtolower($gateway) === strtolower($recentPayment->payment_method) ? 'selected' : '' }}>{{ $gateway }}</option>
                                     @endforeach
                                 </select>
                             </div>

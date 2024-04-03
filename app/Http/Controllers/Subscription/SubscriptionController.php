@@ -322,7 +322,7 @@ class SubscriptionController extends Controller
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
 
-        if (! $createdDate->eq($today) && ! $createdDate->eq($yesterday)) {
+        if (! $createdDate->eq($today)) {
             return;
         }
         $invoiceCost = $this->calculateReverseUnitCost($currency, $latestInvoice->amount);
@@ -358,7 +358,7 @@ class SubscriptionController extends Controller
         $order = Order::where('id', $subscription->order_id)->first();
 
         foreach ($invoices->items as $invoice) {
-            if ($invoice->status === 'paid' && date('Y-m-d', $invoice->paid_at) === $today || date('Y-m-d', $invoice->paid_at) === $yesterday) {
+            if ($invoice->status === 'paid' && date('Y-m-d', $invoice->paid_at) === $today) {
                 $recentInvoice = $invoice;
                 break;
             }

@@ -17,6 +17,12 @@ use Carbon\Carbon;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Model\Product\Subscription;
+use App\Model\Payment\PlanPrice;
+use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use Razorpay\Api\Api;
+use App\ApiKey;
+use App\Model\Payment\Plan;
 
 //////////////////////////////////////////////////////////////////////////////
 // Handle the post manual payment
@@ -102,6 +108,7 @@ trait PostPaymentHandle
                 $this->doTheDeed($invoice);
                 $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                 $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+                $this->updateSubscriptionPriceIfNeeded($orderId,$invoice);//Check and update the subscription price if necessary
             } elseif ($cloud->checkUpgradeDowngrade()) {
                 $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                 $checkout_controller->checkoutAction($invoice);
@@ -112,6 +119,7 @@ trait PostPaymentHandle
                 $this->doTheDeed($invoice);
                 $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
                 $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+                $this->updateSubscriptionPriceIfNeeded($orderId,$invoice); //Check and update the subscription price if necessary
             } else {
                 $control->successRenew($invoice);
                 $payment = new \App\Http\Controllers\Order\InvoiceController();
@@ -136,7 +144,7 @@ trait PostPaymentHandle
                 'message' => $view['message'],
             ];
         } catch (\Exception $e) {
-            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }
 
@@ -169,6 +177,7 @@ trait PostPaymentHandle
                     'created_at' => Carbon::now(),
                 ]);
             }
+
         }
     }
 
@@ -222,4 +231,107 @@ trait PostPaymentHandle
 
         return $unit_cost;
     }
+
+ /**
+ * Check and update the subscription price if necessary.
+ *
+ * @param string $orderId   The order ID associated with the subscription.
+ * @param object $invoice   The invoice object for the subscription.
+ * @return void
+ */
+public function updateSubscriptionPriceIfNeeded($orderId,$invoice)
+{
+    $subscription = Subscription::where('order_id', $orderId)->first();
+    $product = Product::find($subscription->product_id)->first();
+
+    if (!$subscription) {
+        return; // No subscription found
+    }
+
+    if ($subscription->is_subscribed != '1') {
+        return; // Subscription not active
+    }
+
+    if ($subscription->rzp_subscription != '3' && $subscription->autoRenew_status != '3') {
+        return; // Subscription not eligible for price check/update
+    }
+
+    $plan = Plan::find($subscription->plan_id);
+    $days = intval(round((int) $plan->days / 30));
+    $renewPrice = intval($this->calculateUnitCost($invoice->currency, $invoice->grand_total));
+
+    if ($subscription->rzp_subscription == '3' && $subscription->subscribe_id) {
+        $key_id = ApiKey::pluck('rzp_key')->first();
+        $secret = ApiKey::pluck('rzp_secret')->first();
+        $api = new Api($key_id, $secret);
+
+        $fetchSub = $api->subscription->fetch($subscription->subscribe_id);
+        $fetchPlan = $api->plan->fetch($fetchSub['plan_id']);
+
+        if ($fetchPlan->item->amount == $renewPrice &&
+            $fetchPlan->item->currency == $invoice->currency &&
+            $fetchPlan->interval == $days) {
+            return; // Subscription price already matches, no update needed
+        }
+
+        if ($fetchSub['status'] == 'active' || $fetchSub['authenticated']) {
+            $updatePlan = $api->plan->create([
+                'period' => 'monthly',
+                'interval' => $days,
+                'item' => [
+                    'name' => $product->name,
+                    'amount' => $renewPrice,
+                    'currency' => $invoice->currency,
+                ],
+            ]);
+
+            $updateSubscription = $api->subscription->fetch($subscription->subscribe_id)->update([
+                'plan_id' => $updatePlan['id'],
+                'quantity' => 1,
+                'remaining_count' => $fetchSub['remaining_count'],
+                'customer_notify' => 1,
+                'schedule_change_at' => 'cycle_end',
+            ]);
+        }
+    } elseif ($subscription->autoRenew_status == '3' && $subscription->subscribe_id) {
+        $renewPrice = intval($this->calculateUnitCost($invoice->currency, $invoice->grand_total));
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+
+        $fetchSub = $stripe->subscriptions->retrieve($subscription->subscribe_id, []);
+
+        if ($fetchSub->status == 'active') {
+            if ($fetchSub->plan->amount == $renewPrice) {
+                return; // Subscription price already matches, no update needed
+            } else {
+                $product = $stripe->products->create([
+                    'name' => $product->name,
+                ]);
+                $product_id = $product['id'];
+
+                $price = $stripe->prices->create([
+                    'unit_amount' => $renewPrice,
+                    'currency' => $invoice->currency,
+                    'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
+                    'product' => $product_id,
+                ]);
+
+                $updateSub = $stripe->subscriptions->update(
+                    $subscription->subscribe_id,
+                    [
+                        'items' => [
+                            [
+                                'id' => $fetchSub->items->data[0]->id,
+                                'price' => $price['id'],
+                            ],
+                        ],
+                        'proration_behavior' => 'none', // Disable proration
+                    ]
+                );
+            }
+        }
+    }
+}
+
 }

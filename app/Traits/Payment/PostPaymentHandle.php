@@ -21,7 +21,6 @@ use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use App\Model\Payment\PlanPrice;
 
 //////////////////////////////////////////////////////////////////////////////
 // Handle the post manual payment
@@ -332,5 +331,4 @@ trait PostPaymentHandle
             }
         }
     }
-
 }

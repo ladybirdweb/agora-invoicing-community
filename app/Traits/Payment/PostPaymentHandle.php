@@ -21,6 +21,7 @@ use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
+use App\Model\Payment\PlanPrice;
 
 //////////////////////////////////////////////////////////////////////////////
 // Handle the post manual payment
@@ -240,6 +241,7 @@ trait PostPaymentHandle
     {
         $subscription = Subscription::where('order_id', $orderId)->first();
         $product = Product::find($subscription->product_id)->first();
+        $order = Order::find($orderId);
 
         if (! $subscription) {
             return; // No subscription found
@@ -271,7 +273,7 @@ trait PostPaymentHandle
                 return; // Subscription price already matches, no update needed
             }
 
-            if ($fetchSub['status'] == 'active' || $fetchSub['authenticated']) {
+            if ($fetchSub['status'] == 'active') {
                 $updatePlan = $api->plan->create([
                     'period' => 'monthly',
                     'interval' => $days,
@@ -330,4 +332,5 @@ trait PostPaymentHandle
             }
         }
     }
+
 }

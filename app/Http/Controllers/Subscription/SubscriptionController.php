@@ -23,7 +23,7 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Razorpay\Api\Api;
-
+use App\Model\Order\InvoiceItem;
 class SubscriptionController extends Controller
 {
     protected $subscription;
@@ -118,7 +118,7 @@ class SubscriptionController extends Controller
                 $product_details = Product::where('name', $item->product_name)->first();
                 $payment_method = $subscription->autoRenew_status != '0' ? 'stripe' : ($subscription->rzp_subscription != '0' ? 'razorpay' : null);
 
-                $plan = Plan::where('product', $product_details->id)->first('days');
+                $plan = Plan::where('id', $subscription->plan_id)->first('days');
                 $oldcurrency = $oldinvoice->currency;
 
                 $user = \DB::table('users')->where('id', $userid)->first();
@@ -152,7 +152,7 @@ class SubscriptionController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
-            $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
+            $this->PostSubscriptionHandle->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
         }
     }
 
@@ -306,6 +306,10 @@ class SubscriptionController extends Controller
 
     private function processStripeSubscription($subscription, $invoice, $currency, $cost, $user, $order, $product_details)
     {
+        $product_name = Product::where('id', $subscription->product_id)->value('name');
+        $invoiceid = \DB::table('order_invoice_relations')->where('order_id', $subscription->order_id)->latest()->value('invoice_id');
+        $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
+        $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = new \Stripe\StripeClient($stripeSecretKey);
         \Stripe\Stripe::setApiKey($stripeSecretKey);
@@ -327,6 +331,12 @@ class SubscriptionController extends Controller
         }
         $invoiceCost = $this->calculateReverseUnitCost($currency, $latestInvoice->amount);
         $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
+        Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->update(['grand_total' => $cost]);
+        \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->update(['regular_price' => $cost]);
+        // Refresh the invoice and invoice item instances
+        $invoice = Invoice::find($invoiceItem->invoice_id);
+        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
+        $this->PostSubscriptionHandle->successRenew($invoiceItem, $subscription, 'Razorpay', $invoice->currency);
         $sub = $this->PostSubscriptionHandle->successRenew($invoice, $subscription, 'stripe', $currency);
         $this->PostSubscriptionHandle->postRazorpayPayment($invoice, 'stripe');
 
@@ -346,8 +356,8 @@ class SubscriptionController extends Controller
         if ($subscriptionStatus->status != 'active') {
             return;
         }
+        $invoices = $api->invoice->all(['subscription_id' => $subscriptionStatus['id']]);
 
-        $invoices = $api->invoice->all(['subscription_id' => $subscription->subscribe_id]);
         $recentInvoice = null;
         $today = date('Y-m-d');
         $yesterday = Carbon::yesterday()->format('Y-m-d');
@@ -357,16 +367,21 @@ class SubscriptionController extends Controller
         $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
         $order = Order::where('id', $subscription->order_id)->first();
 
-        foreach ($invoices->items as $invoice) {
-            if ($invoice->status === 'paid' && date('Y-m-d', $invoice->paid_at) === $today) {
-                $recentInvoice = $invoice;
+        foreach ($invoices->items as $invoices) {
+            if ($invoices->status === 'paid' && date('Y-m-d', $invoices->paid_at) === $today) {
+                $recentInvoice = $invoices;
                 break;
             }
         }
 
         if ($recentInvoice) {
-            $invoiceCost = $this->calculateReverseUnitCost($currency, $invoice->amount);
+            $invoiceCost = $this->calculateReverseUnitCost($currency, $invoices->amount);
             $cost = $cost == intval($invoiceCost) ? $cost : intval($invoiceCost);
+            Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->update(['grand_total' => $cost]);
+            \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->update(['regular_price' => $cost]);
+            // Refresh the invoice and invoice item instances
+            $invoice = Invoice::find($invoiceItem->invoice_id);
+            $invoiceItem = InvoiceItem::where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
             $this->PostSubscriptionHandle->successRenew($invoiceItem, $subscription, 'Razorpay', $invoice->currency);
             $this->PostSubscriptionHandle->postRazorpayPayment($invoiceItem, 'Razorpay');
             $this->PostSubscriptionHandle->sendPaymentSuccessMail($subscription->id, $currency, $cost, $user, $product_name, $order->number);

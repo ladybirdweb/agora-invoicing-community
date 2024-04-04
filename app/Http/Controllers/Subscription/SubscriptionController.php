@@ -12,6 +12,7 @@ use App\Http\Controllers\RazorpayController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
@@ -23,7 +24,7 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Razorpay\Api\Api;
-use App\Model\Order\InvoiceItem;
+
 class SubscriptionController extends Controller
 {
     protected $subscription;

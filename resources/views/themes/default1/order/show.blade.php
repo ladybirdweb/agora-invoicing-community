@@ -706,6 +706,14 @@ input:checked + .slider:before {
 
 
                                         </label></td></tr>
+                                        <?php
+                                        if($statusAutorenewal == 1 && $payment_log == null && !empty($terminatedOrderId)){
+                                             $payment_log = \App\Payment_log::where('order',  $terminatedOrderNumber)
+                                            ->where('payment_type', 'Payment method updated')
+                                            ->orderBy('id', 'desc')
+                                            ->first();
+                                        }
+                                        ?>
                                     @if($subscription->is_subscribed && $payment_log)
                                      <tr><td><b>Status:</b></td><td>
                                      <span class="text-success font-weight-bold">Active</span>

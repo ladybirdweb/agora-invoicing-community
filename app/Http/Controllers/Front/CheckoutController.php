@@ -284,15 +284,13 @@ class CheckoutController extends InfoController
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
                         $orderId = OrderInvoiceRelation::where('invoice_id', $invoice->id)->latest()->value('order_id');
-                        $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$orderId)->value('terminated_order_id');
+                        $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id', $orderId)->value('terminated_order_id');
                         $terminatedOrder = Order::find($term_order_id);
-                        $oldSubscription = Subscription::where('order_id',$terminatedOrder->id)->first();
-                        if($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null)
-                        {
-                           $newSub = Subscription::where('order_id',$orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id,'is_subscribed' => $oldSubscription->is_subscribed,'autoRenew_status' => $oldSubscription->autoRenew_status,
-                           'rzp_subscription' => $oldSubscription->rzp_subscription]); 
+                        $oldSubscription = Subscription::where('order_id', $terminatedOrder->id)->first();
+                        if ($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null) {
+                            $newSub = Subscription::where('order_id', $orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id, 'is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
+                                'rzp_subscription' => $oldSubscription->rzp_subscription]);
                             $this->updateSubscriptionPriceIfNeeded($orderId, $invoice); //Check and update the subscription price if necessary
-            
                         }
                     }
                     if (! empty($invoice->cloud_domain)) {

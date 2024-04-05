@@ -902,7 +902,16 @@ $price = $order->price_override;
                             </div>
 
                             <div class="row"><div class="col"><hr class="solid my-3"></div></div>
-                            @if($statusAutorenewal == 1)
+                            <?php
+                            if($statusAutorenewal == 1 && $payment_log == null && !empty($terminatedOrderId)){
+                           
+                             $payment_log = \App\Payment_log::where('order',  $terminatedOrderNumber)
+                                ->where('payment_type', 'Payment method updated')
+                                ->orderBy('id', 'desc')
+                                ->first();
+                            }
+                            ?>
+                            @if($statusAutorenewal == 1 && $payment_log)
                             <div class="row align-items-center">
 
                                 <div class="col-sm-5">
@@ -917,7 +926,7 @@ $price = $order->price_override;
                             </div>
                             <div class="row"><div class="col"><hr class="solid my-3"></div></div>
                             @endif
-                             @if($statusAutorenewal == 1)
+                             @if($statusAutorenewal == 1 && $payment_log)
                             <div class="row align-items-center">
 
                                 <div class="col-sm-5">

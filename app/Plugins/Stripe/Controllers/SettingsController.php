@@ -256,8 +256,6 @@ class SettingsController extends Controller
             $errorCode = $e->getStripeCode();
             $errorMessage = $e->getMessage();
             Log::error("Stripe API Error: $errorCode - $errorMessage");
-
-            return response()->json(['error' => $errorMessage], 500);
         }
     }
 }

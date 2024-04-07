@@ -13,16 +13,19 @@ use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
+use App\Model\Payment\PlanPrice;
+use App\Traits\TaxCalculation;
+use App\Http\Controllers\Order\BaseRenewController;
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Handle the post manual payment
@@ -31,7 +34,6 @@ use Razorpay\Api\Api;
 trait PostPaymentHandle
 {
     use TaxCalculation;
-
     public static function sendFailedPaymenttoAdmin($invoice, $total, $productName, $exceptionMessage, $user)
     {
         $amount = currencyFormat($total, \Auth::user()->currency);
@@ -122,13 +124,17 @@ trait PostPaymentHandle
                 $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
                 $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                 $orderId = OrderInvoiceRelation::where('invoice_id', $invoice->id)->latest()->value('order_id');
-                $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id', $orderId)->value('terminated_order_id');
+                $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$orderId)->value('terminated_order_id');
                 $terminatedOrder = Order::find($term_order_id);
-                $oldSubscription = Subscription::where('order_id', $terminatedOrder->id)->first();
-                if ($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null) {
-                    $newSub = Subscription::where('order_id', $orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id, 'is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
-                        'rzp_subscription' => $oldSubscription->rzp_subscription]);
+                if($terminatedOrder){
+                $oldSubscription = Subscription::where('order_id',$terminatedOrder->id)->first();
+                if($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null)
+                {
+                   $newSub = Subscription::where('order_id',$orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id,'is_subscribed' => $oldSubscription->is_subscribed,'autoRenew_status' => $oldSubscription->autoRenew_status,
+                   'rzp_subscription' => $oldSubscription->rzp_subscription]); 
                     $this->updateSubscriptionPriceIfNeeded($orderId, $invoice); //Check and update the subscription price if necessary
+
+                }
                 }
             } else {
                 $control->successRenew($invoice);
@@ -154,8 +160,6 @@ trait PostPaymentHandle
                 'message' => $view['message'],
             ];
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }
@@ -256,6 +260,7 @@ trait PostPaymentHandle
         $order = Order::find($orderId);
         $product = Product::find($subscription->product_id);
 
+
         if (! $subscription) {
             return; // No subscription found
         }
@@ -271,7 +276,7 @@ trait PostPaymentHandle
         $plan = Plan::find($subscription->plan_id);
         $days = intval(round((int) $plan->days / 30));
         $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $invoice->currency)->value('renew_price');
-        $amount = $this->getPriceforCloud($order, $price, $subscription->product_id, $invoice->currency, $subscription);
+        $amount = $this->getPriceforCloud($order, $price,$subscription->product_id,$invoice->currency,$subscription);
         $renewPrice = intval($this->calculateUnitCost($invoice->currency, $amount));
 
         if ($subscription->rzp_subscription == '3' && $subscription->subscribe_id) {
@@ -342,12 +347,17 @@ trait PostPaymentHandle
                             'proration_behavior' => 'none', // Disable proration
                         ]
                     );
+                    if($updateSub->status != 'active')
+                    {
+                        $stripe->subscriptions->cancel($updateSub->id, []);
+                        Subscription::where('id',$subscription->id)->update(['is_subscribed' => '0', 'autoRenew_status' => '0','subscribe_id' => null]);
+                    }
+                    
                 }
             }
         }
     }
-
-    public function getPriceforCloud($order, $price, $product, $currency, $subscription)
+    public function getPriceforCloud($order,$price,$product,$currency,$subscription)
     {
         $numberofAgents = (int) ltrim(substr($order->serial_key, -4), '0');
         $finalPrice = $numberofAgents * $price;
@@ -355,18 +365,21 @@ trait PostPaymentHandle
         $tax = $this->calculateTax($product, \Auth::user()->state, \Auth::user()->country);
         $tax_rate = $tax->getValue();
         $cost = rounding($controller->calculateTotal($tax_rate, $finalPrice));
-        if ($subscription->autoRenew_status == '3') {
-            if ($currency == 'INR') {
-                $fee = $cost * (1 / 100);
-                $finalprice = round($fee + $cost);
-            } else {
-                $fee = $cost * (5 / 100);
-                $finalprice = round($cost + $fee);
-            }
+        if($subscription->autoRenew_status == '3'){
+        if($currency == 'INR')
+        {
+            $fee = $cost * (1/100);
+            $finalprice = round($fee + $cost);
+        }
+        else{
+            $fee = $cost * (5/100);
+            $finalprice = round($cost + $fee);
+        }
+        return $finalprice;
 
-            return $finalprice;
-        } else {
+        }else{
             return $cost;
         }
+
     }
 }

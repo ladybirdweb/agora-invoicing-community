@@ -2,27 +2,7 @@
 
 @section('title')
     Cloud Hub
-@stop
-
-
-@section('content-header')
-    <div class="col-sm-6">
-        <h1>Cloud Details</h1>
-    </div>
-
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}"> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url('settings') }}"> Settings</a></li>
-            <li class="breadcrumb-item active">Cloud Hub</li>
-        </ol>
-    </div>
-@stop
-
-
-@section('content')
-
-<style type="text/css">
+    <style type="text/css">
 
     /* Styles for DataTable columns */
     table.dataTable thead th:nth-child(1),
@@ -92,6 +72,27 @@
 
 
 </style>
+@stop
+
+
+
+@section('content-header')
+    <div class="col-sm-6">
+        <h1>Cloud Details</h1>
+    </div>
+
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{ url('/') }}"> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url('settings') }}"> Settings</a></li>
+            <li class="breadcrumb-item active">Cloud Hub</li>
+        </ol>
+    </div>
+@stop
+
+
+@section('content')
+
     <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">Cloud server</h3>

@@ -20,6 +20,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Traits\TaxCalculation;
+use App\Traits\Payment\PostPaymentHandle;
 use App\User;
 use Cart;
 use Darryldecode\Cart\CartCondition;
@@ -29,6 +30,7 @@ use Illuminate\Http\Request;
 class CheckoutController extends InfoController
 {
     use TaxCalculation;
+    use PostPaymentHandle;
 
     public $subscription;
 
@@ -283,15 +285,6 @@ class CheckoutController extends InfoController
                     if (\Session::has('nothingLeft')) {
                         $this->doTheDeed($invoice);
                         \Session::forget('nothingLeft');
-                        $orderId = OrderInvoiceRelation::where('invoice_id', $invoice->id)->latest()->value('order_id');
-                        $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id', $orderId)->value('terminated_order_id');
-                        $terminatedOrder = Order::find($term_order_id);
-                        $oldSubscription = Subscription::where('order_id', $terminatedOrder->id)->first();
-                        if ($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null) {
-                            $newSub = Subscription::where('order_id', $orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id, 'is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
-                                'rzp_subscription' => $oldSubscription->rzp_subscription]);
-                            $this->updateSubscriptionPriceIfNeeded($orderId, $invoice); //Check and update the subscription price if necessary
-                        }
                     }
                     if (! empty($invoice->cloud_domain)) {
                         $orderNumber = Order::where('invoice_id', $invoice->id)->whereIn('product', cloudPopupProducts())->value('number');
@@ -469,6 +462,7 @@ class CheckoutController extends InfoController
             \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageAdmin, 'role' => 'admin', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
             \DB::table('credit_activity')->insert(['payment_id' => $payment_id, 'text' => $messageClient, 'role' => 'user', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]);
         }
+
     }
 
     private function performCloudActions($invoice)
@@ -482,6 +476,8 @@ class CheckoutController extends InfoController
             $licenseCode = \Session::get('upgradeSerialKey');
             $this->doTheDeed($invoice, false);
             $cloud->doTheProductUpgradeDowngrade($licenseCode, $installationPath, $productId, $oldLicense);
+            $this->perfromUpdateSubscription($invoice);
+ 
         } elseif ($cloud->checkAgentAlteration()) {
             $subId = \Session::get('AgentAlteration'); // use if needed in the future
             $newAgents = \Session::get('newAgents');
@@ -490,6 +486,8 @@ class CheckoutController extends InfoController
             $productId = \Session::get('product_id');
             $oldLicense = \Session::get('oldLicense');
             $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+            $this->perfromUpdateSubscription($invoice);
+
         } elseif (\Session::has('AgentAlterationRenew')) { // Added missing parentheses
             $newAgents = \Session::get('newAgentsRenew');
             $orderId = \Session::get('orderIdRenew');
@@ -497,6 +495,24 @@ class CheckoutController extends InfoController
             $productId = \Session::get('product_idRenew');
             $oldLicense = \Session::get('oldLicenseRenew');
             $cloud->doTheAgentAltering($newAgents, $oldLicense, $orderId, $installationPath, $productId);
+            $this->perfromUpdateSubscription($invoice);
+
         }
+
+            
+    }
+    //update the subscription if needed
+    public function perfromUpdateSubscription($invoice){
+            $orderId = OrderInvoiceRelation::where('invoice_id', $invoice->id)->latest()->value('order_id');
+            $term_order_id = \DB::table('terminated_order_upgrade')->where('upgraded_order_id',$orderId)->value('terminated_order_id');
+            $terminatedOrder = Order::find($term_order_id);
+            $oldSubscription = Subscription::where('order_id',$terminatedOrder->id)->first();
+            if($terminatedOrder->order_status == 'Terminated' && $oldSubscription->subscribe_id != '' && $oldSubscription->subscribe_id != null)
+            {
+               $newSub = Subscription::where('order_id',$orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id,'is_subscribed' => $oldSubscription->is_subscribed,'autoRenew_status' => $oldSubscription->autoRenew_status,
+               'rzp_subscription' => $oldSubscription->rzp_subscription]); 
+                $this->updateSubscriptionPriceIfNeeded($orderId, $invoice); //Check and update the subscription price if necessary
+    
+            }
     }
 }

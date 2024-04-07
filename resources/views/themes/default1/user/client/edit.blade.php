@@ -1,8 +1,11 @@
 @extends('themes.default1.layouts.master')
+
 @section('title')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
 Edit User
 @stop
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
 
     @section('content-header')
         <div class="col-sm-6">
@@ -15,7 +18,6 @@ Edit User
             </ol>
         </div><!-- /.col -->
     @stop
-
 @section('content')
 <div class="card card-secondary card-outline">
     <div class="card-body">

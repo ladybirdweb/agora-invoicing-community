@@ -24,6 +24,7 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Razorpay\Api\Api;
+use App\Model\Common\Country;
 
 class SubscriptionController extends Controller
 {
@@ -120,16 +121,18 @@ class SubscriptionController extends Controller
                 $payment_method = $subscription->autoRenew_status != '0' ? 'stripe' : ($subscription->rzp_subscription != '0' ? 'razorpay' : null);
 
                 $plan = Plan::where('id', $subscription->plan_id)->first('days');
-                $oldcurrency = $oldinvoice->currency;
+                
 
                 $user = \DB::table('users')->where('id', $userid)->first();
+                $oldcurrency =getCurrencyForClient($user->country);
+                $countryId = Country::where('country_code_char2',$user->country)->value('country_id');
                 $stripe_payment_details = Auto_renewal::where('user_id', $userid)->where('order_id', $subscription->order_id)->where('payment_method', 'stripe')->latest()->first(['customer_id', 'payment_intent_id']);
                 $planid = Plan::where('product', $product_details->id)->value('id');
 
                 $subscription = Subscription::where('id', $subscription->id)->first();
                 $productType = Product::find($subscription->product_id);
-                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $oldcurrency)->value('renew_price');
-                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
+                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $oldcurrency)->where('country_id',$countryId)->value('renew_price');
+                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->where('country_id',$countryId)->value('renew_price');
 
                 if ($this->shouldCancelSubscription($product_details, $price)) {
                     $subscription->update(['is_subscribed' => 0]);
@@ -152,7 +155,6 @@ class SubscriptionController extends Controller
                 }
             }
         } catch (\Exception $ex) {
-            dd($ex);
             $this->PostSubscriptionHandle->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
         }
     }

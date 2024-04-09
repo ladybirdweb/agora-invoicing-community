@@ -393,7 +393,7 @@ $price = $order->price_override;
                                    data-hash-offset-lg="500" data-hash-delay="500">Auto Renewal
                                 </a>
                             </li>
-                        @elseif($price != '0' && $order->order_status!='Terminated')
+                        @elseif($order->order_status!='Terminated')
                             <li class="nav-item">
 
                                 <a class="nav-link" href="#auto-renew" data-bs-toggle="tab" data-hash data-hash-offset="0"
@@ -1081,7 +1081,9 @@ $price = $order->price_override;
                     <div id="failure-agent"></div>
                     <?php
                     $country_idagnt = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('country_id');
-                    $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country_idagnt)->latest()->value('add_price');
+                    $currency = getCurrencyForClient(\Auth::user()->country);
+                    $country = ($currency == 'USD') ? '0' : $country_idagnt;
+                    $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country)->latest()->value('add_price');
                     if(!$ExistingPlanPirce){
                         $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',0)->latest()->value('add_price');
                     }

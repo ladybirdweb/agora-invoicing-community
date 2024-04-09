@@ -28,12 +28,16 @@
                                                   ->pluck('plans.name', 'plans.id')
                                                    ->toArray();
 
+
                                             $planIds = array_keys($plans);
 
                                             $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+                                            $currency = getCurrencyForClient(\Auth::user()->country);
+                                            $country = ($currency == 'USD') ? '0' : $countryids->country_id;
+
 
                                             $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                                                ->where('country_id',$countryids->country_id)
+                                                ->where('country_id',$country)
                                                 ->where('currency',getCurrencyForClient(\Auth::user()->country))
                                                 ->latest()
                                                 ->pluck('renew_price', 'plan_id')
@@ -67,6 +71,7 @@
                                             // $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
                                             $userid = Auth::user()->id;
                                             ?>
+                                            
 
                                             <div class="row">
                                                 <div class="form-group col">

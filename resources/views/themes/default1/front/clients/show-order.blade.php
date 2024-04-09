@@ -251,7 +251,7 @@ $currency = \Auth::user()->currency;
 
 
 
-$gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(\Auth::user()->currency);
+$gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(getCurrencyForClient(\Auth::user()->country));
 // $processingFee = \DB::table(strtolower($gateways))->where('currencies',\Auth::user()->currency)->value('processing_fee');
 
 $planid = \App\Model\Payment\Plan::where('product',$product->id)->value('id');
@@ -1151,9 +1151,11 @@ $price = $order->price_override;
                     $planIds = array_keys($plans);
 
                     $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
+                    $currency = getCurrencyForClient(\Auth::user()->country);
+                    $country = ($currency == 'USD') ? '0' : $countryids->country_id;
 
                     $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                        ->where('country_id',$countryids->country_id)
+                        ->where('country_id',$country)
                         ->where('currency',getCurrencyForClient(\Auth::user()->country))
                         ->latest()
                         ->pluck('renew_price', 'plan_id')

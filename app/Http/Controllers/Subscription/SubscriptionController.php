@@ -130,8 +130,8 @@ class SubscriptionController extends Controller
 
                 $subscription = Subscription::where('id', $subscription->id)->first();
                 $productType = Product::find($subscription->product_id);
-                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $oldcurrency)->where('country_id', $countryId)->value('renew_price');
-                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->where('country_id', $countryId)->value('renew_price');
+                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $oldcurrency)->value('renew_price');
+                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
 
                 if ($this->shouldCancelSubscription($product_details, $price)) {
                     $subscription->update(['is_subscribed' => 0]);

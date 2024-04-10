@@ -271,9 +271,11 @@ trait PostPaymentHandle
         $plan = Plan::find($subscription->plan_id);
         $days = intval(round((int) $plan->days / 30));
         $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
-        $currency = getCurrencyForClient(\Auth::user()->country);
-        $country = ($currency == 'USD') ? '0' : $countryids->country_id;
-        $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('country_id', $country)->value('renew_price');
+        $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency',$invoice->currency)->where('country_id', $countryids->country_id)->value('renew_price');
+        if(empty($price))
+        {
+        $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency',$invoice->currency)->where('country_id',0)->value('renew_price');
+        }
         $amount = $this->getPriceforCloud($order, $price, $subscription->product_id, $invoice->currency, $subscription);
         $renewPrice = intval($this->calculateUnitCost($invoice->currency, $amount));
 
@@ -332,7 +334,6 @@ trait PostPaymentHandle
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,
                     ]);
-
                     $updateSub = $stripe->subscriptions->update(
                         $subscription->subscribe_id,
                         [

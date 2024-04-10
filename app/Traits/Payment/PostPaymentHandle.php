@@ -362,18 +362,7 @@ trait PostPaymentHandle
         $tax = $this->calculateTax($product, \Auth::user()->state, \Auth::user()->country);
         $tax_rate = $tax->getValue();
         $cost = rounding($controller->calculateTotal($tax_rate, $finalPrice));
-        if ($subscription->autoRenew_status == '3') {
-            if ($currency == 'INR') {
-                $fee = $cost * (1 / 100);
-                $finalprice = round($fee + $cost);
-            } else {
-                $fee = $cost * (5 / 100);
-                $finalprice = round($cost + $fee);
-            }
-
-            return $finalprice;
-        } else {
-            return $cost;
-        }
+        return $cost;
+        
     }
 }

@@ -133,12 +133,11 @@ class SubscriptionController extends Controller
                 $countryids = \App\Model\Common\Country::where('country_code_char2', $user->country)->first();
                 $currency = getCurrencyForClient($user->country);
                 $country = $countryids->country_id;
-                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency',$currency)->where('country_id', $country)->value('renew_price');
-                if(empty($price))
-                {
-                  $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency',$currency)->where('country_id',0)->value('renew_price');   
+                $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $currency)->where('country_id', $country)->value('renew_price');
+                if (empty($price)) {
+                    $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $currency)->where('country_id', 0)->value('renew_price');
                 }
-                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) :$price;
+                $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : $price;
 
                 if ($this->shouldCancelSubscription($product_details, $price)) {
                     $subscription->update(['is_subscribed' => 0]);

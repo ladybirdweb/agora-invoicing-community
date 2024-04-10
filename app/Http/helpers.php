@@ -330,13 +330,7 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
 function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
 {
     $country = Country::where('country_code_char2', $countryCode)->first();
-    $currencyStatus = $country->currency->status;
-    $country = Country::where('country_code_char2', $countryCode)->first();
-    if ($currencyStatus) {
-        $userPlan = $plan->planPrice->where('country_id', $country->country_id)->first() ?: $plan->planPrice->where('country_id', 0)->first();
-    } else {
-        $userPlan = $plan->planPrice->where('country_id', 0)->first();
-    }
+    $userPlan = $plan->planPrice->where('country_id', $country->country_id)->first() ?: $plan->planPrice->where('country_id', 0)->first();
     $currency = $userPlan->currency;
     $currency_symbol = Currency::where('code', $currency)->value('symbol');
 

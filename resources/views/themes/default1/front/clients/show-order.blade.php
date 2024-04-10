@@ -1081,9 +1081,7 @@ $price = $order->price_override;
                     <div id="failure-agent"></div>
                     <?php
                     $country_idagnt = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->value('country_id');
-                    $currency = getCurrencyForClient(\Auth::user()->country);
-                    $country = ($currency == 'USD') ? '0' : $country_idagnt;
-                    $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country)->latest()->value('add_price');
+                    $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',$country_idagnt)->latest()->value('add_price');
                     if(!$ExistingPlanPirce){
                         $ExistingPlanPirce= \App\Model\Payment\PlanPrice::where('plan_id',$planIdOld)->where('currency',getCurrencyForClient(\Auth::user()->country))->where('country_id',0)->latest()->value('add_price');
                     }
@@ -1153,11 +1151,10 @@ $price = $order->price_override;
                     $planIds = array_keys($plans);
 
                     $countryids = \App\Model\Common\Country::where('country_code_char2', \Auth::user()->country)->first();
-                    $currency = getCurrencyForClient(\Auth::user()->country);
-                    $country = ($currency == 'USD') ? '0' : $countryids->country_id;
+
 
                     $renewalPrices = \App\Model\Payment\PlanPrice::whereIn('plan_id', $planIds)
-                        ->where('country_id',$country)
+                        ->where('country_id',$countryids->country_id)
                         ->where('currency',getCurrencyForClient(\Auth::user()->country))
                         ->latest()
                         ->pluck('renew_price', 'plan_id')

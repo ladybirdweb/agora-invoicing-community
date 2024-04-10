@@ -362,7 +362,7 @@ trait PostPaymentHandle
         $tax = $this->calculateTax($product, \Auth::user()->state, \Auth::user()->country);
         $tax_rate = $tax->getValue();
         $cost = rounding($controller->calculateTotal($tax_rate, $finalPrice));
+
         return $cost;
-        
     }
 }

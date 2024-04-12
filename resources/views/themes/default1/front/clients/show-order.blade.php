@@ -909,6 +909,11 @@ $price = $order->price_override;
                                 ->where('payment_type', 'Payment method updated')
                                 ->orderBy('id', 'desc')
                                 ->first();
+                                if(!$payment_log){
+                                    $payment_log = \App\Payment_log::where('order',  $terminatedOrderNumber)
+                                    ->orderBy('id', 'desc')
+                                    ->first();
+                                }
                             }
                             ?>
                             @if($statusAutorenewal == 1 && $payment_log)

@@ -164,54 +164,53 @@ class SettingsController extends Controller
 
         $this->validate($request, $validation);
 
-            $cronController = new CronController();
-            $cost = $this->calculateUnitCost($currency, $amount);
+        $cronController = new CronController();
+        $cost = $this->calculateUnitCost($currency, $amount);
 
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-            \Stripe\Stripe::setApiKey($stripeSecretKey);
-            $customer = \Stripe\Customer::create([
-                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                'email' => \Auth::user()->email,
-                'address' => [
-                    'line1' => \Auth::user()->address,
-                    'postal_code' => \Auth::user()->zip,
-                    'city' => \Auth::user()->town,
-                    'state' => \Auth::user()->state,
-                    'country' => \Auth::user()->country,
-                ],
-            ]);
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        $customer = \Stripe\Customer::create([
+            'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+            'email' => \Auth::user()->email,
+            'address' => [
+                'line1' => \Auth::user()->address,
+                'postal_code' => \Auth::user()->zip,
+                'city' => \Auth::user()->town,
+                'state' => \Auth::user()->state,
+                'country' => \Auth::user()->country,
+            ],
+        ]);
 
-            $paymentMethod = \Stripe\PaymentMethod::create([
-                'type' => 'card',
-                'card' => [
-                    'number' => $request->get('card_no'),
-                    'exp_month' => $request->get('exp_month'),
-                    'exp_year' => $request->get('exp_year'),
-                    'cvc' => $request->get('cvv'),
-                ],
-            ]);
+        $paymentMethod = \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'number' => $request->get('card_no'),
+                'exp_month' => $request->get('exp_month'),
+                'exp_year' => $request->get('exp_year'),
+                'cvc' => $request->get('cvv'),
+            ],
+        ]);
 
-            $intent = \Stripe\PaymentIntent::create([
-                'amount' => intval($cost),
-                'currency' => $currency,
+        $intent = \Stripe\PaymentIntent::create([
+            'amount' => intval($cost),
+            'currency' => $currency,
+            'payment_method' => $paymentMethod['id'],
+            'customer' => $customer['id'],
+            'confirmation_method' => 'automatic',
+            'setup_future_usage' => 'off_session',
+            'description' => 'payments for the purchased product',
+
+        ]);
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $confirm = $stripe->paymentIntents->confirm(
+            $intent['id'],
+            [
                 'payment_method' => $paymentMethod['id'],
-                'customer' => $customer['id'],
-                'confirmation_method' => 'automatic',
-                'setup_future_usage' => 'off_session',
-                'description' => 'payments for the purchased product',
+                'return_url' => $url,
+            ]
+        );
 
-            ]);
-            $stripe = new \Stripe\StripeClient($stripeSecretKey);
-            $confirm = $stripe->paymentIntents->confirm(
-                $intent['id'],
-                [
-                    'payment_method' => $paymentMethod['id'],
-                    'return_url' => $url,
-                ]
-            );
-
-            return $confirm;
-
+        return $confirm;
     }
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)

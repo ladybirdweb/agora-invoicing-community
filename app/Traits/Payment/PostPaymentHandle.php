@@ -130,9 +130,9 @@ trait PostPaymentHandle
                         $newSub = Subscription::where('order_id', $orderId)->update(['subscribe_id' => $oldSubscription->subscribe_id, 'is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
                             'rzp_subscription' => $oldSubscription->rzp_subscription]);
                         $this->updateSubscriptionPriceIfNeeded($orderId, $invoice); //Check and update the subscription price if necessary
-                    }elseif($terminatedOrder->order_status == 'Terminated' && $oldSubscription->is_subscribed == '1'){
-                     $newSub = Subscription::where('order_id', $orderId)->update(['is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
-                            'rzp_subscription' => $oldSubscription->rzp_subscription]);   
+                    } elseif ($terminatedOrder->order_status == 'Terminated' && $oldSubscription->is_subscribed == '1') {
+                        $newSub = Subscription::where('order_id', $orderId)->update(['is_subscribed' => $oldSubscription->is_subscribed, 'autoRenew_status' => $oldSubscription->autoRenew_status,
+                            'rzp_subscription' => $oldSubscription->rzp_subscription]);
                     }
                 }
             } else {

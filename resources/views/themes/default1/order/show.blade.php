@@ -712,6 +712,11 @@ input:checked + .slider:before {
                                             ->where('payment_type', 'Payment method updated')
                                             ->orderBy('id', 'desc')
                                             ->first();
+                                            if(!$payment_log){
+                                             $payment_log = \App\Payment_log::where('order',  $terminatedOrderNumber)
+                                            ->orderBy('id', 'desc')
+                                            ->first(); 
+                                            }
                                         }
                                         ?>
                                     @if($subscription->is_subscribed && $payment_log)

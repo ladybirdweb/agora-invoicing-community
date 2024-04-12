@@ -163,7 +163,7 @@ class SettingsController extends Controller
         ];
 
         $this->validate($request, $validation);
-        try {
+
             $cronController = new CronController();
             $cost = $this->calculateUnitCost($currency, $amount);
 
@@ -211,9 +211,7 @@ class SettingsController extends Controller
             );
 
             return $confirm;
-        } catch(\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+
     }
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)

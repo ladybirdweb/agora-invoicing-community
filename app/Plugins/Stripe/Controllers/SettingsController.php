@@ -161,6 +161,7 @@ class SettingsController extends Controller
             'exp_year' => 'required',
             'cvv' => 'required',
         ];
+        try{
 
         $this->validate($request, $validation);
 
@@ -211,6 +212,9 @@ class SettingsController extends Controller
         );
 
         return $confirm;
+    } catch(\Exception $ex) {
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
     }
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)

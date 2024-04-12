@@ -93,19 +93,20 @@ class SettingsControllerTest extends DBTestCase
         $this->assertEquals('succeeded', $response['status']);
     }
 
-    // Test case for handling incorrect card values
-    public function test_handlePayment_return_exception_incorrect_values()
-    {
-        $requestData = ['card_no' => '12345678123456', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
-        $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
-        $status = 'require_action';
-        $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
-        $requestMock = $this->setupRequestMock($requestData);
-        $this->SetAuthUser();
-        $controller = new SettingsController($stripeClientConstructorMock);
-        $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
-        $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
-    }
+        // Test case for handling incorrect card values
+        public function test_handlePayment_return_exception_incorrect_values()
+        {
+            $requestData = ['card_no' => '1234567890123456', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
+            $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
+            $status = 'require_action';
+            $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
+            $requestMock = $this->setupRequestMock($requestData);
+            $this->SetAuthUser();
+            $controller = new SettingsController($stripeClientConstructorMock);
+            $this->expectException(\Stripe\Exception\CardException::class);
+            $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
+            $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
+        }
 
     // Test case for handling autopay for 3ds with incomplete status
     public function test_handle_autoPayment_non_3ds_card()

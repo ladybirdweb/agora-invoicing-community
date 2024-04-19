@@ -10,6 +10,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ExtendedOrderController extends Controller
 {
@@ -140,7 +141,8 @@ class ExtendedOrderController extends Controller
             //Now make Installation status as inactive
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
             //Delete instalation details
-            // $installationDetails = \DB::table('installation_details')->Where('order_id', $request->input('id'))->delete();
+            $installationDetails = \DB::table('installation_details')->Where('order_id', $request->input('id'))->update(['last_active' => Carbon::now()]);
+
         }
 
         return ['message' => 'success', 'update' => 'License Reissued'];

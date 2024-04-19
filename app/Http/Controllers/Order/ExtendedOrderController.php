@@ -8,9 +8,9 @@ use App\Model\Common\FaveoCloud;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class ExtendedOrderController extends Controller
 {
@@ -142,7 +142,6 @@ class ExtendedOrderController extends Controller
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
             //Delete instalation details
             $installationDetails = \DB::table('installation_details')->Where('order_id', $request->input('id'))->update(['last_active' => Carbon::now()]);
-
         }
 
         return ['message' => 'success', 'update' => 'License Reissued'];

@@ -34,7 +34,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-         // Check if the exception is an UnauthenticatedException
+        // Check if the exception is an UnauthenticatedException
         if (! $exception instanceof AuthenticationException) {
             // Send unhandled exceptions to Bugsnag
             $this->reportToBugsnag($exception);

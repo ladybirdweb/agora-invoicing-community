@@ -164,14 +164,11 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label', $path
     $latestVersion = \Cache::remember('latest_'.$productId, 10, function () use ($productId) {
         return ProductUpload::where('product_id', $productId)->latest()->value('version');
     });
-
     if (! $productVersion && $path) {
         $installationDetail = InstallationDetail::where('installation_path', 'like', '%'.$path.'%')->orderBy('id', 'desc')->first();
-        $productVersion = $installationDetail ? $installationDetail->version : null;
+        $productVersion = $installationDetail ? $installationDetail->version : $latestVersion;
     }
-
     $status = $productVersion ? ($productVersion < $latestVersion ? 'warning' : 'success') : '';
-
     return '<span class="'.$badge.' '.$badge.'-'.$status.'"><label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="'.($productVersion ? ($status == 'warning' ? 'Outdated Version' : 'Latest Version') : '').'"></label>'.($productVersion ? $productVersion : '--').'</span>';
 }
 

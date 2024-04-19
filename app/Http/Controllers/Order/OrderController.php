@@ -259,15 +259,35 @@ class OrderController extends BaseOrderController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            if ($installationDetails['installed_path'] == null) {
+            if ($installationDetails !== null && !empty($installationDetails['installed_path'])) {
+            foreach ($installationDetails['installed_path'] as $index => $installedPath) {
+                $installedIp = $installationDetails['installed_ip'][$index] ?? null;
+                $installationDate = $installationDetails['installation_date'][$index] ?? null;
+        
+                // Check if InstallationDetail record exists for the current installation path
+                $installationDetail = InstallationDetail::where('installation_path', $installedPath)->first();
+        
+                if (!$installationDetail) {
+                    // Create a new InstallationDetail record if it doesn't exist
+                    InstallationDetail::create([
+                        'installation_path' => $installedPath,
+                        'installation_ip' => $installedIp,
+                        'last_active' => $installationDate,
+                        'order_id' => $orderId
+                    ]);
+                }
+            }
+        }
+            $insDetail = InstallationDetail::where('order_id', $orderId)->get();
+            // if ($installationDetails['installed_path'] == null) {
                 $insDetail = InstallationDetail::where('order_id', $orderId)->get();
 
                 if (! $insDetail->isEmpty()) {
                     $installationDetails['installed_path'] = $insDetail->pluck('installation_path')->toArray();
                     $installationDetails['installed_ip'] = $insDetail->pluck('installation_ip')->toArray();
-                    $installationDetails['installation_date'] = $insDetail->pluck('created_at')->toArray();
+                    $installationDetails['installation_date'] = $insDetail->pluck('last_active')->toArray();
                 }
-            }
+            // }
 
             $combinedDetails = array_map(null,
                 $installationDetails['installed_path'] ?? [],
@@ -279,8 +299,11 @@ class OrderController extends BaseOrderController
                 array_column($combinedDetails, 1), SORT_ASC,
                 array_column($combinedDetails, 2), SORT_ASC
             );
+            $combinedDetailsWithOrderId = array_map(function ($details) use ($orderId) {
+            return array_merge($details, ['order_id' => $orderId]);
+        }, $combinedDetails);
 
-            return \DataTables::of($combinedDetails)
+            return \DataTables::of($combinedDetailsWithOrderId)
 
                 ->addColumn('path', function ($details) {
                     return '<a href="https://'.$details[0].'" target="_blank">'.$details[0].'</a>';
@@ -288,9 +311,7 @@ class OrderController extends BaseOrderController
                 ->addColumn('ip', function ($details) {
                     return $details[1];
                 })
-                ->addColumn('date', function ($details) {
-                    return $details[2];
-                })
+
                 ->addColumn('version', function ($details) use ($order) {
                     $version = getInstallationDetail($details[1]);
                     if ($version) {
@@ -298,28 +319,38 @@ class OrderController extends BaseOrderController
 
                         return $versionLabel;
                     } else {
-                        return getVersionAndLabel(null, $order->product, 'label', $details[0]);
+                        $version = Subscription::where('order_id', $details['order_id'])
+                              ->first();
+                        return getVersionAndLabel($version->version, $order->product);
                     }
                 })
                  ->addColumn('active', function ($details) {
-                     $version = getInstallationDetail($details[0]);
-                     $dayUtc = new Carbon('-30 days');
-                     $minus30Day = $dayUtc->toDateTimeString();
-                     $sub = null;
-                     if ($version) {
-                         $sub = Subscription::where('order_id', $version->order_id)
-                             ->where('created_at', '!=', 'updated_at')
-                             ->where('updated_at', '>', $minus30Day)
-                             ->first();
-                     }
-                     if ($version && $sub) {
-                         return getDateHtml($version->last_active).'&nbsp;'.installationStatusLabel($details[0]);
-                     } else {
-                         return getDateHtml($version ? $version->last_active : $details[2]).'&nbsp;'.installationStatusLabel('');
-                     }
-                 })
-
-                ->rawColumns(['path', 'version', 'active', 'ip'])
+                    $order = $this->order->findOrFail($details['order_id']);
+                    $cont = new \App\Http\Controllers\License\LicenseController();
+                    $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                
+                    if ($installationDetails === null || empty($installationDetails['installed_path'])) {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel('');
+                    }
+                
+                    $installedPaths = $installationDetails['installed_path'];
+                
+                    $matchFound = false;
+                
+                    foreach ($installedPaths as $key => $installedPath) {
+                        if ($details[0] == $installedPath) {
+                            $matchFound = true;
+                            break; 
+                        }
+                    }
+                
+                    if ($matchFound) {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel($details[$key]);
+                    } else {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel('');
+                    }
+                })
+                ->rawColumns(['path', 'ip', 'version', 'active'])
                  ->make(true);
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

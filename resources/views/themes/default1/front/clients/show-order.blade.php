@@ -2172,7 +2172,7 @@ $(document).ready(function() {
                           $('#installationDetail-table').DataTable({
                               processing: true,
                               serverSide: true,
-                               stateSave: true,
+                               stateSave: false,
                                 ajax: {
                               "url":  "{{Url('get-installation-details/'.$order->id)}}",
                                  error: function(xhr) {
@@ -2189,13 +2189,6 @@ $(document).ready(function() {
                                   "sSearch"    : "Search: ",
                                   "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                               },
-                                  columnDefs: [
-                                  { 
-                                      targets: 'no-sort', 
-                                      orderable: false,
-                                      order: []
-                                  }
-                              ],
 
                               columns: [
                               

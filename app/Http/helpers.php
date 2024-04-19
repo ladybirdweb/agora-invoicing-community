@@ -169,6 +169,7 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label', $path
         $productVersion = $installationDetail ? $installationDetail->version : $latestVersion;
     }
     $status = $productVersion ? ($productVersion < $latestVersion ? 'warning' : 'success') : '';
+
     return '<span class="'.$badge.' '.$badge.'-'.$status.'"><label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="'.($productVersion ? ($status == 'warning' ? 'Outdated Version' : 'Latest Version') : '').'"></label>'.($productVersion ? $productVersion : '--').'</span>';
 }
 

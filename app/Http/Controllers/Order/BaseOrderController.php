@@ -317,10 +317,10 @@ class BaseOrderController extends ExtendedOrderController
         $myaccounturl = url('my-order/'.$orderid);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
-        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
+        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl,$order->serial_key);
     }
 
-    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
+    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl,$licenseCode)
     {
         $contact = getContactData();
         $value = Product::where('name', $product)->value('type');
@@ -342,7 +342,7 @@ class BaseOrderController extends ExtendedOrderController
         $orderUrl = ($value != '4') ? $downloadurl : url('my-order/'.$orderid);
         $end = app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid);
         $date = date_create($end);
-        $end = date_format($date, 'l, F j, Y');
+        $end = date_format($date, 'M d, Y');
 
         $replace = [
             'orderHeading' => $orderHeading,
@@ -357,7 +357,9 @@ class BaseOrderController extends ExtendedOrderController
             'knowledge_base' => $knowledgeBaseUrlFinal,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
-            'reply_email' => $setting->company_email, ];
+            'reply_email' => $setting->company_email, 
+            'licenseCode' => $licenseCode,
+        ];
 
         $type = '';
         if ($template) {

@@ -490,7 +490,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                                     <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
 
-                                                        <p class="text-color-dark" id="fee" style="display:none;">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p>
+                                                        <p class="text-color-dark" id="fee" style="display:none;font-family: sans-serif;">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p>
 
                                                        
 

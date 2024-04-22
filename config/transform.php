@@ -50,6 +50,7 @@ return[
         'contact' => '{{contact}}',
         'orderHeading' => '{{orderHeading}}',
         'reply_email' => '{{reply_email}}',
+        'licenseCode' => '{{licenseCode}}',
 
     ],
 

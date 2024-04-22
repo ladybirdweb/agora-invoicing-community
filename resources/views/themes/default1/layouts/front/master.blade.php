@@ -395,30 +395,26 @@ $days = $pay->where('product','117')->value('days');
                                                                 </div>
                                                             </li>
                                                         @empty
+
+
                                                             @php
-                                                                $data = \App\Model\Product\ProductGroup::where('hidden', '!=', 1)->first();
-                                                            @endphp
-                                                            <li>
-                                                                <div class="dropdown-mega-content">
-                                                                    <table class="cart">
-                                                                        <tbody>
-                                                                        @php
-                                                                            $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
-                                                                        @endphp
-                                                                        <tr>
-                                                                            <td>
-                                                                                @if (Auth::check())
-                                                                                    <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
-                                                                                        @else
-                                                                                            <a href="{{ url('login') }}">Choose a Product
-                                                                                                @endif
-                                                                                            </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </li>
+                                                                $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                                                            @endphp                                                                      
+                                                  
+                                                           <div class="product-details d-flex justify-content-between align-items-center" style="margin-bottom: 20px;font-weight: 500;font-size: 13px;font-family: Poppins,sans-serif;letter-spacing: -0.12px;">
+                                                            <span class="text-muted">0 ITEMS</span>
+                                                            @if (Auth::check())
+                                                            <a class="text-v-dark text-uppercase" style="color: black;font-family: Poppins,sans-serif;font-weight: 700;font-size: 13px;letter-spacing: -0.12px;" href="{{url("group/$data->pricing_templates_id/$data->id")}}">View Store</a>
+                                                            @else
+                                                             <a class="text-v-dark text-uppercase" href="{{ url('login') }}">View Store</a>
+                                                            @endif
+                                                        </div>
+
+                                                        <hr style="border-top: 0.5px solid #ccc;">
+
+                                                        <span  style="display: block; text-align: center;">No products in the cart.</span>
+
+                                                          
                                                         @endforelse
                                                         @if (!Cart::isEmpty())
                                                             <div class="totals">
@@ -429,7 +425,7 @@ $days = $pay->where('product','117')->value('days');
                                                             <li>
                                                                 <div class="actions">
                                                                     <a class="btn btn-dark btn-modern text-uppercase font-weight-semi-bold"
-                                                                       href="{{ url('show/cart') }}">View Cart</a>
+                                                                       href="{{ url('show/cart') }}">View Store</a>
                                                                     @if (count($domain) > 0)
                                                                         <a href="#domain" data-toggle="modal" data-target="#domain"
                                                                            class="btn btn-primary">Proceed to Checkout</a>

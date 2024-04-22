@@ -144,7 +144,7 @@ Cart
                                                         <i class="fas fa-times"></i>
                                                     </a>
 
-                                                    <span class="product-thumbnail-image"  data-bs-toggle="tooltip" title="Faveo Enterprise Advance">
+                                                    <span class="product-thumbnail-image"  data-bs-toggle="tooltip" title="{{$item->name}}">
 
                                                         <img width="90" height="90" alt="" class="img-fluid" src="{{$item->associatedModel->image}}">
                                                     </span>

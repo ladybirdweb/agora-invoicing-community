@@ -164,6 +164,11 @@ class PhpMailController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->from_name;
+            if($subject == 'Contact us' || $subject == 'Requesting a demo for '){
+            if (is_array($transform) && isset($transform[0]['name'])){
+                $fromname = $transform[0]['name'];
+            }
+            }
             $temp_id = TemplateType::where('name', $type)->value('id');
             $reply_email_from_db = Template::where('type', $temp_id)->value('reply_to');
             $reply_to = null;

@@ -317,10 +317,10 @@ class BaseOrderController extends ExtendedOrderController
         $myaccounturl = url('my-order/'.$orderid);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
-        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl,$order->serial_key);
+        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl, $order->serial_key);
     }
 
-    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl,$licenseCode)
+    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl, $licenseCode)
     {
         $contact = getContactData();
         $value = Product::where('name', $product)->value('type');
@@ -357,7 +357,7 @@ class BaseOrderController extends ExtendedOrderController
             'knowledge_base' => $knowledgeBaseUrlFinal,
             'contact' => $contact['contact'],
             'logo' => $contact['logo'],
-            'reply_email' => $setting->company_email, 
+            'reply_email' => $setting->company_email,
             'licenseCode' => $licenseCode,
         ];
 

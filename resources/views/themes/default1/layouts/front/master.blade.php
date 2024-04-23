@@ -404,9 +404,9 @@ $days = $pay->where('product','117')->value('days');
                                                            <div class="product-details d-flex justify-content-between align-items-center" style="margin-bottom: 20px;font-weight: 500;font-size: 13px;font-family: Poppins,sans-serif;letter-spacing: -0.12px;">
                                                             <span class="text-muted">0 ITEMS</span>
                                                             @if (Auth::check())
-                                                            <a class="text-v-dark text-uppercase" style="color: black;font-family: Poppins,sans-serif;font-weight: 700;font-size: 13px;letter-spacing: -0.12px;" href="{{url("group/$data->pricing_templates_id/$data->id")}}">View Store</a>
+                                                            <a class="text-v-dark text-uppercase" style="color: black;font-family: Poppins,sans-serif;font-weight: 700;font-size: 13px;letter-spacing: -0.12px;" href="{{url("show/cart")}}">View Cart</a>
                                                             @else
-                                                             <a class="text-v-dark text-uppercase" href="{{ url('login') }}">View Store</a>
+                                                             <a class="text-v-dark text-uppercase" href="{{ url('login') }}">View Cart</a>
                                                             @endif
                                                         </div>
 
@@ -425,7 +425,7 @@ $days = $pay->where('product','117')->value('days');
                                                             <li>
                                                                 <div class="actions">
                                                                     <a class="btn btn-dark btn-modern text-uppercase font-weight-semi-bold"
-                                                                       href="{{ url('show/cart') }}">View Store</a>
+                                                                       href="{{ url('show/cart') }}">View Cart</a>
                                                                     @if (count($domain) > 0)
                                                                         <a href="#domain" data-toggle="modal" data-target="#domain"
                                                                            class="btn btn-primary">Proceed to Checkout</a>

@@ -82,8 +82,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                          padding: 15px 8px;" valign="top">'.$item->product_name.'</td>'.
                         '<td style="border-bottom: 1px solid#ccc; color: #333; 
                         font-family: Arial,sans-serif; font-size: 14px; line-height: 20px;
-                         padding: 15px 8px;" valign="top">'.$this->currency($invoiceid).' '
-                         .$item->subtotal.'</td>'.
+                         padding: 15px 8px;" valign="top">'.$this->currency($invoiceid)
+                         .number_format($item->subtotal).'</td>'.
                         '</tr>';
             }
         }

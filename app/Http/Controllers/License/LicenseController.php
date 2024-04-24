@@ -424,6 +424,7 @@ class LicenseController extends Controller
         $installation_domain = [];
         $installation_ip = [];
         $installation_date = [];
+        $installation_status = [];
         $details = json_decode($this->searchInstallationId($licenseCode));
 
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
@@ -433,11 +434,12 @@ class LicenseController extends Controller
                     $installation_domain[] = $detail->installation_domain;
                     $installation_ip[] = $detail->installation_ip;
                     $installation_date[] = $detail->installation_date;
+                    $installation_status[] = $detail->installation_status;
                 }
             }
         }
 
-        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date];
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date,'installation_status' => $installation_status];
     }
 
     //Update  Expiration Date After Renewal

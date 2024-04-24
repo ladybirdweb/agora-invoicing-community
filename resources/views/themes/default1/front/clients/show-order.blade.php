@@ -2173,6 +2173,7 @@ $(document).ready(function() {
                               processing: true,
                               serverSide: true,
                                stateSave: false,
+                            //   order: [[3, "asc"]],
                                 ajax: {
                               "url":  "{{Url('get-installation-details/'.$order->id)}}",
                                  error: function(xhr) {

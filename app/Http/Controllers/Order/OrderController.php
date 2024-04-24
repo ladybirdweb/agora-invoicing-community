@@ -315,7 +315,7 @@ class OrderController extends BaseOrderController
                 })
 
                 ->addColumn('version', function ($details) use ($order) {
-                     $version = InstallationDetail::where('installation_path',$details[0])->where('order_id',$order->id)->first();
+                    $version = InstallationDetail::where('installation_path', $details[0])->where('order_id', $order->id)->first();
                     if ($version) {
                         $versionLabel = getVersionAndLabel($version->version, $order->product);
 
@@ -336,10 +336,8 @@ class OrderController extends BaseOrderController
                          return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
                      }
 
-                    $installedPaths = $installationDetails['installed_path'];
-                    $installationStatuses = $installationDetails['installation_status'];
-
-                    
+                     $installedPaths = $installationDetails['installed_path'];
+                     $installationStatuses = $installationDetails['installation_status'];
 
                      $matchFound = false;
                      $installationStatus = '';
@@ -354,8 +352,9 @@ class OrderController extends BaseOrderController
                      }
 
                      if ($matchFound) {
-                        $installation = isset($details[$key]) ? $details[$key] : '';
-                        return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($installationStatus);
+                         $installation = isset($details[$key]) ? $details[$key] : '';
+
+                         return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($installationStatus);
                      } else {
                          return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
                      }

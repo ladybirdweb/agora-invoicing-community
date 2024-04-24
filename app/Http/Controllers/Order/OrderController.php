@@ -262,6 +262,7 @@ class OrderController extends BaseOrderController
                 foreach ($installationDetails['installed_path'] as $index => $installedPath) {
                     $installedIp = $installationDetails['installed_ip'][$index] ?? null;
                     $installationDate = $installationDetails['installation_date'][$index] ?? null;
+                    $installationStatus = $installationDetails['installation_status'][$index] ?? null;
 
                     // Check if InstallationDetail record exists for the current installation path
                     $installationDetail = InstallationDetail::where('installation_path', $installedPath)->first();
@@ -291,13 +292,15 @@ class OrderController extends BaseOrderController
             $combinedDetails = array_map(null,
                 $installationDetails['installed_path'] ?? [],
                 $installationDetails['installed_ip'] ?? [],
-                $installationDetails['installation_date'] ?? []
+                $installationDetails['installation_date'] ?? [],
+                $installationDetails['installation_status'] ?? []
             );
             array_multisort(
                 array_column($combinedDetails, 0), SORT_ASC,
                 array_column($combinedDetails, 1), SORT_ASC,
                 array_column($combinedDetails, 2), SORT_ASC
             );
+
             $combinedDetailsWithOrderId = array_map(function ($details) use ($orderId) {
                 return array_merge($details, ['order_id' => $orderId]);
             }, $combinedDetails);
@@ -312,7 +315,7 @@ class OrderController extends BaseOrderController
                 })
 
                 ->addColumn('version', function ($details) use ($order) {
-                    $version = getInstallationDetail($details[1]);
+                     $version = InstallationDetail::where('installation_path',$details[0])->where('order_id',$order->id)->first();
                     if ($version) {
                         $versionLabel = getVersionAndLabel($version->version, $order->product);
 
@@ -333,19 +336,26 @@ class OrderController extends BaseOrderController
                          return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
                      }
 
-                     $installedPaths = $installationDetails['installed_path'];
+                    $installedPaths = $installationDetails['installed_path'];
+                    $installationStatuses = $installationDetails['installation_status'];
+
+                    
 
                      $matchFound = false;
+                     $installationStatus = '';
 
                      foreach ($installedPaths as $key => $installedPath) {
                          if ($details[0] == $installedPath) {
                              $matchFound = true;
+                             $installationStatus = $installationStatuses[$key] == 1 ? $installedPath : '';
+
                              break;
                          }
                      }
 
                      if ($matchFound) {
-                         return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($details[$key]);
+                        $installation = isset($details[$key]) ? $details[$key] : '';
+                        return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($installationStatus);
                      } else {
                          return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
                      }

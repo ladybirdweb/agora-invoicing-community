@@ -439,7 +439,7 @@ class LicenseController extends Controller
             }
         }
 
-        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date,'installation_status' => $installation_status];
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date, 'installation_status' => $installation_status];
     }
 
     //Update  Expiration Date After Renewal

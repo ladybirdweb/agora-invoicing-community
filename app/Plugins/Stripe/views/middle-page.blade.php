@@ -244,9 +244,9 @@ $json = json_encode($data);
                                                     <i class="fas fa-times"></i>
                                                 </a>
 
-                                                <span class="product-thumbnail-image"  data-bs-toggle="tooltip" title="{{$item->name}}">
+                                                <span class="product-thumbnail-image">
 
-                                                        <img width="90" height="90" alt="" class="img-fluid" src="{{$item->associatedModel->image}}">
+                                                        <img width="90" height="90" alt="" class="img-fluid" src="{{$item->associatedModel->image}}"   data-bs-toggle="tooltip" title="{{$item->name}}">
                                                     </span>
                                             </div>
                                         </td>

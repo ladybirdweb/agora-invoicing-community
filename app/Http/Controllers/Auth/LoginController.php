@@ -86,11 +86,18 @@ class LoginController extends Controller
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
 
+        if (!\Hash::check($password, User::where('email', $usernameinput)->value('password'))) { //Check for correct password
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors([
+                        'password1' => 'Please Enter a valid Password',
+                    ]);
+        }
+        
         if (optional(User::where('email', $usernameinput))->value('is_2fa_enabled') == 1) {
             $userId = User::where('email', $usernameinput)->value('id');
             $request->session()->put('2fa:user:id', $userId);
             $request->session()->put('remember:user:id', $request->has('remember'));
-
             return redirect('2fa/validate');
         }
 

@@ -403,7 +403,7 @@ $days = $pay->where('product','117')->value('days');
                                                   
                                                            <div class="product-details d-flex justify-content-between align-items-center" style="margin-bottom: 20px;font-weight: 500;font-size: 13px;font-family: Poppins,sans-serif;letter-spacing: -0.12px;">
                                                             <span class="text-muted">0 ITEMS</span>
-                                                            @if (Auth::check())
+                                                            @if (Auth::check() && $data)
                                                             <a class="text-v-dark text-uppercase" style="color: black;font-family: Poppins,sans-serif;font-weight: 700;font-size: 13px;letter-spacing: -0.12px;" href="{{url("show/cart")}}">View Cart</a>
                                                             @else
                                                              <a class="text-v-dark text-uppercase" href="{{ url('login') }}">View Cart</a>

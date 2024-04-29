@@ -178,10 +178,17 @@ class AuthController extends BaseAuthController
         $client = new \GuzzleHttp\Client();
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $number = $code.$mobile;
+        $checkNumber = User::where('mobile',$mobile)->first();
+        if(!$checkNumber){
+        return;
+        }
+        if(\Cache::get('otp'.$number)>3){
+        return;
+        }
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/verify', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
         ]);
-
+        \Cache::put('otp'.$number, \Cache::get('otp'.$number)+1);
         return $response->getBody()->getContents();
     }
 

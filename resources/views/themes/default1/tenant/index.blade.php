@@ -1,7 +1,11 @@
 @extends('themes.default1.layouts.master')
-
 @section('title')
     Cloud Hub
+@stop
+
+
+
+@section('content-header')
     <style type="text/css">
 
     /* Styles for DataTable columns */
@@ -65,18 +69,8 @@
         font-size: 16px;
     }
 
-
-    .select2-container--default .select2-selection--single {
-        height: 320px;
-    }
-
-
 </style>
-@stop
 
-
-
-@section('content-header')
     <div class="col-sm-6">
         <h1>Cloud Details</h1>
     </div>

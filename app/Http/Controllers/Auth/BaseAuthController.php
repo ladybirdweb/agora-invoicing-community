@@ -60,12 +60,12 @@ class BaseAuthController extends Controller
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
-        $checkNumber = User::where('mobile',$mobile)->first();
-        if(!$checkNumber){
-        return;
+        $checkNumber = User::where('mobile', $mobile)->first();
+        if (! $checkNumber) {
+            return;
         }
-        if(\Cache::get('otp'.$number)>3){
-        return;
+        if (\Cache::get('otp'.$number) > 3) {
+            return;
         }
 
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp', [
@@ -79,7 +79,8 @@ class BaseAuthController extends Controller
         if ($array['type'] == 'error') {
             throw new \Exception($array['message']);
         }
-        \Cache::put('otp'.$number, \Cache::get('otp'.$number)+1);
+        \Cache::put('otp'.$number, \Cache::get('otp'.$number) + 1);
+
         return $array['type'];
     }
 
@@ -91,12 +92,12 @@ class BaseAuthController extends Controller
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
-        $checkNumber = User::where('mobile',$mobile)->first();
-        if(!$checkNumber){
-        return;
+        $checkNumber = User::where('mobile', $mobile)->first();
+        if (! $checkNumber) {
+            return;
         }
-          if(\Cache::get('otp'.$number)>3){
-        return;
+        if (\Cache::get('otp'.$number) > 3) {
+            return;
         }
 
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
@@ -107,7 +108,8 @@ class BaseAuthController extends Controller
         if ($array['type'] == 'error') {
             throw new \Exception($array['message']);
         }
-        \Cache::put('otp'.$number, \Cache::get('otp'.$number)+1);
+        \Cache::put('otp'.$number, \Cache::get('otp'.$number) + 1);
+
         return $array['type'];
     }
 

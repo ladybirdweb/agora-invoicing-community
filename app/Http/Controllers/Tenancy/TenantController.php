@@ -371,7 +371,7 @@ class TenantController extends Controller
 
                 $user = optional(\Auth::user())->email ?? 'Auto deletion';
 
-                $this->googleChat('Hello, it has come to my notice that '.$user. ' has deleted this cloud instance '. $request->input('id'));
+                $this->googleChat('Hello, it has come to my notice that '.$user.' has deleted this cloud instance '.$request->input('id'));
 
                 return successResponse($response->message);
             } else {
@@ -461,7 +461,7 @@ class TenantController extends Controller
 
                             $user = optional(\Auth::user())->email ?? 'Auto deletion';
 
-                            $this->googleChat('Hello, it has come to my notice that '.$user. ' has deleted this cloud instance '. $installation_path);
+                            $this->googleChat('Hello, it has come to my notice that '.$user.' has deleted this cloud instance '.$installation_path);
 
                             return redirect()->back()->with('success', $response->message);
                         } else {

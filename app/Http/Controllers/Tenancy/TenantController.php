@@ -369,6 +369,10 @@ class TenantController extends Controller
                 (empty($request->orderId)) ?: Order::where('id', $request->get('orderId'))->delete();
                 (new LicenseController())->reissueDomain($request->input('id'));
 
+                $user = optional(\Auth::user())->email ?? 'Auto deletion';
+
+                $this->googleChat('Hello, it has come to my notice that '.$user. ' has deleted this cloud instance '. $request->input('id'));
+
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);
@@ -454,6 +458,10 @@ class TenantController extends Controller
                             $this->reissueCloudLicense($order_id);
                             Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
                             \DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
+
+                            $user = optional(\Auth::user())->email ?? 'Auto deletion';
+
+                            $this->googleChat('Hello, it has come to my notice that '.$user. ' has deleted this cloud instance '. $installation_path);
 
                             return redirect()->back()->with('success', $response->message);
                         } else {

@@ -342,6 +342,7 @@ class TemplateTableSeeder extends Seeder
         </tbody>
         </table>
         <p>&nbsp;</p>']);
+        Template::where('id',10)->update(['name' => 'Your New Account Manager']);     
 
 
 

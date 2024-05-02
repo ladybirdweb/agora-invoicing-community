@@ -135,9 +135,9 @@ class SettingsController extends Controller
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             $control = new \App\Http\Controllers\Order\RenewController();
             if ($control->checkRenew($invoice->is_renewed) != true) {
-                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try with another card or gateway');
             } else {
-                return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+                return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try with another card or gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
@@ -148,7 +148,7 @@ class SettingsController extends Controller
 
             return redirect()->route('checkout');
         } catch (\Exception $e) {
-            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try with another card or gateway.');
         }
     }
 

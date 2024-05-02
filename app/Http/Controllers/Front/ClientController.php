@@ -197,7 +197,7 @@ class ClientController extends BaseClientController
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->payment_log(\Auth::user()->email, 'stripe', 'failed', Order::where('id', $orderid)->value('number'), $result, $amount, 'Payment method updated');
 
-            return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
+            return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try with another card or gateway');
         }
     }
 

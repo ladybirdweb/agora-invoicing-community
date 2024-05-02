@@ -159,7 +159,7 @@ trait PostPaymentHandle
                 'message' => $view['message'],
             ];
         } catch (\Exception $e) {
-            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try with another card or gateway.');
         }
     }
 

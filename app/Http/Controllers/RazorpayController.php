@@ -69,9 +69,9 @@ class RazorpayController extends Controller
             } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
                 SettingsController::sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), \Auth::user());
 
-                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try with another card or gateway');
             } catch (\Exception $e) {
-                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try with another card or gateway');
             }
         }
     }
@@ -112,13 +112,13 @@ class RazorpayController extends Controller
             } else {
                 $control = new \App\Http\Controllers\Order\RenewController();
                 if ($control->checkRenew($invoice->is_renewed) != true) {
-                    return redirect('checkout')->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+                    return redirect('checkout')->with('fails', 'Your Payment was declined. Please try with another card or gateway');
                 } else {
-                    return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+                    return redirect('paynow/'.$invoice->id)->with('fails', 'Your Payment was declined. Please try with another card or gateway');
                 }
             }
         } catch (\Exception $e) {
-            return redirect('checkout')->with('fails', 'Your Payment was declined. Please try again or try the other gateway');
+            return redirect('checkout')->with('fails', 'Your Payment was declined. Please try with another card or gateway');
         }
     }
 

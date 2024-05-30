@@ -342,7 +342,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-license-permission', [License\LicensePermissionsController::class, 'getPermissions'])->name('get-license-permission');
     Route::delete('add-permission', [License\LicensePermissionsController::class, 'addPermission'])->name('add-permission');
     Route::get('tick-permission', [License\LicensePermissionsController::class, 'tickPermission'])->name('tick-permission');
-
+    Route::get('orders/license/{order_number}',[License\LicenseController::class,'licenseRedirect']);
     /*
      * Order
      */

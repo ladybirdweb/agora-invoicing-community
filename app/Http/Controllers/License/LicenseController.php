@@ -512,8 +512,9 @@ class LicenseController extends Controller
         $token = $OauthDetails->access_token;
         $this->postCurl($url.'api/admin/license/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code&old_license_code=$oldLicense", $token);
     }
+
     public function licenseRedirect($orderNumber)
     {
-        return redirect("/orders/".Order::where('number', $orderNumber)->value('id'));
+        return redirect('/orders/'.Order::where('number', $orderNumber)->value('id'));
     }
 }

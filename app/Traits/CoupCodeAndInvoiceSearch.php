@@ -14,7 +14,7 @@ trait CoupCodeAndInvoiceSearch
     public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
     {
         $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id')
-        ->join('invoice_items', 'invoices.id' ,'=', 'invoice_items.invoice_id')
+        ->join('invoice_items', 'invoices.id', '=', 'invoice_items.invoice_id')
            ->select(
                'invoices.id',
                'first_name',

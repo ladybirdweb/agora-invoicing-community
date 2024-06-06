@@ -13,7 +13,7 @@ class ReportColumn extends Model
         'key',
         'label',
         'type',
-        'default'
+        'default',
     ];
 
     public function userLinkReports()

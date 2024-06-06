@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Requests\Order\OrderRequest;
+use App\Jobs\ReportExport;
 use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\QueueService;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -18,8 +20,7 @@ use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Jobs\ReportExport;
-use App\Model\Mailjob\QueueService;
+
 class OrderController extends BaseOrderController
 {
     // NOTE FROM AVINASH: utha le re deva
@@ -119,137 +120,139 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-        try{
-        $orderSearch = new OrderSearchController();
-        $query = $orderSearch->advanceOrderSearch($request);
+        try {
+            $orderSearch = new OrderSearchController();
+            $query = $orderSearch->advanceOrderSearch($request);
 
+            $count = $query->count();
+            $cont = new \App\Http\Controllers\License\LicenseController();
 
-        $count = $query->count();
-        $cont = new \App\Http\Controllers\License\LicenseController();
+            return \DataTables::of($query)
+                ->orderColumn('client', '-orders.created_at $1')
+                ->orderColumn('product_name', 'orders.created_at $1')
+                ->orderColumn('version', 'orders.created_at $1')
+                ->orderColumn('agents', 'orders.created_at $1')
+                ->orderColumn('number', 'orders.created_at $1')
+                ->orderColumn('order_status', 'orders.created_at $1')
+                ->orderColumn('order_date', 'orders.created_at $1')
+                ->orderColumn('update_ends_at', 'orders.created_at $1')
 
-        return \DataTables::of($query)
-            ->orderColumn('client', '-orders.created_at $1')
-            ->orderColumn('product_name', 'orders.created_at $1')
-            ->orderColumn('version', 'orders.created_at $1')
-            ->orderColumn('agents', 'orders.created_at $1')
-            ->orderColumn('number', 'orders.created_at $1')
-            ->orderColumn('order_status', 'orders.created_at $1')
-            ->orderColumn('order_date', 'orders.created_at $1')
-            ->orderColumn('update_ends_at', 'orders.created_at $1')
+                ->setTotalRecords($count)
 
-            ->setTotalRecords($count)
+                ->addColumn('checkbox', function ($model) {
+                    return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
+                })
+                ->addColumn('client', function ($model) {
+                    return '<a href='.url('clients/'.$model->client_id).'>'.ucfirst($model->client_name).'<a>';
+                })
+               ->addColumn('email', function ($model) {
+                   $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
 
-            ->addColumn('checkbox', function ($model) {
-                return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
-            })
-            ->addColumn('client', function ($model) {
-                return '<a href='.url('clients/'.$model->client_id).'>'.ucfirst($model->client_name).'<a>';
-            })
-           ->addColumn('email', function ($model) {
+                   return $user->email;
+               })
+                ->addColumn('mobile', function ($model) {
                     $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
-                    return $user->email;
-            })
-            ->addColumn('mobile', function ($model) {
+
+                    return '+'.$user->mobile_code.' '.$user->mobile;
+                })
+                ->addColumn('country', function ($model) {
                     $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
-                    return '+' . $user->mobile_code . ' ' . $user->mobile;
-            })
-            ->addColumn('country', function ($model) {
-                    $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
+
                     return $user->country;
-            })
-            ->addColumn('product_name', function ($model) {
-                return $model->product_name;
-            })
-             ->addColumn('plan_name', function ($model) {
-                $planName = Plan::find($model->plan_id);
-                return $planName->name ?? '';
-            })
-            ->addColumn('version', function ($model) {
-                $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
-                if (count($installedVersions)) {
-                    $latest = max($installedVersions);
+                })
+                ->addColumn('product_name', function ($model) {
+                    return $model->product_name;
+                })
+                 ->addColumn('plan_name', function ($model) {
+                     $planName = Plan::find($model->plan_id);
 
-                    return getVersionAndLabel($latest, $model->product);
-                } else {
-                    return '--';
-                }
-            })
-            ->addColumn('agents', function ($model) {
-                $license = substr($model->serial_key, 12, 16);
-                if ($license == '0000') {
-                    return 'Unlimited';
-                }
+                     return $planName->name ?? '';
+                 })
+                ->addColumn('version', function ($model) {
+                    $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
+                    if (count($installedVersions)) {
+                        $latest = max($installedVersions);
 
-                return intval($license, 10);
-            })
-            ->addColumn('number', function ($model) use ($cont) {
-                $installedPath = InstallationDetail::where('order_id', $model->id)->exists();
-                $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
-                if ($model->subscription_updated_at) {
-                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel(! empty($installationDetails['installed_path']) ? $installationDetails['installed_path'] : $installedPath);
-                }
-                if ($model->order_status == 'Terminated') {
-                    $badge = 'badge';
+                        return getVersionAndLabel($latest, $model->product);
+                    } else {
+                        return '--';
+                    }
+                })
+                ->addColumn('agents', function ($model) {
+                    $license = substr($model->serial_key, 12, 16);
+                    if ($license == '0000') {
+                        return 'Unlimited';
+                    }
 
-                    return  '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has been Terminated">
+                    return intval($license, 10);
+                })
+                ->addColumn('number', function ($model) {
+                    $installedPath = InstallationDetail::where('order_id', $model->id)->exists();
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
+                    if ($model->subscription_updated_at) {
+                        $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel(! empty($installationDetails['installed_path']) ? $installationDetails['installed_path'] : $installedPath);
+                    }
+                    if ($model->order_status == 'Terminated') {
+                        $badge = 'badge';
+
+                        return  '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has been Terminated">
 
                          </label>
             Terminated</span>';
-                }
+                    }
 
-                return $orderLink;
-            })
-             ->addColumn('status', function ($model) use($cont) {
-                    return InstallationDetail::where('order_id', $model->id)->exists() ? 'Active' : 'Inactive';
+                    return $orderLink;
+                })
+                 ->addColumn('status', function ($model) {
+                     return InstallationDetail::where('order_id', $model->id)->exists() ? 'Active' : 'Inactive';
+                 })
+                ->addColumn('order_status', function ($model) {
+                    return ucfirst($model->order_status);
+                })
+                ->addColumn('order_date', function ($model) {
+                    return getDateHtml($model->created_at);
+                })
+                ->addColumn('update_ends_at', function ($model) {
+                    $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
 
-            })
-            ->addColumn('order_status', function ($model) {
-                return ucfirst($model->order_status);
-            })
-            ->addColumn('order_date', function ($model) {
-                return getDateHtml($model->created_at);
-            })
-            ->addColumn('update_ends_at', function ($model) {
-                $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
+                    return getExpiryLabel($ends_at);
+                })
+                ->addColumn('action', function ($model) {
+                    $status = $this->checkInvoiceStatusByOrderId($model->id);
 
-                return getExpiryLabel($ends_at);
-            })
-            ->addColumn('action', function ($model) {
-                $status = $this->checkInvoiceStatusByOrderId($model->id);
+                    $license = substr($model->serial_key, 12, 16);
 
-                $license = substr($model->serial_key, 12, 16);
+                    if ($license == '0000') {
+                        $agents = 'Unlimited';
+                    } else {
+                        $agents = intval($license, 10);
+                    }
 
-                if ($license == '0000') {
-                    $agents = 'Unlimited';
-                } else {
-                    $agents = intval($license, 10);
-                }
+                    return $this->getUrl($model, $status, $model->subscription_id, $agents);
+                })
 
-                return $this->getUrl($model, $status, $model->subscription_id, $agents);
-            })
+                ->filterColumn('client', function ($query, $keyword) {
+                    $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$keyword%"]);
+                })
+                ->filterColumn('product_name', function ($query, $keyword) {
+                    $query->whereRaw('products.name like ?', ["%$keyword%"]);
+                })
+                ->filterColumn('version', function ($query, $keyword) {
+                    $query->whereRaw('subscriptions.version like ?', ["%$keyword%"]);
+                })
+                ->filterColumn('number', function ($query, $keyword) {
+                    $query->whereRaw('number like ?', ["%{$keyword}%"]);
+                })
+                ->filterColumn('price_override', function ($query, $keyword) {
+                    $query->whereRaw('price_override like ?', ["%{$keyword}%"]);
+                })
+                ->filterColumn('order_status', function ($query, $keyword) {
+                    $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
+                })
 
-            ->filterColumn('client', function ($query, $keyword) {
-                $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$keyword%"]);
-            })
-            ->filterColumn('product_name', function ($query, $keyword) {
-                $query->whereRaw('products.name like ?', ["%$keyword%"]);
-            })
-            ->filterColumn('version', function ($query, $keyword) {
-                $query->whereRaw('subscriptions.version like ?', ["%$keyword%"]);
-            })
-            ->filterColumn('number', function ($query, $keyword) {
-                $query->whereRaw('number like ?', ["%{$keyword}%"]);
-            })
-            ->filterColumn('price_override', function ($query, $keyword) {
-                $query->whereRaw('price_override like ?', ["%{$keyword}%"]);
-            })
-            ->filterColumn('order_status', function ($query, $keyword) {
-                $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
-            })
-
-            ->rawColumns(['checkbox', 'date', 'client','email','mobile','country', 'version', 'agents', 'number', 'status','plan_name','order_status', 'order_date', 'update_ends_at', 'action'])
-            ->make(true);
-             } catch (\Exception $e) {
+                ->rawColumns(['checkbox', 'date', 'client', 'email', 'mobile', 'country', 'version', 'agents', 'number', 'status', 'plan_name', 'order_status', 'order_date', 'update_ends_at', 'action'])
+                ->make(true);
+        } catch (\Exception $e) {
             return redirect('orders')->with('fails', $e->getMessage());
         }
     }
@@ -329,6 +332,7 @@ class OrderController extends BaseOrderController
             $combinedDetailsWithOrderId = array_map(function ($details) use ($orderId) {
                 return array_merge($details, ['order_id' => $orderId]);
             }, $combinedDetails);
+
             return \DataTables::of($combinedDetailsWithOrderId)
 
                 ->addColumn('path', function ($details) {
@@ -387,6 +391,7 @@ class OrderController extends BaseOrderController
                  ->make(true);
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -624,23 +629,24 @@ class OrderController extends BaseOrderController
 
     public function exportOrders(Request $request)
     {
-    try {
+        try {
             ini_set('memory_limit', '-1');
             $selectedColumns = $request->input('selected_columns', []);
             $searchParams = $request->input('search_params', []);
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
             if ($driver->name != 'Sync') {
-            ReportExport::dispatch('orders', $selectedColumns, $searchParams, $email)->onQueue('reports');
-            return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
-            } else{
-            return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+                ReportExport::dispatch('orders', $selectedColumns, $searchParams, $email)->onQueue('reports');
+
+                return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
+            } else {
+                return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
             }
-         }
-          catch (\Exception $e) {
+        } catch (\Exception $e) {
             dd($e);
-           \Log::error('Export failed: ' . $e->getMessage());
-           return response()->json(['message' => 'Export failed.'], 500);
+            \Log::error('Export failed: '.$e->getMessage());
+
+            return response()->json(['message' => 'Export failed.'], 500);
         }
     }
 }

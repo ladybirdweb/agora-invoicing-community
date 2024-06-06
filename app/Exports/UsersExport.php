@@ -2,11 +2,12 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\ReportSetting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use App\ReportSetting;
+
 class UsersExport implements WithMultipleSheets
 {
     protected $selectedColumns;
@@ -27,6 +28,7 @@ class UsersExport implements WithMultipleSheets
         foreach ($chunks as $index => $chunk) {
             $sheets[] = new UsersSheet($this->selectedColumns, $chunk, $index + 1);
         }
+
         return $sheets;
     }
 }
@@ -49,7 +51,7 @@ class UsersSheet implements FromCollection, WithHeadings, WithTitle
         return collect($this->usersData);
     }
 
-        public function headings(): array
+    public function headings(): array
     {
         $headingsMap = [
             'name' => 'Name',
@@ -60,7 +62,7 @@ class UsersSheet implements FromCollection, WithHeadings, WithTitle
             'active' => 'Email status',
             'mobile_verified' => 'Mobile status',
             'is_2fa_enabled' => '2FA status',
-         
+
         ];
 
         return array_map(function ($column) use ($headingsMap) {
@@ -70,6 +72,6 @@ class UsersSheet implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Sheet ' . $this->sheetIndex;
+        return 'Sheet '.$this->sheetIndex;
     }
 }

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Tenancy;
 use App\CloudPopUp;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
+use App\Jobs\ReportExport;
 use App\Model\CloudDataCenters;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\QueueService;
 use App\Model\Order\Order;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\CloudProducts;
@@ -19,8 +21,7 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Jobs\ReportExport;
-use App\Model\Mailjob\QueueService;
+
 class TenantController extends Controller
 {
     private $cloud;
@@ -112,6 +113,7 @@ class TenantController extends Controller
             $collection = collect($responseData->message)->reject(function ($item) {
                 return $item === null;
             });
+
             return \DataTables::collection($collection)
                 ->addColumn('Order', function ($model) {
                     $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
@@ -136,13 +138,19 @@ class TenantController extends Controller
                         ->latest()
                         ->value('order_id');
 
-                    if (!$order_id) return '--';
+                    if (! $order_id) {
+                        return '--';
+                    }
 
                     $userId = Order::where('id', $order_id)->value('client');
-                    if (!$userId) return '--';
+                    if (! $userId) {
+                        return '--';
+                    }
 
                     $user = User::find($userId);
-                    if (!$user) return '--';
+                    if (! $user) {
+                        return '--';
+                    }
 
                     return '<a href="'.url('clients/'.$user->id).'">'.e(ucfirst($user->first_name)).' '.e(ucfirst($user->last_name)).'</a>';
                 })
@@ -152,59 +160,77 @@ class TenantController extends Controller
                         ->latest()
                         ->value('order_id');
 
-                    if (!$order_id) return '--';
+                    if (! $order_id) {
+                        return '--';
+                    }
 
                     $userId = Order::where('id', $order_id)->value('client');
-                    if (!$userId) return '--';
+                    if (! $userId) {
+                        return '--';
+                    }
 
                     $user = User::find($userId);
-                    if (!$user) return '--';
+                    if (! $user) {
+                        return '--';
+                    }
 
                     return $user->email ?? '';
                 })
                    ->addColumn('mobile', function ($model) {
-                    $order_id = \DB::table('installation_details')
-                        ->where('installation_path', $model->domain)
-                        ->latest()
-                        ->value('order_id');
+                       $order_id = \DB::table('installation_details')
+                           ->where('installation_path', $model->domain)
+                           ->latest()
+                           ->value('order_id');
 
-                    if (!$order_id) return '--';
+                       if (! $order_id) {
+                           return '--';
+                       }
 
-                    $userId = Order::where('id', $order_id)->value('client');
-                    if (!$userId) return '--';
+                       $userId = Order::where('id', $order_id)->value('client');
+                       if (! $userId) {
+                           return '--';
+                       }
 
-                    $user = User::find($userId);
-                    if (!$user) return '--';
+                       $user = User::find($userId);
+                       if (! $user) {
+                           return '--';
+                       }
 
-                    return isset($user->mobile_code) && isset($user->mobile) ? '+' . $user->mobile_code . ' ' . $user->mobile : '--';
+                       return isset($user->mobile_code) && isset($user->mobile) ? '+'.$user->mobile_code.' '.$user->mobile : '--';
                    })
 
                    ->addColumn('country', function ($model) {
-                    $order_id = \DB::table('installation_details')
-                        ->where('installation_path', $model->domain)
-                        ->latest()
-                        ->value('order_id');
+                       $order_id = \DB::table('installation_details')
+                           ->where('installation_path', $model->domain)
+                           ->latest()
+                           ->value('order_id');
 
-                    if (!$order_id) return '--';
+                       if (! $order_id) {
+                           return '--';
+                       }
 
-                    $userId = Order::where('id', $order_id)->value('client');
-                    if (!$userId) return '--';
+                       $userId = Order::where('id', $order_id)->value('client');
+                       if (! $userId) {
+                           return '--';
+                       }
 
-                    $user = User::find($userId);
-                    if (!$user) return '--';
+                       $user = User::find($userId);
+                       if (! $user) {
+                           return '--';
+                       }
 
-                   return $user->country ?? '';
+                       return $user->country ?? '';
                    })
 
                    ->addColumn('Expiry day', function ($model) {
-                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
-                    $subscription_date = Subscription::where('order_id', $order_id)->value('ends_at');
-                    if (empty($subscription_date)) {
-                        return '--';
-                    }
-                    return getDateHtml($subscription_date);
-                })
+                       $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
+                       $subscription_date = Subscription::where('order_id', $order_id)->value('ends_at');
+                       if (empty($subscription_date)) {
+                           return '--';
+                       }
 
+                       return getDateHtml($subscription_date);
+                   })
 
                 ->addColumn('Deletion day', function ($model) {
                     $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
@@ -220,18 +246,17 @@ class TenantController extends Controller
                 })
 
                ->addColumn('plan', function ($model) {
-                    $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
-                    if (empty($order_id)) {
-                        return '--';
-                    }
+                   $order_id = \DB::table('installation_details')->where('installation_path', $model->domain)->latest()->value('order_id');
+                   if (empty($order_id)) {
+                       return '--';
+                   }
 
-                    $plan_id = Subscription::where('order_id', $order_id)->latest()->value('plan_id');
-                    $price = PlanPrice::where('plan_id', $plan_id)->latest()->value('add_price');
-                    $message = ($price) ? 'Paid Subscription' : 'Free Trial';
+                   $plan_id = Subscription::where('order_id', $order_id)->latest()->value('plan_id');
+                   $price = PlanPrice::where('plan_id', $plan_id)->latest()->value('add_price');
+                   $message = ($price) ? 'Paid Subscription' : 'Free Trial';
 
-                    return $message;
-                })
-
+                   return $message;
+               })
 
                 ->addColumn('tenants', function ($model) {
                     return $model->id ?? '';
@@ -261,10 +286,11 @@ class TenantController extends Controller
                 class='btn btn-sm btn-dark btn-xs delTenant' ".tooltip('Delete')."<i class='fa fa-trash'
                 style='color:white;'> </i></button>&nbsp;</p>";
                 })
-                ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action','name','email','mobile','country','Expiry day','plan'])
+                ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action', 'name', 'email', 'mobile', 'country', 'Expiry day', 'plan'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -670,15 +696,16 @@ class TenantController extends Controller
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
             if ($driver->name != 'Sync') {
-            ReportExport::dispatch('tenats', $selectedColumns, $searchParams, $email)->onQueue('reports');
-            return response()->json(['message' => 'System is generating your report. You will be notified once completed'], 200);
-            }else{
-            return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
-        }
-            } catch (\Exception $e) {
-                \Log::error('Export failed: ' . $e->getMessage());
-                return response()->json(['message' => 'Export failed.'], 500);
-            }
-    }
+                ReportExport::dispatch('tenats', $selectedColumns, $searchParams, $email)->onQueue('reports');
 
+                return response()->json(['message' => 'System is generating your report. You will be notified once completed'], 200);
+            } else {
+                return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Export failed: '.$e->getMessage());
+
+            return response()->json(['message' => 'Export failed.'], 500);
+        }
+    }
 }

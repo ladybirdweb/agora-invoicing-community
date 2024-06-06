@@ -16,7 +16,16 @@ use App\User;
 use DB;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UsersExport;
+use App\Jobs\ReportExport;
+use App\ExportDetail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+use Carbon\Carbon;
+use App\Model\Mailjob\QueueService;
+use App\UserLinkReport;
+use App\ReportColumn;
 class ClientController extends AdvanceSearchController
 {
     use PaymentsAndInvoices;
@@ -540,18 +549,113 @@ class ClientController extends AdvanceSearchController
             $query->where('account_manager', $request->actmanager);
         })->when($request->salesmanager, function ($query) use ($request) {
             $query->where('manager', $request->salesmanager);
-        })->when($request->filled('mobile_verified'), function ($query) use ($request) {
+        })->when($request->filled('mobile_verified'), function ($query) use ($request){
             $query->where('mobile_verified', $request->mobile_verified);
-        })
-          ->when($request->filled('active'), function ($query) use ($request) {
+        })->when($request->filled('active'), function ($query) use ($request) {
               $query->where('active', $request->active);
-          })
-          ->when($request->filled('is_2fa_enabled'), function ($query) use ($request) {
+        })->when($request->filled('is_2fa_enabled'), function ($query) use ($request) {
               $query->where('is_2fa_enabled', $request->is_2fa_enabled);
-          });
+        });
 
         $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
 
         return $baseQuery;
     }
+
+        public function exportUsers(Request $request)
+        {
+        try {
+             ini_set('memory_limit', '-1');
+                $selectedColumns = $request->input('selected_columns', []);
+                $searchParams = $request->input('search_params', []);
+                $email = \Auth::user()->email;
+                $driver = QueueService::where('status', '1')->first();
+                if ($driver->name != 'Sync') {
+                ReportExport::dispatch('users', $selectedColumns, $searchParams, $email)->onQueue('reports');
+                return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
+                } else{
+                return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+
+                 }
+                } catch (\Exception $e) {
+                    dd($e);
+               \Log::error('Export failed: ' . $e->getMessage());
+               return response()->json(['message' => 'Export failed.'], 500);
+            }
+        }
+
+        public function downloadExportedFile($id)
+        {
+            $exportDetail = ExportDetail::find($id);
+
+            if (!$exportDetail) {
+                return redirect()->back()->with('fails', \Lang::get('File not found.'));
+            }
+
+            $expirationTime = $exportDetail->created_at->addHours(6);
+            if (now()->gt($expirationTime)) {
+                return redirect()->back()->with('fails', \Lang::get('This download link has expired'));
+            }
+
+            // Check if the file exists
+            $filePath = $exportDetail->file_path;
+            if (!file_exists($filePath)) {
+                return redirect()->back()->with('fails', \Lang::get('File not found'));
+            }
+
+            // Convert Excel file to zip on-the-fly
+            $zipFileName = $exportDetail->file . '.zip';
+            $zipFilePath = storage_path('app/public/export/' . $zipFileName);
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+                $zip->addFile($filePath, $exportDetail->file);
+                $zip->close();
+            } else {
+                return redirect()->back()->with('fails', \Lang::get('Failed to create zip file'));
+            }
+
+            // Provide the zip file for download
+            return Response::download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+        }
+
+    public function saveColumns(Request $request)
+    {
+        $userId = auth()->id();
+        $entityType = $request->entity_type;
+        $selectedColumns = $request->selected_columns;
+        $reportColumns = ReportColumn::whereIn('key', $selectedColumns)
+                                 ->where('type', $entityType)
+                                 ->pluck('id', 'key');
+
+        UserLinkReport::where('user_id', $userId)->where('type', $entityType)->delete();
+
+        foreach ($selectedColumns as $columnKey) {
+            if (isset($reportColumns[$columnKey])) {
+                UserLinkReport::create([
+                    'user_id' => $userId,
+                    'column_id' => $reportColumns[$columnKey],
+                    'type' => $entityType
+                ]);
+            }
+        }
+
+    return response()->json(['message' => 'Columns saved successfully.']);
+    }
+
+    public function getColumns(Request $request)
+    {
+         $userId = auth()->id();
+         $entityType = $request->entity_type;
+
+         $userColumns = UserLinkReport::where('user_id', $userId)->where('type', $entityType)->pluck('column_id');
+        if ($userColumns->isEmpty()) {
+            $defaultColumns = ReportColumn::where('type', $entityType)->where('default', true)->pluck('key');
+            return response()->json(['selected_columns' => $defaultColumns]);
+        }else{
+            $defaultColumns = ReportColumn::where('type', $entityType)->whereIn('id', $userColumns)
+                                   ->pluck('key');
+        }
+        return response()->json(['selected_columns' => $defaultColumns]);
+    }
+
 }

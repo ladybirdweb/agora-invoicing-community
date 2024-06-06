@@ -25,6 +25,48 @@ Invoices
     position: relative;
     z-index: 1;
 }
+.custom-dropdown .form-check {
+    padding-right: 60px;
+    position: relative;
+    right: -15px;
+}
+      .dropdown-menu {
+        position: absolute;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+   /* Loading spinner */
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+ [type="search"] {
+         position: relative;
+         right: 180px;
+        }
 </style>
     <div class="col-sm-6">
         <h1>All Invoices</h1>
@@ -37,6 +79,7 @@ Invoices
     </div><!-- /.col -->
 @stop
 @section('content')
+<div id="export-message"></div>
     <div class="row">
         <div class="col-12">
             <div class="card card-secondary card-outline collapsed-card">
@@ -148,15 +191,77 @@ Invoices
     <div class="card-header">
 
         <div id="response"></div>
+
         <h3 class="card-title">{{Lang::get('message.invoices')}} </h3>
             <div class="card-tools">
-                <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"><i class="fas fa-credit-card"></i>&nbsp; {{Lang::get('message.place-an-order')}}</a>
+                <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"  data-toggle="tooltip" title="Create new invoice" ><i class="fas fa-plus"></i></a>
             </div>
     </div>
 
 
+    <div class="card-body table-responsive" style="overflow: hidden;padding-top: 0px;">
+          <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
+    <div class="col-md-12" style="position: relative;left: 86%; top: 90px;">
+            <form id="columnForm">
+        <div class="custom-dropdown" id="columnUpdate">
+            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
+            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                 <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" >
+                    <label class="form-check-label" for="name">checkbox</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="user_id" id="nameCheckbox" >
+                    <label class="form-check-label" for="name">Name</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="email" id="inemailCheckbox">
+                    <label class="form-check-label" for="email">Email</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="mobile" id="inmobileCheckbox">
+                    <label class="form-check-label" for="mobile">Mobile</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="country" id="incountryCheckbox">
+                    <label class="form-check-label" for="country">Country</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox" >
+                    <label class="form-check-label" for="Registered">Invoice No</label>
+                </div>
+                 <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="product" id="productCheckbox">
+                    <label class="form-check-label" for="Registered">Product Name</label>
+                </div>
+                   <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="date" id="dateCheckbox" >
+                    <label class="form-check-label" for="Registered">Date</label>
+                </div>
+                   <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="grand_total" id="totalCheckbox" >
+                    <label class="form-check-label" for="Registered">Total</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="status" id="instatusCheckbox" >
+                    <label class="form-check-label" for="status">Status</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="action" id="inactionCheckbox" >
+                    <label class="form-check-label" for="status">Action</label>
+                </div>
+                <br>
 
-    <div class="card-body table-responsive">
+                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="insaveColumnsBtn">Save</button>
+            </div>
+        </div>
+    </form>
+</div> 
+  <div id="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
         <div class="row">
 
             <div class="col-md-12">
@@ -170,17 +275,21 @@ Invoices
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox"  name="select_all" onchange="checking(this)"></th>
                          <th>User</th>
+                         <th>Email</th>
+                         <th>Mobile</th>
+                         <th>Country</th>
                           <th>Invoice No</th>
-                           <th>Date</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                          <th>Product</th>
+                          <th>Date</th>
+                          <th>Total</th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr></thead>
                      </table>
                
 
             </div>
-        </div>
+
 
     </div>
 
@@ -200,69 +309,192 @@ Invoices
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
-
-
-     $(document).ready(function() {
-          var invoiceTable = $('#invoice-table').DataTable({
+    $(document).ready(function() {
+        var invoiceTable = $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: false, // Change stateSave to true
-            order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]], // Change the default order if needed
-
+            stateSave: false,
+            order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]],
             ajax: {
-              "url": '{!! route('get-invoices', "name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
-              error: function(xhr) {
-                if (xhr.status == 401) {
-                  alert('Your session has expired. Please login again to continue.')
-                  window.location.href = '/login';
+                "url": '{!! route('get-invoices', "name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
+                error: function(xhr) {
+                    if (xhr.status == 401) {
+                        alert('Your session has expired. Please login again to continue.')
+                        window.location.href = '/login';
+                    }
                 }
-              }
             },
-
             "oLanguage": {
-              "sLengthMenu": "_MENU_ Records per page",
-              "sSearch": "Search: ",
-              "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch": "<span style='position: relative;right: 180px;'>Search:</span> ",
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-              {
-                targets: 'no-sort',
-                orderable: false,
-                order: []
-              }
+                {
+                    targets: 'no-sort',
+                    orderable: false,
+                    order: []
+                }
             ],
             columns: [
-              { data: 'checkbox', name: 'checkbox' },
-              { data: 'user_id', name: 'user_id' },
-              { data: 'number', name: 'number' },
-              { data: 'date', name: 'created_at' },
-              { data: 'grand_total', name: 'grand_total' },
-              { data: 'status', name: 'status' },
-              { data: 'action', name: 'action' }
+                { data: 'checkbox', name: 'checkbox' },
+                { data: 'user_id', name: 'user_id' },
+                { data: 'email', name: 'email' },
+                { data: 'mobile', name: 'mobile' },
+                { data: 'country', name: 'country' },
+                { data: 'number', name: 'number' },
+                { data: 'product', name: 'product' },
+                { data: 'date', name: 'created_at' }, 
+                { data: 'grand_total', name: 'grand_total' },
+                { data: 'status', name: 'status' },
+                { data: 'action', name: 'action' }
             ],
             "fnDrawCallback": function(oSettings) {
-              $('[data-toggle="tooltip"]').tooltip({
-                container: 'body'
-              });
-              $('.loader').css('display', 'none');
+                $('[data-toggle="tooltip"]').tooltip({
+                    container: 'body'
+                });
+                $('.loader').css('display', 'none');
 
-              // Check the URL parameters after DataTables redraws
-              var urlParams = new URLSearchParams(window.location.search);
-              var hasSearchParams = urlParams.has('name') || urlParams.has('invoice_no') || urlParams.has('status') || urlParams.has('currency_id') || urlParams.has('from') || urlParams.has('till');
-              if (hasSearchParams) {
-                $("#advance-search").css('display','block');
-                $('#tip-search').attr('title', 'Collapse');
-                $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
-              }
+                var urlParams = new URLSearchParams(window.location.search);
+                var hasSearchParams = urlParams.has('name') || urlParams.has('invoice_no') || urlParams.has('status') || urlParams.has('currency_id') || urlParams.has('from') || urlParams.has('till');
+                if (hasSearchParams) {
+                    $("#advance-search").css('display','block');
+                    $('#tip-search').attr('title', 'Collapse');
+                    $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
+                }
             },
             "fnPreDrawCallback": function(oSettings, json) {
-              $('.loader').css('display', 'block');
+                $('.loader').css('display', 'block');
             }
-          });
         });
 
-    </script>
+      
+    $('#insaveColumnsBtn').click(function() {
+        // Get selected columns
+        var selectedColumns = [];
+        $('input[type="checkbox"]:checked').each(function() {
+            selectedColumns.push($(this).val());
+        });
+         if (selectedColumns.length === 0) {
+        alert('Please select at least one column.');
+        return;
+        }
 
+        $.ajax({
+            url: '{{ route('save-columns') }}',
+            method: 'POST',
+            data: {
+                selected_columns: selectedColumns,
+                entity_type: 'invoices',
+                _token: '{{ csrf_token() }}'
+            },
+            // success: function(response) {
+            //     alert(response.message);
+            // },
+            // error: function(xhr) {
+            //     alert('Failed to save column preferences');
+            // }
+        });
+
+        invoiceTable.columns().every(function() {
+            var column = this;
+            if (selectedColumns.includes(column.dataSrc())) {
+                column.visible(true);
+            } else {
+                column.visible(false);
+            }
+        });
+        invoiceTable.draw();
+    });
+
+      $(document).ready(function() {
+        $.ajax({
+            url: '{{ route('get-columns') }}',
+            method: 'GET',
+            data: {
+                entity_type: 'invoices'
+            },
+            success: function(response) {
+                var selectedColumns = response.selected_columns;
+                invoiceTable.columns().every(function() {
+                    var column = this;
+                    if (selectedColumns.includes(column.dataSrc())) {
+                        column.visible(true);
+                    } else {
+                        column.visible(false);
+                    }
+                });
+
+                $('input[type="checkbox"]').each(function() {
+                    var checkboxValue = $(this).val();
+                    if (selectedColumns.includes(checkboxValue)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            },
+            error: function(xhr) {
+                console.error('Failed to load column preferences.');
+            }
+        });
+    });
+
+                   // Export button click event
+        $('#invoice_export-report-btn').click(function() {
+            $(this).prop('disabled', true);
+
+            var selectedColumns = [];
+            $('input[type="checkbox"]:checked').each(function() {
+                selectedColumns.push($(this).val());
+            });
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var searchParams = {};
+            for (const [key, value] of urlParams) {
+                searchParams[key] = value;
+            }
+             var loadingElement = document.getElementById("loading");
+            loadingElement.style.display = "flex";
+            $.ajax({
+                url: '{{ url("export-invoices") }}',
+                method: 'GET',
+                data: {
+                    selected_columns: selectedColumns,
+                    search_params: searchParams
+                },
+                    success: function(response, status, xhr) {
+                    var result = '<div class="alert alert-success">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button>' +
+                        '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                        response.message + '!</div>';
+                    
+                    $('#export-message').html(result).removeClass('text-danger').addClass('text-success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 5000);
+                },
+                error: function(xhr, status, error) {
+                    var result = '<div class="alert alert-danger">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button>' +
+                        '<strong><i class="far fa-thumbs-down"></i> Oops! </strong>' +
+                        'Export failed: ' + xhr.responseJSON.message + '</div>';
+
+                    $('#export-message').html(result).removeClass('text-success').addClass('text-danger');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 5000);
+                },
+                 complete: function () {
+                        loadingElement.style.display = "none";
+                    }
+
+            });
+        });
+    });
+</script>
 
 
 @stop

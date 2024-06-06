@@ -15,8 +15,54 @@ Users
         </ol>
     </div><!-- /.col -->
 @stop
+    <style type="text/css">
+        .custom-dropdown .form-check {
+            padding-right: 60px;
+            position: relative;
+            right: -15px;
+        }
+          .dropdown-menu {
+            position: absolute;
+            max-height: 210px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
 
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+       }
+        [type="search"] {
+         position: relative;
+         right: 180px;
+        }
+
+
+        
+    </style>
 @section('content')
+<div id="export-message"></div>
 
     <div class="row">
         <div class="col-12">
@@ -193,7 +239,7 @@ Users
         <h3 class="card-title">Users</h3>
 
         <div class="card-tools">
-            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Create New User</a>
+            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new user" style="position: relative;right: 8px;" ><span class="fas fa-plus"></span></a>
 
 
         </div>
@@ -201,12 +247,69 @@ Users
 
     <div id="response"></div>
 
-    <div class="card-body table-responsive">
-        <div class="row">
+    <div class="card-body table-responsive" style="overflow: hidden;">
+        <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
 
+ <!--   <div class="col-md-6" style="left: 86%; top: 92px;width: 100%;cursor: pointer;">
+    <form id="columnForm">
+        <div class="custom-dropdown" id="columnUpdate">
+            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
+            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                 <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" checked>
+                    <label class="form-check-label" for="name">checkbox</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox" checked>
+                    <label class="form-check-label" for="name">Name</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox" checked>
+                    <label class="form-check-label" for="email">Email</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox" checked>
+                    <label class="form-check-label" for="mobile">Mobile</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox" checked>
+                    <label class="form-check-label" for="country">Country</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="created_at" id="RegisteredCheckbox" checked>
+                    <label class="form-check-label" for="Registered">Registered on</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="active" id="statusCheckbox" checked>
+                    <label class="form-check-label" for="status">Status</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox" checked>
+                    <label class="form-check-label" for="status">Action</label>
+                </div>
+                <br>
+
+                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
+            </div>
+        </div>
+    </form>
+</div> -->
+  <div id="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+
+       <div class="row">
             <div class="col-md-12">
+
                 <table id="user-table" class="table display " cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users</button><br /><br />
+
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users</button>
+               <br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
@@ -221,9 +324,56 @@ Users
 
 
             </div>
+                  <div class="col-md-12" style="left: 85%; bottom: 506px;cursor: pointer;padding-top: 0px;">
+                                     <form id="columnForm">
+                                     <div class="custom-dropdown" id="columnUpdate">
+                                    <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
+                                    &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                         <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox">
+                                            <label class="form-check-label" for="name">checkbox</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox">
+                                            <label class="form-check-label" for="name">Name</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
+                                            <label class="form-check-label" for="email">Email</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
+                                            <label class="form-check-label" for="mobile">Mobile</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
+                                            <label class="form-check-label" for="country">Country</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="created_at" id="RegisteredCheckbox">
+                                            <label class="form-check-label" for="Registered">Registered on</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="active" id="statusCheckbox">
+                                            <label class="form-check-label" for="status">Status</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox">
+                                            <label class="form-check-label" for="status">Action</label>
+                                        </div>
+                                        <br>
+
+                                        <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
         </div>
 
     </div>
+</div>
 <div id="gif"></div>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
@@ -232,81 +382,195 @@ Users
 <script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script> 
 
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-
-<script type="text/javascript">
-
-
-                 $('ul.nav-sidebar a').filter(function() {
-                    return this.id == 'all_user';
-                }).addClass('active');
-
-                // for treeview
-                $('ul.nav-treeview a').filter(function() {
-                    return this.id == 'all_user';
-                }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-
-               $(document).ready(function() {
-              var userTable = $('#user-table').DataTable({
-                processing: true,
-                serverSide: true,
-                stateSave: false,
-                order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]],
-                ajax: {
-                  "url": '{!! route('get-clients', "company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager&active=$request->active&mobile_verified=$request->mobile_verified&is_2fa_enabled=$request->is_2fa_enabled") !!}',
-                  error: function(xhr) {
-                    if (xhr.status == 401) {
-                      alert('Your session has expired. Please login again to continue.')
-                      window.location.href = '/login';
-                    }
-                  }
-                },
-
-                "oLanguage": {
-                  "sLengthMenu": "_MENU_ Records per page",
-                  "sSearch": "Search: ",
-                  "sProcessing": ' <div class="overlay dataTables_processing"><i class="fas fa-3x fa-sync-alt fa-spin" style=" margin-top: -25px;"></i><div class="text-bold pt-2">Loading...</div></div>'
-                },
-                columnDefs: [
-                  {
-                    targets: 'no-sort',
-                    orderable: false,
-                    order: []
-                  }
-                ],
-                columns: [
-                  { data: 'checkbox', name: 'checkbox' },
-                  { data: 'name', name: 'name' },
-                  { data: 'email', name: 'email' },
-                  { data: 'mobile', name: 'mobile' },
-                  { data: 'country', name: 'country' },
-                  { data: 'created_at', name: 'created_at' },
-                  { data: 'active', name: 'active' },
-                  { data: 'action', name: 'action' }
-                ],
-                "fnDrawCallback": function(oSettings) {
-                  $(function() {
-                    $('[data-toggle="tooltip"]').tooltip({
-                      container: 'body'
-                    });
-                  });
-                  $('.loader').css('display', 'none');
-                },
-                "fnPreDrawCallback": function(oSettings) {
-                  var urlParams = new URLSearchParams(window.location.search);
-                  var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry') || urlParams.has('reg_from') || urlParams.has('reg_till');
-                  if (hasSearchParams) {
-                    $("#advance-search").css('display','block');
-                    $('#tip-search').attr('title', 'Collapse');
-                    $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
-                  } else {
-                    $("#advance-search").collapse("hide");
-                  }
-
-                  $('.loader').css('display', 'block');
+ <script type="text/javascript">
+$(document).ready(function() {
+    // Initialize DataTable
+    var userTable = $('#user-table').DataTable({
+        processing: true,
+        serverSide: true,
+        stateSave: false,
+        order: [[{!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!}]],
+        ajax: {
+            "url": '{!! route('get-clients', "company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager&active=$request->active&mobile_verified=$request->mobile_verified&is_2fa_enabled=$request->is_2fa_enabled") !!}',
+            error: function(xhr) {
+                if (xhr.status == 401) {
+                    alert('Your session has expired. Please login again to continue.');
+                    window.location.href = '/login';
                 }
-              });
+            }
+        },
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ Records per page",
+             "sSearch": "<span style='position: relative;right: 180px;'>Search:</span> ",
+            "sProcessing": ' <div class="overlay dataTables_processing"><i class="fas fa-3x fa-sync-alt fa-spin" style=" margin-top: -25px;"></i><div class="text-bold pt-2">Loading...</div></div>'
+        },
+        columnDefs: [
+            {
+                targets: 'no-sort',
+                orderable: false,
+                order: []
+            }
+        ],
+        columns: [
+            { data: 'checkbox', name: 'checkbox',visible: true },
+            { data: 'name', name: 'name' },
+            { data: 'email', name: 'email' },
+            { data: 'mobile', name: 'mobile' },
+            { data: 'country', name: 'country' },
+            { data: 'created_at', name: 'created_at' },
+            { data: 'active', name: 'active' },
+            { data: 'action', name: 'action' }
+        ],
+        "fnDrawCallback": function(oSettings) {
+            $(function() {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container: 'body'
+                });
             });
-  </script>
+            $('.loader').css('display', 'none');
+        },
+        "fnPreDrawCallback": function(oSettings) {
+            var urlParams = new URLSearchParams(window.location.search);
+            var hasSearchParams = urlParams.has('company') || urlParams.has('country') || urlParams.has('industry') || urlParams.has('reg_from') || urlParams.has('reg_till');
+            if (hasSearchParams) {
+                $("#advance-search").css('display','block');
+                $('#tip-search').attr('title', 'Collapse');
+                $('#search-icon').removeClass('fa-plus').addClass('fa-minus');
+            } else {
+                $("#advance-search").collapse("hide");
+            }
+
+            $('.loader').css('display', 'block');
+        }
+    });
+
+    $('#saveColumnsBtn').click(function() {
+        // Get selected columns
+        var selectedColumns = [];
+        $('input[type="checkbox"]:checked').each(function() {
+            selectedColumns.push($(this).val());
+        });
+         if (selectedColumns.length === 0) {
+        alert('Please select at least one column.');
+        return;
+        }
+
+        $.ajax({
+            url: '{{ route('save-columns') }}',
+            method: 'POST',
+            data: {
+                selected_columns: selectedColumns,
+                entity_type: 'users',
+                _token: '{{ csrf_token() }}'
+            },
+            // success: function(response) {
+            //     alert(response.message);
+            // },
+            // error: function(xhr) {
+            //     alert('Failed to save column preferences');
+            // }
+        });
+
+        userTable.columns().every(function() {
+            var column = this;
+            if (selectedColumns.includes(column.dataSrc())) {
+                column.visible(true);
+            } else {
+                column.visible(false);
+            }
+        });
+        userTable.draw();
+    });
+
+   $(document).ready(function() {
+        $.ajax({
+            url: '{{ route('get-columns') }}',
+            method: 'GET',
+            data: {
+                entity_type: 'users'
+            },
+            success: function(response) {
+                var selectedColumns = response.selected_columns;
+                userTable.columns().every(function() {
+                    var column = this;
+                    if (selectedColumns.includes(column.dataSrc())) {
+                        column.visible(true);
+                    } else {
+                        column.visible(false);
+                    }
+                });
+
+                $('input[type="checkbox"]').each(function() {
+                    var checkboxValue = $(this).val();
+                    if (selectedColumns.includes(checkboxValue)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            },
+            error: function(xhr) {
+                console.error('Failed to load column preferences.');
+            }
+        });
+    });
+
+    // Export button click event
+    $('#export-report-btn').click(function() {
+        $(this).prop('disabled', true);
+
+        var selectedColumns = [];
+        $('input[type="checkbox"]:checked').each(function() {
+            selectedColumns.push($(this).val());
+        });
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var searchParams = {};
+        for (const [key, value] of urlParams) {
+            searchParams[key] = value;
+        }
+         var loadingElement = document.getElementById("loading");
+            loadingElement.style.display = "flex";
+        $.ajax({
+            url: '{{ url("export-users") }}',
+            method: 'GET',
+            data: {
+                selected_columns: selectedColumns,
+                search_params: searchParams
+            },
+                success: function(response, status, xhr) {
+                var result = '<div class="alert alert-success">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' +
+                    '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                    response.message + '!</div>';
+                
+                $('#export-message').html(result).removeClass('text-danger').addClass('text-success');
+                setTimeout(function() {
+                    location.reload();
+                }, 5000);
+            },
+            error: function(xhr, status, error) {
+                var result = '<div class="alert alert-danger">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' +
+                    '<strong><i class="far fa-thumbs-down"></i> Oops! </strong>' +
+                    'Export failed: ' + xhr.responseJSON.message + '</div>';
+
+                $('#export-message').html(result).removeClass('text-success').addClass('text-danger');
+                setTimeout(function() {
+                    location.reload();
+                }, 5000);
+            },
+             complete: function () {
+                    loadingElement.style.display = "none";
+                }
+        });
+    });
+});
+</script>
+
+
 
 
 @stop
@@ -398,6 +662,7 @@ Users
         });
     });
 </script>
+
 
 
 

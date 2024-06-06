@@ -2,11 +2,11 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\ReportSetting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use App\ReportSetting;
 
 class TenatExport implements WithMultipleSheets
 {
@@ -28,6 +28,7 @@ class TenatExport implements WithMultipleSheets
         foreach ($chunks as $index => $chunk) {
             $sheets[] = new TenantsSheet($this->selectedColumns, $chunk, $index + 1);
         }
+
         return $sheets;
     }
 }
@@ -74,7 +75,6 @@ class TenantsSheet implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Sheet ' . $this->sheetIndex;
+        return 'Sheet '.$this->sheetIndex;
     }
 }
-

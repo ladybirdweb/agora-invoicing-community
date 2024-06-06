@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\Http\Requests\InvoiceRequest;
+use App\Jobs\ReportExport;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
+use App\Model\Mailjob\QueueService;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -26,8 +28,6 @@ use App\Traits\TaxCalculation;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Jobs\ReportExport;
-use App\Model\Mailjob\QueueService;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -177,24 +177,26 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                            ->addColumn('email', function ($model) {
-                            $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
-                            return $user->email;
-                        })
+                               $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+
+                               return $user->email;
+                           })
                           ->addColumn('mobile', function ($model) {
-                            $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
-                            return $user->mobile;
-                        })
+                              $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+
+                              return $user->mobile;
+                          })
                             ->addColumn('country', function ($model) {
-                            $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
-                            return $user->country;
-                        })
+                                $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+
+                                return $user->country;
+                            })
                          ->addColumn('number', function ($model) {
                              return ucfirst($model->number);
                          })
                           ->addColumn('product', function ($model) {
-                             return ucfirst($model->product_name);
-                         })
-
+                              return ucfirst($model->product_name);
+                          })
 
                         ->addColumn('date', function ($model) {
                             return getDateHtml($model->date);
@@ -251,7 +253,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                                  $query->whereRaw($sql, ["%{$sql2}%"]);
                              }
                          })
-                         ->rawColumns(['checkbox', 'user_id','email','mobile','country', 'number','product', 'date', 'grand_total', 'status', 'action'])
+                         ->rawColumns(['checkbox', 'user_id', 'email', 'mobile', 'country', 'number', 'product', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
     }
 
@@ -567,24 +569,23 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function exportInvoices(Request $request)
     {
-    try {
+        try {
             ini_set('memory_limit', '-1');
             $selectedColumns = $request->input('selected_columns', []);
             $searchParams = $request->input('search_params', []);
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
             if ($driver->name != 'Sync') {
-            ReportExport::dispatch('invoices', $selectedColumns, $searchParams, $email)->onQueue('reports');
-            return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
-             }
-            else{
-            return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+                ReportExport::dispatch('invoices', $selectedColumns, $searchParams, $email)->onQueue('reports');
 
-             }
-
+                return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
+            } else {
+                return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+            }
         } catch (\Exception $e) {
-           \Log::error('Export failed: ' . $e->getMessage());
-           return response()->json(['message' => 'Export failed.'], 500);
+            \Log::error('Export failed: '.$e->getMessage());
+
+            return response()->json(['message' => 'Export failed.'], 500);
         }
     }
 }

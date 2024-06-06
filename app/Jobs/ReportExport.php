@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 class ReportExport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-   
+
     protected $reportType;
     protected $selectedColumns;
     protected $searchParams;
@@ -34,7 +33,7 @@ class ReportExport implements ShouldQueue
      */
     public function handle(): void
     {
-         switch ($this->reportType) {
+        switch ($this->reportType) {
             case 'users':
                 $exportJob = new ExportUsersJob($this->selectedColumns, $this->searchParams, $this->email);
                 break;
@@ -52,6 +51,5 @@ class ReportExport implements ShouldQueue
         }
 
         dispatch($exportJob);
-    
     }
 }

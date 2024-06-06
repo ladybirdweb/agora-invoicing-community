@@ -23,6 +23,7 @@ use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\Report\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -271,6 +272,21 @@ Route::middleware('installAgora')->group(function () {
     Route::post('chunkupload', [Product\ProductController::class, 'uploadFile']);
     Route::patch('upload/{id}', [Product\ProductController::class, 'uploadUpdate']);
     Route::get('get-group-url', [Product\GroupController::class, 'generateGroupUrl']);
+    Route::post('save-user-column', [User\SoftDeleteController::class, 'saveUserColumn']);
+
+    Route::get('export-users',[User\ClientController::class, 'exportUsers'])->name('export-users');
+    Route::get('download-exported-file/{id}', [User\ClientController::class, 'downloadExportedFile'])->name('download.exported.file');
+    Route::get('reports/view',[ReportController::class, 'viewReports']);
+    Route::get('get-reports',[ReportController::class, 'getReports']);
+    Route::delete('report-delete',[ReportController::class, 'destroyReports']);
+
+    Route::get('records/column',[ReportController::class, 'viewRecordsColumn']);
+    Route::post('add_records',[ReportController::class, 'addRecords']);
+
+    Route::post('/save-columns', [User\ClientController::class, 'saveColumns'])->name('save-columns');
+   Route::get('/get-columns', [User\ClientController::class, 'getColumns'])->name('get-columns');
+
+
 
     /*
      * Plan
@@ -366,6 +382,9 @@ Route::middleware('installAgora')->group(function () {
     //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
     Route::get('get-installation-details/{orderId}', [Order\OrderController::class, 'getInstallationDetails']);
 
+    Route::get('export-orders',[Order\OrderController::class, 'exportOrders'])->name('export-orders');
+
+
     /*
      * Groups
      */
@@ -418,6 +437,8 @@ Route::middleware('installAgora')->group(function () {
     Route::post('generate/invoice/{user_id?}', [Order\InvoiceController::class, 'invoiceGenerateByForm']);
     Route::post('change-invoiceTotal', [Order\InvoiceController::class, 'invoiceTotalChange'])->name('change-invoiceTotal');
     Route::post('change-paymentTotal', [Order\InvoiceController::class, 'paymentTotalChange'])->name('change-paymentTotal');
+
+     Route::get('export-invoices',[Order\InvoiceController::class, 'exportInvoices'])->name('export-invoices');
 
     /*
      * Payment
@@ -579,6 +600,8 @@ Route::middleware('installAgora')->group(function () {
     Route::delete('remove-location', [Tenancy\CloudExtraActivities::class, 'removeLocation'])->name('remove-location');
 
     Route::post('cloud-data-center-store', [Tenancy\CloudExtraActivities::class, 'storeCloudDataCenter'])->name('cloud-data-center-store');
+
+    Route::get('export-tenats',[Tenancy\TenantController::class, 'exportTenats'])->name('export-tenats');
 
     /*
      * Api

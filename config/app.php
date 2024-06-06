@@ -219,6 +219,7 @@ return [
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         App\Providers\ImageUploadHelperServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -251,6 +252,8 @@ return [
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
 
     ])->toArray(),
 

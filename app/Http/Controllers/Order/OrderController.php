@@ -18,7 +18,8 @@ use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-
+use App\Jobs\ReportExport;
+use App\Model\Mailjob\QueueService;
 class OrderController extends BaseOrderController
 {
     // NOTE FROM AVINASH: utha le re deva
@@ -118,10 +119,13 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
+        try{
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
 
-        $count = count($query->get()->toArray());
+
+        $count = $query->count();
+        $cont = new \App\Http\Controllers\License\LicenseController();
 
         return \DataTables::of($query)
             ->orderColumn('client', '-orders.created_at $1')
@@ -134,14 +138,31 @@ class OrderController extends BaseOrderController
             ->orderColumn('update_ends_at', 'orders.created_at $1')
 
             ->setTotalRecords($count)
+
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
             })
             ->addColumn('client', function ($model) {
                 return '<a href='.url('clients/'.$model->client_id).'>'.ucfirst($model->client_name).'<a>';
             })
+           ->addColumn('email', function ($model) {
+                    $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
+                    return $user->email;
+            })
+            ->addColumn('mobile', function ($model) {
+                    $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
+                    return '+' . $user->mobile_code . ' ' . $user->mobile;
+            })
+            ->addColumn('country', function ($model) {
+                    $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
+                    return $user->country;
+            })
             ->addColumn('product_name', function ($model) {
                 return $model->product_name;
+            })
+             ->addColumn('plan_name', function ($model) {
+                $planName = Plan::find($model->plan_id);
+                return $planName->name ?? '';
             })
             ->addColumn('version', function ($model) {
                 $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
@@ -161,12 +182,10 @@ class OrderController extends BaseOrderController
 
                 return intval($license, 10);
             })
-            ->addColumn('number', function ($model) {
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($model->serial_key, $model->product);
-                $installedPath = InstallationDetail::where('order_id', $model->id)->pluck('Installation_path')->toArray();
+            ->addColumn('number', function ($model) use ($cont) {
+                $installedPath = InstallationDetail::where('order_id', $model->id)->exists();
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
-                if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                if ($model->subscription_updated_at) {
                     $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel(! empty($installationDetails['installed_path']) ? $installationDetails['installed_path'] : $installedPath);
                 }
                 if ($model->order_status == 'Terminated') {
@@ -179,6 +198,10 @@ class OrderController extends BaseOrderController
                 }
 
                 return $orderLink;
+            })
+             ->addColumn('status', function ($model) use($cont) {
+                    return InstallationDetail::where('order_id', $model->id)->exists() ? 'Active' : 'Inactive';
+
             })
             ->addColumn('order_status', function ($model) {
                 return ucfirst($model->order_status);
@@ -224,8 +247,11 @@ class OrderController extends BaseOrderController
                 $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
             })
 
-            ->rawColumns(['checkbox', 'date', 'client', 'version', 'agents', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
+            ->rawColumns(['checkbox', 'date', 'client','email','mobile','country', 'version', 'agents', 'number', 'status','plan_name','order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);
+             } catch (\Exception $e) {
+            return redirect('orders')->with('fails', $e->getMessage());
+        }
     }
 
     /**
@@ -300,11 +326,9 @@ class OrderController extends BaseOrderController
                 array_column($combinedDetails, 1), SORT_ASC,
                 array_column($combinedDetails, 2), SORT_ASC
             );
-
             $combinedDetailsWithOrderId = array_map(function ($details) use ($orderId) {
                 return array_merge($details, ['order_id' => $orderId]);
             }, $combinedDetails);
-
             return \DataTables::of($combinedDetailsWithOrderId)
 
                 ->addColumn('path', function ($details) {
@@ -362,6 +386,7 @@ class OrderController extends BaseOrderController
                 ->rawColumns(['path', 'ip', 'version', 'active'])
                  ->make(true);
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -595,5 +620,27 @@ class OrderController extends BaseOrderController
     {
         //$sub = $this->subscription($orderid);
         return url('my-orders');
+    }
+
+    public function exportOrders(Request $request)
+    {
+    try {
+            ini_set('memory_limit', '-1');
+            $selectedColumns = $request->input('selected_columns', []);
+            $searchParams = $request->input('search_params', []);
+            $email = \Auth::user()->email;
+            $driver = QueueService::where('status', '1')->first();
+            if ($driver->name != 'Sync') {
+            ReportExport::dispatch('orders', $selectedColumns, $searchParams, $email)->onQueue('reports');
+            return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
+            } else{
+            return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
+            }
+         }
+          catch (\Exception $e) {
+            dd($e);
+           \Log::error('Export failed: ' . $e->getMessage());
+           return response()->json(['message' => 'Export failed.'], 500);
+        }
     }
 }

@@ -355,6 +355,33 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>
+                                    {{Lang::get('Reports')}}
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{url('reports/view')}}" class="nav-link" id="all_reports">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{Lang::get('All Reports')}}</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{url('records/column')}}" class="nav-link" id="add_col">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{Lang::get('Report settings')}}</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li class="nav-item has-treeview">
                             <a href="{{url('settings')}}" class="nav-link" id="setting">
                                 <i class="nav-icon fa fa-fw fa-cogs"></i>
@@ -363,6 +390,7 @@
                                 </p>
                             </a>
                         </li>
+                       
 
 
 

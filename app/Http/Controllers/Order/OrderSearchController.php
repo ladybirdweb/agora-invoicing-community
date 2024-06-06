@@ -36,13 +36,13 @@ class OrderSearchController extends Controller
             }
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
-            $this->product($request->input('product_id'), $baseQuery);
-            $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery, $request);
-            $this->orderTill($request->input('from'), $request->input('till'), $baseQuery, $request);
-            $this->domain($request->input('domain'), $baseQuery);
-            $this->allInstallations($request->input('act_ins'), $baseQuery);
-            $this->allRenewals($request->input('renewal'), $baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
+             $this->product($request->input('product_id'), $baseQuery);
+             $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery, $request);
+             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery, $request);
+             $this->domain($request->input('domain'), $baseQuery);
+             $this->allInstallations($request->input('act_ins'), $baseQuery);
+             $this->allRenewals($request->input('renewal'), $baseQuery);
+             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
 
             return in_array($request->renewal, ['expiring_subscription', 'expired_subscription'])
             ? $baseQuery->orderBy('subscriptions.update_ends_at', 'desc')
@@ -65,9 +65,9 @@ class OrderSearchController extends Controller
             ->leftJoin('installation_details', 'orders.id', '=', 'installation_details.order_id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
-                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id', 'installation_details.installation_path'
-            )->groupBy('orders.number');
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at','subscriptions.plan_id',
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id', 'installation_details.installation_path','users.email',\DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),'users.country'
+            );
     }
 
     public function getProductVersions(Request $request, $productId)

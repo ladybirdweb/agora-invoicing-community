@@ -2,25 +2,24 @@
 
 namespace App\Exports;
 
-use App\Order\Order;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\ReportSetting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use App\ReportSetting;
 
 class OrderExport implements WithMultipleSheets
 {
-   protected $selectedColumns;
-   protected $ordersData;
+    protected $selectedColumns;
+    protected $ordersData;
 
-     public function __construct($selectedColumns, $ordersData)
+    public function __construct($selectedColumns, $ordersData)
     {
         $this->selectedColumns = $selectedColumns;
         $this->ordersData = $ordersData;
     }
 
-     public function sheets(): array
+    public function sheets(): array
     {
         $sheets = [];
         $limit = ReportSetting::first()->value('records');
@@ -51,7 +50,6 @@ class OrderSheet implements FromCollection, WithHeadings, WithTitle
         return collect($this->ordersData);
     }
 
-
     public function headings(): array
     {
         $headingsMap = [
@@ -65,8 +63,8 @@ class OrderSheet implements FromCollection, WithHeadings, WithTitle
             'agents' => 'Agents',
             'order_status' => 'Status',
             'status' => 'Order status',
-             'order_date' => 'Created At',
-             'update_ends_at' => 'Expiry At',
+            'order_date' => 'Created At',
+            'update_ends_at' => 'Expiry At',
 
         ];
 
@@ -74,8 +72,9 @@ class OrderSheet implements FromCollection, WithHeadings, WithTitle
             return $headingsMap[$column] ?? $column;
         }, $this->selectedColumns);
     }
+
     public function title(): string
     {
-        return 'Sheet ' . $this->sheetIndex;
+        return 'Sheet '.$this->sheetIndex;
     }
 }

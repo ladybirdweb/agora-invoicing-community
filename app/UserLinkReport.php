@@ -9,13 +9,13 @@ class UserLinkReport extends Model
 {
     use HasFactory;
     protected $table = 'users_link_reports';
-     protected $fillable = [
+    protected $fillable = [
         'user_id',
         'column_id',
-        'type'
+        'type',
     ];
 
-     public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

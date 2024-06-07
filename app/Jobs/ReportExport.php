@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Report\ConcreteExportHandleController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Http\Controllers\Report\ConcreteExportHandleController;
 
 class ReportExport implements ShouldQueue
 {
@@ -23,7 +23,6 @@ class ReportExport implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct($reportType, $selectedColumns, $searchParams, $email)
-
     {
         $this->reportType = $reportType;
         $this->selectedColumns = $selectedColumns;
@@ -55,6 +54,5 @@ class ReportExport implements ShouldQueue
             default:
                 return;
         }
-
     }
 }

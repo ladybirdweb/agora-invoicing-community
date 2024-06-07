@@ -6,7 +6,8 @@ use App\Http\Controllers\User\ClientController;
 use App\User;
 use Illuminate\Http\Request;
 use Tests\DBTestCase;
-
+use App\UserLinkReport;
+use App\ReportColumn;
 class ClientControllerTest extends DBTestCase
 {
     private $classObject;
@@ -157,5 +158,34 @@ class ClientControllerTest extends DBTestCase
             'address' => 'abce',
         ]);
         $this->assertDatabaseHas('users', ['id' => $admin->id]);
+    }
+
+    public function test_add_columns_to_db_successfully()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin);
+        $response = UserLinkReport::create([
+             'user_id' => $admin->id,
+             'column_id' => '1',
+             'type' => 'users',
+        ]);
+        $this->assertDatabaseHas('users_link_reports', ['user_id' => $admin->id]);
+
+    }
+
+    public function test_get_columns_with_user_columns(){
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin);
+        $reportColumn = ReportColumn::create(['type' => 'orders', 'key' => 'order_id']);
+
+        $userlink = UserLinkReport::create([
+             'user_id' => $admin->id,
+             'column_id' => '1',
+             'type' => 'orders',
+        ]);
+
+        $response = $this->call('GET', 'get-columns');
+        $response->assertStatus(302);
+
     }
 }

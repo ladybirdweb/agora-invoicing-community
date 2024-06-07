@@ -569,6 +569,7 @@ class ClientController extends AdvanceSearchController
             $searchParams = $request->input('search_params', []);
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
+
             if ($driver->name != 'Sync') {
                 ReportExport::dispatch('users', $selectedColumns, $searchParams, $email)->onQueue('reports');
 

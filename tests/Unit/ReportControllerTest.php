@@ -1,8 +1,8 @@
 <?php
 
 namespace Tests\Unit;
+
 use App\User;
-use App\ReportSetting;
 use Tests\DBTestCase;
 
 class ReportControllerTest extends DBTestCase
@@ -15,8 +15,8 @@ class ReportControllerTest extends DBTestCase
         $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user);
         $response = $this->call('POST', url('add_records'), [
-                'records' => '14',
+            'records' => '14',
         ]);
-         $response->assertStatus(302);
+        $response->assertStatus(302);
     }
 }

@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers\Report;
 
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use App\ExportDetail;
-use App\Exports\UsersExport;
-use App\User;
 use App\Exports\InvoiceExport;
-use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
-use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Exports\OrderExport;
+use App\Exports\TenatExport;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Order\OrderSearchController;
-use App\Model\Order\InstallationDetail;
+use App\Model\Common\FaveoCloud;
+use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
-use App\Model\Product\Product;
+use App\Model\Payment\PlanPrice;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\ThirdPartyApp;
+use App\Traits\CoupCodeAndInvoiceSearch;
+use App\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Exports\TenatExport;
-use App\Model\Common\FaveoCloud;
-use App\Model\Payment\PlanPrice;
-use App\ThirdPartyApp;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+
 abstract class ExportHandleController
 {
     use CoupCodeAndInvoiceSearch;
@@ -39,16 +37,15 @@ abstract class ExportHandleController
         $this->selectedColumns = $selectedColumns;
         $this->searchParams = $searchParams;
         $this->email = $email;
-
     }
 
     abstract public function userExports($selectedColumns, $searchParams, $email);
+
     abstract public function invoiceExports($selectedColumns, $searchParams, $email);
+
     abstract public function orderExports($selectedColumns, $searchParams, $email);
+
     abstract public function tenantExports($selectedColumns, $searchParams, $email);
-
-
-
 }
 
 class ConcreteExportHandleController extends ExportHandleController
@@ -62,84 +59,85 @@ class ConcreteExportHandleController extends ExportHandleController
     {
         try {
             $selectedColumns = array_filter($selectedColumns, function ($column) {
-            return !in_array($column, ['checkbox', 'action']);
-        });
-        $users = User::query();
+                return ! in_array($column, ['checkbox', 'action']);
+            });
+            $users = User::query();
 
-        foreach ($searchParams as $key => $value) {
-            if ($value !== null && $value !== '') {
-                if ($key === 'reg_from') {
-                    $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
-                } elseif ($key === 'reg_till') {
-                    $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
-                } else {
-                    $users->where($key, $value);
+            foreach ($searchParams as $key => $value) {
+                if ($value !== null && $value !== '') {
+                    if ($key === 'reg_from') {
+                        $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
+                    } elseif ($key === 'reg_till') {
+                        $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
+                    } else {
+                        $users->where($key, $value);
+                    }
                 }
             }
-        }
 
-        $users->orderBy('created_at', 'desc');
+            $users->orderBy('created_at', 'desc');
 
-        if (!empty($selectedColumns)) {
-            $statusColumns = ['mobile_verified', 'active', 'is_2fa_enabled'];
-            foreach ($statusColumns as $statusColumn) {
-                if (!in_array($statusColumn, $selectedColumns)) {
-                    $selectedColumns[] = $statusColumn;
+            if (! empty($selectedColumns)) {
+                $statusColumns = ['mobile_verified', 'active', 'is_2fa_enabled'];
+                foreach ($statusColumns as $statusColumn) {
+                    if (! in_array($statusColumn, $selectedColumns)) {
+                        $selectedColumns[] = $statusColumn;
+                    }
                 }
             }
-        }
 
-        $filteredUsers = $users->get()->map(function ($user) use ($selectedColumns) {
-            $userData = [];
-            foreach ($selectedColumns as $column) {
-                switch ($column) {
-                    case 'name':
-                        $userData['name'] = $user->first_name . ' ' . $user->last_name;
-                        break;
-                    case 'mobile':
-                        $userData['mobile'] = '+' . $user->mobile_code . ' ' . $user->mobile;
-                        break;
-                    case 'mobile_verified':
-                    case 'active':
-                    case 'is_2fa_enabled':
-                        $userData[$column] = $user->$column ? 'Active' : 'Inactive';
-                        break;
-                    default:
-                        $userData[$column] = $user->$column;
+            $filteredUsers = $users->get()->map(function ($user) use ($selectedColumns) {
+                $userData = [];
+                foreach ($selectedColumns as $column) {
+                    switch ($column) {
+                        case 'name':
+                            $userData['name'] = $user->first_name.' '.$user->last_name;
+                            break;
+                        case 'mobile':
+                            $userData['mobile'] = '+'.$user->mobile_code.' '.$user->mobile;
+                            break;
+                        case 'mobile_verified':
+                        case 'active':
+                        case 'is_2fa_enabled':
+                            $userData[$column] = $user->$column ? 'Active' : 'Inactive';
+                            break;
+                        default:
+                            $userData[$column] = $user->$column;
+                    }
                 }
-            }
-            return $userData;
-        });
 
-        $usersData = $filteredUsers;
+                return $userData;
+            });
 
-        // Generate Excel file and create ExportDetail
-        $export = new UsersExport($selectedColumns, $usersData);
-        $id = User::where('email', $email)->value('id');
-        $user = User::find($id);
-        $timestamp = now()->format('Ymd_His');
-        $fileName = 'users_' . $id . '_' . $timestamp . '.xlsx';
-        $filePath = storage_path('app/public/export/' . $fileName);
-        Excel::store($export, 'public/export/' . $fileName);
+            $usersData = $filteredUsers;
 
-        $exportDetail = ExportDetail::create([
-            'user_id' => $id,
-            'file_path' => $filePath,
-            'file' => $fileName,
-            'name' => 'users',
-        ]);
+            // Generate Excel file and create ExportDetail
+            $export = new UsersExport($selectedColumns, $usersData);
+            $id = User::where('email', $email)->value('id');
+            $user = User::find($id);
+            $timestamp = now()->format('Ymd_His');
+            $fileName = 'users_'.$id.'_'.$timestamp.'.xlsx';
+            $filePath = storage_path('app/public/export/'.$fileName);
+            Excel::store($export, 'public/export/'.$fileName);
 
-        $settings = \App\Model\Common\Setting::find(1);
-        $from = $settings->email;
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
-        $emailContent = 'Hello ' . $user->first_name . ' ' . $user->last_name . ',' .
-            '<br><br>User report is successfully generated and ready for download.' .
-            '<br><br>Download link: <a href="' . $downloadLink . '">' . $downloadLink . '</a>' .
-            '<br><br>Please note this link will be expired in 6 hours.' .
-            '<br><br>Kind regards,<br>' . $user->first_name;
+            $exportDetail = ExportDetail::create([
+                'user_id' => $id,
+                'file_path' => $filePath,
+                'file' => $fileName,
+                'name' => 'users',
+            ]);
 
-        $mail->SendEmail($from, $email, $emailContent, 'User report available for download');
+            $settings = \App\Model\Common\Setting::find(1);
+            $from = $settings->email;
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
+            $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
+                '<br><br>User report is successfully generated and ready for download.'.
+                '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
+                '<br><br>Please note this link will be expired in 6 hours.'.
+                '<br><br>Kind regards,<br>'.$user->first_name;
+
+            $mail->SendEmail($from, $email, $emailContent, 'User report available for download');
         } catch (Exception $ex) {
             dd($ex);
             throw new Exception($ex->getMessage());
@@ -148,7 +146,7 @@ class ConcreteExportHandleController extends ExportHandleController
 
     public function invoiceExports($selectedColumns, $searchParams, $email)
     {
-         // Similar logic to export users but for invoices
+        // Similar logic to export users but for invoices
         $this->selectedColumns = array_filter($this->selectedColumns, function ($column) {
             return ! in_array($column, ['checkbox', 'action']);
         });
@@ -322,7 +320,8 @@ class ConcreteExportHandleController extends ExportHandleController
         $mail->SendEmail($from, $this->email, $emailContent, 'Order report available for download');
     }
 
-    public function tenantExports($selectedColumns, $searchParams, $email){
+    public function tenantExports($selectedColumns, $searchParams, $email)
+    {
         $this->cloud = FaveoCloud::first();
         $client = new Client();
 
@@ -569,6 +568,7 @@ class ConcreteExportHandleController extends ExportHandleController
                 return 'partially paid';
         }
     }
+
     public function allInstallations($allInstallation, $orders)
     {
         if ($allInstallation) {
@@ -625,5 +625,4 @@ class ConcreteExportHandleController extends ExportHandleController
 
         return intval($license, 10);
     }
-
 }

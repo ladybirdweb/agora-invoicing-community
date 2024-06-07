@@ -3,11 +3,12 @@
 namespace Tests\Unit\Admin\User;
 
 use App\Http\Controllers\User\ClientController;
+use App\ReportColumn;
 use App\User;
+use App\UserLinkReport;
 use Illuminate\Http\Request;
 use Tests\DBTestCase;
-use App\UserLinkReport;
-use App\ReportColumn;
+
 class ClientControllerTest extends DBTestCase
 {
     private $classObject;
@@ -165,27 +166,26 @@ class ClientControllerTest extends DBTestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
         $response = UserLinkReport::create([
-             'user_id' => $admin->id,
-             'column_id' => '1',
-             'type' => 'users',
+            'user_id' => $admin->id,
+            'column_id' => '1',
+            'type' => 'users',
         ]);
         $this->assertDatabaseHas('users_link_reports', ['user_id' => $admin->id]);
-
     }
 
-    public function test_get_columns_with_user_columns(){
+    public function test_get_columns_with_user_columns()
+    {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
         $reportColumn = ReportColumn::create(['type' => 'orders', 'key' => 'order_id']);
 
         $userlink = UserLinkReport::create([
-             'user_id' => $admin->id,
-             'column_id' => '1',
-             'type' => 'orders',
+            'user_id' => $admin->id,
+            'column_id' => '1',
+            'type' => 'orders',
         ]);
 
         $response = $this->call('GET', 'get-columns');
         $response->assertStatus(302);
-
     }
 }

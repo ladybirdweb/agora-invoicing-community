@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Http\Controllers\Report\ConcreteExportHandleController;
 
 class ReportExport implements ShouldQueue
 {
@@ -16,16 +17,21 @@ class ReportExport implements ShouldQueue
     protected $selectedColumns;
     protected $searchParams;
     protected $email;
+    protected $exportHandleController;
 
     /**
      * Create a new job instance.
      */
     public function __construct($reportType, $selectedColumns, $searchParams, $email)
+
     {
         $this->reportType = $reportType;
         $this->selectedColumns = $selectedColumns;
         $this->searchParams = $searchParams;
         $this->email = $email;
+
+        $exportHandleController = new ConcreteExportHandleController($reportType, $selectedColumns, $searchParams, $email);
+        $this->exportHandleController = $exportHandleController;
     }
 
     /**
@@ -35,21 +41,20 @@ class ReportExport implements ShouldQueue
     {
         switch ($this->reportType) {
             case 'users':
-                $exportJob = new ExportUsersJob($this->selectedColumns, $this->searchParams, $this->email);
+                $exportJob = $this->exportHandleController->userExports($this->selectedColumns, $this->searchParams, $this->email);
                 break;
             case 'invoices':
-                $exportJob = new ExportInvoicesJob($this->selectedColumns, $this->searchParams, $this->email);
+                $exportJob = $this->exportHandleController->invoiceExports($this->selectedColumns, $this->searchParams, $this->email);
                 break;
             case 'orders':
-                $exportJob = new ExportOrdersJob($this->selectedColumns, $this->searchParams, $this->email);
+                $exportJob = $this->exportHandleController->orderExports($this->selectedColumns, $this->searchParams, $this->email);
                 break;
             case 'tenats':
-                $exportJob = new ExportTenatsJob($this->selectedColumns, $this->searchParams, $this->email);
+                $exportJob = $this->exportHandleController->tenantExports($this->selectedColumns, $this->searchParams, $this->email);
                 break;
             default:
                 return;
         }
 
-        dispatch($exportJob);
     }
 }

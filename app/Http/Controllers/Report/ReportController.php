@@ -46,7 +46,7 @@ class ReportController extends Controller
             ->addColumn('format', function ($model) {
                 $fileType = pathinfo($model->file, PATHINFO_EXTENSION);
 
-                return strtoupper($fileType);
+                return !empty($fileType) ? strtoupper($fileType) : 'XLSX';
             })
              ->addColumn('type', function ($model) {
                  return $model->name.'-'.'report';
@@ -83,8 +83,6 @@ class ReportController extends Controller
              ->rawColumns(['checkbox', 'file_name', 'format', 'type', 'contact', 'created_at', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -127,7 +125,6 @@ class ReportController extends Controller
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
-            //echo \Lang::get('message.select-a-row');
         }
     }
 

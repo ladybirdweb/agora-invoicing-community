@@ -578,46 +578,53 @@ class ClientController extends AdvanceSearchController
                 return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
             }
         } catch (\Exception $e) {
-            dd($e);
             \Log::error('Export failed: '.$e->getMessage());
 
             return response()->json(['message' => 'Export failed.'], 500);
         }
     }
-
     public function downloadExportedFile($id)
-    {
-        $exportDetail = ExportDetail::find($id);
+        {
+            $exportDetail = ExportDetail::find($id);
 
-        if (! $exportDetail) {
-            return redirect()->back()->with('fails', \Lang::get('File not found.'));
+            if (! $exportDetail) {
+                return redirect()->back()->with('fails', \Lang::get('File not found.'));
+            }
+
+            $expirationTime = $exportDetail->created_at->addHours(6);
+            if (now()->gt($expirationTime)) {
+                return redirect()->back()->with('fails', \Lang::get('This download link has expired'));
+            }
+
+            $filePath = $exportDetail->file_path;
+            if (! file_exists($filePath)) {
+                return redirect()->back()->with('fails', \Lang::get('File not found'));
+            }
+
+            $zipFileName = $exportDetail->file . '.zip';
+            $zipFilePath = storage_path('app/public/export/' . $zipFileName);
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+                if (is_dir($filePath)) {
+                    // Add directory and its files to the zip
+                    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath), \RecursiveIteratorIterator::LEAVES_ONLY);
+                    foreach ($files as $name => $file) {
+                        if (!$file->isDir()) {
+                            $filePath = $file->getRealPath();
+                            $relativePath = substr($filePath, strlen($exportDetail->file_path) + 1);
+                            $zip->addFile($filePath, $relativePath);
+                        }
+                    }
+                } else {
+                    $zip->addFile($filePath, basename($filePath));
+                }
+                $zip->close();
+            } else {
+                return redirect()->back()->with('fails', \Lang::get('Failed to create zip file'));
+            }
+            return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
         }
 
-        $expirationTime = $exportDetail->created_at->addHours(6);
-        if (now()->gt($expirationTime)) {
-            return redirect()->back()->with('fails', \Lang::get('This download link has expired'));
-        }
-
-        // Check if the file exists
-        $filePath = $exportDetail->file_path;
-        if (! file_exists($filePath)) {
-            return redirect()->back()->with('fails', \Lang::get('File not found'));
-        }
-
-        // Convert Excel file to zip on-the-fly
-        $zipFileName = $exportDetail->file.'.zip';
-        $zipFilePath = storage_path('app/public/export/'.$zipFileName);
-        $zip = new \ZipArchive();
-        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
-            $zip->addFile($filePath, $exportDetail->file);
-            $zip->close();
-        } else {
-            return redirect()->back()->with('fails', \Lang::get('Failed to create zip file'));
-        }
-
-        // Provide the zip file for download
-        return Response::download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
-    }
 
     public function saveColumns(Request $request)
     {

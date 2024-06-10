@@ -28,7 +28,7 @@ use App\Traits\TaxCalculation;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-
+use App\Model\Common\Country;
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
     use  CoupCodeAndInvoiceSearch;
@@ -188,8 +188,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                           })
                             ->addColumn('country', function ($model) {
                                 $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+                                $country = Country::where('country_code_char2',$user->country)->value('nicename');
 
-                                return $user->country;
+                                return $country;
                             })
                          ->addColumn('number', function ($model) {
                              return ucfirst($model->number);

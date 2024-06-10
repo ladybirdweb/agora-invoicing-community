@@ -249,53 +249,6 @@ Users
 
     <div class="card-body table-responsive" style="overflow: hidden;">
         <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
-
- <!--   <div class="col-md-6" style="left: 86%; top: 92px;width: 100%;cursor: pointer;">
-    <form id="columnForm">
-        <div class="custom-dropdown" id="columnUpdate">
-            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" checked>
-                    <label class="form-check-label" for="name">checkbox</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox" checked>
-                    <label class="form-check-label" for="name">Name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox" checked>
-                    <label class="form-check-label" for="email">Email</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox" checked>
-                    <label class="form-check-label" for="mobile">Mobile</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox" checked>
-                    <label class="form-check-label" for="country">Country</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="created_at" id="RegisteredCheckbox" checked>
-                    <label class="form-check-label" for="Registered">Registered on</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="active" id="statusCheckbox" checked>
-                    <label class="form-check-label" for="status">Status</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox" checked>
-                    <label class="form-check-label" for="status">Action</label>
-                </div>
-                <br>
-
-                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
-            </div>
-        </div>
-    </form>
-</div> -->
   <div id="loading" style="display: none;">
                 <div class="spinner"></div>
             </div>
@@ -463,12 +416,12 @@ $(document).ready(function() {
                 entity_type: 'users',
                 _token: '{{ csrf_token() }}'
             },
-            // success: function(response) {
-            //     alert(response.message);
-            // },
-            // error: function(xhr) {
-            //     alert('Failed to save column preferences');
-            // }
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(xhr) {
+                console.log('Failed to save column preferences');
+            }
         });
 
         userTable.columns().every(function() {

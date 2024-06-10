@@ -39,10 +39,38 @@ Orders
     @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
- [type="search"] {
+    }
+    [type="search"] {
          position: relative;
          right: 180px;
+        }
+
+        #order-table_wrapper {
+            overflow-x: auto; 
+        }
+
+        #order-table .dataTables_scrollBody {
+            overflow-y: hidden; 
+        }
+
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner {
+            overflow: auto;
+        }
+
+        #order-table .dataTables_scrollHeadInner table,
+        #order-table .dataTables_scrollFootInner table {
+            width: auto; 
+        }
+
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner,
+        #order-table .dataTables_scrollBody {
+            margin-right: 0 !important;
+        }
+        #order-table th,
+        #order-table td {
+            word-break: initial;
         }
 </style>
     <div class="col-sm-6">
@@ -183,82 +211,8 @@ Orders
 
 
 
-    <div class="card-body table-responsive" style="overflow: hidden;padding-top: 20px;">
+    <div class="card-body table-responsive" style="padding-top: 20px;overflow: hidden;">
           <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
-<!--         <div class="col-md-12" style="left: 86%; top: 100%;">
-    <form id="columnForm">
-        <div class="custom-dropdown" id="columnUpdate">
-            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" checked>
-                    <label class="form-check-label" for="name">checkbox</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="client" id="clientCheckbox" checked>
-                    <label class="form-check-label" for="client">Name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
-                    <label class="form-check-label" for="email">Email</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
-                    <label class="form-check-label" for="mobile">Mobile</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
-                    <label class="form-check-label" for="country">Country</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox" checked>
-                    <label class="form-check-label" for="number">Order No</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="status" id="statusCheckbox">
-                    <label class="form-check-label" for="status">Order Status</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="product_name" id="productCheckbox" checked> 
-                    <label class="form-check-label" for="product_name">Product Name</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="plan_name" id="planCheckbox">
-                    <label class="form-check-label" for="plan_name">Plan Name</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="version" id="versionCheckbox" checked>
-                    <label class="form-check-label" for="version">Version</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="agents" id="agentsCheckbox" checked>
-                    <label class="form-check-label" for="agents">Agents</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="order_status" id="inorder_statusCheckbox" checked>
-                    <label class="form-check-label" for="order_status">Status</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="order_date" id="inorder_dateCheckbox" checked>
-                    <label class="form-check-label" for="order_date">Order Date</label>
-                </div>
-                      <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="update_ends_at" id="inupdate_ends_atCheckbox" checked>
-                    <label class="form-check-label" for="update_ends_at">Expiry Date</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox" checked>
-                    <label class="form-check-label" for="action">Action</label>
-                </div>
-                <br>
-
-                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
-            </div>
-        </div>
-    </form>
-</div> -->
         <div class="row">
 
             <div class="col-md-12">
@@ -287,7 +241,7 @@ Orders
                         </tr></thead>
                      </table>
                 </div>
-     <div class="col-md-12" style="left: 85%; bottom: 720px;cursor: pointer;padding-top: 0px;">
+     <div class="col-md-12" style="left: 85%; bottom: 1256px;cursor: pointer;padding-top: 0px;">
 
     <form id="columnForm">
         <div class="custom-dropdown" id="columnUpdate">
@@ -481,12 +435,12 @@ Orders
                 entity_type: 'orders',
                 _token: '{{ csrf_token() }}'
             },
-            // success: function(response) {
-            //     alert(response.message);
-            // },
-            // error: function(xhr) {
-            //     alert('Failed to save column preferences');
-            // }
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(xhr) {
+                console.log('Failed to save column preferences');
+            }
         });
 
         orderTable.columns().every(function() {

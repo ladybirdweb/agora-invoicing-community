@@ -2,43 +2,22 @@
 
 namespace App\Exports;
 
-use App\ReportSetting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class InvoiceExport implements WithMultipleSheets
+
+class InvoiceExport implements FromCollection, WithHeadings, WithTitle
 {
-    protected $selectedColumns;
-    protected $invoicesData;
+    use Exportable;
 
-    public function __construct($selectedColumns, $invoicesData)
-    {
-        $this->selectedColumns = $selectedColumns;
-        $this->invoicesData = $invoicesData;
-    }
-
-    public function sheets(): array
-    {
-        $sheets = [];
-        $limit = ReportSetting::first()->value('records');
-        $chunks = $this->invoicesData->chunk($limit);
-        foreach ($chunks as $index => $chunk) {
-            $sheets[] = new InvoiceSheet($this->selectedColumns, $chunk, $index + 1);
-        }
-
-        return $sheets;
-    }
-}
-
-class InvoiceSheet implements FromCollection, WithHeadings, WithTitle
-{
     protected $selectedColumns;
     protected $invoicesData;
     protected $sheetIndex;
 
-    public function __construct($selectedColumns, $invoicesData, $sheetIndex)
+    public function __construct($selectedColumns,$invoicesData, $sheetIndex)
     {
         $this->selectedColumns = $selectedColumns;
         $this->invoicesData = $invoicesData;
@@ -70,6 +49,7 @@ class InvoiceSheet implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Sheet '.$this->sheetIndex;
+        return 'Sheet ' . $this->sheetIndex;
     }
 }
+

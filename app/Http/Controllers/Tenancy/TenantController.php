@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Model\Common\Country;
 
 class TenantController extends Controller
 {
@@ -215,11 +216,12 @@ class TenantController extends Controller
                        }
 
                        $user = User::find($userId);
+                       $country = Country::where('country_code_char2',$user->country)->value('nicename');
                        if (! $user) {
                            return '--';
                        }
 
-                       return $user->country ?? '';
+                       return $country ?? '';
                    })
 
                    ->addColumn('Expiry day', function ($model) {
@@ -289,8 +291,6 @@ class TenantController extends Controller
                 ->rawColumns(['Order', 'Deletion day', 'tenants', 'domain', 'db_name', 'db_username', 'action', 'name', 'email', 'mobile', 'country', 'Expiry day', 'plan'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
-            dd($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

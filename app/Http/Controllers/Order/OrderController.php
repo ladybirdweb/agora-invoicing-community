@@ -20,7 +20,7 @@ use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-
+use App\Model\Common\Country;
 class OrderController extends BaseOrderController
 {
     // NOTE FROM AVINASH: utha le re deva
@@ -157,8 +157,9 @@ class OrderController extends BaseOrderController
                 })
                 ->addColumn('country', function ($model) {
                     $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
+                    $country = Country::where('country_code_char2',$user->country)->value('nicename');
 
-                    return $user->country;
+                    return $country;
                 })
                 ->addColumn('product_name', function ($model) {
                     return $model->product_name;
@@ -390,8 +391,6 @@ class OrderController extends BaseOrderController
                 ->rawColumns(['path', 'ip', 'version', 'active'])
                  ->make(true);
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -643,7 +642,6 @@ class OrderController extends BaseOrderController
                 return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);
             }
         } catch (\Exception $e) {
-            dd($e);
             \Log::error('Export failed: '.$e->getMessage());
 
             return response()->json(['message' => 'Export failed.'], 500);

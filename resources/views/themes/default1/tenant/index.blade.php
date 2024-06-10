@@ -7,10 +7,7 @@
 
 @section('content-header')
     <style type="text/css">
-
-
-
-    /* Loading spinner */
+   /* Loading spinner */
     #loading {
         position: fixed;
         top: 0;
@@ -63,13 +60,14 @@
     padding-right: 60px;
     position: relative;
     right: -15px;
-}
- .dropdown-menu {
-        position: absolute;
-        max-height: 280px;
-        overflow-y: auto;
-        overflow-x: hidden;
     }
+     .dropdown-menu {
+            position: absolute;
+            max-height: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
    /* Loading spinner */
     #tenatloading {
         position: fixed;
@@ -84,56 +82,54 @@
         z-index: 9999;
     }
 
-    .tenatspinner {
+      .tenatspinner {
         border: 4px solid #f3f3f3;
         border-top: 4px solid #3498db;
         border-radius: 50%;
         width: 30px;
         height: 30px;
         animation: spin 1s linear infinite;
-    }
+        }
         #tenant-table_wrapper {
-            overflow-x: auto; /* Enable horizontal scrolling */
+            overflow-x: auto; 
         }
 
         #tenant-table .dataTables_scrollBody {
-            overflow-y: hidden; /* Hide vertical scrollbar */
+            overflow-y: hidden; 
         }
 
         #tenant-table .dataTables_scrollHeadInner,
         #tenant-table .dataTables_scrollFootInner {
-            overflow: auto; /* Enable scrolling for header and footer */
+            overflow: auto;
         }
 
         #tenant-table .dataTables_scrollHeadInner table,
         #tenant-table .dataTables_scrollFootInner table {
-            width: auto; /* Full width for header and footer tables */
+            width: auto; 
         }
 
         #tenant-table .dataTables_scrollHeadInner,
         #tenant-table .dataTables_scrollFootInner,
         #tenant-table .dataTables_scrollBody {
-            margin-right: 0 !important; /* Remove any right margin */
+            margin-right: 0 !important;
         }
-    #tenant-table th,
-    #tenant-table td {
-        word-break: initial; /* Allow words to break */
-    }
-   /* Styles for search input within tenant-table */
-#tenant-table_wrapper input[type="search"] {
-    position: relative;
-    right: 180px;
-    padding: 4px;
-    border-radius: 5px;
-}
+        #tenant-table th,
+        #tenant-table td {
+            word-break: initial;
+        }
+        #tenant-table_wrapper input[type="search"] {
+            position: relative;
+            right: 180px;
+            padding: 4px;
+            border-radius: 5px;
+        }
 
-/* Reset styles for search input within pop-product-table */
-#pop-product-table_wrapper input[type="search"] {
-    position: initial;
-    right: initial;
-    padding: initial;
-    border-radius: initial;
-}
+        #pop-product-table_wrapper input[type="search"] {
+            position: initial;
+            right: initial;
+            padding: initial;
+            border-radius: initial;
+        }
 
 
 
@@ -411,7 +407,7 @@
             </div>
             <div id="successmsg"></div>
             <div id="error"></div>
-            <div class="card-body table-responsive" style="padding-top: 10px;">
+            <div class="card-body table-responsive" style="padding-top: 10px;overflow: hidden;">
             <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 96%;top: 13px;"><i class="fas fa-paper-plane"></i></button><br />
 
                     <div class="row">
@@ -440,7 +436,7 @@
                             </thead>
                         </table>
                     </div>
-           <div class="col-md-12" style="left: 85%; bottom: 1111px;cursor: pointer;padding-top: 0px;">
+           <div class="col-md-12" style="poaition: relative;left: 85%; bottom: 1151px;cursor: pointer;padding-top: 0px;">
            <form id="columnForm">
            <div class="custom-dropdown" id="columnUpdate">
             <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
@@ -591,12 +587,12 @@
                 entity_type: 'tenats',
                 _token: '{{ csrf_token() }}'
             },
-            // success: function(response) {
-            //     alert(response.message);
-            // },
-            // error: function(xhr) {
-            //     alert('Failed to save column preferences');
-            // }
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(xhr) {
+                console.log('Failed to save column preferences');
+            }
         });
 
         tenatTable.columns().every(function() {
@@ -607,7 +603,7 @@
                 column.visible(false);
             }
         });
-        tenatTable.draw();
+        // tenatTable.draw();
     });
 
    $(document).ready(function() {

@@ -388,12 +388,12 @@ Invoices
                 entity_type: 'invoices',
                 _token: '{{ csrf_token() }}'
             },
-            // success: function(response) {
-            //     alert(response.message);
-            // },
-            // error: function(xhr) {
-            //     alert('Failed to save column preferences');
-            // }
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(xhr) {
+                console.log('Failed to save column preferences');
+            }
         });
 
         invoiceTable.columns().every(function() {

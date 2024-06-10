@@ -2,12 +2,10 @@
 
 namespace App\Exports;
 
-use App\ReportSetting;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\Exportable;
-
 
 class OrderExport implements FromCollection, WithHeadings, WithTitle
 {
@@ -16,13 +14,12 @@ class OrderExport implements FromCollection, WithHeadings, WithTitle
     protected $ordersData;
     protected $sheetIndex;
 
-    public function __construct($selectedColumns,$ordersData, $sheetIndex)
+    public function __construct($selectedColumns, $ordersData, $sheetIndex)
     {
         $this->selectedColumns = $selectedColumns;
         $this->ordersData = $ordersData;
         $this->sheetIndex = $sheetIndex;
     }
-
 
     public function collection()
     {

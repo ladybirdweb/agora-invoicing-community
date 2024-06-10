@@ -2,12 +2,10 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\Exportable;
-
 
 class InvoiceExport implements FromCollection, WithHeadings, WithTitle
 {
@@ -17,7 +15,7 @@ class InvoiceExport implements FromCollection, WithHeadings, WithTitle
     protected $invoicesData;
     protected $sheetIndex;
 
-    public function __construct($selectedColumns,$invoicesData, $sheetIndex)
+    public function __construct($selectedColumns, $invoicesData, $sheetIndex)
     {
         $this->selectedColumns = $selectedColumns;
         $this->invoicesData = $invoicesData;
@@ -49,7 +47,6 @@ class InvoiceExport implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Sheet ' . $this->sheetIndex;
+        return 'Sheet '.$this->sheetIndex;
     }
 }
-

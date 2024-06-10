@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('key')->nullable();
             $table->string('label')->nullable();
             $table->string('type')->nullable();
+            $table->string('default')->nullable();
             $table->timestamps();
         });
     }

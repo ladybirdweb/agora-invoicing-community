@@ -2,11 +2,10 @@
 
 namespace App\Exports;
 
-use App\ReportSetting;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\Exportable;
 
 class TenatExport implements FromCollection, WithHeadings, WithTitle
 {
@@ -52,6 +51,6 @@ class TenatExport implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Sheet ' . $this->sheetIndex;
+        return 'Sheet '.$this->sheetIndex;
     }
 }

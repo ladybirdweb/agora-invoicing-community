@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Requests\Order\OrderRequest;
 use App\Jobs\ReportExport;
+use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\QueueService;
 use App\Model\Order\InstallationDetail;
@@ -20,7 +21,7 @@ use App\Payment_log;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Model\Common\Country;
+
 class OrderController extends BaseOrderController
 {
     // NOTE FROM AVINASH: utha le re deva
@@ -157,7 +158,7 @@ class OrderController extends BaseOrderController
                 })
                 ->addColumn('country', function ($model) {
                     $user = $this->user->where('id', $model->client_id)->first() ?: User::onlyTrashed()->find($model->client_id);
-                    $country = Country::where('country_code_char2',$user->country)->value('nicename');
+                    $country = Country::where('country_code_char2', $user->country)->value('nicename');
 
                     return $country;
                 })

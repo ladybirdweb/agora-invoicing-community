@@ -20,9 +20,7 @@ use App\User;
 use App\UserLinkReport;
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 class ClientController extends AdvanceSearchController
@@ -583,48 +581,49 @@ class ClientController extends AdvanceSearchController
             return response()->json(['message' => 'Export failed.'], 500);
         }
     }
+
     public function downloadExportedFile($id)
-        {
-            $exportDetail = ExportDetail::find($id);
+    {
+        $exportDetail = ExportDetail::find($id);
 
-            if (! $exportDetail) {
-                return redirect()->back()->with('fails', \Lang::get('File not found.'));
-            }
-
-            $expirationTime = $exportDetail->created_at->addHours(6);
-            if (now()->gt($expirationTime)) {
-                return redirect()->back()->with('fails', \Lang::get('This download link has expired'));
-            }
-
-            $filePath = $exportDetail->file_path;
-            if (! file_exists($filePath)) {
-                return redirect()->back()->with('fails', \Lang::get('File not found'));
-            }
-
-            $zipFileName = $exportDetail->file . '.zip';
-            $zipFilePath = storage_path('app/public/export/' . $zipFileName);
-            $zip = new \ZipArchive();
-            if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
-                if (is_dir($filePath)) {
-                    // Add directory and its files to the zip
-                    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath), \RecursiveIteratorIterator::LEAVES_ONLY);
-                    foreach ($files as $name => $file) {
-                        if (!$file->isDir()) {
-                            $filePath = $file->getRealPath();
-                            $relativePath = substr($filePath, strlen($exportDetail->file_path) + 1);
-                            $zip->addFile($filePath, $relativePath);
-                        }
-                    }
-                } else {
-                    $zip->addFile($filePath, basename($filePath));
-                }
-                $zip->close();
-            } else {
-                return redirect()->back()->with('fails', \Lang::get('Failed to create zip file'));
-            }
-            return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+        if (! $exportDetail) {
+            return redirect()->back()->with('fails', \Lang::get('File not found.'));
         }
 
+        $expirationTime = $exportDetail->created_at->addHours(6);
+        if (now()->gt($expirationTime)) {
+            return redirect()->back()->with('fails', \Lang::get('This download link has expired'));
+        }
+
+        $filePath = $exportDetail->file_path;
+        if (! file_exists($filePath)) {
+            return redirect()->back()->with('fails', \Lang::get('File not found'));
+        }
+
+        $zipFileName = $exportDetail->file.'.zip';
+        $zipFilePath = storage_path('app/public/export/'.$zipFileName);
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+            if (is_dir($filePath)) {
+                // Add directory and its files to the zip
+                $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath), \RecursiveIteratorIterator::LEAVES_ONLY);
+                foreach ($files as $name => $file) {
+                    if (! $file->isDir()) {
+                        $filePath = $file->getRealPath();
+                        $relativePath = substr($filePath, strlen($exportDetail->file_path) + 1);
+                        $zip->addFile($filePath, $relativePath);
+                    }
+                }
+            } else {
+                $zip->addFile($filePath, basename($filePath));
+            }
+            $zip->close();
+        } else {
+            return redirect()->back()->with('fails', \Lang::get('Failed to create zip file'));
+        }
+
+        return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+    }
 
     public function saveColumns(Request $request)
     {

@@ -46,7 +46,7 @@ class ReportController extends Controller
             ->addColumn('format', function ($model) {
                 $fileType = pathinfo($model->file, PATHINFO_EXTENSION);
 
-                return !empty($fileType) ? strtoupper($fileType) : 'XLSX';
+                return ! empty($fileType) ? strtoupper($fileType) : 'XLSX';
             })
              ->addColumn('type', function ($model) {
                  return $model->name.'-'.'report';

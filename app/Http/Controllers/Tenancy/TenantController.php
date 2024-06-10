@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Jobs\ReportExport;
 use App\Model\CloudDataCenters;
+use App\Model\Common\Country;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -21,7 +22,6 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Model\Common\Country;
 
 class TenantController extends Controller
 {
@@ -216,7 +216,7 @@ class TenantController extends Controller
                        }
 
                        $user = User::find($userId);
-                       $country = Country::where('country_code_char2',$user->country)->value('nicename');
+                       $country = Country::where('country_code_char2', $user->country)->value('nicename');
                        if (! $user) {
                            return '--';
                        }

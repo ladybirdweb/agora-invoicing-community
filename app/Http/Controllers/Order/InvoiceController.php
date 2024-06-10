@@ -6,6 +6,7 @@ use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\Http\Requests\InvoiceRequest;
 use App\Jobs\ReportExport;
+use App\Model\Common\Country;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
@@ -28,7 +29,7 @@ use App\Traits\TaxCalculation;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Model\Common\Country;
+
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
     use  CoupCodeAndInvoiceSearch;
@@ -188,7 +189,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                           })
                             ->addColumn('country', function ($model) {
                                 $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
-                                $country = Country::where('country_code_char2',$user->country)->value('nicename');
+                                $country = Country::where('country_code_char2', $user->country)->value('nicename');
 
                                 return $country;
                             })

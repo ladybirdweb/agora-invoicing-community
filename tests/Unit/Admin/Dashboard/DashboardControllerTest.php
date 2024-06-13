@@ -175,7 +175,7 @@ class DashboardControllerTest extends DBTestCase
         $this->assertCount(4, $response);
         $this->assertEquals('4 days', $response[0]->days_difference);
         $this->assertEquals('3 days', $response[1]->days_difference);
-        $this->assertEquals('2days', $response[2]->days_difference);
+        $this->assertEquals('2 days', $response[2]->days_difference);
         $this->assertEquals('1 days', $response[3]->days_difference);
 
         $this->assertEquals($this->user->first_name.' '.$this->user->last_name, $response[0]->client_name);

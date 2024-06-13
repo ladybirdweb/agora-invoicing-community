@@ -298,14 +298,13 @@ class ClientController extends AdvanceSearchController
             $client = $this->user->where('id', $id)->first();
 
             if (is_null($client)) {
-            throw new \Exception('User not found.');
+                throw new \Exception('User not found.');
             }
 
             if (User::onlyTrashed()->find($id)) {
                 $client = User::onlyTrashed()->find($id);
             }
 
-           
             $is2faEnabled = $client->is_2fa_enabled;
             $currency = getCurrencyForClient($client->country);
             $orders = $order->where('client', $id)->get();

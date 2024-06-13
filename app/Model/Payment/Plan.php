@@ -49,7 +49,7 @@ class Plan extends BaseModel
 
     public function product()
     {
-        return $this->hasMany(\App\Model\Product\Product::class, 'product','id');
+        return $this->hasMany(\App\Model\Product\Product::class, 'product', 'id');
     }
 
     public function periods()

@@ -94,7 +94,7 @@ class Product extends BaseModel
     public function getImageAttribute($value)
     {
         if (! $value) {
-            $image = asset('storage/common/images/No-image-found.jpg');
+            $image = asset('storage/common/images/No-image-found.png');
         } else {
             $image = asset("storage/common/images/$value");
         }
@@ -137,5 +137,10 @@ class Product extends BaseModel
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
+    }
+
+    public function plans()
+    {
+        return $this->hasMany(\App\Model\Payment\Plan::class, 'product', 'id');
     }
 }

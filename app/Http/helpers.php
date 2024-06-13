@@ -284,33 +284,46 @@ function getStateByCode($code)
         throw new \Exception($ex->getMessage());
     }
 }
+    function userCurrencyAndPrice($userid, $plan, $productid = '')
+    {
+        try {
+            $country = null;
 
-function userCurrencyAndPrice($userid, $plan, $productid = '')
-{
-    try {
-        if (! \Auth::user()) {//When user is not logged in
-            $location = getLocation();
-            $country = findCountryByGeoip($location['iso_code']);
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-        }
-        if (\Auth::user() && ! $userid) {
-            $country = \Auth::user()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-        }
+            if (\Auth::check()) {
+                $country = \Auth::user()->country;
+            } elseif ($userid) { 
+                $country = User::where('id', $userid)->value('country');
+            } else {
+                $location = cache()->remember('user_location', 60, function () {
+                    return getLocation();
+                });
 
-        if ($userid) {//For Admin Panel Clients
-            $userCountry = User::where('id', $userid)->first()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($userCountry, $plan);
-        }
-        $currency = $currencyAndSymbol['currency'];
-        $symbol = $currencyAndSymbol['currency_symbol'];
-        $plan = $currencyAndSymbol['userPlan'];
+                if (isset($location['iso_code'])) {
+                    $country = cache()->remember('country_by_geoip_' . $location['iso_code'], 60, function () use ($location) {
+                        return findCountryByGeoip($location['iso_code']);
+                    });
+                }
+            }
 
-        return ['currency' => $currency, 'symbol' => $symbol, 'plan' => $plan];
-    } catch (\Exception $ex) {
-        return redirect()->back()->with('fails', $ex->getMessage());
+            if (!$country) {
+                throw new \Exception('Country could not be determined.');
+            }
+
+            $currencyAndSymbol = cache()->remember('currency_and_symbol_for_' . $country . '_' . $plan, 60, function () use ($country, $plan) {
+                return getCurrencySymbolAndPriceForPlans($country, $plan);
+            });
+
+            return [
+                'currency' => $currencyAndSymbol['currency'],
+                'symbol' => $currencyAndSymbol['currency_symbol'],
+                'plan' => $currencyAndSymbol['userPlan']
+            ];
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
-}
+
+
 
 /**
  * Fetches currency and price for a plan. If the country code sent has a price defined for them in a plan then

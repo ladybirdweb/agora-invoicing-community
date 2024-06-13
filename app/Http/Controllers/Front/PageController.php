@@ -19,8 +19,6 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-
 
 class PageController extends Controller
 {
@@ -581,17 +579,17 @@ class PageController extends Controller
                         $trasform[$productId]['subscription'] = '';
                         $buttonClass = $highlight ? 'btn-primary' : 'btn-dark';
                         $url = $product['add_to_contact'] != 1 ?
-                            '<button class="btn ' . $buttonClass . ' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="' . $productId . '">
+                            '<button class="btn '.$buttonClass.' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$productId.'">
                                 <span style="white-space: nowrap;">Order Now</span>
                             </button>' :
-                            '<a class="btn ' . $buttonClass . ' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
+                            '<a class="btn '.$buttonClass.' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
                         $trasform[$productId]['url'] = $url;
                     } else {
                         $trasform[$productId]['subscription'] = $temp_controller->plans($product['shoping_cart_link'], $productId);
                         $buttonClass = $highlight ? 'btn-primary' : 'btn-dark';
                         $url = $product['add_to_contact'] != 1 ?
-                            '<input type="submit" value="Order Now" class="btn ' . $buttonClass . ' btn-modern buttonsale"></form>' :
-                            '<a class="btn ' . $buttonClass . ' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
+                            '<input type="submit" value="Order Now" class="btn '.$buttonClass.' btn-modern buttonsale"></form>' :
+                            '<a class="btn '.$buttonClass.' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
                         $trasform[$productId]['url'] = $url;
                     }
                 }
@@ -603,12 +601,10 @@ class PageController extends Controller
             return $template;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
-
 
     public function plansYear($url, $id)
     {
@@ -702,7 +698,7 @@ class PageController extends Controller
         return $offerprices;
     }
 
-     public function YearlyAmount($id)
+    public function YearlyAmount($id)
     {
         $countryCheck = true;
         try {
@@ -738,7 +734,6 @@ class PageController extends Controller
         }
     }
 
-
     public function getmonthPriceDescription(int $productid)
     {
         try {
@@ -760,10 +755,10 @@ class PageController extends Controller
                         $priceDescription = 'free';
                     } else {
                         // Determine price description based on plan details
-                        $priceDescription = $description ? 
-                            ($description->no_of_agents ? 
-                                'per month for <strong>' . $description->no_of_agents . ' agent</strong>' 
-                                : 'per month') 
+                        $priceDescription = $description ?
+                            ($description->no_of_agents ?
+                                'per month for <strong>'.$description->no_of_agents.' agent</strong>'
+                                : 'per month')
                             : '';
                     }
                     break;
@@ -773,6 +768,7 @@ class PageController extends Controller
             return $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -787,7 +783,7 @@ class PageController extends Controller
      * @param  int  $productid  Id of the Product
      * @return string $priceDescription        The Description of the Price
      */
-   public function getPriceDescription(int $productid)
+    public function getPriceDescription(int $productid)
     {
         try {
             $product = Product::find($productid);
@@ -811,10 +807,10 @@ class PageController extends Controller
                     } else {
                         // Determine price description based on plan details
                         if ($product->status) {
-                            $priceDescription = $description ? 
-                                ($description->no_of_agents ? 
-                                    'per month for <strong>' . $description->no_of_agents . ' agent</strong>' 
-                                    : 'per month') 
+                            $priceDescription = $description ?
+                                ($description->no_of_agents ?
+                                    'per month for <strong>'.$description->no_of_agents.' agent</strong>'
+                                    : 'per month')
                                 : '';
                         } else {
                             $priceDescription = $description ? $description->price_description : '';
@@ -823,7 +819,7 @@ class PageController extends Controller
 
                     // Break the loop if we find a plan with 30 or 31 days
                     break;
-                } elseif (!$product->status) {
+                } elseif (! $product->status) {
                     // Use the planPrice relationship directly
                     $description = $plan->planPrice->first();
                     $priceDescription = $description ? $description->price_description : '';
@@ -833,12 +829,10 @@ class PageController extends Controller
             return $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
-
 
     public function checkConfigKey($config, $transform)
     {

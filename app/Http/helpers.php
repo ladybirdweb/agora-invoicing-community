@@ -304,11 +304,12 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
             throw new \Exception('Country could not be determined.');
         }
         $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-        echo "<script>";
-        echo "localStorage.setItem('currency', '" . $currencyAndSymbol['currency'] . "');";
-        echo "localStorage.setItem('symbol', '" . $currencyAndSymbol['currency_symbol'] . "');";
-        echo "localStorage.setItem('plan', '" . json_encode($currencyAndSymbol['userPlan']) . "');";
-        echo "</script>";
+        echo '<script>';
+        echo "localStorage.setItem('currency', '".$currencyAndSymbol['currency']."');";
+        echo "localStorage.setItem('symbol', '".$currencyAndSymbol['currency_symbol']."');";
+        echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
+        echo '</script>';
+
         return [
             'currency' => $currencyAndSymbol['currency'],
             'symbol' => $currencyAndSymbol['currency_symbol'],
@@ -318,7 +319,6 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
         return redirect()->back()->with('fails', $ex->getMessage());
     }
 }
-
 
 /**
  * Fetches currency and price for a plan. If the country code sent has a price defined for them in a plan then

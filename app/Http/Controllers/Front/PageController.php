@@ -466,7 +466,6 @@ class PageController extends Controller
     public function pageTemplates(int $templateid = null, int $groupid)
     {
         try {
-            $groupid = (int) $groupid;
             $productsHightlight = Product::wherehighlight(1)->get();
 
             // $data = PricingTemplate::findorFail($templateid)->data;
@@ -535,76 +534,59 @@ class PageController extends Controller
      * @param  $trasform
      * @return string
      */
-    public function getTemplateOne($helpdesk_products, $trasform)
-    {
-        try {
-            $template = '';
-            $temp_controller = new TemplateController();
+        public function getTemplateOne($helpdesk_products, &$trasform)
+        {
+            try {
+                if ($helpdesk_products->isEmpty()) {
+                    return '';
+                }
 
-            if ($helpdesk_products->isNotEmpty()) {
-                $productIds = $helpdesk_products->pluck('id')->toArray();
-                $productNames = $helpdesk_products->pluck('name')->toArray();
-
-                $highlightedProducts = Product::whereIn('name', $productNames)
+                $temp_controller = new TemplateController();
+                $highlightedProducts = Product::whereIn('name', $helpdesk_products->pluck('name'))
                     ->pluck('highlight', 'name')
                     ->toArray();
 
-                $leastAmounts = [];
-                $yearlyAmounts = [];
-                $priceDescriptions = [];
-                $monthPriceDescriptions = [];
-
-                foreach ($productIds as $productId) {
-                    $leastAmounts[$productId] = $temp_controller->leastAmount($productId);
-                    $yearlyAmounts[$productId] = $this->YearlyAmount($productId);
-                    $priceDescriptions[$productId] = $this->getPriceDescription($productId);
-                    $monthPriceDescriptions[$productId] = $this->getmonthPriceDescription($productId);
-                }
-
                 foreach ($helpdesk_products as $product) {
-                    $productId = $product['id'];
-                    $productName = $product['name'];
+                    $productId = $product->id;
+                    $productName = $product->name;
                     $highlight = $highlightedProducts[$productName] ?? false;
+                    $orderButton = $highlight ? 'btn-primary' : 'btn-dark';
 
-                    $trasform[$productId]['price'] = $leastAmounts[$productId];
-                    $trasform[$productId]['price-year'] = $yearlyAmounts[$productId];
-                    $trasform[$productId]['price-description'] = $priceDescriptions[$productId];
-                    $trasform[$productId]['pricemonth-description'] = $monthPriceDescriptions[$productId];
-                    $trasform[$productId]['strike-price'] = $leastAmounts[$productId];
-                    $trasform[$productId]['strike-priceyear'] = $yearlyAmounts[$productId];
-                    $trasform[$productId]['name'] = $productName;
-                    $trasform[$productId]['feature'] = $product['description'];
-
-                    if ($product['type'] == 4) {
-                        $trasform[$productId]['subscription'] = '';
-                        $buttonClass = $highlight ? 'btn-primary' : 'btn-dark';
-                        $url = $product['add_to_contact'] != 1 ?
-                            '<button class="btn '.$buttonClass.' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$productId.'">
-                                <span style="white-space: nowrap;">Order Now</span>
-                            </button>' :
-                            '<a class="btn '.$buttonClass.' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
-                        $trasform[$productId]['url'] = $url;
-                    } else {
-                        $trasform[$productId]['subscription'] = $temp_controller->plans($product['shoping_cart_link'], $productId);
-                        $buttonClass = $highlight ? 'btn-primary' : 'btn-dark';
-                        $url = $product['add_to_contact'] != 1 ?
-                            '<input type="submit" value="Order Now" class="btn '.$buttonClass.' btn-modern buttonsale"></form>' :
-                            '<a class="btn '.$buttonClass.' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
-                        $trasform[$productId]['url'] = $url;
-                    }
+                    $trasform[$productId] = [
+                        'price' => $temp_controller->leastAmount($productId),
+                        'price-year' => $this->YearlyAmount($productId),
+                        'price-description' => $this->getPriceDescription($productId),
+                        'pricemonth-description' => $this->getmonthPriceDescription($productId),
+                        'strike-price' => $temp_controller->leastAmount($productId),
+                        'strike-priceyear' => $this->YearlyAmount($productId),
+                        'name' => $productName,
+                        'feature' => $product->description,
+                        'subscription' => $product->type == 4 ? '' : $temp_controller->plans($product->shoping_cart_link, $productId),
+                        'url' => $this->generateProductUrl($product, $orderButton, $highlight)
+                    ];
                 }
 
                 $data = PricingTemplate::findOrFail(1)->data;
-                $template = $this->transformTemplate('cart', $data, $trasform);
+                return $this->transformTemplate('cart', $data, $trasform);
+            } catch (\Exception $ex) {
+                return redirect()->back()->with('fails', $ex->getMessage());
             }
-
-            return $template;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
+
+        private function generateProductUrl($product, $orderButton, $highlight)
+        {
+            if ($product->add_to_contact != 1) {
+                if ( in_array($product->id, cloudPopupProducts())) {
+                    return '<button class="btn ' . $orderButton . ' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="' . $product->id . '">
+                                <span style="white-space: nowrap;">Order Now</span>
+                            </button>';
+                } else {
+                    return '<input type="submit" value="Order Now" class="btn ' . $orderButton . ' btn-modern buttonsale"></form>';
+                }
+            } else {
+                return '<a class="btn ' . $orderButton . ' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
+            }
+        }
 
     public function plansYear($url, $id)
     {
@@ -739,36 +721,33 @@ class PageController extends Controller
         try {
             $product = Product::find($productid);
 
-            if ($product && $product->add_to_contact == 1) {
+            if ($product['add_to_contact'] == 1) {
                 return '';
             }
 
-            $priceDescription = '';
+            $priceDescription = ''; 
 
-            $plans = Plan::with('planPrice')->where('product', $productid)->get();
+            $plans = Plan::where('product', $productid)->get();
 
-            foreach ($plans as $plan) {
-                if ($plan->days == 30 || $plan->days == 31) {
-                    $description = $plan->planPrice->first();
+            if ($plans) {
+                foreach ($plans as $plan) {
+                    if ($plan->days == 30 || $plan->days == 31) {
+                        $description = $plan->planPrice->first();
 
-                    if ($description && $description->price_description == 'Free') {
-                        $priceDescription = 'free';
-                    } else {
-                        // Determine price description based on plan details
-                        $priceDescription = $description ?
-                            ($description->no_of_agents ?
-                                'per month for <strong>'.$description->no_of_agents.' agent</strong>'
-                                : 'per month')
-                            : '';
+                        if ($description->price_description == 'Free') {
+                            $priceDescription = 'free';
+                        } else {
+                            $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agent</strong>' : 'per month';
+                        }
+
+                        break;
                     }
-                    break;
                 }
             }
 
             return $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -783,56 +762,53 @@ class PageController extends Controller
      * @param  int  $productid  Id of the Product
      * @return string $priceDescription        The Description of the Price
      */
-    public function getPriceDescription(int $productid)
+    public function getPriceDescription(int $productId)
     {
         try {
-            $product = Product::find($productid);
+            $product = Product::find($productId);
 
-            if ($product && $product->add_to_contact == 1) {
+            if ($product->add_to_contact == 1) {
                 return '';
             }
 
-            $priceDescription = '';
-
-            // Retrieve plans with eager loading of planPrice relationship
-            $plans = Plan::with('planPrice')->where('product', $productid)->get();
+            $plans = Plan::where('product', $productId)
+                        ->with('planPrice')
+                        ->get();
 
             foreach ($plans as $plan) {
-                if ($plan->days == 365 || $plan->days == 366) {
-                    // Check if planPrice relationship is loaded and retrieve the first planPrice
+                if (in_array($plan->days, [365, 366])) {
                     $description = $plan->planPrice->first();
 
-                    if ($description && $description->price_description == 'Free') {
-                        $priceDescription = 'free';
-                    } else {
-                        // Determine price description based on plan details
-                        if ($product->status) {
-                            $priceDescription = $description ?
-                                ($description->no_of_agents ?
-                                    'per month for <strong>'.$description->no_of_agents.' agent</strong>'
-                                    : 'per month')
-                                : '';
-                        } else {
-                            $priceDescription = $description ? $description->price_description : '';
+                    if ($description) {
+                        if ($description->price_description === 'Free') {
+                            return 'free';
                         }
-                    }
 
-                    // Break the loop if we find a plan with 30 or 31 days
-                    break;
-                } elseif (! $product->status) {
-                    // Use the planPrice relationship directly
-                    $description = $plan->planPrice->first();
-                    $priceDescription = $description ? $description->price_description : '';
+                        if ($product->status) {
+                            return $description->no_of_agents 
+                                ? 'per month for <strong>' . $description->no_of_agents . ' agent</strong>'
+                                : 'per month';
+                        }
+
+                        return $description->price_description;
+                    }
                 }
             }
 
-            return $priceDescription;
+            if (!$product->status) {
+                $plan = $plans->first();
+                if ($plan && $plan->planPrice->isNotEmpty()) {
+                    return $plan->planPrice->first()->price_description;
+                }
+            }
+
+            return '';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return '';
         }
     }
+
 
     public function checkConfigKey($config, $transform)
     {

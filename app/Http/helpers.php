@@ -287,39 +287,39 @@ function getStateByCode($code)
 
 function userCurrencyAndPrice($userid, $plan, $productid = '')
 {
-    try{
-    $country = getCountry($userid);
+    try {
+        $country = getCountry($userid);
 
-    if (!$country) {
-        throw new \Exception('Country could not be determined.');
+        if (! $country) {
+            throw new \Exception('Country could not be determined.');
+        }
+
+        $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
+
+        echo '<script>';
+        echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
+        echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
+        echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
+        echo '</script>';
+
+        return [
+            'currency' => $currencyAndSymbol['currency'],
+            'symbol' => $currencyAndSymbol['currency_symbol'],
+            'plan' => $currencyAndSymbol['userPlan'],
+        ];
+    } catch (\Exception $ex) {
+        return redirect()->back()->with('fails', $ex->getMessage());
     }
-
-    $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-
-    echo '<script>';
-    echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
-    echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
-    echo "localStorage.setItem('plan', '" . json_encode($currencyAndSymbol['userPlan']) . "');";
-    echo '</script>';
-
-    return [
-        'currency' => $currencyAndSymbol['currency'],
-        'symbol' => $currencyAndSymbol['currency_symbol'],
-        'plan' => $currencyAndSymbol['userPlan'],
-    ];
-} catch (\Exception $ex) {
-    return redirect()->back()->with('fails', $ex->getMessage());
-}
 }
 
 function getCountry($userid)
 {
     if (Auth::check()) {
-    return Auth::user()->country;
+        return Auth::user()->country;
     }
 
     if ($userid) {
-    return User::where('id', $userid)->value('country');
+        return User::where('id', $userid)->value('country');
     }
 
     $location = cache()->remember('user_location', 60, function () {

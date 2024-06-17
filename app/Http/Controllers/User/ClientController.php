@@ -282,7 +282,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             if (User::onlyTrashed()->find($id)) {
-                throw new \Exception('This user is suspended from system. Restore the user to view details.');
+               throw new \Exception(Lang::get('messages.user_suspend'));
             }
             $invoice = new Invoice();
             $order = new Order();
@@ -296,10 +296,6 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
-
-            if (is_null($client)) {
-                throw new \Exception('User not found.');
-            }
 
             if (User::onlyTrashed()->find($id)) {
                 $client = User::onlyTrashed()->find($id);

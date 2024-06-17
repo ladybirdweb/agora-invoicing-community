@@ -284,40 +284,49 @@ function getStateByCode($code)
         throw new \Exception($ex->getMessage());
     }
 }
+
 function userCurrencyAndPrice($userid, $plan, $productid = '')
 {
-    try {
-        $country = null;
-        if (Auth::check()) {
-            $country = Auth::user()->country;
-        } elseif ($userid) {
-            $country = User::where('id', $userid)->value('country');
-        } else {
-            $location = cache()->remember('user_location', 60, function () {
-                return getLocation();
-            });
-            if (isset($location['iso_code'])) {
-                $country = findCountryByGeoip($location['iso_code']);
-            }
-        }
-        if (! $country) {
-            throw new \Exception('Country could not be determined.');
-        }
-        $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-        echo '<script>';
-        echo "localStorage.setItem('currency', '".$currencyAndSymbol['currency']."');";
-        echo "localStorage.setItem('symbol', '".$currencyAndSymbol['currency_symbol']."');";
-        echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
-        echo '</script>';
+    try{
+    $country = getCountry($userid);
 
-        return [
-            'currency' => $currencyAndSymbol['currency'],
-            'symbol' => $currencyAndSymbol['currency_symbol'],
-            'plan' => $currencyAndSymbol['userPlan'],
-        ];
-    } catch (\Exception $ex) {
-        return redirect()->back()->with('fails', $ex->getMessage());
+    if (!$country) {
+        throw new \Exception('Country could not be determined.');
     }
+
+    $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
+
+    echo '<script>';
+    echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
+    echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
+    echo "localStorage.setItem('plan', '" . json_encode($currencyAndSymbol['userPlan']) . "');";
+    echo '</script>';
+
+    return [
+        'currency' => $currencyAndSymbol['currency'],
+        'symbol' => $currencyAndSymbol['currency_symbol'],
+        'plan' => $currencyAndSymbol['userPlan'],
+    ];
+} catch (\Exception $ex) {
+    return redirect()->back()->with('fails', $ex->getMessage());
+}
+}
+
+function getCountry($userid)
+{
+    if (Auth::check()) {
+    return Auth::user()->country;
+    }
+
+    if ($userid) {
+    return User::where('id', $userid)->value('country');
+    }
+
+    $location = cache()->remember('user_location', 60, function () {
+        return getLocation();
+    });
+
+    return $location['iso_code'] ? findCountryByGeoip($location['iso_code']) : null;
 }
 
 /**

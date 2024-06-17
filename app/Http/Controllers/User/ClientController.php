@@ -282,7 +282,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             if (User::onlyTrashed()->find($id)) {
-               throw new \Exception(Lang::get('messages.user_suspend'));
+                throw new \Exception(Lang::get('messages.user_suspend'));
             }
             $invoice = new Invoice();
             $order = new Order();

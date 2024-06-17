@@ -534,59 +534,60 @@ class PageController extends Controller
      * @param  $trasform
      * @return string
      */
-        public function getTemplateOne($helpdesk_products, &$trasform)
-        {
-            try {
-                if ($helpdesk_products->isEmpty()) {
-                    return '';
-                }
-
-                $temp_controller = new TemplateController();
-                $highlightedProducts = Product::whereIn('name', $helpdesk_products->pluck('name'))
-                    ->pluck('highlight', 'name')
-                    ->toArray();
-
-                foreach ($helpdesk_products as $product) {
-                    $productId = $product->id;
-                    $productName = $product->name;
-                    $highlight = $highlightedProducts[$productName] ?? false;
-                    $orderButton = $highlight ? 'btn-primary' : 'btn-dark';
-
-                    $trasform[$productId] = [
-                        'price' => $temp_controller->leastAmount($productId),
-                        'price-year' => $this->YearlyAmount($productId),
-                        'price-description' => $this->getPriceDescription($productId),
-                        'pricemonth-description' => $this->getmonthPriceDescription($productId),
-                        'strike-price' => $temp_controller->leastAmount($productId),
-                        'strike-priceyear' => $this->YearlyAmount($productId),
-                        'name' => $productName,
-                        'feature' => $product->description,
-                        'subscription' => $product->type == 4 ? '' : $temp_controller->plans($product->shoping_cart_link, $productId),
-                        'url' => $this->generateProductUrl($product, $orderButton, $highlight)
-                    ];
-                }
-
-                $data = PricingTemplate::findOrFail(1)->data;
-                return $this->transformTemplate('cart', $data, $trasform);
-            } catch (\Exception $ex) {
-                return redirect()->back()->with('fails', $ex->getMessage());
+    public function getTemplateOne($helpdesk_products, &$trasform)
+    {
+        try {
+            if ($helpdesk_products->isEmpty()) {
+                return '';
             }
-        }
 
-        private function generateProductUrl($product, $orderButton, $highlight)
-        {
-            if ($product->add_to_contact != 1) {
-                if ( in_array($product->id, cloudPopupProducts())) {
-                    return '<button class="btn ' . $orderButton . ' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="' . $product->id . '">
+            $temp_controller = new TemplateController();
+            $highlightedProducts = Product::whereIn('name', $helpdesk_products->pluck('name'))
+                ->pluck('highlight', 'name')
+                ->toArray();
+
+            foreach ($helpdesk_products as $product) {
+                $productId = $product->id;
+                $productName = $product->name;
+                $highlight = $highlightedProducts[$productName] ?? false;
+                $orderButton = $highlight ? 'btn-primary' : 'btn-dark';
+
+                $trasform[$productId] = [
+                    'price' => $temp_controller->leastAmount($productId),
+                    'price-year' => $this->YearlyAmount($productId),
+                    'price-description' => $this->getPriceDescription($productId),
+                    'pricemonth-description' => $this->getmonthPriceDescription($productId),
+                    'strike-price' => $temp_controller->leastAmount($productId),
+                    'strike-priceyear' => $this->YearlyAmount($productId),
+                    'name' => $productName,
+                    'feature' => $product->description,
+                    'subscription' => $product->type == 4 ? '' : $temp_controller->plans($product->shoping_cart_link, $productId),
+                    'url' => $this->generateProductUrl($product, $orderButton, $highlight),
+                ];
+            }
+
+            $data = PricingTemplate::findOrFail(1)->data;
+
+            return $this->transformTemplate('cart', $data, $trasform);
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    private function generateProductUrl($product, $orderButton, $highlight)
+    {
+        if ($product->add_to_contact != 1) {
+            if (in_array($product->id, cloudPopupProducts())) {
+                return '<button class="btn '.$orderButton.' btn-modern buttonsale" data-toggle="modal" data-target="#tenancy" data-mydata="'.$product->id.'">
                                 <span style="white-space: nowrap;">Order Now</span>
                             </button>';
-                } else {
-                    return '<input type="submit" value="Order Now" class="btn ' . $orderButton . ' btn-modern buttonsale"></form>';
-                }
             } else {
-                return '<a class="btn ' . $orderButton . ' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
+                return '<input type="submit" value="Order Now" class="btn '.$orderButton.' btn-modern buttonsale"></form>';
             }
+        } else {
+            return '<a class="btn '.$orderButton.' btn-modern sales buttonsale" href="https://www.faveohelpdesk.com/contact-us/">Contact Sales</a>';
         }
+    }
 
     public function plansYear($url, $id)
     {
@@ -725,7 +726,7 @@ class PageController extends Controller
                 return '';
             }
 
-            $priceDescription = ''; 
+            $priceDescription = '';
 
             $plans = Plan::where('product', $productid)->get();
 
@@ -748,6 +749,7 @@ class PageController extends Controller
             return $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -785,8 +787,8 @@ class PageController extends Controller
                         }
 
                         if ($product->status) {
-                            return $description->no_of_agents 
-                                ? 'per month for <strong>' . $description->no_of_agents . ' agent</strong>'
+                            return $description->no_of_agents
+                                ? 'per month for <strong>'.$description->no_of_agents.' agent</strong>'
                                 : 'per month';
                         }
 
@@ -795,7 +797,7 @@ class PageController extends Controller
                 }
             }
 
-            if (!$product->status) {
+            if (! $product->status) {
                 $plan = $plans->first();
                 if ($plan && $plan->planPrice->isNotEmpty()) {
                     return $plan->planPrice->first()->price_description;
@@ -805,10 +807,10 @@ class PageController extends Controller
             return '';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return '';
         }
     }
-
 
     public function checkConfigKey($config, $transform)
     {

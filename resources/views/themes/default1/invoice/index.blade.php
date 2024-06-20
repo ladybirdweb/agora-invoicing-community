@@ -21,22 +21,6 @@ Invoices
     font-size: 48px;
 }
 
-#invoice-table {
-    position: relative;
-    z-index: 1;
-}
-.custom-dropdown .form-check {
-    padding-right: 60px;
-    position: relative;
-    right: -15px;
-}
-      .dropdown-menu {
-        position: absolute;
-        max-height: 300px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
    /* Loading spinner */
     #loading {
         position: fixed;
@@ -62,11 +46,61 @@ Invoices
     @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
- [type="search"] {
-         position: relative;
-         right: 180px;
-        }
+    }
+    
+   .custom-dropdown {
+    position: relative;
+    z-index: 1050;
+    }
+    
+
+    
+    .custom-dropdown .form-check {
+        padding-right: 60px; 
+        position: relative;
+        right: -15px; 
+    }
+    
+    .dropdown-menu {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        max-height: 150px;
+        overflow-y: auto;
+        overflow-x: hidden; 
+    }
+    
+    #invoice_export-report-btn,
+    .custom-dropdown {
+        z-index: 1000;
+    }
+    
+    #invoice_export-report-btn {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+    
+    .card-body.table-responsive {
+        position: relative;
+        overflow: hidden;
+        padding-top: 0px;
+    }
+    
+    .d-flex.justify-content-between {
+        margin-bottom: 1rem;
+    }
+    
+    [type="search"] {
+        position: relative;
+        right: 180px; /* Adjust as needed */
+    }
+    
+    .dataTables_filter {
+        position: relative;
+        z-index: 1;
+    }
+
+
 </style>
     <div class="col-sm-6">
         <h1>All Invoices</h1>
@@ -186,114 +220,108 @@ Invoices
         </div>
     </div>
 
-    <div class="card card-secondary card-outline">
-
+<div class="card card-secondary card-outline">
     <div class="card-header">
-
         <div id="response"></div>
-
-        <h3 class="card-title">{{Lang::get('message.invoices')}} </h3>
-            <div class="card-tools">
-                <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"  data-toggle="tooltip" title="Create new invoice" ><i class="fas fa-plus"></i></a>
-            </div>
+        <h3 class="card-title">{{ Lang::get('message.invoices') }}</h3>
+        <div class="card-tools">
+            <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 93%; top: 13px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <a href="{{ url('invoice/generate') }}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
     </div>
 
+    <div class="card-body table-responsive">
 
-    <div class="card-body table-responsive" style="overflow: hidden;padding-top: 0px;">
-          <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
-    <div class="col-md-12" style="position: relative;left: 86%; top: 90px;">
-            <form id="columnForm">
-        <div class="custom-dropdown" id="columnUpdate">
-            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" >
-                    <label class="form-check-label" for="name">checkbox</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="user_id" id="nameCheckbox" >
-                    <label class="form-check-label" for="name">Name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="email" id="inemailCheckbox">
-                    <label class="form-check-label" for="email">Email</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="mobile" id="inmobileCheckbox">
-                    <label class="form-check-label" for="mobile">Mobile</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="country" id="incountryCheckbox">
-                    <label class="form-check-label" for="country">Country</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox" >
-                    <label class="form-check-label" for="Registered">Invoice No</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="product" id="productCheckbox">
-                    <label class="form-check-label" for="Registered">Product Name</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="date" id="dateCheckbox" >
-                    <label class="form-check-label" for="Registered">Date</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="grand_total" id="totalCheckbox" >
-                    <label class="form-check-label" for="Registered">Total</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="status" id="instatusCheckbox" >
-                    <label class="form-check-label" for="status">Status</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="action" id="inactionCheckbox" >
-                    <label class="form-check-label" for="status">Action</label>
-                </div>
-                <br>
+            <div class="col-md-12" style="position: relative; left: 86%; top: 73px;">
+                <form id="columnForm">
+                    <div class="custom-dropdown" id="columnUpdate">
+                        <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 18px;">
+                            <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="insaveColumnsBtn">Save</button>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="user_id" id="nameCheckbox">
+                                <label class="form-check-label" for="nameCheckbox">Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="email" id="inemailCheckbox">
+                                <label class="form-check-label" for="inemailCheckbox">Email</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="mobile" id="inmobileCheckbox">
+                                <label class="form-check-label" for="inmobileCheckbox">Mobile</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="country" id="incountryCheckbox">
+                                <label class="form-check-label" for="incountryCheckbox">Country</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox">
+                                <label class="form-check-label" for="numberCheckbox">Invoice No</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product" id="productCheckbox">
+                                <label class="form-check-label" for="productCheckbox">Product Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="date" id="dateCheckbox">
+                                <label class="form-check-label" for="dateCheckbox">Date</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="grand_total" id="totalCheckbox">
+                                <label class="form-check-label" for="totalCheckbox">Total</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="status" id="instatusCheckbox">
+                                <label class="form-check-label" for="instatusCheckbox">Status</label>
+                            </div>
+
+                            <br>
+                            <button type="button" class="btn btn-primary btn-sm" style="left: 10px; position: relative;" id="insaveColumnsBtn">Apply</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        <div id="loading" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="loader" style="display: none;">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </div>
+                <table id="invoice-table" class="table display" cellspacing="0" width="100%">
+                    <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
+                    </button><br /><br />
+                    <thead>
+                        <tr>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Country</th>
+                            <th>Invoice No</th>
+                            <th>Product</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
-    </form>
-</div> 
-  <div id="loading" style="display: none;">
-                <div class="spinner"></div>
-            </div>
-        <div class="row">
-
-            <div class="col-md-12">
-
-                <div id="loader" style="display: none;">
-                    <i class="fa fa-spinner fa-spin"></i> 
-                </div>
-                  
-                <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
-                    <thead><tr>
-                        <th class="no-sort"><input type="checkbox"  name="select_all" onchange="checking(this)"></th>
-                         <th>User</th>
-                         <th>Email</th>
-                         <th>Mobile</th>
-                         <th>Country</th>
-                          <th>Invoice No</th>
-                          <th>Product</th>
-                          <th>Date</th>
-                          <th>Total</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr></thead>
-                     </table>
-               
-
-            </div>
-
-
     </div>
-
 </div>
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <script>
      $('ul.nav-sidebar a').filter(function() {
@@ -389,6 +417,7 @@ Invoices
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                location.reload();
                 console.log(response.message);
             },
             error: function(xhr) {

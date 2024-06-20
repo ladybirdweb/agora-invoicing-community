@@ -16,6 +16,7 @@ Users
     </div><!-- /.col -->
 @stop
     <style type="text/css">
+
         .custom-dropdown .form-check {
             padding-right: 60px;
             position: relative;
@@ -24,7 +25,7 @@ Users
           .dropdown-menu {
             position: absolute;
             max-height: 210px;
-            overflow-y: auto;
+            overflow-y: hidden;
             overflow-x: hidden;
         }
 
@@ -53,14 +54,38 @@ Users
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
        }
+
+        .table-responsive {
+            position: relative; 
+        }
+        
+        .custom-dropdown {
+            z-index: 1050; 
+        }
+        
+        .btn-alldell, #export-report-btn {
+            z-index: 1000; 
+        }
+        
+        .d-flex.justify-content-between {
+            margin-bottom: 1rem;
+        }
+        
+        .dropdown-menu {
+            z-index: 1050; 
+        }
+        
         [type="search"] {
-         position: relative;
-         right: 180px;
+            position: relative;
+            right: 180px;
+        }
+        
+        .dataTables_filter {
+            position: relative;
+            z-index: 1;
         }
 
-
-        
-    </style>
+     </style>
 @section('content')
 <div id="export-message"></div>
 
@@ -232,101 +257,89 @@ Users
     </div>
 </div>
 
-
 <div class="card card-secondary card-outline">
-
     <div class="card-header">
         <h3 class="card-title">Users</h3>
-
         <div class="card-tools">
-            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new user" style="position: relative;right: 8px;" ><span class="fas fa-plus"></span></a>
-
-
+            
+        <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new user" style="position: relative;right: 8px;">
+                <span class="fas fa-plus"></span>
+            </a>
         </div>
     </div>
-
+    
     <div id="response"></div>
 
-    <div class="card-body table-responsive" style="overflow: hidden;">
-        <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
-  <div id="loading" style="display: none;">
-                <div class="spinner"></div>
-            </div>
-
-       <div class="row">
-            <div class="col-md-12">
-
-                <table id="user-table" class="table display " cellspacing="0" width="100%" styleClass="borderless">
-
-                <div id="loading" style="display: none;">
-                    <div class="spinner"></div>
-                </div>
-                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users</button>
-               <br /><br />
-                    <thead><tr>
-                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Mobile</th>
-                            <th>Country</th>
-                            <th>Registered on</th>
-                             <th>Status</th>
-                            <th>Action</th>
-                        </tr></thead>
-                     </table>
-
-
-            </div>
-                  <div class="col-md-12" style="left: 85%; bottom: 506px;cursor: pointer;padding-top: 0px;">
-                                     <form id="columnForm">
-                                     <div class="custom-dropdown" id="columnUpdate">
-                                    <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-                                    &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox">
-                                            <label class="form-check-label" for="name">checkbox</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox">
-                                            <label class="form-check-label" for="name">Name</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
-                                            <label class="form-check-label" for="email">Email</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
-                                            <label class="form-check-label" for="mobile">Mobile</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
-                                            <label class="form-check-label" for="country">Country</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="created_at" id="RegisteredCheckbox">
-                                            <label class="form-check-label" for="Registered">Registered on</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="active" id="statusCheckbox">
-                                            <label class="form-check-label" for="status">Status</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox">
-                                            <label class="form-check-label" for="status">Action</label>
-                                        </div>
-                                        <br>
-
-                                        <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
-                                    </div>
-                                </div>
-                            </form>
+    <div class="card-body table-responsive">
+        <div class="d-flex justify-content-between mb-3">
+            <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                <i class="fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users
+            </button>
+            
+            <form id="columnForm">
+                <div class="custom-dropdown" id="columnUpdate">
+                    <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 52px;">
+                        <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox">
+                            <label class="form-check-label" for="nameCheckbox">Name</label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
+                            <label class="form-check-label" for="emailCheckbox">Email</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
+                            <label class="form-check-label" for="mobileCheckbox">Mobile</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
+                            <label class="form-check-label" for="countryCheckbox">Country</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="created_at" id="RegisteredCheckbox">
+                            <label class="form-check-label" for="RegisteredCheckbox">Registered on</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="active" id="statusCheckbox">
+                            <label class="form-check-label" for="statusCheckbox">Status</label>
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-primary btn-sm" style="left: 10px; position: relative;" id="saveColumnsBtn">Apply</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
+        
+        <div id="loading" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+
+        <table id="user-table" class="table display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Country</th>
+                    <th>Registered on</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+          
+        </table>
     </div>
 </div>
+
+
 <div id="gif"></div>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
@@ -417,6 +430,7 @@ $(document).ready(function() {
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                location.reload();
                 console.log(response.message);
             },
             error: function(xhr) {

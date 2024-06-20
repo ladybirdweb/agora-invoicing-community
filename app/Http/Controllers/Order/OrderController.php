@@ -636,6 +636,7 @@ class OrderController extends BaseOrderController
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
             if ($driver->name != 'Sync') {
+                app('queue')->setDefaultDriver($driver->short_name);
                 ReportExport::dispatch('orders', $selectedColumns, $searchParams, $email)->onQueue('reports');
 
                 return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);

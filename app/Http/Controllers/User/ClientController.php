@@ -636,7 +636,6 @@ class ClientController extends AdvanceSearchController
         $reportColumns = ReportColumn::whereIn('key', $selectedColumns)
                                  ->where('type', $entityType)
                                  ->pluck('id', 'key');
-                                 
 
         UserLinkReport::where('user_id', $userId)->where('type', $entityType)->delete();
 

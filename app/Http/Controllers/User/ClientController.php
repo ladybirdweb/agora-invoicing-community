@@ -580,7 +580,6 @@ class ClientController extends AdvanceSearchController
             \Log::error('Export failed: '.$e->getMessage());
 
             return response()->json(['message' => $e->getMessage()], 500);
-
         }
     }
 

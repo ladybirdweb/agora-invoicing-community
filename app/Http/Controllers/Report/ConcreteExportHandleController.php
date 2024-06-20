@@ -112,6 +112,10 @@ class ConcreteExportHandleController extends ExportHandleController
             });
 
             $usersData = $filteredUsers;
+            if ($usersData->isEmpty()) {
+                throw new \Exception("No data available for export.");
+            }
+
             $limit = ReportSetting::first()->value('records');
             $chunks = $usersData->chunk($limit);
 
@@ -216,6 +220,11 @@ class ConcreteExportHandleController extends ExportHandleController
             });
 
             $invoicesData = $filteredInvoices;
+            if ($invoicesData->isEmpty()) {
+                throw new \Exception("No data available for export.");
+            }
+
+          
 
             // Get user details for email
             $id = User::where('email', $email)->value('id');
@@ -258,6 +267,8 @@ class ConcreteExportHandleController extends ExportHandleController
                 '<br><br>Kind regards,<br>'.$user->first_name;
 
             $mail->SendEmail($from, $email, $emailContent, 'Invoice report available for download');
+
+
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -325,7 +336,11 @@ class ConcreteExportHandleController extends ExportHandleController
 
                 return $orderData;
             });
+            
 
+            if ($filteredOrders->isEmpty()) {
+                throw new \Exception("No data available for export.");
+            }
             // Get user details for email
             $id = User::where('email', $email)->value('id');
             $user = User::find($id);
@@ -577,6 +592,10 @@ class ConcreteExportHandleController extends ExportHandleController
 
             return $tenantData;
         });
+
+         if ($filteredTenants->isEmpty()) {
+                throw new \Exception("No data available for export.");
+            }
         // Get user details for email
         $id = User::where('email', $email)->value('id');
         $user = User::find($id);

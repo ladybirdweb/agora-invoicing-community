@@ -376,7 +376,7 @@ class ReportColumnSeeder extends Seeder
         ]);
     }
 }
-class ReportColumnSeeder extends Seeder
+class ReportSettingSeeder extends Seeder
 {
     public function run()
     {

@@ -117,7 +117,7 @@ Orders
         }
         
         .dataTables_filter {
-            position: fixed;
+            position: relative;
             z-index: 1;
             right: 50px; 
         }

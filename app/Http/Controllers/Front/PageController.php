@@ -736,7 +736,7 @@ class PageController extends Controller
                         $description = $plan->planPrice->first();
 
                         if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) {
-                          $priceDescription = 'free';
+                            $priceDescription = 'free';
                         } else {
                             $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agent</strong>' : 'per month';
                         }
@@ -781,10 +781,9 @@ class PageController extends Controller
                 if (in_array($plan->days, [365, 366])) {
                     $description = $plan->planPrice->first();
                     if ($description) {
-                     if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) {
-                        return 'free';
-                     }
-
+                        if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) {
+                            return 'free';
+                        }
 
                         if ($product->status) {
                             return $description->no_of_agents

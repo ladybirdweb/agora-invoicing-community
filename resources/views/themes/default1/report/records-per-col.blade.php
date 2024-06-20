@@ -23,18 +23,33 @@ Report settings
           {!! Form::open(['url' => 'add_records', 'method' => 'post']) !!}
         <div class="card-body table-responsive">
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('records', Lang::get('Records per export'), ['class' => 'required']) !!}
-                         <i class="fas fa-question-circle" data-toggle="tooltip" title="add a records per sheer and the limit maxiumn is 3000."></i>
-                          
-                        {!! Form::text('records', $settings->records ?? null, ['class' => 'form-control']) !!}
-
-                    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('records', Lang::get('Records per export'), ['class' => 'required']) !!}
+                    <i class="fas fa-question-circle" data-toggle="tooltip" title="Add records per sheet. The maximum limit is 3000."></i>
+                    
+                    {!! Form::select('records', [
+                        200 => '200',
+                        400 => '400',
+                        600 => '600',
+                        800 => '800',
+                        1000 => '1000',
+                        1200 => '1200',
+                        1400 => '1400',
+                        1600 => '1600',
+                        1800 => '1800',
+                        2000 => '2000',
+                        2200 => '2200',
+                        2400 => '2400',
+                        2600 => '2600',
+                        2800 => '2800',
+                        3000 => '3000'
+                    ], $settings->records ?? null, ['class' => 'form-control']) !!}
                 </div>
-
             </div>
+        </div>
+
             <div class="row">
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">

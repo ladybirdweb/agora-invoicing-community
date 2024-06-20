@@ -3,6 +3,7 @@
 namespace Database\Seeders\v4_0_2_1;
 use Illuminate\Database\Seeder;
 use App\ReportColumn;
+use App\ReportSetting;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -14,8 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         ReportColumn::truncate();
+        ReportSetting::truncate();
 
         $this->call([ReportColumnSeeder::class]);
+        $this->command->info('Report column Table Seeded!');
+
+        $this->call([ReportSettingSeeder::class]);
         $this->command->info('Report column Table Seeded!');
 
          \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -368,6 +373,16 @@ class ReportColumnSeeder extends Seeder
             'label' => 'action',
             'type' => 'tenats',
             'default' => '1'
+        ]);
+    }
+}
+class ReportColumnSeeder extends Seeder
+{
+    public function run()
+    {
+        ReportSetting::create([
+            'id' => '1',
+            'records' => '3000'
         ]);
     }
 }

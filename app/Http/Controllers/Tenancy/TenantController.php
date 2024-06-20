@@ -696,6 +696,7 @@ class TenantController extends Controller
             $email = \Auth::user()->email;
             $driver = QueueService::where('status', '1')->first();
             if ($driver->name != 'Sync') {
+                app('queue')->setDefaultDriver($driver->short_name);
                 ReportExport::dispatch('tenats', $selectedColumns, $searchParams, $email)->onQueue('reports');
 
                 return response()->json(['message' => 'System is generating your report. You will be notified once completed'], 200);

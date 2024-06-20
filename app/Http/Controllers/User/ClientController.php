@@ -569,6 +569,7 @@ class ClientController extends AdvanceSearchController
             $driver = QueueService::where('status', '1')->first();
 
             if ($driver->name != 'Sync') {
+                app('queue')->setDefaultDriver($driver->short_name);
                 ReportExport::dispatch('users', $selectedColumns, $searchParams, $email)->onQueue('reports');
 
                 return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
@@ -630,9 +631,12 @@ class ClientController extends AdvanceSearchController
         $userId = auth()->id();
         $entityType = $request->entity_type;
         $selectedColumns = $request->selected_columns;
+        $selectedColumns = array_unique(array_merge($selectedColumns, ['checkbox', 'action']));
+
         $reportColumns = ReportColumn::whereIn('key', $selectedColumns)
                                  ->where('type', $entityType)
                                  ->pluck('id', 'key');
+                                 
 
         UserLinkReport::where('user_id', $userId)->where('type', $entityType)->delete();
 

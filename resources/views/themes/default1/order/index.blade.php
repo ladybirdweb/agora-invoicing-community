@@ -4,16 +4,16 @@ Orders
 @stop
 @section('content-header')
 <style type="text/css">
-    .custom-dropdown .form-check {
-    padding-right: 60px;
-    position: relative;
-    right: -15px;
-}
-    .dropdown-menu {
-        max-height: 250px; 
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+/*    .custom-dropdown .form-check {*/
+/*    padding-right: 60px;*/
+/*    position: relative;*/
+/*    right: -15px;*/
+/*}*/
+/*    .dropdown-menu {*/
+/*        max-height: 250px; */
+/*        overflow-y: auto;*/
+/*        overflow-x: hidden;*/
+/*    }*/
    /* Loading spinner */
     #loading {
         position: fixed;
@@ -40,10 +40,7 @@ Orders
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
     }
-    [type="search"] {
-         position: relative;
-         right: 180px;
-        }
+
 
         #order-table_wrapper {
             overflow-x: auto; 
@@ -72,6 +69,59 @@ Orders
         #order-table td {
             word-break: initial;
         }
+        
+        .custom-dropdown {
+            position: relative;
+            z-index: 1050;
+        }
+        
+        
+        .custom-dropdown .form-check {
+            padding-right: 60px; 
+            position: relative;
+            right: -15px; 
+        }
+        
+        .dropdown-menu {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            max-height: 150px; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            width: max-content; 
+        }
+        
+        #order_export-report-btn,
+        .custom-dropdown {
+            z-index: 1000;
+        }
+        
+        #order_export-report-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        
+        .card-body.table-responsive {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .d-flex.justify-content-between {
+            margin-bottom: 1rem;
+        }
+        
+        [type="search"] {
+            position: relative;
+            right: 180px;
+        }
+        
+        .dataTables_filter {
+            position: fixed;
+            z-index: 1;
+            right: 50px; 
+        }
+
 </style>
     <div class="col-sm-6">
         <h1>View All Orders</h1>
@@ -195,38 +245,103 @@ Orders
 </div>
     </div>
 </div>
-<div class="card card-secondary card-outline">
-
+    <div class="card card-secondary card-outline">
     <div class="card-header">
-
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
         <div class="card-tools">
-            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice"  style="position: relative;right: 8px;"><span class="fas fa-plus"></span></a>
-
-
+        <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 91%; top: 13px;">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
+                <span class="fas fa-plus"></span>
+            </a>
         </div>
-            <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
     </div>
 
+    <div class="card-body table-responsive" style="padding-top: 0px; overflow: hidden;">
 
-
-    <div class="card-body table-responsive" style="padding-top: 20px;overflow: hidden;">
-          <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;"><i class="fas fa-paper-plane"></i></button>
+        
         <div class="row">
-
             <div class="col-md-12">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="custom-dropdown" id="columnUpdate">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 615%;top: 108px;">
+                            <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="client" id="clientCheckbox">
+                                <label class="form-check-label" for="clientCheckbox">Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
+                                <label class="form-check-label" for="emailCheckbox">Email</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
+                                <label class="form-check-label" for="mobileCheckbox">Mobile</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
+                                <label class="form-check-label" for="countryCheckbox">Country</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox">
+                                <label class="form-check-label" for="numberCheckbox">Order No</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="status" id="statusCheckbox">
+                                <label class="form-check-label" for="statusCheckbox">Order Status</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product_name" id="productCheckbox">
+                                <label class="form-check-label" for="productCheckbox">Product Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="plan_name" id="planCheckbox">
+                                <label class="form-check-label" for="planCheckbox">Plan Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="version" id="versionCheckbox">
+                                <label class="form-check-label" for="versionCheckbox">Version</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="agents" id="agentsCheckbox">
+                                <label class="form-check-label" for="agentsCheckbox">Agents</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="order_status" id="inorder_statusCheckbox">
+                                <label class="form-check-label" for="inorder_statusCheckbox">Status</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="order_date" id="inorder_dateCheckbox">
+                                <label class="form-check-label" for="inorder_dateCheckbox">Order Date</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="update_ends_at" id="inupdate_ends_atCheckbox">
+                                <label class="form-check-label" for="inupdate_ends_atCheckbox">Expiry Date</label>
+                            </div>
+                            <br>
+                            <button type="button" class="btn btn-primary btn-sm" style="left: 10px; position: relative;" id="saveColumnsBtn">Apply</button>
+                        </div>
+                    </div>
+                </div>
 
-                 <div id="loading" style="display: none;">
-                <div class="spinner"></div>
-                 </div>
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
-                    <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                          <th>User</th>
-                           <th>Email</th>
-                           <th>Mobile</th>
+                    <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
+                    </button><br /><br />
+                    <thead>
+                        <tr>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
                             <th>Country</th>
                             <th>Order No</th>
                             <th>Order Status</th>
@@ -234,93 +349,18 @@ Orders
                             <th>Plan</th>
                             <th>Version</th>
                             <th>Agents</th>
-                             <th>Status</th>
-                              <th>Order Date</th>
-                              <th>Expiry</th>
+                            <th>Status</th>
+                            <th>Order Date</th>
+                            <th>Expiry</th>
                             <th>Action</th>
-                        </tr></thead>
-                     </table>
-                </div>
-     <div class="col-md-12" style="left: 85%; bottom: 1256px;cursor: pointer;padding-top: 0px;">
-
-    <form id="columnForm">
-        <div class="custom-dropdown" id="columnUpdate">
-            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="checkbox" id="checkCheckbox" >
-                    <label class="form-check-label" for="name">checkbox</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="client" id="clientCheckbox" >
-                    <label class="form-check-label" for="client">Name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
-                    <label class="form-check-label" for="email">Email</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
-                    <label class="form-check-label" for="mobile">Mobile</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
-                    <label class="form-check-label" for="country">Country</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox" >
-                    <label class="form-check-label" for="number">Order No</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="status" id="statusCheckbox">
-                    <label class="form-check-label" for="status">Order Status</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="product_name" id="productCheckbox" > 
-                    <label class="form-check-label" for="product_name">Product Name</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="plan_name" id="planCheckbox">
-                    <label class="form-check-label" for="plan_name">Plan Name</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="version" id="versionCheckbox" >
-                    <label class="form-check-label" for="version">Version</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="agents" id="agentsCheckbox" >
-                    <label class="form-check-label" for="agents">Agents</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="order_status" id="inorder_statusCheckbox" >
-                    <label class="form-check-label" for="order_status">Status</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="order_date" id="inorder_dateCheckbox" >
-                    <label class="form-check-label" for="order_date">Order Date</label>
-                </div>
-                      <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="update_ends_at" id="inupdate_ends_atCheckbox" >
-                    <label class="form-check-label" for="update_ends_at">Expiry Date</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox" >
-                    <label class="form-check-label" for="action">Action</label>
-                </div>
-                <br>
-
-                <button type="button" class="btn btn-primary btn-sm" style="left: 10px;position: relative;" id="saveColumnsBtn">Save</button>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
-    </form>
-</div>
-        </div>
-
     </div>
-
 </div>
+
    <script>
        $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_order';
@@ -436,6 +476,7 @@ Orders
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                location.reload();
                 console.log(response.message);
             },
             error: function(xhr) {

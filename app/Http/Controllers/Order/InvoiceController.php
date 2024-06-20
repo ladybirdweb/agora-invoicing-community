@@ -580,6 +580,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($driver->name != 'Sync') {
                 app('queue')->setDefaultDriver($driver->short_name);
                 ReportExport::dispatch('invoices', $selectedColumns, $searchParams, $email)->onQueue('reports');
+
                 return response()->json(['message' => 'System is generating you report. You will be notified once completed'], 200);
             } else {
                 return response()->json(['message' => 'Cannot use sync queue driver for export'], 400);

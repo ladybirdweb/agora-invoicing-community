@@ -735,8 +735,8 @@ class PageController extends Controller
                     if ($plan->days == 30 || $plan->days == 31) {
                         $description = $plan->planPrice->first();
 
-                        if ($description->price_description == 'Free') {
-                            $priceDescription = 'free';
+                        if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) {
+                          $priceDescription = 'free';
                         } else {
                             $priceDescription = $description->no_of_agents ? 'per month for <strong>'.' '.$description->no_of_agents.' '.'agent</strong>' : 'per month';
                         }
@@ -775,16 +775,16 @@ class PageController extends Controller
 
             $plans = Plan::where('product', $productId)
                         ->with('planPrice')
-                        ->get();
+                        ->cursor();
 
             foreach ($plans as $plan) {
                 if (in_array($plan->days, [365, 366])) {
                     $description = $plan->planPrice->first();
-
                     if ($description) {
-                        if ($description->price_description === 'Free') {
-                            return 'free';
-                        }
+                     if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) {
+                        return 'free';
+                     }
+
 
                         if ($product->status) {
                             return $description->no_of_agents

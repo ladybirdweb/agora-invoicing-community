@@ -65,7 +65,7 @@ class SubscriptionControllerTest extends DBTestCase
         $subscription = Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v6.0.0', 'update_ends_at' => $date]);
         $controller = $this->instantiateDependencies();
         $response = (new SubscriptionController($controller))->getOnDayExpiryInfoSubs();
-        $this->assertEmpty($response->get());
+        $this->assertEmpty($response);
     }
 
     //return onday expired data in autorenewal
@@ -85,7 +85,7 @@ class SubscriptionControllerTest extends DBTestCase
         $subscription = Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v6.0.0', 'update_ends_at' => $date]);
         $controller = $this->instantiateDependencies();
         $response = (new SubscriptionController($controller))->getOnDayExpiryInfoSubs();
-        $this->assertEquals(0, $response->get()->count());
+        $this->assertEmpty($response);
     }
 
     public function test_autoRenewal_return_payment_status_suucess()

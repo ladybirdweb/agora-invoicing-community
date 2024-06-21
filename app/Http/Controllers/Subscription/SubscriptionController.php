@@ -10,8 +10,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\BaseRenewController;
 use App\Http\Controllers\RazorpayController;
 use App\Model\Common\Country;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -25,8 +27,6 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Razorpay\Api\Api;
-use App\Model\Common\StatusSetting;
-use App\Model\Mailjob\ExpiryMailDay;
 
 class SubscriptionController extends Controller
 {
@@ -102,7 +102,7 @@ class SubscriptionController extends Controller
                               ->orWhere('autoRenew_status', '!=', 2);
                     })
                     ->get()
-                    ->toArray(); 
+                    ->toArray();
 
                 $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
             }
@@ -115,9 +115,7 @@ class SubscriptionController extends Controller
         return [];
     }
 
-
-
-   public function getCreatedSubscription()
+    public function getCreatedSubscription()
     {
         $tomorrow = now()->startOfDay()->addDay();
         $twoDaysAgo = now()->subDays(2)->startOfDay();
@@ -469,9 +467,9 @@ class SubscriptionController extends Controller
     {
         $razorpayController = new RazorpayController();
         $rzpResponse = $razorpayController->handleRzpAutoPay($unit_cost, $plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end, $product_details);
-    
+
         if ($rzpResponse->status == 'created') {
-            $cost = $this->calculateReverseUnitCost($currency,$unit_cost);
+            $cost = $this->calculateReverseUnitCost($currency, $unit_cost);
             $this->mailSendToActiveStripeSubscription($subscription, $product_details, $cost, $currency, $plan, $rzpResponse->short_url, $user);
             Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzpResponse->id, 'rzp_subscription' => '2']);
         }

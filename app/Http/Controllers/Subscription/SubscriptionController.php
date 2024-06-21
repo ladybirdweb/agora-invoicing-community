@@ -25,6 +25,8 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Razorpay\Api\Api;
+use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\ExpiryMailDay;
 
 class SubscriptionController extends Controller
 {
@@ -71,23 +73,51 @@ class SubscriptionController extends Controller
 
     public function getOnDayExpiryInfoSubs()
     {
-        $yesterday = new Carbon('yesterday');
-        $tomorrow = new Carbon('tomorrow');
-        $daybefore = new Carbon('-1 days');
-        $today = new Carbon('today');
-        $sub = Subscription::whereNotNull('update_ends_at')
-            ->where('is_subscribed', 1)
-            ->where(function ($query) {
-                $query->where('rzp_subscription', '!=', 2)
-                      ->orWhere('autoRenew_status', '!=', 2);
-            })
-            ->whereBetween('update_ends_at', [$yesterday, $tomorrow])
-            ->whereBetween('support_ends_at', [$yesterday, $tomorrow]);
+        $status = StatusSetting::value('subs_expirymail');
+        if ($status == 1) {
+            $daysArray = ExpiryMailDay::pluck('autorenewal_days')->toArray();
 
-        return $sub;
+            if (empty($daysArray) || empty($daysArray[0])) {
+                return [];
+            }
+
+            $decodedData = json_decode($daysArray[0]);
+
+            if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
+                return [];
+            }
+
+            $subscriptions = [];
+            foreach ($decodedData as $day) {
+                $day = (int) $day;
+                $startDate = Carbon::now()->toDateString();
+                $endDate = Carbon::now()->addDays($day)->toDateString();
+
+                $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+                    ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
+                    ->where('orders.order_status', 'executed')
+                    ->where('is_subscribed', 1)
+                    ->where(function ($query) {
+                        $query->where('rzp_subscription', '!=', 2)
+                              ->orWhere('autoRenew_status', '!=', 2);
+                    })
+                    ->get()
+                    ->toArray(); 
+
+                $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
+            }
+
+            $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+
+            return $uniqueSubscriptions;
+        }
+
+        return [];
     }
 
-    public function getCreatedSubscription()
+
+
+   public function getCreatedSubscription()
     {
         $tomorrow = now()->startOfDay()->addDay();
         $twoDaysAgo = now()->subDays(2)->startOfDay();
@@ -109,8 +139,9 @@ class SubscriptionController extends Controller
                 $this->checkSubscriptionStatus($sub);
             }
             //Retrieve expired subscription details
-            $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
+            $subscriptions_detail = $this->getOnDayExpiryInfoSubs();
             foreach ($subscriptions_detail as $subscription) {
+                $subscription = (object) $subscription;
                 $userid = $subscription->user_id;
                 $end = $subscription->update_ends_at;
                 $cronController = new CronController();
@@ -185,6 +216,7 @@ class SubscriptionController extends Controller
         $today = new DateTime();
         $today->modify('+1 day');
         $expiry_date = $today->format('d M Y');
+        $date = $subscription->update_ends_at->format('d M Y');
         $order = Order::where('id', $subscription->order_id)->first();
 
         $replace = [
@@ -199,6 +231,7 @@ class SubscriptionController extends Controller
             'company_title' => $setting->company,
             'url' => $url,
             'number' => $order->number,
+            'date' => $date,
         ];
 
         $type = '';
@@ -436,8 +469,10 @@ class SubscriptionController extends Controller
     {
         $razorpayController = new RazorpayController();
         $rzpResponse = $razorpayController->handleRzpAutoPay($unit_cost, $plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end, $product_details);
-
+    
         if ($rzpResponse->status == 'created') {
+            $cost = $this->calculateReverseUnitCost($currency,$unit_cost);
+            $this->mailSendToActiveStripeSubscription($subscription, $product_details, $cost, $currency, $plan, $rzpResponse->short_url, $user);
             Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzpResponse->id, 'rzp_subscription' => '2']);
         }
     }

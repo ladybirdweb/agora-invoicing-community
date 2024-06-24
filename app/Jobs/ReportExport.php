@@ -19,6 +19,9 @@ class ReportExport implements ShouldQueue
     protected $email;
     protected $exportHandleController;
 
+    public $tries = 5;
+    public $timeout = 300;
+
     /**
      * Create a new job instance.
      */

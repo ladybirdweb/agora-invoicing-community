@@ -757,4 +757,5 @@ return [
     'tooltip_js_code' => 'Enter your JavaScript code in the box below. Remember, you can include <script> at the beginning and </script> at the end, or omit them entirely. The system will handle the formatting accordingly. Just choose one approach to avoid any issues.',
     'existings_invoice' => 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again',
     'user_suspend' => 'This user is suspended from system. Restore the user to view details',
+    'country_notfound' => 'Country could not be determined',
 ];

@@ -262,10 +262,10 @@ Users
         <h3 class="card-title">Users</h3>
         <div class="card-tools">
             
-        <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 93%;top: 13px;">
+        <button type="button" id="export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 92%;top: 13px;">
             <i class="fas fa-paper-plane"></i>
         </button>
-            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new user" style="position: relative;right: 8px;">
+            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new user" style="position: relative;right: 10px;">
                 <span class="fas fa-plus"></span>
             </a>
         </div>

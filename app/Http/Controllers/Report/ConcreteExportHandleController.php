@@ -56,30 +56,34 @@ class ConcreteExportHandleController extends ExportHandleController
         parent::__construct($reportType, $selectedColumns, $searchParams, $email);
     }
 
-    public function userExports($selectedColumns, $searchParams, $email)
-    {
-        try {
-            $selectedColumns = array_filter($selectedColumns, function ($column) {
-                return ! in_array($column, ['checkbox', 'action']);
-            });
+public function userExports($selectedColumns, $searchParams, $email)
+{
+    try {
+        // Filter out unwanted columns
+        $selectedColumns = array_filter($selectedColumns, function ($column) {
+            return ! in_array($column, ['checkbox', 'action']);
+        });
 
-            $users = User::query();
+        // Prepare the query
+        $users = User::query();
 
-            foreach ($searchParams as $key => $value) {
-                if ($value !== null && $value !== '') {
-                    if ($key === 'reg_from') {
-                        $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
-                    } elseif ($key === 'reg_till') {
-                        $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
-                    } else {
-                        $users->where($key, $value);
-                    }
+        // Apply search filters
+        foreach ($searchParams as $key => $value) {
+            if ($value !== null && $value !== '') {
+                if ($key === 'reg_from') {
+                    $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
+                } elseif ($key === 'reg_till') {
+                    $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
+                } else {
+                    $users->where($key, $value);
                 }
             }
+        }
 
-            $users->orderBy('created_at', 'desc');
+        $users->orderBy('created_at', 'desc');
 
-            if (! empty($selectedColumns)) {
+        // Ensure status columns are included
+        if (! empty($selectedColumns) && $selectedColumns == 'active') {
                 $statusColumns = ['mobile_verified', 'active', 'is_2fa_enabled'];
                 foreach ($statusColumns as $statusColumn) {
                     if (! in_array($statusColumn, $selectedColumns)) {
@@ -88,301 +92,321 @@ class ConcreteExportHandleController extends ExportHandleController
                 }
             }
 
-            $filteredUsers = $users->get()->map(function ($user) use ($selectedColumns) {
-                $userData = [];
-                foreach ($selectedColumns as $column) {
-                    switch ($column) {
-                        case 'name':
-                            $userData['name'] = $user->first_name.' '.$user->last_name;
-                            break;
-                        case 'mobile':
-                            $userData['mobile'] = '+'.$user->mobile_code.' '.$user->mobile;
-                            break;
-                        case 'mobile_verified':
-                        case 'active':
-                        case 'is_2fa_enabled':
-                            $userData[$column] = $user->$column ? 'Active' : 'Inactive';
-                            break;
-                        default:
-                            $userData[$column] = $user->$column;
-                    }
+        // Use LazyCollection for efficient memory usage
+        $filteredUsers = $users->lazy()->map(function ($user) use ($selectedColumns) {
+            $userData = [];
+            foreach ($selectedColumns as $column) {
+                switch ($column) {
+                    case 'name':
+                        $userData['name'] = $user->first_name.' '.$user->last_name;
+                        break;
+                    case 'mobile':
+                        $userData['mobile'] = '+'.$user->mobile_code.' '.$user->mobile;
+                        break;
+                    case 'mobile_verified':
+                    case 'active':
+                    case 'is_2fa_enabled':
+                        $userData[$column] = $user->$column ? 'Active' : 'Inactive';
+                        break;
+                    default:
+                        $userData[$column] = $user->$column;
                 }
-
-                return $userData;
-            });
-
-            $usersData = $filteredUsers;
-            if ($usersData->isEmpty()) {
-                throw new \Exception('No data available for export.');
             }
 
-            $limit = ReportSetting::first()->value('records');
-            $chunks = $usersData->chunk($limit);
+            return $userData;
+        });
 
-            $id = User::where('email', $email)->value('id');
-            $user = User::find($id);
-            $timestamp = now()->format('Ymd_His');
-            $folderName = 'users_export_'.$id.'_'.$timestamp;
-            $folderPath = storage_path('app/public/export/'.$folderName);
-
-            // Create directory
-            if (! file_exists($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
-
-            foreach ($chunks as $index => $chunk) {
-                $export = new UsersExport($selectedColumns, $chunk, $index + 1);
-                $fileName = 'users_'.$id.'_part'.($index + 1).'.xlsx';
-                $filePath = $folderPath.'/'.$fileName;
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
-            }
-
-            $exportDetail = ExportDetail::create([
-                'user_id' => $id,
-                'file_path' => $folderPath,
-                'file' => $folderName,
-                'name' => 'users',
-            ]);
-
-            $settings = \App\Model\Common\Setting::find(1);
-            $from = $settings->email;
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
-            $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
-                '<br><br>User report is successfully generated and ready for download.'.
-                '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
-                '<br><br>Please note this link will be expired in 6 hours.'.
-                '<br><br>Kind regards,<br>'.$user->first_name;
-
-            $mail->SendEmail($from, $email, $emailContent, 'User report available for download');
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        if ($filteredUsers->isEmpty()) {
+            return response()->json(['message' => 'No data available for export.'], 400);
         }
+
+        // Get the report setting for the record limit
+        $limit = ReportSetting::first()->value('records');
+        $chunks = $filteredUsers->chunk($limit);
+
+        // Get user details for email
+        $id = User::where('email', $email)->value('id');
+        $user = User::find($id);
+        $timestamp = now()->format('Ymd_His');
+        $folderName = 'users_export_'.$id.'_'.$timestamp.'_XLSX';
+        $folderPath = storage_path('app/public/export/'.$folderName);
+
+        // Create directory if it doesn't exist
+        if (! file_exists($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
+
+        // Process and store each chunk
+        foreach ($chunks as $index => $chunk) {
+            $export = new UsersExport($selectedColumns, $chunk, $index + 1);
+            $fileName = 'users_'.$id.'_part'.($index + 1).'.xlsx';
+            $filePath = $folderPath.'/'.$fileName;
+            Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+        }
+
+        // Save export details
+        $exportDetail = ExportDetail::create([
+            'user_id' => $id,
+            'file_path' => $folderPath,
+            'file' => $folderName,
+            'name' => 'users',
+        ]);
+
+        // Send email notification
+        $settings = \App\Model\Common\Setting::find(1);
+        $from = $settings->email;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
+        $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
+            '<br><br>User report is successfully generated and ready for download.'.
+            '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
+            '<br><br>Please note this link will be expired in 6 hours.'.
+            '<br><br>Kind regards,<br>'.$user->first_name;
+
+        $mail->SendEmail($from, $email, $emailContent, 'User report available for download');
+
+        return response()->json(['message' => 'Report successfully generated and email sent.'], 200);
+    } catch (Exception $ex) {
+        return response()->json(['message' => 'Failed to generate report: ' . $ex->getMessage()], 500);
     }
+}
+
 
     public function invoiceExports($selectedColumns, $searchParams, $email)
-    {
-        try {
-            // Filter out unwanted columns
-            $selectedColumns = array_filter($selectedColumns, function ($column) {
-                return ! in_array($column, ['checkbox', 'action']);
-            });
+{
+    try {
+        // Filter out unwanted columns
+        $selectedColumns = array_filter($selectedColumns, function ($column) {
+            return ! in_array($column, ['checkbox', 'action']);
+        });
 
-            // Perform search and filtering
-            $request = new Request();
-            $request->merge($searchParams);
-            $name = $request->input('name');
-            $invoice_no = $request->input('invoice_no');
-            $status = $request->input('status');
-            $currency = $request->input('currency_id');
-            $from = $request->input('from');
-            $till = $request->input('till');
-            $invoices = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
-            $invoices->orderBy('date', 'desc');
+        // Perform search and filtering
+        $request = new Request();
+        $request->merge($searchParams);
+        $name = $request->input('name');
+        $invoice_no = $request->input('invoice_no');
+        $status = $request->input('status');
+        $currency = $request->input('currency_id');
+        $from = $request->input('from');
+        $till = $request->input('till');
 
-            // Prepare filtered invoices data
-            $filteredInvoices = $invoices->get()->map(function ($invoice) use ($selectedColumns) {
-                $invoiceData = [];
-                foreach ($selectedColumns as $column) {
-                    switch ($column) {
-                        case 'user_id':
-                            $user = $invoice->user;
-                            $invoiceData['name'] = $user ? $user->first_name.' '.$user->last_name : null;
-                            break;
-                        case 'email':
-                            $invoiceData['email'] = $user ? $user->email : null;
-                            break;
-                        case 'mobile':
-                            $invoiceData['mobile'] = $user ? '+'.$user->mobile_code.' '.$user->mobile : null;
-                            break;
-                        case 'country':
-                            $invoiceData['country'] = $user ? $user->country : null;
-                            break;
-                        case 'grand_total':
-                            $invoiceData['total'] = currencyFormat($invoice->grand_total, $code = $invoice->currency);
-                            break;
-                        case 'product':
-                            $item = InvoiceItem::where('invoice_id', $invoice->id)->first();
-                            $invoiceData['product'] = $item ? $item->product_name : null;
-                            break;
-                        case 'date':
-                            $invoiceData['date'] = \Carbon\Carbon::parse($invoice->created_at)->format('Y-m-d');
-                            break;
-                        case 'status':
-                            $invoiceData['status'] = $this->getStatus($invoice->status);
-                            break;
-                        default:
-                            $invoiceData[$column] = $invoice->$column;
-                    }
+        // Get invoices with filters applied
+        $invoices = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
+        $invoices->orderBy('date', 'desc');
+
+        // Use LazyCollection for efficient memory usage
+        $filteredInvoices = $invoices->lazy()->map(function ($invoice) use ($selectedColumns) {
+            $invoiceData = [];
+            foreach ($selectedColumns as $column) {
+                switch ($column) {
+                    case 'user_id':
+                        $user = $invoice->user;
+                        $invoiceData['name'] = $user ? $user->first_name.' '.$user->last_name : null;
+                        break;
+                    case 'email':
+                        $invoiceData['email'] = $user ? $user->email : null;
+                        break;
+                    case 'mobile':
+                        $invoiceData['mobile'] = $user ? '+'.$user->mobile_code.' '.$user->mobile : null;
+                        break;
+                    case 'country':
+                        $invoiceData['country'] = $user ? $user->country : null;
+                        break;
+                    case 'grand_total':
+                        $invoiceData['total'] = currencyFormat($invoice->grand_total, $invoice->currency);
+                        break;
+                    case 'product':
+                        $item = InvoiceItem::where('invoice_id', $invoice->id)->first();
+                        $invoiceData['product'] = $item ? $item->product_name : null;
+                        break;
+                    case 'date':
+                        $invoiceData['date'] = \Carbon\Carbon::parse($invoice->created_at)->format('Y-m-d');
+                        break;
+                    case 'status':
+                        $invoiceData['status'] = $this->getStatus($invoice->status);
+                        break;
+                    default:
+                        $invoiceData[$column] = $invoice->$column;
                 }
-
-                return $invoiceData;
-            });
-
-            $invoicesData = $filteredInvoices;
-            if ($invoicesData->isEmpty()) {
-                throw new \Exception('No data available for export.');
             }
+            return $invoiceData;
+        });
 
-            // Get user details for email
-            $id = User::where('email', $email)->value('id');
-            $user = User::find($id);
-            $timestamp = now()->format('Ymd_His');
-            $folderName = 'invoices_export_'.$id.'_'.$timestamp.'_XLSX';
-            $folderPath = storage_path('app/public/export/'.$folderName);
-
-            // Create directory
-            if (! file_exists($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
-
-            // Get the report setting for the record limit
-            $limit = ReportSetting::first()->value('records');
-            $chunks = $invoicesData->chunk($limit);
-
-            foreach ($chunks as $index => $chunk) {
-                $export = new InvoiceExport($selectedColumns, $chunk, $index + 1);
-                $fileName = 'invoices_'.$id.'_part'.($index + 1).'.xlsx';
-                $filePath = $folderPath.'/'.$fileName;
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
-            }
-
-            $exportDetail = ExportDetail::create([
-                'user_id' => $id,
-                'file_path' => $folderPath,
-                'file' => $folderName,
-                'name' => 'invoices',
-            ]);
-
-            $settings = \App\Model\Common\Setting::find(1);
-            $from = $settings->email;
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
-            $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
-                '<br><br>Invoice report is successfully generated and ready for download.'.
-                '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
-                '<br><br>Please note this link will be expired in 6 hours.'.
-                '<br><br>Kind regards,<br>'.$user->first_name;
-
-            $mail->SendEmail($from, $email, $emailContent, 'Invoice report available for download');
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        if ($filteredInvoices->isEmpty()) {
+            return response()->json(['message' => 'No data available for export.'], 400);
         }
+
+        // Get user details for email
+        $id = User::where('email', $email)->value('id');
+        $user = User::find($id);
+        $timestamp = now()->format('Ymd_His');
+        $folderName = 'invoices_export_'.$id.'_'.$timestamp.'_XLSX';
+        $folderPath = storage_path('app/public/export/'.$folderName);
+
+        // Create directory if it doesn't exist
+        if (! file_exists($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
+
+        // Get the report setting for the record limit
+        $limit = ReportSetting::first()->value('records');
+        $chunks = $filteredInvoices->chunk($limit);
+
+        // Process and store each chunk
+        foreach ($chunks as $index => $chunk) {
+            $export = new InvoiceExport($selectedColumns, $chunk, $index + 1);
+            $fileName = 'invoices_'.$id.'_part'.($index + 1).'.xlsx';
+            $filePath = $folderPath.'/'.$fileName;
+            Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+        }
+
+        // Save export details
+        $exportDetail = ExportDetail::create([
+            'user_id' => $id,
+            'file_path' => $folderPath,
+            'file' => $folderName,
+            'name' => 'invoices',
+        ]);
+
+        // Send email notification
+        $settings = \App\Model\Common\Setting::find(1);
+        $from = $settings->email;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
+        $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
+            '<br><br>Invoice report is successfully generated and ready for download.'.
+            '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
+            '<br><br>Please note this link will be expired in 6 hours.'.
+            '<br><br>Kind regards,<br>'.$user->first_name;
+
+        $mail->SendEmail($from, $email, $emailContent, 'Invoice report available for download');
+
+        return response()->json(['message' => 'Report successfully generated and email sent.'], 200);
+    } catch (Exception $ex) {
+        return response()->json(['message' => 'Failed to generate report: ' . $ex->getMessage()], 500);
     }
+}
+
 
     public function orderExports($selectedColumns, $searchParams, $email)
-    {
-        try {
-            // Filter out unwanted columns
-            $selectedColumns = array_filter($selectedColumns, function ($column) {
-                return ! in_array($column, ['checkbox', 'action']);
-            });
+{
+    try {
+        // Filter out unwanted columns
+        $selectedColumns = array_filter($selectedColumns, function ($column) {
+            return ! in_array($column, ['checkbox', 'action']);
+        });
 
-            // Merge search parameters
-            $request = new Request();
-            $request->merge($searchParams);
+        // Merge search parameters
+        $request = new Request();
+        $request->merge($searchParams);
 
-            // Perform advanced order search
-            $orderSearch = new OrderSearchController();
-            $orders = $orderSearch->advanceOrderSearch($request);
-            $orders->orderBy('orders.created_at', 'desc');
+        // Perform advanced order search
+        $orderSearch = new OrderSearchController();
+        $orders = $orderSearch->advanceOrderSearch($request);
+        $orders->orderBy('orders.created_at', 'desc');
 
-            $filteredOrders = $orders->get()->map(function ($order) use ($selectedColumns) {
-                $orderData = [];
-                foreach ($selectedColumns as $column) {
-                    switch ($column) {
-                        case 'client':
-                            $orderData['name'] = $order->client_name;
-                            break;
-                        case 'email':
-                            $orderData['email'] = $order->email;
-                            break;
-                        case 'mobile':
-                            $orderData['mobile'] = $order->mobile;
-                            break;
-                        case 'country':
-                            $orderData['country'] = $order->country;
-                            break;
-                        case 'status':
-                            $orderData['status'] = $order->installation_path ? 'Active' : 'Inactive';
-                            break;
-                        case 'product_name':
-                            $orderData['product_name'] = $order->product_name;
-                            break;
-                        case 'plan_name':
-                            $plan = Plan::find($order->plan_id);
-                            $orderData['plan_name'] = $plan ? $plan->name : 'Unknown Plan';
-                            break;
-                        case 'version':
-                            $orderData['version'] = $order->product_version;
-                            break;
-                        case 'agents':
-                            $orderData['agents'] = $this->getAgents($order);
-                            break;
-                        case 'order_date':
-                            $orderData['order_date'] = \Carbon\Carbon::parse($order->subscription_created_at)->format('Y-m-d');
-                            break;
-                        case 'update_ends_at':
-                            $orderData['update_ends_at'] = \Carbon\Carbon::parse($order->subscription_updated_at)->format('Y-m-d');
-                            break;
-                        default:
-                            $orderData[$column] = $order->$column;
-                    }
+        // Use LazyCollection for efficient memory usage
+        $filteredOrders = $orders->lazy()->map(function ($order) use ($selectedColumns) {
+            $orderData = [];
+            foreach ($selectedColumns as $column) {
+                switch ($column) {
+                    case 'client':
+                        $orderData['name'] = $order->client_name;
+                        break;
+                    case 'email':
+                        $orderData['email'] = $order->email;
+                        break;
+                    case 'mobile':
+                        $orderData['mobile'] = $order->mobile;
+                        break;
+                    case 'country':
+                        $orderData['country'] = $order->country;
+                        break;
+                    case 'status':
+                        $orderData['status'] = $order->installation_path ? 'Active' : 'Inactive';
+                        break;
+                    case 'product_name':
+                        $orderData['product_name'] = $order->product_name;
+                        break;
+                    case 'plan_name':
+                        $plan = Plan::find($order->plan_id);
+                        $orderData['plan_name'] = $plan ? $plan->name : 'Unknown Plan';
+                        break;
+                    case 'version':
+                        $orderData['version'] = $order->product_version;
+                        break;
+                    case 'agents':
+                        $orderData['agents'] = $this->getAgents($order);
+                        break;
+                    case 'order_date':
+                        $orderData['order_date'] = \Carbon\Carbon::parse($order->subscription_created_at)->format('Y-m-d');
+                        break;
+                    case 'update_ends_at':
+                        $orderData['update_ends_at'] = \Carbon\Carbon::parse($order->subscription_updated_at)->format('Y-m-d');
+                        break;
+                    default:
+                        $orderData[$column] = $order->$column;
                 }
-
-                return $orderData;
-            });
-
-            if ($filteredOrders->isEmpty()) {
-                throw new \Exception('No data available for export.');
-            }
-            // Get user details for email
-            $id = User::where('email', $email)->value('id');
-            $user = User::find($id);
-            $timestamp = now()->format('Ymd_His');
-            $folderName = 'orders_export_'.$id.'_'.$timestamp.'_XLSX';
-            $folderPath = storage_path('app/public/export/'.$folderName);
-
-            // Create directory
-            if (! file_exists($folderPath)) {
-                mkdir($folderPath, 0777, true);
             }
 
-            // Get the report setting for the record limit
-            $limit = ReportSetting::first()->value('records');
-            $chunks = $filteredOrders->chunk($limit);
+            return $orderData;
+        });
 
-            foreach ($chunks as $index => $chunk) {
-                $export = new OrderExport($selectedColumns, $chunk, $index + 1);
-                $fileName = 'orders_'.$id.'_part'.($index + 1).'.xlsx';
-                $filePath = $folderPath.'/'.$fileName;
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
-            }
-
-            // Create ExportDetail record
-            $exportDetail = ExportDetail::create([
-                'user_id' => $id,
-                'file_path' => $folderPath,
-                'file' => $folderName,
-                'name' => 'orders',
-            ]);
-
-            // Send email notification
-            $settings = \App\Model\Common\Setting::find(1);
-            $from = $settings->email;
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
-            $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
-                '<br><br>Order report is successfully generated and ready for download.'.
-                '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
-                '<br><br>Please note this link will expire in 6 hours.'.
-                '<br><br>Kind regards,<br>'.$user->first_name;
-
-            $mail->SendEmail($from, $email, $emailContent, 'Order report available for download');
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        if ($filteredOrders->isEmpty()) {
+            throw new \Exception('No data available for export.');
         }
+
+        // Get user details for email
+        $id = User::where('email', $email)->value('id');
+        $user = User::find($id);
+        $timestamp = now()->format('Ymd_His');
+        $folderName = 'orders_export_'.$id.'_'.$timestamp.'_XLSX';
+        $folderPath = storage_path('app/public/export/'.$folderName);
+
+        // Create directory if it doesn't exist
+        if (! file_exists($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
+
+        // Get the report setting for the record limit
+        $limit = ReportSetting::first()->value('records');
+        $chunks = $filteredOrders->chunk($limit);
+
+        // Process and store each chunk
+        foreach ($chunks as $index => $chunk) {
+            $export = new OrderExport($selectedColumns, $chunk, $index + 1);
+            $fileName = 'orders_'.$id.'_part'.($index + 1).'.xlsx';
+            $filePath = $folderPath.'/'.$fileName;
+            Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+        }
+
+        // Create ExportDetail record
+        $exportDetail = ExportDetail::create([
+            'user_id' => $id,
+            'file_path' => $folderPath,
+            'file' => $folderName,
+            'name' => 'orders',
+        ]);
+
+        // Send email notification
+        $settings = \App\Model\Common\Setting::find(1);
+        $from = $settings->email;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
+        $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
+            '<br><br>Order report is successfully generated and ready for download.'.
+            '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
+            '<br><br>Please note this link will expire in 6 hours.'.
+            '<br><br>Kind regards,<br>'.$user->first_name;
+
+        $mail->SendEmail($from, $email, $emailContent, 'Order report available for download');
+
+        return response()->json(['message' => 'Report successfully generated and email sent.'], 200);
+    } catch (Exception $ex) {
+        return response()->json(['message' => 'Failed to generate report: ' . $ex->getMessage()], 500);
     }
+}
+
 
     public function tenantExports($selectedColumns, $searchParams, $email)
     {

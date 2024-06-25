@@ -4,17 +4,6 @@ Orders
 @stop
 @section('content-header')
 <style type="text/css">
-/*    .custom-dropdown .form-check {*/
-/*    padding-right: 60px;*/
-/*    position: relative;*/
-/*    right: -15px;*/
-/*}*/
-/*    .dropdown-menu {*/
-/*        max-height: 250px; */
-/*        overflow-y: auto;*/
-/*        overflow-x: hidden;*/
-/*    }*/
-   /* Loading spinner */
     #loading {
         position: fixed;
         top: 0;
@@ -42,85 +31,94 @@ Orders
     }
 
 
-        #order-table_wrapper {
-            overflow-x: auto; 
-        }
 
-        #order-table .dataTables_scrollBody {
-            overflow-y: hidden; 
-        }
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+}
 
-        #order-table .dataTables_scrollHeadInner,
-        #order-table .dataTables_scrollFootInner {
-            overflow: auto;
-        }
+#order-table {
+    width: 100%;
+}
 
-        #order-table .dataTables_scrollHeadInner table,
-        #order-table .dataTables_scrollFootInner table {
-            width: auto; 
-        }
+.dataTables_wrapper .dataTables_scrollHeadInner,
+.dataTables_wrapper .dataTables_scrollFootInner {
+    overflow-x: auto !important;
+    overflow-y: hidden !important; 
+}
 
-        #order-table .dataTables_scrollHeadInner,
-        #order-table .dataTables_scrollFootInner,
-        #order-table .dataTables_scrollBody {
-            margin-right: 0 !important;
-        }
-        #order-table th,
-        #order-table td {
-            word-break: initial;
-        }
-        
-        .custom-dropdown {
-            position: relative;
-            z-index: 1050;
-        }
-        
-        
-        .custom-dropdown .form-check {
-            padding-right: 60px; 
-            position: relative;
-            right: -15px; 
-        }
-        
-        .dropdown-menu {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            max-height: 150px; 
-            overflow-y: auto; 
-            overflow-x: hidden;
-            width: max-content; 
-        }
-        
-        #order_export-report-btn,
-        .custom-dropdown {
-            z-index: 1000;
-        }
-        
-        #order_export-report-btn {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-        
-        .card-body.table-responsive {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .d-flex.justify-content-between {
-            margin-bottom: 1rem;
-        }
-        
-        [type="search"] {
-            position: relative;
-            right: 180px;
-        }
-        
-        .dataTables_filter {
-            position: relative;
-            z-index: 1;
-            right: 50px; 
-        }
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto;
+    overflow-y: hidden !important; 
+}
+
+.dataTables_wrapper .dataTables_scrollHead table,
+.dataTables_wrapper .dataTables_scrollFoot table {
+    width: auto !important;
+}
+
+#order-table th,
+#order-table td {
+    text-overflow: ellipsis;
+    overflow-x: auto;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    position: absolute;
+    top: -10px;
+    right: 40px;
+    z-index: 1000;
+    padding: 10px; 
+}
+
+#order_export-report-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.custom-dropdown .dropdown-menu {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: max-content;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    z-index: 1000;
+}
+
+.card-body.table-responsive {
+    position: relative;
+}
+
+.d-flex.justify-content-between {
+    margin-bottom: 1rem;
+}
+
+[type="search"] {
+    position: relative;
+    right: 140px; 
+}
+.dataTables_wrapper {
+    position: relative;
+    clear: both;
+    overflow-y: hidden;
+    width: 100%;
+}
+
+.dataTables_scrollBody {
+    position: relative;
+    overflow: auto;
+}
+
+.dataTables_scrollHeadInner {
+    box-sizing: content-box;
+}
+
+
+
 
 </style>
     <div class="col-sm-6">
@@ -250,7 +248,7 @@ Orders
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
         <div class="card-tools">
-        <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 91%; top: 13px;">
+        <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 88%; top: 13px;">
             <i class="fas fa-paper-plane"></i>
         </button>
             <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
@@ -266,7 +264,7 @@ Orders
             <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 615%;top: 108px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 605%;top: 108px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -395,11 +393,15 @@ Orders
             var orderTable = $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: false, // Change stateSave to true
-            order: [[1, "asc"]], // Change the default order if needed
+            stateSave: false, 
+            order: [[1, "asc"]], 
+            "scrollX": true,
+            "scrollCollapse": true,
+
 
             ajax: {
-              "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
+              "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->ren
+ewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
               error: function(xhr) {
                 if (xhr.status == 401) {
                   alert('Your session has expired. Please login again to continue.')
@@ -417,7 +419,7 @@ Orders
 
             "oLanguage": {
               "sLengthMenu": "_MENU_ Records per page",
-              "sSearch": "<span style='position: relative;right: 180px;'>Search:</span> ",
+              "sSearch": "<span style='position: relative;right: 150px;'>Search:</span> ",
               "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columns: [
@@ -437,6 +439,9 @@ Orders
                 {data: 'update_ends_at', name: 'update_ends_at'},
                 {data: 'action', name: 'action'}
             ],
+
+    
+
             "fnDrawCallback": function(oSettings) {
               $('[data-toggle="tooltip"]').tooltip({
                 container: 'body'

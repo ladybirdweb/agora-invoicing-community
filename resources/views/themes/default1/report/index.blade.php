@@ -123,7 +123,9 @@ Reports
                 success: function (data) {
                 $('#gif').hide();
                 $('#response').html(data);
-                location.reload();
+                setTimeout(function() {
+                    location.reload();
+                }, 5000);
                 }
                })
             }

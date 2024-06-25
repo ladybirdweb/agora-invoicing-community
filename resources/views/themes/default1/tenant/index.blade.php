@@ -39,36 +39,7 @@
         }
     }
 
-    /* Table styles */
-    #tenant-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #tenant-table th, #tenant-table td {
-        padding: 12px;
-        text-align: left;
-    }
-
-    /* Button styles */
-    .btn-primary {
-        padding: 10px 20px;
-        font-size: 16px;
-    }
-
-    .custom-dropdown .form-check {
-    padding-right: 60px;
-    position: relative;
-    right: -15px;
-    }
-     .dropdown-menu {
-            position: absolute;
-            max-height: 280px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-   /* Loading spinner */
+       /* Loading spinner */
     #tenatloading {
         position: fixed;
         top: 0;
@@ -90,49 +61,67 @@
         height: 30px;
         animation: spin 1s linear infinite;
         }
-        #tenant-table_wrapper {
-            overflow-x: auto; 
-        }
 
-        #tenant-table .dataTables_scrollBody {
-            overflow-y: hidden; 
-        }
+  #tenant-table_wrapper input[type="search"] {
+    position: relative;
+    right: 210px !important;
+    top: -4px;
+    padding: 4px;
+    border-radius: 5px;
+}
 
-        #tenant-table .dataTables_scrollHeadInner,
-        #tenant-table .dataTables_scrollFootInner {
-            overflow: auto;
-        }
+#pop-product-table_wrapper input[type="search"] {
+    position: initial;
+    right: initial;
+    padding: initial;
+    border-radius: initial;
+}
 
-        #tenant-table .dataTables_scrollHeadInner table,
-        #tenant-table .dataTables_scrollFootInner table {
-            width: auto; 
-        }
+.custom-dropdown {
+    position: relative;
+    z-index: 1050;
+}
 
-        #tenant-table .dataTables_scrollHeadInner,
-        #tenant-table .dataTables_scrollFootInner,
-        #tenant-table .dataTables_scrollBody {
-            margin-right: 0 !important;
-        }
-        #tenant-table th,
-        #tenant-table td {
-            word-break: initial;
-        }
-        #tenant-table_wrapper input[type="search"] {
-            position: relative;
-            right: 180px;
-            padding: 4px;
-            border-radius: 5px;
-        }
+.custom-dropdown .form-check {
+    padding-right: 60px;
+    position: relative;
+    right: -15px;
+}
 
-        #pop-product-table_wrapper input[type="search"] {
-            position: initial;
-            right: initial;
-            padding: initial;
-            border-radius: initial;
-        }
+.dropdown-menu {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: max-content;
+}
 
+#tenat_export-report-btn,
+.custom-dropdown {
+    z-index: 1000;
+}
 
+#tenat_export-report-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
 
+.card-body.table-responsive {
+    position: relative;
+    overflow: hidden;
+}
+
+.dataTables_filter {
+    position: relative;
+    z-index: 1;
+}
+
+.d-flex.justify-content-between {
+    margin-bottom: 1rem;
+    position: relative;
+}
 
 </style>
 
@@ -294,7 +283,6 @@
 
 
     <script>
-        // JavaScript to duplicate the fields
         $(document).ready(function () {
             $('#addFields').on('click', function () {
                 var originalFields = $('.original-fields').html();
@@ -399,113 +387,110 @@
     @if($cloud != null)
     <div id="export-message"></div>
         <div class="card card-secondary card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Tenants</h3>
-            </div>
-            <div id="loading" style="display: none;">
-                <div class="spinner"></div>
-            </div>
-            <div id="successmsg"></div>
-            <div id="error"></div>
-            <div class="card-body table-responsive" style="padding-top: 10px;overflow: hidden;">
-            <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 96%;top: 13px;"><i class="fas fa-paper-plane"></i></button><br />
-
-                    <div class="row">
-                    <div class="col-md-12">
-
-                 <div id="tenatloading" style="display: none;">
-                <div class="tenatspinner"></div>
-                 </div>
-                        <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless" >
-                            <thead>
-                            <tr>
-                                <th>Order</th>
-                                <th>User</th>
-                               <th>Email</th>
-                               <th>Mobile</th>
-                                <th>Country</th>
-                                <th>Expiry day</th>
-                                <th>Deletion day</th>
-                                <th>Plan Status</th>
-                                <th>Tenant</th>
-                                <th>Domain</th>
-                                <th>DB name</th>
-                                <th>DB username</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-           <div class="col-md-12" style="poaition: relative;left: 85%; bottom: 1151px;cursor: pointer;padding-top: 0px;">
-           <form id="columnForm">
-           <div class="custom-dropdown" id="columnUpdate">
-            <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-columns"></span>
-            &nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="Order" id="OrderCheckbox" >
-                    <label class="form-check-label" for="Order">Order</label>
-                </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox">
-                    <label class="form-check-label" for="name">Name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
-                    <label class="form-check-label" for="email">Email</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
-                    <label class="form-check-label" for="mobile">Mobile</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
-                    <label class="form-check-label" for="country">Country</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="Expiry day" id="Expiry dayCheckbox">
-                    <label class="form-check-label" for="Expiry day">Expiry Day</label>
-                </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="Deletion day" id="Deletion dayCheckbox" >
-                    <label class="form-check-label" for="Deletion day">Deletion Day</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="plan" id="planCheckbox">
-                    <label class="form-check-label" for="plan">Plan Status</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="tenants" id="tenantsCheckbox" > 
-                    <label class="form-check-label" for="tenants">Tenats</label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="domain" id="domainCheckbox" >
-                    <label class="form-check-label" for="domain">Domain</label>
-                </div>
-                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="db_name" id="db_nameCheckbox" >
-                    <label class="form-check-label" for="db_name">DB name</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="db_username" id="db_usernameCheckbox" >
-                    <label class="form-check-label" for="db_username">DB username</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox" >
-                    <label class="form-check-label" for="action">Action</label>
-                </div>
-                    <br>
-
-                    <button type="button" class="btn btn-primary btn-sm" style="position: relative;left: 20px;padding: 4px;" id="saveColumnsBtn">Save</button>
-                </div>
-            </div>
-        </form>
+    <div class="card-header">
+        <h3 class="card-title">Tenants</h3>
     </div>
+    <div id="tenatloading" style="display: none;">
+        <div class="tenatspinner"></div>
+    </div>
+    <div id="successmsg"></div>
+    <div id="error"></div>
+    <div class="card-body table-responsive" style="padding-top: 0px;">
+        <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;left: 97%;top: 80px;">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+        <br />
+
+        <!-- Container for Select Columns and Search Input -->
+        <div class="d-flex justify-content-between align-items-center mb-3" style="padding-top: 0px;">
+            <div class="custom-dropdown" id="columnUpdate">
+                <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 1000px;top: 50px;">
+                    <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Order" id="OrderCheckbox">
+                        <label class="form-check-label" for="Order">Order</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="name" id="nameCheckbox">
+                        <label class="form-check-label" for="name">Name</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
+                        <label class="form-check-label" for="email">Email</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
+                        <label class="form-check-label" for="mobile">Mobile</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
+                        <label class="form-check-label" for="country">Country</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Expiry day" id="Expiry dayCheckbox">
+                        <label class="form-check-label" for="Expiry day">Expiry Day</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Deletion day" id="Deletion dayCheckbox">
+                        <label class="form-check-label" for="Deletion day">Deletion Day</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="plan" id="planCheckbox">
+                        <label class="form-check-label" for="plan">Plan Status</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="tenants" id="tenantsCheckbox">
+                        <label class="form-check-label" for="tenants">Tenants</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="domain" id="domainCheckbox">
+                        <label class="form-check-label" for="domain">Domain</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="db_name" id="db_nameCheckbox">
+                        <label class="form-check-label" for="db_name">DB name</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="db_username" id="db_usernameCheckbox">
+                        <label class="form-check-label" for="db_username">DB username</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="action" id="actionCheckbox">
+                        <label class="form-check-label" for="action">Action</label>
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-primary btn-sm" style="position: relative; left: 20px; padding: 4px;" id="saveColumnsBtn">Save</button>
                 </div>
             </div>
+
         </div>
+
+        <div style="position: relative;">
+            <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Country</th>
+                        <th>Expiry day</th>
+                        <th>Deletion day</th>
+                        <th>Plan Status</th>
+                        <th>Tenant</th>
+                        <th>Domain</th>
+                        <th>DB name</th>
+                        <th>DB username</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
     @endif
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -526,6 +511,8 @@
                 serverSide: true,
                 stateSave: false,
                 order: [[0, "desc"]],
+                "scrollX": true,
+               "scrollCollapse": true,
                 ajax: {
                     "url": '{!! route('get-tenants') !!}',
                     error: function (xhr) {
@@ -537,7 +524,7 @@
                 },
                 "oLanguage": {
                     "sLengthMenu": "_MENU_ Records per page",
-                    "sSearch": "<span style='position: relative;right: 180px;'>Search:</span> ",
+                   "sSearch": "<span style='position: relative;right: 220px;'>Search:</span> ",
 
                     "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                 },

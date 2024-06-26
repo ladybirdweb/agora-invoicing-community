@@ -8,6 +8,7 @@ use App\Exports\OrderExport;
 use App\Exports\TenatExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Order\OrderSearchController;
+use App\Model\Common\Country;
 use App\Model\Common\FaveoCloud;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -23,7 +24,6 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Model\Common\Country;
 
 abstract class ExportHandleController
 {
@@ -110,8 +110,8 @@ class ConcreteExportHandleController extends ExportHandleController
                             $userData[$column] = $user->$column ? 'Active' : 'Inactive';
                             break;
                         case 'created_at':
-                            $userData['created_at'] =\Carbon\Carbon::parse($user->created_at)->format('Y-m-d');
-                            break; 
+                            $userData['created_at'] = \Carbon\Carbon::parse($user->created_at)->format('Y-m-d');
+                            break;
                         case 'country':
                             $country = Country::where('country_code_char2', $user->country)->value('nicename');
                             $userData['country'] = $country;
@@ -216,14 +216,14 @@ class ConcreteExportHandleController extends ExportHandleController
                         case 'mobile':
                             $invoiceData['mobile'] = $user ? '+'.$user->mobile_code.' '.$user->mobile : null;
                             break;
-                       case 'country':
-                        if ($user) {
-                            $country = Country::where('country_code_char2', $user->country)->value('nicename');
-                            $invoiceData['country'] = $country ? $country : null;
-                        } else {
-                            $invoiceData['country'] = null; 
-                        }
-                        break;
+                        case 'country':
+                            if ($user) {
+                                $country = Country::where('country_code_char2', $user->country)->value('nicename');
+                                $invoiceData['country'] = $country ? $country : null;
+                            } else {
+                                $invoiceData['country'] = null;
+                            }
+                            break;
 
                         case 'grand_total':
                             $invoiceData['total'] = currencyFormat($invoice->grand_total, $invoice->currency);
@@ -333,13 +333,13 @@ class ConcreteExportHandleController extends ExportHandleController
                             $orderData['mobile'] = $order->mobile;
                             break;
                         case 'country':
-                         if ($order) {
-                            $country = Country::where('country_code_char2', $order->country)->value('nicename');
-                            $orderData['country'] = $country ? $country : null;
-                        } else {
-                            $orderData['country'] = null; 
-                        }
-                        break;
+                            if ($order) {
+                                $country = Country::where('country_code_char2', $order->country)->value('nicename');
+                                $orderData['country'] = $country ? $country : null;
+                            } else {
+                                $orderData['country'] = null;
+                            }
+                            break;
                         case 'status':
                             $orderData['status'] = $order->installation_path ? 'Active' : 'Inactive';
                             break;

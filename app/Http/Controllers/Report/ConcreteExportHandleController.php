@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Model\Common\Country;
 
 abstract class ExportHandleController
 {
@@ -107,6 +108,13 @@ class ConcreteExportHandleController extends ExportHandleController
                         case 'active':
                         case 'is_2fa_enabled':
                             $userData[$column] = $user->$column ? 'Active' : 'Inactive';
+                            break;
+                        case 'created_at':
+                            $userData['created_at'] =\Carbon\Carbon::parse($user->created_at)->format('Y-m-d');
+                            break; 
+                        case 'country':
+                            $country = Country::where('country_code_char2', $user->country)->value('nicename');
+                            $userData['country'] = $country;
                             break;
                         default:
                             $userData[$column] = $user->$column;
@@ -208,9 +216,15 @@ class ConcreteExportHandleController extends ExportHandleController
                         case 'mobile':
                             $invoiceData['mobile'] = $user ? '+'.$user->mobile_code.' '.$user->mobile : null;
                             break;
-                        case 'country':
-                            $invoiceData['country'] = $user ? $user->country : null;
-                            break;
+                       case 'country':
+                        if ($user) {
+                            $country = Country::where('country_code_char2', $user->country)->value('nicename');
+                            $invoiceData['country'] = $country ? $country : null;
+                        } else {
+                            $invoiceData['country'] = null; 
+                        }
+                        break;
+
                         case 'grand_total':
                             $invoiceData['total'] = currencyFormat($invoice->grand_total, $invoice->currency);
                             break;
@@ -319,8 +333,13 @@ class ConcreteExportHandleController extends ExportHandleController
                             $orderData['mobile'] = $order->mobile;
                             break;
                         case 'country':
-                            $orderData['country'] = $order->country;
-                            break;
+                         if ($order) {
+                            $country = Country::where('country_code_char2', $order->country)->value('nicename');
+                            $orderData['country'] = $country ? $country : null;
+                        } else {
+                            $orderData['country'] = null; 
+                        }
+                        break;
                         case 'status':
                             $orderData['status'] = $order->installation_path ? 'Active' : 'Inactive';
                             break;
@@ -534,7 +553,8 @@ class ConcreteExportHandleController extends ExportHandleController
                                 if (! $user) {
                                     $tenantData['country'] = null;
                                 } else {
-                                    $tenantData['country'] = $user->country;
+                                    $country = Country::where('country_code_char2', $user->country)->value('nicename');
+                                    $tenantData['country'] = $country;
                                 }
                             }
                         }
@@ -617,7 +637,7 @@ class ConcreteExportHandleController extends ExportHandleController
         $id = User::where('email', $email)->value('id');
         $user = User::find($id);
         $timestamp = now()->format('Ymd_His');
-        $folderName = 'tenats_export_'.$id.'_'.$timestamp.'_XLSX';
+        $folderName = 'tenants_export_'.$id.'_'.$timestamp.'_XLSX';
         $folderPath = storage_path('app/public/export/'.$folderName);
 
         // Create directory
@@ -649,12 +669,12 @@ class ConcreteExportHandleController extends ExportHandleController
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $downloadLink = route('download.exported.file', ['id' => $exportDetail->id]);
         $emailContent = 'Hello '.$user->first_name.' '.$user->last_name.','.
-            '<br><br>Tenat report is successfully generated and ready for download.'.
+            '<br><br>Tenant report is successfully generated and ready for download.'.
             '<br><br>Download link: <a href="'.$downloadLink.'">'.$downloadLink.'</a>'.
             '<br><br>Please note this link will be expired in 6 hours.'.
             '<br><br>Kind regards,<br>'.$user->first_name;
 
-        $mail->SendEmail($from, $this->email, $emailContent, 'Tenat report available for download');
+        $mail->SendEmail($from, $this->email, $emailContent, 'Tenant report available for download');
     }
 
     public function getStatus($status)

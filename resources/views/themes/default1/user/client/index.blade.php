@@ -75,7 +75,7 @@ Users
             z-index: 1050; 
         }
         
-        [type="search"] {
+        #user-table_wrapper input[type="search"] {
             position: relative;
             right: 180px;
         }

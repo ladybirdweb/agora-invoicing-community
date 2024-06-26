@@ -4,6 +4,8 @@ Orders
 @stop
 @section('content-header')
 <style type="text/css">
+
+   /* Loading spinner */
     #loading {
         position: fixed;
         top: 0;
@@ -31,94 +33,85 @@ Orders
     }
 
 
+        #order-table_wrapper {
+            overflow-x: auto; 
+        }
 
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    position: relative;
-}
+        #order-table .dataTables_scrollBody {
+            overflow-y: hidden; 
+        }
 
-#order-table {
-    width: 100%;
-}
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner {
+            overflow: auto;
+        }
 
-.dataTables_wrapper .dataTables_scrollHeadInner,
-.dataTables_wrapper .dataTables_scrollFootInner {
-    overflow-x: auto !important;
-    overflow-y: hidden !important; 
-}
+        #order-table .dataTables_scrollHeadInner table,
+        #order-table .dataTables_scrollFootInner table {
+            width: auto; 
+        }
 
-.dataTables_wrapper .dataTables_scrollBody {
-    overflow-x: auto;
-    overflow-y: hidden !important; 
-}
-
-.dataTables_wrapper .dataTables_scrollHead table,
-.dataTables_wrapper .dataTables_scrollFoot table {
-    width: auto !important;
-}
-
-#order-table th,
-#order-table td {
-    text-overflow: ellipsis;
-    overflow-x: auto;
-}
-
-.dataTables_wrapper .dataTables_filter {
-    position: absolute;
-    top: -10px;
-    right: 40px;
-    z-index: 1000;
-    padding: 10px; 
-}
-
-#order_export-report-btn {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-}
-
-.custom-dropdown .dropdown-menu {
-    max-height: 150px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    width: max-content;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    z-index: 1000;
-}
-
-.card-body.table-responsive {
-    position: relative;
-}
-
-.d-flex.justify-content-between {
-    margin-bottom: 1rem;
-}
-
-#order-table_wrapper input[type="search"] {
-    position: relative;
-    right: 140px; 
-}
-.dataTables_wrapper {
-    position: relative;
-    clear: both;
-    overflow-y: hidden;
-    width: 100%;
-}
-
-.dataTables_scrollBody {
-    position: relative;
-    overflow: auto;
-}
-
-.dataTables_scrollHeadInner {
-    box-sizing: content-box;
-}
-
-
-
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner,
+        #order-table .dataTables_scrollBody {
+            margin-right: 0 !important;
+        }
+        #order-table th,
+        #order-table td {
+            word-break: initial;
+        }
+        
+        .custom-dropdown {
+            position: relative;
+            z-index: 1050;
+        }
+        
+        
+        .custom-dropdown .form-check {
+            padding-right: 60px; 
+            position: relative;
+            right: -15px; 
+        }
+        
+        .dropdown-menu {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            max-height: 150px; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            width: max-content; 
+        }
+        
+        #order_export-report-btn,
+        .custom-dropdown {
+            z-index: 1000;
+        }
+        
+        #order_export-report-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        
+        .card-body.table-responsive {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .d-flex.justify-content-between {
+            margin-bottom: 1rem;
+        }
+        
+        #order-table_wrapper input[type="search"]  {
+            position: relative;
+            right: 150px;
+        }
+        
+        .dataTables_filter {
+            position: relative;
+            z-index: 1;
+            right: 50px; 
+        }
 
 </style>
     <div class="col-sm-6">
@@ -264,7 +257,7 @@ Orders
             <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 715%;top: 108px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 700%;top: 108px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

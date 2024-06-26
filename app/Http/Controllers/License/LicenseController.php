@@ -427,7 +427,7 @@ class LicenseController extends Controller
         $installation_status = [];
         $details = json_decode($this->searchInstallationId($licenseCode));
 
-        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+        if ($details && $details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {
                 if ($detail->product_id == $productId) {
                     // $installation_domain[] = "<a href=https://$detail->installation_domain target = '_blank'>  "."$detail->installation_domain</a>".' | '.$detail->installation_ip;

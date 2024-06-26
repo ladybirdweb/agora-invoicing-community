@@ -90,7 +90,7 @@ Invoices
         margin-bottom: 1rem;
     }
     
-    [type="search"] {
+    #invoice-table_wrapper input[type="search"] {
         position: relative;
         right: 180px; /* Adjust as needed */
     }

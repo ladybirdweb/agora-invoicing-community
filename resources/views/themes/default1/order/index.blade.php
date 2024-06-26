@@ -97,7 +97,7 @@ Orders
     margin-bottom: 1rem;
 }
 
-[type="search"] {
+#order-table_wrapper input[type="search"] {
     position: relative;
     right: 140px; 
 }
@@ -264,7 +264,7 @@ Orders
             <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 605%;top: 108px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 715%;top: 108px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

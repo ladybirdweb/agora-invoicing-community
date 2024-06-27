@@ -178,11 +178,11 @@ class ExtendedBaseProductController extends Controller
         }
     }
 
-    public function adminDownload($id, $invoice = '', $api = false)
+    public function adminDownload($id, $invoice = '', $api = false, $beta = 1)
     {
         try {
             if ($this->downloadValidation(true, $id, $invoice, $api)) {
-                $release = $this->downloadProductAdmin($id);
+                $release = $this->downloadProductAdmin($id, $beta);
                 $name = Product::where('id', $id)->value('name');
                 if (is_array($release) && array_key_exists('type', $release)) {
                     header('Location: '.$release['release']);

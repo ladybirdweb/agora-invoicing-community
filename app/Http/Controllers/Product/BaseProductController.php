@@ -230,21 +230,20 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function downloadProductAdmin($id,$beta=1)
+    public function downloadProductAdmin($id, $beta = 1)
     {
         try {
             $product = Product::findOrFail($id);
             $type = $product->type;
             $owner = $product->github_owner;
             $repository = $product->github_repository;
-            if($beta) {
+            if ($beta) {
                 $file = ProductUpload::where('product_id', '=', $id)->select('file')
                     ->orderBy('created_at', 'desc')
                     ->first();
-            }
-            else{
+            } else {
                 $file = ProductUpload::where('product_id', '=', $id)->
-                    where('is_pre_release',0)
+                    where('is_pre_release', 0)
                     ->select('file')
                     ->orderBy('created_at', 'desc')
                     ->first();

@@ -240,14 +240,15 @@ Orders
     <div class="card-header">
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
-        <div class="card-tools">
-        <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 88%; top: 13px;">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
+        <div class="card-tools" style="position: relative; float: right;">
+            <button type="button" id="order_export-report-btn" class="btn btn-sm" data-toggle="tooltip" title="Export" style="position: relative;top: -2px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
                 <span class="fas fa-plus"></span>
             </a>
         </div>
+
     </div>
 
     <div class="card-body table-responsive" style="padding-top: 0px; overflow: hidden;">
@@ -399,7 +400,16 @@ Orders
                   alert('Your session has expired. Please login again to continue.')
                   window.location.href = '/login';
                 }
-              }
+              },
+                dataFilter: function(data) {
+                    var json = jQuery.parseJSON(data);
+                    if (json.data.length === 0) {
+                        $('#order_export-report-btn').hide(); // Hide export button
+                    } else {
+                        $('#order_export-report-btn').show(); // Show export button
+                    }
+                    return data;
+                }
             },
             columnDefs: [
               {

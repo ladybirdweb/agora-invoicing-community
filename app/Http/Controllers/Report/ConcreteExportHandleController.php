@@ -69,52 +69,52 @@ class ConcreteExportHandleController extends ExportHandleController
             $users = User::query();
 
             // Apply search filters
-                   // Apply search filters
-                   foreach ($searchParams as $key => $value) {
-                    if ($value !== null && $value !== '') {
-                        if ($key === 'reg_from') {
-                            $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
-                        } elseif ($key === 'reg_till') {
-                            $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
-                        } else {
-                            switch ($key) {
-                                case 'company':
-                                    $users->where('company', 'LIKE', '%' . $value . '%');
-                                    break;
-                                case 'country':
-                                    $users->where('country', $value);
-                                    break;
-                                case 'industry':
-                                    $users->where('bussiness', $value);
-                                    break;
-                                case 'role':
-                                    $users->where('role', $value);
-                                    break;
-                                case 'position':
-                                    $users->where('position', $value);
-                                    break;
-                                case 'actmanager':
-                                    $users->where('account_manager', $value);
-                                    break;
-                                case 'salesmanager':
-                                    $users->where('manager', $value);
-                                    break;
-                                case 'mobile_verified':
-                                    $users->where('mobile_verified', $value);
-                                    break;
-                                case 'active':
-                                    $users->where('active', $value);
-                                    break;
-                                case 'is_2fa_enabled':
-                                    $users->where('is_2fa_enabled', $value);
-                                    break;
-                                default:
-                                    $users->where($key, $value);
-                                    break;
-                            }
+            // Apply search filters
+            foreach ($searchParams as $key => $value) {
+                if ($value !== null && $value !== '') {
+                    if ($key === 'reg_from') {
+                        $users->whereDate('created_at', '>=', date('Y-m-d', strtotime($value)));
+                    } elseif ($key === 'reg_till') {
+                        $users->whereDate('created_at', '<=', date('Y-m-d', strtotime($value)));
+                    } else {
+                        switch ($key) {
+                            case 'company':
+                                $users->where('company', 'LIKE', '%'.$value.'%');
+                                break;
+                            case 'country':
+                                $users->where('country', $value);
+                                break;
+                            case 'industry':
+                                $users->where('bussiness', $value);
+                                break;
+                            case 'role':
+                                $users->where('role', $value);
+                                break;
+                            case 'position':
+                                $users->where('position', $value);
+                                break;
+                            case 'actmanager':
+                                $users->where('account_manager', $value);
+                                break;
+                            case 'salesmanager':
+                                $users->where('manager', $value);
+                                break;
+                            case 'mobile_verified':
+                                $users->where('mobile_verified', $value);
+                                break;
+                            case 'active':
+                                $users->where('active', $value);
+                                break;
+                            case 'is_2fa_enabled':
+                                $users->where('is_2fa_enabled', $value);
+                                break;
+                            default:
+                                $users->where($key, $value);
+                                break;
                         }
                     }
                 }
+            }
 
             $users->orderBy('created_at', 'desc');
 
@@ -343,10 +343,8 @@ class ConcreteExportHandleController extends ExportHandleController
             $selectedColumns = array_filter($selectedColumns, function ($column) {
                 return ! in_array($column, ['checkbox', 'action']);
             });
-           $searchRequest = new Request($searchParams);
+            $searchRequest = new Request($searchParams);
 
-
-   
             // Perform advanced order search
             $orderSearch = new OrderSearchController();
             $orders = $orderSearch->advanceOrderSearch($searchRequest);

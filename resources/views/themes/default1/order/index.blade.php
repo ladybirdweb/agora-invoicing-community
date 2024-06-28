@@ -264,7 +264,7 @@ Orders
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="client" id="clientCheckbox">
-                                <label class="form-check-label" for="clientCheckbox">Name</label>
+                                <label class="form-check-label" for="clientCheckbox">User</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
@@ -288,11 +288,11 @@ Orders
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="product_name" id="productCheckbox">
-                                <label class="form-check-label" for="productCheckbox">Product Name</label>
+                                <label class="form-check-label" for="productCheckbox">Product</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="plan_name" id="planCheckbox">
-                                <label class="form-check-label" for="planCheckbox">Plan Name</label>
+                                <label class="form-check-label" for="planCheckbox">Plan</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="version" id="versionCheckbox">
@@ -312,7 +312,7 @@ Orders
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="update_ends_at" id="inupdate_ends_atCheckbox">
-                                <label class="form-check-label" for="inupdate_ends_atCheckbox">Expiry Date</label>
+                                <label class="form-check-label" for="inupdate_ends_atCheckbox">Expiry</label>
                             </div>
                             <br>
                             <button type="button" class="btn btn-primary btn-sm" style="left: 10px; position: relative;" id="saveColumnsBtn">Apply</button>

@@ -247,7 +247,7 @@ Invoices
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="user_id" id="nameCheckbox">
-                                <label class="form-check-label" for="nameCheckbox">Name</label>
+                                <label class="form-check-label" for="nameCheckbox">User</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="email" id="inemailCheckbox">
@@ -267,7 +267,7 @@ Invoices
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="product" id="productCheckbox">
-                                <label class="form-check-label" for="productCheckbox">Product Name</label>
+                                <label class="form-check-label" for="productCheckbox">Product</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="date" id="dateCheckbox">

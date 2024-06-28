@@ -461,7 +461,7 @@
                         <label class="form-check-label" for="action">Action</label>
                     </div>
                     <br>
-                    <button type="button" class="btn btn-primary btn-sm" style="position: relative; left: 20px; padding: 4px;" id="saveColumnsBtn">Save</button>
+                    <button type="button" class="btn btn-primary btn-sm" style="position: relative; left: 20px; padding: 4px;" id="saveColumnsBtn">Apply</button>
                 </div>
             </div>
 

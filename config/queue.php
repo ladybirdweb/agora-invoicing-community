@@ -90,5 +90,6 @@ return [
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
+    'timeout' => env('QUEUE_TIMEOUT', 60),
 
 ];

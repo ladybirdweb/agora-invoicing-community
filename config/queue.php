@@ -40,6 +40,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
+            'timeout' => 300,
         ],
 
         'beanstalkd' => [
@@ -89,5 +90,6 @@ return [
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
+    'timeout' => env('QUEUE_TIMEOUT', 60),
 
 ];

@@ -249,4 +249,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->hasMany(VerificationAttempt::class);
     }
+
+    public function userLinkReports()
+    {
+        return $this->hasMany(UserLinkReport::class);
+    }
 }

@@ -632,7 +632,7 @@ input:checked + .slider:before {
                                             }
                                         }
                                         ?>
-                                    @if($subscription->is_subscribed && $payment_log)
+                                    @if($subscription && $subscription->is_subscribed && $payment_log)
                                      <tr><td><b>Status:</b></td><td>
                                      <span class="text-success font-weight-bold">Active</span>
                                      </td></tr>

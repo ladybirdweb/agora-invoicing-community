@@ -171,6 +171,7 @@ return [
                 'balanceCooldown' => 3,
                 'tries' => 1,
                 'nice' => 0,
+                'timeout' => 30,
             ],
         ],
 

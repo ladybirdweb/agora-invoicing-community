@@ -130,6 +130,14 @@ return  [
             'Livewire' => 'Livewire\\Livewire',
         ],
     ],
+    'maatwebsite/excel' => [
+        'providers' => [
+            0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+        ],
+        'aliases' => [
+            'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+        ],
+    ],
     'nesbot/carbon' => [
         'providers' => [
             0 => 'Carbon\\Laravel\\ServiceProvider',

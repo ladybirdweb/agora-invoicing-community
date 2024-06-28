@@ -3,6 +3,117 @@
 Orders
 @stop
 @section('content-header')
+<style type="text/css">
+
+   /* Loading spinner */
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+    }
+
+
+        #order-table_wrapper {
+            overflow-x: auto; 
+        }
+
+        #order-table .dataTables_scrollBody {
+            overflow-y: hidden; 
+        }
+
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner {
+            overflow: auto;
+        }
+
+        #order-table .dataTables_scrollHeadInner table,
+        #order-table .dataTables_scrollFootInner table {
+            width: auto; 
+        }
+
+        #order-table .dataTables_scrollHeadInner,
+        #order-table .dataTables_scrollFootInner,
+        #order-table .dataTables_scrollBody {
+            margin-right: 0 !important;
+        }
+        #order-table th,
+        #order-table td {
+            word-break: initial;
+        }
+        
+        .custom-dropdown {
+            position: relative;
+            z-index: 1050;
+        }
+        
+        
+        .custom-dropdown .form-check {
+            padding-right: 60px; 
+            position: relative;
+            right: -15px; 
+        }
+        
+        .dropdown-menu {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            max-height: 150px; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            width: max-content; 
+        }
+        
+        #order_export-report-btn,
+        .custom-dropdown {
+            z-index: 1000;
+        }
+        
+        #order_export-report-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        
+        .card-body.table-responsive {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .d-flex.justify-content-between {
+            margin-bottom: 1rem;
+        }
+        
+        #order-table_wrapper input[type="search"]  {
+            position: relative;
+            right: 150px;
+        }
+        
+        .dataTables_filter {
+            position: relative;
+            z-index: 1;
+            right: 50px; 
+        }
+
+</style>
     <div class="col-sm-6">
         <h1>View All Orders</h1>
     </div>
@@ -14,7 +125,7 @@ Orders
     </div><!-- /.col -->
 @stop
 @section('content')
-
+<div id="export-message"></div>
 <div class="row">
     <div class="col-12">
         <div class="card card-secondary card-outline collapsed-card">
@@ -125,52 +236,123 @@ Orders
 </div>
     </div>
 </div>
-<div class="card card-secondary card-outline">
-
+    <div class="card card-secondary card-outline">
     <div class="card-header">
-
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
-        <div class="card-tools">
-            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Generate new invoice</a>
-
-
+        <div class="card-tools" style="position: relative; float: right;">
+            <button type="button" id="order_export-report-btn" class="btn btn-sm" data-toggle="tooltip" title="Export" style="position: relative;top: -2px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
+                <span class="fas fa-plus"></span>
+            </a>
         </div>
-            <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
+
     </div>
 
+    <div class="card-body table-responsive" style="padding-top: 0px; overflow: hidden;">
 
-
-    <div class="card-body table-responsive">
+        
         <div class="row">
-
             <div class="col-md-12">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="custom-dropdown" id="columnUpdate">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 600%;top: 108px;">
+                            <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="client" id="clientCheckbox">
+                                <label class="form-check-label" for="clientCheckbox">User</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="email" id="emailCheckbox">
+                                <label class="form-check-label" for="emailCheckbox">Email</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="mobile" id="mobileCheckbox">
+                                <label class="form-check-label" for="mobileCheckbox">Mobile</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="country" id="countryCheckbox">
+                                <label class="form-check-label" for="countryCheckbox">Country</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="number" id="numberCheckbox">
+                                <label class="form-check-label" for="numberCheckbox">Order No</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="status" id="statusCheckbox">
+                                <label class="form-check-label" for="statusCheckbox">Order Status</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="product_name" id="productCheckbox">
+                                <label class="form-check-label" for="productCheckbox">Product</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="plan_name" id="planCheckbox">
+                                <label class="form-check-label" for="planCheckbox">Plan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="version" id="versionCheckbox">
+                                <label class="form-check-label" for="versionCheckbox">Version</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="agents" id="agentsCheckbox">
+                                <label class="form-check-label" for="agentsCheckbox">Agents</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="order_status" id="inorder_statusCheckbox">
+                                <label class="form-check-label" for="inorder_statusCheckbox">Status</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="order_date" id="inorder_dateCheckbox">
+                                <label class="form-check-label" for="inorder_dateCheckbox">Order Date</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="update_ends_at" id="inupdate_ends_atCheckbox">
+                                <label class="form-check-label" for="inupdate_ends_atCheckbox">Expiry</label>
+                            </div>
+                            <br>
+                            <button type="button" class="btn btn-primary btn-sm" style="left: 10px; position: relative;" id="saveColumnsBtn">Apply</button>
+                        </div>
+                    </div>
+                </div>
 
-
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
-                    <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                          <th>User</th>
-
+                    <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
+                    </button><br /><br />
+                    <thead>
+                        <tr>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Country</th>
                             <th>Order No</th>
+                            <th>Order Status</th>
                             <th>Product</th>
+                            <th>Plan</th>
                             <th>Version</th>
                             <th>Agents</th>
-
-
-                             <th>Status</th>
-                              <th>Order Date</th>
-                              <th>Expiry</th>
+                            <th>Status</th>
+                            <th>Order Date</th>
+                            <th>Expiry</th>
                             <th>Action</th>
-                        </tr></thead>
-                     </table>
-                </div>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
-
     </div>
-
 </div>
+
    <script>
        $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_order';
@@ -202,11 +384,14 @@ Orders
     });
 
            $(document).ready(function() {
-              var orderTable = $('#order-table').DataTable({
+            var orderTable = $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-            stateSave: false, // Change stateSave to true
-            order: [[1, "asc"]], // Change the default order if needed
+            stateSave: false, 
+            order: [[1, "asc"]], 
+            "scrollX": true,
+            "scrollCollapse": true,
+
 
             ajax: {
               "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
@@ -215,7 +400,16 @@ Orders
                   alert('Your session has expired. Please login again to continue.')
                   window.location.href = '/login';
                 }
-              }
+              },
+                dataFilter: function(data) {
+                    var json = jQuery.parseJSON(data);
+                    if (json.data.length === 0) {
+                        $('#order_export-report-btn').hide(); // Hide export button
+                    } else {
+                        $('#order_export-report-btn').show(); // Show export button
+                    }
+                    return data;
+                }
             },
             columnDefs: [
               {
@@ -227,14 +421,19 @@ Orders
 
             "oLanguage": {
               "sLengthMenu": "_MENU_ Records per page",
-              "sSearch": "Search: ",
+              "sSearch": "<span style='position: relative;right: 150px;'>Search:</span> ",
               "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'client', name: 'client'},
+                {data: 'email', name: 'email' },
+                {data: 'mobile', name: 'mobile' },
+                {data: 'country', name: 'country' },
                 {data: 'number', name: 'number'},
+                {data: 'status', name: 'status'},
                 {data: 'product_name', name: 'product_name'},
+                {data: 'plan_name', name: 'plan_name'},
                 {data: 'version', name: 'version'},
                 {data: 'agents', name: 'agents'},
                 {data: 'order_status', name: 'order_status'},
@@ -242,6 +441,9 @@ Orders
                 {data: 'update_ends_at', name: 'update_ends_at'},
                 {data: 'action', name: 'action'}
             ],
+
+    
+
             "fnDrawCallback": function(oSettings) {
               $('[data-toggle="tooltip"]').tooltip({
                 container: 'body'
@@ -259,6 +461,152 @@ Orders
               $('.loader').css('display', 'block');
             }
           });
+
+       
+    $('#saveColumnsBtn').click(function() {
+        // Get selected columns
+        var selectedColumns = [];
+        $('input[type="checkbox"]:checked').each(function() {
+            selectedColumns.push($(this).val());
+        });
+         if (selectedColumns.length === 0) {
+        alert('Please select at least one column.');
+        return;
+        }
+
+        $.ajax({
+            url: '{{ route('save-columns') }}',
+            method: 'POST',
+            data: {
+                selected_columns: selectedColumns,
+                entity_type: 'orders',
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                location.reload();
+                console.log(response.message);
+            },
+            error: function(xhr) {
+                console.log('Failed to save column preferences');
+            }
+        });
+
+        orderTable.columns().every(function() {
+            var column = this;
+            if (selectedColumns.includes(column.dataSrc())) {
+                column.visible(true);
+            } else {
+                column.visible(false);
+            }
+        });
+        orderTable.draw();
+    });
+
+   $(document).ready(function() {
+        $.ajax({
+            url: '{{ route('get-columns') }}',
+            method: 'GET',
+            data: {
+                entity_type: 'orders'
+            },
+            success: function(response) {
+                var selectedColumns = response.selected_columns;
+                orderTable.columns().every(function() {
+                    var column = this;
+                    if (selectedColumns.includes(column.dataSrc())) {
+                        column.visible(true);
+                    } else {
+                        column.visible(false);
+                    }
+                });
+
+                $('input[type="checkbox"]').each(function() {
+                    var checkboxValue = $(this).val();
+                    if (selectedColumns.includes(checkboxValue)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            },
+            error: function(xhr) {
+                console.error('Failed to load column preferences.');
+            }
+        });
+    });
+        
+
+          $('#order_export-report-btn').click(function() {
+            $(this).prop('disabled', true);
+
+            var selectedColumns = [];
+            $('input[type="checkbox"]:checked').each(function() {
+                selectedColumns.push($(this).val());
+            });
+
+            var urlParams = new URLSearchParams(window.location.search);
+            console.log(urlParams);
+            var searchParams = {};
+            for (const [key, value] of urlParams) {
+                searchParams[key] = value;
+            }
+             var loadingElement = document.getElementById("loading");
+            loadingElement.style.display = "flex";
+            $.ajax({
+            "url": '{{ url("export-orders") }}?' +
+                   'order_no={{ $request->order_no }}' +
+                   '&product_id={{ $request->product_id }}' +
+                   '&expiry={{ $request->expiry }}' +
+                   '&expiryTill={{ $request->expiryTill }}' +
+                   '&from={{ $request->from }}' +
+                   '&till={{ $request->till }}' +
+                   '&sub_from={{ $request->sub_from }}' +
+                   '&sub_till={{ $request->sub_till }}' +
+                   '&ins_not_ins={{ $request->ins_not_ins }}' +
+                   '&domain={{ $request->domain }}' +
+                   '&p_un={{ $request->p_un }}' +
+                   '&act_ins={{ $request->act_inst }}' +
+                   '&renewal={{ $request->renewal }}' +
+                   '&inact_ins={{ $request->inact_inst }}' +
+                   '&version={{ $request->version }}',
+
+                method: 'GET',
+                data: {
+                    selected_columns: selectedColumns,
+                    search_params: searchParams
+                },
+                success: function(response, status, xhr) {
+                    var result = '<div class="alert alert-success">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button>' +
+                        '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                        response.message + '!</div>';
+                    
+                    $('#export-message').html(result).removeClass('text-danger').addClass('text-success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 5000);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                    var result = '<div class="alert alert-danger">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button>' +
+                        '<strong><i class="far fa-thumbs-down"></i> Oops! </strong>' +
+                        'Export failed: ' + xhr.responseJSON.message + '</div>';
+
+                    $('#export-message').html(result).removeClass('text-success').addClass('text-danger');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 5000);
+                },
+                 complete: function () {
+                        loadingElement.style.display = "none";
+                    }
+
+            });
+        });
+
         });
 
         function getProductVersion(val) {

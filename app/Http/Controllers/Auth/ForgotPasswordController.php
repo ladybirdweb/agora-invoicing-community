@@ -108,6 +108,7 @@ class ForgotPasswordController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
+            dd($ex);
             $result = ['Reset instructions have been mailed to '.$request->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
 
             return response()->json(compact('result'), 500);

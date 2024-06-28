@@ -257,7 +257,7 @@ Orders
             <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 700%;top: 108px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 600%;top: 108px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -393,8 +393,7 @@ Orders
 
 
             ajax: {
-              "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->ren
-ewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
+              "url": '{!! route('get-orders', "order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
               error: function(xhr) {
                 if (xhr.status == 401) {
                   alert('Your session has expired. Please login again to continue.')
@@ -536,6 +535,7 @@ ewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
             });
 
             var urlParams = new URLSearchParams(window.location.search);
+            console.log(urlParams);
             var searchParams = {};
             for (const [key, value] of urlParams) {
                 searchParams[key] = value;
@@ -543,13 +543,29 @@ ewal&inact_ins=$request->inact_inst&version=$request->version") !!}',
              var loadingElement = document.getElementById("loading");
             loadingElement.style.display = "flex";
             $.ajax({
-                url: '{{ url("export-orders") }}',
+            "url": '{{ url("export-orders") }}?' +
+                   'order_no={{ $request->order_no }}' +
+                   '&product_id={{ $request->product_id }}' +
+                   '&expiry={{ $request->expiry }}' +
+                   '&expiryTill={{ $request->expiryTill }}' +
+                   '&from={{ $request->from }}' +
+                   '&till={{ $request->till }}' +
+                   '&sub_from={{ $request->sub_from }}' +
+                   '&sub_till={{ $request->sub_till }}' +
+                   '&ins_not_ins={{ $request->ins_not_ins }}' +
+                   '&domain={{ $request->domain }}' +
+                   '&p_un={{ $request->p_un }}' +
+                   '&act_ins={{ $request->act_inst }}' +
+                   '&renewal={{ $request->renewal }}' +
+                   '&inact_ins={{ $request->inact_inst }}' +
+                   '&version={{ $request->version }}',
+
                 method: 'GET',
                 data: {
                     selected_columns: selectedColumns,
                     search_params: searchParams
                 },
-                    success: function(response, status, xhr) {
+                success: function(response, status, xhr) {
                     var result = '<div class="alert alert-success">' +
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                         '<span aria-hidden="true">&times;</span></button>' +

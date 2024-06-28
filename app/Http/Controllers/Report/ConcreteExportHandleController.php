@@ -683,7 +683,7 @@ class ConcreteExportHandleController extends ExportHandleController
         $chunks = $filteredTenants->chunk($limit);
 
         foreach ($chunks as $index => $chunk) {
-            $export = new TenatExport($selectedColumns, $chunk, $index + 1);
+            $export = new TenatExport($this->selectedColumns, $chunk, $index + 1);
             $fileName = 'tenants_'.$id.'_part'.($index + 1).'.xlsx';
             $filePath = $folderPath.'/'.$fileName;
             Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);

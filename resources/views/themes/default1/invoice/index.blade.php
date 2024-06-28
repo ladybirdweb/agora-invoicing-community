@@ -351,6 +351,15 @@ Invoices
                         alert('Your session has expired. Please login again to continue.')
                         window.location.href = '/login';
                     }
+                },
+                 dataFilter: function(data) {
+                    var json = jQuery.parseJSON(data);
+                    if (json.data.length === 0) {
+                        $('#invoice_export-report-btn').hide(); // Hide export button
+                    } else {
+                        $('#invoice_export-report-btn').show(); // Show export button
+                    }
+                    return data;
                 }
             },
             "oLanguage": {

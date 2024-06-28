@@ -684,7 +684,7 @@ class ConcreteExportHandleController extends ExportHandleController
 
         foreach ($chunks as $index => $chunk) {
             $export = new TenatExport($selectedColumns, $chunk, $index + 1);
-            $fileName = 'tenats_'.$id.'_part'.($index + 1).'.xlsx';
+            $fileName = 'tenants_'.$id.'_part'.($index + 1).'.xlsx';
             $filePath = $folderPath.'/'.$fileName;
             Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
         }
@@ -693,7 +693,7 @@ class ConcreteExportHandleController extends ExportHandleController
             'user_id' => $id,
             'file_path' => $folderPath,
             'file' => $folderName,
-            'name' => 'tenats',
+            'name' => 'tenants',
         ]);
 
         $settings = new \App\Model\Common\Setting();

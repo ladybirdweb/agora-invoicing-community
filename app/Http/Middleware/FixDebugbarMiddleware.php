@@ -5,8 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Barryvdh\Debugbar\Facade as Debugbar;
-
 
 class FixDebugbarMiddleware
 {
@@ -21,10 +19,10 @@ class FixDebugbarMiddleware
 
         foreach ($middlewareConfig as $alias => $class) {
             if (is_array($class)) {
-                config(['debugbar.middleware.' . $alias => implode(',', $class)]);
+                config(['debugbar.middleware.'.$alias => implode(',', $class)]);
             }
         }
-        
+
         return $next($request);
     }
 }

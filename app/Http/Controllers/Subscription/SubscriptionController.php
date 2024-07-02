@@ -117,23 +117,51 @@ class SubscriptionController extends Controller
 
     public function getCreatedSubscription()
     {
-        $tomorrow = now()->startOfDay()->addDay();
-        $twoDaysAgo = now()->subDays(2)->startOfDay();
-        $sub = Subscription::where(function ($query) {
-            $query->Where('rzp_subscription', '2')
-                ->orWhere('autoRenew_status', '2');
-        })
-       ->whereBetween('update_ends_at', [$twoDaysAgo, $tomorrow]);
+        
+            $daysArray = ExpiryMailDay::pluck('autorenewal_days')->toArray();
 
-        return $sub;
+            if (empty($daysArray) || empty($daysArray[0])) {
+                return [];
+            }
+
+            $decodedData = json_decode($daysArray[0]);
+
+            if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
+                return [];
+            }
+
+            $subscriptions = [];
+            foreach ($decodedData as $day) {
+                $day = (int) $day;
+                $startDate = Carbon::now()->toDateString();
+                $endDate = Carbon::now()->addDays($day)->toDateString();
+
+                $subscriptionsForDay = Subscription::where(function ($query) {
+                    $query->where('rzp_subscription', '2')
+                          ->orWhere('autoRenew_status', '2');
+                })
+                ->whereBetween('update_ends_at', [$startDate, $endDate])
+                ->get()
+                ->toArray();
+                
+
+                $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
+            }
+
+            $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+            return $uniqueSubscriptions;
+        
+
+        return [];
     }
 
     public function autoRenewal()
     {
         ini_set('memory_limit', '-1');
         try {
-            $createdSubscription = $this->getCreatedSubscription()->get();
+            $createdSubscription = $this->getCreatedSubscription();
             foreach ($createdSubscription as $sub) {
+                $sub = (object) $sub;
                 $this->checkSubscriptionStatus($sub);
             }
             //Retrieve expired subscription details
@@ -214,7 +242,8 @@ class SubscriptionController extends Controller
         $today = new DateTime();
         $today->modify('+1 day');
         $expiry_date = $today->format('d M Y');
-        $date = $subscription->update_ends_at->format('d M Y');
+        $update_ends_at = new DateTime($subscription->update_ends_at);
+        $date = $update_ends_at->format('d M Y');
         $order = Order::where('id', $subscription->order_id)->first();
 
         $replace = [

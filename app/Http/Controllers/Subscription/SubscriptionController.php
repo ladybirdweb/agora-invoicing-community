@@ -117,40 +117,38 @@ class SubscriptionController extends Controller
 
     public function getCreatedSubscription()
     {
-        
-            $daysArray = ExpiryMailDay::pluck('autorenewal_days')->toArray();
+        $daysArray = ExpiryMailDay::pluck('autorenewal_days')->toArray();
 
-            if (empty($daysArray) || empty($daysArray[0])) {
-                return [];
-            }
+        if (empty($daysArray) || empty($daysArray[0])) {
+            return [];
+        }
 
-            $decodedData = json_decode($daysArray[0]);
+        $decodedData = json_decode($daysArray[0]);
 
-            if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
-                return [];
-            }
+        if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
+            return [];
+        }
 
-            $subscriptions = [];
-            foreach ($decodedData as $day) {
-                $day = (int) $day;
-                $startDate = Carbon::now()->toDateString();
-                $endDate = Carbon::now()->addDays($day)->toDateString();
+        $subscriptions = [];
+        foreach ($decodedData as $day) {
+            $day = (int) $day;
+            $startDate = Carbon::now()->toDateString();
+            $endDate = Carbon::now()->addDays($day)->toDateString();
 
-                $subscriptionsForDay = Subscription::where(function ($query) {
-                    $query->where('rzp_subscription', '2')
-                          ->orWhere('autoRenew_status', '2');
-                })
-                ->whereBetween('update_ends_at', [$startDate, $endDate])
-                ->get()
-                ->toArray();
-                
+            $subscriptionsForDay = Subscription::where(function ($query) {
+                $query->where('rzp_subscription', '2')
+                      ->orWhere('autoRenew_status', '2');
+            })
+            ->whereBetween('update_ends_at', [$startDate, $endDate])
+            ->get()
+            ->toArray();
 
-                $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
-            }
+            $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
+        }
 
-            $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
-            return $uniqueSubscriptions;
-        
+        $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
+
+        return $uniqueSubscriptions;
 
         return [];
     }

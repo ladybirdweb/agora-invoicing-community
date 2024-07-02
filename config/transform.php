@@ -238,6 +238,7 @@ return[
         'company_title' => '{{company_title}}',
         'url' => '{{url}}',
         'number' => '{{number}}',
+        'date' => '{{date}}',
     ],
 
 ];

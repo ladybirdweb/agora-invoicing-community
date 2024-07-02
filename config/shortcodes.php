@@ -44,5 +44,6 @@ return [
     '{{application_title}}' => 'company\'s application title',
     '{{company_title}}' => 'company title',
     '{{licenseCode}}' => 'Order\'s licenseCode',
+    '{{date}}' => 'Order\'s expiry date',
 
 ];

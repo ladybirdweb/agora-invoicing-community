@@ -11,13 +11,13 @@
 
 @section('container')
 
-	@if(session('message')['dbOutputLog'])
-		<p><strong><small>{{ trans('installer_messages.final.migration') }}</small></strong></p>
-		<pre><code>{{ session('message')['dbOutputLog'] }}</code></pre>
-	@endif
-    <strong>Username : </strong> demo <br/>
-    <strong>Password : </strong> password
-	
+    @if(session('message')['dbOutputLog'] ?? false)
+        <p><strong><small>{{ trans('installer_messages.final.migration') }}</small></strong></p>
+        <pre><code>{{ session('message')['dbOutputLog'] }}</code></pre>
+    @endif
+    <strong>Email: </strong> demo@admin.com  <br/>
+    <strong>Password: </strong> password
+    
     <div class="buttons">
         <a href="{{ url('/') }}" class="button">{{ trans('installer_messages.final.exit') }}</a>
     </div>

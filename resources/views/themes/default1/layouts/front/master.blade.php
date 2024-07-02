@@ -927,21 +927,29 @@ $days = $pay->where('product','117')->value('days');
 
 <script type="text/javascript">
 
-    var csrfToken = $('[name="csrf_token"]').attr('content');
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    setInterval(refreshToken, 360000); // 1 hour
+setInterval(refreshToken, 3600000); 
 
-    function refreshToken(){
-        $.get('refresh-csrf').done(function(data){
-            csrfToken = data; // the new token
+function refreshToken(){
+    $.get('refresh-csrf').done(function(data){
+        csrfToken = data.token;
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            }
         });
-    }
+    });
+}
 
+$(document).ready(function() {
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': csrfToken
         }
     });
+});
+
 </script>
 
 

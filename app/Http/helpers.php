@@ -288,28 +288,48 @@ function getStateByCode($code)
 function userCurrencyAndPrice($userid, $plan, $productid = '')
 {
     try {
-        if (! \Auth::user()) {//When user is not logged in
-            $location = getLocation();
-            $country = findCountryByGeoip($location['iso_code']);
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
-        }
-        if (\Auth::user() && ! $userid) {
-            $country = \Auth::user()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
+        $country = getCountry($userid);
+
+        if (! $country) {
+            throw new \Exception(Lang::get('messages.country_notfound'));
         }
 
-        if ($userid) {//For Admin Panel Clients
-            $userCountry = User::where('id', $userid)->first()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($userCountry, $plan);
-        }
-        $currency = $currencyAndSymbol['currency'];
-        $symbol = $currencyAndSymbol['currency_symbol'];
-        $plan = $currencyAndSymbol['userPlan'];
+        $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
 
-        return ['currency' => $currency, 'symbol' => $symbol, 'plan' => $plan];
+        // Check if the user is not authenticated
+        if (! auth()->check()) {
+            echo '<script>';
+            echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
+            echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
+            echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
+            echo '</script>';
+        }
+
+        return [
+            'currency' => $currencyAndSymbol['currency'],
+            'symbol' => $currencyAndSymbol['currency_symbol'],
+            'plan' => $currencyAndSymbol['userPlan'],
+        ];
     } catch (\Exception $ex) {
         return redirect()->back()->with('fails', $ex->getMessage());
     }
+}
+
+function getCountry($userid)
+{
+    if (Auth::check()) {
+        return Auth::user()->country;
+    }
+
+    if ($userid) {
+        return User::where('id', $userid)->value('country');
+    }
+
+    $location = cache()->remember('user_location', 60, function () {
+        return getLocation();
+    });
+
+    return $location['iso_code'] ? findCountryByGeoip($location['iso_code']) : null;
 }
 
 /**

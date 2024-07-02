@@ -92,18 +92,13 @@ class SubscriptionController extends Controller
                 $day = (int) $day;
                 $startDate = Carbon::now()->toDateString();
                 $endDate = Carbon::now()->addDays($day)->toDateString();
-
                 $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
-                    ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
-                    ->where('orders.order_status', 'executed')
-                    ->where('is_subscribed', 1)
-                    ->where(function ($query) {
-                        $query->where('rzp_subscription', '!=', 2)
-                              ->orWhere('autoRenew_status', '!=', 2);
-                    })
-                    ->get()
-                    ->toArray();
-
+                ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
+                ->where('orders.order_status', 'executed')
+                ->where('is_subscribed', 1)
+                ->orWhereRaw('(case when rzp_subscription = 1 then 1 when autoRenew_status = 1 then 1 else 0 end) = 1')
+                ->get()
+                ->toArray();
                 $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
             }
 
@@ -199,20 +194,49 @@ class SubscriptionController extends Controller
                 }
 
                 //Do not create invoices for invoices that are already unpaid
-                if ($subscription->autoRenew_status != '2' && $subscription->rzp_subscription != '2' && $price > 0) {
-                    $renewController = new BaseRenewController();
-                    $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
+                if ($subscription->autoRenew_status != '2' || $subscription->rzp_subscription != '2' && $price > 0) {
+                    $findInvoiceid = \DB::table('order_invoice_relations')
+                                        ->where('order_id', $subscription->order_id)
+                                        ->latest()
+                                        ->value('invoice_id');
+    
+                    $existingInvoiceItem = \DB::table('invoice_items')
+                                              ->where('invoice_id', $findInvoiceid)
+                                              ->where('product_name', $product_details->name)
+                                              ->first();
+    
+                    if ($existingInvoiceItem) {
+                        $isUnpaid = Invoice::where('id', $existingInvoiceItem->invoice_id)
+                                           ->where('status', 'pending')
+                                           ->where('is_renewed', '1')  // Corrected the typo from 'is_renewded' to 'is_renewed'
+                                           ->latest('created_at')
+                                           ->first();
+                    } else {
+                        $isUnpaid = null;
+                    }
+    
+                    if (!$isUnpaid) {
+                        $renewController = new BaseRenewController();
+                        $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
+                    } else {
+                        $invoice = InvoiceItem::where('invoice_id', $isUnpaid->id)
+                                              ->latest('created_at')
+                                              ->first();
+                    }
+    
                     $cost = Invoice::where('id', $invoice->invoice_id)->value('grand_total');
                     $currency = Invoice::where('id', $invoice->invoice_id)->value('currency');
+    
+                    }
                     $unit_cost = $this->PostSubscriptionHandle->calculateUnitCost($currency, $cost);
-                }
-                if ($price > 0) {
-                    //Check the invoice status for active subscription
-                    $this->validateInvoiceForActiveSubscriptionStatus($subscription, $invoice, $currency, $cost, $user, $order, $product_details);
-
-                    //Create subscription status enabled users
-                    $this->createSubscriptionsForEnabledUsers($stripe_payment_details, $product_details, $unit_cost, $currency, $plan, $subscription, $invoice, $order, $user, $cost, $end);
-                }
+    
+                    if ($price > 0) {
+                        //Check the invoice status for active subscription
+                        $this->validateInvoiceForActiveSubscriptionStatus($subscription, $currency, $cost, $user, $order, $product_details);
+                        
+                        //Create subscription status enabled users
+                        $this->createSubscriptionsForEnabledUsers($stripe_payment_details, $product_details, $unit_cost, $currency, $plan, $subscription, $invoice, $order, $user, $cost, $end);
+                    }
             }
         } catch (\Exception $ex) {
             $this->PostSubscriptionHandle->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice, $payment_method);
@@ -357,20 +381,20 @@ class SubscriptionController extends Controller
         return $finalPrice;
     }
 
-    private function validateInvoiceForActiveSubscriptionStatus($subscription, $invoice, $currency, $cost, $user, $order, $product_details)
+    private function validateInvoiceForActiveSubscriptionStatus($subscription, $currency, $cost, $user, $order, $product_details)
     {
         if ($subscription->is_subscribed != '1') {
             return;
         }
 
         if ($subscription->is_subscribed == '1' && $subscription->autoRenew_status == '3') {
-            $this->processStripeSubscription($subscription, $invoice, $currency, $cost, $user, $order, $product_details);
+            $this->processStripeSubscription($subscription,$currency, $cost, $user, $order, $product_details);
         } elseif ($subscription->is_subscribed == '1' && $subscription->rzp_subscription == '3') {
-            $this->processRazorpaySubscription($subscription, $invoice, $currency, $cost, $user, $order, $product_details);
+            $this->processRazorpaySubscription($subscription,$currency, $cost, $user, $order, $product_details);
         }
     }
 
-    private function processStripeSubscription($subscription, $invoice, $currency, $cost, $user, $order, $product_details)
+    private function processStripeSubscription($subscription,$currency, $cost, $user, $order, $product_details)
     {
         $product_name = Product::where('id', $subscription->product_id)->value('name');
         $invoiceid = \DB::table('order_invoice_relations')->where('order_id', $subscription->order_id)->latest()->value('invoice_id');
@@ -412,7 +436,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    private function processRazorpaySubscription($subscription, $invoice, $currency, $cost, $user, $order, $product_details)
+    private function processRazorpaySubscription($subscription,$currency, $cost, $user, $order, $product_details)
     {
         $key_id = ApiKey::pluck('rzp_key')->first();
         $secret = ApiKey::pluck('rzp_secret')->first();

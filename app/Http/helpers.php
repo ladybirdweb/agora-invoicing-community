@@ -296,11 +296,14 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
 
         $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
 
-        echo '<script>';
-        echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
-        echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
-        echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
-        echo '</script>';
+        // Check if the user is not authenticated
+        if (!auth()->check()) {
+            echo '<script>';
+            echo "localStorage.setItem('currency', '{$currencyAndSymbol['currency']}');";
+            echo "localStorage.setItem('symbol', '{$currencyAndSymbol['currency_symbol']}');";
+            echo "localStorage.setItem('plan', '".json_encode($currencyAndSymbol['userPlan'])."');";
+            echo '</script>';
+        }
 
         return [
             'currency' => $currencyAndSymbol['currency'],

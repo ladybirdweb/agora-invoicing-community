@@ -30,7 +30,7 @@ class InvoiceExport implements FromCollection, WithHeadings, WithTitle
     public function headings(): array
     {
         $headingsMap = [
-            'user_id' => 'Name',
+            'user_id' => 'User',
             'email' => 'Email',
             'mobile' => 'Mobile',
             'country' => 'Country',

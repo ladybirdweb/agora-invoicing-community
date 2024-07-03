@@ -142,8 +142,8 @@ class ReportColumnSeeder extends Seeder
         ]);
           ReportColumn::create([
             'id' => '16',
-            'key' => 'created_at',
-            'label' => 'created_at',
+            'key' => 'date',
+            'label' => 'date',
             'type' => 'invoices',
             'default' => '1'
         ]);

@@ -43,7 +43,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // \App\Http\Middleware\IsInstalled::class,
-            \App\Http\Middleware\FixDebugbarMiddleware::class,
 
         ],
         'admin' => [\App\Http\Middleware\Admin::class],
@@ -56,7 +55,6 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\FixDebugbarMiddleware::class,
 
         ],
     ];
@@ -75,7 +73,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'installAgora' => \App\Http\Middleware\Install::class,
-        'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
+        'isInstalled' => \App\Http\Middleware\IsInstalled::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
 

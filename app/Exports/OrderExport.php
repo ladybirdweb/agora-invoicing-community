@@ -29,18 +29,18 @@ class OrderExport implements FromCollection, WithHeadings, WithTitle
     public function headings(): array
     {
         $headingsMap = [
-            'client' => 'Name',
+            'client' => 'User',
             'email' => 'Email',
             'mobile' => 'Mobile',
             'number' => 'Order No',
-            'product_name' => 'Product Name',
-            'plan_name' => 'Plan Name',
+            'product_name' => 'Product',
+            'plan_name' => 'Plan',
             'version' => 'Version',
             'agents' => 'Agents',
             'order_status' => 'Status',
             'status' => 'Order Status',
-            'order_date' => 'Created At',
-            'update_ends_at' => 'Expiry At',
+            'order_date' => 'Order Date',
+            'update_ends_at' => 'Expiry',
         ];
 
         return array_map(function ($column) use ($headingsMap) {

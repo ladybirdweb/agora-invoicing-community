@@ -68,7 +68,13 @@ class ConcreteExportHandleController extends ExportHandleController
             // Prepare the query
             $users = User::query();
 
-            // Apply search filters
+            $statusColumns = ['mobile_verified', 'active', 'is_2fa_enabled'];
+            foreach ($statusColumns as $statusColumn) {
+                if (! in_array($statusColumn, $selectedColumns)) {
+                    $selectedColumns[] = $statusColumn;
+                }
+            }
+
             // Apply search filters
             foreach ($searchParams as $key => $value) {
                 if ($value !== null && $value !== '') {

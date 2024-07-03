@@ -71,7 +71,7 @@ return [
             'block_for' => null,
             'after_commit' => false,
             'timeout' => 300,
-            'sleep' => 3, 
+            'sleep' => 3,
         ],
 
     ],

@@ -148,8 +148,8 @@ class RazorpayController extends Controller
             'addons' => [['item' => [
                 'name' => $product_name,
                 'amount' => $cost,
-                'currency' => $currency]]]
-   
+                'currency' => $currency]]],
+
         ]);
 
         return $rzp_subscriptionLink;

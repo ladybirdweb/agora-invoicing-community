@@ -148,11 +148,9 @@ class RazorpayController extends Controller
             'addons' => [['item' => [
                 'name' => $product_name,
                 'amount' => $cost,
-                'currency' => $currency]]],
-            'notify_info' => [
-                'notify_phone' => $user->mobile,
-                'notify_email' => $user->email,
-            ]]);
+                'currency' => $currency]]]
+   
+        ]);
 
         return $rzp_subscriptionLink;
     }

@@ -60,35 +60,43 @@ class MailChimpController extends BaseMailChimpController
         $this->mailchimp = new \Mailchimp\Mailchimp($this->mail_api_key);
     }
 
-    public function addSubscriber($email)
+    public function addSubscriber($user)
     {
         try {
-            $merge_fields = $this->field($email);
-            $interestGroupIdForNo = $this->relation->is_paid_no; //Interest GroupId for IsPaid Is No
-            $interestGroupIdForYes = $this->relation->is_paid_yes; //Interest GroupId for IsPaid Is Yes
+            // Assuming $user array contains 'first_name' and 'last_name'
+            $merge_fields = [
+                'FNAME' => $user['first_name'],
+                'LNAME' => $user['last_name']
+            ];
+
+            $interestGroupIdForNo = $this->relation->is_paid_no; // Interest GroupId for IsPaid Is No
+            $interestGroupIdForYes = $this->relation->is_paid_yes; // Interest GroupId for IsPaid Is Yes
+
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status' => $this->mailchimp_set->subscribe_status,
-                'email_address' => $email,
-                // 'merge_fields' => $merge_fields,
-
+                'email_address' => $user['email'],
+                'merge_fields' => $merge_fields,
                 // 'interests' => [$interestGroupIdForNo => true, $interestGroupIdForYes => false],
-
             ]);
 
             return $result;
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
             if ($exe['status'] == 400) {
-                throw new Exception("$email is already subscribed to newsletter", 400);
+                throw new Exception("$user[email] is already subscribed to the newsletter", 400);
             }
         }
     }
 
+
     //Update to Mailchimp For Paid Product
     public function addSubscriberByClientPanel(Request $request)
     {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
         $this->validate($request, [
             'email' => 'required|email',
+            'mailchimp-recaptcha-response-1' => "$captchaRule|captcha",
         ]);
 
         try {

@@ -88,6 +88,12 @@ class RegisterController extends Controller
 
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
 
+            $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+            if ($mailchimpStatus == 1) {
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->addSubscriber($user);
+            }
+
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);

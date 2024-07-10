@@ -16,7 +16,7 @@
     border-radius: 4px;
     padding: 11.2px 16px;
     color: #777;
-    width: 84%;
+    width: 86%;
 
 }
 
@@ -809,18 +809,30 @@ $days = $pay->where('product','117')->value('days');
                         $socialMedia .= '</ul>';
                     }
 
+                    $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+
                     $mailchimpSection = '';
-                    if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
-                        // Mailchimp Subscription Form
-                        $mailchimpSection .= '<div id="mailchimp-message" style="width: 100%;"></div>
-                                    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
-                                        <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
-                                            <div class="input-group">
-                                                <input class="custom-input newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
-                                                <button class="btn btn-primary" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
-                                            </div>
-                                        </form>
-                                    </div>';
+                     if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
+                        $mailchimpSection .= '<div id="mailchimp-message" style="width: 86%;"></div>
+                                                <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
+                                                    <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
+                                                        <div class="input-group mb-3">
+                                                            <input class="custom-input newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
+                                                        </div>
+                                                        <!-- Honeypot fields (hidden) -->
+                                                        <div class="mb-3" style="display: none;">
+                                                            <label>Leave this field empty</label>
+                                                            <input type="text" name="mailhoneypot_field" value="">
+                                                        </div>';
+                        if ($status->recaptcha_status) {
+                            $mailchimpSection .= '<div class="mb-3">' . NoCaptcha::display(['id' => 'g-recaptcha-mailchimp', 'data-callback' => 'mailchimponRecaptcha']) . '</div>';
+                            $mailchimpSection .= '<input type="hidden" id="mailchimp-recaptcha-response-1" name="mailchimp-recaptcha-response-1">
+                                                  <div class="robot-verification mb-3" id="mailchimpcaptcha"></div>
+                                                  <span id="mailchimpcaptchacheck"></span>';
+                        }
+                        $mailchimpSection .= '<button class="btn btn-primary mb-3" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
+                                            </form>
+                                          </div>';
                     }
 
                     // Check if the 'menu' class exists in the widget content
@@ -922,6 +934,19 @@ $days = $pay->where('product','117')->value('days');
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <!-- Current Page Vendor and Views -->
 <script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
+ <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+    <script>
+        ///////////////////////////////////////////////////////////////////////////////
+        ///Google Recaptcha
+        function recaptchaCallback() {
+            document.querySelectorAll('.g-recaptcha-mailchimp').forEach(function (el) {
+                grecaptcha.render(el);
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
+    </script>
 
 
 
@@ -952,61 +977,104 @@ $(document).ready(function() {
 
 </script>
 
+  <script>
+      var recaptchaValid = false;
+        function mailchimponRecaptcha(response) {
+        if (response === '') {
+            recaptchaValid = false; 
+        } else {
+            recaptchaValid = true; 
+            $('#mailchimp-recaptcha-response-1').val(response);
+        }
+        }
+    
+         function mailchimpvalidateRecaptcha() {
+                 var recaptchaResponse = $('#mailchimp-recaptcha-response-1').val();
 
+                if (recaptchaResponse === '') {
+                    $('#mailchimpcaptchacheck').show();
+                    $('#mailchimpcaptchacheck').html("Robot verification failed, please try again.");
+                    $('#mailchimpcaptchacheck').focus();
+                    $('#mailchimpcaptcha').css("border-color", "red");
+                    $('#mailchimpcaptchacheck').css({"color": "red", "margin-top": "5px"});
+                    return false;
+                } else {
+                    $('#mailchimpcaptchacheck').hide();
+                    return true;
+                }
+         }
+    </script>
 <script>
 
 
+    
     $(document).ready(function() {
-        var emailInput = $('.newsletterEmail');
+    var emailInput = $('.newsletterEmail');
 
-        $('#newsletterForm').submit(function(e) {
-            e.preventDefault(); 
-            var email = emailInput.val();
+    $('#newsletterForm').submit(function(e) {
+        e.preventDefault(); 
+        var email = emailInput.val();
 
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            if (!emailRegex.test(email)) {
-                $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+        if (!emailRegex.test(email)) {
+            $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            return;
+        }
+
+        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
+        if (recaptchaEnabled == 1) {
+            if (!mailchimpvalidateRecaptcha()) {
+                $("#mailchimp-subscription").attr('disabled', false);
+                $("#mailchimp-subscription").html("Send Message");
                 return;
             }
+        }
 
-            $('#mailchimp-subscription').html("Wait...");
+        var honeypot = $('input[name=honeypot_field]').val();
+        var captcha = $('#mailchimp-recaptcha-response-1').val();
 
-            $.ajax({
-                type: 'POST',
-                url: '{{url("mail-chimp/subcribe")}}',
-                data: {'email': email, '_token': "{!! csrf_token() !!}"},
-                success: function(data) {
-                     emailInput.val('');
-                    $("#mailchimp-subscription").html("Go");
+        $('#mailchimp-subscription').html("Wait...");
+
+        $.ajax({
+            type: 'POST',
+            url: '{{url("mail-chimp/subcribe")}}',
+            data: {
+                'email': email, 
+                '_token': "{!! csrf_token() !!}",
+                'honeypot_field': honeypot,
+                'mailchimp-recaptcha-response-1': captcha
+            },
+            success: function(data) {
+                emailInput.val('');
+                $("#mailchimp-subscription").html("Go");
+                $('#mailchimp-message').show();
+                var result = '<br><div class="alert alert-success"><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + ' <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                $('#mailchimp-message').html(result + ".");
+            },
+            error: function(response) {
+                emailInput.val('');
+                $("#mailchimp-subscription").html("Go");
+
+                if (response.status == 400) {
+                    var myJSON = response.responseJSON.message;
+                    var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    $('#mailchimp-message').html(html);
                     $('#mailchimp-message').show();
-                    var result = '<br><div class="alert alert-success"><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + ' <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                    $('#mailchimp-message').html(result + ".");
-                },
-                error: function(response) {
-                     emailInput.val('');
-                    $("#mailchimp-subscription").html("Go");
-
-                    if (response.status == 400) {
-                        var myJSON = response.responseJSON.message;
-                        var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                        $('#mailchimp-message').html(html);
-                         $('#mailchimp-message').show();
-                    } else {
-                        emailInput.val('');
-                        var myJSON = response.responseJSON.errors;
-                        var html = '<br><button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
-                        for (var key in myJSON) {
-                            html += '<li>' + myJSON[key][0] + '</li>';
-                        }
-                        html += '</ul></div>';
-                        $('#mailchimp-message').html(html);
-                        $('#mailchimp-message').show();
+                } else {
+                    var myJSON = response.responseJSON.errors;
+                    var html = '<br><button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
+                    for (var key in myJSON) {
+                        html += '<li>' + myJSON[key][0] + '</li>';
                     }
+                    html += '</ul></div>';
+                    $('#mailchimp-message').html(html);
+                    $('#mailchimp-message').show();
                 }
-            });
+            }
         });
     });
+});
 
     function removeItem(id) {
         $.ajax({

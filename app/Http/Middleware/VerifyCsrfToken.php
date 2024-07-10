@@ -21,6 +21,7 @@ class VerifyCsrfToken extends BaseVerifier
         'v2/serial',
         'update/lic-code',
         'renewurl',
+        'pricing/data',
     ];
 
     /**

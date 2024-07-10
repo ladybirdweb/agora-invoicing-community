@@ -15,7 +15,8 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
-
+use App\Model\Product\ProductGroup;
+use App\Model\Common\Country;
 class HomeController extends BaseHomeController
 {
     /*
@@ -528,4 +529,46 @@ class HomeController extends BaseHomeController
             default => $title
         };
     }
+
+    public function getPricingData(Request $request)
+    {
+        try {
+            $group = $request->query('group');
+            $countryCode = $request->query('country', '');
+
+            $groupId = ProductGroup::where('name',$group)->value('id');
+
+            if (\Auth::check()) {
+                $countryCode = \Auth::user()->country;
+            } else if (empty($countryCode)) {
+                $location = getLocation();
+                $countryCode = findCountryByGeoip($location['iso_code']);
+            }
+
+            $countryId = Country::where('country_code_char2', $countryCode)->value('country_id');
+            $currencyAndSymbol = getCurrencyForClient($countryCode);
+
+            $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupId)
+            ->where('hidden', '!=', 1)
+            ->join('plans', 'products.id', '=', 'plans.product')
+            ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
+            ->where('plan_prices.currency', '=', $currencyAndSymbol)
+            ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
+            ->orderBy('products.created_at', 'ASC')
+            ->select('products.name','products.description','products.category','products.version','products.highlight','products.add_to_contact','plan_prices.add_price')
+            ->get();
+
+    
+            return response()->json([
+                'data' => $productsRelatedToGroup,
+       
+            ]);
+        } catch (\Exception $ex) {
+            return response()->json(['error' => $ex->getMessage()], 500);
+        }
+    
+    }
+
+
+    
 }

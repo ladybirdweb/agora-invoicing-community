@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
-use App\Model\Common\Country;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
@@ -534,13 +533,11 @@ class HomeController extends BaseHomeController
     public function getPricingData(Request $request)
     {
         try {
-     
             $location = getLocation();
             $countryCode = findCountryByGeoip($location['iso_code']);
 
             $currencyAndSymbol = getCurrencyForClient($countryCode);
             $productGroupsQuery = ProductGroup::where('hidden', 0);
-      
 
             $productGroups = $productGroupsQuery->get();
 
@@ -557,9 +554,8 @@ class HomeController extends BaseHomeController
                     ->select('products.*', 'plan_prices.add_price')
                     ->get();
 
-
                 $response[] = [
-                    'products' => $productsRelatedToGroup
+                    'products' => $productsRelatedToGroup,
                 ];
             }
 

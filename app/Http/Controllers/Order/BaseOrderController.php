@@ -81,6 +81,7 @@ class BaseOrderController extends ExtendedOrderController
                     }
                 }
             }
+
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -124,13 +125,11 @@ class BaseOrderController extends ExtendedOrderController
                 $plan = Plan::with('addOns')->find($plan_id);
 
                 if ($plan) {
-
                     $addOnIds = $plan->addOns()->pluck('products.id')->toArray();
 
                     $addOnIds = implode(',', $addOnIds);
 
                     (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, 1);
-
                 }
             }
 

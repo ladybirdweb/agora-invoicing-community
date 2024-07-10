@@ -66,7 +66,7 @@ class MailChimpController extends BaseMailChimpController
             // Assuming $user array contains 'first_name' and 'last_name'
             $merge_fields = [
                 'FNAME' => $user['first_name'],
-                'LNAME' => $user['last_name']
+                'LNAME' => $user['last_name'],
             ];
 
             $interestGroupIdForNo = $this->relation->is_paid_no; // Interest GroupId for IsPaid Is No
@@ -87,7 +87,6 @@ class MailChimpController extends BaseMailChimpController
             }
         }
     }
-
 
     //Update to Mailchimp For Paid Product
     public function addSubscriberByClientPanel(Request $request)

@@ -628,6 +628,7 @@ Route::post('update/lic-code', [HomeController::class, 'updateLicenseCode']);
 Route::get('new-version-available', [HomeController::class, 'isNewVersionAvailable']);
 Route::post('update-installation-detail', [HomeController::class, 'updateInstallationDetails']);
 Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
+Route::get('api/billingInfo', [HomeController::class, 'getDetailedBillingInfo']);
 
 Route::post('renewurl', [HomeController::class, 'renewurl']);
 

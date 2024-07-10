@@ -616,4 +616,36 @@ class HomeController extends BaseHomeController
 
         return response()->json(['group' => $group]);
     }
+    public function getDetailedBillingInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $orderNumber = $request->input('order_number');
+        // Fetch the order details
+        $order = Order::where('number', $orderNumber)->first();
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+        // Fetch the subscription details
+        $productsAddon = $order->subscription->plan->addOns;
+
+        return response()->json([
+            'order' => $order->getAttributes(),
+            'productsAddon' => $productsAddon,
+        ]);
+    }
+
+    public function getDetailsForAClient(Request $request){
+        $user = $request->input('user_id');
+
+        $order = Order::where('client', $user)->get();
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        foreach($order as $od){
+
+        }
+
+    }
 }

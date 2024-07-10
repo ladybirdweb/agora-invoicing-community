@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
@@ -80,7 +81,6 @@ class BaseOrderController extends ExtendedOrderController
                     }
                 }
             }
-
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -121,6 +121,17 @@ class BaseOrderController extends ExtendedOrderController
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key, $admin);
+                $plan = Plan::with('addOns')->find($plan_id);
+
+                if ($plan) {
+
+                    $addOnIds = $plan->addOns()->pluck('products.id')->toArray();
+
+                    $addOnIds = implode(',', $addOnIds);
+
+                    (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, 1);
+
+                }
             }
 
             if (emailSendingStatus()) {

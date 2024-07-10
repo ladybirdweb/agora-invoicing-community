@@ -266,7 +266,7 @@ class ClientController extends AdvanceSearchController
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
             if ($mailchimpStatus == 1) {
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user['email']);
+                $r = $mailchimp->addSubscriber($user);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));

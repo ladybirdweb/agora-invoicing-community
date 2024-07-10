@@ -534,35 +534,36 @@ class HomeController extends BaseHomeController
     public function getPricingData(Request $request)
     {
         try {
-            $group = $request->query('group');
-            $countryCode = $request->query('country', '');
+     
+            $location = getLocation();
+            $countryCode = findCountryByGeoip($location['iso_code']);
 
-            $groupId = ProductGroup::where('name', $group)->value('id');
+            $currencyAndSymbol = getCurrencyForClient($countryCode);
+            $productGroupsQuery = ProductGroup::where('hidden', 0);
+      
 
-            if (\Auth::check()) {
-                $countryCode = \Auth::user()->country;
-            } elseif (empty($countryCode)) {
-                $location = getLocation();
-                $countryCode = findCountryByGeoip($location['iso_code']);
+            $productGroups = $productGroupsQuery->get();
+
+            $response = [];
+
+            foreach ($productGroups as $group) {
+                $productsRelatedToGroup = Product::where('group', $group->id)
+                     ->where('hidden', '!=', 1)
+                    ->join('plans', 'products.id', '=', 'plans.product')
+                    ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
+                    ->where('plan_prices.currency', '=', $currencyAndSymbol)
+                    ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
+                    ->orderBy('created_at', 'ASC')
+                    ->select('products.*', 'plan_prices.add_price')
+                    ->get();
+
+
+                $response[] = [
+                    'products' => $productsRelatedToGroup
+                ];
             }
 
-            $countryId = Country::where('country_code_char2', $countryCode)->value('country_id');
-            $currencyAndSymbol = getCurrencyForClient($countryCode);
-
-            $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupId)
-            ->where('hidden', '!=', 1)
-            ->join('plans', 'products.id', '=', 'plans.product')
-            ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
-            ->where('plan_prices.currency', '=', $currencyAndSymbol)
-            ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
-            ->orderBy('products.created_at', 'ASC')
-            ->select('products.name', 'products.description', 'products.category', 'products.version', 'products.highlight', 'products.add_to_contact', 'plan_prices.add_price')
-            ->get();
-
-            return response()->json([
-                'data' => $productsRelatedToGroup,
-
-            ]);
+            return response()->json($response);
         } catch (\Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 500);
         }

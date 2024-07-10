@@ -4,8 +4,6 @@ namespace Database\Seeders\v4_0_2_1;
 use Illuminate\Database\Seeder;
 use App\ReportColumn;
 use App\ReportSetting;
-
-use Illuminate\Database\Seeder;
 use App\Model\Common\Template;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +24,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([ReportSettingSeeder::class]);
         $this->command->info('Report column Table Seeded!');
+
+        $this->call([
+            TemplateTableSeeder::class,
+        ]);
 
          \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
@@ -391,13 +393,6 @@ class ReportSettingSeeder extends Seeder
     }
 }
 
-        $this->call([
-            TemplateTableSeeder::class,
-        ]);
-
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-    }
-}
 
 
 
@@ -478,13 +473,7 @@ class TemplateTableSeeder extends Seeder
    </tbody>
    </table>
    <p>&nbsp;</p>']);
-
-     
-
-       
-
-
-    }
+ }
 }
 
 

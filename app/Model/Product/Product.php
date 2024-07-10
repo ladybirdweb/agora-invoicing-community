@@ -3,6 +3,7 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
+use App\Model\Payment\Plan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -141,6 +142,6 @@ class Product extends BaseModel
 
     public function plans()
     {
-        return $this->hasMany(\App\Model\Payment\Plan::class, 'product', 'id');
+        return $this->belongsToMany(Plan::class, 'plan_add_ons', 'product_id', 'plan_id');
     }
 }

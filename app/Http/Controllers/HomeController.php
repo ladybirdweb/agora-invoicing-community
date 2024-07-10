@@ -622,7 +622,7 @@ class HomeController extends BaseHomeController
         // Fetch the order details
         $order = Order::where('number', $orderNumber)->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
         // Fetch the subscription details
@@ -634,18 +634,17 @@ class HomeController extends BaseHomeController
         ]);
     }
 
-    public function getDetailsForAClient(Request $request){
+    public function getDetailsForAClient(Request $request)
+    {
         $user = $request->input('user_id');
 
         $order = Order::where('client', $user)->get();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        foreach($order as $od){
-
+        foreach ($order as $od) {
         }
-
     }
 }

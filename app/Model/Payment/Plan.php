@@ -67,4 +67,9 @@ class Plan extends BaseModel
     {
         return LogOptions::defaults();
     }
+
+    public function addOns()
+    {
+        return $this->belongsToMany(\App\Model\Product\Product::class, 'plan_add_ons', 'plan_id', 'product_id');
+    }
 }

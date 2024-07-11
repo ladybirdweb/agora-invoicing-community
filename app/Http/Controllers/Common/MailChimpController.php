@@ -93,7 +93,7 @@ class MailChimpController extends BaseMailChimpController
     {
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
-            $this->validate($request, [
+        $this->validate($request, [
             'email' => 'required|email',
             'mailchimp-recaptcha-response-1' => $captchaRule,
         ], [

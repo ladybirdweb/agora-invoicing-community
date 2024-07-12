@@ -325,7 +325,7 @@ class HomeController extends BaseHomeController
         try {
             $faveo_encrypted_order_number = $request->input('order_number');
             $faveo_serial_key = $request->input('serial_key');
-            $beta = $request->input('beta',1);
+            $beta = $request->input('beta', 1);
 
             $orderSerialKey = $order->where('number', $faveo_encrypted_order_number)
                 ->value('serial_key');
@@ -337,7 +337,7 @@ class HomeController extends BaseHomeController
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
 
-                return $product_controller->adminDownload($product_id, '', true,$beta);
+                return $product_controller->adminDownload($product_id, '', true, $beta);
             } else {
                 return response()->json(['Invalid Credentials']);
             }
@@ -447,7 +447,7 @@ class HomeController extends BaseHomeController
              * to compares all these version with current version and if it finds a first greater version than current
              * version then it updates returns "updates available" else "no updates available".
              */
-             $releases = [0, $request->input('is_pre_release', 0)];
+            $releases = [0, $request->input('is_pre_release', 0)];
             $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)
             ->whereIn('is_pre_release', $releases)
             ->orderBy('id', 'desc')->pluck('version')->toArray();
@@ -534,6 +534,7 @@ class HomeController extends BaseHomeController
             default => $title
         };
     }
+
     public function getPricingData(Request $request)
     {
         try {
@@ -552,7 +553,7 @@ class HomeController extends BaseHomeController
             ->where('plan_prices.currency', '=', $currencyAndSymbol)
             ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
             ->orderBy('created_at', 'ASC')
-            ->select('products.*', 'plan_prices.add_price','plans.days','plan_prices.offer_price','plan_prices.price_description')
+            ->select('products.*', 'plan_prices.add_price', 'plans.days', 'plan_prices.offer_price', 'plan_prices.price_description')
             ->get();
 
             return response()->json(['products' => $productsRelatedToGroup, 'currency' => $currencyAndSymbol]);

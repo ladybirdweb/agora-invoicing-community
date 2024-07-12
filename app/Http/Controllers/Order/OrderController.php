@@ -289,16 +289,20 @@ class OrderController extends BaseOrderController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            if ($installationDetails !== null && ! empty($installationDetails['installed_path'])) {
-                foreach ($installationDetails['installed_path'] as $index => $installedPath) {
-                    $installedIp = $installationDetails['installed_ip'][$index] ?? null;
-                    $installationDate = $installationDetails['installation_date'][$index] ?? null;
-                    $installationStatus = $installationDetails['installation_status'][$index] ?? null;
+            if ($installationDetails !== null && !empty($installationDetails['installed_path'])) {
+                // Loop through each installed_path and corresponding installed_ip
+                for ($i = 0; $i < count($installationDetails['installed_path']); $i++) {
+                    $installedPath = $installationDetails['installed_path'][$i];
+                    $installedIp = $installationDetails['installed_ip'][$i] ?? null;
+                    $installationDate = $installationDetails['installation_date'][$i] ?? null;
+                    $installationStatus = $installationDetails['installation_status'][$i] ?? null;
 
-                    // Check if InstallationDetail record exists for the current installation path
-                    $installationDetail = InstallationDetail::where('installation_path', $installedPath)->first();
+                    // Find or create InstallationDetail record based on path and IP
+                    $installationDetail = InstallationDetail::where('installation_path', $installedPath)
+                                                            ->where('installation_ip', $installedIp)
+                                                            ->first();
 
-                    if (! $installationDetail) {
+                    if (!$installationDetail) {
                         // Create a new InstallationDetail record if it doesn't exist
                         InstallationDetail::create([
                             'installation_path' => $installedPath,
@@ -306,11 +310,16 @@ class OrderController extends BaseOrderController
                             'last_active' => $installationDate,
                             'order_id' => $orderId,
                         ]);
+                    } else {
+                        // Update existing record if found
+                        $installationDetail->update([
+                            'last_active' => $installationDate,
+                            'order_id' => $orderId,
+                            // Add more fields to update as needed
+                        ]);
                     }
                 }
             }
-            $insDetail = InstallationDetail::where('order_id', $orderId)->get();
-            // if ($installationDetails['installed_path'] == null) {
             $insDetail = InstallationDetail::where('order_id', $orderId)->get();
 
             if (! $insDetail->isEmpty()) {
@@ -334,7 +343,6 @@ class OrderController extends BaseOrderController
             $combinedDetailsWithOrderId = array_map(function ($details) use ($orderId) {
                 return array_merge($details, ['order_id' => $orderId]);
             }, $combinedDetails);
-
             return \DataTables::of($combinedDetailsWithOrderId)
 
                 ->addColumn('path', function ($details) {
@@ -357,38 +365,40 @@ class OrderController extends BaseOrderController
                         return getVersionAndLabel($version->version, $order->product);
                     }
                 })
-                 ->addColumn('active', function ($details) {
-                     $order = $this->order->findOrFail($details['order_id']);
-                     $cont = new \App\Http\Controllers\License\LicenseController();
-                     $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                   ->addColumn('active', function ($details) {
+                    $order = $this->order->findOrFail($details['order_id']);
+                    $cont = new \App\Http\Controllers\License\LicenseController();
+                    $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
 
-                     if ($installationDetails === null || empty($installationDetails['installed_path'])) {
-                         return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
-                     }
+                    if ($installationDetails === null || empty($installationDetails['installed_path'])) {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel('');
+                    }
 
-                     $installedPaths = $installationDetails['installed_path'];
-                     $installationStatuses = $installationDetails['installation_status'];
+                    $installedPaths = $installationDetails['installed_path'];
+                    $installationStatuses = $installationDetails['installation_status'];
+                    $installedIps = $installationDetails['installed_ip'];
 
-                     $matchFound = false;
-                     $installationStatus = '';
+                    $matchFound = false;
+                    $installationStatus = '';
 
-                     foreach ($installedPaths as $key => $installedPath) {
-                         if ($details[0] == $installedPath) {
-                             $matchFound = true;
-                             $installationStatus = $installationStatuses[$key] == 1 ? $installedPath : '';
+                    foreach ($installedPaths as $key => $installedPath) {
+                        $installedIp = $installedIps[$key] ?? '';
 
-                             break;
-                         }
-                     }
+                        // Check if both path and IP match
+                        if ($details[0] == $installedPath && $details[1] == $installedIp) {
+                            $matchFound = true;
+                            $installationStatus = $installationStatuses[$key] == 1 ? 'Installed' : 'Not Installed';
+                            break;
+                        }
+                    }
 
-                     if ($matchFound) {
-                         $installation = isset($details[$key]) ? $details[$key] : '';
+                    if ($matchFound) {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel($installationStatus);
+                    } else {
+                        return getDateHtml($details[2]) . '&nbsp;' . installationStatusLabel('');
+                    }
+                })
 
-                         return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($installationStatus);
-                     } else {
-                         return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
-                     }
-                 })
                 ->rawColumns(['path', 'ip', 'version', 'active'])
                  ->make(true);
         } catch (\Exception $ex) {

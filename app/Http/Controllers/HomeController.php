@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
+use App\Model\Common\Country;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
@@ -16,7 +17,7 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
-use App\Model\Common\Country;
+
 class HomeController extends BaseHomeController
 {
     /*
@@ -551,9 +552,7 @@ class HomeController extends BaseHomeController
             ->select('products.*', 'plan_prices.add_price')
             ->get();
 
-
             return response()->json(['products' => $productsRelatedToGroup, 'currency' => $currencyAndSymbol]);
-
         } catch (\Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 500);
         }
@@ -561,8 +560,8 @@ class HomeController extends BaseHomeController
 
     public function getGroupDatails()
     {
-        $group = ProductGroup::where('hidden','0')->pluck('id','name');
-        return response()->json(['group' => $group]);
+        $group = ProductGroup::where('hidden', '0')->pluck('id', 'name');
 
+        return response()->json(['group' => $group]);
     }
 }

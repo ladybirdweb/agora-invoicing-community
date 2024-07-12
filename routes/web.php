@@ -649,6 +649,7 @@ Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verify
 Route::post('renewurl', [HomeController::class, 'renewurl']);
 
 Route::get('pricing/data', [HomeController::class, 'getPricingData']);
+Route::get('group/data', [HomeController::class, 'getGroupDatails']);
 Route::get('404', function () {
     return view('errors.404');
 })->name('error404');

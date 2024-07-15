@@ -131,6 +131,9 @@ class BaseOrderController extends ExtendedOrderController
 
                     (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, 1);
                 }
+                if(Product::where('id',$product)->exists()){
+                    (new LicenseController())->syncTheAddonForALicense($product, $serial_key, 1, 1);
+                }
             }
 
             if (emailSendingStatus()) {

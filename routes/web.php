@@ -629,6 +629,7 @@ Route::get('new-version-available', [HomeController::class, 'isNewVersionAvailab
 Route::post('update-installation-detail', [HomeController::class, 'updateInstallationDetails']);
 Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
 Route::get('api/billingInfo', [HomeController::class, 'getDetailedBillingInfo']);
+Route::get('api/billingAddonInfo', [HomeController::class, 'getDetailsForAClient']);
 
 Route::post('renewurl', [HomeController::class, 'renewurl']);
 

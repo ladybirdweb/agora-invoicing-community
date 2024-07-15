@@ -163,7 +163,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['reports','default'],
+                'queue' => ['reports', 'default'],
                 'balance' => 'simple',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
@@ -178,7 +178,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['reports','default'],
+                'queue' => ['reports', 'default'],
                 'balance' => 'simple',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,

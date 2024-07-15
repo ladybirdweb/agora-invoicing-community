@@ -104,7 +104,7 @@ Orders
         
         #order-table_wrapper input[type="search"]  {
             position: relative;
-            right: 150px;
+            right: 130px;
         }
         
         .dataTables_filter {
@@ -254,11 +254,9 @@ Orders
     <div class="card-body table-responsive" style="padding-top: 0px; overflow: hidden;">
 
         
-        <div class="row">
-            <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 600%;top: 108px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 610%;top: 106px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -348,9 +346,8 @@ Orders
                         </tr>
                     </thead>
                 </table>
-            </div>
+          
         </div>
-    </div>
 </div>
 
    <script>
@@ -421,7 +418,7 @@ Orders
 
             "oLanguage": {
               "sLengthMenu": "_MENU_ Records per page",
-              "sSearch": "<span style='position: relative;right: 150px;'>Search:</span> ",
+              "sSearch": "<span style='position: relative;right: 140px;'>Search:</span> ",
               "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columns: [

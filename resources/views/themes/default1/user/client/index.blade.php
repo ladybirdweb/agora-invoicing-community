@@ -14,7 +14,6 @@ Users
             <li class="breadcrumb-item active">All Users</li>
         </ol>
     </div><!-- /.col -->
-@stop
     <style type="text/css">
 
         .custom-dropdown .form-check {
@@ -86,6 +85,8 @@ Users
         }
 
      </style>
+@stop
+    
 @section('content')
 <div id="export-message"></div>
 

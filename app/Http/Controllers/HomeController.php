@@ -636,15 +636,35 @@ class HomeController extends BaseHomeController
 
     public function getDetailsForAClient(Request $request)
     {
-        $user = $request->input('user_id');
 
-        $order = Order::where('client', $user)->get();
+        $userId = $request->input('user_id');
 
-        if (! $order) {
+        // Fetch orders for the specified client
+        $orders = Order::where('client', $userId)->get();
+
+        // Check if any orders were found
+        if ($orders->isEmpty()) {
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        foreach ($order as $od) {
-        }
+        // Structure the response data
+        $response = $orders->flatMap(function ($order) {
+            // Manually fetch the product details
+            $product = \App\Model\Product\Product::where('id', $order->product)
+                ->first();
+
+            // Check if product exists and return structured data
+            if ($product) {
+                return [
+                    [
+                        'order' => $order->toArray(),
+                        'product' => $product->toArray(),
+                    ]
+                ];
+            }
+            return [];
+        });
+        return response()->json(['data' => $response]);
     }
+
 }

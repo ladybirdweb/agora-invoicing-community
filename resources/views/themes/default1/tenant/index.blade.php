@@ -404,7 +404,7 @@
         <!-- Container for Select Columns and Search Input -->
         <div class="d-flex justify-content-between align-items-center mb-3" style="padding-top: 0px;">
             <div class="custom-dropdown" id="columnUpdate">
-                <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 980px;top: 50px;">
+                <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 930px;top: 50px;">
                     <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

@@ -237,7 +237,7 @@ Invoices
 
     <div class="card-body table-responsive">
 
-            <div class="col-md-12" style="position: relative; left: 86%; top: 73px;">
+            <div class="col-md-12" style="position: relative; left: 84%; top: 73px;">
                 <form id="columnForm">
                     <div class="custom-dropdown" id="columnUpdate">
                         <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 18px;">

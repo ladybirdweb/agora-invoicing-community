@@ -317,7 +317,7 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
 
 function getCountry($userid)
 {
-    if (Auth::check()) {
+    if (Auth::check() && empty($userid)) {
         return Auth::user()->country;
     }
 

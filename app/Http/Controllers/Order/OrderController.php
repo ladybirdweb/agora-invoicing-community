@@ -125,7 +125,7 @@ class OrderController extends BaseOrderController
             $orderSearch = new OrderSearchController();
             $query = $orderSearch->advanceOrderSearch($request);
 
-            $count = $query->count();
+            $count = count($query->cursor());
             $cont = new \App\Http\Controllers\License\LicenseController();
 
             return \DataTables::of($query)

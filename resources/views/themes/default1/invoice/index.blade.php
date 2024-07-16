@@ -222,7 +222,7 @@ Invoices
 
 <div class="card card-secondary card-outline">
     <div class="card-header">
-        <div id="response"></div>
+      
         <h3 class="card-title">{{ Lang::get('message.invoices') }}</h3>
         <div class="card-tools">
         <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 90%; top: 13px; z-index: 10;">
@@ -234,13 +234,17 @@ Invoices
     </div>
 
     </div>
+      <div id="response"></div>
 
     <div class="card-body table-responsive">
 
-            <div class="col-md-12" style="position: relative; left: 84%; top: 73px;">
+           <div class="d-flex justify-content-between mb-3">
+                <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
+                    </button>
                 <form id="columnForm">
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 18px;">
+                        <button class="btn btn-default pull-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 52px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -299,9 +303,7 @@ Invoices
                     <i class="fa fa-spinner fa-spin"></i>
                 </div>
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%">
-                    <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
-                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
-                    </button><br /><br />
+                
                     <thead>
                         <tr>
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>

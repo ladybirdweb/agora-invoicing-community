@@ -238,7 +238,6 @@ Orders
 </div>
     <div class="card card-secondary card-outline">
     <div class="card-header">
-        <div id="response"></div>
         <h3 class="card-title">Orders</h3>
         <div class="card-tools" style="position: relative; float: right;">
             <button type="button" id="order_export-report-btn" class="btn btn-sm" data-toggle="tooltip" title="Export" style="position: relative;top: -2px;">
@@ -250,13 +249,17 @@ Orders
         </div>
 
     </div>
+        <div id="response"></div>
 
-    <div class="card-body table-responsive" style="padding-top: 0px; overflow: hidden;">
+    <div class="card-body table-responsive">
 
         
                 <div class="d-flex justify-content-between mb-3">
+                          <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
+                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
+                    </button>
                     <div class="custom-dropdown" id="columnUpdate">
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;left: 610%;top: 106px;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 53px;">
                             <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -323,9 +326,7 @@ Orders
                 </div>
                 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">
-                        <i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected
-                    </button><br /><br />
+              
                     <thead>
                         <tr>
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>

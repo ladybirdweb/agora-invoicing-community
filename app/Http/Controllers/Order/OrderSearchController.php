@@ -67,7 +67,7 @@ class OrderSearchController extends Controller
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at', 'subscriptions.plan_id',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id', 'installation_details.installation_path', 'users.email', \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"), 'users.country'
-            )->distinct();
+            )->groupBy('orders.number');
     }
 
     public function getProductVersions(Request $request, $productId)

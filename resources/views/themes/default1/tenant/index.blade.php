@@ -396,7 +396,7 @@
     <div id="successmsg"></div>
     <div id="error"></div>
     
-        <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;right: 10px;">
+        <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;right: 10px;top: 10px;">
             <i class="fas fa-paper-plane"></i>
         </button>
         <br />

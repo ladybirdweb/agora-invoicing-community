@@ -236,7 +236,7 @@ Invoices
     </div>
       <div id="response"></div>
 
-    <div class="card-body table-responsive">
+    <div class="card-body table-responsive"><br >
 
            <div class="d-flex justify-content-between mb-3">
                 <button value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete">

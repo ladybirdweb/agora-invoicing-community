@@ -225,10 +225,10 @@ Invoices
       
         <h3 class="card-title">{{ Lang::get('message.invoices') }}</h3>
         <div class="card-tools">
-        <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 90%; top: 13px; z-index: 10;">
+        <button type="button" id="invoice_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute; left: 94%; top: 13px; z-index: 10;">
             <i class="fas fa-paper-plane"></i>
         </button>
-        <a href="{{ url('invoice/generate') }}" class="btn btn-default btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: absolute; left: 97%; top: 13px; z-index: 20;">
+        <a href="{{ url('invoice/generate') }}" class="btn btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: absolute; left: 97%; top: 13px;right: 0px;">
             <i class="fas fa-plus"></i>
         </a>
     </div>

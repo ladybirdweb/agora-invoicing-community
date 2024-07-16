@@ -64,7 +64,7 @@
 
   #tenant-table_wrapper input[type="search"] {
     position: relative;
-    right: 210px !important;
+    right: 180px !important;
     top: -4px;
     padding: 4px;
     border-radius: 5px;
@@ -396,7 +396,7 @@
     <div id="successmsg"></div>
     <div id="error"></div>
     
-        <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;">
+        <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;right: 10px;">
             <i class="fas fa-paper-plane"></i>
         </button>
         <br />
@@ -406,7 +406,7 @@
       <div class="card-body table-responsive" style="padding-top: 0px;">
         <div class="d-flex justify-content-end" style="padding-top: 0px;">
             <div class="custom-dropdown" id="columnUpdate">
-                <button class="btn btn-default float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 30px;">
+                <button class="btn btn-default float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;top: 32px;">
                     <span class="fa fa-columns"></span>&nbsp;&nbsp;Select Columns&nbsp;&nbsp;<span class="fas fa-caret-down"></span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -535,7 +535,7 @@
                 },
                 "oLanguage": {
                     "sLengthMenu": "_MENU_ Records per page",
-                   "sSearch": "<span style='position: relative;right: 220px;'>Search:</span> ",
+                   "sSearch": "<span style='position: relative;right: 175px;'>Search:</span> ",
 
                     "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                 },

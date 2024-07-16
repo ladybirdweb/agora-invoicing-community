@@ -239,11 +239,11 @@ Orders
     <div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Orders</h3>
-        <div class="card-tools" style="position: relative; float: right;">
-            <button type="button" id="order_export-report-btn" class="btn btn-sm" data-toggle="tooltip" title="Export" style="position: relative;top: -2px;">
+        <div class="card-tools">
+            <button type="button" id="order_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: relative;top: 0px;left: 0px;">
                 <i class="fas fa-paper-plane"></i>
             </button>
-            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 8px;">
+            <a href="{{url('invoice/generate')}}" class="btn btn-sm pull-right" data-toggle="tooltip" title="Create new invoice" style="position: relative; right: 0px;">
                 <span class="fas fa-plus"></span>
             </a>
         </div>

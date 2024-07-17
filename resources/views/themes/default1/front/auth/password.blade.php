@@ -108,7 +108,7 @@ main
                  
             });
            function verify_mail_check(){
-              var pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+               var pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                var email_val = $('#email').val();
                if(email_val.length == ''){
                 $('#resetpasswordcheck').show();

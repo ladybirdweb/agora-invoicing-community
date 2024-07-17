@@ -79,7 +79,7 @@
 
 .custom-dropdown {
     position: relative;
-    z-index: 1050;
+    z-index: 9999;
 }
 
 .custom-dropdown .form-check {
@@ -110,7 +110,7 @@
 
 .card-body.table-responsive {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .dataTables_filter {
@@ -324,7 +324,7 @@
                           ?>
                           {!! Form::label('cloud_state', Lang::get('message.cloud_state'), ['class' => 'required']) !!}
                           <div class="form-group">
-                              
+
                               <select id="cloud_state" name="cloud_state" class="form-control">
                               </select>
                           </div>
@@ -395,7 +395,7 @@
     </div>
     <div id="successmsg"></div>
     <div id="error"></div>
-    
+
         <button type="button" id="tenat_export-report-btn" class="btn btn-sm pull-right" data-toggle="tooltip" title="Export" style="position: absolute;right: 10px;top: 10px;">
             <i class="fas fa-paper-plane"></i>
         </button>
@@ -565,7 +565,7 @@
                 },
             });
 
-           
+
     $('#saveColumnsBtn').click(function() {
         // Get selected columns
         var selectedColumns = [];
@@ -665,7 +665,7 @@
                         '<span aria-hidden="true">&times;</span></button>' +
                         '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
                         response.message + '!</div>';
-                    
+
                     $('#export-message').html(result).removeClass('text-danger').addClass('text-success');
                     setTimeout(function() {
                         location.reload();

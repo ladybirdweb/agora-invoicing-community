@@ -63,6 +63,10 @@ class MailChimpController extends BaseMailChimpController
     public function addSubscriber($user)
     {
         try {
+
+            if(!is_array($user)){
+                $user = User::where('email', $user)->firstOrFail()->toArray();
+            }
             // Assuming $user array contains 'first_name' and 'last_name'
             $merge_fields = [
                 'FNAME' => $user['first_name'],

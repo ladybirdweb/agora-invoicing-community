@@ -63,8 +63,7 @@ class MailChimpController extends BaseMailChimpController
     public function addSubscriber($user)
     {
         try {
-
-            if(!is_array($user)){
+            if (! is_array($user)) {
                 $user = User::where('email', $user)->firstOrFail()->toArray();
             }
             // Assuming $user array contains 'first_name' and 'last_name'

@@ -369,7 +369,7 @@ class OrderController extends BaseOrderController
                    ->addColumn('active', function ($details) {
                        $order = $this->order->findOrFail($details['order_id']);
                        $cont = new \App\Http\Controllers\License\LicenseController();
-                       $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                       $installationDetails = $cont->getInstallationLogsDetails($order->serial_key);
 
                        if ($installationDetails === null || empty($installationDetails['installed_path'])) {
                            return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');

@@ -517,6 +517,7 @@ class LicenseController extends Controller
     {
         return redirect('/orders/'.Order::where('number', $orderNumber)->value('id'));
     }
+
     public function getInstallationLogsDetails($license_code)
     {
         $installation_domain = [];
@@ -536,10 +537,11 @@ class LicenseController extends Controller
                 $installation_status[] = $detail->installation_status;
             }
         }
-        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date, 'installation_status' => $installation_status];
 
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date, 'installation_status' => $installation_status];
     }
-    public function updateInstallationLogs($root_url,$version_number)
+
+    public function updateInstallationLogs($root_url, $version_number)
     {
         try {
             $url = $this->url;
@@ -547,7 +549,7 @@ class LicenseController extends Controller
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
             $details = json_decode($this->postCurl($url.'api/admin/updateInstallationLogs', "api_key_secret=$api_key_secret&root_url=$root_url&version_number=$version_number", $token));
-        }catch (\Exception $ex){
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
         }
     }

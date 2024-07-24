@@ -227,7 +227,7 @@ class BaseHomeController extends Controller
                         $existingVersion = $request->input('version');
                     }
                     $cont = new \App\Http\Controllers\License\LicenseController();
-                    $cont->updateInstallationLogs($url,$existingVersion);
+                    $cont->updateInstallationLogs($url, $existingVersion);
                     Subscription::where('order_id', $orderForLicense->first()->id)->update(['version' => $existingVersion, 'version_updated_at' => (string) \Carbon\Carbon::now()]);
 
                     return ['status' => 'success', 'message' => 'version-updated-successfully'];

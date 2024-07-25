@@ -388,7 +388,7 @@ class OrderController extends BaseOrderController
                            // Check if both path and IP match
                            if ($details[0] == $installedPath && $details[1] == $installedIp) {
                                $matchFound = true;
-                               $installationStatus = $installationStatuses[$key] == 1 ? 'Installed' : 'Not Installed';
+                               $installationStatus = $installationStatuses[$key] == 1 ? 1 : 0;
                                break;
                            }
                        }

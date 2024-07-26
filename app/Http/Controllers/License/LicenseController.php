@@ -538,6 +538,7 @@ class LicenseController extends Controller
         } else {
             $installation_details = []; // Handle the case when there are no details or an error occurs
         }
+
         return $installation_details;
     }
 

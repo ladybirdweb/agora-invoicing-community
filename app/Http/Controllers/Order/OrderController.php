@@ -369,9 +369,9 @@ class OrderController extends BaseOrderController
                        }
                        $installationStatus = $installationLogsDetails['installation_status'] == 1 ? 1 : 0;
                        if ($installationStatus) {
-                           return getDateHtml( $installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel($installationStatus);
+                           return getDateHtml($installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel($installationStatus);
                        } else {
-                           return getDateHtml( $installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel('');
+                           return getDateHtml($installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel('');
                        }
                    })
 

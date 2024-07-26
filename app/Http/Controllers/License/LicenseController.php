@@ -6,7 +6,6 @@ use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use App\User;
 
 class LicenseController extends Controller
 {
@@ -520,25 +519,26 @@ class LicenseController extends Controller
 
     public function getInstallationLogsDetails($license_code)
     {
-        $installation_domain = [];
-        $installation_ip = [];
-        $installation_date = [];
-        $installation_status = [];
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $details = json_decode($this->postCurl($url.'api/admin/getInstallationLogs', "api_key_secret=$api_key_secret&license_code=$license_code", $token));
-        if ($details && $details->api_error_detected == 0 && is_array($details->page_message)) {
-            foreach ($details->page_message as $detail) {
-                $installation_domain[] = $detail->installation_domain;
-                $installation_ip[] = $detail->installation_ip;
-                $installation_date[] = $detail->installation_last_active_date;
-                $installation_status[] = $detail->installation_status;
-            }
-        }
 
-        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip, 'installation_date' => $installation_date, 'installation_status' => $installation_status];
+        if ($details && $details->api_error_detected == 0 && is_array($details->page_message)) {
+            $installation_details = collect($details->page_message)->map(function ($item) {
+                return [
+                    'installation_domain' => $item->installation_domain,
+                    'installation_ip' => $item->installation_ip,
+                    'installation_last_active_date' => $item->installation_last_active_date,
+                    'installation_status' => $item->installation_status,
+                    'version_number' => $item->version_number,
+                ];
+            })->toArray(); // Convert the collection back to an array if needed
+        } else {
+            $installation_details = []; // Handle the case when there are no details or an error occurs
+        }
+        return $installation_details;
     }
 
     public function updateInstallationLogs($root_url, $version_number)

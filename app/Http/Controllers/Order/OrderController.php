@@ -344,59 +344,34 @@ class OrderController extends BaseOrderController
                 return array_merge($details, ['order_id' => $orderId]);
             }, $combinedDetails);
 
-            return \DataTables::of($combinedDetailsWithOrderId)
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $installationLogsDetails = $cont->getInstallationLogsDetails($order->serial_key);
 
-                ->addColumn('path', function ($details) {
-                    return '<a href="https://'.$details[0].'" target="_blank">'.$details[0].'</a>';
+            return \DataTables::of($installationLogsDetails)
+
+                ->addColumn('path', function ($installationLogsDetails) {
+                    return '<a href="https://'.$installationLogsDetails['installation_domain'].'" target="_blank">'.$installationLogsDetails['installation_domain'].'</a>';
                 })
-                ->addColumn('ip', function ($details) {
-                    return $details[1];
+                ->addColumn('ip', function ($installationLogsDetails) {
+                    return $installationLogsDetails['installation_ip'];
                 })
 
-                ->addColumn('version', function ($details) use ($order) {
-                    $version = InstallationDetail::where('installation_path', $details[0])->where('order_id', $order->id)->first();
-                    if ($version) {
-                        $versionLabel = getVersionAndLabel($version->version, $order->product);
-
-                        return $versionLabel;
+                ->addColumn('version', function ($installationLogsDetails) {
+                    if ($installationLogsDetails['version_number']) {
+                        return $installationLogsDetails['version_number'];
                     } else {
-                        $version = Subscription::where('order_id', $details['order_id'])
-                              ->first();
-
-                        return getVersionAndLabel($version->version, $order->product);
+                        return '---';
                     }
                 })
-                   ->addColumn('active', function ($details) {
-                       $order = $this->order->findOrFail($details['order_id']);
-                       $cont = new \App\Http\Controllers\License\LicenseController();
-                       $installationDetails = $cont->getInstallationLogsDetails($order->serial_key);
-
-                       if ($installationDetails === null || empty($installationDetails['installed_path'])) {
-                           return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
+                   ->addColumn('active', function ($installationLogsDetails) {
+                       if ($installationLogsDetails === null || empty($installationLogsDetails['installation_domain'])) {
+                           return getDateHtml($installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel('');
                        }
-
-                       $installedPaths = $installationDetails['installed_path'];
-                       $installationStatuses = $installationDetails['installation_status'];
-                       $installedIps = $installationDetails['installed_ip'];
-
-                       $matchFound = false;
-                       $installationStatus = '';
-
-                       foreach ($installedPaths as $key => $installedPath) {
-                           $installedIp = $installedIps[$key] ?? '';
-
-                           // Check if both path and IP match
-                           if ($details[0] == $installedPath && $details[1] == $installedIp) {
-                               $matchFound = true;
-                               $installationStatus = $installationStatuses[$key] == 1 ? 1 : 0;
-                               break;
-                           }
-                       }
-
-                       if ($matchFound) {
-                           return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel($installationStatus);
+                       $installationStatus = $installationLogsDetails['installation_status'] == 1 ? 1 : 0;
+                       if ($installationStatus) {
+                           return getDateHtml( $installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel($installationStatus);
                        } else {
-                           return getDateHtml($details[2]).'&nbsp;'.installationStatusLabel('');
+                           return getDateHtml( $installationLogsDetails['installation_last_active_date']).'&nbsp;'.installationStatusLabel('');
                        }
                    })
 

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->json('attributes')->nullable();
-            $table->string('product_type')->nullable();
+            $table->string('product_type', 255)->nullable();
+            $table->index('product_type');
         });
     }
 
@@ -23,8 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->json('attributes')->nullable();
-            $table->string('product_type')->nullable();
+            $table->dropColumn('product_type');
         });
     }
 };

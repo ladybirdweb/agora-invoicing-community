@@ -14,7 +14,6 @@ class ProductPluginGroup extends Model
 
     protected $guarded = [];
 
-
     // Define the relationship with Product (as product)
     public function product()
     {

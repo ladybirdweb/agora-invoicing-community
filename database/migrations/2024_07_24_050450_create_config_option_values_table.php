@@ -12,11 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('config_option_values', function (Blueprint $table) {
-
             $table->id();
             $table->unsignedBigInteger('option_id');
-            $table->string('key',255);
-            $table->string('value',255);
+            $table->string('key', 255);
+            $table->string('value', 255);
 
             $table->foreign('option_id')->references('id')->on('config_option')->onDelete('cascade');
             $table->timestamps();

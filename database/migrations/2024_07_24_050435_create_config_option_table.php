@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('config_option', function (Blueprint $table) {
-
             $table->id();
             $table->unsignedBigInteger('group_id');
             $table->string('config_option_name', 255);

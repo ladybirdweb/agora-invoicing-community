@@ -534,7 +534,7 @@ class LicenseController extends Controller
             'options' => $options,
         ]);
 
-        $this->postCurl($url . 'api/admin/license/syncAddonLicense', $postData, $token);
+        $this->postCurl($url.'api/admin/license/syncAddonLicense', $postData, $token);
     }
 
     public function getInstallationLogsDetails($license_code)

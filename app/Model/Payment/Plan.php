@@ -3,6 +3,7 @@
 namespace App\Model\Payment;
 
 use App\BaseModel;
+use App\Model\Configure\ConfigOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -68,8 +69,8 @@ class Plan extends BaseModel
         return LogOptions::defaults();
     }
 
-    public function addOns()
+    public function configOptions()
     {
-        return $this->belongsToMany(\App\Model\Product\Product::class, 'plan_add_ons', 'plan_id', 'product_id');
+        return $this->hasMany(ConfigOption::class);
     }
 }

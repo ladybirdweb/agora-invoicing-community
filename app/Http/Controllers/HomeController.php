@@ -16,6 +16,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class HomeController extends BaseHomeController
@@ -618,53 +619,42 @@ class HomeController extends BaseHomeController
     }
     public function getDetailedBillingInfo(Request $request): \Illuminate\Http\JsonResponse
     {
-        $orderNumber = $request->input('order_number');
+        $order = $request->input('order');
         // Fetch the order details
-        $order = Order::where('number', $orderNumber)->first();
+        $user = Order::where('number', $order)->value('client');
 
-        if (! $order) {
-            return response()->json(['error' => 'Order not found'], 404);
+        $email = User::where('id',$user)->value('email');
+
+        if (!$email) {
+            return response()->json([]);
         }
         // Fetch the subscription details
-        $productsAddon = $order->subscription->plan->addOns;
 
         return response()->json([
-            'order' => $order->getAttributes(),
-            'productsAddon' => $productsAddon,
+            'billing_client_email' => $email,
         ]);
     }
 
     public function getDetailsForAClient(Request $request)
     {
 
-        $userId = $request->input('user_id');
+        $client = $request->input('client');
 
-        // Fetch orders for the specified client
-        $orders = Order::where('client', $userId)->get();
+        $license = $request->input('license');
 
-        // Check if any orders were found
-        if ($orders->isEmpty()) {
-            return response()->json(['error' => 'Order not found'], 404);
-        }
+        $user = User::where('email', $client)->value('id');
 
-        // Structure the response data
-        $response = $orders->flatMap(function ($order) {
-            // Manually fetch the product details
-            $product = \App\Model\Product\Product::where('id', $order->product)
-                ->first();
+        $licenses = Order::where('client', $user)->pluck('serial_key')->toArray();
 
-            // Check if product exists and return structured data
-            if ($product) {
-                return [
-                    [
-                        'order' => $order->toArray(),
-                        'product' => $product->toArray(),
-                    ]
-                ];
-            }
-            return [];
-        });
-        return response()->json(['data' => $response]);
+        $licenses = array_merge([$license], $licenses);
+
+        $client = new Client(['verify' => false]);
+
+        $response = $client->get('https://localhost/agora-license-manager/public/api/pluginLicense', [
+            'query' => ['license_code' => json_encode($licenses)]
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
 }

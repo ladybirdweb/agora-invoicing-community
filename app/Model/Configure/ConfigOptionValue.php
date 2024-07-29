@@ -12,7 +12,6 @@ class ConfigOptionValue extends Model
     protected $table = 'config_option_values';
     protected $guarded = [];
 
-
     // Define the relationship with ConfigOption
     public function configOption()
     {

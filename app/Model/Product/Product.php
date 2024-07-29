@@ -3,6 +3,9 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
+use App\Model\Configure\ConfigGroup;
+use App\Model\Configure\ConfigOption;
+use App\Model\Configure\ProductPluginGroup;
 use App\Model\Payment\Plan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
@@ -140,8 +143,20 @@ class Product extends BaseModel
         return LogOptions::defaults();
     }
 
-    public function plans()
+    // Define the relationship with ProductPluginGroup (as product)
+    public function productPluginGroupsAsProduct()
     {
-        return $this->belongsToMany(Plan::class, 'plan_add_ons', 'product_id', 'plan_id');
+        return $this->hasMany(ProductPluginGroup::class, 'product_id');
+    }
+
+    // Define the relationship with ProductPluginGroup (as plugin)
+    public function productPluginGroupsAsPlugin()
+    {
+        return $this->hasMany(ProductPluginGroup::class, 'plugin_id');
+    }
+
+    public function configOptions()
+    {
+        return $this->hasMany(ConfigOption::class, 'product_id');
     }
 }

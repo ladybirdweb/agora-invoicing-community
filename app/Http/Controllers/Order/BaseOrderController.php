@@ -6,6 +6,7 @@ use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
+use App\Model\Configure\ProductPluginGroup;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
@@ -122,18 +123,13 @@ class BaseOrderController extends ExtendedOrderController
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key, $admin);
-                $plan = Plan::with('addOns')->find($plan_id);
 
-                if ($plan) {
-                    $addOnIds = $plan->addOns()->pluck('products.id')->toArray();
+                    $addOnIds = implode(',', $this->product->find($product)->productPluginGroupsAsProduct->pluck('plugin_id')->toArray());
 
-                    $addOnIds = implode(',', $addOnIds);
+                    $options = $this->formatConfigurableOptions($product);
+                    
+                    (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, $options);
 
-                    (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, 1);
-                }
-                if(Product::where('id',$product)->exists()){
-                    (new LicenseController())->syncTheAddonForALicense($product, $serial_key, 1, 1);
-                }
             }
 
             if (emailSendingStatus()) {
@@ -425,4 +421,40 @@ class BaseOrderController extends ExtendedOrderController
 
         return $url;
     }
+
+    public function formatConfigurableOptions($productId)
+    {
+            // Retrieve the product ID and related plugin IDs in one query
+            $productIds = ProductPluginGroup::where('product_id', $productId)
+                ->pluck('plugin_id')
+                ->prepend($productId)
+                ->toArray();
+
+            // Fetch all products with related configurations in one query
+            $products = $this->product->with('configOptions.configOptionValues')
+                ->whereIn('id', $productIds)
+                ->get();
+
+            // Check if any products were found
+            if ($products->isEmpty()) {
+                return [];
+            }
+
+            // Format the configuration options
+            return $products->flatMap(function ($product) {
+                return $product->configOptions->flatMap(function ($configOption) use ($product) {
+                    return $configOption->configOptionValues->map(function ($configOptionValue) use ($product, $configOption) {
+                        return [
+                            'product_id' => $product->id,
+                            'option_group' => $configOption->configGroup->config_group_name,
+                            'option_name' => $configOption->config_option_name,
+                            'key' => $configOptionValue->key,
+                            'value' => $configOptionValue->value,
+                        ];
+                    });
+                });
+            });
+    }
+
+
 }

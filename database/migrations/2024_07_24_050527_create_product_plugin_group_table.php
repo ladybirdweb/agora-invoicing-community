@@ -11,20 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plan_add_ons', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('plan_id')->nullable();
-            $table->unsignedInteger('product_id')->nullable(); // Assuming add-ons are stored in the products table
+        Schema::create('product_plugin_group', function (Blueprint $table) {
 
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
+            $table->id();
+            $table->unsignedInteger('product_id');
+            $table->unsignedInteger('plugin_id');
+
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('plugin_id')->references('id')->on('products')->onDelete('cascade');
 
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('plan_add_ons');
+        Schema::dropIfExists('product_plugin_group');
     }
 };

@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_plugin_group', function (Blueprint $table) {
-
             $table->id();
             $table->unsignedInteger('product_id');
             $table->unsignedInteger('plugin_id');

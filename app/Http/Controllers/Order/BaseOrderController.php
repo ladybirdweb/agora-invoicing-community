@@ -124,12 +124,11 @@ class BaseOrderController extends ExtendedOrderController
             if ($plan_id != 0) {
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key, $admin);
 
-                    $addOnIds = implode(',', $this->product->find($product)->productPluginGroupsAsProduct->pluck('plugin_id')->toArray());
+                $addOnIds = implode(',', $this->product->find($product)->productPluginGroupsAsProduct->pluck('plugin_id')->toArray());
 
-                    $options = $this->formatConfigurableOptions($product);
-                    
-                    (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, $options);
+                $options = $this->formatConfigurableOptions($product);
 
+                (new LicenseController())->syncTheAddonForALicense($addOnIds, $serial_key, $options);
             }
 
             if (emailSendingStatus()) {
@@ -424,37 +423,35 @@ class BaseOrderController extends ExtendedOrderController
 
     public function formatConfigurableOptions($productId)
     {
-            // Retrieve the product ID and related plugin IDs in one query
-            $productIds = ProductPluginGroup::where('product_id', $productId)
-                ->pluck('plugin_id')
-                ->prepend($productId)
-                ->toArray();
+        // Retrieve the product ID and related plugin IDs in one query
+        $productIds = ProductPluginGroup::where('product_id', $productId)
+            ->pluck('plugin_id')
+            ->prepend($productId)
+            ->toArray();
 
-            // Fetch all products with related configurations in one query
-            $products = $this->product->with('configOptions.configOptionValues')
-                ->whereIn('id', $productIds)
-                ->get();
+        // Fetch all products with related configurations in one query
+        $products = $this->product->with('configOptions.configOptionValues')
+            ->whereIn('id', $productIds)
+            ->get();
 
-            // Check if any products were found
-            if ($products->isEmpty()) {
-                return [];
-            }
+        // Check if any products were found
+        if ($products->isEmpty()) {
+            return [];
+        }
 
-            // Format the configuration options
-            return $products->flatMap(function ($product) {
-                return $product->configOptions->flatMap(function ($configOption) use ($product) {
-                    return $configOption->configOptionValues->map(function ($configOptionValue) use ($product, $configOption) {
-                        return [
-                            'product_id' => $product->id,
-                            'option_group' => $configOption->configGroup->config_group_name,
-                            'option_name' => $configOption->config_option_name,
-                            'key' => $configOptionValue->key,
-                            'value' => $configOptionValue->value,
-                        ];
-                    });
+        // Format the configuration options
+        return $products->flatMap(function ($product) {
+            return $product->configOptions->flatMap(function ($configOption) use ($product) {
+                return $configOption->configOptionValues->map(function ($configOptionValue) use ($product, $configOption) {
+                    return [
+                        'product_id' => $product->id,
+                        'option_group' => $configOption->configGroup->config_group_name,
+                        'option_name' => $configOption->config_option_name,
+                        'key' => $configOptionValue->key,
+                        'value' => $configOptionValue->value,
+                    ];
                 });
             });
+        });
     }
-
-
 }

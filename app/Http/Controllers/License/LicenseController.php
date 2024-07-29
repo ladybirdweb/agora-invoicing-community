@@ -514,8 +514,8 @@ class LicenseController extends Controller
         $this->postCurl($url.'api/admin/license/updateLicenseCode', "api_key_secret=$api_key_secret&license_code=$license_code&old_license_code=$oldLicense", $token);
     }
 
-    public function syncTheAddonForALicense($product_ids, $license_code, $options = []) {
-
+    public function syncTheAddonForALicense($product_ids, $license_code, $options = [])
+    {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
 
@@ -531,7 +531,6 @@ class LicenseController extends Controller
             'options' => $options,
         ]);
 
-        $this->postCurl($url . 'api/admin/license/syncAddonLicense', $postData, $token);
+        $this->postCurl($url.'api/admin/license/syncAddonLicense', $postData, $token);
     }
-
 }

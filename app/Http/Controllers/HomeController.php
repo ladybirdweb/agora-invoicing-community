@@ -575,9 +575,9 @@ class HomeController extends BaseHomeController
         // Fetch the order details
         $user = Order::where('number', $order)->value('client');
 
-        $email = User::where('id',$user)->value('email');
+        $email = User::where('id', $user)->value('email');
 
-        if (!$email) {
+        if (! $email) {
             return response()->json([]);
         }
         // Fetch the subscription details
@@ -589,7 +589,6 @@ class HomeController extends BaseHomeController
 
     public function getDetailsForAClient(Request $request)
     {
-
         $client = $request->input('client');
 
         $license = $request->input('license');
@@ -603,10 +602,9 @@ class HomeController extends BaseHomeController
         $client = new Client(['verify' => false]);
 
         $response = $client->get('https://localhost/agora-license-manager/public/api/pluginLicense', [
-            'query' => ['license_code' => json_encode($licenses)]
+            'query' => ['license_code' => json_encode($licenses)],
         ]);
 
         return json_decode($response->getBody()->getContents(), true);
     }
-
 }

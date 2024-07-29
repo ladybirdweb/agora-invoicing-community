@@ -15,7 +15,6 @@ class ConfigOption extends Model
 
     protected $guarded = [];
 
-
     // Define the relationship with ConfigGroup
     public function configGroup()
     {

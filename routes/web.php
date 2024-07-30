@@ -630,6 +630,7 @@ Route::post('update-installation-detail', [HomeController::class, 'updateInstall
 Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
 Route::get('api/billingInfo', [HomeController::class, 'getDetailedBillingInfo']);
 Route::get('api/pluginInfo', [HomeController::class, 'getDetailsForAClient']);
+Route::get('api/billingRelease', [HomeController::class, 'getProductRelease']);
 
 Route::post('renewurl', [HomeController::class, 'renewurl']);
 

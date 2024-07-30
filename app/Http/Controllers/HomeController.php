@@ -570,15 +570,16 @@ class HomeController extends BaseHomeController
         $licenseUrl = ApiKey::value('license_url');
 
         $response = $client->get($licenseUrl.'api/pluginLicense', [
-            'query' => ['license_code' => json_encode($licenses)]
+            'query' => ['license_code' => json_encode($licenses)],
         ]);
 
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function getProductRelease(Request $request){
-
+    public function getProductRelease(Request $request)
+    {
         $product_id = $request->input('product_id');
+
         return ProductUpload::where('product_id', $product_id)->where('is_private', 0)->value('description');
     }
 }

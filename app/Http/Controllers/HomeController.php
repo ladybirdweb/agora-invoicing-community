@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiKey;
 use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
@@ -541,7 +542,6 @@ class HomeController extends BaseHomeController
         if (! $email) {
             return response()->json([]);
         }
-        // Fetch the subscription details
 
         return response()->json([
             'billing_client_email' => $email,
@@ -556,16 +556,29 @@ class HomeController extends BaseHomeController
 
         $user = User::where('email', $client)->value('id');
 
-        $licenses = Order::where('client', $user)->pluck('serial_key')->toArray();
+        $licenses = Order::where('client', $user)
+            ->whereHas('product', function ($query) {
+                $query->where('product_type', 'plugin');
+            })
+            ->pluck('serial_key')
+            ->toArray();
 
         $licenses = array_merge([$license], $licenses);
 
         $client = new Client(['verify' => false]);
 
-        $response = $client->get('https://localhost/agora-license-manager/public/api/pluginLicense', [
-            'query' => ['license_code' => json_encode($licenses)],
+        $licenseUrl = ApiKey::value('license_url');
+
+        $response = $client->get($licenseUrl.'api/pluginLicense', [
+            'query' => ['license_code' => json_encode($licenses)]
         ]);
 
         return json_decode($response->getBody()->getContents(), true);
+    }
+
+    public function getProductRelease(Request $request){
+
+        $product_id = $request->input('product_id');
+        return ProductUpload::where('product_id', $product_id)->where('is_private', 0)->value('description');
     }
 }

@@ -168,6 +168,5 @@ class Product extends BaseModel
     public function pluginCompWith()
     {
         return $this->hasMany(PluginCompatibleWithProducts::class, 'plugin_id');
-
     }
 }

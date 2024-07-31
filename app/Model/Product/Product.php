@@ -6,6 +6,7 @@ use App\BaseModel;
 use App\Facades\Attach;
 use App\Model\Configure\ConfigGroup;
 use App\Model\Configure\ConfigOption;
+use App\Model\Configure\PluginCompatibleWithProducts;
 use App\Model\Configure\ProductPluginGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
@@ -158,5 +159,17 @@ class Product extends BaseModel
     public function configOptions()
     {
         return $this->hasMany(ConfigOption::class, 'product_id');
+    }
+
+    public function productCompWith()
+    {
+        return $this->hasMany(PluginCompatibleWithProducts::class, 'product_id');
+    }
+
+    // Define the relationship with Product (as plugin)
+    public function pluginCompWith()
+    {
+        return $this->hasMany(PluginCompatibleWithProducts::class, 'plugin_id');
+
     }
 }

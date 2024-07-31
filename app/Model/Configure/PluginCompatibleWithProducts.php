@@ -24,6 +24,5 @@ class PluginCompatibleWithProducts extends Model
     public function pluginComp()
     {
         return $this->belongsTo(Product::class, 'plugin_id');
-
     }
 }

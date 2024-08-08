@@ -872,4 +872,6 @@ return [
     'max_stripe_key' => 'Stripe Key cannot exceed 200 characters',
     'required_stripe_secret' => 'Please Enter Stripe Secret',
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

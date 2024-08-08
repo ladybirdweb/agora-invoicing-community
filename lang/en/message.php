@@ -1359,17 +1359,6 @@ return [
     'view_invoices' => 'View Invoices',
     'generate_invoice' => 'Generate Invoice',
     'add_plan_product' => 'Add a plan for the product',
-
-    //    {{ __('message.something_wrong') }}
-
-    //       @json(__('message.enter_domain_form')))
-
-    //    {{ __('message.success') }}
-
-    //       @json(__('message.enter_domain_form')))
-
-    //    Lang::get('message.configure_tweet')
-
-    //    Lang::get('message.configure_tweet')
-
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

@@ -5,7 +5,7 @@ Edit Product
 @section('content-header')
     <div class="col-sm-6">
         <h1>Edit Product</h1>
-      
+
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -39,7 +39,7 @@ Edit Product
                $("#git").hide();
                 $("#uploads").hide();
                 $("#hide").hide();
-            } 
+            }
         });
     });
 
@@ -52,8 +52,9 @@ Edit Product
             } else {
                 $("#git").hide();
                 $("#uploads").hide();
+                $("#uploads").hide();
                 $("#hide").hide();
-            } 
+            }
         });
     });
 
@@ -106,27 +107,28 @@ Edit Product
                                    <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
                                     echo "selected";
                                 } ?>>{{$group}}</option>
-                           
+
                              @endforeach
                               </select>
                                 </div>
-                                
-                                
+
+
 
                             </div>
 
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                    
-                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
+
+                                    {!! Form::label('description',Lang::get('message.price_description'),['class'=>'required']) !!}
                                     <!--{!! Form::text('description',null,['class' => 'form-control','id'=>'textarea1']) !!}-->
                                     <textarea hidden class="form-control"  name="description" id='textarea1'>{!! $product->description !!}</textarea>
 
-                                    
-                                   
+
                                      <h6 id= "descheck"></h6>
                                      </div>
+
+
                                    <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li>
@@ -158,15 +160,15 @@ Edit Product
 
                                         </div>
                                                 </li>
-                                      
-                                       
+
+
                                             <table class="table">
                                                 <input type="hidden" value="{{$checkowner}}" id="checkowner">
                                               <span>Where do you want to retrieve your files from?</span>
                                              </br>
-                                             <input type="hidden" value="{{$githubStatus}}" id="gitstatus">    
-                                                <tr>  
-                                                      
+                                             <input type="hidden" value="{{$githubStatus}}" id="gitstatus">
+                                                <tr>
+
                                                     <td>
                                                         <label for="chkYes" style="">
                                                         <input type="radio" id="chkYes" name="chkTax" />
@@ -178,17 +180,17 @@ Edit Product
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
                                                          {!! Form::text('github_owner',null,['class'=>'form-control','id'=>'owner']) !!}
-                                                        
+
                                                     </div>
                                                     <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                  {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
                                                      {!! Form::text('github_repository',null,['class'=>'form-control','id'=>'repo']) !!}
-                                                        
 
-                                                    </div>  
+
+                                                    </div>
                                                 </li>
-                                            
+
                                                 <li>
                                                     <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
@@ -209,7 +211,7 @@ Edit Product
                                                     </td>
                                                 </tr>
                                              </table>
-                                       
+
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -234,7 +236,7 @@ Edit Product
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
                                                 {!! Form::hidden('hidden', 0) !!}
-                                                <?php 
+                                                <?php
                                                 $value=  "";
                                                 if ($product->hidden==1) {
                                                     $value = 'true';
@@ -253,7 +255,7 @@ Edit Product
                                                 <!-- first name -->
                                                 {!! Form::label('highlight',Lang::get('message.highlight')) !!}
                                                 {!! Form::hidden('highlight', 0) !!}
-                                                <?php 
+                                                <?php
                                                 $value=  "";
                                                 if ($product->highlight==1) {
                                                     $value = 'true';
@@ -273,7 +275,7 @@ Edit Product
                                                 <!-- first name -->
                                                 {!! Form::label('add_to_contact',Lang::get('Contact to sales')) !!}
                                                 {!! Form::hidden('add_to_contact', 0) !!}
-                                                <?php 
+                                                <?php
                                                 $value=  "";
                                                 if ($product->add_to_contact==1) {
                                                     $value = 'true';
@@ -285,12 +287,22 @@ Edit Product
 
                                             </div>
                                         </li>
-                                   
+
                                 </div>
 
                             </div>
+                            <div class="row">
 
-                  
+                            <div class="col-md-12 form-group {{ $errors->has('product_description') ? 'has-error' : '' }}">
+                                {!! Form::label('product_description', Lang::get('message.product_description'), ['class' => 'required']) !!}
+                                {!! Form::textarea('product_description', null, ['class' => 'form-control', 'id' => 'product-description']) !!}
+                                <textarea hidden class="form-control"  name="product_description" id='textarea1'>{!! $product->product_description !!}</textarea>
+
+                                <h6 id="descheck"></h6>
+                            </div>
+                            </div>
+
+
                         </div>
 
                          <!-- /.tab-pane -->
@@ -301,14 +313,14 @@ Edit Product
                                  <tr>
                                     <div class="row">
                                     <td>
-                                          
+
                                         <div><label>
                                              {!! Form::radio('show_agent',1,null,['id'=>'agent']) !!}
                                               <!-- <input type ="radio" id="agent" value="0" name="cartquantity" hidden>   -->
                                             Agents
                                         </label></div>
-                                   
-                                    <br/> 
+
+                                    <br/>
                                     <div class="col-md-10" id="allowmulagent" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_agent',1,null,['id'=>'agent_multiple_quantity']) !!} {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
                                     </div>
@@ -328,38 +340,38 @@ Edit Product
                                      <div class="col-md-10" id="allowmulproduct" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_quantity',1,null,['id'=>'product_multiple_quantity']) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
                                     </div>
-                                  
+
                                     </td>
                                 </tr>
                         </table>
-                                
+
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                
+
                                                 <div class="col-md-2">
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
-                                                    
+
                                                        @foreach($taxes as $value)
-                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['name'].')'}}</option> 
-                                                        
+                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['name'].')'}}</option>
+
                                                        @endforeach
                                                     </select>
-                                                    
-                                                   
-                                                   
+
+
+
                                                 </div>
 
-                                               
+
                                             </div>
 
                                         </div>
                                     </td>
                                 </tr>
-                                 
-                                       
+
+
 
                                             <br>
                                             <h3>  Plans &nbsp;
@@ -396,13 +408,13 @@ Edit Product
                             @endif
 
                                         </div>
-                                   
+
 
        </div>
         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
           {!! Form::close() !!}
-                      
+
                 <!-- nav-tabs-custom -->
 
 
@@ -412,7 +424,7 @@ Edit Product
 
 
 
-          
+
 
        </div>
                    </div>
@@ -500,7 +512,7 @@ Edit Product
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
  <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
+
 <script>
                                         $(function(){
                                           tinymce.init({
@@ -530,7 +542,7 @@ Edit Product
                                           });
                                           tinymce.init({
                                          selector: '#textarea1',
-                                         height: 500,
+                                         height: 770,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -592,7 +604,7 @@ Edit Product
                                 $(this).append('<span class="more-text">' + removedStr + '</span>');
                                 $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
                             }
-                          }); 
+                          });
                          }
         $('#upload-table').DataTable({
               destroy: true,
@@ -602,7 +614,7 @@ Edit Product
             processing: true,
             serverSide: true,
                order: [[ 0, "desc" ]],
-               
+
              ajax: '{!! route('get-upload',$product->id) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
@@ -610,8 +622,8 @@ Edit Product
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
                 columnDefs: [
-                { 
-                    targets: 'no-sort', 
+                {
+                    targets: 'no-sort',
                     orderable: false,
                     order: []
                 }
@@ -633,9 +645,9 @@ Edit Product
                 $('.loader').css('display', 'block');
             },
         });
-        
-  
-     
+
+
+
         function bindEditButton() {
                 $('[data-toggle="tooltip"]').tooltip({
                     container : 'body'
@@ -663,7 +675,7 @@ Edit Product
     $.ajax({
        type : "PATCH",
        url  :  "{{url('upload/')}}"+"/"+upload_id,
-       data :  {'productname': productname , 'producttitle': producttitle, 
+       data :  {'productname': productname , 'producttitle': producttitle,
        'description': description,'version':version},
        success: function(response) {
          $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
@@ -679,20 +691,50 @@ Edit Product
            html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
         }
           html += '</ul></div>';
-           $('#error1').show(); 
+           $('#error1').show();
            document.getElementById('error1').innerHTML = html;
        }
     });
 
  })
-      
 
-    
+
+
         </script>
         <script>
         function checking(e){
            $('#upload-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
      }
+
+     $(document).on('click','#bulk_delete',function(){
+      var id=[];
+      if (confirm("Are you sure you want to delete this?"))
+        {
+            $('.upload_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! Url('uploads-delete') !!}",
+                      method:"delete",
+                      data: $('#checks:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+        }
 
         $(document).ready(function () {
             var selectedIds = [];
@@ -789,10 +831,10 @@ Edit Product
         </script>
 
 
-      
-   
-  
-   
+
+
+
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
@@ -819,8 +861,8 @@ Edit Product
             function name_check(){
                 var name = $('#productname').val();
                 if (name.length == ''){
-                   $('#namecheck').show(); 
-                   $('#namecheck').html('This field is required'); 
+                   $('#namecheck').show();
+                   $('#namecheck').html('This field is required');
                    $('#namecheck').focus();
                    $('#productname').css("border-color","red");
                    $('#namecheck').css({"color":"red","margin-top":"5px"});
@@ -862,7 +904,7 @@ Edit Product
 <script>
     $(document).ready(function(){
         var githubstatus =  $('#gitstatus').val();
-        
+
         if( $("input[type=radio][name='show_agent']:checked").val() == 1) {
             $('#agent').prop('checked',true);
             $('#allowmulagent').show();
@@ -895,7 +937,7 @@ Edit Product
             document.getElementById("hide").style.display="block";
             $("#uploads").show();
         }
-        
+
     // })
 
 });
@@ -906,7 +948,7 @@ Edit Product
             if($('#agent').is(":checked")) {
                $("#allowmulagent").show();
                $("#allowmulproduct").hide();
-            } 
+            }
         })
 
     })
@@ -916,7 +958,7 @@ Edit Product
             if($('#quantity').is(":checked")) {
                $("#allowmulagent").hide();
                $("#allowmulproduct").show();
-            } 
+            }
         })
 
     })
@@ -934,7 +976,7 @@ Edit Product
 </script>
 <script>
  $(document).ready(function(){
-     
+
 var $ = window.$; // use the global jQuery instance
 
 var $fileUpload = $('#resumable-browse');
@@ -997,7 +1039,7 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
 })
 
  //------------------------------------------------------------------------------------------------------------//
- 
+
 function privateRelease()
 {
     // val = $('#p_release').val();
@@ -1042,7 +1084,7 @@ function preRelease()
     $.ajax({
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
-       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
+       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle,
        'description': description,'dependencies':dependencies,'version':version,'is_private': private,'is_restricted': restricted,'release_type': releaseType,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
          $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
@@ -1058,7 +1100,7 @@ function preRelease()
            html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
         }
           html += '</ul></div>';
-           $('#error').show(); 
+           $('#error').show();
            document.getElementById('error').innerHTML = html;
        }
     });

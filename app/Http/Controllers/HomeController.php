@@ -619,7 +619,7 @@ class HomeController extends BaseHomeController
     {
         $product_id = $request->input('product_id');
 
-        $version  = $request->input('version');
+        $version = $request->input('version');
 
         $product_upload = ProductUpload::where('product_id', $product_id)
             ->where('is_private', 0)
@@ -628,8 +628,7 @@ class HomeController extends BaseHomeController
             ->select('version', 'title', 'description', 'dependencies', 'updated_at')
             ->first(); // Get the first result (latest version)
 
-
-        $product = Product::where('id', $product_id)->select('name','description','shoping_cart_link','product_description')->first();
+        $product = Product::where('id', $product_id)->select('name', 'description', 'shoping_cart_link', 'product_description')->first();
 
         return ['product' => $product, 'release' => $product_upload];
     }

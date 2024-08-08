@@ -756,4 +756,7 @@ return [
 
     'tooltip_js_code' => 'Enter your JavaScript code in the box below. Remember, you can include <script> at the beginning and </script> at the end, or omit them entirely. The system will handle the formatting accordingly. Just choose one approach to avoid any issues.',
     'existings_invoice' => 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again',
+
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

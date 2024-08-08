@@ -580,6 +580,18 @@ class HomeController extends BaseHomeController
     {
         $product_id = $request->input('product_id');
 
-        return ProductUpload::where('product_id', $product_id)->where('is_private', 0)->value('description');
+        $version  = $request->input('version');
+
+        $product_upload = ProductUpload::where('product_id', $product_id)
+            ->where('is_private', 0)
+            ->where('version', $version)
+            ->orderByDesc('version') // Order by version in descending order
+            ->select('version', 'title', 'description', 'dependencies', 'updated_at')
+            ->first(); // Get the first result (latest version)
+
+
+        $product = Product::where('id', $product_id)->select('name','description','shoping_cart_link','product_description')->first();
+
+        return ['product' => $product, 'release' => $product_upload];
     }
 }

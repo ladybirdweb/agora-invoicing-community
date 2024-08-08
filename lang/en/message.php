@@ -866,4 +866,6 @@ return [
     'recaptcha_v3' => 'reCAPTCHA v3',
     'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in :time ',
     'verify_time_limit_exceed' => 'Oops! It looks like you\'ve reached the maximum verification attempts.  Please try again in :time ',
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

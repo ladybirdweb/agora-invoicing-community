@@ -99,18 +99,18 @@ Create Product
                              @endif
                           @endforeach
                           </select>
-  
+
                                 </div>
-                                
+
 
                             </div>
 
                             <div class="row">
 
-                                <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
+                                <div class="col-md-6 form-group {{ $errors->has('price_description') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                      <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
+
                                     <script>
                                     tinymce.init({
                                          selector: 'textarea',
@@ -139,9 +139,8 @@ Create Product
                                     });
                                     </script>
 
-
-                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
-                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
+                                    {!! Form::label('price_description', trans('message.price_description'), ['class' => 'required']) !!}
+                                    {!! Form::textarea('description', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
                                 <h6 id= "descheck"></h6>
                                 </div>
                                 <div class="col-md-6">
@@ -175,7 +174,7 @@ Create Product
 
                                         </div>
                                         </li>
-                           
+
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -199,7 +198,7 @@ Create Product
                                                 <!-- first name -->
                                                <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
                                                 <label data-toggle="tooltip" data-placement="top" title="">Hidden</label>
-                                               
+
                                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
@@ -209,7 +208,7 @@ Create Product
                                                 <!-- first name -->
                                                <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
                                                 <label data-toggle="tooltip" data-placement="top" title="">Highlight</label>
-                                               
+
                                                 <p>{!! Form::checkbox('highlight') !!}  {{Lang::get('message.tick-to-highlight-product')}}</p>
 
                                             </div>
@@ -219,7 +218,7 @@ Create Product
                                                 <!-- first name -->
                                                <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
                                                 <label data-toggle="tooltip" data-placement="top" title="">Contact to sales</label>
-                                               
+
                                                 <p>{!! Form::checkbox('add_to_contact') !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
 
                                             </div>
@@ -228,8 +227,47 @@ Create Product
 
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12 form-group {{ $errors->has('product_description') ? 'has-error' : '' }}">
+                                    <!-- last name -->
+                                    <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
-                           
+                                    <script>
+                                        tinymce.init({
+                                            selector: 'textarea',
+                                            height: 500,
+                                            theme: 'silver',
+                                            relative_urls: true,
+                                            remove_script_host: false,
+                                            convert_urls: false,
+                                            plugins: [
+                                                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                                'insertdatetime media nonbreaking save table contextmenu directionality',
+                                                'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                            ],
+                                            toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                            toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                            image_advtab: true,
+                                            templates: [
+                                                {title: 'Test template 1', content: 'Test 1'},
+                                                {title: 'Test template 2', content: 'Test 2'}
+                                            ],
+                                            content_css: [
+                                                '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                                '//www.tinymce.com/css/codepen.min.css'
+                                            ]
+                                        });
+                                    </script>
+
+
+                                    {!! Form::label('product_description', trans('message.product_description'), ['class' => 'required']) !!}
+                                    {!! Form::textarea('product_description', null, ['class' => 'form-control', 'id' => 'product-description']) !!}
+                                    <h6 id= "descheck"></h6>
+                                </div>
+                            </div>
+
+
                         </div>
                         <!-- /.tab-pane -->
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
@@ -248,7 +286,7 @@ Create Product
                                             Agents
                                         </label>
                                         </div>
-                                    <br/> 
+                                    <br/>
                                     <div class="col-md-10" id="allowmulagent" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_agent',1) !!}  {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
                                     </div>
@@ -266,7 +304,7 @@ Create Product
                                      <div class="col-md-10" id="allowmulproduct" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_quantity',1) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
                                     </div>
-                                
+
                                     </td>
                                 </tr>
                               </table>
@@ -277,34 +315,34 @@ Create Product
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
                                                 <div class="col-md-2" >
-                                                     
+
                                                     <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="multiple">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
-                                                        <option value={{$key}}>{{$value}}</option> 
+                                                        <option value={{$key}}>{{$value}}</option>
                                                         @endforeach
                                                     </select>
-                                                
+
                                                 </div>
                                             </div>
 
                                         </div>
                                     </td>
-                                   
-                                    
+
+
                                 </tr>
                                 <tr>
-                               
+
                                 </tr>
 
 
-                       
+
         {!! Form::close() !!}
 
- 
-                                        
 
-                                  
+
+
+
                                     </div>
                         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                     </div>

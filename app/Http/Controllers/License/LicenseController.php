@@ -542,7 +542,7 @@ class LicenseController extends Controller
         return $installation_details;
     }
 
-    public function updateInstallationLogs($root_url, $version_number,$installation_ip)
+    public function updateInstallationLogs($root_url, $version_number, $installation_ip)
     {
         try {
             $url = $this->url;

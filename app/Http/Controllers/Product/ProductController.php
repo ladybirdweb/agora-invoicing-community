@@ -441,6 +441,7 @@ class ProductController extends BaseProductController
             'name' => 'required',
             'type' => 'required',
             'description' => 'required',
+            'product_description' => 'required',
             'image' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
             'product_sku' => 'required',
             'group' => 'required',
@@ -466,6 +467,7 @@ class ProductController extends BaseProductController
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
+
 
             $product->fill($request->except('image', 'file'))->save();
             $highlight = $request->input('highlight');

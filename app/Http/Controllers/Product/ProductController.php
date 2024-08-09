@@ -463,7 +463,6 @@ class ProductController extends BaseProductController
                 $product->file = $file;
             }
 
-
             $product->fill($request->except('image', 'file'))->save();
             $highlight = $request->input('highlight');
             $add_to_contact = $request->input('add_to_contact');

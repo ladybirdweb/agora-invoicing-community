@@ -295,9 +295,7 @@ Edit Product
 
                             <div class="col-md-12 form-group {{ $errors->has('product_description') ? 'has-error' : '' }}">
                                 {!! Form::label('product_description', Lang::get('message.product_description'), ['class' => 'required']) !!}
-                                {!! Form::textarea('product_description', null, ['class' => 'form-control', 'id' => 'product-description']) !!}
-                                <textarea hidden class="form-control"  name="product_description" id='textarea1'>{!! $product->product_description !!}</textarea>
-
+                                {!! Form::textarea('product_description', $product->product_description, ['class' => 'form-control', 'id' => 'product-description']) !!}
                                 <h6 id="descheck"></h6>
                             </div>
                             </div>

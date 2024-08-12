@@ -12,7 +12,8 @@ class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that should not be reported.
-     * Tesztign
+     * Tesztign.
+     *
      * @var array
      */
     protected $dontReport = [

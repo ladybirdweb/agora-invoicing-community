@@ -516,10 +516,11 @@ class LicenseController extends Controller
 
     public function licenseRedirect($orderNumber)
     {
-        return redirect('/orders/' . Order::where('number', $orderNumber)->value('id'));
+        return redirect('/orders/'.Order::where('number', $orderNumber)->value('id'));
     }
-    public function syncTheAddonForALicense($product_ids, $license_code, $options = []) {
 
+    public function syncTheAddonForALicense($product_ids, $license_code, $options = [])
+    {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
 

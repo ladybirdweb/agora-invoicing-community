@@ -618,6 +618,7 @@ class HomeController extends BaseHomeController
 
         return response()->json(['group' => $group]);
     }
+
     public function getDetailedBillingInfo(Request $request): \Illuminate\Http\JsonResponse
     {
         $order = $request->input('order');

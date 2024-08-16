@@ -360,7 +360,6 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
-            dd($e);
             app('log')->error($e->getMessage());
 
             return redirect()->back()->with('fails', $e->getMessage());

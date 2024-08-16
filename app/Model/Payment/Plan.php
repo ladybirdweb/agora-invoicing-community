@@ -3,6 +3,7 @@
 namespace App\Model\Payment;
 
 use App\BaseModel;
+use App\Model\Configure\ConfigOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -66,5 +67,10 @@ class Plan extends BaseModel
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
+    }
+
+    public function configOptions()
+    {
+        return $this->hasMany(ConfigOption::class);
     }
 }

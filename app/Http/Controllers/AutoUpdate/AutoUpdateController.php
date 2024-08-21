@@ -88,7 +88,7 @@ class AutoUpdateController extends Controller
     /*
     *  Add New Product
     */
-    public function addNewProductToAUS($product_id,$product_name, $product_sku)
+    public function addNewProductToAUS($product_id, $product_name, $product_sku)
     {
         try {
             $url = $this->url;

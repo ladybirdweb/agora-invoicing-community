@@ -88,7 +88,7 @@ class AutoUpdateController extends Controller
     /*
     *  Add New Product
     */
-    public function addNewProductToAUS($product_name, $product_sku)
+    public function addNewProductToAUS($product_id,$product_name, $product_sku)
     {
         try {
             $url = $this->url;
@@ -97,7 +97,7 @@ class AutoUpdateController extends Controller
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
 
-            $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
+            $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_id=$product_id&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
             //need to remove this once we deprecate updates.faveohelpdesk.com
             $anotheradd = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
         } catch (\Exception $ex) {

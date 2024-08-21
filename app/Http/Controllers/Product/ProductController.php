@@ -328,9 +328,10 @@ class ProductController extends BaseProductController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
+                $product_id = $this->licensing->searchProductId($input['product_sku']);
+                $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+                $addProductToLicensing = $updateCont->addNewProductToAUS($product_id,$input['name'], $input['product_sku']);
             }
-            $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
                 $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
                 $this->product->image = $image;
@@ -340,7 +341,11 @@ class ProductController extends BaseProductController
             $highlight = $request->input('highlight');
             $add_to_contact = $request->input('add_to_contact');
             $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity, $highlight, $add_to_contact);
-            $this->product->fill($request->except('image', 'file'))->save();
+            $data = $request->except(['image', 'file']);
+            if (!empty($product_id)) {
+                $data['id'] = $product_id;
+            }
+            $this->product->fill($data)->save();
 
             $taxes = $request->input('tax');
             if ($taxes) {

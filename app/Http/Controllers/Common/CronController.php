@@ -59,11 +59,11 @@ class CronController extends BaseCronController
     {
         $yesterday = new Carbon('today');
         $sub = $this->sub
-                ->where('order_id', $orderid)
-                ->where('update_ends_at', '!=', '0000-00-00 00:00:00')
-                ->whereNotNull('update_ends_at')
-                ->where('update_ends_at', '<', $yesterday)
-                ->first();
+            ->where('order_id', $orderid)
+            ->where('update_ends_at', '!=', '0000-00-00 00:00:00')
+            ->whereNotNull('update_ends_at')
+            ->where('update_ends_at', '<', $yesterday)
+            ->first();
 
         return $sub;
     }
@@ -279,11 +279,11 @@ class CronController extends BaseCronController
 
             // Calculate the start and end dates
             $startDate = Carbon::now()->toDateString();
-            $endDate = Carbon::now()->addDays($day);
+            $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
-                ->orWhere('support_ends_at', $endDate)
-                ->orWhere('license_ends_at', $endDate)
+            $subscriptionsForDay = Subscription::where('update_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('ends_at', 'LIKE', $endDate.'%')
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '0')
@@ -292,7 +292,6 @@ class CronController extends BaseCronController
 
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }
-
         $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
 
         return $uniqueSubscriptions;
@@ -311,12 +310,11 @@ class CronController extends BaseCronController
             $day = (int) $day;
 
             // Calculate the start and end dates
-            $startDate = Carbon::now()->toDateString();
-            $endDate = Carbon::now()->addDays($day);
+            $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
-                ->orWhere('support_ends_at', $endDate)
-                ->orWhere('license_ends_at', $endDate)
+            $subscriptionsForDay = Subscription::where('update_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('ends_at', 'LIKE', $endDate.'%')
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '1')
@@ -342,17 +340,17 @@ class CronController extends BaseCronController
         $subscriptions = [];
 
         // Calculate the end date as today
-        $endDate = Carbon::now()->toDateString();
+
 
         foreach ($decodedData as $day) {
             $day = (int) $day;
 
             // Calculate the start date based on the specific day value from $decodedData
-            $startDate = Carbon::now()->subDays($day)->toDateString(); // Use $day here
+            $endDate = Carbon::now()->subDays($day)->toDateString(); // Use $day here
 
-            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
-                ->orWhere('support_ends_at', $endDate)
-                ->orWhere('license_ends_at', $endDate)
+            $subscriptionsForDay = Subscription::where('update_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
+                ->orWhere('ends_at', 'LIKE', $endDate.'%')
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->get()
@@ -481,12 +479,12 @@ class CronController extends BaseCronController
     private function canDeleteInvoice($invoice)
     {
         $condition1 = $invoice->is_renewed == 0 &&
-                      ! $invoice->orderRelation()->exists() &&
-                      $invoice->invoiceItem()->exists();
+            ! $invoice->orderRelation()->exists() &&
+            $invoice->invoiceItem()->exists();
 
         $condition2 = $invoice->is_renewed != 0 &&
-                      $invoice->orderRelation()->exists() &&
-                      $invoice->invoiceItem()->exists();
+            $invoice->orderRelation()->exists() &&
+            $invoice->invoiceItem()->exists();
 
         return $condition1 || $condition2;
     }

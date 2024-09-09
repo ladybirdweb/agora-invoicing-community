@@ -281,7 +281,9 @@ class CronController extends BaseCronController
             $startDate = Carbon::now()->toDateString();
             $endDate = Carbon::now()->addDays($day);
 
-            $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
+                ->orWhere('support_ends_at', $endDate)
+                ->orWhere('license_ends_at', $endDate)
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '0')
@@ -312,7 +314,9 @@ class CronController extends BaseCronController
             $startDate = Carbon::now()->toDateString();
             $endDate = Carbon::now()->addDays($day);
 
-            $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
+                ->orWhere('support_ends_at', $endDate)
+                ->orWhere('license_ends_at', $endDate)
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '1')
@@ -346,7 +350,9 @@ class CronController extends BaseCronController
             // Calculate the start date based on the specific day value from $decodedData
             $startDate = Carbon::now()->subDays($day)->toDateString(); // Use $day here
 
-            $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+            $subscriptionsForDay = Subscription::where('update_ends_at', $endDate)
+                ->orWhere('support_ends_at', $endDate)
+                ->orWhere('license_ends_at', $endDate)
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->get()

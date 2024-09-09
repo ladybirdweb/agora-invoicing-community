@@ -1435,21 +1435,40 @@ foreach($scripts as $script) {
                         }
                     },
                     error: function (data) {
-                        $("#register").attr('disabled',false);
+                        $("#register").attr('disabled', false);
                         $("#register").html("Register");
-                        $('html, body').animate({scrollTop:0}, 500);
+                        $('html, body').animate({scrollTop: 0}, 500);
 
-
-                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                        for (var key in data.responseJSON.errors)
-                        {
-                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                        // Convert responseText to an object if it's a string
+                        var response = {};
+                        try {
+                            response = typeof data.responseText === 'string' ? JSON.parse(data.responseText) : data.responseText;
+                        } catch (e) {
+                            console.error('Error parsing responseText:', e);
                         }
-                        html += '</ul></div>';
+
+                        // Pick the message or set a default message
+                        var message = response.message ? response.message : 'An error occurred. Please try again.';
+
+                        var html = '<div class="alert alert-danger alert-dismissable">' +
+                            '<strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' + message +
+                            ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>';
+
+                        // If there are errors, loop through and add to the alert
+                        // if (response.errors) {
+                        //     html += '<ul>';
+                        //     for (var key in response.errors) {
+                        //         html += '<li>' + response.errors[key][0] + '</li>';
+                        //     }
+                        //     html += '</ul>';
+                        // }
+
+                        html += '</div>';
 
                         $('#error').show();
                         document.getElementById('error').innerHTML = html;
-                        setInterval(function(){
+
+                        setInterval(function() {
                             $('#error').slideUp(3000);
                         }, 8000);
                     }

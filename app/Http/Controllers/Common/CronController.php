@@ -341,7 +341,6 @@ class CronController extends BaseCronController
 
         // Calculate the end date as today
 
-
         foreach ($decodedData as $day) {
             $day = (int) $day;
 

@@ -527,7 +527,7 @@ return [
     'list_id' => 'List id',
     'subscribe_status' => 'Subscribe status',
     'mapping' => 'Mapping',
-    'enter-the-mailchimp-api-key' => 'Enter the mailchimp api key',
+    'enter-the-mailchimp-api-key-setting' => 'You can edit the API key in the API section only.',
     'enter-the-mailchimp-list-id' => 'Enter the mailchimp list id',
     'enter-the-mailchimp-subscribe-status' => 'Enter the mailchimp subscribe status',
     'map-the-mailchimp-field-with-agora' => 'Map the mailchimp field with agora',

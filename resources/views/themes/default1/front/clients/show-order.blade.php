@@ -2135,7 +2135,7 @@ $(document).ready(function() {
         $.ajax({
             url: "{{ url('stripeUpdatePayment/confirm') }}",
             method: 'POST',
-            data: { payment_intent: paymentIntent,orderId: orderId },
+            data: { payment_intent: paymentIntent,orderId: orderId, _token: '{!! csrf_token() !!}'},
             success: function(response) {
                 $('#confirmStripe').modal('hide');
                 $('html, body').animate({ scrollTop: 0 }, 500);

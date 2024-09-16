@@ -281,9 +281,11 @@ class CronController extends BaseCronController
             $startDate = Carbon::now()->toDateString();
             $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where('update_ends_at', 'LIKE', $endDate.'%')
-                ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
-                ->orWhere('ends_at', 'LIKE', $endDate.'%')
+            $subscriptionsForDay = Subscription::where(function($query) use ($endDate) {
+                $query->where('update_ends_at', 'LIKE', $endDate.'%')
+                    ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
+                    ->orWhere('ends_at', 'LIKE', $endDate.'%');
+            })
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', '0')
@@ -312,18 +314,20 @@ class CronController extends BaseCronController
             // Calculate the start and end dates
             $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where('update_ends_at', 'LIKE', $endDate.'%')
-                ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
-                ->orWhere('ends_at', 'LIKE', $endDate.'%')
+            $subscriptionsForDay = Subscription::where(function($query) use ($endDate) {
+                $query->where('update_ends_at', 'LIKE', $endDate.'%')
+                    ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
+                    ->orWhere('ends_at', 'LIKE', $endDate.'%');
+            })
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
-                ->where('is_subscribed', '1')
+                ->where('subscriptions.is_subscribed', '1') // Apply this condition correctly
                 ->get()
                 ->toArray(); // Convert the collection to an array
 
+
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }
-
         $uniqueSubscriptions = array_map('unserialize', array_unique(array_map('serialize', $subscriptions)));
 
         return $uniqueSubscriptions;

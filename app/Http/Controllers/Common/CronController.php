@@ -281,7 +281,7 @@ class CronController extends BaseCronController
             $startDate = Carbon::now()->toDateString();
             $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where(function($query) use ($endDate) {
+            $subscriptionsForDay = Subscription::where(function ($query) use ($endDate) {
                 $query->where('update_ends_at', 'LIKE', $endDate.'%')
                     ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
                     ->orWhere('ends_at', 'LIKE', $endDate.'%');
@@ -314,7 +314,7 @@ class CronController extends BaseCronController
             // Calculate the start and end dates
             $endDate = Carbon::now()->addDays($day)->toDateString();
 
-            $subscriptionsForDay = Subscription::where(function($query) use ($endDate) {
+            $subscriptionsForDay = Subscription::where(function ($query) use ($endDate) {
                 $query->where('update_ends_at', 'LIKE', $endDate.'%')
                     ->orWhere('support_ends_at', 'LIKE', $endDate.'%')
                     ->orWhere('ends_at', 'LIKE', $endDate.'%');
@@ -324,7 +324,6 @@ class CronController extends BaseCronController
                 ->where('subscriptions.is_subscribed', '1') // Apply this condition correctly
                 ->get()
                 ->toArray(); // Convert the collection to an array
-
 
             $subscriptions = array_merge($subscriptions, $subscriptionsForDay);
         }

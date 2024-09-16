@@ -288,7 +288,7 @@ class CronController extends BaseCronController
             })
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
-                ->where('is_subscribed', '0')
+                ->where('subscriptions.is_subscribed', '0') // Apply this condition correctly
                 ->get()
                 ->toArray(); // Convert the collection to an array
 

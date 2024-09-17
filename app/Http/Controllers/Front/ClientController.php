@@ -410,7 +410,7 @@ class ClientController extends BaseClientController
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
             $order_id = $order->id;
 
-            $versions = ProductUpload::where('product_id', $productid)->where('is_private',0)
+            $versions = ProductUpload::where('product_id', $productid)->where('is_private', 0)
                 ->select(
                     'id',
                     'product_id',

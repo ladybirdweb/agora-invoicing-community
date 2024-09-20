@@ -647,9 +647,9 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
 }
 
 /**
- * Creates an empty DB with given name
+ * Creates an empty DB with given name.
  *
- * @param  string  $dbName    name of the DB
+ * @param  string  $dbName  name of the DB
  * @return null
  */
 function createDB(string $dbName)

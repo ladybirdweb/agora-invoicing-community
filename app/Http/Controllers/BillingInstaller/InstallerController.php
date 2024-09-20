@@ -24,7 +24,7 @@ class InstallerController extends Controller
     {
         $inputs = $request->only([
             'host', 'databasename', 'username', 'password', 'port',
-            'db_ssl_key', 'db_ssl_cert', 'db_ssl_ca', 'db_ssl_verify'
+            'db_ssl_key', 'db_ssl_cert', 'db_ssl_ca', 'db_ssl_verify',
         ]);
         Cache::forever('config-check', 'config-check');
         Session::put(array_merge($inputs, ['default' => 'mysql', 'db_ssl_key' => $inputs['db_ssl_key'] ?? null, 'db_ssl_cert' => $inputs['db_ssl_cert'] ?? null, 'db_ssl_ca' => $inputs['db_ssl_ca'] ?? null, 'db_ssl_verify' => $inputs['db_ssl_verify'] ?? null]));
@@ -141,18 +141,17 @@ class InstallerController extends Controller
             $result = [
                 'success' => 'Environment configuration file has been created successfully',
                 'next' => 'Running pre-migration test',
-                'api' => $url
+                'api' => $url,
             ];
 
             return response()->json(compact('result'));
         }
     }
 
-
     public function env($default, $host, $port, $database, $dbusername, $dbpassword, $appUrl = null)
     {
         $ENV = [
-            'APP_NAME' => 'Faveo:' . md5(uniqid()),
+            'APP_NAME' => 'Faveo:'.md5(uniqid()),
             'APP_DEBUG' => 'false',
             'APP_BUGSNAG' => 'true',
             'APP_URL' => $appUrl ?? url('/'), // for CLI installation
@@ -163,11 +162,11 @@ class InstallerController extends Controller
             'DB_INSTALL' => 0,
             'DB_DATABASE' => "\"$database\"",
             'DB_USERNAME' => "\"$dbusername\"",
-            'DB_PASSWORD' => '"' . str_replace('"', '\"', $dbpassword) . '"',
+            'DB_PASSWORD' => '"'.str_replace('"', '\"', $dbpassword).'"',
             'DB_ENGINE' => 'InnoDB', // Update after resolving InnoDB issues
             'CACHE_DRIVER' => 'file',
             'SESSION_DRIVER' => 'file',
-            'SESSION_COOKIE_NAME' => 'faveo_' . rand(0, 10000),
+            'SESSION_COOKIE_NAME' => 'faveo_'.rand(0, 10000),
             'QUEUE_DRIVER' => 'sync',
             'FCM_SERVER_KEY' => 'AIzaSyBJNRvyub-_-DnOAiIJfuNOYMnffO2sfw4',
             'FCM_SENDER_ID' => '505298756081',
@@ -191,11 +190,11 @@ class InstallerController extends Controller
             'SESSION_SECURE_COOKIE' => 'false',
             'CSRF_COOKIE_HTTP_ONLY' => 'false',
             'RECAPTCHA_SITE_KEY' => '',
-            'VITE_RECAPTCHA_SITE_KEY' => '"${RECAPTCHA_SITE_KEY}"'
+            'VITE_RECAPTCHA_SITE_KEY' => '"${RECAPTCHA_SITE_KEY}"',
         ];
 
         $config = collect($ENV)
-            ->map(fn($val, $key) => "$key=$val")
+            ->map(fn ($val, $key) => "$key=$val")
             ->implode("\n");
 
         $envPath = base_path('.env');
@@ -207,7 +206,7 @@ class InstallerController extends Controller
         }
 
         // Create a new example.env file if it doesn't exist
-        if (!is_file($exampleEnvPath)) {
+        if (! is_file($exampleEnvPath)) {
             touch($exampleEnvPath);
         }
 
@@ -218,16 +217,16 @@ class InstallerController extends Controller
         rename($exampleEnvPath, $envPath);
     }
 
-    public function updateInstallEnv(string $environment,string $driver, $redisConfig = [])
+    public function updateInstallEnv(string $environment, string $driver, $redisConfig = [])
     {
-        $env = base_path() . DIRECTORY_SEPARATOR . '.env';
-        if (!is_file($env)) {
-            return errorResponse('.env not found',400);
+        $env = base_path().DIRECTORY_SEPARATOR.'.env';
+        if (! is_file($env)) {
+            return errorResponse('.env not found', 400);
         }
 
         $txt1 = "\nAPP_ENV=$environment";
-        file_put_contents($env, str_replace('DB_INSTALL=' . 0, 'DB_INSTALL=' . 1, file_get_contents($env)));
-        file_put_contents($env, $txt1 . PHP_EOL, FILE_APPEND | LOCK_EX);
+        file_put_contents($env, str_replace('DB_INSTALL='. 0, 'DB_INSTALL='. 1, file_get_contents($env)));
+        file_put_contents($env, $txt1.PHP_EOL, FILE_APPEND | LOCK_EX);
 
         foreach ($redisConfig as $key => $value) {
             $line = strtoupper($key).'='.$value.PHP_EOL;
@@ -237,7 +236,7 @@ class InstallerController extends Controller
         // If Redis is used as cache driver, update .env and relevant database records
         if ($driver == 'redis') {
             // Update .env file to set CACHE_DRIVER to 'redis'
-            file_put_contents($env, str_replace('CACHE_DRIVER=' . getenv('CACHE_DRIVER'), 'CACHE_DRIVER=' . 'redis', file_get_contents($env)));
+            file_put_contents($env, str_replace('CACHE_DRIVER='.getenv('CACHE_DRIVER'), 'CACHE_DRIVER='.'redis', file_get_contents($env)));
 
             // Disable all active QueueServices
             QueueService::where('status', 1)->update(['status' => 0]);
@@ -326,7 +325,6 @@ class InstallerController extends Controller
         }
     }
 
-
     public function getTimeZoneDropDown()
     {
         $timezonesList = \App\Model\Common\Timezone::get();
@@ -340,6 +338,7 @@ class InstallerController extends Controller
                 $display[] = ['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name];
             }
         }
+
         return $display;
     }
 }

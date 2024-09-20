@@ -20,5 +20,5 @@ Route::post('preinstall/check', [InstallerController::class, 'checkPreInstall',
 Route::post('migrate', [InstallerController::class, 'migrate',
 ])->withoutMiddleware('installer')->name('migrate');
 
-Route::get('getTimeZone', [InstallerController::class, 'getTimeZoneDropDown',])->withoutMiddleware('installer');
+Route::get('getTimeZone', [InstallerController::class, 'getTimeZoneDropDown'])->withoutMiddleware('installer');
 Route::post('accountcheck', [InstallerController::class, 'accountcheck'])->withoutMiddleware('installer');

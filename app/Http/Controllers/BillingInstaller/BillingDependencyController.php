@@ -29,7 +29,7 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Validate storage directory
+     * Validate storage directory.
      */
     private function validateStorageDirectory($basePath, &$errorCount, &$error)
     {
@@ -54,7 +54,7 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Validate bootstrap directory
+     * Validate bootstrap directory.
      */
     private function validateBootstrapDirectory($basePath, &$errorCount, &$error)
     {
@@ -94,7 +94,7 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Get the json content of dependencies
+     * Get the json content of dependencies.
      */
     private function getDependenciesJson()
     {
@@ -106,10 +106,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Extension that are required for Faveo to run
+     * Extension that are required for Faveo to run.
      *
      * @param  array  $requiredExtensions  Array of required extensions
-     * @param  array  &$error              Array of errors
+     * @param  array  &$error  Array of errors
      */
     private function validateRequiredExtensions(array $requiredExtensions, array &$error, int &$errorCount)
     {
@@ -136,10 +136,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Extension that are optional for Faveo to run
+     * Extension that are optional for Faveo to run.
      *
      * @param  array  $requiredExtensions  Array of required extensions
-     * @param  array  &$error              Array of errors
+     * @param  array  &$error  Array of errors
      */
     private function validateOptionalExtensions(array $requiredExtensions, array &$error)
     {
@@ -161,10 +161,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Gets the Name and status of the requisites for Faveo
+     * Gets the Name and status of the requisites for Faveo.
      *
-     * @param  array  &$arrayOfRequisites Array with name and status
-     * @param  string  $requisite         The name of the requisite to be checked
+     * @param  array  &$arrayOfRequisites  Array with name and status
+     * @param  string  $requisite  The name of the requisite to be checked
      */
     private function requisitesWithTheirStatus(array &$arrayOfRequisites, $requisite, int &$errorCount)
     {
@@ -215,10 +215,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Check the current PHP version is compatible or not for running Faveo
+     * Check the current PHP version is compatible or not for running Faveo.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function PhpVersionCheck(array &$arrayOfRequisites, int &$errorCount, $minPhpVersionRequired)
     {
@@ -242,10 +242,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Check PHP exec function is enabled or not
+     * Check PHP exec function is enabled or not.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function execFunctionCheck(array &$arrayOfRequisites, int &$errorCount)
     {
@@ -264,7 +264,7 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Check if exec() function is available
+     * Check if exec() function is available.
      *
      * @return bool
      */
@@ -279,10 +279,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Check .env exists or not
+     * Check .env exists or not.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function dotEnvFileCheck(array &$arrayOfRequisites, int &$errorCount)
     {
@@ -301,10 +301,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Check maximum execution time
+     * Check maximum execution time.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function maxExecutionTimeCheck(array &$arrayOfRequisites, int &$errorCount)
     {
@@ -320,10 +320,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Checks allow_url_enabled directive is enabled or not
+     * Checks allow_url_enabled directive is enabled or not.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function allowUrlFopen(array &$arrayOfRequisites, int &$errorCount)
     {
@@ -339,10 +339,10 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Checks URL is valid or invalid
+     * Checks URL is valid or invalid.
      *
-     * @param  array  $arrayOfRequisites Requisite details
-     * @param  int  $errorCount        The count of errors occured
+     * @param  array  $arrayOfRequisites  Requisite details
+     * @param  int  $errorCount  The count of errors occured
      */
     private function appUrlcheck(array &$arrayOfRequisites, int &$errorCount)
     {
@@ -362,9 +362,9 @@ class BillingDependencyController extends Controller
     }
 
     /**
-     * Validate PHP extentions for probe page and auto-update module
+     * Validate PHP extentions for probe page and auto-update module.
      *
-     * @param  string  $extensionCheckFrom Whether the request is from probe page or auto-update module
+     * @param  string  $extensionCheckFrom  Whether the request is from probe page or auto-update module
      * @return array
      */
     public function validatePHPExtensions(&$errorCount)

@@ -36,20 +36,29 @@ if (isset($_POST['submit'])) {
 
     <link rel="shortcut icon" href="./images/faveo.png" type="image/x-icon" />
 
-    <link rel="apple-touch-icon" href="./agora.png">
+<!--    <link rel="apple-touch-icon" href="./agora.png">-->
 
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-    <link rel="stylesheet" id="rtl-styles-1" href="./custom-rtl.css">
+    <?php
+    // Array of CSS files with optional IDs for each link tag
+    $css_files = [
+        ['file' => './admin/css-1/all.min.css'],
+        ['file' => './admin/css-1/adminlte.min.css', 'id' => 'default-styles'],
+//        ['file' => './admin/css-1/adminlte-rtl.css', 'id' => 'rtl-styles'],
+        ['file' => './admin/css-1/bs-stepper-rtl.css', 'id' => 'rtl-styles-2'],
+        ['file' => './admin/css-1/bs-stepper.css', 'id' => 'default-styles-2'],
+        ['file' => './admin/css-1/flag-icons.min.css'],
+        ['file' => './admin/css-1/probe-rtl.css', 'id' => 'rtl-styles-1'],
+        ['file' => './admin/css-1/probe.css', 'id' => 'default-styles-1'],
+    ];
 
-    <link rel="stylesheet" id="default-styles-1" href="./custom.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte-rtl.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper-rtl.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.7/css/flag-icon.min.css">
+    // Loop through the array to generate <link> tags
+    foreach ($css_files as $css) {
+        $id = isset($css['id']) ? ' id="' . $css['id'] . '"' : ''; // Check if 'id' is set
+        echo '<link rel="stylesheet" href="' . $css['file'] . '"' . $id . '>' . PHP_EOL;
+    }
+    ?>
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
@@ -68,7 +77,7 @@ if (isset($_POST['submit'])) {
 
             <a href="javascript:;" class="navbar-brand" style="">
 
-                <img src="./agora.png" alt="Faveo Logo" class="brand-image install-img">
+                <img src="./images/agora-invoicing.png" alt="Agora Logo" class="brand-image install-img">
             </a>
 
             <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -699,10 +708,10 @@ if (isset($_POST['submit'])) {
     </footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js"></script>
+<script src="./admin/js/jquery.min.js"></script>
+<script src="./admin/js/bootstrap.bundle.min.js"></script>
+<script src="./admin/js/adminlte.min.js"></script>
+<script src="./admin/js/bs-stepper.min.js"></script>
 
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>-->
 

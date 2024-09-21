@@ -1,0 +1,63 @@
+
+.install-img {
+    margin-top: 5px !important;
+    height: 50px !important;
+}
+
+.steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+.step-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #aaaeb1;
+    transition: .4s;
+    color: #fff;
+}
+.step-button[aria-expanded="true"] {
+    width: 45px;
+    height: 45px;
+    background-color: #007bff;
+    color: #fff;
+}
+.done {
+    background-color: #aaaeb1 !important;
+    color: #fff !important;
+}
+.step-item {
+    z-index: 10;
+    text-align: center;
+}
+#progress {
+    -webkit-appearance:none;
+    position: absolute;
+    width: 90%;
+    z-index: 5;
+    height: 4px;
+    margin-left: 76px;
+    margin-bottom: 25px;
+}
+#progress::-webkit-progress-value {
+    background-color: darkgrey;
+    transition: .5s ease;
+}
+#progress::-webkit-progress-bar {
+    background-color: #dee2e6;
+}
+
+@media only screen and (max-width: 767px) {
+    .step-title {
+        display: none;
+    }
+
+    #progress {
+        margin-bottom: 0 !important;
+        margin-left: 0 !important;
+    }
+}

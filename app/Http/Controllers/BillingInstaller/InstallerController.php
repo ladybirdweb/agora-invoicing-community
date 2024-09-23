@@ -232,12 +232,11 @@ class InstallerController extends Controller
                 'required',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/',
             ],
-            'driver' => 'nullable|string|in:redis',
-            'redis_host' => 'nullable|required_if:driver,redis|string',
-            'redis_password' => 'nullable|required_if:driver,redis|string',
-            'redis_port' => 'nullable|required_if:driver,redis|numeric',
-            'environment' => 'required|string',
             'cache_driver' => 'required|string',
+            'redis_host' => 'nullable|required_if:cache_driver,redis|string',
+            'redis_password' => 'nullable|required_if:cache_driver,redis|string',
+            'redis_port' => 'nullable|required_if:cache_driver,redis|numeric',
+            'environment' => 'required|string',
         ], [
             'password.regex' => 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.',
             'redis_host.required_if' => 'Redis host is required.',
@@ -247,7 +246,7 @@ class InstallerController extends Controller
 
         // Return validation errors if any
         if ($validator->fails()) {
-            return errorResponse($validator->errors()->first(), 400);
+            return errorResponse($validator->errors(), 400);
         }
 
         try {
@@ -275,8 +274,8 @@ class InstallerController extends Controller
                 $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'));
             }
 
-            // Cache 'getting-started' status
-            Cache::forever('getting-started', 'getting-started');
+            Session::flush();
+            \Cache::flush();
 
             // Return success response
             return successResponse('Setup completed successfully!', 201);

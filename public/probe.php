@@ -473,7 +473,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-footer">
 
-                                <button class="btn btn-primary" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; Previous</button>
+                                <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; Previous</button>
 
                                 <button class="btn btn-primary float-right" type="submit" id="validate">Continue &nbsp;
                                     <i class="fas fa-arrow-right"></i>
@@ -648,7 +648,7 @@ if (isset($_POST['submit'])) {
                                             <label class="col-sm-2 col-form-label">Redis Password <span style="color: red;">*</span></label>
 
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="redis_password" placeholder="Redis Password">
+                                                <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
                                             </div>
                                         </div>
                                     </div>
@@ -682,7 +682,7 @@ if (isset($_POST['submit'])) {
 
                                         <p class="lead">Learn More</p>
 
-                                        <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://support.faveohelpdesk.com/knowledgebase">Knowledge base</a></p>
+                                        <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank">Knowledge base</a></p>
                                         <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com">Email Support</a></p>
                                     </div>
 
@@ -921,6 +921,10 @@ if (isset($_POST['submit'])) {
     }
     validateData();
     function dbFormSubmit() {
+        const previous = document.getElementById('previous');
+        const continueButton = document.getElementById('continue');
+        previous.disabled = true;
+        continueButton.disabled = true;
         // Collect data from form inputs
         const fields = {
             host: document.getElementById('host'),
@@ -980,7 +984,9 @@ if (isset($_POST['submit'])) {
     }
     function toggleContinueButton(hasError) {
         const continueButton = document.getElementById('continue');
+        const previousButton = document.getElementById('previous');
         continueButton.disabled = hasError;
+        previousButton.disabled = !hasError;
     }
 
     async function postData(url, data) {

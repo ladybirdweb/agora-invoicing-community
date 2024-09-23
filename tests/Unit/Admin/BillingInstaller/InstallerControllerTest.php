@@ -3,15 +3,12 @@
 namespace Tests\Unit\Admin\BillingInstaller;
 
 use App\Http\Controllers\BillingInstaller\InstallerController;
-use Artisan;
-use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class InstallerControllerTest extends TestCase
 {
-
     public function testConfigurationCheck()
     {
 //        This will only test the wrong connection because we dont know the database credential

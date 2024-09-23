@@ -34,7 +34,7 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
         'web' => [
             // \App\Http\Middleware\Install::class,
-           // \App\Http\Middleware\EncryptCookies::class,
+            // \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 
             \Spatie\Referer\CaptureReferer::class,

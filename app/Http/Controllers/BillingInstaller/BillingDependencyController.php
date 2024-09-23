@@ -250,7 +250,7 @@ class BillingDependencyController extends Controller
     private function execFunctionCheck(array &$arrayOfRequisites, int &$errorCount)
     {
         $execColor = 'green';
-        $execString = 'exec function is enabled';
+        $execString = 'Enabled';
         if (! $this->execEnabled()) {
             $execColor = '#F89C0D';
             $execString = 'exec function is not enabled. This is required for taking system backup. Please note system backup functionality will not work without it.';
@@ -328,7 +328,7 @@ class BillingDependencyController extends Controller
     private function allowUrlFopen(array &$arrayOfRequisites, int &$errorCount)
     {
         $color = 'green';
-        $messsage = 'Directive is enabled';
+        $messsage = 'Enabled';
         if (! (int) ini_get('allow_url_fopen')) {
             $color = '#F89C0D';
             $messsage = 'Directive is disabled (It is recommended to keep this ON as few features in the system are dependent on this)';

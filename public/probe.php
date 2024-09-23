@@ -123,7 +123,7 @@ if (isset($_POST['submit'])) {
                         <div class="card">
                             <form action="probe.php" method="post">
                             <div class="card-body">
-                                <p class="text-center lead text-bold">Billing Probes</p>
+                                <p class="text-center lead text-bold">Agora Invoicing Probes</p>
                                 <div class="form-group row">
 
                                     <label for="inputEmail1" class="col-sm-2 col-form-label">What's the magic phrase <span style="color: red;">*</span></label>
@@ -410,11 +410,12 @@ if (isset($_POST['submit'])) {
                                 <div id="db_fields">
 
                                     <div class="form-group row">
-
-                                        <label for="inputEmail6" class="col-sm-2 col-form-label">Host <span style="color: red;">*</span></label>
-
+                                        <label for="inputEmail6" class="col-sm-2 col-form-label">
+                                            Host <span style="color: red;">*</span>
+                                            <!-- Icon with Tooltip -->
+                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If your MySQL is installed on the same server as Agora Invoicing, let it be localhost"></i>
+                                        </label>
                                         <div class="col-sm-10">
-
                                             <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
                                         </div>
                                     </div>
@@ -429,11 +430,12 @@ if (isset($_POST['submit'])) {
                                         </div>
                                     </div>
                                     <div class="form-group row">
-
-                                        <label for="inputEmail4" class="col-sm-2 col-form-label">MySQL port number</label>
-
+                                        <label for="inputEmail4" class="col-sm-2 col-form-label">
+                                            MySQL port number
+                                            <!-- Icon with Tooltip -->
+                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Port number on which your MySQL server is listening. By default, it is 3306"></i>
+                                        </label>
                                         <div class="col-sm-10">
-
                                             <input type="text" class="form-control" id="mysql_port" placeholder="Port Number">
                                         </div>
                                     </div>
@@ -460,7 +462,7 @@ if (isset($_POST['submit'])) {
                                 </div>
 
                                 <div id="db_config">
-                                    <h6 class="mt-1 mb-3">This test will check prerequisites required to install Billing</h6>
+                                    <h6 class="mt-1 mb-3">This test will check prerequisites required to install Agora Invoicing</h6>
 
                                     <div class="timeline timeline-inverse "  id="timeline-container">
 
@@ -523,7 +525,9 @@ if (isset($_POST['submit'])) {
 
                                         <div class="form-group row">
 
-                                            <label class="col-sm-2 col-form-label">Username <span style="color: red;">*</span></label>
+                                            <label class="col-sm-2 col-form-label">Username <span style="color: red;">*</span>
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Username can have only alphanumeric characters, spaces, underscores, hyphens, periods, and the @ symbol."></i>
+                                            </label>
 
                                             <div class="col-sm-10">
 
@@ -666,7 +670,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-body">
 
-                                <p class="text-center lead text-bold">Your Billing Application is Ready!</p>
+                                <p class="text-center lead text-bold">Your Agora Invoicing Application is Ready!</p>
 
                                 <div class="alert" style="background:#f5f5f5;">
                                     All right, sparky! You’ve made it through the installation.
@@ -716,6 +720,9 @@ if (isset($_POST['submit'])) {
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>-->
 
 <script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
     document.getElementById('validate').addEventListener('click', function(event) {
         event.preventDefault();
         dbFormSubmit();
@@ -883,12 +890,32 @@ if (isset($_POST['submit'])) {
             data: data,
             success: function(response) {
                 console.log('Form submitted successfully');
-                alert('Form submitted successfully!');
                 gotoStep('final');
             },
             error: function(error) {
                 console.error('Error submitting form', error);
-                alert('Error submitting form.');
+                let errors = error.responseJSON.message;
+                const fieldMapping = {
+                    first_name: '#admin_first_name',
+                    last_name: '#admin_last_name',
+                    user_name: '#admin_username',
+                    email: '#email',
+                    password: '#admin_password',
+                    redis_host: '#redis_host',
+                    redis_port: '#redis_port',
+                    redis_password: '#redis_password',
+                    environment: '#environment',
+                    cache_driver: '#driver'
+                };
+
+                // Loop through the errors and display them on the corresponding fields
+                Object.keys(errors).forEach(field => {
+                    const errorMessages = errors[field];
+                    const fieldElement = $(fieldMapping[field]); // Use the mapped field ID
+                    if (fieldElement.length) {
+                        showError(fieldElement, errorMessages.join(', '));
+                    }
+                });
             }
         });
     }

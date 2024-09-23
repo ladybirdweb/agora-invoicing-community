@@ -27,6 +27,7 @@ class InstallerController extends Controller
             'db_ssl_key', 'db_ssl_cert', 'db_ssl_ca', 'db_ssl_verify',
         ]);
         Session::put(array_merge($inputs, ['default' => 'mysql', 'db_ssl_key' => $inputs['db_ssl_key'] ?? null, 'db_ssl_cert' => $inputs['db_ssl_cert'] ?? null, 'db_ssl_ca' => $inputs['db_ssl_ca'] ?? null, 'db_ssl_verify' => $inputs['db_ssl_verify'] ?? null]));
+
         return response()->json((new DatabaseSetupController())->testResult());
     }
 
@@ -120,7 +121,7 @@ class InstallerController extends Controller
     public function env($default, $host, $port, $database, $dbusername, $dbpassword, $appUrl = null)
     {
         $ENV = [
-            'APP_NAME' => 'Faveo:' . md5(uniqid()),
+            'APP_NAME' => 'Faveo:'.md5(uniqid()),
             'APP_DEBUG' => 'false',
             'APP_BUGSNAG' => 'true',
             'APP_URL' => $appUrl ?? url('/'), // for CLI installation
@@ -136,7 +137,7 @@ class InstallerController extends Controller
             'DB_ENGINE' => 'InnoDB', // Update after resolving InnoDB issues
             'CACHE_DRIVER' => 'file',
             'SESSION_DRIVER' => 'file',
-            'SESSION_COOKIE_NAME' => 'faveo_' . rand(0, 10000),
+            'SESSION_COOKIE_NAME' => 'faveo_'.rand(0, 10000),
             'QUEUE_CONNECTION' => 'sync',
             'PROBE_PASS_PHRASE' => md5(uniqid()),
             'REDIS_DATABASE' => '0',

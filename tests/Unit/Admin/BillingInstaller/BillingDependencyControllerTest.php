@@ -3,8 +3,6 @@
 namespace Tests\Unit\Admin\BillingInstaller;
 
 use App\Http\Controllers\BillingInstaller\BillingDependencyController;
-use Exception;
-use Mockery;
 use Tests\TestCase;
 
 class BillingDependencyControllerTest extends TestCase
@@ -16,10 +14,10 @@ class BillingDependencyControllerTest extends TestCase
     {
         $this->validator = new BillingDependencyController('test');
         // Path to the test directories.
-        $this->basePath = __DIR__ . '/testDirectories';
+        $this->basePath = __DIR__.'/testDirectories';
 
         // Create test base directory if it doesn't exist
-        if (!file_exists($this->basePath)) {
+        if (! file_exists($this->basePath)) {
             mkdir($this->basePath, 0777, true);
         }
     }
@@ -27,14 +25,14 @@ class BillingDependencyControllerTest extends TestCase
     protected function tearDown(): void
     {
         // Clean up after each test
-        if (file_exists($this->basePath . DIRECTORY_SEPARATOR . 'storage')) {
-            chmod($this->basePath . DIRECTORY_SEPARATOR . 'storage', 0777);
-            rmdir($this->basePath . DIRECTORY_SEPARATOR . 'storage');
+        if (file_exists($this->basePath.DIRECTORY_SEPARATOR.'storage')) {
+            chmod($this->basePath.DIRECTORY_SEPARATOR.'storage', 0777);
+            rmdir($this->basePath.DIRECTORY_SEPARATOR.'storage');
         }
 
-        if (file_exists($this->basePath . DIRECTORY_SEPARATOR . 'bootstrap')) {
-            chmod($this->basePath . DIRECTORY_SEPARATOR . 'bootstrap', 0777);
-            rmdir($this->basePath . DIRECTORY_SEPARATOR . 'bootstrap');
+        if (file_exists($this->basePath.DIRECTORY_SEPARATOR.'bootstrap')) {
+            chmod($this->basePath.DIRECTORY_SEPARATOR.'bootstrap', 0777);
+            rmdir($this->basePath.DIRECTORY_SEPARATOR.'bootstrap');
         }
 
         if (file_exists($this->basePath)) {
@@ -49,8 +47,8 @@ class BillingDependencyControllerTest extends TestCase
         $errorCount = 0;
 
         // Create and set permissions for test directories
-        mkdir($this->basePath . DIRECTORY_SEPARATOR . 'storage', 0777, true);
-        mkdir($this->basePath . DIRECTORY_SEPARATOR . 'bootstrap', 0777, true);
+        mkdir($this->basePath.DIRECTORY_SEPARATOR.'storage', 0777, true);
+        mkdir($this->basePath.DIRECTORY_SEPARATOR.'bootstrap', 0777, true);
 
         $result = $this->validator->validateDirectory($this->basePath, $errorCount);
 
@@ -68,14 +66,14 @@ class BillingDependencyControllerTest extends TestCase
         $errorCount = 0;
 
         // Create and set permissions for test directories
-        mkdir($this->basePath . DIRECTORY_SEPARATOR . 'storage', 0500, true);
-        mkdir($this->basePath . DIRECTORY_SEPARATOR . 'bootstrap', 0500, true);
+        mkdir($this->basePath.DIRECTORY_SEPARATOR.'storage', 0500, true);
+        mkdir($this->basePath.DIRECTORY_SEPARATOR.'bootstrap', 0500, true);
 
         try {
             $this->validator->validateDirectory($this->basePath, $errorCount);
-            $this->fail("Expected exception was not thrown");
+            $this->fail('Expected exception was not thrown');
         } catch (\Exception $e) {
-            $this->assertStringContainsString('Expected exception was not thrown',$e->getMessage());
+            $this->assertStringContainsString('Expected exception was not thrown', $e->getMessage());
         }
     }
 }

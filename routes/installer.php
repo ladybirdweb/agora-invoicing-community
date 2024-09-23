@@ -6,19 +6,20 @@ use Illuminate\Support\Facades\Route;
 Route::post('db-setup', [InstallerController::class, 'configuration'])->name('db-setup');
 
 Route::post('posting', [InstallerController::class, 'configurationcheck',
-])->withoutMiddleware('installer')->name('posting');
+])->name('posting');
 
 Route::get('config-check', [InstallerController::class, 'database',
-])->withoutMiddleware('installer')->name('config-check');
+])->name('config-check');
 
 Route::post('create/env', [InstallerController::class, 'createEnv',
-])->withoutMiddleware('installer')->name('create.env');
+])->name('create.env');
 
 Route::post('preinstall/check', [InstallerController::class, 'checkPreInstall',
-])->withoutMiddleware('installer')->name('preinstall.check');
+])->name('preinstall.check');
 
 Route::post('migrate', [InstallerController::class, 'migrate',
-])->withoutMiddleware('installer')->name('migrate');
+])->name('migrate');
 
-Route::get('getTimeZone', [InstallerController::class, 'getTimeZoneDropDown'])->withoutMiddleware('installer');
-Route::post('accountcheck', [InstallerController::class, 'accountcheck'])->withoutMiddleware('installer');
+Route::get('getTimeZone', [InstallerController::class, 'getTimeZoneDropDown']);
+
+Route::post('accountcheck', [InstallerController::class, 'accountcheck']);

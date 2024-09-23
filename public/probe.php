@@ -193,7 +193,7 @@ if (isset($_POST['submit'])) {
                                 4
                             </button>
 
-                            <div class="step-title mt-2">Entry Gateway</div>
+                            <div class="step-title mt-2">Final</div>
                         </div>
                     </div>
 
@@ -471,7 +471,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-footer">
 
-                                <button class="btn btn-primary" onclick="gotoStep('server')"><i class="fas fa-arrow-left"></i>&nbsp; Previous</button>
+                                <button class="btn btn-primary" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; Previous</button>
 
                                 <button class="btn btn-primary float-right" type="submit" id="validate">Continue &nbsp;
                                     <i class="fas fa-arrow-right"></i>
@@ -781,7 +781,15 @@ if (isset($_POST['submit'])) {
         // Start observing the target element
         observer.observe(targetNode, observerConfig);
     });
+    function previous() {
+        const dbConfigStyle = document.getElementById("db_config").style.display;
 
+        if (dbConfigStyle === 'none') {
+            gotoStep('server');
+        } else {
+            validateData();
+        }
+    }
     function submitForm() {
         // Cache input elements
         const fields = {
@@ -939,6 +947,7 @@ if (isset($_POST['submit'])) {
         };
 
         const url = `<?php echo getBaseUrl() ?>/posting`;
+        document.getElementById('timeline-container').innerHTML = '';
         postData(url, data);
         validateData();
     }
@@ -1046,7 +1055,7 @@ if (isset($_POST['submit'])) {
             case 'Error':
                 return { iconClass: 'fas fa-times', bgClass: 'bg-danger' };
             default:
-                return { iconClass: 'fas fa-spinner fa-spin-pulse', bgClass: 'bg-info' };
+                return { iconClass: 'fas fa-spinner fa-spin', bgClass: 'bg-info' };
         }
     }
 

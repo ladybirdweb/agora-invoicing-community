@@ -64,6 +64,9 @@ if (isset($_POST['submit'])) {
 
     <style>
         .cursor-default { cursor: default !important; }
+         .timeline::before {
+             bottom: 10px;
+         }
     </style>
 </head>
 

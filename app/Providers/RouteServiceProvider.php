@@ -86,7 +86,7 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function installer()
     {
-        Route::middleware('installer')
+        Route::middleware('isInstalled')
             ->namespace($this->namespace)
             ->group(base_path('routes/installer.php'));
     }

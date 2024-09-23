@@ -26,39 +26,8 @@ class InstallerController extends Controller
             'host', 'databasename', 'username', 'password', 'port',
             'db_ssl_key', 'db_ssl_cert', 'db_ssl_ca', 'db_ssl_verify',
         ]);
-        Cache::forever('config-check', 'config-check');
         Session::put(array_merge($inputs, ['default' => 'mysql', 'db_ssl_key' => $inputs['db_ssl_key'] ?? null, 'db_ssl_cert' => $inputs['db_ssl_cert'] ?? null, 'db_ssl_ca' => $inputs['db_ssl_ca'] ?? null, 'db_ssl_verify' => $inputs['db_ssl_verify'] ?? null]));
-        Session::put('setup', 1);
-        Cache::forever('dummy_data_installation', false);
-
         return response()->json((new DatabaseSetupController())->testResult());
-    }
-
-    /**
-     * Get database
-     * checking prerequisites.
-     *
-     * @return type view
-     */
-    public function database(Request $request)
-    {
-        // checking if the installation is running for the first time or not
-        if (Cache::get('config-check') == 'config-check') {
-            return View::make('themes/default1/installer/helpdesk/view4');
-        } else {
-            return Redirect::route('config');
-        }
-    }
-
-    /**
-     * Get account
-     * checking prerequisites.
-     *
-     * @return type view
-     */
-    public function account(Request $request)
-    {
-        return View::make('installer/demo');
     }
 
     public function checkPreInstall()
@@ -151,46 +120,37 @@ class InstallerController extends Controller
     public function env($default, $host, $port, $database, $dbusername, $dbpassword, $appUrl = null)
     {
         $ENV = [
-            'APP_NAME' => 'Faveo:'.md5(uniqid()),
+            'APP_NAME' => 'Faveo:' . md5(uniqid()),
             'APP_DEBUG' => 'false',
             'APP_BUGSNAG' => 'true',
             'APP_URL' => $appUrl ?? url('/'), // for CLI installation
             'APP_KEY' => 'base64:h3KjrHeVxyE+j6c8whTAs2YI+7goylGZ/e2vElgXT6I=',
-            'DB_TYPE' => $default,
-            'DB_HOST' => "\"$host\"",
-            'DB_PORT' => "\"$port\"",
+            'APP_LOG_LEVEL' => 'debug',
+            'DB_CONNECTION' => $default,
+            'DB_HOST' => $host,
+            'DB_PORT' => $port,
             'DB_INSTALL' => 0,
-            'DB_DATABASE' => "\"$database\"",
-            'DB_USERNAME' => "\"$dbusername\"",
-            'DB_PASSWORD' => '"'.str_replace('"', '\"', $dbpassword).'"',
+            'DB_DATABASE' => $database,
+            'DB_USERNAME' => $dbusername,
+            'DB_PASSWORD' => str_replace('"', '\"', $dbpassword),
             'DB_ENGINE' => 'InnoDB', // Update after resolving InnoDB issues
             'CACHE_DRIVER' => 'file',
             'SESSION_DRIVER' => 'file',
-            'SESSION_COOKIE_NAME' => 'faveo_'.rand(0, 10000),
-            'QUEUE_DRIVER' => 'sync',
-            'FCM_SERVER_KEY' => 'AIzaSyBJNRvyub-_-DnOAiIJfuNOYMnffO2sfw4',
-            'FCM_SENDER_ID' => '505298756081',
+            'SESSION_COOKIE_NAME' => 'faveo_' . rand(0, 10000),
+            'QUEUE_CONNECTION' => 'sync',
             'PROBE_PASS_PHRASE' => md5(uniqid()),
             'REDIS_DATABASE' => '0',
             'BROADCAST_DRIVER' => 'pusher',
-            'LARAVEL_WEBSOCKETS_ENABLED' => 'false',
-            'LARAVEL_WEBSOCKETS_PORT' => 6001,
-            'LARAVEL_WEBSOCKETS_HOST' => '127.0.0.1',
-            'LARAVEL_WEBSOCKETS_SCHEME' => 'http',
-            'PUSHER_APP_ID' => str_random(16),
+            'PUSHER_APP_ID' => str_random(16), // Use Str::random
             'PUSHER_APP_KEY' => md5(uniqid()),
             'PUSHER_APP_SECRET' => md5(uniqid()),
             'PUSHER_APP_CLUSTER' => 'mt1',
-            'MIX_PUSHER_APP_KEY' => '"${PUSHER_APP_KEY}"',
-            'MIX_PUSHER_APP_CLUSTER' => '"${PUSHER_APP_CLUSTER}"',
-            'SOCKET_CLIENT_SSL_ENFORCEMENT' => 'false',
-            'LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT' => 'null',
-            'LARAVEL_WEBSOCKETS_SSL_LOCAL_PK' => 'null',
-            'LARAVEL_WEBSOCKETS_SSL_PASSPHRASE' => 'null',
-            'SESSION_SECURE_COOKIE' => 'false',
-            'CSRF_COOKIE_HTTP_ONLY' => 'false',
-            'RECAPTCHA_SITE_KEY' => '',
-            'VITE_RECAPTCHA_SITE_KEY' => '"${RECAPTCHA_SITE_KEY}"',
+            'MAIL_DRIVER' => '',
+            'MAIL_HOST' => '',
+            'MAIL_PORT' => '',
+            'MAIL_USERNAME' => '',
+            'MAIL_PASSWORD' => '',
+            'MAIL_ENCRYPTION' => '',
         ];
 
         $config = collect($ENV)

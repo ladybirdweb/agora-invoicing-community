@@ -57,24 +57,24 @@ Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDeta
 /*
 * Installer Routes
 */
-
-Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
-    Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
-
-    Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
-
-    Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
-
-    Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
-
-    Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
-
-    Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
-
-    Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
-
-    Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
-});
+//
+//Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
+//    Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
+//
+//    Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
+//
+//    Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
+//
+//    Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
+//
+//    Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
+//
+//    Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
+//
+//    Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
+//
+//    Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
+//});
 
 Route::middleware('installAgora')->group(function () {
     Route::post('store_toggle_state', [Common\TemplateController::class, 'toggle'])->withoutMiddleware(['auth', 'admin']);

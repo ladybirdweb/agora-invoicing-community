@@ -6,9 +6,9 @@ use App\Http\Controllers\BillingInstaller\InstallerController;
 use Artisan;
 use Illuminate\Http\Request;
 use Illuminate\Testing\TestResponse;
+use Mockery;
 use Session;
 use Tests\TestCase;
-use Mockery;
 
 class InstallerControllerTest extends TestCase
 {
@@ -45,7 +45,9 @@ class InstallerControllerTest extends TestCase
         $this->assertEquals('Pre migration has been tested successfully', $data['result']['success']);
         $this->assertEquals('Migrating tables in database', $data['result']['next']);
     }
-    public function test_createEnv(){
+
+    public function test_createEnv()
+    {
         // Arrange
         Session::shouldReceive('put')
             ->with('default', 'mysql');
@@ -60,8 +62,8 @@ class InstallerControllerTest extends TestCase
             ->with(true)
             ->andReturn(response()->json([
                 'result' => [
-                    'success' => 'Environment configuration file has been created successfully'
-                ]
+                    'success' => 'Environment configuration file has been created successfully',
+                ],
             ], 200));
 
         // Act

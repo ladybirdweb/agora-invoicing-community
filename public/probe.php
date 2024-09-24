@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
 
     // Loop through the array to generate <link> tags
     foreach ($css_files as $css) {
-        $id = isset($css['id']) ? ' id="' . $css['id'] . '"' : ''; // Check if 'id' is set
+        $id = isset($css['id']) ? ' id="' . $css['id'] . '"' : '';
         echo '<link rel="stylesheet" href="' . $css['file'] . '"' . $id . '>' . PHP_EOL;
     }
     ?>
@@ -67,6 +67,10 @@ if (isset($_POST['submit'])) {
          .timeline::before {
              bottom: 10px;
          }
+        .text-bold,
+        .active {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -76,43 +80,12 @@ if (isset($_POST['submit'])) {
 
     <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
 
-        <div class="container">
+        <div class="container d-flex justify-content-center align-items-center">
 
             <a href="javascript:;" class="navbar-brand" style="">
 
                 <img src="./images/agora-invoicing.png" alt="Agora Logo" class="brand-image install-img">
             </a>
-
-            <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse order-3"></div>
-
-            <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-
-                <li class="nav-item dropdown">
-
-                    <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-
-                        <i id="flagIcon" class="flag-icon flag-icon-us"></i>
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-right p-0" style="left: inherit; right: 0px;">
-
-                        <a href="javascript:;" class="dropdown-item" id="englishOption">
-
-                            <i class="flag-icon flag-icon-us mr-2"></i> English
-                        </a>
-
-                        <a href="javascript:;" class="dropdown-item" id="arabicOption">
-
-                            <i class="flag-icon flag-icon-ar mr-2"></i> Arabic
-                        </a>
-                    </div>
-                </li>
-            </ul>
         </div>
     </nav>
 
@@ -274,7 +247,7 @@ if (isset($_POST['submit'])) {
                                         <?php
                                         $details = (new BillingDependencyController('probe'))->validatePHPExtensions($errorCount);
                                         $extString = "Not Enabled<p>To enable this, please install the extension on your server and  update '".php_ini_loaded_file()."' to enable ".$detail['extensionName'].'</p>'
-                                            .'<a href="https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation">How to install PHP extensions on my server?</a>';
+                                            .'<a href="https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation" target="_blank">How to install PHP extensions on my server?</a>';
 
                                         foreach ($details as $item): ?>
                                             <tr>
@@ -336,7 +309,7 @@ if (isset($_POST['submit'])) {
                                         // Rewrite Engine Check
                                         $redirect = function_exists('apache_get_modules') ? (int) in_array('mod_rewrite', apache_get_modules()) : 2;
                                         $rewriteStatusColor = 'green';
-                                        $rewriteStatusString = 'ON';
+                                        $rewriteStatusString = 'Enabled';
                                         if ($redirect == 2) {
                                             $rewriteStatusColor = '#F89C0D';
                                             $rewriteStatusString = 'Unable to detect';
@@ -349,7 +322,7 @@ if (isset($_POST['submit'])) {
                                         // User Friendly URL Check
                                         $userFriendlyUrl = checkUserFriendlyUrl();
                                         $userFriendlyUrlStatusColor = 'green';
-                                        $userFriendlyUrlStatusString = 'ON';
+                                        $userFriendlyUrlStatusString = 'Enabled';
 
                                         if ($userFriendlyUrl === false) {
                                             $errorCount++;
@@ -411,58 +384,42 @@ if (isset($_POST['submit'])) {
                                 <p class="text-center lead text-bold">Database Setup</p>
 
                                 <div id="db_fields">
-
                                     <div class="form-group row">
-                                        <label for="inputEmail6" class="col-sm-2 col-form-label">
-                                            Host <span style="color: red;">*</span>
-                                            <!-- Icon with Tooltip -->
-                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If your MySQL is installed on the same server as Agora Invoicing, let it be localhost"></i>
-                                        </label>
-                                        <div class="col-sm-10">
+                                        <div class="col-sm-6">
+                                            <label for="host" class="col-form-label">
+                                                Host <span style="color: red;">*</span>
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If your MySQL is installed on the same server as Agora Invoicing, let it be localhost"></i>
+                                            </label>
                                             <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
                                         </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label for="inputEmail7" class="col-sm-2 col-form-label">Database name <span style="color: red;">*</span></label>
-
-                                        <div class="col-sm-10">
-
+                                        <div class="col-sm-6">
+                                            <label for="database_name" class="col-form-label">Database name <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="database_name" placeholder="Database">
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label for="inputEmail4" class="col-sm-2 col-form-label">
-                                            MySQL port number
-                                            <!-- Icon with Tooltip -->
-                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Port number on which your MySQL server is listening. By default, it is 3306"></i>
-                                        </label>
-                                        <div class="col-sm-10">
+                                        <div class="col-sm-6">
+                                            <label for="mysql_port" class="col-form-label">
+                                                MySQL port number
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Port number on which your MySQL server is listening. By default, it is 3306"></i>
+                                            </label>
                                             <input type="text" class="form-control" id="mysql_port" placeholder="Port Number">
                                         </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label for="inputEmail3" class="col-sm-2 col-form-label">Username <span style="color: red;">*</span></label>
-
-                                        <div class="col-sm-10">
-
-                                            <input type="email" class="form-control" id="username" placeholder="User name">
+                                        <div class="col-sm-6">
+                                            <label for="username" class="col-form-label">Username <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" id="username" placeholder="User name">
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
-
-                                        <label for="inputPassword3" class="col-sm-2 col-form-label">Password </label>
-
-                                        <div class="col-sm-10">
-
+                                        <div class="col-sm-6">
+                                            <label for="password" class="col-form-label">Password</label>
                                             <input type="password" class="form-control" id="password" placeholder="Password">
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <div id="db_config">
                                     <h6 class="mt-1 mb-3">This test will check prerequisites required to install Agora Invoicing</h6>
@@ -505,69 +462,52 @@ if (isset($_POST['submit'])) {
                                     </div>
 
                                     <div class="card-body">
-
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">First Name <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="text" id="admin_first_name" class="form-control"  placeholder="First Name">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">First Name <span style="color: red;">*</span></label>
+                                                <input type="text" id="admin_first_name" class="form-control" placeholder="First Name">
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Last Name <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Last Name <span style="color: red;">*</span></label>
                                                 <input type="text" id="admin_last_name" class="form-control" placeholder="Last Name">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Username <span style="color: red;">*</span>
-                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Username can have only alphanumeric characters, spaces, underscores, hyphens, periods, and the @ symbol."></i>
-                                            </label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="email" id="admin_username" class="form-control" placeholder="User name">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Username <span style="color: red;">*</span>
+                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Username can have only alphanumeric characters, spaces, underscores, hyphens, periods, and the @ symbol."></i>
+                                                </label>
+                                                <input type="text" id="admin_username" class="form-control" placeholder="User name">
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Email <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Email <span style="color: red;">*</span></label>
                                                 <input type="email" id="email" class="form-control" placeholder="User email">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Password <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Password <span style="color: red;">*</span></label>
                                                 <input type="password" id="admin_password" class="form-control" placeholder="Password">
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Confirm Password <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Confirm Password <span style="color: red;">*</span></label>
                                                 <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
                                             </div>
                                         </div>
+                                        <small class="form-text text-muted">
+                                            Your password must have:
+                                            <ul>
+                                                <li>Between 8-16 characters</li>
+                                                <li>Uppercase characters (A-Z)</li>
+                                                <li>Lowercase characters (a-z)</li>
+                                                <li>Numbers (0-9)</li>
+                                                <li>Special characters (~*!@$#%_+.?:,{ })</li>
+                                            </ul>
+                                        </small>
                                     </div>
+
                                 </div>
 
                                 <div class="card card-light">
@@ -578,46 +518,36 @@ if (isset($_POST['submit'])) {
                                     </div>
                                     <div class="card-body">
 
-<!--                                        This will add when general timezone is build-->
-
-<!--                                        <div class="form-group row">-->
-<!---->
-<!--                                            <label class="col-sm-2 col-form-label">Timezone</label>-->
-<!---->
-<!--                                            <div class="col-sm-10">-->
-<!--                                                <select id="timezone" name="timezone" class="form-control select2">-->
-<!--                                                </select>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-
+                                        <!-- Uncomment and apply layout for Timezone when built
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Environment <span style="color: red;">*</span></label>
-
+                                            <label class="col-sm-2 col-form-label">Timezone</label>
                                             <div class="col-sm-10">
-
-                                                <select id="environment" name="environment" class="form-control select2">
-                                                    <option value="production" selected>Production</option>
-                                                    <option value="development" >Development</option>
-                                                    <option value="testing" >Testing</option>
+                                                <select id="timezone" name="timezone" class="form-control select2">
                                                 </select>
                                             </div>
                                         </div>
+                                        -->
 
                                         <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Environment <span style="color: red;">*</span></label>
+                                                <select id="environment" name="environment" class="form-control select2">
+                                                    <option value="production" selected>Production</option>
+                                                    <option value="development">Development</option>
+                                                    <option value="testing">Testing</option>
+                                                </select>
+                                            </div>
 
-                                            <label class="col-sm-2 col-form-label">Cache Driver <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Cache Driver <span style="color: red;">*</span></label>
                                                 <select id="driver" name="driver" class="form-control select2">
-
                                                     <option value="file" selected>File</option>
                                                     <option value="redis">Redis</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="card card-light" id="redis-setup">
@@ -629,32 +559,25 @@ if (isset($_POST['submit'])) {
                                     <div class="card-body">
 
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Redis Host <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Redis Host <span style="color: red;">*</span></label>
                                                 <input type="text" class="form-control" id="redis_host" placeholder="Redis Host">
                                             </div>
-                                        </div>
 
-                                        <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Redis Port <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Redis Port <span style="color: red;">*</span></label>
                                                 <input type="text" class="form-control" id="redis_port" placeholder="Redis Port">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-
-                                            <label class="col-sm-2 col-form-label">Redis Password <span style="color: red;">*</span></label>
-
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">Redis Password <span style="color: red;">*</span></label>
                                                 <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
@@ -723,6 +646,12 @@ if (isset($_POST['submit'])) {
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>-->
 
 <script>
+    document.getElementById('admin_username').addEventListener('input',function (){
+       this.value = this.value.toLowerCase();
+    });
+    document.getElementById('email').addEventListener('input',function (){
+        this.value = this.value.toLowerCase();
+    });
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
@@ -1129,78 +1058,38 @@ if (isset($_POST['submit'])) {
     }
 
     function gotoStep(value) {
-
         const progress = document.querySelector('#progress');
+        const steps = ['server', 'database', 'start', 'final'];
+        const progressValues = {
+            server: 0,
+            database: 35,
+            start: 68,
+            final: 100
+        };
 
-        if(value === 'server') {
-            progress.setAttribute('value', 0);
-            document.getElementById('server').classList.add('show');
-            document.getElementById('btn-server').setAttribute('aria-expanded', true);
-            document.getElementById('database').classList.remove('show');
-            document.getElementById('btn-database').setAttribute('aria-expanded', false);
-            document.getElementById('start').classList.remove('show');
-            document.getElementById('btn-start').setAttribute('aria-expanded', false);
-            document.getElementById('final').classList.remove('show');
-            document.getElementById('btn-final').setAttribute('aria-expanded', false);
+        // Set progress bar value
+        progress.setAttribute('value', progressValues[value] || 0);
 
-            document.getElementById('btn-server').nextElementSibling.classList.add('text-bold');
-            document.getElementById('btn-license').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-database').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-start').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-code').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-final').nextElementSibling.classList.remove('text-bold');
-        }
+        // Get the index of the current step
+        const currentStepIndex = steps.indexOf(value);
 
-        if(value === 'database') {
-            progress.setAttribute('value', 33.33);
-            document.getElementById('server').classList.remove('show');
-            document.getElementById('btn-server').setAttribute('aria-expanded', false);
-            document.getElementById('database').classList.add('show');
-            document.getElementById('btn-database').setAttribute('aria-expanded', true);
-            document.getElementById('start').classList.remove('show');
-            document.getElementById('btn-start').setAttribute('aria-expanded', false);
-            document.getElementById('final').classList.remove('show');
-            document.getElementById('btn-final').setAttribute('aria-expanded', false);
+        // Loop through each step and toggle visibility and boldness
+        steps.forEach((step, index) => {
+            const stepElement = document.getElementById(step);
+            const btnStep = document.getElementById(`btn-${step}`);
+            const isActive = step === value;
 
-            document.getElementById('btn-server').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-database').nextElementSibling.classList.add('text-bold');
-            document.getElementById('btn-start').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-final').nextElementSibling.classList.remove('text-bold');
-        }
+            stepElement.classList.toggle('show', isActive);
+            btnStep.setAttribute('aria-expanded', isActive);
+            btnStep.nextElementSibling.classList.toggle('text-bold', isActive);
 
-        if(value === 'start') {
-            progress.setAttribute('value', 66.66);
-            document.getElementById('server').classList.remove('show');
-            document.getElementById('btn-server').setAttribute('aria-expanded', false);
-            document.getElementById('database').classList.remove('show');
-            document.getElementById('btn-database').setAttribute('aria-expanded', false);
-            document.getElementById('start').classList.add('show');
-            document.getElementById('btn-start').setAttribute('aria-expanded', true);
-            document.getElementById('final').classList.remove('show');
-            document.getElementById('btn-final').setAttribute('aria-expanded', false);
-
-            document.getElementById('btn-server').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-database').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-start').nextElementSibling.classList.add('text-bold');
-            document.getElementById('btn-final').nextElementSibling.classList.remove('text-bold');
-        }
-
-        if(value === 'final') {
-            progress.setAttribute('value', 100);
-            document.getElementById('server').classList.remove('show');
-            document.getElementById('btn-server').setAttribute('aria-expanded', false);
-            document.getElementById('database').classList.remove('show');
-            document.getElementById('btn-database').setAttribute('aria-expanded', false);
-            document.getElementById('start').classList.remove('show');
-            document.getElementById('btn-start').setAttribute('aria-expanded', false);
-            document.getElementById('final').classList.add('show');
-            document.getElementById('btn-final').setAttribute('aria-expanded', true);
-
-            document.getElementById('btn-server').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-database').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-start').nextElementSibling.classList.remove('text-bold');
-            document.getElementById('btn-final').nextElementSibling.classList.add('text-bold');
-        }
+            // Change the color of the previous button
+            if (index < currentStepIndex) {
+                btnStep.style.backgroundColor = '#3AA7D9'; // Set to desired previous button color
+            } else {
+                btnStep.style.backgroundColor = ''; // Reset for non-previous buttons
+            }
+        });
     }
 
     // const stepButtons = document.querySelectorAll('.step-button');

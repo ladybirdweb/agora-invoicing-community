@@ -23,11 +23,11 @@
 .step-button[aria-expanded="true"] {
     width: 45px;
     height: 45px;
-    background-color: #007bff;
+    background-color: #3AA7D9;
     color: #fff;
 }
 .done {
-    background-color: #aaaeb1 !important;
+    background-color: #3AA7D9 !important;
     color: #fff !important;
 }
 .step-item {
@@ -44,7 +44,7 @@
     margin-bottom: 25px;
 }
 #progress::-webkit-progress-value {
-    background-color: darkgrey;
+    background-color: #3AA7D9;
     transition: .5s ease;
 }
 #progress::-webkit-progress-bar {

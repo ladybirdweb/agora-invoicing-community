@@ -230,7 +230,7 @@ class InstallerController extends Controller
             'email' => 'required|string|max:50|email|unique:users,email',
             'password' => [
                 'required',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/',
+                'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/',
             ],
             'cache_driver' => 'required|string',
             'redis_host' => 'nullable|required_if:cache_driver,redis|string',
@@ -254,8 +254,8 @@ class InstallerController extends Controller
             $user = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
-                'user_name' => $request->input('user_name'),
-                'email' => $request->input('email'),
+                'user_name' => strtolower($request->input('user_name')),
+                'email' => strtolower($request->input('email')),
                 'password' => \Hash::make($request->input('password')),
                 'active' => 1,
                 'role' => 'admin',

@@ -547,14 +547,15 @@ class HomeController extends BaseHomeController
             $currencyAndSymbol = getCurrencyForClient($countryCode);
 
             $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupId)
-            ->where('hidden', '!=', 1)
-            ->join('plans', 'products.id', '=', 'plans.product')
-            ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
-            ->where('plan_prices.currency', '=', $currencyAndSymbol)
-            ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
-            ->orderBy('created_at', 'ASC')
-            ->select('products.*', 'plan_prices.add_price', 'plans.days', 'plan_prices.offer_price', 'plan_prices.price_description')
-            ->get();
+                ->where('hidden', '!=', 1)
+                ->join('plans', 'products.id', '=', 'plans.product')
+                ->join('plan_prices', 'plans.id', '=', 'plan_prices.plan_id')
+                ->where('plan_prices.currency', '=', $currencyAndSymbol)
+                ->orderByRaw('CAST(plan_prices.add_price AS DECIMAL(10, 2)) ASC')
+                ->orderBy('created_at', 'ASC')
+                // ->select('products.*', 'plan_prices.add_price')
+                ->select('products.*', 'plan_prices.add_price', 'plans.days', 'plan_prices.offer_price', 'plan_prices.price_description')
+                ->get();
 
             return response()->json(['products' => $productsRelatedToGroup, 'currency' => $currencyAndSymbol]);
         } catch (\Exception $ex) {

@@ -556,7 +556,7 @@ class HomeController extends BaseHomeController
                 ->select('products.*', 'plan_prices.add_price', 'plans.days', 'plan_prices.offer_price', 'plan_prices.price_description')
                 ->get();
 
-            if($productsRelatedToGroup->isEmpty()){
+            if ($productsRelatedToGroup->isEmpty()) {
                 $productsRelatedToGroup = \App\Model\Product\Product::where('group', $groupId)
                     ->where('hidden', '!=', 1)
                     ->join('plans', 'products.id', '=', 'plans.product')

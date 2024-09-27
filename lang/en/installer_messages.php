@@ -2,245 +2,112 @@
 
 return [
 
-    /*
-     *
-     * Shared translations.
-     *
-     */
     'title' => 'Agora Invoicing Installer',
-    'next' => 'Next Step',
-    'back' => 'Previous',
-    'finish' => 'Install',
-    'forms' => [
-        'errorTitle' => 'The Following errors occurred:',
+    'probe' => 'Agora Invoicing Probes',
+    'magic_phrase' => 'What\'s the magic phrase',
+    'server_requirements' => 'Server Requirements',
+    'database_setup'=> 'Database Setup',
+    'getting_started' => 'Getting Started',
+    'final' => 'Final',
+    'directory' => 'Directory',
+    'permissions' => 'Permissions',
+    'requisites' => 'Requisites',
+    'status' => 'Status',
+    'php_extensions' => 'PHP Extensions',
+    'not_enabled' => 'Not Enabled',
+    'extension_not_enabled' => 'Not Enabled: To enable this, please install the extension on your server and update :php_ini_file to enable :extensionName. <a href=":url" target="_blank">How to install PHP extensions on my server?</a>',
+    'mod_rewrite' => 'Mod Rewrite',
+    'off_apache' => 'OFF (If you are using apache, make sure <var><strong>AllowOverride</strong></var> is set to <var><strong>All</strong></var> in apache configuration)',
+    'rewrite_engine' => 'Rewrite Engine',
+    'user_url' => 'User friendly URL',
+
+    'host_label' => 'Host',
+    'host_tooltip' => 'If your MySQL is installed on the same server as Agora Invoicing, let it be localhost',
+    'database_name_label' => 'Database name',
+    'mysql_port_label' => 'MySQL port number',
+    'mysql_port_tooltip' => 'Port number on which your MySQL server is listening. By default, it is 3306',
+    'username' => 'Username',
+    'password_label' => 'Password',
+    'test_prerequisites_message' => 'This test will check prerequisites required to install Agora Invoicing',
+    'previous' => 'Previous',
+
+    'sign_up_as_admin' => 'Sign up as Admin',
+    'first_name' => 'First Name',
+    'first_name_required' => 'First Name is required',
+    'last_name' => 'Last Name',
+    'last_name_required' => 'Last Name is required',
+    'username_info' => 'Username can have only alphanumeric characters, spaces, underscores, hyphens, periods, and the @ symbol.',
+    'email' => 'Email',
+    'email_required' => 'User email is required',
+    'password_required' => 'Password is required',
+    'confirm_password' => 'Confirm Password',
+    'confirm_password_required' => 'Confirm Password is required',
+    'password_requirements' => 'Your password must have:',
+    'password_requirements_list' => [
+        'Between 8-16 characters',
+        'Uppercase characters (A-Z)',
+        'Lowercase characters (a-z)',
+        'Numbers (0-9)',
+        'Special characters (~*!@$#%_+.?:,{ })',
     ],
 
-    /*
-     *
-     * Home page translations.
-     *
-     */
-    'welcome' => [
-        'templateTitle' => 'Welcome',
-        'title' => 'Agora Invoicing Installer',
-        'message' => 'Easy Installation and Setup Wizard.',
-        'next' => 'Check Requirements',
-    ],
+    // System Information
+    'system_information' => 'System Information',
+    'environment' => 'Environment',
+    'environment_required' => 'Environment is required',
+    'production' => 'Production',
+    'development' => 'Development',
+    'testing' => 'Testing',
+    'cache_driver' => 'Cache Driver',
+    'cache_driver_required' => 'Cache Driver is required',
+    'file' => 'File',
+    'redis' => 'Redis',
+    'password' => 'Password',
 
-    /*
-     *
-     * Requirements page translations.
-     *
-     */
-    'requirements' => [
-        'templateTitle' => 'Step 1 | Server Requirements',
-        'title' => 'Server Requirements',
-        'next' => 'Check Permissions',
-    ],
+    // Redis Setup
+    'redis_setup' => 'Redis Setup',
+    'redis_host' => 'Redis Host',
+    'redis_port' => 'Redis Port',
+    'redis_password' => 'Redis Password',
 
-    /*
-     *
-     * Permissions page translations.
-     *
-     */
-    'permissions' => [
-        'templateTitle' => 'Step 2 | Permissions',
-        'title' => 'Permissions',
-        'next' => 'Configure Environment',
-    ],
+    // Buttons
+    'continue' => 'Continue',
 
-    /*
-     *
-     * Environment page translations.
-     *
-     */
-    'environment' => [
-        'menu' => [
-            'templateTitle' => 'Step 3 | Environment Settings',
-            'title' => 'Environment Settings',
-            'desc' => 'Please select how you want to configure the apps <code>.env</code> file.',
-            'wizard-button' => 'Form Wizard Setup',
-            'classic-button' => 'Classic Text Editor',
-        ],
-        'wizard' => [
-            'templateTitle' => 'Step 3 | Environment Settings | Guided Wizard',
-            'title' => 'Guided <code>.env</code> Wizard',
-            'tabs' => [
-                'environment' => 'Environment',
-                'database' => 'Database',
-                'application' => 'Application',
-            ],
-            'form' => [
-                'name_required' => 'An environment name is required.',
-                'app_name_label' => 'App Name',
-                'app_name_placeholder' => 'App Name',
-                'app_environment_label' => 'App Environment',
-                'app_environment_label_local' => 'Local',
-                'app_environment_label_developement' => 'Development',
-                'app_environment_label_qa' => 'Qa',
-                'app_environment_label_production' => 'Production',
-                'app_environment_label_other' => 'Other',
-                'app_environment_placeholder_other' => 'Enter your environment...',
-                'app_debug_label' => 'App Debug',
-                'app_debug_label_true' => 'True',
-                'app_debug_label_false' => 'False',
-                'app_log_level_label' => 'App Log Level',
-                'app_log_level_label_debug' => 'debug',
-                'app_log_level_label_info' => 'info',
-                'app_log_level_label_notice' => 'notice',
-                'app_log_level_label_warning' => 'warning',
-                'app_log_level_label_error' => 'error',
-                'app_log_level_label_critical' => 'critical',
-                'app_log_level_label_alert' => 'alert',
-                'app_log_level_label_emergency' => 'emergency',
-                'app_url_label' => 'App Url',
-                'app_url_placeholder' => 'App Url',
-                'db_connection_label' => 'Database Connection',
-                'db_connection_label_mysql' => 'mysql',
-                'db_connection_label_sqlite' => 'sqlite',
-                'db_connection_label_pgsql' => 'pgsql',
-                'db_connection_label_sqlsrv' => 'sqlsrv',
-                'db_host_label' => 'Database Host',
-                'db_host_placeholder' => 'Database Host',
-                'db_port_label' => 'Database Port',
-                'db_port_placeholder' => 'Database Port',
-                'db_name_label' => 'Database Name',
-                'db_name_placeholder' => 'Database Name',
-                'db_username_label' => 'Database User Name',
-                'db_username_placeholder' => 'Database User Name',
-                'db_password_label' => 'Database Password',
-                'db_password_placeholder' => 'Database Password',
 
-                'app_tabs' => [
-                    'more_info' => 'More Info',
-                    'broadcasting_title' => 'Broadcasting, Caching, Session, Queue',
-                    'broadcasting_label' => 'Broadcast Driver',
-                    'broadcasting_placeholder' => 'Broadcast Driver',
-                    'cache_label' => 'Cache Driver',
-                    'cache_placeholder' => 'Cache Driver',
-                    'session_label' => 'Session Driver',
-                    'session_placeholder' => 'Session Driver',
-                    'queue_label' => 'Queue Driver',
-                    'queue_placeholder' => 'Queue Driver',
-                    'redis_label' => 'Redis Driver',
-                    'redis_host' => 'Redis Host',
-                    'redis_password' => 'Redis Password',
-                    'redis_port' => 'Redis Port',
+    // Final Setup
+    'final_setup' => 'Your Agora Invoicing Application is Ready!',
+    'installation_complete' => 'All right, sparky! You’ve made it through the installation.',
 
-                    'mail_label' => 'Mail',
-                    'mail_driver_label' => 'Mail Driver',
-                    'mail_driver_placeholder' => 'Mail Driver',
-                    'mail_host_label' => 'Mail Host',
-                    'mail_host_placeholder' => 'Mail Host',
-                    'mail_port_label' => 'Mail Port',
-                    'mail_port_placeholder' => 'Mail Port',
-                    'mail_username_label' => 'Mail Username',
-                    'mail_username_placeholder' => 'Mail Username',
-                    'mail_password_label' => 'Mail Password',
-                    'mail_password_placeholder' => 'Mail Password',
-                    'mail_encryption_label' => 'Mail Encryption',
-                    'mail_encryption_placeholder' => 'Mail Encryption',
+    // Learn More
+    'learn_more' => 'Learn More',
+    'knowledge_base' => 'Knowledge base',
+    'email_support' => 'Email Support',
 
-                    'pusher_label' => 'Pusher',
-                    'pusher_app_id_label' => 'Pusher App Id',
-                    'pusher_app_id_palceholder' => 'Pusher App Id',
-                    'pusher_app_key_label' => 'Pusher App Key',
-                    'pusher_app_key_palceholder' => 'Pusher App Key',
-                    'pusher_app_secret_label' => 'Pusher App Secret',
-                    'pusher_app_secret_palceholder' => 'Pusher App Secret',
-                ],
-                'buttons' => [
-                    'setup_database' => 'Setup Database',
-                    'setup_application' => 'Setup Application',
-                    'install' => 'Install',
-                ],
-            ],
-        ],
-        'classic' => [
-            'templateTitle' => 'Step 3 | Environment Settings | Classic Editor',
-            'title' => 'Classic Environment Editor',
-            'save' => 'Save .env',
-            'back' => 'Use Form Wizard',
-            'install' => 'Save and Install',
-        ],
-        'success' => 'Your .env file settings have been saved.',
-        'errors' => 'Unable to save the .env file, Please create it manually.',
-    ],
+    // Next Step
+    'next_step' => 'Next Step',
+    'login_button' => 'Login to Billing',
 
-    'install' => 'Install',
+    'pre_migration_success' => 'Pre migration has been tested successfully',
+    'migrating_tables' => 'Migrating tables in database',
+    'db_connection_error' => 'Database connection did not update.',
+    'database_setup_success' => 'Database has been setup successfully.',
+    'env_file_created' => 'Environment configuration file has been created successfully',
+    'pre_migration_test' => 'Running pre-migration test',
 
-    /*
-     *
-     * Installed Log translations.
-     *
-     */
-    'installed' => [
-        'success_log_message' => 'Agora Invoicing Installer successfully INSTALLED on ',
-    ],
+    'redis_host_required' => 'Redis host is required.',
+    'redis_password_required' => 'Redis password is required.',
+    'redis_port_required' => 'Redis port is required.',
+    'password_regex' => 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.',
+    'setup_completed' => 'Setup completed successfully!',
 
-    /*
-     *
-     * Final page translations.
-     *
-     */
-    'final' => [
-        'title' => 'Installation Finished',
-        'templateTitle' => 'Installation Finished',
-        'finished' => 'Application has been successfully installed.',
-        'migration' => 'Migration &amp; Seed Console Output:',
-        'console' => 'Application Console Output:',
-        'log' => 'Installation Log Entry:',
-        'env' => 'Final .env File:',
-        'exit' => 'Click here to exit',
-    ],
+    'database' => 'Database',
+    'selected' => 'Selected',
+    'mysql_version_is' => 'MySQL version is',
+    'database_empty' => 'Database is empty',
+    'database_not_empty' => 'Agora Invoicing installation requires an empty database, your database already has tables and data in it.',
+    'mysql_version_required' => 'We recommend upgrading to at least MySQL 5.6 or MariaDB 10.3!',
+    'database_connection_unsuccessful' => 'Database connection unsuccessful.',
+    'connected_as' => 'Connected to database as',
+    'failed_connection' => 'Failed to connect to database.',
 
-    /*
-     *
-     * Update specific translations
-     *
-     */
-    'updater' => [
-        /*
-         *
-         * Shared translations.
-         *
-         */
-        'title' => 'Agora Invoicing Updater',
-
-        /*
-         *
-         * Welcome page translations for update feature.
-         *
-         */
-        'welcome' => [
-            'title' => 'Welcome To The Updater',
-            'message' => 'Welcome to the update wizard.',
-        ],
-
-        /*
-         *
-         * Welcome page translations for update feature.
-         *
-         */
-        'overview' => [
-            'title' => 'Overview',
-            'message' => 'There is 1 update.|There are :number updates.',
-            'install_updates' => 'Install Updates',
-        ],
-
-        /*
-         *
-         * Final page translations.
-         *
-         */
-        'final' => [
-            'title' => 'Finished',
-            'finished' => 'Application\'s database has been successfully updated.',
-            'exit' => 'Click here to exit',
-        ],
-
-        'log' => [
-            'success_message' => 'Agora Invoicing Installer successfully UPDATED on ',
-        ],
-    ],
 ];

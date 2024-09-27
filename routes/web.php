@@ -9,7 +9,6 @@ use App\Http\Controllers\Front;
 use App\Http\Controllers\Github;
 use App\Http\Controllers\Google2FAController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Installer;
 use App\Http\Controllers\Jobs;
 use App\Http\Controllers\License;
 use App\Http\Controllers\License\LocalizedLicenseController;

@@ -93,26 +93,26 @@ class DatabaseSetupController extends Controller
     private function checkDBPrerequisites(array &$results, bool &$mysqli_ok, object $connection): void
     {
         if (mysqli_select_db($connection, DB_NAME)) {
-            $results[] = new TestResult('Database "'.DB_NAME.'" selected', STATUS_OK);
+            $results[] = new TestResult(\Lang::get('installer_messages.database').' '.DB_NAME.' '.\Lang::get('installer_messages.selected'), STATUS_OK);
             $mysqli_version = mysqli_get_server_info($connection);
             $dbVersion = mysqli_get_server_version($connection);
             if ($this->compareMySqlAndMariDB($dbVersion)) {
-                $results[] = new TestResult('MySQL version is '.$mysqli_version, STATUS_OK);
+                $results[] = new TestResult(\Lang::get('installer_messages.mysql_version_is').' '.$mysqli_version, STATUS_OK);
                 $sql = 'SHOW TABLES FROM '.DB_NAME;
                 $res = mysqli_query($connection, $sql);
                 if (mysqli_fetch_array($res) === null) {
-                    $results[] = new TestResult('Database is empty');
+                    $results[] = new TestResult(\Lang::get('installer_messages.database_empty'));
                     $mysqli_ok = true;
                 } else {
-                    $results[] = new TestResult('Helpdesk installation requires an empty database, your database already has tables and data in it.', STATUS_ERROR);
+                    $results[] = new TestResult(\Lang::get('installer_messages.database_not_empty'), STATUS_ERROR);
                     $mysqli_ok = false;
                 }
             } else {
-                $results[] = new TestResult('Your MySQL version is '.$mysqli_version.'. We recommend upgrading to at least MySQL 5.6 or MariaDB 10.3!', STATUS_ERROR);
+                $results[] = new TestResult(\Lang::get('installer_messages.mysql_version_is').' '.$mysqli_version.' '.\Lang::get('installer_messages.mysql_version_required'), STATUS_ERROR);
                 $mysqli_ok = false;
             }
         } else {
-            echo '<br><br><p id="fail">Database connection unsuccessful.'.' '.mysqli_connect_error().'</p>';
+            echo '<br><br><p id="fail">'.\Lang::get('installer_messages.database_connection_unsuccessful').' '.mysqli_connect_error().'</p>';
             $mysqli_ok = false;
         }
     }
@@ -190,15 +190,15 @@ class DatabaseSetupController extends Controller
                     }
 
                     if ($connection) {
-                        $results[] = new TestResult('Connected to database as '.DB_USER.'@'.DB_HOST.DB_PORT, STATUS_OK);
+                        $results[] = new TestResult(\Lang::get('installer_messages.connected_as').DB_USER.'@'.DB_HOST.DB_PORT, STATUS_OK);
                         $this->checkDBPrerequisites($results, $mysqli_ok, $connection);
                     } else {
                         $mysqli_ok = false;
-                        $results[] = new TestResult('Failed to connect to database. '.mysqli_connect_error(), STATUS_ERROR);
+                        $results[] = new TestResult(\Lang::get('installer_messages.failed_connection').' '.mysqli_connect_error(), STATUS_ERROR);
                     }
                 }
             } catch (Exception $e) {
-                $results[] = new TestResult('Failed to connect to database. '.$e->getMessage(), STATUS_ERROR);
+                $results[] = new TestResult(\Lang::get('installer_messages.failed_connection').' '.$e->getMessage(), STATUS_ERROR);
                 $mysqli_ok = false;
             }
         }

@@ -23,3 +23,5 @@ Route::post('migrate', [InstallerController::class, 'migrate',
 Route::get('getTimeZone', [InstallerController::class, 'getTimeZoneDropDown']);
 
 Route::post('accountcheck', [InstallerController::class, 'accountcheck']);
+
+Route::post('lang', [InstallerController::class, 'getLang',]);

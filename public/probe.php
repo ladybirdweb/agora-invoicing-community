@@ -14,16 +14,58 @@ if ($envFound) {
 if (isset($_POST['submit'])) {
 
     $probePhrase = env('PROBE_PASS_PHRASE', '   ');
-    //Unique password incase support team requires access to probe.php
-    $password = '599fe9896c015afebff1789ea0078f61';
 
     $input = $_POST['passPhrase'];
-    if (! in_array($input, [$probePhrase, $password])) {
+    if (! in_array($input, [$probePhrase])) {
         $showError = true;
     } else {
         $passwordMatched = true;
     }
 }
+
+function getBaseUrl() {
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $path = dirname($_SERVER['SCRIPT_NAME']);
+    return $protocol . '://' . $host . $path;
+}
+function fetchLang() {
+    $baseUrl = getBaseUrl();
+    $langUrl = "{$baseUrl}/lang";
+
+    // Initialize cURL session
+    $ch = curl_init($langUrl);
+
+    // Set cURL options for POST request
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json;charset=UTF-8']);
+    curl_setopt($ch, CURLOPT_POST, true);
+
+    $postData = json_encode(['set_lang' => 'en']);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+
+    // Execute cURL session
+    $response = curl_exec($ch);
+
+    // Check for cURL errors
+    if(curl_errno($ch)) {
+        // Handle error, if any
+        echo 'cURL error: ' . curl_error($ch);
+        return null;
+    }
+
+    // Close cURL session
+    curl_close($ch);
+
+    // Parse the JSON response
+    $langData = json_decode($response, true); // Decode JSON response into an associative array
+
+    return $langData; // Return the language data
+}
+
+$lang = fetchLang();
+
+
 ?>
 <!Doctype html>
 <html lang="en">
@@ -32,7 +74,7 @@ if (isset($_POST['submit'])) {
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Agora Invoicing Installer</title>
+    <title><?= $lang['title'] ?></title>
 
     <link rel="shortcut icon" href="./images/faveo.png" type="image/x-icon" />
 
@@ -99,10 +141,10 @@ if (isset($_POST['submit'])) {
                         <div class="card">
                             <form action="probe.php" method="post">
                             <div class="card-body">
-                                <p class="text-center lead text-bold">Agora Invoicing Probes</p>
+                                <p class="text-center lead text-bold"><?= $lang['title'] ?></p>
                                 <div class="form-group row">
 
-                                    <label for="inputEmail1" class="col-sm-2 col-form-label">What's the magic phrase <span style="color: red;">*</span></label>
+                                    <label for="inputEmail1" class="col-sm-2 col-form-label"><?= $lang['magic_phrase'] ?><span style="color: red;">*</span></label>
 
                                     <div class="col-sm-10">
 
@@ -142,7 +184,7 @@ if (isset($_POST['submit'])) {
                                 1
                             </button>
 
-                            <div class="step-title mt-2 text-bold">Server Requirements</div>
+                            <div class="step-title mt-2 text-bold"><?= $lang['server_requirements'] ?></div>
                         </div>
 
                         <div class="step-item">
@@ -151,7 +193,7 @@ if (isset($_POST['submit'])) {
                                 2
                             </button>
 
-                            <div class="step-title mt-2">Database Setup</div>
+                            <div class="step-title mt-2"><?= $lang['database_setup'] ?></div>
                         </div>
 
                         <div class="step-item">
@@ -160,7 +202,7 @@ if (isset($_POST['submit'])) {
                                 3
                             </button>
 
-                            <div class="step-title mt-2">Getting Started</div>
+                            <div class="step-title mt-2"><?= $lang['getting_started'] ?></div>
                         </div>
 
                         <div class="step-item">
@@ -169,7 +211,7 @@ if (isset($_POST['submit'])) {
                                 4
                             </button>
 
-                            <div class="step-title mt-2">Final</div>
+                            <div class="step-title mt-2"><?= $lang['final'] ?></div>
                         </div>
                     </div>
 
@@ -179,7 +221,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-body">
 
-                                <p class="text-center lead text-bold">Server Requirements</p>
+                                <p class="text-center lead text-bold"><?= $lang['server_requirements'] ?></p>
 
 
                                 <div class="row">
@@ -188,7 +230,7 @@ if (isset($_POST['submit'])) {
 
                                         <thead style="background: #f5f5f5;">
 
-                                        <tr><th style="width:50%;">Directory</th><th>Permissions</th></tr>
+                                        <tr><th style="width:50%;"><?= $lang['directory'] ?></th><th><?= $lang['permissions'] ?></th></tr>
                                         </thead>
 
                                         <tbody>
@@ -216,7 +258,7 @@ if (isset($_POST['submit'])) {
 
                                         <thead style="background: #f5f5f5;">
 
-                                        <tr><th style="width:50%;">Requisites</th><th>Status</th></tr>
+                                        <tr><th style="width:50%;"><?= $lang['requisites'] ?></th><th><?= $lang['status'] ?></th></tr>
                                         </thead>
 
                                         <tbody>
@@ -240,15 +282,24 @@ if (isset($_POST['submit'])) {
 
                                         <thead style="background: #f5f5f5;">
 
-                                        <tr><th style="width:50%;">PHP Extensions</th><th>Status</th></tr>
+                                        <tr><th style="width:50%;"><?= $lang['php_extensions'] ?></th><th><?= $lang['status'] ?></th></tr>
                                         </thead>
 
                                         <tbody>
                                         <?php
                                         $details = (new BillingDependencyController('probe'))->validatePHPExtensions($errorCount);
-                                        $extString = "Not Enabled<p>To enable this, please install the extension on your server and  update '".php_ini_loaded_file()."' to enable ".$detail['extensionName'].'</p>'
-                                            .'<a href="https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation" target="_blank">How to install PHP extensions on my server?</a>';
 
+                                        $extString = $lang['extension_not_enabled'];
+
+                                        $phpIniFile = php_ini_loaded_file();
+                                        $extensionName = $detail['extensionName'];
+                                        $url = 'https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation';
+
+                                        $extString = str_replace(
+                                            [':php_ini_file', ':extensionName', ':url'],
+                                            [$phpIniFile, $extensionName, $url],
+                                            $extString
+                                        );
                                         foreach ($details as $item): ?>
                                             <tr>
                                                 <td><?= htmlspecialchars($item['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
@@ -266,7 +317,7 @@ if (isset($_POST['submit'])) {
 
                                         <thead style="background: #f5f5f5;">
 
-                                        <tr><th style="width:50%;">Mod Rewrite</th><th>Status</th></tr>
+                                        <tr><th style="width:50%;"><?= $lang['mod_rewrite'] ?></th><th><?= $lang['status'] ?></th></tr>
                                         </thead>
                                         <?php
                                         function getLicenseUrl()
@@ -327,7 +378,7 @@ if (isset($_POST['submit'])) {
                                         if ($userFriendlyUrl === false) {
                                             $errorCount++;
                                             $userFriendlyUrlStatusColor = 'red';
-                                            $userFriendlyUrlStatusString = 'OFF (If you are using apache, make sure <var><strong>AllowOverride</strong></var> is set to <var><strong>All</strong></var> in apache configuration)';
+                                            $userFriendlyUrlStatusString = $lang['off_apache'];
                                         } elseif ($userFriendlyUrl !== true) {
                                             $userFriendlyUrlStatusColor = '#F89C0D';
                                             $userFriendlyUrlStatusString = 'Unable to detect';
@@ -335,13 +386,13 @@ if (isset($_POST['submit'])) {
                                         ?>
                                         <tbody>
                                         <tr>
-                                            <td>Rewrite Engine</td>
+                                            <td><?= $lang['rewrite_engine'] ?></td>
                                             <td style='color: <?= htmlspecialchars($rewriteStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
                                                 <?= htmlspecialchars($rewriteStatusString, ENT_QUOTES, 'UTF-8'); ?>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>User friendly URL</td>
+                                            <td><?= $lang['user_url'] ?></td>
                                             <td style='color: <?= htmlspecialchars($userFriendlyUrlStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
                                                 <?= htmlspecialchars($userFriendlyUrlStatusString, ENT_QUOTES, 'UTF-8'); ?>
                                             </td>
@@ -367,16 +418,6 @@ if (isset($_POST['submit'])) {
                     </div>
 
                     <div id="database" class="collapse" role="tabpanel" aria-labelledby="database-trigger">
-
-                        <?php
-                        function getBaseUrl() {
-                            $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-                            $host = $_SERVER['HTTP_HOST'];
-                            $path = dirname($_SERVER['SCRIPT_NAME']);
-                            return $protocol . '://' . $host . $path;
-                        }
-                        ?>
-
                         <div class="card">
 
                             <div class="card-body">
@@ -387,8 +428,8 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group row">
                                         <div class="col-sm-6">
                                             <label for="host" class="col-form-label">
-                                                Host <span style="color: red;">*</span>
-                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If your MySQL is installed on the same server as Agora Invoicing, let it be localhost"></i>
+                                                <?= $lang['host'] ?> <span style="color: red;">*</span>
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['host_tooltip'] ?>"></i>
                                             </label>
                                             <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
                                         </div>
@@ -401,20 +442,20 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group row">
                                         <div class="col-sm-6">
                                             <label for="mysql_port" class="col-form-label">
-                                                MySQL port number
-                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Port number on which your MySQL server is listening. By default, it is 3306"></i>
+                                                <?= $lang['mysql_port_label'] ?>
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['mysql_port_tooltip'] ?>"></i>
                                             </label>
                                             <input type="text" class="form-control" id="mysql_port" placeholder="Port Number">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="username" class="col-form-label">Username <span style="color: red;">*</span></label>
+                                            <label for="username" class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="username" placeholder="User name">
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-6">
-                                            <label for="password" class="col-form-label">Password</label>
+                                            <label for="password" class="col-form-label"><?= $lang['password'] ?></label>
                                             <input type="password" class="form-control" id="password" placeholder="Password">
                                         </div>
                                     </div>
@@ -422,7 +463,7 @@ if (isset($_POST['submit'])) {
 
 
                                 <div id="db_config">
-                                    <h6 class="mt-1 mb-3">This test will check prerequisites required to install Agora Invoicing</h6>
+                                    <h6 class="mt-1 mb-3"><?= $lang['test_prerequisites_message'] ?></h6>
 
                                     <div class="timeline timeline-inverse "  id="timeline-container">
 
@@ -433,13 +474,13 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-footer">
 
-                                <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; Previous</button>
+                                <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; <?= $lang['previous'] ?></button>
 
-                                <button class="btn btn-primary float-right" type="submit" id="validate">Continue &nbsp;
+                                <button class="btn btn-primary float-right" type="submit" id="validate"><?= $lang['continue'] ?> &nbsp;
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
 
-                                <button class="btn btn-primary float-right" onclick="gotoStep('start')" id="continue">Continue &nbsp;
+                                <button class="btn btn-primary float-right" onclick="gotoStep('start')" id="continue"><?= $lang['continue'] ?> &nbsp;
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
@@ -452,59 +493,59 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-body">
 
-                                <p class="text-center lead text-bold">Getting Started</p>
+                                <p class="text-center lead text-bold"><?= $lang['getting_started'] ?></p>
 
                                 <div class="card card-light">
 
                                     <div class="card-header">
 
-                                        <h3 class="card-title">Sign up as Admin</h3>
+                                        <h3 class="card-title"><?= $lang['sign_up_as_admin'] ?></h3>
                                     </div>
 
                                     <div class="card-body">
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">First Name <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['first_name'] ?><span style="color: red;">*</span></label>
                                                 <input type="text" id="admin_first_name" class="form-control" placeholder="First Name">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Last Name <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['last_name'] ?><span style="color: red;">*</span></label>
                                                 <input type="text" id="admin_last_name" class="form-control" placeholder="Last Name">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Username <span style="color: red;">*</span>
-                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Username can have only alphanumeric characters, spaces, underscores, hyphens, periods, and the @ symbol."></i>
+                                                <label class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span>
+                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['username_info'] ?>"></i>
                                                 </label>
                                                 <input type="text" id="admin_username" class="form-control" placeholder="User name">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Email <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['email'] ?> <span style="color: red;">*</span></label>
                                                 <input type="email" id="email" class="form-control" placeholder="User email">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Password <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['password'] ?> <span style="color: red;">*</span></label>
                                                 <input type="password" id="admin_password" class="form-control" placeholder="Password">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Confirm Password <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['confirm_password'] ?><span style="color: red;">*</span></label>
                                                 <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
                                             </div>
                                         </div>
                                         <small class="form-text text-muted">
-                                            Your password must have:
-                                            <ul>
-                                                <li>Between 8-16 characters</li>
-                                                <li>Uppercase characters (A-Z)</li>
-                                                <li>Lowercase characters (a-z)</li>
-                                                <li>Numbers (0-9)</li>
-                                                <li>Special characters (~*!@$#%_+.?:,{ })</li>
-                                            </ul>
+                                            <?= $lang['password_requirements'] ?>
+                                            <?php
+                                            echo '<ul>';
+                                            foreach ($lang['password_requirements_list'] as $value) {
+                                                echo '<li>' . $value . '</li>';
+                                            }
+                                            echo '</ul>';
+                                            ?>
                                         </small>
                                     </div>
 
@@ -514,7 +555,7 @@ if (isset($_POST['submit'])) {
 
                                     <div class="card-header">
 
-                                        <h3 class="card-title">System Information</h3>
+                                        <h3 class="card-title"><?= $lang['system_information'] ?></h3>
                                     </div>
                                     <div class="card-body">
 
@@ -530,7 +571,7 @@ if (isset($_POST['submit'])) {
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Environment <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['environment'] ?> <span style="color: red;">*</span></label>
                                                 <select id="environment" name="environment" class="form-control select2">
                                                     <option value="production" selected>Production</option>
                                                     <option value="development">Development</option>
@@ -539,7 +580,7 @@ if (isset($_POST['submit'])) {
                                             </div>
 
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Cache Driver <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['cache_driver'] ?><span style="color: red;">*</span></label>
                                                 <select id="driver" name="driver" class="form-control select2">
                                                     <option value="file" selected>File</option>
                                                     <option value="redis">Redis</option>
@@ -554,25 +595,25 @@ if (isset($_POST['submit'])) {
 
                                     <div class="card-header">
 
-                                        <h3 class="card-title">Redis Setup</h3>
+                                        <h3 class="card-title"><?= $lang['redis_setup'] ?></h3>
                                     </div>
                                     <div class="card-body">
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Redis Host <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['redis_host'] ?><span style="color: red;">*</span></label>
                                                 <input type="text" class="form-control" id="redis_host" placeholder="Redis Host">
                                             </div>
 
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Redis Port <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['redis_port'] ?><span style="color: red;">*</span></label>
                                                 <input type="text" class="form-control" id="redis_port" placeholder="Redis Port">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label">Redis Password <span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['redis_password'] ?><span style="color: red;">*</span></label>
                                                 <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
                                             </div>
                                         </div>
@@ -583,7 +624,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-footer">
 
-                                <button class="btn btn-primary float-right" onclick="submitForm()">Continue &nbsp;
+                                <button class="btn btn-primary float-right" onclick="submitForm()"><?= $lang['continue'] ?> &nbsp;
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
@@ -596,27 +637,27 @@ if (isset($_POST['submit'])) {
 
                             <div class="card-body">
 
-                                <p class="text-center lead text-bold">Your Agora Invoicing Application is Ready!</p>
+                                <p class="text-center lead text-bold"><?= $lang['final_setup'] ?>!</p>
 
                                 <div class="alert" style="background:#f5f5f5;">
-                                    All right, sparky! You’ve made it through the installation.
+                                    <?= $lang['installation_complete'] ?>
                                 </div>
 
                                 <div class="row">
 
                                     <div class="col-6">
 
-                                        <p class="lead">Learn More</p>
+                                        <p class="lead"><?= $lang['learn_more'] ?></p>
 
-                                        <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank">Knowledge base</a></p>
-                                        <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com">Email Support</a></p>
+                                        <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank"><?= $lang['knowledge_base'] ?></a></p>
+                                        <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com"><?= $lang['email_support'] ?></a></p>
                                     </div>
 
                                     <div class="col-6">
 
-                                        <p class="lead">Next Step</p>
+                                        <p class="lead"><?= $lang['next_step'] ?></p>
                                         <a href="<?php echo getBaseUrl() ?>/login">
-                                            <div class="btn btn-primary">Login to Billing &nbsp;<i class="fas fa-arrow-right"></i></div>
+                                            <div class="btn btn-primary"><?= $lang['login_button'] ?>&nbsp;<i class="fas fa-arrow-right"></i></div>
                                         </a>
                                     </div>
                                 </div>

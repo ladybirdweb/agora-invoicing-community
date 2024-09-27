@@ -300,6 +300,7 @@ class InstallerController extends Controller
 
         return $display;
     }
+
     public function getLang(Request $request)
     {
         $set_lang = $request->input('set_lang') ?? 'en';
@@ -311,5 +312,4 @@ class InstallerController extends Controller
         // Return the language array as a JSON response
         return response()->json($lang);
     }
-
 }

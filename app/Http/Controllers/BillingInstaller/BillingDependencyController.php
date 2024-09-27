@@ -380,4 +380,16 @@ class BillingDependencyController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
+
+
+    public function getLang($key)
+    {
+        // Assuming 'en' is the default language
+//        $langContent = trans('messages.' . $key);
+
+
+        // Return the translated content or a default fallback message if not found
+        return "Hello";
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BillingInstaller;
 
+use App;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Mailjob\QueueService;
@@ -35,8 +36,7 @@ class InstallerController extends Controller
     {
         Artisan::call('key:generate', ['--force' => true]);
 
-        $url = url('migrate');
-        $result = ['success' => 'Pre migration has been tested successfully', 'next' => 'Migrating tables in database', 'api' => $url];
+        $result = ['success' => \Lang::get('installer_messages.pre_migration_success'), 'next' => \Lang::get('installer_messages.migrating_tables')];
 
         return response()->json(compact('result'));
     }
@@ -46,7 +46,7 @@ class InstallerController extends Controller
         $db_install_method = '';
         try {
             if (Cache::get('databasename') != env('DB_DATABASE')) {
-                throw new Exception('Database connection did not update.', 500);
+                throw new Exception(\Lang::get('installer_messages.db_connection_error'), 500);
             }
             $tableNames = \Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
             //allowing migrations table in db as it does not get removed on "migrate:reset"
@@ -67,7 +67,7 @@ class InstallerController extends Controller
             return response()->json(compact('result'), 500);
         }
 
-        $message = 'Database has been setup successfully.';
+        $message = \Lang::get('installer_messages.database_setup_success');
         $result = ['success' => $message];
 
         return response()->json(compact('result'));
@@ -109,9 +109,8 @@ class InstallerController extends Controller
             Cache::forever('databasename', $database);
             $url = url('preinstall/check');
             $result = [
-                'success' => 'Environment configuration file has been created successfully',
-                'next' => 'Running pre-migration test',
-                'api' => $url,
+                'success' => \Lang::get('installer_messages.env_file_created'),
+                'next' => \Lang::get('installer_messages.pre_migration_test'),
             ];
 
             return response()->json(compact('result'));
@@ -238,10 +237,10 @@ class InstallerController extends Controller
             'redis_port' => 'nullable|required_if:cache_driver,redis|numeric',
             'environment' => 'required|string',
         ], [
-            'password.regex' => 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.',
-            'redis_host.required_if' => 'Redis host is required.',
-            'redis_password.required_if' => 'Redis password is required.',
-            'redis_port.required_if' => 'Redis port is required.',
+            'password.regex' => \Lang::get('installer_messages.password_regex'),
+            'redis_host.required_if' => \Lang::get('installer_messages.redis_host_required'),
+            'redis_password.required_if' => \Lang::get('installer_messages.redis_password_required'),
+            'redis_port.required_if' => \Lang::get('installer_messages.redis_port_required'),
         ]);
 
         // Return validation errors if any
@@ -278,7 +277,7 @@ class InstallerController extends Controller
             \Cache::flush();
 
             // Return success response
-            return successResponse('Setup completed successfully!', 201);
+            return successResponse(\Lang::get('installer_messages.setup_completed'), 201);
         } catch (\Exception $e) {
             // Return error response in case of exception
             return errorResponse($e->getMessage(), 400);
@@ -301,4 +300,16 @@ class InstallerController extends Controller
 
         return $display;
     }
+    public function getLang(Request $request)
+    {
+        $set_lang = $request->input('set_lang') ?? 'en';
+
+        App::setLocale($set_lang);
+        // Fetch all keys from the 'messages' language file
+        $lang = \Lang::get('installer_messages');
+
+        // Return the language array as a JSON response
+        return response()->json($lang);
+    }
+
 }

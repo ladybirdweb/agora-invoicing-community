@@ -6,7 +6,7 @@ return [
     'probe' => 'Agora Invoicing Probes',
     'magic_phrase' => 'What\'s the magic phrase',
     'server_requirements' => 'Server Requirements',
-    'database_setup'=> 'Database Setup',
+    'database_setup' => 'Database Setup',
     'getting_started' => 'Getting Started',
     'final' => 'Final',
     'directory' => 'Directory',
@@ -72,7 +72,6 @@ return [
 
     // Buttons
     'continue' => 'Continue',
-
 
     // Final Setup
     'final_setup' => 'Your Agora Invoicing Application is Ready!',

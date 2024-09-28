@@ -2,244 +2,110 @@
 
 return [
 
-    /*
-     *
-     * Shared translations.
-     *
-     */
-    'title' => 'Kurulum',
-    'next' => 'Sonraki Adım',
-    'back' => 'Önceki Adım',
-    'finish' => 'Kur',
-    'forms' => [
-        'errorTitle' => 'Hatalar tespit edildi :',
+    'title' => 'Agora Faturalama Yükleyicisi',
+    'probe' => 'Agora Faturalama Provaları',
+    'magic_phrase' => 'Sihirli cümle nedir',
+    'server_requirements' => 'Sunucu Gereksinimleri',
+    'database_setup'=> 'Veritabanı Kurulumu',
+    'getting_started' => 'Başlarken',
+    'final' => 'Son',
+    'directory' => 'Dizin',
+    'permissions' => 'İzinler',
+    'requisites' => 'Gereksinimler',
+    'status' => 'Durum',
+    'php_extensions' => 'PHP Uzantıları',
+    'not_enabled' => 'Etkin Değil',
+    'extension_not_enabled' => 'Etkin Değil: Bunu etkinleştirmek için lütfen sunucunuza uzantıyı yükleyin ve :php_ini_file dosyasını :extensionName uzantısını etkinleştirmek için güncelleyin. <a href=":url" target="_blank">Sunucumda PHP uzantıları nasıl yüklenir?</a>',
+    'mod_rewrite' => 'Mod Rewrite',
+    'off_apache' => 'KAPALI (Eğer Apache kullanıyorsanız, apache yapılandırmasında <var><strong>AllowOverride</strong></var> ayarının <var><strong>All</strong></var> olarak ayarlandığından emin olun)',
+    'rewrite_engine' => 'Yazma Motoru',
+    'user_url' => 'Kullanıcı dostu URL',
+
+    'host' => 'Ana Bilgisayar',
+    'host_tooltip' => 'Eğer MySQL sunucunuz Agora Faturalama ile aynı sunucuda kuruluysa, localhost olarak bırakın',
+    'database_name_label' => 'Veritabanı adı',
+    'mysql_port_label' => 'MySQL bağlantı noktası numarası',
+    'mysql_port_tooltip' => 'MySQL sunucunuzun dinlediği bağlantı noktası numarası. Varsayılan olarak 3306\'dır',
+    'username' => 'Kullanıcı Adı',
+    'password_label' => 'Şifre',
+    'test_prerequisites_message' => 'Bu test, Agora Faturalama\'yı kurmak için gereken ön koşulları kontrol edecektir',
+    'previous' => 'Önceki',
+
+    'sign_up_as_admin' => 'Yönetici olarak kaydol',
+    'first_name' => 'Ad',
+    'first_name_required' => 'Ad gereklidir',
+    'last_name' => 'Soyad',
+    'last_name_required' => 'Soyad gereklidir',
+    'username_info' => 'Kullanıcı adı yalnızca alfasayısal karakterler, boşluklar, alt çizgiler, tireler, noktalar ve @ sembolü içerebilir.',
+    'email' => 'E-posta',
+    'email_required' => 'Kullanıcı e-postası gereklidir',
+    'password_required' => 'Şifre gereklidir',
+    'confirm_password' => 'Şifreyi Onayla',
+    'confirm_password_required' => 'Şifreyi onaylamak gereklidir',
+    'password_requirements' => 'Şifreniz aşağıdakilere sahip olmalıdır:',
+    'password_requirements_list' => [
+        '8-16 karakter arasında',
+        'Büyük harf (A-Z)',
+        'Küçük harf (a-z)',
+        'Rakamlar (0-9)',
+        'Özel karakterler (~*!@$#%_+.?:,{ })',
     ],
 
-    /*
-     *
-     * Home page translations.
-     *
-     */
-    'welcome' => [
-        'templateTitle' => 'Kurulum\'a Hoşgeldiniz',
-        'title' => 'Kurulum',
-        'message' => 'Kolay Kurulum Sihirbazı.',
-        'next' => 'Gereksinimleri Denetle',
-    ],
+// Sistem Bilgileri
+    'system_information' => 'Sistem Bilgisi',
+    'environment' => 'Ortam',
+    'environment_required' => 'Ortam gereklidir',
+    'production' => 'Üretim',
+    'development' => 'Geliştirme',
+    'testing' => 'Test',
+    'cache_driver' => 'Önbellek Sürücüsü',
+    'cache_driver_required' => 'Önbellek Sürücüsü gereklidir',
+    'file' => 'Dosya',
+    'redis' => 'Redis',
+    'password' => 'Şifre',
 
-    /*
-     *
-     * Requirements page translations.
-     *
-     */
-    'requirements' => [
-        'templateTitle' => 'Adım 1 | Sunucu Gereksinimleri',
-        'title' => 'Sunucu Gereksinimleri',
-        'next' => 'İzinleri Kontrol Et',
-    ],
+// Redis Kurulumu
+    'redis_setup' => 'Redis Kurulumu',
+    'redis_host' => 'Redis Ana Bilgisi',
+    'redis_port' => 'Redis Bağlantı Noktası',
+    'redis_password' => 'Redis Şifresi',
 
-    /*
-     *
-     * Permissions page translations.
-     *
-     */
-    'permissions' => [
-        'templateTitle' => 'Adım 2 | İzinler',
-        'title' => 'İzinler',
-        'next' => 'Ortam ayarlarına geç',
-    ],
+// Düğmeler
+    'continue' => 'Devam et',
 
-    /*
-     *
-     * Environment page translations.
-     *
-     */
-    'environment' => [
-        'menu' => [
-            'templateTitle' => 'Adım 3 | Ortam Ayarları',
-            'title' => 'Ortam Ayarları',
-            'desc' => 'Lütfen uygulamanın <code> .env </code> dosyasını nasıl yapılandıracağınızı seçin.',
-            'wizard-button' => 'Form Sihirbazı Kurulumu ',
-            'classic-button' => 'Klasik Metin Editörü',
-        ],
-        'wizard' => [
-            'templateTitle' => 'Adım 3 | Ortam Ayarları | Form sihirbazı',
-            'title' => 'Guided <code>.env</code> Wizard',
-            'tabs' => [
-                'environment' => 'Ortam',
-                'database' => 'Veritabanı',
-                'application' => 'Uygulama',
-            ],
-            'form' => [
-                'name_required' => 'Bir ortam adı gerekiyor.',
-                'app_name_label' => 'Uygulama Adı',
-                'app_name_placeholder' => 'Uygulama Adı',
-                'app_environment_label' => 'Uygulama Ortamı',
-                'app_environment_label_local' => 'Yerel',
-                'app_environment_label_developement' => 'Geliştirme',
-                'app_environment_label_qa' => 'qa',
-                'app_environment_label_production' => 'Üretim',
-                'app_environment_label_other' => 'Diğer',
-                'app_environment_placeholder_other' => 'Çevrenizi girin ...',
-                'app_debug_label' => 'Uygulama Hataları Gösterme',
-                'app_debug_label_true' => 'Aktif',
-                'app_debug_label_false' => 'Pasif',
-                'app_log_level_label' => 'Uygulama Günlüğü Düzeyi',
-                'app_log_level_label_debug' => 'hata ayıklama',
-                'app_log_level_label_info' => 'bilgi',
-                'app_log_level_label_notice' => 'haber',
-                'app_log_level_label_warning' => 'uyarı',
-                'app_log_level_label_error' => 'hata',
-                'app_log_level_label_critical' => 'kritik',
-                'app_log_level_label_alert' => 'uyarı',
-                'app_log_level_label_emergency' => 'acil durum',
-                'app_url_label' => 'Uygulama URL\'si',
-                'app_url_placeholder' => 'Uygulama URL\'si',
-                'db_connection_label' => 'Veritabanı Bağlantısı',
-                'db_connection_label_mysql' => 'mysql',
-                'db_connection_label_sqlite' => 'sqlite',
-                'db_connection_label_pgsql' => 'pgsql',
-                'db_connection_label_sqlsrv' => 'sqlsrv',
-                'db_host_label' => 'Veritabanı Sunucusu',
-                'db_host_placeholder' => 'Veritabanı Sunucusu',
-                'db_port_label' => 'Veritabanı Bağlantı Noktası',
-                'db_port_placeholder' => 'Veritabanı Bağlantı Noktası',
-                'db_name_label' => 'Veritabanı Adı',
-                'db_name_placeholder' => 'Veritabanı Adı',
-                'db_username_label' => 'Veritabanı Kullanıcı Adı',
-                'db_username_placeholder' => 'Veritabanı Kullanıcı Adı',
-                'db_password_label' => 'Veritabanı Şifresi',
-                'db_password_placeholder' => 'Veritabanı Şifresi',
-                'app_tabs' => [
-                    'more_info' => 'Daha Fazla Bilgi',
-                    'broadcasting_title' => 'Yayıncılık, Önbellekleme, Oturum &amp; Kuyruk',
-                    'broadcasting_label' => 'Yayıncı Sürücüsü',
-                    'broadcasting_placeholder' => 'Yayıncı Sürücüsü',
-                    'cache_label' => 'Önbellek Sürücüsü',
-                    'cache_placeholder' => 'Önbellek Sürücüsü',
-                    'session_label' => 'Oturum Sürücüsü',
-                    'session_placeholder' => 'Oturum Sürücüsü',
-                    'queue_label' => 'Kuyruk Sürücüsü',
-                    'queue_placeholder' => 'Kuyruk Sürücüsü',
-                    'redis_label' => 'Redis Sürücüsü',
-                    'redis_host' => 'Redis Host',
-                    'redis_password' => 'Redis Şifre',
-                    'redis_port' => 'Redis Port',
+// Son Kurulum
+    'final_setup' => 'Agora Faturalama Uygulamanız Hazır!',
+    'installation_complete' => 'Her şey yolunda, sparky! Kurulumdan başarıyla geçtiniz.',
 
-                    'mail_label' => 'Mail',
-                    'mail_driver_label' => 'Posta Sürücüsü',
-                    'mail_driver_placeholder' => 'Posta Sürücüsü',
-                    'mail_host_label' => 'Posta Sunucusu',
-                    'mail_host_placeholder' => 'Posta Sunucusu',
-                    'mail_port_label' => 'Posta Bağlantı Noktası',
-                    'mail_port_placeholder' => 'Posta Bağlantı Noktası',
-                    'mail_username_label' => 'Posta Kullanıcı Adı',
-                    'mail_username_placeholder' => 'Posta Kullanıcı Adı',
-                    'mail_password_label' => 'Posta Parolası',
-                    'mail_password_placeholder' => 'Posta Parolası',
-                    'mail_encryption_label' => 'Posta Güvenlik Türü',
-                    'mail_encryption_placeholder' => 'Posta Güvenlik Türü',
+// Daha Fazla Bilgi Edin
+    'learn_more' => 'Daha Fazla Bilgi Edin',
+    'knowledge_base' => 'Bilgi Tabanı',
+    'email_support' => 'E-posta Desteği',
 
-                    'pusher_label' => 'Pusher',
-                    'pusher_app_id_label' => 'İtici Uygulama Kimliği',
-                    'pusher_app_id_palceholder' => 'İtici Uygulama Kimliği',
-                    'pusher_app_key_label' => 'İtici Uygulama Anahtarı',
-                    'pusher_app_key_palceholder' => 'İtici Uygulama Anahtarı',
-                    'pusher_app_secret_label' => 'Pusher App Secret',
-                    'pusher_app_secret_palceholder' => 'Pusher App Secret',
-                ],
-                'buttons' => [
-                    'setup_database' => 'Veritabanı Ayarları',
-                    'setup_application' => 'Uygulama Ayarları',
-                    'install' => 'Yükle',
-                ],
-            ],
-        ],
-        'classic' => [
-            'templateTitle' => '3. Adım | Ortam Ayarları | Klasik Editör ',
-            'title' => 'Klasik Metin Editörü',
-            'save' => 'Kaydet (.env)',
-            'back' => 'Form Sihirbazını Kullan',
-            'install' => 'Yükle',
-        ],
-        'success' => '.env dosyası ayarları kaydedildi.',
-        'errors' => '.env dosyasını kaydedemiyoruz, lütfen el ile oluşturun.',
-    ],
+// Sonraki Adım
+    'next_step' => 'Sonraki Adım',
+    'login_button' => 'Faturalama Giriş',
 
-    'install' => 'Kurulum',
+    'pre_migration_success' => 'Ön göç başarıyla test edildi',
+    'migrating_tables' => 'Veritabanındaki tabloları taşıyor',
+    'db_connection_error' => 'Veritabanı bağlantısı güncellenmedi.',
+    'database_setup_success' => 'Veritabanı başarıyla kuruldu.',
+    'env_file_created' => 'Ortam yapılandırma dosyası başarıyla oluşturuldu',
+    'pre_migration_test' => 'Ön göç testi çalıştırılıyor',
 
-    /*
-     *
-     * Installed Log translations.
-     *
-     */
-    'installed' => [
-        'success_log_message' => 'Uygulama başarıyla KURULDU ',
-    ],
+    'redis_host_required' => 'Redis ana bilgisini girmek gereklidir.',
+    'redis_password_required' => 'Redis şifresi gereklidir.',
+    'redis_port_required' => 'Redis bağlantı noktası gereklidir.',
+    'password_regex' => 'Şifre en az 8 karakter, bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir.',
+    'setup_completed' => 'Kurulum başarıyla tamamlandı!',
 
-    /*
-     *
-     * Final page translations.
-     *
-     */
-    'final' => [
-        'title' => 'Kurulum Bitti',
-        'templateTitle' => 'Kurulum Bitti',
-        'finished' => 'Uygulama başarıyla kuruldu.',
-        'migration' => 'Veritabanı  Konsolu Çıktısı: ',
-        'console' => 'Uygulama Konsolu Çıktısı:',
-        'log' => 'Kurulum Günlüğü Girişi:',
-        'env' => 'Son .env Dosyası:',
-        'exit' => 'Çıkmak için burayı tıklayın',
-    ],
-
-    /*
-     *
-     * Update specific translations
-     *
-     */
-    'updater' => [
-        /*
-         *
-         * Shared translations.
-         *
-         */
-        'title' => 'Güncelleyici',
-
-        /*
-         *
-         * Welcome page translations for update feature.
-         *
-         */
-        'welcome' => [
-            'title' => 'Güncelleyiciye Hoş Geldiniz',
-            'message' => 'Güncelleme sihirbazına hoş geldiniz.',
-        ],
-
-        /*
-         *
-         * Welcome page translations for update feature.
-         *
-         */
-        'overview' => [
-            'title' => 'Genel bakış',
-            'message' => '1 güncelleme var.| :number güncellemeleri var.',
-            'install_updates' => 'Güncellemeyi yükle',
-        ],
-
-        /*
-         *
-         * Final page translations.
-         *
-         */
-        'final' => [
-            'title' => 'Tamamlandı',
-            'finished' => 'Uygulamanın veritabanını başarıyla güncelleştirildi.',
-            'exit' => 'Çıkmak ve uygulamayı başlatmak için buraya tıklayın',
-        ],
-
-        'log' => [
-            'success_message' => 'Uygulama GÜNCELLENDİ  ',
-        ],
-    ],
+    'database' => 'Veritabanı',
+    'selected' => 'Seçilen',
+    'mysql_version_is' => 'MySQL sürümü',
+    'database_empty' => 'Veritabanı boş',
+    'database_not_empty' => 'Agora Faturalama kurulumu boş bir veritabanı gerektirir, veritabanınızda zaten tablolar ve veriler bulunmaktadır.',
+    'mysql_version_required' => 'En az MySQL 5.6 veya MariaDB 10.3\'e yükseltmenizi öneririz!',
+    'database_connection_unsuccessful' => 'Veritabanı bağlantısı başarısız.',
+    'connected_as' => 'Veritabanına bağlı olarak',
+    'failed_connection' => 'Veritabanına bağlanılamadı.',
 ];

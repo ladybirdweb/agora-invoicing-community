@@ -21,7 +21,7 @@ return [
     'rewrite_engine' => 'Rewrite Engine',
     'user_url' => 'User friendly URL',
 
-    'host_label' => 'Host',
+    'host' => 'Host',
     'host_tooltip' => 'If your MySQL is installed on the same server as Agora Invoicing, let it be localhost',
     'database_name_label' => 'Database name',
     'mysql_port_label' => 'MySQL port number',

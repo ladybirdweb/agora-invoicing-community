@@ -6,7 +6,7 @@ return [
     'probe' => 'Agora Arveldamise Proovid',
     'magic_phrase' => 'Mis on maagiline fraas',
     'server_requirements' => 'Serveri Nõuded',
-    'database_setup'=> 'Andmebaasi Seadistamine',
+    'database_setup' => 'Andmebaasi Seadistamine',
     'getting_started' => 'Alustamine',
     'final' => 'Lõpp',
     'directory' => 'Kataloog',
@@ -51,7 +51,7 @@ return [
         'Erimärgid (~*!@$#%_+.?:,{ })',
     ],
 
-// Süsteemi teave
+    // Süsteemi teave
     'system_information' => 'Süsteemi Teave',
     'environment' => 'Keskkond',
     'environment_required' => 'Keskkond on nõutav',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Parool',
 
-// Redis Seadistamine
+    // Redis Seadistamine
     'redis_setup' => 'Redis Seadistamine',
     'redis_host' => 'Redis Host',
     'redis_port' => 'Redis Port',
     'redis_password' => 'Redis Parool',
 
-// Nupud
+    // Nupud
     'continue' => 'Jätka',
 
-// Lõpp Seadistus
+    // Lõpp Seadistus
     'final_setup' => 'Teie Agora Arveldamise Rakendus on Valmis!',
     'installation_complete' => 'Kõik on korras, sa oled läbi paigaldamise läinud.',
 
-// Rohkem teada
+    // Rohkem teada
     'learn_more' => 'Uuri rohkem',
     'knowledge_base' => 'Teadmiste baas',
     'email_support' => 'E-posti Tugi',
 
-// Järgmine samm
+    // Järgmine samm
     'next_step' => 'Järgmine samm',
     'login_button' => 'Logi sisse Arveldamisse',
 

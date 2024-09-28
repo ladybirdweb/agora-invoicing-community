@@ -6,7 +6,7 @@ return [
     'probe' => 'Agora Invoicing Probes',
     'magic_phrase' => 'Wat is de magische zin',
     'server_requirements' => 'Serververeisten',
-    'database_setup'=> 'Database-instelling',
+    'database_setup' => 'Database-instelling',
     'getting_started' => 'Aan de slag',
     'final' => 'Eind',
     'directory' => 'Directory',
@@ -51,7 +51,7 @@ return [
         'Speciale tekens (~*!@$#%_+.?:,{ })',
     ],
 
-// Systeeminformatie
+    // Systeeminformatie
     'system_information' => 'Systeeminformatie',
     'environment' => 'Omgeving',
     'environment_required' => 'Omgeving is vereist',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Wachtwoord',
 
-// Redis-configuratie
+    // Redis-configuratie
     'redis_setup' => 'Redis-configuratie',
     'redis_host' => 'Redis-host',
     'redis_port' => 'Redis-poort',
     'redis_password' => 'Redis-wachtwoord',
 
-// Knoppen
+    // Knoppen
     'continue' => 'Doorgaan',
 
-// Einde Configuratie
+    // Einde Configuratie
     'final_setup' => 'Uw Agora Invoicing-toepassing is klaar!',
     'installation_complete' => 'Goed gedaan! U heeft de installatie doorlopen.',
 
-// Meer informatie
+    // Meer informatie
     'learn_more' => 'Leer meer',
     'knowledge_base' => 'Kennisbank',
     'email_support' => 'E-mailondersteuning',
 
-// Volgende Stap
+    // Volgende Stap
     'next_step' => 'Volgende stap',
     'login_button' => 'Inloggen bij facturering',
 

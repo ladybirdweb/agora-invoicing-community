@@ -51,7 +51,7 @@ return [
         'Znaki specjalne (~*!@$#%_+.?:,{ })',
     ],
 
-// Informacje systemowe
+    // Informacje systemowe
     'system_information' => 'Informacje systemowe',
     'environment' => 'Środowisko',
     'environment_required' => 'Środowisko jest wymagane',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Hasło',
 
-// Konfiguracja Redis
+    // Konfiguracja Redis
     'redis_setup' => 'Konfiguracja Redis',
     'redis_host' => 'Host Redis',
     'redis_port' => 'Port Redis',
     'redis_password' => 'Hasło Redis',
 
-// Przyciski
+    // Przyciski
     'continue' => 'Kontynuuj',
 
-// Finalna konfiguracja
+    // Finalna konfiguracja
     'final_setup' => 'Twoja aplikacja Agora Invoicing jest gotowa!',
     'installation_complete' => 'Brawo, udało Ci się przejść przez instalację.',
 
-// Dowiedz się więcej
+    // Dowiedz się więcej
     'learn_more' => 'Dowiedz się więcej',
     'knowledge_base' => 'Baza wiedzy',
     'email_support' => 'Wsparcie emailowe',
 
-// Następny krok
+    // Następny krok
     'next_step' => 'Następny krok',
     'login_button' => 'Zaloguj się do rozliczeń',
 

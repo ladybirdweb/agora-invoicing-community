@@ -50,7 +50,7 @@ return [
         '特殊字符 (~*!@$#%_+.?:,{ })',
     ],
 
-// 系統信息
+    // 系統信息
     'system_information' => '系統信息',
     'environment' => '環境',
     'environment_required' => '環境為必填',
@@ -63,25 +63,25 @@ return [
     'redis' => 'Redis',
     'password' => '密碼',
 
-// Redis 設置
+    // Redis 設置
     'redis_setup' => 'Redis 設置',
     'redis_host' => 'Redis 主機',
     'redis_port' => 'Redis 端口',
     'redis_password' => 'Redis 密碼',
 
-// 按鈕
+    // 按鈕
     'continue' => '繼續',
 
-// 最終設置
+    // 最終設置
     'final_setup' => '您的 Agora 發票應用程序已準備好！',
     'installation_complete' => '太好了，火花！您已成功完成安裝。',
 
-// 獲取更多信息
+    // 獲取更多信息
     'learn_more' => '瞭解更多',
     'knowledge_base' => '知識庫',
     'email_support' => '電子郵件支持',
 
-// 下一步
+    // 下一步
     'next_step' => '下一步',
     'login_button' => '登錄到計費',
 

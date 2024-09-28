@@ -6,7 +6,7 @@ return [
     'probe' => 'أجهزة استشعار أغيرا للفواتير',
     'magic_phrase' => 'ما هي العبارة السحرية',
     'server_requirements' => 'متطلبات الخادم',
-    'database_setup'=> 'إعداد قاعدة البيانات',
+    'database_setup' => 'إعداد قاعدة البيانات',
     'getting_started' => 'البدء',
     'final' => 'نهائي',
     'directory' => 'الدليل',
@@ -68,18 +68,14 @@ return [
     'redis_port' => 'منفذ ريديس',
     'redis_password' => 'كلمة مرور ريديس',
 
-
     'continue' => 'متابعة',
-
 
     'final_setup' => 'تطبيق فواتير أغيرا جاهز!',
     'installation_complete' => 'رائع، لقد اجتزت عملية التثبيت.',
 
-
     'learn_more' => 'تعلم المزيد',
     'knowledge_base' => 'قاعدة المعرفة',
     'email_support' => 'دعم البريد الإلكتروني',
-
 
     'next_step' => 'الخطوة التالية',
     'login_button' => 'تسجيل الدخول إلى الفواتير',
@@ -106,6 +102,5 @@ return [
     'database_connection_unsuccessful' => 'فشل اتصال قاعدة البيانات.',
     'connected_as' => 'متصل بقاعدة البيانات كـ',
     'failed_connection' => 'فشل الاتصال بقاعدة البيانات.',
-
 
 ];

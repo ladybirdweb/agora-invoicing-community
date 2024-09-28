@@ -6,7 +6,7 @@ return [
     'probe' => 'Provas d\'Agora Invoicing',
     'magic_phrase' => 'Cheu è la frasa magica',
     'server_requirements' => 'Requisites dal server',
-    'database_setup'=> 'Configuraziun dal database',
+    'database_setup' => 'Configuraziun dal database',
     'getting_started' => 'Per cumenzar',
     'final' => 'Final',
     'directory' => 'Directiva',
@@ -51,7 +51,7 @@ return [
         'Caracters spezials (~*!@$#%_+.?:,{ })',
     ],
 
-// Infurmaziuns dal sistem
+    // Infurmaziuns dal sistem
     'system_information' => 'Infurmaziuns dal sistem',
     'environment' => 'Ambient',
     'environment_required' => 'L\'ambient è necessar',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Cura',
 
-// Configuraziun Redis
+    // Configuraziun Redis
     'redis_setup' => 'Configuraziun Redis',
     'redis_host' => 'Host Redis',
     'redis_port' => 'Port Redis',
     'redis_password' => 'Cura Redis',
 
-// Buttone
+    // Buttone
     'continue' => 'Duvrar',
 
-// Configuraziun finala
+    // Configuraziun finala
     'final_setup' => 'Vossa applicaziun d\'Agora Invoicing è pronta!',
     'installation_complete' => 'Tgür, sparky! Vus avai fatg tras l\'instalaziun.',
 
-// Scuvrir dapli
+    // Scuvrir dapli
     'learn_more' => 'Scuvrir dapli',
     'knowledge_base' => 'Base da savida',
     'email_support' => 'Sustegn via Email',
 
-// Suandant pass
+    // Suandant pass
     'next_step' => 'Suandant pass',
     'login_button' => 'Login a Billing',
 

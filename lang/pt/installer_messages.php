@@ -6,7 +6,7 @@ return [
     'probe' => 'Provas do Agora Invoicing',
     'magic_phrase' => 'Qual é a frase mágica',
     'server_requirements' => 'Requisitos do Servidor',
-    'database_setup'=> 'Configuração do Banco de Dados',
+    'database_setup' => 'Configuração do Banco de Dados',
     'getting_started' => 'Introdução',
     'final' => 'Final',
     'directory' => 'Diretório',
@@ -51,7 +51,7 @@ return [
         'Caracteres especiais (~*!@$#%_+.?:,{ })',
     ],
 
-// Informações do Sistema
+    // Informações do Sistema
     'system_information' => 'Informações do Sistema',
     'environment' => 'Ambiente',
     'environment_required' => 'O ambiente é obrigatório',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Senha',
 
-// Configuração do Redis
+    // Configuração do Redis
     'redis_setup' => 'Configuração do Redis',
     'redis_host' => 'Host do Redis',
     'redis_port' => 'Porta do Redis',
     'redis_password' => 'Senha do Redis',
 
-// Botões
+    // Botões
     'continue' => 'Continuar',
 
-// Configuração Final
+    // Configuração Final
     'final_setup' => 'Sua aplicação Agora Invoicing está pronta!',
     'installation_complete' => 'Tudo certo, amigo! Você completou a instalação.',
 
-// Saiba Mais
+    // Saiba Mais
     'learn_more' => 'Saiba Mais',
     'knowledge_base' => 'Base de Conhecimento',
     'email_support' => 'Suporte por E-mail',
 
-// Próximo Passo
+    // Próximo Passo
     'next_step' => 'Próximo Passo',
     'login_button' => 'Entrar no Faturamento',
 

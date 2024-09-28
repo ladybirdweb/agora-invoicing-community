@@ -305,7 +305,7 @@ class InstallerController extends Controller
     {
         $set_lang = $request->input('set_lang');
 
-        if(!empty($set_lang)){
+        if (! empty($set_lang)) {
             App::setLocale($set_lang);
         }
         // Fetch all keys from the 'messages' language file

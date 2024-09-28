@@ -5,7 +5,7 @@ return [
     'probe' => 'Probe di Agora Invoicing',
     'magic_phrase' => 'Qual è la frase magica',
     'server_requirements' => 'Requisiti del server',
-    'database_setup'=> 'Impostazione del database',
+    'database_setup' => 'Impostazione del database',
     'getting_started' => 'Iniziare',
     'final' => 'Finale',
     'directory' => 'Directory',
@@ -50,7 +50,7 @@ return [
         'Caratteri speciali (~*!@$#%_+.?:,{ })',
     ],
 
-// Informazioni di sistema
+    // Informazioni di sistema
     'system_information' => 'Informazioni di sistema',
     'environment' => 'Ambiente',
     'environment_required' => 'L\'ambiente è richiesto',
@@ -63,25 +63,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Password',
 
-// Configurazione Redis
+    // Configurazione Redis
     'redis_setup' => 'Configurazione Redis',
     'redis_host' => 'Host Redis',
     'redis_port' => 'Porta Redis',
     'redis_password' => 'Password Redis',
 
-// Pulsanti
+    // Pulsanti
     'continue' => 'Continua',
 
-// Configurazione finale
+    // Configurazione finale
     'final_setup' => 'La tua applicazione Agora Invoicing è pronta!',
     'installation_complete' => 'Tutto bene, amico! Hai completato l\'installazione.',
 
-// Scopri di più
+    // Scopri di più
     'learn_more' => 'Scopri di più',
     'knowledge_base' => 'Base di conoscenza',
     'email_support' => 'Supporto via email',
 
-// Passo successivo
+    // Passo successivo
     'next_step' => 'Passo successivo',
     'login_button' => 'Accedi alla fatturazione',
 

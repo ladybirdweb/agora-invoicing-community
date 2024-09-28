@@ -5,7 +5,7 @@ return [
     'probe' => 'پروب‌های صورت‌حساب آگورا',
     'magic_phrase' => 'عبارت جادویی چیست',
     'server_requirements' => 'نیازمندی‌های سرور',
-    'database_setup'=> 'راه‌اندازی پایگاه داده',
+    'database_setup' => 'راه‌اندازی پایگاه داده',
     'getting_started' => 'شروع کار',
     'final' => 'نهایی',
     'directory' => 'دائره',
@@ -50,7 +50,7 @@ return [
         'کاراکترهای خاص (~*!@$#%_+.?:,{ })',
     ],
 
-// اطلاعات سیستم
+    // اطلاعات سیستم
     'system_information' => 'اطلاعات سیستم',
     'environment' => 'محیط',
     'environment_required' => 'محیط الزامی است',
@@ -63,25 +63,25 @@ return [
     'redis' => 'ردیس',
     'password' => 'گذرواژه',
 
-// راه‌اندازی Redis
+    // راه‌اندازی Redis
     'redis_setup' => 'راه‌اندازی ردیوس',
     'redis_host' => 'میزبان ردیوس',
     'redis_port' => 'پورت ردیوس',
     'redis_password' => 'گذرواژه ردیوس',
 
-// دکمه‌ها
+    // دکمه‌ها
     'continue' => 'ادامه',
 
-// راه‌اندازی نهایی
+    // راه‌اندازی نهایی
     'final_setup' => 'برنامه صورت‌حساب آگورا شما آماده است!',
     'installation_complete' => 'خوب، شما به نصب پایان داده‌اید.',
 
-// یادگیری بیشتر
+    // یادگیری بیشتر
     'learn_more' => 'یادگیری بیشتر',
     'knowledge_base' => 'پایگاه دانش',
     'email_support' => 'پشتیبانی ایمیلی',
 
-// مرحله بعد
+    // مرحله بعد
     'next_step' => 'مرحله بعد',
     'login_button' => 'ورود به صورت‌حساب',
 
@@ -106,6 +106,6 @@ return [
     'mysql_version_required' => 'ما پیشنهاد می‌کنیم به حداقل MySQL 5.6 یا MariaDB 10.3 ارتقا دهید!',
     'database_connection_unsuccessful' => 'اتصال به پایگاه داده ناموفق بود.',
     'connected_as' => 'متصل به پایگاه داده به عنوان',
-    'failed_connection' => 'اتصال به پایگاه داده ناموفق بود.'
+    'failed_connection' => 'اتصال به پایگاه داده ناموفق بود.',
 
 ];

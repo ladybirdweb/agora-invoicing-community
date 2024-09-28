@@ -6,7 +6,7 @@ return [
     'probe' => 'Agora Faturalama Provaları',
     'magic_phrase' => 'Sihirli cümle nedir',
     'server_requirements' => 'Sunucu Gereksinimleri',
-    'database_setup'=> 'Veritabanı Kurulumu',
+    'database_setup' => 'Veritabanı Kurulumu',
     'getting_started' => 'Başlarken',
     'final' => 'Son',
     'directory' => 'Dizin',
@@ -51,7 +51,7 @@ return [
         'Özel karakterler (~*!@$#%_+.?:,{ })',
     ],
 
-// Sistem Bilgileri
+    // Sistem Bilgileri
     'system_information' => 'Sistem Bilgisi',
     'environment' => 'Ortam',
     'environment_required' => 'Ortam gereklidir',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Şifre',
 
-// Redis Kurulumu
+    // Redis Kurulumu
     'redis_setup' => 'Redis Kurulumu',
     'redis_host' => 'Redis Ana Bilgisi',
     'redis_port' => 'Redis Bağlantı Noktası',
     'redis_password' => 'Redis Şifresi',
 
-// Düğmeler
+    // Düğmeler
     'continue' => 'Devam et',
 
-// Son Kurulum
+    // Son Kurulum
     'final_setup' => 'Agora Faturalama Uygulamanız Hazır!',
     'installation_complete' => 'Her şey yolunda, sparky! Kurulumdan başarıyla geçtiniz.',
 
-// Daha Fazla Bilgi Edin
+    // Daha Fazla Bilgi Edin
     'learn_more' => 'Daha Fazla Bilgi Edin',
     'knowledge_base' => 'Bilgi Tabanı',
     'email_support' => 'E-posta Desteği',
 
-// Sonraki Adım
+    // Sonraki Adım
     'next_step' => 'Sonraki Adım',
     'login_button' => 'Faturalama Giriş',
 

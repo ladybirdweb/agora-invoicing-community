@@ -51,7 +51,7 @@ return [
         'Специальные символы (~*!@$#%_+.?:,{ })',
     ],
 
-// Системная информация
+    // Системная информация
     'system_information' => 'Системная информация',
     'environment' => 'Окружение',
     'environment_required' => 'Окружение обязательно',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => 'Пароль',
 
-// Настройка Redis
+    // Настройка Redis
     'redis_setup' => 'Настройка Redis',
     'redis_host' => 'Хост Redis',
     'redis_port' => 'Порт Redis',
     'redis_password' => 'Пароль Redis',
 
-// Кнопки
+    // Кнопки
     'continue' => 'Продолжить',
 
-// Финальная настройка
+    // Финальная настройка
     'final_setup' => 'Ваше приложение Agora Invoicing готово!',
     'installation_complete' => 'Отлично, вы успешно завершили установку.',
 
-// Узнать больше
+    // Узнать больше
     'learn_more' => 'Узнать больше',
     'knowledge_base' => 'База знаний',
     'email_support' => 'Поддержка по электронной почте',
 
-// Следующий шаг
+    // Следующий шаг
     'next_step' => 'Следующий шаг',
     'login_button' => 'Войти в Billing',
 

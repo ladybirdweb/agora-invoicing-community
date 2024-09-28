@@ -2,12 +2,11 @@
 
 return [
 
-
     'title' => 'Agora Rechnungsinstaller',
     'probe' => 'Agora Rechnungsprüfungen',
     'magic_phrase' => 'Was ist die magische Phrase',
     'server_requirements' => 'Serveranforderungen',
-    'database_setup'=> 'Datenbankeinrichtung',
+    'database_setup' => 'Datenbankeinrichtung',
     'getting_started' => 'Erste Schritte',
     'final' => 'Abschluss',
     'directory' => 'Verzeichnis',

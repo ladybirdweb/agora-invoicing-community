@@ -6,7 +6,7 @@ return [
     'probe' => 'Pruebas de Agora Facturación',
     'magic_phrase' => '¿Cuál es la frase mágica?',
     'server_requirements' => 'Requisitos del Servidor',
-    'database_setup'=> 'Configuración de la Base de Datos',
+    'database_setup' => 'Configuración de la Base de Datos',
     'getting_started' => 'Comenzando',
     'final' => 'Final',
     'directory' => 'Directorio',

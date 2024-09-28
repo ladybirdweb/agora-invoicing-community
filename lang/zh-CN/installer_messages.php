@@ -51,7 +51,7 @@ return [
         '特殊字符 (~*!@$#%_+.?:,{ })',
     ],
 
-// 系统信息
+    // 系统信息
     'system_information' => '系统信息',
     'environment' => '环境',
     'environment_required' => '环境是必填项',
@@ -64,25 +64,25 @@ return [
     'redis' => 'Redis',
     'password' => '密码',
 
-// Redis 设置
+    // Redis 设置
     'redis_setup' => 'Redis 设置',
     'redis_host' => 'Redis 主机',
     'redis_port' => 'Redis 端口',
     'redis_password' => 'Redis 密码',
 
-// 按钮
+    // 按钮
     'continue' => '继续',
 
-// 最终设置
+    // 最终设置
     'final_setup' => '您的 Agora 发票应用程序已准备好！',
     'installation_complete' => '好的，伙计！您已经完成了安装。',
 
-// 了解更多
+    // 了解更多
     'learn_more' => '了解更多',
     'knowledge_base' => '知识库',
     'email_support' => '电子邮件支持',
 
-// 下一步
+    // 下一步
     'next_step' => '下一步',
     'login_button' => '登录到计费',
 

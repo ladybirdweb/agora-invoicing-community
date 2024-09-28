@@ -41,7 +41,7 @@ function fetchLang() {
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json;charset=UTF-8']);
     curl_setopt($ch, CURLOPT_POST, true);
 
-    $postData = json_encode(['set_lang' => 'en']);
+    $postData = '';
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 
     // Execute cURL session

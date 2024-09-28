@@ -303,9 +303,11 @@ class InstallerController extends Controller
 
     public function getLang(Request $request)
     {
-        $set_lang = $request->input('set_lang') ?? 'en';
+        $set_lang = $request->input('set_lang');
 
-        App::setLocale($set_lang);
+        if(!empty($set_lang)){
+            App::setLocale($set_lang);
+        }
         // Fetch all keys from the 'messages' language file
         $lang = \Lang::get('installer_messages');
 

@@ -56,8 +56,6 @@ class ProfileController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -72,7 +70,7 @@ class ProfileController extends Controller
             if (Hash::check($oldpassword, $currentpassword)) {
                 $user->password = Hash::make($newpassword);
                 $user->save();
-
+                \DB::table('password_resets')->where('email', $user->email)->delete();
                 return redirect()->back()->with('success1', \Lang::get('message.updated-successfully'));
             } else {
                 return redirect()->back()->with('fails1', 'Incorrect old password');

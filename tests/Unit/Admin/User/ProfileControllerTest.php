@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Admin\User;
 
-
 use App\Model\User\Password;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
@@ -13,16 +12,15 @@ class ProfileControllerTest extends DBTestCase
 
     protected $user;
 
-    public function setUp():void{
+    public function setUp(): void
+    {
         parent::setUp();
         $this->withoutMiddleware();
         $this->getLoggedInUser('admin');
     }
 
-
     public function testUpdateProfileWithoutAnyErrors()
     {
-
         $this->call('PATCH', 'profile', [
             'first_name' => 'update first',
             'last_name' => 'update last',
@@ -48,7 +46,6 @@ class ProfileControllerTest extends DBTestCase
         $this->assertEquals('updated@example.com', $this->user->email);
     }
 
-
     public function testUpdateProfileWithErrors()
     {
         $this->getLoggedInUser('admin');
@@ -64,7 +61,6 @@ class ProfileControllerTest extends DBTestCase
 
         $response->assertSessionHasErrors(['email']);
         $response->assertSessionHasErrors(['last_name']);
-
     }
 
     public function testUpdatePasswordSuccess()
@@ -99,7 +95,7 @@ class ProfileControllerTest extends DBTestCase
 
         \Auth::user()->update(['password' => \Hash::make('Test@1234')]);
 
-        Password::where('email',$user->email)->get();
+        Password::where('email', $user->email)->get();
 
         $response = $this->call('PATCH', 'password', [
             'old_password' => 'Test@1234',

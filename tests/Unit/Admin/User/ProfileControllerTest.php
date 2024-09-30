@@ -10,8 +10,6 @@ class ProfileControllerTest extends DBTestCase
 {
     use DatabaseTransactions;
 
-    protected $user;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -31,9 +29,6 @@ class ProfileControllerTest extends DBTestCase
             'user_name' => 'update name',
             'email' => 'updated@example.com',
         ]);
-
-        // Refresh the user to get the updated data
-        $this->user->refresh();
 
         // Asserting all fields
         $this->assertEquals('update first', $this->user->first_name);

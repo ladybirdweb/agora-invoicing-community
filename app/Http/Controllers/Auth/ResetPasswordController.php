@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
+use App\Rules\StrongPassword;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -46,27 +47,24 @@ class ResetPasswordController extends Controller
     {
         try {
             $reset = \DB::table('password_resets')->select('email', 'created_at')->where('token', $token)->first();
-            if ($reset) {
-                if (Carbon::parse($reset->created_at)->addSeconds(config('auth.passwords.users.expire') * 60) > Carbon::now()) {
-                    $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
-                    $captchaKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
-                    $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
-                    $user = User::where('email', $reset->email)->first();
-                    if ($user && $user->is_2fa_enabled && \Session::get('2fa_verified') == null) {
-                        \Session::put('2fa:user:id', $user->id);
-                        \Session::put('reset_token', $token);
 
-                        return redirect('verify-2fa');
-                    }
+            if ($reset && Carbon::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Carbon::now()) {
+                $captchaStatus = StatusSetting::value('recaptcha_status');
+                $captchaKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
 
-                    return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))->with(
-                        ['reset_token' => $token, 'email' => $reset->email]
-                    );
-                } else {
-                    return \Redirect::to('password/reset')->with('fails', 'It looks like you clicked on an invalid password reset link. Please try again.');
+                $user = User::where('email', $reset->email)->first();
+
+                if ($user && $user->is_2fa_enabled && ! \Session::get('2fa_verified')) {
+                    \Session::put('2fa:user:id', $user->id);
+                    \Session::put('reset_token', $token);
+
+                    return redirect('verify-2fa');
                 }
+
+                return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))
+                    ->with(['reset_token' => $token, 'email' => $reset->email]);
             } else {
-                return redirect('login')->with('fails', 'This link is already used.Please try to login');
+                return redirect('login')->with('fails', \Lang::get('message.reset_link_expired'));
             }
         } catch (\Exception $ex) {
             return redirect('login')->with('fails', $ex->getMessage());
@@ -84,9 +82,13 @@ class ResetPasswordController extends Controller
         $this->validate($request, [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
-       confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha',
-        ], ['password.regex' => 'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.', 'g-recaptcha-response.required' => 'Please verify that you are not a robot.',
+            'password' => [
+                'required',
+                'confirmed',
+                new StrongPassword(),
+            ],
+            'g-recaptcha-response' => 'sometimes|required|captcha',
+        ], ['g-recaptcha-response.required' => 'Please verify that you are not a robot.',
             'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.',
         ]);
         try {
@@ -105,6 +107,10 @@ class ResetPasswordController extends Controller
 
                         $user->password = \Hash::make($pass);
                         $user->save();
+
+                        //logout all other session when password is updated
+                        \Auth::logoutOtherDevices($pass);
+
                         \DB::table('password_resets')->where('email', $user->email)->delete();
 
                         return redirect('login')->with('success', 'You have successfully changed your password');

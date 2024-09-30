@@ -758,4 +758,24 @@ return [
     'existings_invoice' => 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again',
     'user_suspend' => 'This user is suspended from system. Restore the user to view details',
     'country_notfound' => 'Country could not be determined',
+
+    //Strong Password
+    'strong_password' => 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.',
+
+    'password_requirements' => 'Your password must have:',
+    'password_requirements_list' => [
+        ['id' => 'length', 'text' => 'Between 8-16 characters'],
+        ['id' => 'letter', 'text' => 'Lowercase characters (a-z)'],
+        ['id' => 'capital', 'text' => 'Uppercase characters (A-Z)'],
+        ['id' => 'number', 'text' => 'Numbers (0-9)'],
+        ['id' => 'space', 'text' => 'Special characters (~*!@$#%_+.?:,{ })'],
+    ],
+
+    'old_pass_required' => 'Old password is required.',
+    'new_pass_required' => 'New password is required.',
+    'confirm_pass_required' => 'Confirm password is required.',
+    'password_mismatch' => 'Confirm password do not match.',
+    'password_required' => 'Password is required.',
+    'new_password_different' => 'The new password must be different from the old password.',
+    'reset_link_expired' => 'Your reset password link has been expired or not found. Please try reset password again.',
 ];

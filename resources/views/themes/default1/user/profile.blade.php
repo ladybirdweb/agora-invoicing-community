@@ -151,7 +151,7 @@ input:checked + .slider:before {
                   {!! Form::label('mobile',null,Lang::get('message.mobile')) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                      <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
-                        
+
                     {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'mobile_code']) !!}
                     <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
@@ -249,7 +249,7 @@ input:checked + .slider:before {
                         @endif
 
                 </div>
-                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Updating..."><i class="fas fa-sync">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
                 {!! Form::token() !!}
                 {!! Form::close() !!}
@@ -257,12 +257,7 @@ input:checked + .slider:before {
         </div>
     </div>
     <div class="col-md-6">
-
-
-
-        {!! Form::model($user,['url'=>'password' , 'method' => 'PATCH']) !!}
-
-
+        {!! Form::model($user, ['url' => 'password', 'method' => 'PATCH', 'id' => 'changePasswordForm']) !!}
 
         <div class="card card-secondary card-outline">
             <div class="card-header">
@@ -295,22 +290,51 @@ input:checked + .slider:before {
                 <!-- old password -->
                 <div class="form-group has-feedback {{ $errors->has('old_password') ? 'has-error' : '' }}">
                     {!! Form::label('old_password',null,['class' => 'required'],Lang::get('message.old_password')) !!}
+                    <div class="input-group">
                     {!! Form::password('old_password',['placeholder'=>'Password','class' => 'form-control']) !!}
+                        <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                        </div>
+                    </div>
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <!-- new password -->
                 <div class="form-group has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
                     {!! Form::label('new_password',null,['class' => 'required'],Lang::get('message.new_password')) !!}
+                    <div class="input-group has-validation">
                     {!! Form::password('new_password',['placeholder'=>'New Password','class' => 'form-control']) !!}
+                    <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                    </div>
+                </div>
+                    <small class="text-sm text-muted" id="pswd_info" style="display: none;">
+                       <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
+                        <ul class="pl-4">
+                            @foreach (\Lang::get('message.password_requirements_list') as $requirement)
+                                <li id="{{ $requirement['id'] }}" class="text-danger">{{ $requirement['text'] }}</li>
+                            @endforeach
+                        </ul>
+                    </small>
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <!-- cofirm password -->
                 <div class="form-group has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
                     {!! Form::label('confirm_password',null,['class' => 'required'],Lang::get('message.confirm_password')) !!}
+                    <div class="input-group">
                     {!! Form::password('confirm_password',['placeholder'=>'Confirm Password','class' => 'form-control']) !!}
+                    <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                    </div>
+                </div>
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
-                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Updating..."><i class="fas fa-sync">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}
             </div>
         </div>
@@ -367,7 +391,130 @@ input:checked + .slider:before {
 {!! Form::close() !!}
 <script src="{{asset('common/js/2fa.js')}}"></script>
 <script>
-// get the country data from the plugin
+    $(document).ready(function() {
+        const requiredFields = {
+            old_password: @json(trans('message.old_pass_required')),
+            new_password: @json(trans('message.new_pass_required')),
+            confirm_password: @json(trans('message.confirm_pass_required')),
+        };
+
+        const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/;
+
+        $('#changePasswordForm').on('submit', function(e) {
+            const fields = {
+                old_password: $('#old_password'),
+                new_password: $('#new_password'),
+                confirm_password: $('#confirm_password'),
+            };
+
+            // Clear previous errors
+            Object.values(fields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(fields).forEach(field => {
+                if (!fields[field].val()) {
+                    showError(fields[field], requiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            if (isValid && fields.old_password.val() === fields.new_password.val()) {
+                showError(fields.new_password,  @json(trans('message.new_password_different')));
+                isValid = false;
+            }
+
+            // Validate new password against the regex
+            if (isValid && !pattern.test(fields.new_password.val())) {
+                showError(fields.new_password, @json(trans('message.strong_password')));
+                isValid = false;
+            }
+
+            // Check if new password and confirm password match
+            if (isValid && fields.new_password.val() !== fields.confirm_password.val()) {
+                showError(fields.confirm_password, @json(trans('message.password_mismatch')));
+                isValid = false;
+            }
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        // Function to remove error when inputting data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['new_password', 'old_password', 'confirm_password'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                removeErrorMessage(this);
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        // Cache the selectors for better performance
+        var $pswdInfo = $('#pswd_info');
+        var $newPassword = $('#new_password');
+        var $length = $('#length');
+        var $letter = $('#letter');
+        var $capital = $('#capital');
+        var $number = $('#number');
+        var $special = $('#space');
+
+        // Function to update validation classes
+        function updateClass(condition, $element) {
+            $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+        }
+
+        // Initially hide the password requirements
+        $pswdInfo.hide();
+
+        // Show/hide password requirements on focus/blur
+        $newPassword.focus(function() {
+            $pswdInfo.show();
+        }).blur(function() {
+            $pswdInfo.hide();
+        });
+
+        // Perform real-time validation on keyup
+        $newPassword.on('keyup', function() {
+            var pswd = $(this).val();
+
+            // Validate the length (8 to 16 characters)
+            updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+            // Validate lowercase letter
+            updateClass(/[a-z]/.test(pswd), $letter);
+
+            // Validate uppercase letter
+            updateClass(/[A-Z]/.test(pswd), $capital);
+
+            // Validate number
+            updateClass(/\d/.test(pswd), $number);
+
+            // Validate special character
+            updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+        });
+    });
+
+    // get the country data from the plugin
      $(document).ready(function(){
          $(function () {
              //Initialize Select2 Elements

@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Forgot Paswword | Faveo Helpdesk
+Forgot Password | Faveo Helpdesk
 @stop
 @section('page-heading')
  Forgot Password
@@ -173,8 +173,8 @@ main
                                             // $('#alertMessage2').html(result);
                                             $("#resetmail").html("Send Email");
                                              setTimeout(function() {
-                                            location.reload(true);
-                                        }, 10000);
+                                                 window.location.href = '{{ route('login') }}';
+                                             }, 10000);
                                           
                                               // response.success("Success");
                                            }  else {
@@ -186,8 +186,8 @@ main
                                             // $('#alertMessage2').html(result);
                                             $("#resetmail").html("Send Email");
                                              setTimeout(function() {
-                                            location.reload(true);
-                                        }, 10000);
+                                                 window.location.href = '{{ route('login') }}';
+                                             }, 10000);
                                            }
                                         },
                                      error: function(ex) {
@@ -197,8 +197,8 @@ main
                                         $('#errorMessage').show();
                                         $("#resetmail").html("Send Email");
                                          setTimeout(function() {
-                                            location.reload(true);
-                                        }, 10000);
+                                             window.location.href = '{{ route('login') }}';
+                                         }, 10000);
                                     }
                                     });
                                   }

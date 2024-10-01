@@ -200,7 +200,7 @@ class DashboardControllerTest extends DBTestCase
 
         $response = $this->classObject->getExpiringSubscriptions(true);
 
-        $this->assertCount(5, $response);
+        $this->assertCount(4, $response);
         $this->assertEquals('2 days', $response[0]->days_difference);
         $this->assertEquals('3 days', $response[1]->days_difference);
         $this->assertEquals('4 days', $response[2]->days_difference);

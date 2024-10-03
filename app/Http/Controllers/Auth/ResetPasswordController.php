@@ -85,7 +85,7 @@ class ResetPasswordController extends Controller
         $this->validate($request, [
             'token' => 'required',
             'email' => 'required|email',
-            'password' =>[
+            'password' => [
                 'required',
                 'confirmed',
                 new StrongPassword(),

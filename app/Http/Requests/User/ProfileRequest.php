@@ -64,7 +64,7 @@ class ProfileRequest extends Request
                 'old_password' => 'required|min:6',
                 'new_password' => [
                     'required',
-                    new StrongPassword()
+                    new StrongPassword(),
                 ],
                 'confirm_password' => 'required|same:new_password',
             ];
@@ -81,7 +81,7 @@ class ProfileRequest extends Request
                 'terms' => 'accepted',
                 'password' => [
                     'required',
-                    new StrongPassword()
+                    new StrongPassword(),
                 ],
                 'password_confirmation' => 'required|same:password',
                 // 'country'               => 'required|exists:countries,country_code_char2',

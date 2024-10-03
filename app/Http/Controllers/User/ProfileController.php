@@ -70,6 +70,10 @@ class ProfileController extends Controller
             if (Hash::check($oldpassword, $currentpassword)) {
                 $user->password = Hash::make($newpassword);
                 $user->save();
+
+                //logout all other session when password is updated
+                \Auth::logoutOtherDevices($newpassword);
+
                 \DB::table('password_resets')->where('email', $user->email)->delete();
 
                 return redirect()->back()->with('success1', \Lang::get('message.updated-successfully'));

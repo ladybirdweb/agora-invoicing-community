@@ -372,6 +372,15 @@ foreach($scripts as $script) {
                             </div>
                         </div>
 
+                        <small class="text-sm text-muted" id="pswd_info" style="display: none;">
+                            <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
+                            <ul class="pl-4">
+                                @foreach (\Lang::get('message.password_requirements_list') as $requirement)
+                                    <li id="{{ $requirement['id'] }}" class="text-danger">{{ $requirement['text'] }}</li>
+                                @endforeach
+                            </ul>
+                        </small>
+
                         <div class="form-row">
                         <div class="form-group col-lg-6">
                             @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
@@ -556,6 +565,51 @@ foreach($scripts as $script) {
 
     <script type="text/javascript">
 
+        $(document).ready(function() {
+            // Cache the selectors for better performance
+            var $pswdInfo = $('#pswd_info');
+            var $newPassword = $('#password');
+            var $length = $('#length');
+            var $letter = $('#letter');
+            var $capital = $('#capital');
+            var $number = $('#number');
+            var $special = $('#space');
+
+            // Function to update validation classes
+            function updateClass(condition, $element) {
+                $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+            }
+
+            // Initially hide the password requirements
+            $pswdInfo.hide();
+
+            // Show/hide password requirements on focus/blur
+            $newPassword.focus(function() {
+                $pswdInfo.show();
+            }).blur(function() {
+                $pswdInfo.hide();
+            });
+
+            // Perform real-time validation on keyup
+            $newPassword.on('keyup', function() {
+                var pswd = $(this).val();
+
+                // Validate the length (8 to 16 characters)
+                updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+                // Validate lowercase letter
+                updateClass(/[a-z]/.test(pswd), $letter);
+
+                // Validate uppercase letter
+                updateClass(/[A-Z]/.test(pswd), $capital);
+
+                // Validate number
+                updateClass(/\d/.test(pswd), $number);
+
+                // Validate special character
+                updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+            });
+        });
 
 
         function verify_otp_check(){
@@ -1212,7 +1266,7 @@ foreach($scripts as $script) {
 
 
         function password1check(){
-            var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+            var pattern = new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/);
             if (pattern.test($('#password').val())){
                 $('#password1check').hide();
                 $('#password').css("border-color","");
@@ -1221,7 +1275,7 @@ foreach($scripts as $script) {
             }
             else{
                 $('#password1check').show();
-                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
+                $('#password1check').html(@json(\Lang::get('message.strong_password')));
                 $('#password1check').focus();
                 $('#password').css("border-color","red");
                 $('#password1check').css({"color":"red","margin-top":"0px"});
@@ -1438,13 +1492,23 @@ foreach($scripts as $script) {
                         $("#register").attr('disabled', false);
                         $("#register").html("Register");
                         $('html, body').animate({scrollTop: 0}, 500);
+                        // Parse the error response
+                        var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
 
-                        // Convert responseText to an object if it's a string
-                        var response = {};
-                        try {
-                            response = typeof data.responseText === 'string' ? JSON.parse(data.responseText) : data.responseText;
-                        } catch (e) {
-                            console.error('Error parsing responseText:', e);
+                        // Create the alert box
+                        var html = '<div class="alert alert-danger alert-dismissable">' +
+                            '<strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' +
+                            response.message +
+                            ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            '<br><ul>';
+
+                        // Loop through errors and display them
+                        if (response.errors) {
+                            for (var key in response.errors) {
+                                if (response.errors.hasOwnProperty(key)) {
+                                    html += '<li>' + response.errors[key][0] + '</li>';
+                                }
+                            }
                         }
 
                         // Pick the message or set a default message
@@ -1466,9 +1530,9 @@ foreach($scripts as $script) {
                         html += '</div>';
 
                         $('#error').show();
-                        document.getElementById('error').innerHTML = html;
+                        $('#error').html(html);
 
-                        setInterval(function() {
+                        setTimeout(function(){
                             $('#error').slideUp(3000);
                         }, 8000);
                     }

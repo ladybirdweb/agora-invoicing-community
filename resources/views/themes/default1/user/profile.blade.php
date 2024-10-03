@@ -302,6 +302,14 @@ input:checked + .slider:before {
                 <div class="form-group has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
                     {!! Form::label('new_password',null,['class' => 'required'],Lang::get('message.new_password')) !!}
                     {!! Form::password('new_password',['placeholder'=>'New Password','class' => 'form-control']) !!}
+                    <small class="text-sm text-muted" id="pswd_info" style="display: none;">
+                       <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
+                        <ul class="pl-4">
+                            @foreach (\Lang::get('message.password_requirements_list') as $requirement)
+                                <li id="{{ $requirement['id'] }}" class="text-danger">{{ $requirement['text'] }}</li>
+                            @endforeach
+                        </ul>
+                    </small>
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <!-- cofirm password -->
@@ -367,7 +375,53 @@ input:checked + .slider:before {
 {!! Form::close() !!}
 <script src="{{asset('common/js/2fa.js')}}"></script>
 <script>
-// get the country data from the plugin
+    $(document).ready(function() {
+        // Cache the selectors for better performance
+        var $pswdInfo = $('#pswd_info');
+        var $newPassword = $('#new_password');
+        var $length = $('#length');
+        var $letter = $('#letter');
+        var $capital = $('#capital');
+        var $number = $('#number');
+        var $special = $('#space');
+
+        // Function to update validation classes
+        function updateClass(condition, $element) {
+            $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+        }
+
+        // Initially hide the password requirements
+        $pswdInfo.hide();
+
+        // Show/hide password requirements on focus/blur
+        $newPassword.focus(function() {
+            $pswdInfo.show();
+        }).blur(function() {
+            $pswdInfo.hide();
+        });
+
+        // Perform real-time validation on keyup
+        $newPassword.on('keyup', function() {
+            var pswd = $(this).val();
+
+            // Validate the length (8 to 16 characters)
+            updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+            // Validate lowercase letter
+            updateClass(/[a-z]/.test(pswd), $letter);
+
+            // Validate uppercase letter
+            updateClass(/[A-Z]/.test(pswd), $capital);
+
+            // Validate number
+            updateClass(/\d/.test(pswd), $number);
+
+            // Validate special character
+            updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+        });
+    });
+
+    // get the country data from the plugin
      $(document).ready(function(){
          $(function () {
              //Initialize Select2 Elements

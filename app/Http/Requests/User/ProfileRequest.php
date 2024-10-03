@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\Request;
+use App\Rules\StrongPassword;
 
 class ProfileRequest extends Request
 {
@@ -61,7 +62,10 @@ class ProfileRequest extends Request
         if ($this->segment(1) == 'password' || $this->segment(1) == 'my-password') {
             return [
                 'old_password' => 'required|min:6',
-                'new_password' => 'required|min:6',
+                'new_password' => [
+                    'required',
+                    new StrongPassword()
+                ],
                 'confirm_password' => 'required|same:new_password',
             ];
         }
@@ -75,7 +79,10 @@ class ProfileRequest extends Request
                 'mobile' => 'required',
                 'address' => 'required',
                 'terms' => 'accepted',
-                'password' => 'required|min:6',
+                'password' => [
+                    'required',
+                    new StrongPassword()
+                ],
                 'password_confirmation' => 'required|same:password',
                 // 'country'               => 'required|exists:countries,country_code_char2',
             ];

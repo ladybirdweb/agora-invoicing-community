@@ -306,7 +306,14 @@ input:checked + .slider:before {
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">New Password</label>
                                         <div class="col-lg-9">
                                             {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password','required' => 'required']) !!}
-
+                                            <small class="text-sm text-muted" id="pswd_info" style="display: none;">
+                                                <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
+                                                <ul class="pl-4">
+                                                    @foreach (\Lang::get('message.password_requirements_list') as $requirement)
+                                                        <li id="{{ $requirement['id'] }}" class="text-danger">{{ $requirement['text'] }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </small>
                                          <h6 id="newpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -373,6 +380,51 @@ input:checked + .slider:before {
 
                     <script>
 
+                        $(document).ready(function() {
+                            // Cache the selectors for better performance
+                            var $pswdInfo = $('#pswd_info');
+                            var $newPassword = $('#new_password');
+                            var $length = $('#length');
+                            var $letter = $('#letter');
+                            var $capital = $('#capital');
+                            var $number = $('#number');
+                            var $special = $('#space');
+
+                            // Function to update validation classes
+                            function updateClass(condition, $element) {
+                                $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+                            }
+
+                            // Initially hide the password requirements
+                            $pswdInfo.hide();
+
+                            // Show/hide password requirements on focus/blur
+                            $newPassword.focus(function() {
+                                $pswdInfo.show();
+                            }).blur(function() {
+                                $pswdInfo.hide();
+                            });
+
+                            // Perform real-time validation on keyup
+                            $newPassword.on('keyup', function() {
+                                var pswd = $(this).val();
+
+                                // Validate the length (8 to 16 characters)
+                                updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+                                // Validate lowercase letter
+                                updateClass(/[a-z]/.test(pswd), $letter);
+
+                                // Validate uppercase letter
+                                updateClass(/[A-Z]/.test(pswd), $capital);
+
+                                // Validate number
+                                updateClass(/\d/.test(pswd), $number);
+
+                                // Validate special character
+                                updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+                            });
+                        });
                 //Password Validation
                    function oldpasswordcheck(){
                     var oldpassword_val = $('#old_password').val();
@@ -396,7 +448,7 @@ input:checked + .slider:before {
                    }
 
               function newpasswordcheck(){
-              var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+              var pattern = new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/);
               if (pattern.test($('#new_password').val())){
                  $('#newpasswordcheck').hide();
                   $('#new_password').css("border-color","");
@@ -405,7 +457,7 @@ input:checked + .slider:before {
               }
               else{
                  $('#newpasswordcheck').show();
-                $('#newpasswordcheck').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                $('#newpasswordcheck').html(@json(\Lang::get('message.strong_password')));
                  $('#newpasswordcheck').focus();
                 $('#new_password').css("border-color","red");
                 $('#newpasswordcheck').css({"color":"red","margin-top":"5px"});

@@ -157,6 +157,7 @@ class BaseClientController extends Controller
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             }
+
             return redirect()->back()->with('fails', 'Incorrect old password');
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());

@@ -257,12 +257,7 @@ input:checked + .slider:before {
         </div>
     </div>
     <div class="col-md-6">
-
-
-
-        {!! Form::model($user,['url'=>'password' , 'method' => 'PATCH']) !!}
-
-
+        {!! Form::model($user, ['url' => 'password', 'method' => 'PATCH', 'id' => 'changePasswordForm']) !!}
 
         <div class="card card-secondary card-outline">
             <div class="card-header">
@@ -375,6 +370,78 @@ input:checked + .slider:before {
 {!! Form::close() !!}
 <script src="{{asset('common/js/2fa.js')}}"></script>
 <script>
+    $(document).ready(function() {
+        const requiredFields = {
+            old_password: @json(trans('message.old_pass_required')),
+            new_password: @json(trans('message.new_pass_required')),
+            confirm_password: @json(trans('message.confirm_pass_required')),
+        };
+
+        const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/;
+
+        $('#changePasswordForm').on('submit', function(e) {
+            const fields = {
+                old_password: $('#old_password'),
+                new_password: $('#new_password'),
+                confirm_password: $('#confirm_password'),
+            };
+
+            // Clear previous errors
+            Object.values(fields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next('.error').remove();
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(fields).forEach(field => {
+                if (!fields[field].val()) {
+                    showError(fields[field], requiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            // Validate new password against the regex
+            if (isValid && !pattern.test(fields.new_password.val())) {
+                showError(fields.new_password, @json(trans('message.strong_password')));
+                isValid = false;
+            }
+
+            // Check if new password and confirm password match
+            if (isValid && fields.new_password.val() !== fields.confirm_password.val()) {
+                showError(fields.confirm_password, @json(trans('message.password_mismatch')));
+                isValid = false;
+            }
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        // Function to remove error when inputting data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['new_password', 'old_password', 'confirm_password'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                removeErrorMessage(this);
+            });
+        });
+    });
+
     $(document).ready(function() {
         // Cache the selectors for better performance
         var $pswdInfo = $('#pswd_info');

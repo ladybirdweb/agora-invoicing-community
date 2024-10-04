@@ -770,4 +770,9 @@ return [
         ['id' => 'number', 'text' => 'Numbers (0-9)'],
         ['id' => 'space', 'text' => 'Special characters (~*!@$#%_+.?:,{ })'],
     ],
+
+    'old_pass_required' => 'Old password is required.',
+    'new_pass_required' => 'New password is required.',
+    'confirm_pass_required' => 'Confirm password is required.',
+    'password_mismatch' => 'Passwords do not match.',
 ];

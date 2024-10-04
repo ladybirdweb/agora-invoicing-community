@@ -144,7 +144,7 @@ input:checked + .slider:before {
                 <div class="col-lg-9">
 
                     <div class="tab-pane tab-pane-navigation active" id="profile" role="tabpanel">
-                       
+
                            <div class="row">
                              {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
                                                 <div class="d-flex justify-content-center mb-4" id="profile_img">
@@ -153,11 +153,11 @@ input:checked + .slider:before {
                                                   <?php
                                             $user = \DB::table('users')->find(\Auth::user()->id);
                                             ?>
-                                           
+
 
                                                 <div class="profile-image-inner-container bg-color-primary">
                                                      @if($user && $user->profile_pic)
-                                                  
+
                                                       <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}">
 
                                                     @else
@@ -205,7 +205,7 @@ input:checked + .slider:before {
                                         <div class="col-lg-9">
                                               {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
                                                <!--<input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
-                                                
+
                                             {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'incode']) !!}
                                             <span id="invalid-msg" class="hide"></span>
                                                <span id="inerror-msg" class="hide"></span>
@@ -234,14 +234,14 @@ input:checked + .slider:before {
                                         </div>
                                         <div class="col-lg-3 {{ $errors->has('state') ? 'has-error' : '' }}">
                                            <select name="state" class="form-control text-3 h-auto py-2">
-                       
+
                                                 @if(count($state)>0)
-                                                
+
                                                     <option value="{{$state['id']}}">{{$state['name']}}</option>
-                                                
+
                                                 <option value="">Select State</option>
                                                 @foreach($states as $key=>$value)
-                                                
+
                                                     <option value="{{$key}}">{{$value}}</option>
                                                 @endforeach
                                                @endif
@@ -277,12 +277,12 @@ input:checked + .slider:before {
                                             <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading...">Update</button>
                                         </div>
                                     </div>
-                               
+
 
                             </div>
                             {!! Form::close() !!}
                         </div>
-                         
+
 
                     </div>
 
@@ -292,12 +292,12 @@ input:checked + .slider:before {
 
                             <div class="col-lg-12 order-1 order-lg-2">
 
-                                {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH']) !!}
+                                {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH' , 'id' => 'changePasswordForm']) !!}
 
                                     <div class="form-group row {{ $errors->has('old_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password','required' => 'required']) !!}
+                                            {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password']) !!}
                                              <h6 id="oldpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -305,7 +305,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('new_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">New Password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password','required' => 'required']) !!}
+                                            {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password']) !!}
                                             <small class="text-sm text-muted" id="pswd_info" style="display: none;">
                                                 <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
                                                 <ul class="pl-4">
@@ -321,7 +321,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Confirm password</label>
                                         <div class="col-lg-9">
-                                            {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password','required' => 'required']) !!}
+                                            {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password']) !!}
                                             <h6 id ="confirmpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -361,7 +361,7 @@ input:checked + .slider:before {
                                 </div>
 
                                 <div class="form-check form-switch">
-                          
+
 
                       <input value="{{$is2faEnabled}}" id="2fa" name="modules_settings" class="form-check-input" style="padding-right: 2rem;padding-left: 2rem;padding-top: 1rem!important;padding-bottom: 1rem!important;" type="checkbox" role="switch" <?php if ($is2faEnabled == 1) { echo 'checked'; } ?>>
 
@@ -379,6 +379,79 @@ input:checked + .slider:before {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
                     <script>
+
+                        $(document).ready(function() {
+                            const requiredFields = {
+                                old_password: @json(trans('message.old_pass_required')),
+                                new_password: @json(trans('message.new_pass_required')),
+                                confirm_password: @json(trans('message.confirm_pass_required')),
+                            };
+
+                            const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/;
+
+                            $('#changePasswordForm').on('submit', function(e) {
+                                const fields = {
+                                    old_password: $('#old_password'),
+                                    new_password: $('#new_password'),
+                                    confirm_password: $('#confirm_password'),
+                                };
+
+                                // Clear previous errors
+                                Object.values(fields).forEach(field => {
+                                    field.removeClass('is-invalid');
+                                    field.next('.error').remove();
+                                });
+
+                                let isValid = true;
+
+                                const showError = (field, message) => {
+                                    field.addClass('is-invalid');
+                                    field.after(`<span class='error invalid-feedback'>${message}</span>`);
+                                };
+
+                                // Validate required fields
+                                Object.keys(fields).forEach(field => {
+                                    if (!fields[field].val()) {
+                                        showError(fields[field], requiredFields[field]);
+                                        isValid = false;
+                                    }
+                                });
+
+                                // Validate new password against the regex
+                                if (isValid && !pattern.test(fields.new_password.val())) {
+                                    showError(fields.new_password, @json(trans('message.strong_password')));
+                                    isValid = false;
+                                }
+
+                                // Check if new password and confirm password match
+                                if (isValid && fields.new_password.val() !== fields.confirm_password.val()) {
+                                    showError(fields.confirm_password, @json(trans('message.password_mismatch')));
+                                    isValid = false;
+                                }
+
+                                // If validation fails, prevent form submission
+                                if (!isValid) {
+                                    e.preventDefault();
+                                }
+                            });
+
+                            // Function to remove error when inputting data
+                            const removeErrorMessage = (field) => {
+                                field.classList.remove('is-invalid');
+                                const error = field.nextElementSibling;
+                                if (error && error.classList.contains('error')) {
+                                    error.remove();
+                                }
+                            };
+
+                            // Add input event listeners for all fields
+                            ['new_password', 'old_password', 'confirm_password'].forEach(id => {
+                                document.getElementById(id).addEventListener('input', function() {
+                                    removeErrorMessage(this);
+                                });
+                            });
+                        });
+
 
                         $(document).ready(function() {
                             // Cache the selectors for better performance
@@ -560,7 +633,7 @@ input:checked + .slider:before {
              //Initialize Select2 Elements
              $('.select2').select2()
          });
- 
+
     var incountry = $('#country').val();
 
     getCode(incountry);
@@ -638,11 +711,11 @@ input:checked + .slider:before {
     });
 
 
-           
+
 
 
 });
-    
+
 
    function getCountryAttr(val) {
         if(val == 'IN') {
@@ -676,7 +749,7 @@ input:checked + .slider:before {
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-            
+
                 // $("#mobile_code").val(data);
                 $("#code_hidden").val(data);
             }

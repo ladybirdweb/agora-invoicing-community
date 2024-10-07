@@ -65,12 +65,12 @@ class ProfileControllerTest extends DBTestCase
 
         $response = $this->call('PATCH', 'password', [
             'old_password' => 'Test@1234',
-            'new_password' => 'NewTest1234',
-            'confirm_password' => 'NewTest1234',
+            'new_password' => 'NewTest@1234',
+            'confirm_password' => 'NewTest@1234',
         ]);
 
         // Assert the password has been updated correctly
-        $this->assertTrue(\Hash::check('NewTest1234', \Auth::user()->getAuthPassword()));
+        $this->assertTrue(\Hash::check('NewTest@1234', \Auth::user()->getAuthPassword()));
 
         // Assert the old password no longer works
         $this->assertFalse(\Hash::check('Test@1234', \Auth::user()->getAuthPassword()));
@@ -94,8 +94,8 @@ class ProfileControllerTest extends DBTestCase
 
         $response = $this->call('PATCH', 'password', [
             'old_password' => 'Test@1234',
-            'new_password' => 'NewTest1234',
-            'confirm_password' => 'NewTest1234',
+            'new_password' => 'NewTest@1234',
+            'confirm_password' => 'NewTest@1234',
         ]);
 
         $this->assertEquals(0, Password::where('email', $user->email)->get()->count());

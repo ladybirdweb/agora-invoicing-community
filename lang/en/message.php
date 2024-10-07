@@ -774,5 +774,6 @@ return [
     'old_pass_required' => 'Old password is required.',
     'new_pass_required' => 'New password is required.',
     'confirm_pass_required' => 'Confirm password is required.',
-    'password_mismatch' => 'Passwords do not match.',
+    'password_mismatch' => 'Confirm password do not match.',
+    'password_required' => 'Password is required.',
 ];

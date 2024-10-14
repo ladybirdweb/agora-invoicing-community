@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\ApiKey;
+use App\FileSystemSettings;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -232,15 +233,56 @@ trait ApiKeySettings
 
     public function showFileStorage()
     {
-        $fileStorage = Setting::first()->value('file_storage');
+        $fileStorageSettings = FileSystemSettings::first();
+
+        $fileStorage = (object) [
+            'disk'              => $fileStorageSettings->disk ?? '',
+            'local_file_storage_path' => $fileStorageSettings->local_file_storage_path ?? '',
+            's3_bucket'         => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
+            's3_region'         => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
+            's3_access_key'     => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
+            's3_secret_key'     => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
+        ];
 
         return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
     }
 
     public function updateStoragePath(Request $request)
     {
-        $updatedPath = Setting::find(1)->update(['file_storage' => $request->input('fileuploadpath')]);
+        $validated = $request->validate([
+            'disk' => 'required|string',
+            'path' => 'required|string',
+            's3_bucket' => 'required_if:disk,s3|string',
+            's3_region' => 'required_if:disk,s3|string',
+            's3_access_key' => 'required_if:disk,s3|string',
+            's3_secret_key' => 'required_if:disk,s3|string',
+        ]);
 
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        $fileStorageSettings = FileSystemSettings::firstOrCreate([]);
+        $fileStorageSettings->disk = $validated['disk'];
+        $fileStorageSettings->local_file_storage_path = $validated['path'];
+
+        if ($validated['disk'] === 's3') {
+            $fileStorageSettings->s3_bucket = $validated['s3_bucket'];
+            $fileStorageSettings->s3_region = $validated['s3_region'];
+            $fileStorageSettings->s3_access_key = $validated['s3_access_key'];
+            $fileStorageSettings->s3_secret_key = $validated['s3_secret_key'];
+
+            $s3Settings = [
+                'AWS_ACCESS_KEY_ID' => $validated['s3_access_key'],
+                'AWS_SECRET_ACCESS_KEY' => $validated['s3_secret_key'],
+                'AWS_BUCKET' => $validated['s3_bucket'],
+                'AWS_DEFAULT_REGION' => $validated['s3_region'],
+            ];
+
+            foreach ($s3Settings as $key => $value) {
+                setEnvValue($key, $value);
+            }
+        }
+
+        $fileStorageSettings->save();
+
+        return successResponse('Storage settings updated successfully.');
+
     }
 }

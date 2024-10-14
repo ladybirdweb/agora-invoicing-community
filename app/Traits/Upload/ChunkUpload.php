@@ -2,6 +2,8 @@
 
 namespace App\Traits\Upload;
 
+use App\Facades\Attach;
+use App\FileSystemSettings;
 use App\Model\Common\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -52,37 +54,25 @@ trait ChunkUpload
      */
     protected function saveFile(UploadedFile $file)
     {
-        $fileName = $this->createFilename($file);
-        // Group files by mime type
-        //$mime = str_replace('/', '-', $file->getMimeType());
-        // Group files by the date (week
-        // $dateFolder = date("Y-m-W");
-        // Build the file path
-        //   $filePath = "upload/{$mime}/{$dateFolder}/";
-        $filePath = Setting::find(1)->value('file_storage');
-        $finalPath = Setting::find(1)->value('file_storage');
-        // move the file name
-        $file->move($finalPath, $fileName);
+        $fileName = Attach::createFilename($file);
+        $fileStoragePath = FileSystemSettings::find(1)->value('local_file_storage_path');
+
+        if (isS3Enabled()) {
+            $folder = 'products';
+            $filePath = Attach::put($folder, $file, null, true);
+
+            return response()->json([
+                'path' => $filePath,
+                'name' => $fileName,
+            ]);
+        }
+
+        // Move the file to the local storage path
+        $file->move($fileStoragePath, $fileName);
 
         return response()->json([
-            'path' => $filePath,
+            'path' => $fileStoragePath,
             'name' => $fileName,
         ]);
-    }
-
-    /**
-     * Create unique filename for uploaded file.
-     *
-     * @param  UploadedFile  $file
-     * @return string
-     */
-    protected function createFilename(UploadedFile $file)
-    {
-        $extension = $file->getClientOriginalExtension();
-        $filename = str_replace('.'.$extension, '', $file->getClientOriginalName()); // Filename without extension
-        // Add timestamp hash to name of the file
-        $filename .= '_'.md5(time()).'.'.$extension;
-
-        return $filename;
     }
 }

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Facades\Attach;
+use App\FileSystemSettings;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use http\Header;
 use Illuminate\Http\Request;
 
 class BaseProductController extends ExtendedBaseProductController
@@ -172,14 +175,18 @@ class BaseProductController extends ExtendedBaseProductController
 
                         return view('themes.default1.front.download', compact('release'));
                     } else {
-                        header('Content-type: Zip');
-                        header('Content-Description: File Transfer');
-                        header('Content-Disposition: attachment; filename='.$name.'.zip');
-                        header('Content-type: application/zip');
-                        header('Content-Length: '.filesize($release));
-                        readfile($release);
-                        // ob_end_clean();
-                        // flush();
+                        if(isS3Enabled()){
+                            downloadExternalFile($release,$name);
+                        } else{
+                            header('Content-type: Zip');
+                            header('Content-Description: File Transfer');
+                            header('Content-Disposition: attachment; filename='.$name.'.zip');
+                            header('Content-type: application/zip');
+                            header('Content-Length: '.filesize($release));
+                            readfile($release);
+                            // ob_end_clean();
+                            // flush();
+                        }
                     }
                 } else {
                     return redirect()->back()->with('fails', \Lang::get('activate-your-account'));
@@ -204,7 +211,12 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            $path = Setting::find(1)->value('file_storage');
+            if(isS3Enabled()){
+                $relese = Attach::download('products/'. $fileName);
+
+                return $relese;
+            }
+            $path = FileSystemSettings::find(1)->value('local_file_storage_path');
             // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
             //$relese = '/home/faveo/products/'.$file->file;
             $relese = $path.'/'.$file->file;
@@ -223,7 +235,12 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
-            $path = Setting::find(1)->value('file_storage');
+            if(isS3Enabled()){
+                $relese = Attach::download('products/'. $fileName);
+
+                return $relese;
+            }
+            $path = FileSystemSettings::find(1)->value('local_file_storage_path');
             $relese = $path.'/'.$file->file;
 
             return $relese;

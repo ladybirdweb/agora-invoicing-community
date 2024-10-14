@@ -649,6 +649,7 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
 function isS3Enabled()
 {
     $fileSettings = FileSystemSettings::select('disk')->first();
+
     return $fileSettings->disk === 's3';
 }
 
@@ -678,7 +679,7 @@ function downloadExternalFile($url, $filename)
     // Set headers to force the file download
     header('Content-Type: application/octet-stream');
     header('Content-Description: File Transfer');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
     header('Expires: 0');

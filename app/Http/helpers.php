@@ -645,3 +645,51 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
             return '<span class='.'"'.$badge.' '.$badge.'-info">Beta</span>';
     }
 }
+
+function isS3Enabled()
+{
+    $fileSettings = FileSystemSettings::select('disk')->first();
+    return $fileSettings->disk === 's3';
+}
+
+function setEnvValue($key, $value)
+{
+    $envFile = app()->environmentFilePath();
+    $content = File::get($envFile);
+
+    $keyExists = preg_match("/^{$key}=.*/m", $content);
+
+    if ($keyExists) {
+        $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+    } else {
+        // Append the new key-value pair
+        $content .= "\n{$key}={$value}";
+    }
+
+    // Save the updated .env file
+    File::put($envFile, $content);
+}
+
+function downloadExternalFile($url, $filename)
+{
+    // Open a cURL session to the external URL
+    $ch = curl_init($url);
+
+    // Set headers to force the file download
+    header('Content-Type: application/octet-stream');
+    header('Content-Description: File Transfer');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Connection: Keep-Alive');
+
+    // Execute the cURL session and directly output the data
+    curl_exec($ch);
+
+    // Close the cURL session
+    curl_close($ch);
+
+    // Terminate script execution after the download is complete
+    exit;
+}

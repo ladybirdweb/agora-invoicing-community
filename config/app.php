@@ -220,6 +220,7 @@ return [
         App\Providers\ImageUploadHelperServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        \App\Providers\AttachmentHelperServiceProvider::class,
 
     ],
 

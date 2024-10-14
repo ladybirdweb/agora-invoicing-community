@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Traits\Upload;
-
+use App\Facades\Attach;
+use App\FileSystemSettings;
+use App\Model\Common\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
@@ -36,7 +38,7 @@ trait ChunkUpload
                 'done' => $handler->getPercentageDone(),
                 'status' => true,
             ]);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $response = ['success' => 'false', 'message' => $ex->getMessage()];
 
             return response()->json(compact('response'), 500);

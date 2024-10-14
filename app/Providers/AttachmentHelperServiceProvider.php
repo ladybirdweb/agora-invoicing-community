@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helper\AttachmentHelper;
 use Illuminate\Support\ServiceProvider;
 
 class AttachmentHelperServiceProvider extends ServiceProvider

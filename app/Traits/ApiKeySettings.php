@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\ApiKey;
 use App\FileSystemSettings;
 use App\Model\Common\Mailchimp\MailchimpSetting;
-use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use DateTime;
 use Illuminate\Http\Request;
@@ -236,12 +235,12 @@ trait ApiKeySettings
         $fileStorageSettings = FileSystemSettings::first();
 
         $fileStorage = (object) [
-            'disk'              => $fileStorageSettings->disk ?? '',
+            'disk' => $fileStorageSettings->disk ?? '',
             'local_file_storage_path' => $fileStorageSettings->local_file_storage_path ?? '',
-            's3_bucket'         => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
-            's3_region'         => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
-            's3_access_key'     => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
-            's3_secret_key'     => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
+            's3_bucket' => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
+            's3_region' => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
+            's3_access_key' => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
+            's3_secret_key' => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
         ];
 
         return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
@@ -283,6 +282,5 @@ trait ApiKeySettings
         $fileStorageSettings->save();
 
         return successResponse('Storage settings updated successfully.');
-
     }
 }

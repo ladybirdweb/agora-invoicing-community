@@ -647,6 +647,7 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
 function isS3Enabled()
 {
     $fileSettings = FileSystemSettings::select('disk')->first();
+
     return $fileSettings->disk === 's3';
 }
 
@@ -668,7 +669,7 @@ function setEnvValue($key, $value)
     File::put($envFile, $content);
 }
 
- function downloadExternalFile($url, $filename)
+function downloadExternalFile($url, $filename)
 {
     // Open a cURL session to the external URL
     $ch = curl_init($url);
@@ -676,7 +677,7 @@ function setEnvValue($key, $value)
     // Set headers to force the file download
     header('Content-Type: application/octet-stream');
     header('Content-Description: File Transfer');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
     header('Expires: 0');
@@ -691,4 +692,3 @@ function setEnvValue($key, $value)
     // Terminate script execution after the download is complete
     exit;
 }
-

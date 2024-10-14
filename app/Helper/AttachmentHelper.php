@@ -43,7 +43,7 @@ class AttachmentHelper
 
         $filename = Str::ascii(basename($path)) ?: basename($path);
 
-        if(isS3Enabled()){
+        if (isS3Enabled()) {
             return $adapter->temporaryUrl($path, now()->addMinutes(5));
         }
 

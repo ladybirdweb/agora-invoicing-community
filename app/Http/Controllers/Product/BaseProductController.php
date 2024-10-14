@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -172,9 +171,9 @@ class BaseProductController extends ExtendedBaseProductController
 
                         return view('themes.default1.front.download', compact('release'));
                     } else {
-                        if(isS3Enabled()){
-                            downloadExternalFile($release,$name);
-                        } else{
+                        if (isS3Enabled()) {
+                            downloadExternalFile($release, $name);
+                        } else {
                             header('Content-type: Zip');
                             header('Content-Description: File Transfer');
                             header('Content-Disposition: attachment; filename='.$name.'.zip');
@@ -208,8 +207,8 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            if(isS3Enabled()){
-                $relese = Attach::download('products/'. $fileName);
+            if (isS3Enabled()) {
+                $relese = Attach::download('products/'.$fileName);
 
                 return $relese;
             }
@@ -232,8 +231,8 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
-            if(isS3Enabled()){
-                $relese = Attach::download('products/'. $fileName);
+            if (isS3Enabled()) {
+                $relese = Attach::download('products/'.$fileName);
 
                 return $relese;
             }

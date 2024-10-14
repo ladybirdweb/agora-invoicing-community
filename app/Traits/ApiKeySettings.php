@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\ApiKey;
+use App\FileSystemSettings;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\StatusSetting;
 use DateTime;

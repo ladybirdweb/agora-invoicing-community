@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
+use App\FileSystemSettings;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
-use App\FileSystemSettings;
 use Illuminate\Support\Facades\Response;
 
 class BaseProductController extends ExtendedBaseProductController
@@ -175,18 +175,18 @@ class BaseProductController extends ExtendedBaseProductController
                         return view('themes.default1.front.download', compact('release'));
                     } else {
                         if (isS3Enabled()) {
-                            downloadExternalFile($release,$name);
+                            downloadExternalFile($release, $name);
                         }
 
                         if ($release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
                             return $release;
                         }
 
-                        if (!is_file($release)) {
+                        if (! is_file($release)) {
                             return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                         }
 
-                        return Response::download($release, basename($name) . '.zip', [
+                        return Response::download($release, basename($name).'.zip', [
                             'Content-Type' => 'application/zip',
                         ]);
                     }

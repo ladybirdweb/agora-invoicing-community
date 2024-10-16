@@ -7,6 +7,7 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
+use App\Facades\Attach;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -207,12 +208,13 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            if (isS3Enabled()) {
+            $fileStorageSettings = FileSystemSettings::find(1);
+            if (isS3Enabled() || ($fileStorageSettings->product_storage === 'app' && $fileStorageSettings->disk === 'system')) {
                 $relese = Attach::download('products/'.$fileName);
 
                 return $relese;
             }
-            $path = FileSystemSettings::find(1)->value('local_file_storage_path');
+            $path = $fileStorageSettings->local_file_storage_path;
             // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
             //$relese = '/home/faveo/products/'.$file->file;
             $relese = $path.'/'.$file->file;

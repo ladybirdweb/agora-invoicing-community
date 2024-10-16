@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Facades\Attach;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -133,21 +134,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function getProfilePicAttribute($value)
     {
-        // dd($value);
         $image = \Gravatar::get($this->attributes['email']);
+
         if ($value) {
-            $file = storage_path('common/images/users/'.$value);
-            if (is_file($file)) {
-                $mime = \File::mimeType($file);
-                $extension = \File::extension($file);
-                if (mime($mime) == 'image' && mime($extension) == 'image') {
-                    $image = asset('common/images/users/'.$value);
-                } else {
-                    unlink($file);
-                }
-            } else {
-                return $value;
-            }
+            $image = Attach::getUrlPath('common/images/users/' . $value);
         }
 
         return $image;

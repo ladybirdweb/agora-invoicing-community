@@ -8,6 +8,8 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
+use App\FileSystemSettings;
+use Illuminate\Support\Facades\Response;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -173,17 +175,20 @@ class BaseProductController extends ExtendedBaseProductController
                         return view('themes.default1.front.download', compact('release'));
                     } else {
                         if (isS3Enabled()) {
-                            downloadExternalFile($release, $name);
-                        } else {
-                            header('Content-type: Zip');
-                            header('Content-Description: File Transfer');
-                            header('Content-Disposition: attachment; filename='.$name.'.zip');
-                            header('Content-type: application/zip');
-                            header('Content-Length: '.filesize($release));
-                            readfile($release);
-                            // ob_end_clean();
-                            // flush();
+                            downloadExternalFile($release,$name);
                         }
+
+                        if ($release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+                            return $release;
+                        }
+
+                        if (!is_file($release)) {
+                            return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                        }
+
+                        return Response::download($release, basename($name) . '.zip', [
+                            'Content-Type' => 'application/zip',
+                        ]);
                     }
                 } else {
                     return redirect()->back()->with('fails', \Lang::get('activate-your-account'));

@@ -57,7 +57,7 @@
                 <div id="s3_config" style="display: none;">
                     <div class="row">
                         <div class="form-group col-sm-6">
-                            <label class="required">{{ trans('s3_bucket') }}</label>
+                            <label class="required">{{ trans('message.s3_bucket') }}</label>
                             <input class="form-control" name="s3_bucket" type="text" id="s3_bucket"
                                    placeholder="Enter S3 Bucket Name" value="{{ $fileStorage->s3_bucket }}">
                         </div>
@@ -71,7 +71,7 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="required">{{ trans('message.s3_access_key') }}</label>
-                            <input class="form-control" name="s3_access_key" type="text" id="s3_access_key"
+                            <input class="form-control" name="s3_access_key" type="password" id="s3_access_key"
                                    placeholder="Enter S3 Access Key" value="{{ $fileStorage->s3_access_key }}">
                         </div>
                         <div class="form-group col-sm-6">

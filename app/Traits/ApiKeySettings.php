@@ -297,5 +297,4 @@ trait ApiKeySettings
 
         return successResponse(trans('message.setting_updated'));
     }
-
 }

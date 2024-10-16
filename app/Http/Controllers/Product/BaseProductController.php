@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Facades\Attach;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
-use App\Facades\Attach;
 
 class BaseProductController extends ExtendedBaseProductController
 {

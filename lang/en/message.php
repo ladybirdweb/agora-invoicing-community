@@ -758,4 +758,26 @@ return [
     'existings_invoice' => 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again',
     'user_suspend' => 'This user is suspended from system. Restore the user to view details',
     'country_notfound' => 'Country could not be determined',
+
+    //file storage
+
+    'file_storage' => 'File Storage',
+    'set_file_storage' => 'Set file storage path',
+    'storage_disk' => 'Storage Disk',
+    'storage_path' => 'Storage Path',
+    's3_bucket' => 'S3 Bucket',
+    's3_region' => 'S3 Region',
+    's3_access_key' => 'S3 Access Key',
+    's3_secret_key' => 'S3 Secret Key',
+    's3_endpoint_url' => 'S3 Endpoint URL',
+    'product_storage' => 'Product Storage',
+    'product_storage_required' => 'Product Storage is required',
+    'disk_required' => 'Storage Disk is required',
+    'path_required' => 'Storage Path is required',
+    's3_bucket_required' => 'S3 Bucket is required',
+    's3_region_required' => 'S3 Region is required',
+    's3_access_key_required' => 'S3 Access Key is required',
+    's3_secret_key_required' => 'S3 Secret Key is required',
+    's3_endpoint_url_required' => 'S3 Endpoint URL is required',
+    'setting_updated' => 'Storage settings updated successfully.',
 ];

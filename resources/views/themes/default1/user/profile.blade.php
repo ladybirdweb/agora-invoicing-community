@@ -242,11 +242,7 @@ input:checked + .slider:before {
                        <?php
                         $user = \DB::table('users')->find(\Auth::user()->id);
                         ?>
-                        @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" class="img-thumbnail" style="height: 50px;">
-                        @else
-                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" class="img-thumbnail" style="height: 50px;" />
-                        @endif
 
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>

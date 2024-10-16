@@ -44,7 +44,7 @@ class AttachmentHelper
         $filename = Str::ascii(basename($path)) ?: basename($path);
 
         if (isS3Enabled()) {
-            return $adapter->temporaryUrl($path, now()->addMinutes(5));
+            return $adapter->temporaryUrl($path, now()->addHour());
         }
 
         return $adapter->download($path, $filename);
@@ -67,13 +67,24 @@ class AttachmentHelper
      * @param  UploadedFile  $file
      * @return string
      */
-    protected function createFilename(UploadedFile $file)
+    public function createFilename(UploadedFile $file)
     {
         $extension = $file->getClientOriginalExtension();
-        $filename = str_replace('.'.$extension, '', $file->getClientOriginalName()); // Filename without extension
+        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Filename without extension
         // Add timestamp hash to name of the file
         $filename .= '_'.md5(time()).'.'.$extension;
 
         return $filename;
+    }
+
+    public function getUrlPath($path, $disk = null)
+    {
+        $adapter = $this->getStorageAdapter($disk);
+
+        if (isS3Enabled()) {
+            return $adapter->temporaryUrl($path, now()->addMinute());
+        }
+
+        return asset($adapter->url($path));
     }
 }

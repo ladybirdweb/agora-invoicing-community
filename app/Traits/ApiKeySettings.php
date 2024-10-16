@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\ApiKey;
 use App\FileSystemSettings;
+use App\Http\Requests\UpdateStoragePathRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\StatusSetting;
 use DateTime;
@@ -237,41 +238,54 @@ trait ApiKeySettings
         $fileStorage = (object) [
             'disk' => $fileStorageSettings->disk ?? '',
             'local_file_storage_path' => $fileStorageSettings->local_file_storage_path ?? '',
+            'product_storage' => $fileStorageSettings->product_storage ?? '',
             's3_bucket' => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
             's3_region' => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
             's3_access_key' => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
             's3_secret_key' => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
+            's3_endpoint_url' => env('AWS_ENDPOINT', $fileStorageSettings->s3_endpoint_url ?? ''),
         ];
 
         return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
     }
 
-    public function updateStoragePath(Request $request)
+    public function updateStoragePath(UpdateStoragePathRequest $request)
     {
-        $validated = $request->validate([
-            'disk' => 'required|string',
-            'path' => 'required|string',
-            's3_bucket' => 'required_if:disk,s3|string',
-            's3_region' => 'required_if:disk,s3|string',
-            's3_access_key' => 'required_if:disk,s3|string',
-            's3_secret_key' => 'required_if:disk,s3|string',
-        ]);
+        $disk = $request->input('disk');
+        $productStorage = $request->input('product_storage');
+        $path = $request->input('path');
+        $s3Bucket = $request->input('s3_bucket');
+        $s3Region = $request->input('s3_region');
+        $s3AccessKey = $request->input('s3_access_key');
+        $s3SecretKey = $request->input('s3_secret_key');
+        $s3EndpointUrl = $request->input('s3_endpoint_url');
 
         $fileStorageSettings = FileSystemSettings::firstOrCreate([]);
-        $fileStorageSettings->disk = $validated['disk'];
-        $fileStorageSettings->local_file_storage_path = $validated['path'];
 
-        if ($validated['disk'] === 's3') {
-            $fileStorageSettings->s3_bucket = $validated['s3_bucket'];
-            $fileStorageSettings->s3_region = $validated['s3_region'];
-            $fileStorageSettings->s3_access_key = $validated['s3_access_key'];
-            $fileStorageSettings->s3_secret_key = $validated['s3_secret_key'];
+        $fileStorageSettings->disk = $disk;
+
+        if ($disk === 'system') {
+            $fileStorageSettings->product_storage = $productStorage;
+            if ($productStorage === 'system') {
+                $fileStorageSettings->local_file_storage_path = $path;
+            }
+        }
+
+        if ($disk === 's3') {
+            $fileStorageSettings->fill([
+                's3_bucket' => $s3Bucket,
+                's3_region' => $s3Region,
+                's3_access_key' => $s3AccessKey,
+                's3_secret_key' => $s3SecretKey,
+                's3_endpoint_url' => $s3EndpointUrl,
+            ]);
 
             $s3Settings = [
-                'AWS_ACCESS_KEY_ID' => $validated['s3_access_key'],
-                'AWS_SECRET_ACCESS_KEY' => $validated['s3_secret_key'],
-                'AWS_BUCKET' => $validated['s3_bucket'],
-                'AWS_DEFAULT_REGION' => $validated['s3_region'],
+                'AWS_ACCESS_KEY_ID' => $s3AccessKey,
+                'AWS_SECRET_ACCESS_KEY' => $s3SecretKey,
+                'AWS_BUCKET' => $s3Bucket,
+                'AWS_DEFAULT_REGION' => $s3Region,
+                'AWS_ENDPOINT' => $s3EndpointUrl,
             ];
 
             foreach ($s3Settings as $key => $value) {
@@ -281,6 +295,7 @@ trait ApiKeySettings
 
         $fileStorageSettings->save();
 
-        return successResponse('Storage settings updated successfully.');
+        return successResponse(trans('message.setting_updated'));
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Facades\Attach;
 use App\Facades\ImageUpload;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicensePermissionsController;
@@ -109,8 +110,8 @@ class BaseClientController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
-                $fileName = ImageUpload::saveImageToStorage($request->file('profile_pic'), 'common/images/users');
-                $user->profile_pic = $fileName;
+                $path = Attach::put('common/images/users/', $request->file('profile_pic'), null, true);
+                $user->profile_pic = basename($path);
             }
             $user->first_name = strip_tags($request->input('first_name'));
             $user->user_name = strip_tags($request->input('user_name'));

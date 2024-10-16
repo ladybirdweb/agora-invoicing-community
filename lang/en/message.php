@@ -780,4 +780,5 @@ return [
     's3_secret_key_required' => 'S3 Secret Key is required',
     's3_endpoint_url_required' => 'S3 Endpoint URL is required',
     'setting_updated' => 'Storage settings updated successfully.',
+    'file_not_exist' => 'Requested file doest not exits',
 ];

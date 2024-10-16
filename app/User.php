@@ -137,7 +137,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $image = \Gravatar::get($this->attributes['email']);
 
         if ($value) {
-            $image = Attach::getUrlPath('common/images/users/' . $value);
+            $image = Attach::getUrlPath('common/images/users/'.$value);
         }
 
         return $image;

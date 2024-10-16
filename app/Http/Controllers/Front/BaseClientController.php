@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Facades\Attach;
-use App\Facades\ImageUpload;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;

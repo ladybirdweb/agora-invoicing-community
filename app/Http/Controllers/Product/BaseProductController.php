@@ -175,6 +175,9 @@ class BaseProductController extends ExtendedBaseProductController
                         return view('themes.default1.front.download', compact('release'));
                     } else {
                         if (isS3Enabled()) {
+                            if(!(Attach::exists('products/'.explode("?",basename($release))[0]))) {
+                                return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                            }
                             downloadExternalFile($release, $name);
                         }
 
@@ -186,9 +189,7 @@ class BaseProductController extends ExtendedBaseProductController
                             return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                         }
 
-                        return Response::download($release, basename($name).'.zip', [
-                            'Content-Type' => 'application/zip',
-                        ]);
+                        return Response::download($release);
                     }
                 } else {
                     return redirect()->back()->with('fails', \Lang::get('activate-your-account'));

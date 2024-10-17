@@ -282,10 +282,9 @@ trait ApiKeySettings
                 's3_endpoint_url' => $s3EndpointUrl,
             ]);
 
+            $s3Validate = $this->validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl, $s3Bucket);
 
-            $s3Validate = $this->validateS3Credentials($s3Region,$s3AccessKey,$s3SecretKey,$s3EndpointUrl,$s3Bucket);
-
-            if(!$s3Validate){
+            if (! $s3Validate) {
                 return errorResponse(trans('message.s3_error'));
             }
 
@@ -307,21 +306,20 @@ trait ApiKeySettings
         return successResponse(trans('message.setting_updated'));
     }
 
-    private function validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl,$s3Bucket)
+    private function validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl, $s3Bucket)
     {
         try {
             $s3Client = new S3Client([
                 'region' => $s3Region,
                 'version' => 'latest',
                 'credentials' => [
-                    'key'    => $s3AccessKey,
+                    'key' => $s3AccessKey,
                     'secret' => $s3SecretKey,
                 ],
                 'endpoint' => $s3EndpointUrl,
             ]);
 
             return $s3Client->doesBucketExist($s3Bucket);
-
         } catch (AwsException $e) {
             return errorResponse($e->getMessage());
         }

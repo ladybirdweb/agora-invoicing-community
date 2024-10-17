@@ -150,12 +150,15 @@ class BaseClientController extends Controller
                 $user->password = Hash::make($newpassword);
                 $user->save();
 
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                //logout all other session when password is updated
+                \Auth::logoutOtherDevices($newpassword);
 
-                return $response;
-            } else {
-                return redirect()->back()->with('fails', 'Incorrect old password');
+                \DB::table('password_resets')->where('email', $user->email)->delete();
+
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             }
+
+            return redirect()->back()->with('fails', 'Incorrect old password');
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $result = [$e->getMessage()];

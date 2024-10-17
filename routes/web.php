@@ -9,7 +9,6 @@ use App\Http\Controllers\Front;
 use App\Http\Controllers\Github;
 use App\Http\Controllers\Google2FAController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Installer;
 use App\Http\Controllers\Jobs;
 use App\Http\Controllers\License;
 use App\Http\Controllers\License\LocalizedLicenseController;
@@ -54,27 +53,6 @@ Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
 Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
 
 // !social logins rotes end
-/*
-* Installer Routes
-*/
-
-Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
-    Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
-
-    Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
-
-    Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
-
-    Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
-
-    Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
-
-    Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
-
-    Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
-
-    Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
-});
 
 Route::middleware('installAgora')->group(function () {
     Route::post('store_toggle_state', [Common\TemplateController::class, 'toggle'])->withoutMiddleware(['auth', 'admin']);

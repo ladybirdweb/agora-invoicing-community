@@ -1,0 +1,15 @@
+{
+  "extensions":
+  {
+    "optional":["ldap", "redis", "ionCube Loader", "soap"],
+    "required": ["curl","ctype", "imap", "mbstring", "openssl","tokenizer", "pdo_mysql", "zip", "pdo", "mysqli", "iconv", "XML", "json", "fileinfo", "gd"]
+
+  },
+  "requisites": [ "PHP Version", "Database version", "PHP exec function", "env", "max_execution_time", "allow_url_fopen", "cURL", "app_url", "ssl_certificate"],
+  "min_php_version": "7.3.1",
+  "min_mysql_version": [50700, "v5.7.0"],
+  "max_mysql_version": [50799, "v5.7.*"],
+  "min_mariadb_version":[100300, "v10.3"],
+  "max_mariadb_version":[100600,"v10.6"]
+
+}

@@ -91,6 +91,7 @@ class AttachmentHelper
     public function exists($path, $disk = null)
     {
         $adapter = $this->getStorageAdapter($disk);
+
         return $adapter->exists($path);
     }
 }

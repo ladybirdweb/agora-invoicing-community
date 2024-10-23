@@ -24,6 +24,8 @@ class Kernel extends ConsoleKernel
         //
         \App\Console\Commands\Inspire::class,
         \App\Console\Commands\Install::class,
+        \App\Console\Commands\DropTables::class,
+        \App\Console\Commands\InstallDB::class,
         CurrencyManage::class,
         \App\Console\Commands\ExpiryCron::class,
         SetupTestEnv::class,

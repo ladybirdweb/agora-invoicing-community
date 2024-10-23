@@ -152,7 +152,7 @@ class DatabaseSetupController extends Controller
      */
     private function getDBConnection()
     {
-        try{
+        try {
             $connection = mysqli_init();
             mysqli_ssl_set($connection, DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, null, null);
             if (DB_PORT != '' && is_numeric(DB_PORT)) {
@@ -169,8 +169,7 @@ class DatabaseSetupController extends Controller
             }
 
             return $connection;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

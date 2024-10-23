@@ -152,22 +152,27 @@ class DatabaseSetupController extends Controller
      */
     private function getDBConnection()
     {
-        $connection = mysqli_init();
-        mysqli_ssl_set($connection, DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, null, null);
-        if (DB_PORT != '' && is_numeric(DB_PORT)) {
-            $this->setupConfig(DB_HOST, DB_USER, DB_PASS, DB_PORT, [DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, DB_SSL_VERIFY_PEER_CERT]);
-            if (! mysqli_real_connect($connection, DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)) {
+        try{
+            $connection = mysqli_init();
+            mysqli_ssl_set($connection, DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, null, null);
+            if (DB_PORT != '' && is_numeric(DB_PORT)) {
+                $this->setupConfig(DB_HOST, DB_USER, DB_PASS, DB_PORT, [DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, DB_SSL_VERIFY_PEER_CERT]);
+                if (! mysqli_real_connect($connection, DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)) {
+                    return false;
+                }
+
+                return $connection;
+            }
+            $this->setupConfig(DB_HOST, DB_USER, DB_PASS, '', [DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, DB_SSL_VERIFY_PEER_CERT]);
+            if (! mysqli_real_connect($connection, DB_HOST, DB_USER, DB_PASS, DB_NAME)) {
                 return false;
             }
 
             return $connection;
         }
-        $this->setupConfig(DB_HOST, DB_USER, DB_PASS, '', [DB_SSL_KEY, DB_SSL_CERT, DB_SSL_CA, DB_SSL_VERIFY_PEER_CERT]);
-        if (! mysqli_real_connect($connection, DB_HOST, DB_USER, DB_PASS, DB_NAME)) {
+        catch (Exception $e) {
             return false;
         }
-
-        return $connection;
     }
 
     public function testResult()

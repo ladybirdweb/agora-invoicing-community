@@ -190,7 +190,7 @@ class DatabaseSetupController extends Controller
                     }
 
                     if ($connection) {
-                        $results[] = new TestResult(\Lang::get('installer_messages.connected_as')." ".DB_USER.'@'.DB_HOST.DB_PORT, STATUS_OK);
+                        $results[] = new TestResult(\Lang::get('installer_messages.connected_as').' '.DB_USER.'@'.DB_HOST.DB_PORT, STATUS_OK);
                         $this->checkDBPrerequisites($results, $mysqli_ok, $connection);
                     } else {
                         $mysqli_ok = false;

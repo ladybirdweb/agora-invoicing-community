@@ -40,7 +40,9 @@ class DropTables extends Command
     {
         $database = env('DB_DATABASE');
         $droplist = \Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
-        $droplist = implode(',', array_map(function($table) { return "`$table`"; }, $droplist));
+        $droplist = implode(',', array_map(function ($table) {
+            return "`$table`";
+        }, $droplist));
 
         try {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
@@ -50,7 +52,7 @@ class DropTables extends Command
 
             DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 
-            $this->comment(PHP_EOL . 'All tables were dropped successfully.' . PHP_EOL);
+            $this->comment(PHP_EOL.'All tables were dropped successfully.'.PHP_EOL);
         } catch (\Exception $e) {
             // Log the error or handle it accordingly
             $this->error($e->getMessage());

@@ -177,7 +177,7 @@ class InstallerController extends Controller
         rename($exampleEnvPath, $envPath);
     }
 
-    public function updateInstallEnv(string $environment, string $driver, $redisConfig = [])
+    public function updateInstallEnv(string $environment, string $driver = null, $redisConfig = [])
     {
         $env = base_path().DIRECTORY_SEPARATOR.'.env';
         if (! is_file($env)) {
@@ -194,7 +194,7 @@ class InstallerController extends Controller
         }
 
         // If Redis is used as cache driver, update .env and relevant database records
-        if ($driver == 'redis') {
+        if ($driver === 'redis') {
             // Update .env file to set CACHE_DRIVER to 'redis'
             file_put_contents($env, str_replace('CACHE_DRIVER='.getenv('CACHE_DRIVER'), 'CACHE_DRIVER='.'redis', file_get_contents($env)));
 

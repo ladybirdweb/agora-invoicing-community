@@ -203,6 +203,10 @@ class BillingDependencyController extends Controller
 
                     break;
 
+                case 'ssl_certificate' :
+                    $this->checkSSLCertificateOnDomain($arrayOfRequisites, $errorCount);
+                    break;
+
                 default:
 
                     break;
@@ -379,5 +383,53 @@ class BillingDependencyController extends Controller
         } catch(\Exception $ex) {
             throw new Exception($ex->getMessage());
         }
+    }
+
+    public function checkSSLCertificateOnDomain(array &$arrayOfRequisites, int &$errorCount, $cliAppUrl = null)
+    {
+        $name = 'Domain SSL Certificate';
+        try {
+            $color = 'green';
+            $infoString = 'Valid SSL certificate found, application can be served securely over HTTPS';
+            $stream = stream_context_create(['ssl' => ['capture_peer_cert' => true]]);
+            $sslHost = $cliAppUrl.'/cron-test.php';
+            if (! $cliAppUrl) {
+                $url = preg_replace('#probe.php|api/check-updates#', 'cron-test.php', $_SERVER['REQUEST_URI']);
+                $sslHost = 'https://'.$_SERVER['HTTP_HOST'].$url;
+            }
+            $oldError = error_reporting();
+            error_reporting($oldError & ~ E_WARNING);
+            $read = fopen($sslHost, 'rb', false, $stream);
+            error_reporting($oldError);
+            if(!$read){
+                throw new \Exception('Unable to open stream');
+            }
+            $context = stream_context_get_params($read);
+            fclose($read);
+            $noSSL = is_null($context['options']['ssl']['peer_certificate']);
+            if ($noSSL) {
+                throw new \Exception($infoString);
+            }
+            array_push($arrayOfRequisites, ['extensionName' => $name, 'connection' => $infoString, 'color' => $color, 'errorCount' => $errorCount]);
+
+            return $arrayOfRequisites;
+        } catch (\Exception $e) {
+            $infoString = 'The system can only be opened with secure protocol over HTTPS. Please ensure a valid SSL certificate is installed on the server to serve the application securely over HTTPS.';
+            if($e->getMessage() == 'Unable to open stream'){
+                $infoString =  'Failed to open stream: ' . $infoString;
+            }
+            return $this->handleRequisiteErrors($arrayOfRequisites, $errorCount, $name, $infoString);
+        }
+    }
+    private function handleRequisiteErrors(array &$arrayOfRequisites, int &$errorCount, string $name, $infoString)
+    {
+        $errorCount += 1;
+        $color = 'red';
+        if ($this->extensionCheckFrom == 'auto-update') {
+            throw new \Exception($infoString);
+        }
+        array_push($arrayOfRequisites, ['extensionName' => 'Domain SSL Certificate', 'connection' => $infoString, 'color' => $color, 'errorCount' => $errorCount]);
+
+        return $arrayOfRequisites;
     }
 }

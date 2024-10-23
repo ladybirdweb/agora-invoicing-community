@@ -398,10 +398,10 @@ class BillingDependencyController extends Controller
                 $sslHost = 'https://'.$_SERVER['HTTP_HOST'].$url;
             }
             $oldError = error_reporting();
-            error_reporting($oldError & ~ E_WARNING);
+            error_reporting($oldError & ~E_WARNING);
             $read = fopen($sslHost, 'rb', false, $stream);
             error_reporting($oldError);
-            if(!$read){
+            if (! $read) {
                 throw new \Exception('Unable to open stream');
             }
             $context = stream_context_get_params($read);
@@ -415,12 +415,14 @@ class BillingDependencyController extends Controller
             return $arrayOfRequisites;
         } catch (\Exception $e) {
             $infoString = 'The system can only be opened with secure protocol over HTTPS. Please ensure a valid SSL certificate is installed on the server to serve the application securely over HTTPS.';
-            if($e->getMessage() == 'Unable to open stream'){
-                $infoString =  'Failed to open stream: ' . $infoString;
+            if ($e->getMessage() == 'Unable to open stream') {
+                $infoString = 'Failed to open stream: '.$infoString;
             }
+
             return $this->handleRequisiteErrors($arrayOfRequisites, $errorCount, $name, $infoString);
         }
     }
+
     private function handleRequisiteErrors(array &$arrayOfRequisites, int &$errorCount, string $name, $infoString)
     {
         $errorCount += 1;

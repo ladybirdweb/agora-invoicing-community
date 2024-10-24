@@ -120,11 +120,12 @@ class InstallerController extends Controller
     public function env($default, $host, $port, $database, $dbusername, $dbpassword, $appUrl = null)
     {
         $ENV = [
-            'APP_NAME' => 'Faveo:'.md5(uniqid()),
+            'APP_NAME' => 'Agora:'.md5(uniqid()),
             'APP_DEBUG' => 'false',
             'APP_BUGSNAG' => 'true',
-            'APP_URL' => $appUrl ?? url('/'), // for CLI installation
-            'APP_KEY' => 'base64:h3KjrHeVxyE+j6c8whTAs2YI+7goylGZ/e2vElgXT6I=',
+            'APP_URL' => $appUrl ?? url('/'),
+            'APP_KEY' => 'base64:6bir20aYSpt+tJUiTu3D/QRwddjvwAupLPAfu14uUmk=',
+            'QUERY_DETECTOR_ENABLED' => 'false',
             'APP_LOG_LEVEL' => 'debug',
             'DB_CONNECTION' => $default,
             'DB_HOST' => $host,
@@ -133,15 +134,15 @@ class InstallerController extends Controller
             'DB_DATABASE' => $database,
             'DB_USERNAME' => $dbusername,
             'DB_PASSWORD' => str_replace('"', '\"', $dbpassword),
-            'DB_ENGINE' => 'InnoDB', // Update after resolving InnoDB issues
+            'DB_ENGINE' => 'InnoDB',
             'CACHE_DRIVER' => 'file',
             'SESSION_DRIVER' => 'file',
-            'SESSION_COOKIE_NAME' => 'faveo_'.rand(0, 10000),
+            'SESSION_COOKIE_NAME' => 'agora_'.rand(0, 10000),
             'QUEUE_CONNECTION' => 'sync',
             'PROBE_PASS_PHRASE' => md5(uniqid()),
             'REDIS_DATABASE' => '0',
             'BROADCAST_DRIVER' => 'pusher',
-            'PUSHER_APP_ID' => str_random(16), // Use Str::random
+            'PUSHER_APP_ID' => str_random(16),
             'PUSHER_APP_KEY' => md5(uniqid()),
             'PUSHER_APP_SECRET' => md5(uniqid()),
             'PUSHER_APP_CLUSTER' => 'mt1',
@@ -151,6 +152,8 @@ class InstallerController extends Controller
             'MAIL_USERNAME' => '',
             'MAIL_PASSWORD' => '',
             'MAIL_ENCRYPTION' => '',
+            'NOCAPTCHA_SECRET' => '00',
+            'NOCAPTCHA_SITEKEY' => '00',
         ];
 
         $config = collect($ENV)

@@ -225,7 +225,11 @@ class InstallerController extends Controller
         $validator = \Validator::make($request->all(), [
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'user_name' => 'required|string|max:30|unique:users,user_name',
+            'user_name' => [
+                'required',
+                'regex:/^[a-zA-Z0-9 _\-@.]{3,20}$/',
+                'unique:users,user_name'
+            ],
             'email' => 'required|string|max:50|email|unique:users,email',
             'password' => [
                 'required',
@@ -237,6 +241,7 @@ class InstallerController extends Controller
             'redis_port' => 'nullable|required_if:cache_driver,redis|numeric',
             'environment' => 'required|string',
         ], [
+            'user_name.regex' => \Lang::get('installer_messages.user_name_regex'),
             'password.regex' => \Lang::get('installer_messages.password_regex'),
             'redis_host.required_if' => \Lang::get('installer_messages.redis_host_required'),
             'redis_password.required_if' => \Lang::get('installer_messages.redis_password_required'),

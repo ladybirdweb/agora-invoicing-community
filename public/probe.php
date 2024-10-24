@@ -143,18 +143,26 @@ $lang = fetchLang();
                             <div class="card-body">
                                 <p class="text-center lead text-bold"><?= $lang['title'] ?></p>
                                 <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <label for="inputEmail1" class="col-sm-12 col-form-label">
+                                            <?= $lang['magic_phrase'] ?><span style="color: red;">*</span>
+                                        </label>
+                                        <input type="password"
+                                               class="form-control <?= $showError ? 'is-invalid' : '' ?>"
+                                               id="phrase"
+                                               name="passPhrase"
+                                               placeholder="Enter magic phrase"
+                                               value="<?= isset($_POST['passPhrase']) ? htmlspecialchars($_POST['passPhrase']) : '' ?>">
 
-                                    <label for="inputEmail1" class="col-sm-2 col-form-label"><?= $lang['magic_phrase'] ?><span style="color: red;">*</span></label>
-
-                                    <div class="col-sm-10">
-
-                                        <input type="text" class="form-control" id="phrase" name="passPhrase" placeholder="">
+                                        <?php if (isset($showError) && $showError): ?>
+                                            <span class="error invalid-feedback"><?= $lang['magic_phrase_not_work'] ?></span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer">
 
-                                <button class="btn btn-primary float-right" name="submit">
+                                <button class="btn btn-primary float-right" name="submit" id="magic-phrase-submit">
                                     Continue&nbsp;
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
@@ -165,6 +173,43 @@ $lang = fetchLang();
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById("magic-phrase-submit").addEventListener("click", function(event) {
+                let inputField = document.getElementById("phrase");
+                let passPhrase = inputField.value.trim();
+                let errorMessage = "<?= addslashes($lang['magic_required']) ?>";
+
+                if (passPhrase === "") {
+                    event.preventDefault();
+                    showError(inputField, errorMessage);
+                } else {
+                    removeError(inputField);
+                }
+            });
+
+            const showError = (field, message) => {
+                field.classList.add('is-invalid');
+                const existingError = field.nextElementSibling;
+                if (existingError && existingError.classList.contains('error')) {
+                    existingError.remove();
+                }
+
+                const errorSpan = document.createElement('span');
+                errorSpan.className = 'error invalid-feedback';
+                errorSpan.innerText = message;
+                field.after(errorSpan);
+            };
+
+            const removeError = (field) => {
+                field.classList.remove('is-invalid');
+                const existingError = field.nextElementSibling;
+                if (existingError && existingError.classList.contains('error')) {
+                    existingError.remove();
+                }
+            };
+
+        </script>
+
     <?php } else { ?>
     <div class="content-wrapper" style="margin-top: 80px;">
 

@@ -108,5 +108,6 @@ return [
     'database_connection_unsuccessful' => 'Database connection unsuccessful.',
     'connected_as' => 'Connected to database as',
     'failed_connection' => 'Failed to connect to database.',
-
+    'magic_phrase_not_work' => 'The magic phrase you entered is not working.',
+    'magic_required' => 'The magic phrase is required.',
 ];

@@ -228,7 +228,7 @@ class InstallerController extends Controller
             'user_name' => [
                 'required',
                 'regex:/^[a-zA-Z0-9 _\-@.]{3,20}$/',
-                'unique:users,user_name'
+                'unique:users,user_name',
             ],
             'email' => 'required|string|max:50|email|unique:users,email',
             'password' => [

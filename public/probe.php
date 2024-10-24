@@ -701,7 +701,7 @@ $lang = fetchLang();
                                     <div class="col-6">
 
                                         <p class="lead"><?= $lang['next_step'] ?></p>
-                                        <a href="<?php echo getBaseUrl() ?>/login">
+                                        <a href="<?php echo getBaseUrl() ?>">
                                             <div class="btn btn-primary"><?= $lang['login_button'] ?>&nbsp;<i class="fas fa-arrow-right"></i></div>
                                         </a>
                                     </div>
@@ -858,6 +858,13 @@ $lang = fetchLang();
                 isValid = false;
             }
         });
+
+        var username_regex = /^[a-zA-Z0-9 _\-@.]{3,20}$/;
+
+        if (!username_regex.test(fields.username.val())) {
+            showError(fields.username, 'Username must be 3-20 characters and can only contain letters, numbers, spaces, underscores, hyphens, periods and @ symbol.');
+            isValid = false;
+        }
 
         // Validate passwords match
         if (fields.password.val() !== fields.confirmPassword.val()) {

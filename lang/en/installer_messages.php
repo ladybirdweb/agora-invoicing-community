@@ -110,4 +110,5 @@ return [
     'failed_connection' => 'Failed to connect to database.',
     'magic_phrase_not_work' => 'The magic phrase you entered is not working.',
     'magic_required' => 'The magic phrase is required.',
+    'user_name_regex' => 'Username must be 3-20 characters and can only contain letters, numbers, spaces, underscores, hyphens, periods and @ symbol.',
 ];

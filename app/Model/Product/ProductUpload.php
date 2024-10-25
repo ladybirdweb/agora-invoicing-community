@@ -8,7 +8,7 @@ class ProductUpload extends Model
 {
     protected $table = 'product_uploads';
 
-    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted', 'is_pre_release'];
+    protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted', 'release_type'];
 
     public function product()
     {

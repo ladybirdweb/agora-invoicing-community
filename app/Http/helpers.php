@@ -635,10 +635,13 @@ function cloudPopupProducts()
 function getPreReleaseStatusLabel($status, $badge = 'badge')
 {
     switch ($status) {
-        case '0':
+        case 'official':
             return '<span class='.'"'.$badge.' '.$badge.'-success">Official Release</span>';
 
-        case '1':
+        case 'pre_release':
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Pre Release</span>';
+
+        case 'beta':
+            return '<span class='.'"'.$badge.' '.$badge.'-info">Beta</span>';
     }
 }

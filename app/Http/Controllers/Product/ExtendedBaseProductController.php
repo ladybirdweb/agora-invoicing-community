@@ -8,7 +8,6 @@ use App\Model\Order\Invoice;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\ReleaseType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -51,7 +50,6 @@ class ExtendedBaseProductController extends Controller
             return $model->file;
         })
         ->addColumn('releasetype', function ($model) {
-
             return $model->release_type;
         })
         ->addColumn('action', function ($model) {

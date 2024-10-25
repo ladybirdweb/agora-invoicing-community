@@ -383,9 +383,27 @@ class HomeController extends BaseHomeController
                      * details of only those versions which are greater than current version else empty version details.
                      */
                     $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
-                    $releases = [0, $request->input('is_pre_release', 0)];
+                    $releases = ['official'];
+
+                    /**
+                     * To handle the older version Faveo
+                     */
+                    if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
+                        array_unshift($releases, 'pre_release');
+                    }
+
+                    /**
+                     * This condition will start work from Faveo v9.3.0.RC.1
+                     */
+                    match($request->input('release_type')){
+                        'pre_release' => array_unshift($releases, 'pre_release'),
+                        'beta' => array_unshift($releases, 'beta'),
+
+                        default => $releases
+                     };
+
                     $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')
-                        ->whereIn('is_pre_release', $releases)
+                        ->whereIn('release_type', $releases)
                     ->get()->filter(function ($newVersion) use ($currenctVersion) {
                         return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
                     })->sortBy('version', SORT_NATURAL)->toArray();
@@ -447,9 +465,26 @@ class HomeController extends BaseHomeController
              * to compares all these version with current version and if it finds a first greater version than current
              * version then it updates returns "updates available" else "no updates available".
              */
-            $releases = [0, $request->input('is_pre_release', 0)];
+            $releases = ['official'];
+
+            /**
+             * To handle the older version Faveo
+             */
+            if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
+                array_unshift($releases, 'pre_release');
+            }
+
+            /**
+             * This condition will start work from Faveo v9.3.0.RC.1
+             */
+            match($request->input('release_type')){
+                'pre_release' => array_unshift($releases, 'pre_release'),
+                'beta' => array_unshift($releases, 'beta'),
+                default => $releases
+            };
+
             $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)
-            ->whereIn('is_pre_release', $releases)
+            ->whereIn('release_type', $releases)
             ->orderBy('id', 'desc')->pluck('version')->toArray();
             $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
             $message = ['status' => '', 'message' => 'no-new-version-available'];

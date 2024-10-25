@@ -73,13 +73,17 @@
                     <input type="checkbox" value="0" name= "is_private" id="p_release" onclick="privateRelease()">
                     
                  </div>
-                   <div class="form-group col-md-4{{ $errors->has('is_pre_release') ? 'has-error' : '' }}">
+                   <div class="form-group col-md-4{{ $errors->has('release_type') ? 'has-error' : '' }}">
                     <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
                         </label></i>
                     <!-- name -->
-                    {!! Form::label('is_pre_release','Pre Release') !!}&nbsp;
-                    <input type="checkbox" value="0" name= "is_pre_release" id="pre_release" onclick="preRelease()">
-                    
+                    {!! Form::label('release_type','Releases') !!}&nbsp;
+                    <select name="release_type" id="release_type">
+                        <option value="official" selected>Official</option>
+                        <option value="pre_release">Pre Release</option>
+                        <option value="beta">Beta</option>
+                    </select>
+
                  </div>
 
                      

@@ -173,9 +173,15 @@ foreach($scripts as $script) {
 
                                 <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
 
-                                {!! Form::password('password1', ['class' => 'form-control form-control-lg text-4', 'id' => 'pass', 'style' => 'height: calc(1.5em + 0.75rem + 2px);']) !!}
-                                                                     
+                                <div class="input-group">
+                                    {!! Form::password('password1', ['class' => 'form-control form-control-lg text-4', 'id' => 'pass', 'style' => 'height: calc(1.5em + 0.75rem + 2px);']) !!}
 
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -277,7 +283,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">E-mail address <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
 
                                 {!! Form::email('email',null,['class'=>'form-control form-control-lg text-4', 'id'=>'email']) !!}
                                 <span id="emailcheck"></span>
@@ -358,16 +364,28 @@ foreach($scripts as $script) {
                             <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
-
+                                <div class="input-group">
                                 {!! Form::password('password',['class'=>'form-control form-control-lg text-4', 'id'=>'password']) !!}
+                                    <div class="input-group-append">
+                                        <span class="input-group-text pointer" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                </div>
                                 <span id="password1check"></span>
                             </div>
 
                             <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Re-enter Password <span class="text-color-danger">*</span></label>
-
+                                <div class="input-group">
                                {!! Form::password('password_confirmation',['class'=>'form-control form-control-lg text-4', 'id'=>'confirm_pass']) !!}
+                                    <div class="input-group-append">
+                                        <span class="input-group-text pointer" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                </div>
                                 <span id="conpasscheck"></span>
                             </div>
                         </div>

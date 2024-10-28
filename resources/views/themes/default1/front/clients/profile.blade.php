@@ -297,7 +297,14 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('old_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Password</label>
                                         <div class="col-lg-9">
+                                            <div class="input-group">
                                             {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password']) !!}
+                                                <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                                </div>
+                                            </div>
                                              <h6 id="oldpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -305,7 +312,14 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('new_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">New Password</label>
                                         <div class="col-lg-9">
+                                            <div class="input-group">
                                             {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password']) !!}
+                                                <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                                </div>
+                                            </div>
                                             <small class="text-sm text-muted" id="pswd_info" style="display: none;">
                                                 <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
                                                 <ul class="pl-4">
@@ -321,7 +335,14 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Confirm password</label>
                                         <div class="col-lg-9">
+                                            <div class="input-group">
                                             {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password']) !!}
+                                                <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                                </div>
+                                            </div>
                                             <h6 id ="confirmpasswordcheck"></h6>
                                         </div>
                                     </div>
@@ -399,14 +420,14 @@ input:checked + .slider:before {
                                 // Clear previous errors
                                 Object.values(fields).forEach(field => {
                                     field.removeClass('is-invalid');
-                                    field.next('.error').remove();
+                                    field.next().next('.error').remove();
                                 });
 
                                 let isValid = true;
 
                                 const showError = (field, message) => {
                                     field.addClass('is-invalid');
-                                    field.after(`<span class='error invalid-feedback'>${message}</span>`);
+                                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
                                 };
 
                                 // Validate required fields

@@ -589,7 +589,17 @@ $("document").ready(function(){
                 advance.hide();
             }
         });
+            function togglePasswordVisibility(iconElement) {
+                const inputGroup = iconElement.closest('.input-group');
+                const passwordInput = inputGroup.querySelector('input[type="password"], input[type="text"]');
+                const icon = iconElement.querySelector('i');
 
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+
+                icon.classList.toggle('fa-eye-slash', !isPassword);
+                icon.classList.toggle('fa-eye', isPassword);
+            }
           </script>
 
 

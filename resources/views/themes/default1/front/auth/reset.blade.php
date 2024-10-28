@@ -37,8 +37,14 @@ main
                             <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
-
+                                <div class="input-group">
                                 <input type="password" id="password" value="" class="form-control form-control-lg text-4" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?php } ?>>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                </div>
                                 <small class="text-sm text-muted" id="pswd_info" style="display: none;">
                                     <span class="font-weight-bold">{{ \Lang::get('message.password_requirements') }}</span>
                                     <ul class="pl-4">
@@ -56,10 +62,15 @@ main
                             <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
 
                                 <label class="form-label text-color-dark text-3">Confirm Password <span class="text-color-danger">*</span></label>
-
+                                <div class="input-group">
                                 {!! Form::password('password_confirmation',['placeholder'=>'Retype password','class' => 'form-control form-control-lg text-4' , 'id' => 'confirm_password']) !!}
 
-
+                                <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                                </div>
+                            </div>
                             </div>
                         </div>
 
@@ -94,14 +105,14 @@ main
                 // Clear previous errors
                 Object.values(fields).forEach(field => {
                     field.removeClass('is-invalid');
-                    field.next('.error').remove();
+                    field.next().next('.error').remove();
                 });
 
                 let isValid = true;
 
                 const showError = (field, message) => {
                     field.addClass('is-invalid');
-                    field.after(`<span class='error invalid-feedback'>${message}</span>`);
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
                 };
 
                 // Validate required fields

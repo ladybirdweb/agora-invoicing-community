@@ -65,6 +65,7 @@ class ProfileRequest extends Request
                 'new_password' => [
                     'required',
                     new StrongPassword(),
+                    'different:old_password',
                 ],
                 'confirm_password' => 'required|same:new_password',
             ];
@@ -92,6 +93,7 @@ class ProfileRequest extends Request
     public function messages()
     {
         return[
+            'new_password.different' => \Lang::get('message.new_password_different'),
             'mobile_code.required' => 'Enter Country code (mobile)',
             'state.required_if' => 'The state field is required when country is India.',
             'email.unique' => 'The email address has already been taken. Please choose a different email.',

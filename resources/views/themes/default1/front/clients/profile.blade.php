@@ -417,6 +417,11 @@ input:checked + .slider:before {
                                     }
                                 });
 
+                                if (isValid && fields.old_password.val() === fields.new_password.val()) {
+                                    showError(fields.new_password,  @json(trans('message.new_password_different')));
+                                    isValid = false;
+                                }
+
                                 // Validate new password against the regex
                                 if (isValid && !pattern.test(fields.new_password.val())) {
                                     showError(fields.new_password, @json(trans('message.strong_password')));

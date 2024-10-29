@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\v4_0_2_1;
+namespace Database\Seeders\v4_0_2_2_1;
 use Illuminate\Database\Seeder;
 use App\ReportColumn;
 use App\ReportSetting;

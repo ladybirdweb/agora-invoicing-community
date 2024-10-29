@@ -386,21 +386,21 @@ class HomeController extends BaseHomeController
                     $releases = ['official'];
 
                     /**
-                     * To handle the older version Faveo
+                     * To handle the older version Faveo.
                      */
                     if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
                         array_unshift($releases, 'pre_release');
                     }
 
                     /**
-                     * This condition will start work from Faveo v9.3.0.RC.1
+                     * This condition will start work from Faveo v9.3.0.RC.1.
                      */
-                    match($request->input('release_type')){
+                    match ($request->input('release_type')) {
                         'pre_release' => array_unshift($releases, 'pre_release'),
                         'beta' => array_unshift($releases, 'beta'),
 
                         default => $releases
-                     };
+                    };
 
                     $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')
                         ->whereIn('release_type', $releases)
@@ -468,16 +468,16 @@ class HomeController extends BaseHomeController
             $releases = ['official'];
 
             /**
-             * To handle the older version Faveo
+             * To handle the older version Faveo.
              */
             if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
                 array_unshift($releases, 'pre_release');
             }
 
             /**
-             * This condition will start work from Faveo v9.3.0.RC.1
+             * This condition will start work from Faveo v9.3.0.RC.1.
              */
-            match($request->input('release_type')){
+            match ($request->input('release_type')) {
                 'pre_release' => array_unshift($releases, 'pre_release'),
                 'beta' => array_unshift($releases, 'beta'),
                 default => $releases

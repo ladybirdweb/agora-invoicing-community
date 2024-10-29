@@ -777,4 +777,5 @@ return [
     'password_mismatch' => 'Confirm password do not match.',
     'password_required' => 'Password is required.',
     'new_password_different' => 'The new password must be different from the old password.',
+    'reset_link_expired' => 'Your reset password link has been expired or not found. Please try reset password again.',
 ];

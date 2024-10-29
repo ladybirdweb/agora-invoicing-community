@@ -47,27 +47,26 @@ class ResetPasswordController extends Controller
     {
         try {
             $reset = \DB::table('password_resets')->select('email', 'created_at')->where('token', $token)->first();
-            if ($reset) {
-                if (Carbon::parse($reset->created_at)->addSeconds(config('auth.passwords.users.expire') * 60) > Carbon::now()) {
-                    $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
-                    $captchaKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
-                    $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
-                    $user = User::where('email', $reset->email)->first();
-                    if ($user && $user->is_2fa_enabled && \Session::get('2fa_verified') == null) {
-                        \Session::put('2fa:user:id', $user->id);
-                        \Session::put('reset_token', $token);
+
+            if ($reset && Carbon::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Carbon::now()) {
+
+                $captchaStatus = StatusSetting::value('recaptcha_status');
+                $captchaKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
+
+                $user = User::where('email', $reset->email)->first();
+
+                if ($user && $user->is_2fa_enabled && !\Session::get('2fa_verified')) {
+                    \Session::put('2fa:user:id', $user->id);
+                    \Session::put('reset_token', $token);
 
                         return redirect('verify-2fa');
                     }
 
-                    return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))->with(
-                        ['reset_token' => $token, 'email' => $reset->email]
-                    );
-                } else {
-                    return \Redirect::to('password/reset')->with('fails', 'It looks like you clicked on an invalid password reset link. Please try again.');
-                }
+                return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))
+                    ->with(['reset_token' => $token, 'email' => $reset->email]);
+
             } else {
-                return redirect('login')->with('fails', 'This link is already used.Please try to login');
+                return redirect('login')->with('fails', \Lang::get('message.reset_link_expired'));
             }
         } catch (\Exception $ex) {
             return redirect('login')->with('fails', $ex->getMessage());

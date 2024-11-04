@@ -54,6 +54,6 @@ class Setting extends Model
 
     public function getFavIconAttribute($value)
     {
-        return $this->getImage($value, 'admin/images');
+        return $this->getImage($value, 'common/images');
     }
 }

@@ -175,7 +175,8 @@ class BaseProductController extends ExtendedBaseProductController
                         return view('themes.default1.front.download', compact('release'));
                     } else {
                         if (isS3Enabled()) {
-                            if (! Attach::exists('products/'.explode('?', basename($release))[0])) {
+                            $fileStorageSettings = FileSystemSettings::find(1);
+                            if (! Attach::exists(removeStorageStart($fileStorageSettings->local_file_storage_path).explode('?', basename($release))[0])) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
                             downloadExternalFile($release, $name);

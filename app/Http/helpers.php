@@ -693,3 +693,14 @@ function downloadExternalFile($url, $filename)
     // Terminate script execution after the download is complete
     exit;
 }
+
+function isStoragePath($path)
+{
+    return strpos($path, 'storage') === 0;
+}
+function removeStorageStart($path) {
+    if (isStoragePath($path)) {
+        return substr($path, strlen('storage'));
+    }
+    return $path;
+}

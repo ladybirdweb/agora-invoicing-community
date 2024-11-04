@@ -270,8 +270,8 @@ trait ApiKeySettings
         }
 
         if ($disk === 's3') {
-            if(!isStoragePath($path)) {
-                return errorResponse(\Lang::get('message.storage_path_error'),400);
+            if (! isStoragePath($path)) {
+                return errorResponse(\Lang::get('message.storage_path_error'), 400);
             }
             $fileStorageSettings->fill([
                 's3_bucket' => $s3Bucket,

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('disk');
             $table->string('local_file_storage_path')->nullable();
-            $table->string('product_storage')->nullable();
             $table->string('s3_bucket')->nullable();
             $table->string('s3_region')->nullable();
             $table->string('s3_access_key')->nullable();

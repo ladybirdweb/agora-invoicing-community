@@ -334,7 +334,7 @@ class ProductController extends BaseProductController
                 $addProductToLicensing = $updateCont->addNewProductToAUS($product_id, $input['name'], $input['product_sku']);
             }
             if ($request->hasFile('image')) {
-                $image = Attach::put("common/images/", $request->file('image'));
+                $image = Attach::put('common/images/', $request->file('image'));
                 $this->product->image = basename($image);
             }
             $can_modify_agent = $request->input('can_modify_agent');

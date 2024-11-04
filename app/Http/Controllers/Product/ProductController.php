@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
+use App\Facades\Attach;
 use App\Facades\ImageUpload;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
@@ -333,8 +334,8 @@ class ProductController extends BaseProductController
                 $addProductToLicensing = $updateCont->addNewProductToAUS($product_id, $input['name'], $input['product_sku']);
             }
             if ($request->hasFile('image')) {
-                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
-                $this->product->image = $image;
+                $image = Attach::put("common/images/", $request->file('image'));
+                $this->product->image = basename($image);
             }
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');

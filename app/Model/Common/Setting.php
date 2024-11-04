@@ -38,7 +38,7 @@ class Setting extends Model
     public function getImage($value, $path)
     {
         return $value
-            ? Attach::getUrlPath($path . '/' . $value)
+            ? Attach::getUrlPath($path.'/'.$value)
             : null;
     }
 

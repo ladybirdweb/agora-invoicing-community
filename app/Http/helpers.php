@@ -707,5 +707,5 @@ function removeStorageStart($path)
         $path = substr($path, strlen('storage'));
     }
 
-    return rtrim($path, '/') . '/';
+    return rtrim($path, '/').'/';
 }

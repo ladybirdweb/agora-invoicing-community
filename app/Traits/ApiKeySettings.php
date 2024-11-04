@@ -254,7 +254,6 @@ trait ApiKeySettings
     public function updateStoragePath(UpdateStoragePathRequest $request)
     {
         $disk = $request->input('disk');
-        $productStorage = $request->input('product_storage');
         $path = $request->input('path');
         $s3Bucket = $request->input('s3_bucket');
         $s3Region = $request->input('s3_region');
@@ -267,10 +266,7 @@ trait ApiKeySettings
         $fileStorageSettings->disk = $disk;
 
         if ($disk === 'system') {
-            $fileStorageSettings->product_storage = $productStorage;
-            if ($productStorage === 'system') {
-                $fileStorageSettings->local_file_storage_path = $path;
-            }
+            $fileStorageSettings->local_file_storage_path = $path;
         }
 
         if ($disk === 's3') {

@@ -43,22 +43,7 @@
                         </select>
                     </div>
 
-
-                    <!-- Product Configuration Fields -->
-                    <div class="form-group col-sm-6 product_config">
-                        <label class="required">{{ trans('message.product_storage') }}</label>
-                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
-                           title="{{ trans('message.product_storage_tooltip') }}"></i>
-                        <select class="form-control" name="product_storage" id="product_storage">
-                            <option value="app" {{ $fileStorage->product_storage == 'app' ? 'selected' : '' }}>App
-                                Storage
-                            </option>
-                            <option value="system" {{ $fileStorage->product_storage == 'system' ? 'selected' : '' }}>
-                                System Storage
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group col-sm-6 product_config" id="product_storage_show">
+                    <div class="form-group col-sm-6">
                         <label class="required">{{ trans('message.storage_path') }}</label>
                         <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="{{ trans('message.path_tooltip') }}"></i>
@@ -130,13 +115,6 @@
                     path: {
                         required: true
                     },
-                    product_storage: {
-                        required: {
-                            depends: function () {
-                                return !$('#product_storage').prop('disabled');
-                            }
-                        }
-                    },
                     s3_bucket: {
                         required: {
                             depends: function () {
@@ -179,9 +157,6 @@
                     },
                     path: {
                         required: "{{ trans('message.path_required') }}"
-                    },
-                    product_storage: {
-                        required: "{{ trans('message.product_storage_required') }}"
                     },
                     s3_bucket: {
                         required: "{{ trans('message.s3_bucket_required') }}"
@@ -267,17 +242,6 @@
                 validator.resetForm();
                 $('#file_form').find('.is-invalid').removeClass('is-invalid');
                 $('#file_form').find('.invalid-feedback').remove();
-            }).trigger('change');
-
-            $('#product_storage, #disk').change(function () {
-                let product = $('#disk').val();
-                let storage = $('#product_storage').val();
-                validator.resetForm();
-                if (product === 'system' && storage === 'system') {
-                    $('#product_storage_show').toggle(true);
-                } else {
-                    $('#product_storage_show').toggle(false);
-                }
             }).trigger('change');
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();

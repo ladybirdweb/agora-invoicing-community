@@ -270,12 +270,16 @@ trait ApiKeySettings
         }
 
         if ($disk === 's3') {
+            if(!isStoragePath($path)) {
+                return errorResponse(\Lang::get('message.storage_path_error'),400);
+            }
             $fileStorageSettings->fill([
                 's3_bucket' => $s3Bucket,
                 's3_region' => $s3Region,
                 's3_access_key' => $s3AccessKey,
                 's3_secret_key' => $s3SecretKey,
                 's3_endpoint_url' => $s3EndpointUrl,
+                'local_file_storage_path' => $path,
             ]);
 
             $s3Validate = $this->validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl, $s3Bucket);

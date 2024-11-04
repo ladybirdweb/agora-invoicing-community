@@ -3,6 +3,7 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
+use App\Facades\Attach;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -96,7 +97,7 @@ class Product extends BaseModel
         if (! $value) {
             $image = asset('storage/common/images/No-image-found.png');
         } else {
-            $image = asset("storage/common/images/$value");
+            $image = Attach::getUrlPath('common/images/'.$value);
         }
 
         return $image;

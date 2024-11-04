@@ -704,8 +704,8 @@ function isStoragePath($path)
 function removeStorageStart($path)
 {
     if (isStoragePath($path)) {
-        return substr($path, strlen('storage'));
+        $path = substr($path, strlen('storage'));
     }
 
-    return $path;
+    return rtrim($path, '/') . '/';
 }

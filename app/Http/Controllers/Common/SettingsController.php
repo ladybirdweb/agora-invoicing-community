@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
+use App\Facades\Attach;
 use App\Facades\ImageUpload;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
@@ -194,18 +195,18 @@ class SettingsController extends BaseSettingsController
             $setting = $settings->find(1);
 
             if ($request->hasFile('logo')) {
-                $path = ImageUpload::saveImageToStorage($request->file('logo'), 'images');
-                $setting->logo = $path;
+                $path = Attach::put('images', $request->file('logo'));
+                $setting->logo = basename($path);
             }
 
             if ($request->hasFile('admin-logo')) {
-                $path = ImageUpload::saveImageToStorage($request->file('admin-logo'), 'admin/images');
-                $setting->admin_logo = $path;
+                $path = Attach::put('admin/images', $request->file('admin-logo'));
+                $setting->admin_logo = basename($path);
             }
 
             if ($request->hasFile('fav-icon')) {
-                $path = ImageUpload::saveImageToStorage($request->file('fav-icon'), 'common/images');
-                $setting->fav_icon = $path;
+                $path = Attach::put('common/images', $request->file('fav-icon'));
+                $setting->fav_icon = basename($path);
             }
 
             $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
@@ -231,17 +232,17 @@ class SettingsController extends BaseSettingsController
                 $todo = Setting::findOrFail($request->id);
                 if ($request->column == 'logo') {
                     $logoPath = $todo->logo;
-                    ImageUpload::deleteImage($logoPath);
+                    Attach::delete('images/'.$logoPath);
                     $todo->logo = null;
                 }
                 if ($request->column == 'admin') {
                     $adminLogoPath = $todo->admin_logo;
-                    ImageUpload::deleteImage($adminLogoPath);
+                    Attach::delete('admin/images/'.$adminLogoPath);
                     $todo->admin_logo = null;
                 }
                 if ($request->column == 'fav') {
                     $favIconPath = $todo->fav_icon;
-                    ImageUpload::deleteImage($favIconPath);
+                    Attach::delete('common/images'.$favIconPath);
                     $todo->fav_icon = null;
                 }
                 $todo->save();

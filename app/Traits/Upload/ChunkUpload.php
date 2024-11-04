@@ -57,8 +57,8 @@ trait ChunkUpload
         $fileName = Attach::createFilename($file);
         $fileStoragePath = $fileStorageSettings->local_file_storage_path;
 
-        if (isS3Enabled() || ($fileStorageSettings->product_storage === 'app' && $fileStorageSettings->disk === 'system')) {
-            $folder = 'products';
+        if (isS3Enabled() || isStoragePath($fileStoragePath)) {
+            $folder = removeStorageStart($fileStoragePath);
             $filePath = Attach::put($folder, $file, null, true);
 
             return response()->json([

@@ -11,7 +11,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         @if($set->fav_icon)
-        <link rel="shortcut icon" href='{{asset("storage/common/images/$set->fav_icon")}}' type="image/x-icon" />
+        <link rel="shortcut icon" href='{{ $set->fav_icon }}' type="image/x-icon" />
         @endif
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -165,7 +165,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ $set->admin_logo }}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8;"></span>
                         </a>
                 @endif

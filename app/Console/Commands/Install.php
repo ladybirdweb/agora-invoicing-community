@@ -135,11 +135,11 @@ class Install extends Command
             }
         }
         $result['php']['extension'] = 'PHP';
-        if (phpversion() >= '8.1.0') {
+        if (phpversion() >= '8.2.0') {
             $result['php']['status'] = 'PHP version supports';
         } else {
             $can_install = false;
-            $result['php']['status'] = "PHP version doesn't supports please upgrade to 8.1.0 +";
+            $result['php']['status'] = "PHP version doesn't supports please upgrade to 8.2.0 +";
         }
 
         $headers = ['Extension', 'Status'];

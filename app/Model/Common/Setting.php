@@ -2,6 +2,7 @@
 
 namespace App\Model\Common;
 
+use App\Facades\Attach;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,27 @@ class Setting extends Model
     {
         $value = \Crypt::encrypt($value);
         $this->attributes['password'] = $value;
+    }
+
+    public function getImage($value, $path)
+    {
+        return $value
+            ? Attach::getUrlPath($path . '/' . $value)
+            : null;
+    }
+
+    public function getLogoAttribute($value)
+    {
+        return $this->getImage($value, 'images');
+    }
+
+    public function getAdminLogoAttribute($value)
+    {
+        return $this->getImage($value, 'admin/images');
+    }
+
+    public function getFavIconAttribute($value)
+    {
+        return $this->getImage($value, 'admin/images');
     }
 }

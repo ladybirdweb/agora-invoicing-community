@@ -239,12 +239,14 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
-            if (isS3Enabled()) {
-                $relese = Attach::download('products/'.$fileName);
+            $fileName = $file->file;
+            $fileStorageSettings = FileSystemSettings::find(1);
+            if (isS3Enabled() || isStoragePath($fileStorageSettings->local_file_storage_path)) {
+                $relese = Attach::download(removeStorageStart($fileStorageSettings->local_file_storage_path).$fileName);
 
                 return $relese;
             }
-            $path = FileSystemSettings::find(1)->value('local_file_storage_path');
+            $path = $fileStorageSettings->local_file_storage_path;
             $relese = $path.'/'.$file->file;
 
             return $relese;

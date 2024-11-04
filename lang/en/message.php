@@ -803,7 +803,6 @@ return [
     'file_not_exist' => 'Requested file doest not exits',
     's3_error' => 'Invalid S3 details were provided.',
     'disk_tooltip' => 'Select the storage disk you want to use. \'System\' means local storage on the server, while \'S3\' refers to Amazon S3 cloud storage.',
-    'product_storage_tooltip' => 'Select the type of storage for your products. \'App Storage\' is for files within the application, while \'System Storage\' is for general storage accessible by the whole system.',
-    'path_tooltip' => 'Specify the path for storing product files. This path must be accessible by the application and follow the server\'s directory structure.',
+    'path_tooltip' => 'Specify the path for storing product files (accessible by the application and following the server\'s directory structure); if you need to store the product file in the application, add "storage" at the front of the path.',
 
 ];

@@ -701,9 +701,11 @@ function isStoragePath($path)
 {
     return strpos($path, 'storage') === 0;
 }
-function removeStorageStart($path) {
+function removeStorageStart($path)
+{
     if (isStoragePath($path)) {
         return substr($path, strlen('storage'));
     }
+
     return $path;
 }

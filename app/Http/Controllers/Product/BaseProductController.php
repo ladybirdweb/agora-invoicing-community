@@ -215,7 +215,7 @@ class BaseProductController extends ExtendedBaseProductController
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
             $fileStorageSettings = FileSystemSettings::find(1);
-            if (isS3Enabled()  || isStoragePath($fileStorageSettings->local_file_storage_path)) {
+            if (isS3Enabled() || isStoragePath($fileStorageSettings->local_file_storage_path)) {
                 $relese = Attach::download(removeStorageStart($fileStorageSettings->local_file_storage_path).$fileName);
 
                 return $relese;

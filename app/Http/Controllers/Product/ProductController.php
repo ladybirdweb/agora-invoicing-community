@@ -456,8 +456,8 @@ class ProductController extends BaseProductController
             }
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
-                $image = ImageUpload::saveImageToStorage($request->file('image'), 'common/images');
-                $product->image = $image;
+                $image = Attach::put('common/images/', $request->file('image'));
+                $product->image = basename($image);
             }
             if ($request->hasFile('file')) {
                 $file = $request->file('file')->getClientOriginalName();

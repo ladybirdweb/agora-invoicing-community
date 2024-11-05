@@ -49,7 +49,7 @@
                            title="{{ trans('message.path_tooltip') }}"></i>
                         <input class="form-control" name="path" type="text" id="path"
                                value="{{ $fileStorage->local_file_storage_path }}"
-                               placeholder="Storage Path">
+                               placeholder="Product Storage Path">
                     </div>
 
 

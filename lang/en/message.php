@@ -784,6 +784,5 @@ return [
     's3_error' => 'Invalid S3 details were provided.',
     'disk_tooltip' => 'Select the storage disk you want to use. \'System\' means local storage on the server, while \'S3\' refers to Amazon S3 cloud storage.',
     'path_tooltip' => 'Specify the path for storing product files (accessible by the application and following the server\'s directory structure). To store the product file in the application or on S3, prefix the path with \'storage\'.',
-    'storage_path_error' => 'For S3 product storage, the path must start with \'storage\'.',
 
 ];

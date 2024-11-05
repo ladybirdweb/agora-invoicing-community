@@ -764,7 +764,7 @@ return [
     'file_storage' => 'File Storage',
     'set_file_storage' => 'Set file storage path',
     'storage_disk' => 'Storage Disk',
-    'storage_path' => 'Storage Path',
+    'storage_path' => 'Product Storage Path',
     's3_bucket' => 'S3 Bucket',
     's3_region' => 'S3 Region',
     's3_access_key' => 'S3 Access Key',

@@ -12,7 +12,6 @@ class FileSystemSettings extends Model
     protected $table = 'settings_filesystem';
 
     protected $fillable = [
-        'id',
-        'path',
+        'disk', 'local_file_storage_path', 's3_bucket', 's3_region', 's3_access_key', 's3_secret_key', 's3_endpoint_url'
     ];
 }

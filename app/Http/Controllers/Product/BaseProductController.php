@@ -176,14 +176,10 @@ class BaseProductController extends ExtendedBaseProductController
                     } else {
                         if (isS3Enabled()) {
                             $fileStorageSettings = FileSystemSettings::find(1);
-                            if (! Attach::exists(removeStorageStart($fileStorageSettings->local_file_storage_path).explode('?', basename($release))[0])) {
+                            if (! Attach::exists('products/'.explode('?', basename($release))[0])) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
                             downloadExternalFile($release, $name);
-                        }
-
-                        if ($release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
-                            return $release;
                         }
 
                         if (! is_file($release)) {
@@ -216,8 +212,8 @@ class BaseProductController extends ExtendedBaseProductController
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
             $fileStorageSettings = FileSystemSettings::find(1);
-            if (isS3Enabled() || isStoragePath($fileStorageSettings->local_file_storage_path)) {
-                $relese = Attach::download(removeStorageStart($fileStorageSettings->local_file_storage_path).$fileName);
+            if (isS3Enabled()) {
+                $relese = Attach::download('products/'.$fileName);
 
                 return $relese;
             }
@@ -242,8 +238,8 @@ class BaseProductController extends ExtendedBaseProductController
             //    $relese = '/home/faveo/products/'.$file->file;
             $fileName = $file->file;
             $fileStorageSettings = FileSystemSettings::find(1);
-            if (isS3Enabled() || isStoragePath($fileStorageSettings->local_file_storage_path)) {
-                $relese = Attach::download(removeStorageStart($fileStorageSettings->local_file_storage_path).$fileName);
+            if (isS3Enabled()) {
+                $relese = Attach::download('products/'.$fileName);
 
                 return $relese;
             }

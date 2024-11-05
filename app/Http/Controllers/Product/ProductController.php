@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
 use App\Facades\Attach;
-use App\Facades\ImageUpload;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\Setting;

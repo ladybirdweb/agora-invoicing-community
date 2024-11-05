@@ -18,7 +18,7 @@
 @stop
 @section('content')
     <style>
-        .s3_config, .product_config, #product_storage_show {
+        .s3_config, .system_config {
             display: none;
         }
     </style>
@@ -43,7 +43,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-6 system_config">
                         <label class="required">{{ trans('message.storage_path') }}</label>
                         <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="{{ trans('message.path_tooltip') }}"></i>
@@ -238,7 +238,7 @@
             $('#disk').change(function () {
                 isS3Enabled = $(this).val() === 's3';
                 $('.s3_config').toggle(isS3Enabled);
-                $('.product_config').toggle(!isS3Enabled);
+                $('.system_config').toggle(!isS3Enabled);
                 validator.resetForm();
                 $('#file_form').find('.is-invalid').removeClass('is-invalid');
                 $('#file_form').find('.invalid-feedback').remove();

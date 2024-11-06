@@ -10,6 +10,7 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use PhpParser\Node\Expr\Instanceof_;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -181,12 +182,12 @@ class BaseProductController extends ExtendedBaseProductController
                             }
                             downloadExternalFile($release, $name);
                         }
-
-                        if (! is_file($release)) {
-                            return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                        else{
+                            if (!$release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+                                return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                            }
+                            return $release;
                         }
-
-                        return Response::download($release);
                     }
                 } else {
                     return redirect()->back()->with('fails', \Lang::get('activate-your-account'));
@@ -211,17 +212,7 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            $fileStorageSettings = FileSystemSettings::find(1);
-            if (isS3Enabled()) {
-                $relese = Attach::download('products/'.$fileName);
-
-                return $relese;
-            }
-            $path = $fileStorageSettings->local_file_storage_path;
-            // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            //$relese = '/home/faveo/products/'.$file->file;
-            $relese = $path.'/'.$file->file;
-
+            $relese = Attach::download('products/'.$fileName);
             return $relese;
         }
     }
@@ -237,14 +228,8 @@ class BaseProductController extends ExtendedBaseProductController
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
             $fileName = $file->file;
-            $fileStorageSettings = FileSystemSettings::find(1);
-            if (isS3Enabled()) {
-                $relese = Attach::download('products/'.$fileName);
 
-                return $relese;
-            }
-            $path = $fileStorageSettings->local_file_storage_path;
-            $relese = $path.'/'.$file->file;
+            $relese = Attach::download('products/'.$fileName);
 
             return $relese;
         }

@@ -53,24 +53,11 @@ trait ChunkUpload
      */
     protected function saveFile(UploadedFile $file)
     {
-        $fileStorageSettings = FileSystemSettings::find(1);
         $fileName = Attach::createFilename($file);
-        $fileStoragePath = $fileStorageSettings->local_file_storage_path;
-
-        if (isS3Enabled()) {
-            $filePath = Attach::put('products/', $file, null, true);
-
-            return response()->json([
-                'path' => $filePath,
-                'name' => $fileName,
-            ]);
-        }
-
-        // Move the file to the local storage path
-        $file->move($fileStoragePath, $fileName);
+        $filePath = Attach::put('products/', $file, null, true);
 
         return response()->json([
-            'path' => $fileStoragePath,
+            'path' => $filePath,
             'name' => $fileName,
         ]);
     }

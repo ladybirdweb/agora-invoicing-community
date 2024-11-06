@@ -240,7 +240,6 @@ trait ApiKeySettings
         $fileStorage = (object) [
             'disk' => $fileStorageSettings->disk ?? '',
             'local_file_storage_path' => $fileStorageSettings->local_file_storage_path ?? '',
-            'product_storage' => $fileStorageSettings->product_storage ?? '',
             's3_bucket' => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
             's3_region' => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
             's3_access_key' => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
@@ -267,6 +266,7 @@ trait ApiKeySettings
 
         if ($disk === 'system') {
             $fileStorageSettings->local_file_storage_path = $path;
+            setEnvValue('STORAGE_PATH', $path);
         }
 
         if ($disk === 's3') {

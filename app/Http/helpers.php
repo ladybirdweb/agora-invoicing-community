@@ -697,15 +697,3 @@ function downloadExternalFile($url, $filename)
     exit;
 }
 
-function isStoragePath($path)
-{
-    return strpos($path, 'storage') === 0;
-}
-function removeStorageStart($path)
-{
-    if (isStoragePath($path)) {
-        $path = substr($path, strlen('storage'));
-    }
-
-    return rtrim($path, '/').'/';
-}

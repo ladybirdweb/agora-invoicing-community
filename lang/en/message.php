@@ -764,7 +764,7 @@ return [
     'file_storage' => 'File Storage',
     'set_file_storage' => 'Set file storage path',
     'storage_disk' => 'Storage Disk',
-    'storage_path' => 'Product Storage Path',
+    'storage_path' => 'Storage Path',
     's3_bucket' => 'S3 Bucket',
     's3_region' => 'S3 Region',
     's3_access_key' => 'S3 Access Key',
@@ -783,6 +783,6 @@ return [
     'file_not_exist' => 'Requested file doest not exits',
     's3_error' => 'Invalid S3 details were provided.',
     'disk_tooltip' => 'Select the storage disk you want to use. \'System\' means local storage on the server, while \'S3\' refers to Amazon S3 cloud storage.',
-    'path_tooltip' => 'Specify the path for storing product files (accessible by the application and following the server\'s directory structure). To store the product file in the application or on S3, prefix the path with \'storage\'.',
+    'path_tooltip' => 'Specify the path for storing all files (accessible by the application and following the server\'s directory structure).',
 
 ];

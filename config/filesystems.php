@@ -46,7 +46,7 @@ return [
 
         'system' => [
             'driver' => 'local',
-            'root' =>  env('STORAGE_PATH', storage_path().'/app/public'),
+            'root' => env('STORAGE_PATH', storage_path().'/app/public'),
             'permissions' => [
                 'file' => [
                     'public' => 0664,

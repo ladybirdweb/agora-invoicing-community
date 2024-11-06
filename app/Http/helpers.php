@@ -693,4 +693,3 @@ function downloadExternalFile($url, $filename)
     // Terminate script execution after the download is complete
     exit;
 }
-

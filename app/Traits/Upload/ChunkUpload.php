@@ -3,7 +3,6 @@
 namespace App\Traits\Upload;
 
 use App\Facades\Attach;
-use App\FileSystemSettings;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;

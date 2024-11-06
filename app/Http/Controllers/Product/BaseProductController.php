@@ -9,8 +9,6 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use PhpParser\Node\Expr\Instanceof_;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -181,11 +179,11 @@ class BaseProductController extends ExtendedBaseProductController
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
                             downloadExternalFile($release, $name);
-                        }
-                        else{
-                            if (!$release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+                        } else {
+                            if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
+
                             return $release;
                         }
                     }
@@ -213,6 +211,7 @@ class BaseProductController extends ExtendedBaseProductController
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
             $relese = Attach::download('products/'.$fileName);
+
             return $relese;
         }
     }

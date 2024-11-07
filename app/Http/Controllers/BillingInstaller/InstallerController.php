@@ -240,14 +240,13 @@ class InstallerController extends Controller
             ],
             'cache_driver' => 'required|string',
             'redis_host' => 'nullable|required_if:cache_driver,redis|string',
-            'redis_password' => 'nullable|required_if:cache_driver,redis|string',
+            'redis_password' => 'nullable|string',
             'redis_port' => 'nullable|required_if:cache_driver,redis|numeric',
             'environment' => 'required|string',
         ], [
             'user_name.regex' => \Lang::get('installer_messages.user_name_regex'),
             'password.regex' => \Lang::get('installer_messages.password_regex'),
             'redis_host.required_if' => \Lang::get('installer_messages.redis_host_required'),
-            'redis_password.required_if' => \Lang::get('installer_messages.redis_password_required'),
             'redis_port.required_if' => \Lang::get('installer_messages.redis_port_required'),
         ]);
 

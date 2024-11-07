@@ -56,16 +56,10 @@ class InstallDB extends Command
             }
             $this->call('key:generate', ['--force' => true]);
             $this->checkDBVersion();
-            $response = spin(
-                message: 'Database setup in progress...',
-                callback: fn () => (new SyncBillingToLatestVersion)->sync()
-            );
             $this->info('');
-            if (! $response) {
-                $this->info('Database setup failed.');
-
-                return;
-            }
+            $this->info('Database setup in progress...');
+            (new SyncBillingToLatestVersion)->sync();
+            $this->info('');
             $this->info('Database setup completed successfully.');
             $this->createAdmin();
             $headers = ['email', 'password'];

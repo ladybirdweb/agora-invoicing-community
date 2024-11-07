@@ -658,7 +658,7 @@ $lang = fetchLang();
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['redis_password'] ?><span style="color: red;">*</span></label>
+                                                <label class="col-form-label"><?= $lang['redis_password'] ?></label>
                                                 <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
                                             </div>
                                         </div>
@@ -877,7 +877,6 @@ $lang = fetchLang();
             const redisFields = {
                 redisHost: 'Redis Host',
                 redisPort: 'Redis Port',
-                redisPassword: 'Redis Password'
             };
 
             Object.keys(redisFields).forEach(field => {

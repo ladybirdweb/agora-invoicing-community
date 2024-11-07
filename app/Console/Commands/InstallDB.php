@@ -8,8 +8,6 @@ use Config;
 use DB;
 use Illuminate\Console\Command;
 
-use function Laravel\Prompts\spin;
-
 class InstallDB extends Command
 {
     /**

@@ -140,7 +140,6 @@ class InstallerController extends Controller
             'SESSION_COOKIE_NAME' => 'agora_'.rand(0, 10000),
             'QUEUE_CONNECTION' => 'sync',
             'PROBE_PASS_PHRASE' => md5(uniqid()),
-            'REDIS_DATABASE' => '0',
             'BROADCAST_DRIVER' => 'pusher',
             'PUSHER_APP_ID' => str_random(16),
             'PUSHER_APP_KEY' => md5(uniqid()),

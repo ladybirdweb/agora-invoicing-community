@@ -90,6 +90,7 @@ class SetupTestEnv extends Command
         $env['DB_PASSWORD'] = $dbPassword;
         $env['DB_DATABASE'] = $dbName;
         $env['APP_ENV'] = 'development';
+        $env['APP_KEY'] = env('APP_KEY', 'base64:6bir20aYSpt+tJUiTu3D/QRwddjvwAupLPAfu14uUmk=');
 
         $config = '';
 

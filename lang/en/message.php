@@ -758,4 +758,7 @@ return [
     'existings_invoice' => 'You have an existing unpaid invoice for this product. Please proceed with the payment or delete the invoice and try again',
     'user_suspend' => 'This user is suspended from system. Restore the user to view details',
     'country_notfound' => 'Country could not be determined',
+
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

@@ -178,7 +178,7 @@ class BaseProductController extends ExtendedBaseProductController
                             if (! Attach::exists('products/'.explode('?', basename($release))[0])) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
-                            downloadExternalFile($release, $name);
+                            return downloadExternalFile($release, $name);
                         } else {
                             if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));

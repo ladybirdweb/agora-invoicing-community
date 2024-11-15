@@ -11,6 +11,7 @@ use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 
 function getLocation()
@@ -40,10 +41,10 @@ function checkArray($key, $array)
 function mime($type)
 {
     if ($type == 'jpg' ||
-            $type == 'png' ||
-            $type == 'jpeg' ||
-            $type == 'gif' ||
-            starts_with($type, 'image')) {
+        $type == 'png' ||
+        $type == 'jpeg' ||
+        $type == 'gif' ||
+        starts_with($type, 'image')) {
         return 'image';
     }
 }
@@ -233,7 +234,7 @@ function findStateByRegionId($iso)
 {
     try {
         $states = \App\Model\Common\State::where('country_code_char2', $iso)
-        ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
 
         return $states;
     } catch (\Exception $ex) {
@@ -648,29 +649,6 @@ function getPreReleaseStatusLabel($status, $badge = 'badge')
     }
 }
 
-/**
- * Creates an empty DB with given name.
- *
- * @param  string  $dbName  name of the DB
- * @return null
- */
-function createDB(string $dbName)
-{
-    try {
-        \DB::purge('mysql');
-        // removing old db
-        \DB::connection('mysql')->getPdo()->exec("DROP DATABASE IF EXISTS `{$dbName}`");
-
-        // Creating testing_db
-        \DB::connection('mysql')->getPdo()->exec("CREATE DATABASE `{$dbName}`");
-        //disconnecting it will remove database config from the memory so that new database name can be
-        // populated
-        \DB::disconnect('mysql');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('fails', $e->getMessage());
-    }
-}
-
 function isS3Enabled()
 {
     $fileSettings = FileSystemSettings::select('disk')->first();
@@ -698,24 +676,18 @@ function setEnvValue($key, $value)
 
 function downloadExternalFile($url, $filename)
 {
-    // Open a cURL session to the external URL
-    $ch = curl_init($url);
+    $client = new Client();
+    $response = $client->get($url, ['stream' => true]);
 
-    // Set headers to force the file download
-    header('Content-Type: application/octet-stream');
-    header('Content-Description: File Transfer');
-    header('Content-Disposition: attachment; filename="'.$filename.'.zip"');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Expires: 0');
-    header('Connection: Keep-Alive');
-
-    // Execute the cURL session and directly output the data
-    curl_exec($ch);
-
-    // Close the cURL session
-    curl_close($ch);
-
-    // Terminate script execution after the download is complete
-    exit;
+    return response()->stream(function () use ($response) {
+        $stream = $response->getBody();
+        while (!$stream->eof()) {
+            echo $stream->read(1024);
+        }
+    }, 200, [
+        'Content-Type' => 'application/zip',
+        'Content-Disposition' => 'attachment; filename="' . basename($filename) . '.zip"',
+        'Expires' => 0,
+        'Cache-Control' => 'no-cache'
+    ]);
 }

@@ -286,7 +286,7 @@ trait ApiKeySettings
             's3_endpoint_url' => $request->input('s3_endpoint_url'),
         ]);
 
-        if (!$this->validateS3Credentials(
+        if (! $this->validateS3Credentials(
             $fileStorageSettings->s3_region,
             $fileStorageSettings->s3_access_key,
             $fileStorageSettings->s3_secret_key,

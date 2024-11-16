@@ -704,13 +704,13 @@ function downloadExternalFile($url, $filename)
 
     return response()->stream(function () use ($response) {
         $stream = $response->getBody();
-        while (!$stream->eof()) {
+        while (! $stream->eof()) {
             echo $stream->read(1024);
         }
     }, 200, [
         'Content-Type' => 'application/zip',
-        'Content-Disposition' => 'attachment; filename="' . basename($filename) . '.zip"',
+        'Content-Disposition' => 'attachment; filename="'.basename($filename).'.zip"',
         'Expires' => 0,
-        'Cache-Control' => 'no-cache'
+        'Cache-Control' => 'no-cache',
     ]);
 }

@@ -32,35 +32,23 @@ function getBaseUrl() {
 function fetchLang() {
     $baseUrl = getBaseUrl();
     $langUrl = "{$baseUrl}/lang";
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/json;charset=UTF-8\r\n",
+            'content' => ''
+        ]
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($langUrl, false, $context);
 
-    // Initialize cURL session
-    $ch = curl_init($langUrl);
-
-    // Set cURL options for POST request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json;charset=UTF-8']);
-    curl_setopt($ch, CURLOPT_POST, true);
-
-    $postData = '';
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-
-    // Execute cURL session
-    $response = curl_exec($ch);
-
-    // Check for cURL errors
-    if(curl_errno($ch)) {
-        // Handle error, if any
-        echo 'cURL error: ' . curl_error($ch);
+    if ($response === false) {
         return null;
     }
 
-    // Close cURL session
-    curl_close($ch);
+    $langData = json_decode($response, true);
 
-    // Parse the JSON response
-    $langData = json_decode($response, true); // Decode JSON response into an associative array
-
-    return $langData; // Return the language data
+    return $langData;
 }
 
 $lang = fetchLang();

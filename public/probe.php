@@ -940,6 +940,7 @@ $lang = fetchLang();
         // Collect data from form inputs
         const fields = {
             host: document.getElementById('host'),
+            port:document.getElementById('mysql_port'),
             databaseName: document.getElementById('database_name'),
             username: document.getElementById('username'),
             password: document.getElementById('password')
@@ -984,6 +985,7 @@ $lang = fetchLang();
         // Collect data if validation is successful
         const data = {
             host: fields.host.value,
+            port: fields.port.value,
             databasename: fields.databaseName.value,
             username: fields.username.value,
             password: fields.password.value

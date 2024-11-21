@@ -255,10 +255,14 @@ trait ApiKeySettings
         $disk = $request->input('disk');
         $fileStorageSettings = FileSystemSettings::first();
 
-        match ($disk) {
+        $response = match ($disk) {
             'system' => $this->updateLocalStorage($request, $fileStorageSettings),
             's3' => $this->updateS3Storage($request, $fileStorageSettings),
         };
+
+        if ($response->status() !== 200) {
+            return $response;
+        }
 
         $fileStorageSettings->save();
 
@@ -272,6 +276,8 @@ trait ApiKeySettings
         $fileStorageSettings->local_file_storage_path = $path;
 
         setEnvValue('STORAGE_PATH', $path);
+
+        return successResponse();
     }
 
     protected function updateS3Storage($request, $fileStorageSettings)
@@ -297,6 +303,8 @@ trait ApiKeySettings
         }
 
         $this->updateS3EnvSettings($fileStorageSettings);
+
+        return successResponse();
     }
 
     protected function updateS3EnvSettings($fileStorageSettings)

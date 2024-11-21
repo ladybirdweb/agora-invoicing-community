@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     }
     public function fileSystemSeeder()
     {
-        FileSystemSettings::firstOrCreate([
+        FileSystemSettings::create([
             'disk' => 'system',
         ]);
     }

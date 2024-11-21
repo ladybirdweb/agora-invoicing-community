@@ -253,7 +253,7 @@ trait ApiKeySettings
     public function updateStoragePath(UpdateStoragePathRequest $request)
     {
         $disk = $request->input('disk');
-        $fileStorageSettings = FileSystemSettings::firstOrCreate([]);
+        $fileStorageSettings = FileSystemSettings::first();
 
         match ($disk) {
             'system' => $this->updateLocalStorage($request, $fileStorageSettings),

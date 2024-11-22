@@ -44,11 +44,11 @@ return [
     'confirm_password_required' => 'Confirm Password is required',
     'password_requirements' => 'Your password must have:',
     'password_requirements_list' => [
-        'Between 8-16 characters',
-        'Uppercase characters (A-Z)',
-        'Lowercase characters (a-z)',
-        'Numbers (0-9)',
-        'Special characters (~*!@$#%_+.?:,{ })',
+        ['id' => 'length', 'text' => 'Between 8-16 characters'],
+        ['id' => 'letter', 'text' => 'Lowercase characters (a-z)'],
+        ['id' => 'capital', 'text' => 'Uppercase characters (A-Z)'],
+        ['id' => 'number', 'text' => 'Numbers (0-9)'],
+        ['id' => 'space', 'text' => 'Special characters (~*!@$#%_+.?:,{ })'],
     ],
 
     // System Information

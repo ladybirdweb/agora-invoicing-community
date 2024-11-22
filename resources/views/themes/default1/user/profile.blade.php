@@ -148,7 +148,7 @@ input:checked + .slider:before {
 
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                  {!! Form::label('mobile',null,Lang::get('message.mobile')) !!}
+                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile')) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                      <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 

@@ -570,12 +570,12 @@ $lang = fetchLang();
                                                 <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
                                             </div>
                                         </div>
-                                        <small class="form-text text-muted">
+                                        <small class="form-text text-muted" id="pswd_info" style="display: none;">
                                             <?= $lang['password_requirements'] ?>
                                             <?php
                                             echo '<ul>';
                                             foreach ($lang['password_requirements_list'] as $value) {
-                                                echo '<li>' . $value . '</li>';
+                                                echo '<li id="' . $value['id'] . '" class="text-danger">' . $value['text'] . '</li>';
                                             }
                                             echo '</ul>';
                                             ?>
@@ -728,6 +728,51 @@ $lang = fetchLang();
     });
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function() {
+        // Cache the selectors for better performance
+        var $pswdInfo = $('#pswd_info');
+        var $newPassword = $('#admin_password');
+        var $length = $('#length');
+        var $letter = $('#letter');
+        var $capital = $('#capital');
+        var $number = $('#number');
+        var $special = $('#space');
+
+        // Function to update validation classes
+        function updateClass(condition, $element) {
+            $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+        }
+
+        // Initially hide the password requirements
+        $pswdInfo.hide();
+
+        // Show/hide password requirements on focus/blur
+        $newPassword.focus(function() {
+            $pswdInfo.show();
+        }).blur(function() {
+            $pswdInfo.hide();
+        });
+
+        // Perform real-time validation on keyup
+        $newPassword.on('keyup', function() {
+            var pswd = $(this).val();
+
+            // Validate the length (8 to 16 characters)
+            updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+            // Validate lowercase letter
+            updateClass(/[a-z]/.test(pswd), $letter);
+
+            // Validate uppercase letter
+            updateClass(/[A-Z]/.test(pswd), $capital);
+
+            // Validate number
+            updateClass(/\d/.test(pswd), $number);
+
+            // Validate special character
+            updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+        });
     });
     document.getElementById('validate').addEventListener('click', function(event) {
         event.preventDefault();

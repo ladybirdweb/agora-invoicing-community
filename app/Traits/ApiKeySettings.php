@@ -338,8 +338,7 @@ trait ApiKeySettings
             return $s3Client->doesBucketExist($s3Bucket);
         } catch (AwsException $e) {
             return false;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

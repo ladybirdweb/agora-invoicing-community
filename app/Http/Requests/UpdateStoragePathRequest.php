@@ -21,6 +21,7 @@ class UpdateStoragePathRequest extends FormRequest
             's3_access_key' => 'required_if:disk,s3|string',
             's3_secret_key' => 'required_if:disk,s3|string',
             's3_endpoint_url' => 'required_if:disk,s3|string',
+            's3_path_style_endpoint' => 'required_if:disk,s3|string',
         ];
     }
 

@@ -55,6 +55,13 @@
 
                     <!-- S3 Configuration Fields -->
                     <div class="form-group col-sm-6 s3_config">
+                        <label class="required">{{ trans('message.s3_path_style_endpoint') }}</label>
+                        <select class="form-control" name="s3_path_style_endpoint" id="s3_path_style_endpoint">
+                            <option value="true" {{ $fileStorage->s3_path_style_endpoint === 'true' ? 'selected' : '' }}>True</option>
+                            <option value="false" {{ $fileStorage->s3_path_style_endpoint === 'false' || $fileStorage->s3_path_style_endpoint === null ? 'selected' : '' }}>False</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-6 s3_config">
                         <label class="required">{{ trans('message.s3_bucket') }}</label>
                         <input class="form-control" name="s3_bucket" type="text" id="s3_bucket"
                                placeholder="Enter S3 Bucket Name" value="{{ $fileStorage->s3_bucket }}">
@@ -81,6 +88,11 @@
                                placeholder="Enter S3 Endpoint URL" value="{{ $fileStorage->s3_endpoint_url }}">
                     </div>
 
+                    <div class="form-group col-sm-6 s3_config">
+                        <label>{{ trans('message.s3_url') }}</label>
+                        <input class="form-control" name="s3_url" type="text" id="s3_url"
+                               placeholder="Enter S3 URL" value="{{ $fileStorage->s3_url }}">
+                    </div>
 
                 </div>
 

@@ -790,6 +790,8 @@ return [
     's3_access_key' => 'S3 Access Key',
     's3_secret_key' => 'S3 Secret Key',
     's3_endpoint_url' => 'S3 Endpoint URL',
+    's3_path_style_endpoint' => 'S3 Path Style Endpoint',
+    's3_url' => 'S3 URL',
     'product_storage' => 'Product Storage',
     'product_storage_required' => 'Product Storage is required',
     'disk_required' => 'Storage Disk is required',

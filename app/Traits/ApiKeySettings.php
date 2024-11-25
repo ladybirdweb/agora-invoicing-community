@@ -245,6 +245,8 @@ trait ApiKeySettings
             's3_access_key' => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
             's3_secret_key' => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
             's3_endpoint_url' => env('AWS_ENDPOINT', $fileStorageSettings->s3_endpoint_url ?? ''),
+            's3_url' => env('AWS_URL', $fileStorageSettings->s3_url ?? ''),
+            's3_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', $fileStorageSettings->s3_path_style_endpoint ?? ''),
         ];
 
         return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
@@ -290,6 +292,8 @@ trait ApiKeySettings
             's3_access_key' => $request->input('s3_access_key'),
             's3_secret_key' => $request->input('s3_secret_key'),
             's3_endpoint_url' => $request->input('s3_endpoint_url'),
+            's3_url' => $request->input('s3_url'),
+            's3_path_style_endpoint' => $request->input('s3_path_style_endpoint'),
         ]);
 
         if (! $this->validateS3Credentials(
@@ -297,7 +301,8 @@ trait ApiKeySettings
             $fileStorageSettings->s3_access_key,
             $fileStorageSettings->s3_secret_key,
             $fileStorageSettings->s3_endpoint_url,
-            $fileStorageSettings->s3_bucket
+            $fileStorageSettings->s3_bucket,
+            $fileStorageSettings->s3_path_style_endpoint
         )) {
             return errorResponse(trans('message.s3_error'));
         }
@@ -315,6 +320,8 @@ trait ApiKeySettings
             'AWS_BUCKET' => $fileStorageSettings->s3_bucket,
             'AWS_DEFAULT_REGION' => $fileStorageSettings->s3_region,
             'AWS_ENDPOINT' => $fileStorageSettings->s3_endpoint_url,
+            'AWS_URL' => $fileStorageSettings->s3_url,
+            'AWS_USE_PATH_STYLE_ENDPOINT' => $fileStorageSettings->s3_path_style_endpoint,
         ];
 
         foreach ($s3Settings as $key => $value) {
@@ -322,7 +329,7 @@ trait ApiKeySettings
         }
     }
 
-    private function validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl, $s3Bucket)
+    private function validateS3Credentials($s3Region, $s3AccessKey, $s3SecretKey, $s3EndpointUrl, $s3Bucket, $s3PathStyleEndpoint)
     {
         try {
             $s3Client = new S3Client([
@@ -333,6 +340,7 @@ trait ApiKeySettings
                     'secret' => $s3SecretKey,
                 ],
                 'endpoint' => $s3EndpointUrl,
+                'use_path_style_endpoint' => $s3PathStyleEndpoint,
             ]);
 
             return $s3Client->doesBucketExist($s3Bucket);

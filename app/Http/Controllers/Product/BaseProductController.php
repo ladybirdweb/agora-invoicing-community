@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
-use App\FileSystemSettings;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;

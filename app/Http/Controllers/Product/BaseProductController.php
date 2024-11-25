@@ -9,6 +9,7 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -174,8 +175,7 @@ class BaseProductController extends ExtendedBaseProductController
                         return view('themes.default1.front.download', compact('release'));
                     } else {
                         if (isS3Enabled()) {
-                            $fileStorageSettings = FileSystemSettings::find(1);
-                            if (! Attach::exists('products/'.explode('?', basename($release))[0])) {
+                            if (! Attach::exists('products/'.explode('?', urldecode(basename($release)))[0])) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
 
@@ -184,6 +184,15 @@ class BaseProductController extends ExtendedBaseProductController
                             if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
                                 return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
                             }
+                            $customFileName = "{$name}.zip";
+
+                            $release->headers->set(
+                                'Content-Disposition',
+                                $release->headers->makeDisposition(
+                                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                                    $customFileName
+                                )
+                            );
 
                             return $release;
                         }

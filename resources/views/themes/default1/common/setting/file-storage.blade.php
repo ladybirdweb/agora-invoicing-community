@@ -57,8 +57,8 @@
                     <div class="form-group col-sm-6 s3_config">
                         <label class="required">{{ trans('message.s3_path_style_endpoint') }}</label>
                         <select class="form-control" name="s3_path_style_endpoint" id="s3_path_style_endpoint">
-                            <option value="true" {{ $fileStorage->s3_path_style_endpoint === 'true' ? 'selected' : '' }}>True</option>
-                            <option value="false" {{ $fileStorage->s3_path_style_endpoint === 'false' || $fileStorage->s3_path_style_endpoint === null ? 'selected' : '' }}>False</option>
+                            <option value="true" {{ $fileStorage->s3_path_style_endpoint === 'true' ? 'selected' : '' }}>Yes</option>
+                            <option value="false" {{ $fileStorage->s3_path_style_endpoint === 'false' || $fileStorage->s3_path_style_endpoint === null ? 'selected' : '' }}>No</option>
                         </select>
                     </div>
                     <div class="form-group col-sm-6 s3_config">

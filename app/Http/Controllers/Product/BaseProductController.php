@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
-use App\FileSystemSettings;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Http\Controllers\ThirdPartyAppController;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -353,14 +351,14 @@ class BaseProductController extends ExtendedBaseProductController
 
     public function productDownload(Request $request)
     {
-        if(!$this->validateLicenseManagerAppKey($request->input('app_key'))) {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'))) {
             return errorResponse(\Lang::get('message.invalid_app_key'));
         }
 
         $fileName = $request->input('file_name');
-        $filePath = 'products/' . $fileName;
+        $filePath = 'products/'.$fileName;
 
-        if (!$this->fileExists($filePath)) {
+        if (! $this->fileExists($filePath)) {
             return errorResponse(\Lang::get('message.file_not_exist'));
         }
 
@@ -371,13 +369,13 @@ class BaseProductController extends ExtendedBaseProductController
 
     public function productFileExist(Request $request)
     {
-        if(!$this->validateLicenseManagerAppKey($request->input('app_key'))) {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'))) {
             return errorResponse(\Lang::get('message.invalid_app_key'));
         }
         $fileName = $request->input('file_name');
-        $filePath = 'products/' . $fileName;
+        $filePath = 'products/'.$fileName;
 
-        if(!$this->fileExists($filePath)) {
+        if (! $this->fileExists($filePath)) {
             return errorResponse(\Lang::get('message.file_not_exist'));
         }
 
@@ -406,7 +404,7 @@ class BaseProductController extends ExtendedBaseProductController
                     )
                     ->header(
                         'Content-Disposition',
-                        'attachment; filename="' . basename($fileUrl) . '"'
+                        'attachment; filename="'.basename($fileUrl).'"'
                     );
             }
 
@@ -430,7 +428,6 @@ class BaseProductController extends ExtendedBaseProductController
             );
 
             return $file;
-
         } catch (\Exception $e) {
             return errorResponse(\Lang::get('message.error_occured_while_downloading'));
         }
@@ -439,6 +436,7 @@ class BaseProductController extends ExtendedBaseProductController
     private function validateLicenseManagerAppKey($appKey): bool
     {
         $key = ThirdPartyApp::where('app_name', 'faveo_license_manager')->value('app_key');
+
         return $key === $appKey;
     }
 }

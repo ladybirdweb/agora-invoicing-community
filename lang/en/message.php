@@ -806,5 +806,7 @@ return [
     's3_error' => 'Invalid S3 details were provided.',
     'disk_tooltip' => 'Select the storage disk you want to use. \'System\' means local storage on the server, while \'S3\' refers to Amazon S3 cloud storage.',
     'path_tooltip' => 'Specify the path for storing all files (accessible by the application and following the server\'s directory structure).',
+    'error_occured_while_downloading' => 'An error occurred while downloading the file.',
+    'file_exist' => 'File exists',
 
 ];

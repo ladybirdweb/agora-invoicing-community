@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
+use App\FileSystemSettings;
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Http\Controllers\ThirdPartyAppController;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use App\ThirdPartyApp;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -345,5 +349,96 @@ class BaseProductController extends ExtendedBaseProductController
         $quantityModifyPermission = $product->can_modify_quantity;
 
         return ['agent' => $agentModifyPermission, 'quantity' => $quantityModifyPermission];
+    }
+
+    public function productDownload(Request $request)
+    {
+        if(!$this->validateLicenseManagerAppKey($request->input('app_key'))) {
+            return errorResponse(\Lang::get('message.invalid_app_key'));
+        }
+
+        $fileName = $request->input('file_name');
+        $filePath = 'products/' . $fileName;
+
+        if (!$this->fileExists($filePath)) {
+            return errorResponse(\Lang::get('message.file_not_exist'));
+        }
+
+        return isS3Enabled()
+            ? $this->downloadFromS3($filePath)
+            : $this->downloadFromLocal($filePath);
+    }
+
+    public function productFileExist(Request $request)
+    {
+        if(!$this->validateLicenseManagerAppKey($request->input('app_key'))) {
+            return errorResponse(\Lang::get('message.invalid_app_key'));
+        }
+        $fileName = $request->input('file_name');
+        $filePath = 'products/' . $fileName;
+
+        if(!$this->fileExists($filePath)) {
+            return errorResponse(\Lang::get('message.file_not_exist'));
+        }
+
+        return successResponse(\Lang::get('message.file_exist'));
+    }
+
+    private function fileExists($filePath): bool
+    {
+        return Attach::exists($filePath);
+    }
+
+    private function downloadFromS3($filePath)
+    {
+        try {
+            $fileUrl = Attach::download($filePath);
+
+            $client = new Client();
+
+            $response = $client->get($fileUrl);
+
+            if ($response->getStatusCode() === 200) {
+                return response($response->getBody()->getContents(), 200)
+                    ->header(
+                        'Content-Type',
+                        $response->getHeader('Content-Type')[0] ?? 'application/octet-stream'
+                    )
+                    ->header(
+                        'Content-Disposition',
+                        'attachment; filename="' . basename($fileUrl) . '"'
+                    );
+            }
+
+            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
+        } catch (\Exception $e) {
+            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
+        }
+    }
+
+    private function downloadFromLocal($filePath)
+    {
+        try {
+            $file = Attach::download($filePath);
+
+            $file->headers->set(
+                'Content-Disposition',
+                $file->headers->makeDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    basename($filePath)
+                )
+            );
+
+            return $file;
+
+        } catch (\Exception $e) {
+            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
+        }
+    }
+
+    private function validateLicenseManagerAppKey($appKey): bool
+    {
+        $key = ThirdPartyApp::where('app_name', 'faveo_license_manager')->value('app_key');
+        return $key === $appKey;
     }
 }

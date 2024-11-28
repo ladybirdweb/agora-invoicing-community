@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
     {
         FileSystemSettings::create([
             'disk' => 'system',
+            'local_file_storage_path' => storage_path('app/public'),
         ]);
     }
 }

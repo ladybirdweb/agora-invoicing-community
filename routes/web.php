@@ -609,6 +609,11 @@ Route::middleware('installAgora')->group(function () {
 
         return redirect('login');
     });
+
+    Route::prefix('api')->withoutMiddleware(['web'])->middleware(['api'])->group(function () {
+        Route::post('productDownload', [Product\BaseProductController::class, 'productDownload']);
+        Route::post('productExist', [Product\BaseProductController::class, 'productFileExist']);
+    });
 });
 /*
 * Faveo APIs

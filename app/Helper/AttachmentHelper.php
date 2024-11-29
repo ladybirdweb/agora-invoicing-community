@@ -94,4 +94,11 @@ class AttachmentHelper
 
         return $adapter->exists($path);
     }
+
+    public function readStream($path, $disk = null)
+    {
+        $adapter = $this->getStorageAdapter($disk);
+
+        return $adapter->readStream($path);
+    }
 }

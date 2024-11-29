@@ -11,6 +11,7 @@ use App\ThirdPartyApp;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -362,9 +363,7 @@ class BaseProductController extends ExtendedBaseProductController
             return errorResponse(\Lang::get('message.file_not_exist'));
         }
 
-        return isS3Enabled()
-            ? $this->downloadFromS3($filePath)
-            : $this->downloadFromLocal($filePath);
+        return $this->streamProduct($filePath);
     }
 
     public function productFileExist(Request $request)
@@ -387,47 +386,23 @@ class BaseProductController extends ExtendedBaseProductController
         return Attach::exists($filePath);
     }
 
-    private function downloadFromS3($filePath)
+    private function streamProduct($filePath)
     {
         try {
-            $fileUrl = Attach::download($filePath);
 
-            $client = new Client();
+            $response = new StreamedResponse(function () use ($filePath) {
+                $stream = Attach::readStream($filePath);
+                while (!feof($stream)) {
+                    echo fread($stream, 1024 * 8);  // Read in 8 KB chunks
+                }
 
-            $response = $client->get($fileUrl);
+                fclose($stream);
+            });
 
-            if ($response->getStatusCode() === 200) {
-                return response($response->getBody()->getContents(), 200)
-                    ->header(
-                        'Content-Type',
-                        $response->getHeader('Content-Type')[0] ?? 'application/octet-stream'
-                    )
-                    ->header(
-                        'Content-Disposition',
-                        'attachment; filename="'.basename($fileUrl).'"'
-                    );
-            }
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"');
+            return $response;
 
-            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
-        } catch (\Exception $e) {
-            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
-        }
-    }
-
-    private function downloadFromLocal($filePath)
-    {
-        try {
-            $file = Attach::download($filePath);
-
-            $file->headers->set(
-                'Content-Disposition',
-                $file->headers->makeDisposition(
-                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                    basename($filePath)
-                )
-            );
-
-            return $file;
         } catch (\Exception $e) {
             return errorResponse(\Lang::get('message.error_occured_while_downloading'));
         }

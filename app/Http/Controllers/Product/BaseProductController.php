@@ -8,7 +8,6 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\ThirdPartyApp;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -389,10 +388,9 @@ class BaseProductController extends ExtendedBaseProductController
     private function streamProduct($filePath)
     {
         try {
-
             $response = new StreamedResponse(function () use ($filePath) {
                 $stream = Attach::readStream($filePath);
-                while (!feof($stream)) {
+                while (! feof($stream)) {
                     echo fread($stream, 1024 * 8);  // Read in 8 KB chunks
                 }
 
@@ -400,9 +398,9 @@ class BaseProductController extends ExtendedBaseProductController
             });
 
             $response->headers->set('Content-Type', 'application/octet-stream');
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"');
-            return $response;
+            $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($filePath).'"');
 
+            return $response;
         } catch (\Exception $e) {
             return errorResponse(\Lang::get('message.error_occured_while_downloading'));
         }

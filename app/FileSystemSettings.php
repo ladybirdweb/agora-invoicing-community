@@ -12,6 +12,6 @@ class FileSystemSettings extends Model
     protected $table = 'settings_filesystem';
 
     protected $fillable = [
-        'disk', 'local_file_storage_path'
+        'disk', 'local_file_storage_path',
     ];
 }

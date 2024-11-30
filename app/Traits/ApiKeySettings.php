@@ -239,14 +239,14 @@ trait ApiKeySettings
 
         $fileStorage = (object) [
             'disk' => $fileStorageSettings->disk ?? '',
-            'local_file_storage_path' => env('STORAGE_PATH', storage_path().'/app/public'),
-            's3_bucket' => env('AWS_BUCKET', $fileStorageSettings->s3_bucket ?? ''),
-            's3_region' => env('AWS_DEFAULT_REGION', $fileStorageSettings->s3_region ?? ''),
-            's3_access_key' => env('AWS_ACCESS_KEY_ID', $fileStorageSettings->s3_access_key ?? ''),
-            's3_secret_key' => env('AWS_SECRET_ACCESS_KEY', $fileStorageSettings->s3_secret_key ?? ''),
-            's3_endpoint_url' => env('AWS_ENDPOINT', $fileStorageSettings->s3_endpoint_url ?? ''),
-            's3_url' => env('AWS_URL', $fileStorageSettings->s3_url ?? ''),
-            's3_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', $fileStorageSettings->s3_path_style_endpoint ?? ''),
+            'local_file_storage_path' => env('STORAGE_PATH', storage_path('app/public')),
+            's3_bucket' => env('AWS_BUCKET', ''),
+            's3_region' => env('AWS_DEFAULT_REGION', ''),
+            's3_access_key' => env('AWS_ACCESS_KEY_ID', ''),
+            's3_secret_key' => env('AWS_SECRET_ACCESS_KEY', ''),
+            's3_endpoint_url' => env('AWS_ENDPOINT', ''),
+            's3_url' => env('AWS_URL', ''),
+            's3_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', ''),
         ];
 
         return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
@@ -274,8 +274,11 @@ trait ApiKeySettings
     protected function updateLocalStorage($request, $fileStorageSettings)
     {
         $path = $request->input('path');
-        $fileStorageSettings->disk = 'system';
-        $fileStorageSettings->local_file_storage_path = $path;
+
+        $fileStorageSettings->fill([
+            'disk' => 'system',
+            'local_file_storage_path' => $path,
+        ]);
 
         setEnvValue('STORAGE_PATH', $path);
 
@@ -286,7 +289,7 @@ trait ApiKeySettings
     {
         $fileStorageSettings->disk = 's3';
 
-        $fileStorageSettings->fill([
+        $s3fields = [
             's3_bucket' => $request->input('s3_bucket'),
             's3_region' => $request->input('s3_region'),
             's3_access_key' => $request->input('s3_access_key'),
@@ -294,39 +297,41 @@ trait ApiKeySettings
             's3_endpoint_url' => $request->input('s3_endpoint_url'),
             's3_url' => $request->input('s3_url'),
             's3_path_style_endpoint' => $request->input('s3_path_style_endpoint'),
-        ]);
+        ];
 
         if (! $this->validateS3Credentials(
-            $fileStorageSettings->s3_region,
-            $fileStorageSettings->s3_access_key,
-            $fileStorageSettings->s3_secret_key,
-            $fileStorageSettings->s3_endpoint_url,
-            $fileStorageSettings->s3_bucket,
-            $fileStorageSettings->s3_url,
-            $fileStorageSettings->s3_path_style_endpoint
+            $request->input('s3_region'),
+            $request->input('s3_access_key'),
+            $request->input('s3_secret_key'),
+            $request->input('s3_endpoint_url'),
+            $request->input('s3_bucket'),
+            $request->input('s3_url'),
+            $request->input('s3_path_style_endpoint')
         )) {
             return errorResponse(trans('message.s3_error'));
         }
 
-        $this->updateS3EnvSettings($fileStorageSettings);
+        $this->updateS3EnvSettings($s3fields);
 
         return successResponse();
     }
 
-    protected function updateS3EnvSettings($fileStorageSettings)
+    protected function updateS3EnvSettings($s3fields)
     {
-        $s3Settings = [
-            'AWS_ACCESS_KEY_ID' => $fileStorageSettings->s3_access_key,
-            'AWS_SECRET_ACCESS_KEY' => $fileStorageSettings->s3_secret_key,
-            'AWS_BUCKET' => $fileStorageSettings->s3_bucket,
-            'AWS_DEFAULT_REGION' => $fileStorageSettings->s3_region,
-            'AWS_ENDPOINT' => $fileStorageSettings->s3_endpoint_url,
-            'AWS_URL' => $fileStorageSettings->s3_url,
-            'AWS_USE_PATH_STYLE_ENDPOINT' => $fileStorageSettings->s3_path_style_endpoint,
-        ];
+        foreach ($s3fields as $key => $value) {
+            $envKey = match ($key) {
+                's3_bucket' => 'AWS_BUCKET',
+                's3_region' => 'AWS_DEFAULT_REGION',
+                's3_access_key' => 'AWS_ACCESS_KEY_ID',
+                's3_secret_key' => 'AWS_SECRET_ACCESS_KEY',
+                's3_endpoint_url' => 'AWS_ENDPOINT',
+                's3_url' => 'AWS_URL',
+                's3_path_style_endpoint' => 'AWS_USE_PATH_STYLE_ENDPOINT',
+            };
 
-        foreach ($s3Settings as $key => $value) {
-            setEnvValue($key, $value);
+            if ($envKey) {
+                setEnvValue($envKey, $value);
+            }
         }
     }
 

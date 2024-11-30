@@ -33,7 +33,7 @@
             <form id="file_form">
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="required">{{ trans('message.storage_disk') }} </label>
+                        <label>{{ trans('message.storage_disk') }} </label>
                         <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="{{ trans('message.disk_tooltip') }}"></i>
                         <select class="form-control" name="disk" id="disk">
@@ -55,7 +55,7 @@
 
                     <!-- S3 Configuration Fields -->
                     <div class="form-group col-sm-6 s3_config">
-                        <label class="required">{{ trans('message.s3_path_style_endpoint') }}</label>
+                        <label>{{ trans('message.s3_path_style_endpoint') }}</label>
                         <select class="form-control" name="s3_path_style_endpoint" id="s3_path_style_endpoint">
                             <option value="true" {{ $fileStorage->s3_path_style_endpoint === true ? 'selected' : '' }}>Yes</option>
                             <option value="false" {{ $fileStorage->s3_path_style_endpoint !== true ? 'selected' : '' }}>No</option>

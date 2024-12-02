@@ -351,7 +351,7 @@ class BaseProductController extends ExtendedBaseProductController
 
     public function productDownload(Request $request)
     {
-        if (! $this->validateLicenseManagerAppKey($request->input('app_key'))) {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'),$request->input('app_secret'))) {
             return errorResponse(\Lang::get('message.invalid_app_key'));
         }
 
@@ -367,7 +367,7 @@ class BaseProductController extends ExtendedBaseProductController
 
     public function productFileExist(Request $request)
     {
-        if (! $this->validateLicenseManagerAppKey($request->input('app_key'))) {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'),$request->input('app_secret'))) {
             return errorResponse(\Lang::get('message.invalid_app_key'));
         }
         $fileName = $request->input('file_name');
@@ -406,10 +406,10 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    private function validateLicenseManagerAppKey($appKey): bool
+    private function validateLicenseManagerAppKey($appKey,$appSecret): bool
     {
-        $key = ThirdPartyApp::where('app_name', 'faveo_license_manager')->value('app_key');
-
-        return $key === $appKey;
+        return ThirdPartyApp::where('app_key', $appKey)
+            ->where('app_secret', $appSecret)
+            ->exists();
     }
 }

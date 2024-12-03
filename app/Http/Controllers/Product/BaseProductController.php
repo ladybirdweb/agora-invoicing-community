@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Facades\Attach;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use App\ThirdPartyApp;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -172,14 +175,28 @@ class BaseProductController extends ExtendedBaseProductController
 
                         return view('themes.default1.front.download', compact('release'));
                     } else {
-                        header('Content-type: Zip');
-                        header('Content-Description: File Transfer');
-                        header('Content-Disposition: attachment; filename='.$name.'.zip');
-                        header('Content-type: application/zip');
-                        header('Content-Length: '.filesize($release));
-                        readfile($release);
-                        // ob_end_clean();
-                        // flush();
+                        if (isS3Enabled()) {
+                            if (! Attach::exists('products/'.explode('?', urldecode(basename($release)))[0])) {
+                                return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                            }
+
+                            return downloadExternalFile($release, $name);
+                        } else {
+                            if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+                                return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                            }
+                            $customFileName = "{$name}.zip";
+
+                            $release->headers->set(
+                                'Content-Disposition',
+                                $release->headers->makeDisposition(
+                                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                                    $customFileName
+                                )
+                            );
+
+                            return $release;
+                        }
                     }
                 } else {
                     return redirect()->back()->with('fails', \Lang::get('activate-your-account'));
@@ -204,10 +221,7 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            $path = Setting::find(1)->value('file_storage');
-            // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            //$relese = '/home/faveo/products/'.$file->file;
-            $relese = $path.'/'.$file->file;
+            $relese = Attach::download('products/'.$fileName);
 
             return $relese;
         }
@@ -223,8 +237,9 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
-            $path = Setting::find(1)->value('file_storage');
-            $relese = $path.'/'.$file->file;
+            $fileName = $file->file;
+
+            $relese = Attach::download('products/'.$fileName);
 
             return $relese;
         }
@@ -332,5 +347,69 @@ class BaseProductController extends ExtendedBaseProductController
         $quantityModifyPermission = $product->can_modify_quantity;
 
         return ['agent' => $agentModifyPermission, 'quantity' => $quantityModifyPermission];
+    }
+
+    public function productDownload(Request $request)
+    {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'), $request->input('app_secret'))) {
+            return errorResponse(\Lang::get('message.invalid_app_key'));
+        }
+
+        $fileName = $request->input('file_name');
+        $filePath = 'products/'.$fileName;
+
+        if (! $this->fileExists($filePath)) {
+            return errorResponse(\Lang::get('message.file_not_exist'));
+        }
+
+        return $this->streamProduct($filePath);
+    }
+
+    public function productFileExist(Request $request)
+    {
+        if (! $this->validateLicenseManagerAppKey($request->input('app_key'), $request->input('app_secret'))) {
+            return errorResponse(\Lang::get('message.invalid_app_key'));
+        }
+        $fileName = $request->input('file_name');
+        $filePath = 'products/'.$fileName;
+
+        if (! $this->fileExists($filePath)) {
+            return errorResponse(\Lang::get('message.file_not_exist'));
+        }
+
+        return successResponse(\Lang::get('message.file_exist'));
+    }
+
+    private function fileExists($filePath): bool
+    {
+        return Attach::exists($filePath);
+    }
+
+    private function streamProduct($filePath)
+    {
+        try {
+            $response = new StreamedResponse(function () use ($filePath) {
+                $stream = Attach::readStream($filePath);
+                while (! feof($stream)) {
+                    echo fread($stream, 1024 * 8);  // Read in 8 KB chunks
+                }
+
+                fclose($stream);
+            });
+
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($filePath).'"');
+
+            return $response;
+        } catch (\Exception $e) {
+            return errorResponse(\Lang::get('message.error_occured_while_downloading'));
+        }
+    }
+
+    private function validateLicenseManagerAppKey($appKey, $appSecret): bool
+    {
+        return ThirdPartyApp::where('app_key', $appKey)
+            ->where('app_secret', $appSecret)
+            ->exists();
     }
 }

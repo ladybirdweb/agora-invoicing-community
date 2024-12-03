@@ -32,35 +32,23 @@ function getBaseUrl() {
 function fetchLang() {
     $baseUrl = getBaseUrl();
     $langUrl = "{$baseUrl}/lang";
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/json;charset=UTF-8\r\n",
+            'content' => ''
+        ]
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($langUrl, false, $context);
 
-    // Initialize cURL session
-    $ch = curl_init($langUrl);
-
-    // Set cURL options for POST request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json;charset=UTF-8']);
-    curl_setopt($ch, CURLOPT_POST, true);
-
-    $postData = '';
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-
-    // Execute cURL session
-    $response = curl_exec($ch);
-
-    // Check for cURL errors
-    if(curl_errno($ch)) {
-        // Handle error, if any
-        echo 'cURL error: ' . curl_error($ch);
+    if ($response === false) {
         return null;
     }
 
-    // Close cURL session
-    curl_close($ch);
+    $langData = json_decode($response, true);
 
-    // Parse the JSON response
-    $langData = json_decode($response, true); // Decode JSON response into an associative array
-
-    return $langData; // Return the language data
+    return $langData;
 }
 
 $lang = fetchLang();
@@ -582,12 +570,12 @@ $lang = fetchLang();
                                                 <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
                                             </div>
                                         </div>
-                                        <small class="form-text text-muted">
+                                        <small class="form-text text-muted" id="pswd_info" style="display: none;">
                                             <?= $lang['password_requirements'] ?>
                                             <?php
                                             echo '<ul>';
                                             foreach ($lang['password_requirements_list'] as $value) {
-                                                echo '<li>' . $value . '</li>';
+                                                echo '<li id="' . $value['id'] . '" class="text-danger">' . $value['text'] . '</li>';
                                             }
                                             echo '</ul>';
                                             ?>
@@ -740,6 +728,51 @@ $lang = fetchLang();
     });
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function() {
+        // Cache the selectors for better performance
+        var $pswdInfo = $('#pswd_info');
+        var $newPassword = $('#admin_password');
+        var $length = $('#length');
+        var $letter = $('#letter');
+        var $capital = $('#capital');
+        var $number = $('#number');
+        var $special = $('#space');
+
+        // Function to update validation classes
+        function updateClass(condition, $element) {
+            $element.toggleClass('text-success', condition).toggleClass('text-danger', !condition);
+        }
+
+        // Initially hide the password requirements
+        $pswdInfo.hide();
+
+        // Show/hide password requirements on focus/blur
+        $newPassword.focus(function() {
+            $pswdInfo.show();
+        }).blur(function() {
+            $pswdInfo.hide();
+        });
+
+        // Perform real-time validation on keyup
+        $newPassword.on('keyup', function() {
+            var pswd = $(this).val();
+
+            // Validate the length (8 to 16 characters)
+            updateClass(pswd.length >= 8 && pswd.length <= 16, $length);
+
+            // Validate lowercase letter
+            updateClass(/[a-z]/.test(pswd), $letter);
+
+            // Validate uppercase letter
+            updateClass(/[A-Z]/.test(pswd), $capital);
+
+            // Validate number
+            updateClass(/\d/.test(pswd), $number);
+
+            // Validate special character
+            updateClass(/[~*!@$#%_+.?:,{ }]/.test(pswd), $special);
+        });
     });
     document.getElementById('validate').addEventListener('click', function(event) {
         event.preventDefault();
@@ -952,6 +985,7 @@ $lang = fetchLang();
         // Collect data from form inputs
         const fields = {
             host: document.getElementById('host'),
+            port:document.getElementById('mysql_port'),
             databaseName: document.getElementById('database_name'),
             username: document.getElementById('username'),
             password: document.getElementById('password')
@@ -996,6 +1030,7 @@ $lang = fetchLang();
         // Collect data if validation is successful
         const data = {
             host: fields.host.value,
+            port: fields.port.value,
             databasename: fields.databaseName.value,
             username: fields.username.value,
             password: fields.password.value

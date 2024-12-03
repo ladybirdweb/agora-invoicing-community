@@ -108,8 +108,8 @@ return [
 
     */
 
-    'key' => env('APP_KEY', 'base64:6bir20aYSpt+tJUiTu3D/QRwddjvwAupLPAfu14uUmk='),
-    'cipher' => 'AES-256-CBC',
+    'key' => 'SomeRandomString',
+    'cipher' => 'AES-128-CBC',
 
     /*
       |---------------------------------------------------------------------------------
@@ -220,6 +220,7 @@ return [
         App\Providers\ImageUploadHelperServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        \App\Providers\AttachmentHelperServiceProvider::class,
 
     ],
 

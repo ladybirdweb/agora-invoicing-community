@@ -2,7 +2,7 @@
 
 namespace App\Traits\Upload;
 
-use App\Model\Common\Setting;
+use App\Facades\Attach;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
@@ -37,7 +37,7 @@ trait ChunkUpload
                 'done' => $handler->getPercentageDone(),
                 'status' => true,
             ]);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $response = ['success' => 'false', 'message' => $ex->getMessage()];
 
             return response()->json(compact('response'), 500);
@@ -52,37 +52,12 @@ trait ChunkUpload
      */
     protected function saveFile(UploadedFile $file)
     {
-        $fileName = $this->createFilename($file);
-        // Group files by mime type
-        //$mime = str_replace('/', '-', $file->getMimeType());
-        // Group files by the date (week
-        // $dateFolder = date("Y-m-W");
-        // Build the file path
-        //   $filePath = "upload/{$mime}/{$dateFolder}/";
-        $filePath = Setting::find(1)->value('file_storage');
-        $finalPath = Setting::find(1)->value('file_storage');
-        // move the file name
-        $file->move($finalPath, $fileName);
+        $fileName = Attach::createFilename($file);
+        $filePath = Attach::put('products/', $file, null, true);
 
         return response()->json([
             'path' => $filePath,
             'name' => $fileName,
         ]);
-    }
-
-    /**
-     * Create unique filename for uploaded file.
-     *
-     * @param  UploadedFile  $file
-     * @return string
-     */
-    protected function createFilename(UploadedFile $file)
-    {
-        $extension = $file->getClientOriginalExtension();
-        $filename = str_replace('.'.$extension, '', $file->getClientOriginalName()); // Filename without extension
-        // Add timestamp hash to name of the file
-        $filename .= '_'.md5(time()).'.'.$extension;
-
-        return $filename;
     }
 }

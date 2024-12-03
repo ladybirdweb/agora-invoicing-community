@@ -57,7 +57,7 @@ foreach($scripts as $script) {
 
     <!-- Favicon -->
     @if($setting->fav_icon)
-        <link rel="shortcut icon"  href='{{asset("storage/common/images/$setting->fav_icon")}}' type="image/x-icon" />
+        <link rel="shortcut icon"  href='{{ $setting->fav_icon }}' type="image/x-icon" />
     @endif
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
@@ -164,7 +164,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <a href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                    <img alt="Porto" width="130" height="75" src="{{asset('storage/images/'.$setting->logo)}}">
+                                    <img alt="Porto" width="130" height="75" src="{{ $setting->logo }}">
                                 </a>
                             </div>
                         </div>
@@ -246,7 +246,7 @@ $days = $pay->where('product','117')->value('days');
 
                                                         <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                                            <img alt="Porto" width="75" height="50" src="{{asset('storage/images/'.$setting->logo)}}">
+                                                            <img alt="Porto" width="75" height="50" src="{{ $setting->logo }}">
                                                         </a>
                                                     </li>
 

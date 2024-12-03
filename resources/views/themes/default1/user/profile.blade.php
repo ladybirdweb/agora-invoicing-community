@@ -148,7 +148,7 @@ input:checked + .slider:before {
 
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                  {!! Form::label('mobile',null,Lang::get('message.mobile')) !!}
+                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile')) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                      <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
@@ -242,11 +242,7 @@ input:checked + .slider:before {
                        <?php
                         $user = \DB::table('users')->find(\Auth::user()->id);
                         ?>
-                        @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" class="img-thumbnail" style="height: 50px;">
-                        @else
-                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" class="img-thumbnail" style="height: 50px;" />
-                        @endif
 
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Updating..."><i class="fas fa-sync">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>

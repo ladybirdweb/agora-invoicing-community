@@ -11,7 +11,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         @if($set->fav_icon)
-        <link rel="shortcut icon" href='{{asset("storage/common/images/$set->fav_icon")}}' type="image/x-icon" />
+        <link rel="shortcut icon" href='{{ $set->fav_icon }}' type="image/x-icon" />
         @endif
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -46,6 +46,7 @@
 
         <script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>
         <script src="{{asset('https://code.jquery.com/jquery-3.5.1.min.js')}}"></script>
+        <script src="{{ asset('js/admin/jquery.validate.js') }}"></script>
         <script>
         $(function () {
           $("input[data-bootstrap-switch]").each(function(){
@@ -122,11 +123,7 @@
                         <?php
                         $user = \DB::table('users')->find(\Auth::user()->id);
                         ?>
-                        @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                        @else
-                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                        @endif
                         <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -134,11 +131,7 @@
                             <!-- Message Start -->
                             <div class="media">
 
-                        @if($user->profile_pic == null)
                         <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                        @else
-                        <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                        @endif
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
@@ -172,7 +165,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ asset("storage/admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ $set->admin_logo }}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8;"></span>
                         </a>
                 @endif

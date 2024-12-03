@@ -156,16 +156,7 @@ input:checked + .slider:before {
 
 
                                                 <div class="profile-image-inner-container bg-color-primary">
-                                                     @if($user && $user->profile_pic)
-
-                                                      <img src="{{ asset('storage/common/images/users/' . Auth::user()->profile_pic) }}">
-
-                                                    @else
                                                        <img src="{{ Auth::user()->profile_pic }}">
-
-                                                    @endif
-
-
                                                     <span class="profile-image-button bg-color-dark">
 
                                                         <i class="fas fa-camera text-light"></i>

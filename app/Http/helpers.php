@@ -1,5 +1,6 @@
 <?php
 
+use App\FileSystemSettings;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Order\InstallationDetail;
@@ -10,6 +11,8 @@ use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\Response;
 
 function getLocation()
 {
@@ -38,10 +41,10 @@ function checkArray($key, $array)
 function mime($type)
 {
     if ($type == 'jpg' ||
-            $type == 'png' ||
-            $type == 'jpeg' ||
-            $type == 'gif' ||
-            starts_with($type, 'image')) {
+        $type == 'png' ||
+        $type == 'jpeg' ||
+        $type == 'gif' ||
+        starts_with($type, 'image')) {
         return 'image';
     }
 }
@@ -231,7 +234,7 @@ function findStateByRegionId($iso)
 {
     try {
         $states = \App\Model\Common\State::where('country_code_char2', $iso)
-        ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
 
         return $states;
     } catch (\Exception $ex) {
@@ -667,4 +670,47 @@ function createDB(string $dbName)
     } catch (\Exception $e) {
         return redirect()->back()->with('fails', $e->getMessage());
     }
+}
+
+function isS3Enabled()
+{
+    $fileSettings = FileSystemSettings::select('disk')->first();
+
+    return $fileSettings->disk === 's3';
+}
+
+function setEnvValue($key, $value)
+{
+    $envFile = app()->environmentFilePath();
+    $content = File::get($envFile);
+
+    $keyExists = preg_match("/^{$key}=.*/m", $content);
+
+    if ($keyExists) {
+        $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+    } else {
+        // Append the new key-value pair
+        $content .= "\n{$key}={$value}";
+    }
+
+    // Save the updated .env file
+    File::put($envFile, $content);
+}
+
+function downloadExternalFile($url, $filename)
+{
+    $client = new Client();
+    $response = $client->get($url, ['stream' => true]);
+
+    return response()->stream(function () use ($response) {
+        $stream = $response->getBody();
+        while (! $stream->eof()) {
+            echo $stream->read(1024);
+        }
+    }, 200, [
+        'Content-Type' => 'application/zip',
+        'Content-Disposition' => 'attachment; filename="'.basename($filename).'.zip"',
+        'Expires' => 0,
+        'Cache-Control' => 'no-cache',
+    ]);
 }

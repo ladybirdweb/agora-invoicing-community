@@ -90,4 +90,23 @@ class ThirdPartyApiController extends Controller
             return response()->json(compact('response'), 500);
         }
     }
+
+    public function getFileContent()
+    {
+        // Read the contents of the files
+        $linuxInstallFile = \File::get(public_path('script/install_linux.sh'));
+        $windowsInstallFile = \File::get(public_path('script/install_windows.ps1'));
+        $linuxUninstallFile = \File::get(public_path('script/mac_uninstall.sh'));
+        $macUninstallFile = \File::get(public_path('script/mac_uninstall.sh'));
+
+        // Prepare the response data
+        $responseData = [
+            'linux_install' => $linuxInstallFile,
+            'windows_install' => $windowsInstallFile,
+            'linux_uninstall' => $linuxUninstallFile,
+            'mac_uninstall' => $macUninstallFile
+        ];
+
+        return successResponse('', $responseData);
+    }
 }

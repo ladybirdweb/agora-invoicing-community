@@ -104,7 +104,7 @@ class ThirdPartyApiController extends Controller
             'linux_install' => $linuxInstallFile,
             'windows_install' => $windowsInstallFile,
             'linux_uninstall' => $linuxUninstallFile,
-            'mac_uninstall' => $macUninstallFile
+            'mac_uninstall' => $macUninstallFile,
         ];
 
         return successResponse('', $responseData);

@@ -13,6 +13,7 @@ use App\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\RateLimiter;
 
 function getLocation()
 {
@@ -713,4 +714,23 @@ function downloadExternalFile($url, $filename)
         'Expires' => 0,
         'Cache-Control' => 'no-cache',
     ]);
+}
+
+function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
+{
+    $IpKey = $key . ':' . $request->ip();
+
+    $decaySeconds = $decayMinutes * 60;
+
+    // Attempt to apply the rate limit
+    $isAllowed = RateLimiter::attempt(
+        $IpKey,
+        $maxAttempts,
+        function () {
+        },
+        $decaySeconds
+    );
+
+    // Return true if the rate limit is exceeded, false otherwise
+    return !$isAllowed;
 }

@@ -601,11 +601,12 @@ Route::middleware('installAgora')->group(function () {
     Route::post('otp/verify', [Auth\AuthController::class, 'verifyOtp']);
     Route::post('email/verify', [Auth\AuthController::class, 'verifyEmail']);
     Route::post('resend_otp', [Auth\AuthController::class, 'retryOTP']);
-    Route::post('send-email',[Auth\AuthController::class, 'sendEmail']);
+    Route::post('send-email', [Auth\AuthController::class, 'sendEmail']);
     Route::get('verify', function () {
         $user = \Session::get('user');
         if ($user) {
             $eid = Crypt::encrypt($user->email);
+
             return view('themes.default1.user.verify', compact('user', 'eid'));
         }
 

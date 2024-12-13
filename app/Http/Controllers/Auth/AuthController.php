@@ -8,8 +8,13 @@ use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
+use App\VerificationAttempt;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Validator;
 
@@ -122,140 +127,182 @@ class AuthController extends BaseAuthController
 
     public function requestOtp(Request $request)
     {
-        $this->validate($request, [
-            'mobile' => 'required|numeric',
+        $request->validate([
+            'eid' => 'required|string',
         ]);
-        $newNumber = ltrim($request->newnumber, '0');
-        $newCode = $request->code;
-        $newCountry = $this->getNewCountry($newCode);
-        User::where('id', $request->id)->update(['mobile' => $newNumber, 'mobile_code' => $newCode, 'country' => $newCountry]);
+
         try {
-            $code = $request->input('code');
-            $mobile = ltrim($request->input('mobile'), '0');
-            $number = '(+'.$code.') '.$mobile;
-            $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
+            // Decrypt the email
+            $email = Crypt::decrypt($request->eid);
 
-            return response()->json($response);
-        } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-            \Log::error('Error: '.$ex->getMessage());
+            // Find the user by email
+            $user = User::where('email', $email)->firstOrFail();
 
-            return response()->json(compact('result'), 500);
+            if(!$user){
+                return errorResponse('User not found.');
+            }
+
+            if ($user->mobile_verified) {
+                return errorResponse('Mobile already verified.');
+            }
+
+            // Handle verification attempts
+            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+
+            $attempts->save();
+
+            if ($attempts->mobile_attempt >= 3) {
+                return errorResponse('Maximum number of attempts exceeded.');
+            }
+
+            $attempts->increment('mobile_attempt');
+
+            if(!$this->sendOtp($user->mobile_code.$user->mobile)){
+                return errorResponse('Error occurred while sending OTP.');
+            }
+
+            $user->mobile_verified = 1;
+            $user->save();
+
+            return successResponse('OTP send successfully.');
+
+        }
+        catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error processing request.'], 500);
         }
     }
 
     public function retryOTP(Request $request)
     {
-        $this->validate($request, [
-            'code' => 'required|numeric',
-            'mobile' => 'required',
-        ]);
+        $default_type = $request->input('default_type');
 
-        try {
-            $code = $request->code;
-            $mobile = ltrim($request->mobile, '0');
-            $formatted_mobile = sprintf('(+%s) %s', $code, $mobile);
-
-            $result = $this->sendForReOtp($mobile, $code, $request->type);
-
-            $response = ['type' => 'success'];
-            $response['message'] = match ($request->type) {
-                'text' => 'OTP has been resent to '.$formatted_mobile.'.Please Enter the OTP to login!!',
-                default => 'Voice call has been sent to '.$formatted_mobile.'.Please Enter the OTP received on the call to login!!',
-            };
-
-            return $response;
-        } catch (\Exception $e) {
-            return response()->json([
-                'response' => $e->getMessage(),
-            ], 500);
-        }
+        return match ($default_type) {
+            'email' => $this->sendEmail($request, 'POST'),
+            'mobile' => $this->resendOTP($request),
+        };
     }
 
-    public function verifyOtp($mobile, $code, $otp)
+    public function resendOTP($request)
     {
-        $client = new \GuzzleHttp\Client();
-        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
-        $number = $code.$mobile;
-        $checkNumber = User::where('mobile', $mobile)->first();
-        if (! $checkNumber) {
-            return;
-        }
-        if (\Cache::get('otp'.$number) > 3) {
-            return;
-        }
-        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/verify', [
-            'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
+        $request->validate([
+            'eid' => 'required|string',
+            'type' => 'required|string|in:text,voice',
         ]);
-        \Cache::put('otp'.$number, \Cache::get('otp'.$number) + 1);
 
-        return $response->getBody()->getContents();
+        $email = Crypt::decrypt($request->eid);
+        $type = $request->input('type');
+
+        $user = User::where('email', $email)->firstOrFail();
+
+        if(!$user){
+            return errorResponse('User not found.');
+        }
+
+        // Handle verification attempts
+        $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+
+        $attempts->save();
+
+        if ($attempts->mobile_attempt >= 3) {
+            return errorResponse('Maximum number of attempts exceeded.');
+        }
+
+        $attempts->increment('mobile_attempt');
+
+        if(!$this->sendForReOtp($user->mobile_code.$user->mobile, $type)){
+            return errorResponse('Error occurred while sending OTP.');
+        }
+
+        return successResponse('OTP resend successfully.');
     }
 
-    public function postOtp(Request $request)
+    public function sendEmail(Request $request, $method = 'GET')
     {
-        $this->validate($request, [
-            'otp' => 'required|numeric',
+        $request->validate([
+            'eid' => 'required|string',
         ]);
 
+        $email = Crypt::decrypt($request->eid);
+
+        $user = User::where('email', $email)->firstOrFail();
+
+        if(!$user){
+            return errorResponse('User not found.');
+        }
+
+        // Handle verification attempts
+        $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+
+        $attempts->save();
+
+        if ($attempts->email_attemp >= 3) {
+            return errorResponse('Maximum number of attempts exceeded.');
+        }
+
+        $this->sendActivation($email, $method);
+
+        $attempts->increment('email_attempt');
+
+        if($method == 'POST'){
+            return successResponse('Email resend successfully.');
+        }
+
+        return successResponse('Email send successfully.');
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        if( rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request) ) {
+            return errorResponse('Too Many attempts.');
+        }
+
+        $request->validate([
+            'eid' => 'required|string',
+            'otp' => 'required|string|size:6',
+        ]);
         try {
-            $code = $request->input('code');
-            $mobile = ltrim($request->input('mobile'), '0');
-            $otp = $request->input('otp');
-            $userid = $request->input('id');
-            $verify = $this->verifyOtp($mobile, $code, $otp);
-            $array = json_decode($verify, true);
-            if ($array['type'] == 'error') {
-                throw new \Exception('OTP Not Verified!');
+            // Decrypt the email
+            $email = Crypt::decrypt($request->eid);
+            $otp = $request->otp;
+
+            // Find the user by email
+            $user = User::where('email', $email)->firstOrFail();
+
+            // Validate OTP
+            if (!is_numeric($request->otp)) {
+                return errorResponse('Invalid OTP format.');
             }
 
-            $user = User::find($userid);
-            if ($user) {
-                $user->mobile = $mobile;
-                $user->mobile_code = $code;
-                $user->mobile_verified = 1;
-                $user->save();
+            if(!$this->sendVerifyOTP($otp,$user->mobile_code.$user->mobile)){
+                return errorResponse('Invalid OTP.');
             }
-            $check = $this->checkVerify($user);
-            $this->mobileVerificationAttempt($user);
-            $response = ['type' => 'success', 'proceed' => $check,
-                'user_id' => $userid, 'message' => 'Mobile verified..Please login to access your account', ];
+            $user->mobile_verified = 0;
+            $user->save();
+            return successResponse('OTP Verified successfully.');
 
-            return response()->json($response);
-            // return redirect('/login');
-        } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-            if ($ex->getMessage() == 'OTP Not Verified!') {
-                $errors = ['OTP Not Verified!'];
-            }
-
-            return response()->json(compact('result'), 500);
+        }
+        catch (\Exception $e) {
+            return errorResponse('Error processing request.');
         }
     }
 
     public function verifyEmail(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email',
+        $request->validate([
+            'eid' => 'required|string',
         ]);
-        try {
-            $email = $request->input('email');
-            $userid = $request->input('id');
-            $user = User::find($userid);
-            $check = $this->checkVerify($user);
-            $method = 'GET';
-            //$this->sendActivation($email, $request->method());
-            $this->sendActivation($email, $method);
-            $response = ['type' => 'success', 'proceed' => $check,
-                'email' => $email, 'message' => 'Activation link has been sent to '.$email, ];
+        // Decrypt the email
+        $email = Crypt::decrypt($request->eid);
 
-            return response()->json($response);
-        } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-
-            return response()->json(compact('result'), 500);
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return errorResponse('User does not exist.');
         }
+        if($user->active !== 1) {
+            return errorResponse('Email not verified.');
+        }
+
+        return successResponse('Email verified successfully.');
     }
 
     public function checkVerify($user)

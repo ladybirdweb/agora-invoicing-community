@@ -10,6 +10,7 @@ use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\RateLimiter;
 
 function getLocation()
 {
@@ -667,4 +668,24 @@ function createDB(string $dbName)
     } catch (\Exception $e) {
         return redirect()->back()->with('fails', $e->getMessage());
     }
+}
+
+
+function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
+{
+    $IpKey = $key . ':' . $request->ip();
+
+    $decaySeconds = $decayMinutes * 60;
+
+    // Attempt to apply the rate limit
+    $isAllowed = RateLimiter::attempt(
+        $IpKey,
+        $maxAttempts,
+        function () {
+        },
+        $decaySeconds
+    );
+
+    // Return true if the rate limit is exceeded, false otherwise
+    return !$isAllowed;
 }

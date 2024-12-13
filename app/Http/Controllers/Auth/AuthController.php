@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use App\VerificationAttempt;
-use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Validator;
 
@@ -138,7 +134,7 @@ class AuthController extends BaseAuthController
             // Find the user by email
             $user = User::where('email', $email)->firstOrFail();
 
-            if(!$user){
+            if (! $user) {
                 return errorResponse('User not found.');
             }
 
@@ -157,7 +153,7 @@ class AuthController extends BaseAuthController
 
             $attempts->increment('mobile_attempt');
 
-            if(!$this->sendOtp($user->mobile_code.$user->mobile)){
+            if (! $this->sendOtp($user->mobile_code.$user->mobile)) {
                 return errorResponse('Error occurred while sending OTP.');
             }
 
@@ -165,9 +161,7 @@ class AuthController extends BaseAuthController
             $user->save();
 
             return successResponse('OTP send successfully.');
-
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error processing request.'], 500);
         }
     }
@@ -194,7 +188,7 @@ class AuthController extends BaseAuthController
 
         $user = User::where('email', $email)->firstOrFail();
 
-        if(!$user){
+        if (! $user) {
             return errorResponse('User not found.');
         }
 
@@ -209,7 +203,7 @@ class AuthController extends BaseAuthController
 
         $attempts->increment('mobile_attempt');
 
-        if(!$this->sendForReOtp($user->mobile_code.$user->mobile, $type)){
+        if (! $this->sendForReOtp($user->mobile_code.$user->mobile, $type)) {
             return errorResponse('Error occurred while sending OTP.');
         }
 
@@ -226,7 +220,7 @@ class AuthController extends BaseAuthController
 
         $user = User::where('email', $email)->firstOrFail();
 
-        if(!$user){
+        if (! $user) {
             return errorResponse('User not found.');
         }
 
@@ -243,7 +237,7 @@ class AuthController extends BaseAuthController
 
         $attempts->increment('email_attempt');
 
-        if($method == 'POST'){
+        if ($method == 'POST') {
             return successResponse('Email resend successfully.');
         }
 
@@ -252,7 +246,7 @@ class AuthController extends BaseAuthController
 
     public function verifyOtp(Request $request)
     {
-        if( rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request) ) {
+        if (rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request)) {
             return errorResponse('Too Many attempts.');
         }
 
@@ -269,19 +263,18 @@ class AuthController extends BaseAuthController
             $user = User::where('email', $email)->firstOrFail();
 
             // Validate OTP
-            if (!is_numeric($request->otp)) {
+            if (! is_numeric($request->otp)) {
                 return errorResponse('Invalid OTP format.');
             }
 
-            if(!$this->sendVerifyOTP($otp,$user->mobile_code.$user->mobile)){
+            if (! $this->sendVerifyOTP($otp, $user->mobile_code.$user->mobile)) {
                 return errorResponse('Invalid OTP.');
             }
             $user->mobile_verified = 0;
             $user->save();
-            return successResponse('OTP Verified successfully.');
 
-        }
-        catch (\Exception $e) {
+            return successResponse('OTP Verified successfully.');
+        } catch (\Exception $e) {
             return errorResponse('Error processing request.');
         }
     }
@@ -295,10 +288,10 @@ class AuthController extends BaseAuthController
         $email = Crypt::decrypt($request->eid);
 
         $user = User::where('email', $email)->first();
-        if (!$user) {
+        if (! $user) {
             return errorResponse('User does not exist.');
         }
-        if($user->active !== 1) {
+        if ($user->active !== 1) {
             return errorResponse('Email not verified.');
         }
 

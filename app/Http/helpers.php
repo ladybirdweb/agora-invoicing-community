@@ -670,10 +670,9 @@ function createDB(string $dbName)
     }
 }
 
-
 function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
 {
-    $IpKey = $key . ':' . $request->ip();
+    $IpKey = $key.':'.$request->ip();
 
     $decaySeconds = $decayMinutes * 60;
 
@@ -687,5 +686,5 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
     );
 
     // Return true if the rate limit is exceeded, false otherwise
-    return !$isAllowed;
+    return ! $isAllowed;
 }

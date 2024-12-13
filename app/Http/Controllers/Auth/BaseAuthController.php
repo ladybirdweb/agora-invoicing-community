@@ -10,6 +10,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use App\VerificationAttempt;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -52,65 +53,66 @@ class BaseAuthController extends Controller
         }
     }
 
-    /**
-     * Sends Otp.
-     */
-    public function sendOtp($mobile, $code)
+    private function makeRequest(string $method, string $url, array $queryParams = [])
     {
-        $client = new \GuzzleHttp\Client();
-        $number = $code.$mobile;
-        $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
-        $checkNumber = User::where('mobile', $mobile)->first();
-        if (! $checkNumber) {
-            return;
+        $msgKey = ApiKey::find(1, ['msg91_auth_key', 'msg91_sender', 'msg91_template_id']);
+        $client = new Client();
+        $authKey = $msgKey->msg91_auth_key;
+        try {
+            $response = $client->request($method, $url, [
+                'headers' => [
+                    'authkey' => $authKey,
+                    'Content-Type' => 'application/json',
+                ],
+                'query' => $queryParams,
+            ]);
+
+            return json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            return ['type' => 'error', 'message' => $e->getMessage()];
         }
-        if (\Cache::get('otp'.$number) > 3) {
-            return;
-        }
-
-        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp', [
-            'query' => ['authkey' => $key->msg91_auth_key, 'mobiles' => $number, 'sender' => $key->msg91_sender, 'template_id' => '60979666dc49883cda77961b', 'OPT' => '', 'form_params' => ['var' => '']],
-
-            // 'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
-        ]);
-
-        $send = $response->getBody()->getContents();
-        $array = json_decode($send, true);
-        if ($array['type'] == 'error') {
-            throw new \Exception($array['message']);
-        }
-        \Cache::put('otp'.$number, \Cache::get('otp'.$number) + 1);
-
-        return $array['type'];
     }
 
-    /**
-     * ReSends Otp.
-     */
-    public function sendForReOtp($mobile, $code, $type)
+    public function sendOtp(string $mobile): bool
     {
-        $client = new \GuzzleHttp\Client();
-        $number = $code.$mobile;
-        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
-        $checkNumber = User::where('mobile', $mobile)->first();
-        if (! $checkNumber) {
-            return;
-        }
-        if (\Cache::get('otp'.$number) > 3) {
-            return;
-        }
+        $msgKey = ApiKey::find(1, ['msg91_auth_key', 'msg91_sender', 'msg91_template_id']);
+        $sender = $msgKey->msg91_sender;
+        $templateId = $msgKey->msg91_template_id;
+        $queryParams = [
+            'template_id' => $templateId,
+            'sender' => $sender,
+            'mobile' => $mobile,
+            'otp_length' => 6,
+            'otp_expiry' => 10,
+        ];
 
-        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
-            'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype' => $type],
-        ]);
-        $send = $response->getBody()->getContents();
-        $array = json_decode($send, true);
-        if ($array['type'] == 'error') {
-            throw new \Exception($array['message']);
-        }
-        \Cache::put('otp'.$number, \Cache::get('otp'.$number) + 1);
+        $response = $this->makeRequest('POST', 'https://api.msg91.com/api/v5/otp', $queryParams);
 
-        return $array['type'];
+        return $response['type'] !== 'error';
+    }
+
+    public function sendForReOtp(string $mobile, string $type): bool
+    {
+        $queryParams = [
+            'mobile' => $mobile,
+            'retrytype' => $type,
+        ];
+
+        $response = $this->makeRequest('GET', 'https://api.msg91.com/api/v5/otp/retry', $queryParams);
+
+        return $response['type'] !== 'error';
+    }
+
+    public function sendVerifyOTP(string $otp, string $mobile): bool
+    {
+        $queryParams = [
+            'otp' => $otp,
+            'mobile' => $mobile,
+        ];
+
+        $response = $this->makeRequest('GET', 'https://api.msg91.com/api/v5/otp/verify', $queryParams);
+
+        return $response['type'] !== 'error';
     }
 
     /**

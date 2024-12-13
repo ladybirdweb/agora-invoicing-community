@@ -596,15 +596,17 @@ Route::middleware('installAgora')->group(function () {
     Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
     // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
 
-    Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
+    Route::post('otp/send', [Auth\AuthController::class, 'requestOtp']);
     Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
-    Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
-    Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
-    Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
+    Route::post('otp/verify', [Auth\AuthController::class, 'verifyOtp']);
+    Route::post('email/verify', [Auth\AuthController::class, 'verifyEmail']);
+    Route::post('resend_otp', [Auth\AuthController::class, 'retryOTP']);
+    Route::post('send-email',[Auth\AuthController::class, 'sendEmail']);
     Route::get('verify', function () {
         $user = \Session::get('user');
         if ($user) {
-            return view('themes.default1.user.verify', compact('user'));
+            $eid = Crypt::encrypt($user->email);
+            return view('themes.default1.user.verify', compact('user', 'eid'));
         }
 
         return redirect('login');

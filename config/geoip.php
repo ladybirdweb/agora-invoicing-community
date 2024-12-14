@@ -90,7 +90,7 @@ return [
     |  none - Disable cached
     |
     */
-    'cache' => 'all',
+    'cache' => 'none',
     /*
     |--------------------------------------------------------------------------
     | Cache Tags
@@ -100,7 +100,7 @@ return [
     | drivers in Laravel. This is done so that only locations can be cleared.
     |
     */
-    'cache_tags' => ['torann-geoip-location'],
+    'cache_tags' => '',
     /*
     |--------------------------------------------------------------------------
     | Cache Expiration

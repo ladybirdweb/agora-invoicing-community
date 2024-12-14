@@ -8,6 +8,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use App\VerificationAttempt;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -147,18 +148,22 @@ class AuthController extends BaseAuthController
 
             $attempts->save();
 
+            if ($attempts->updated_at->addDay() < Carbon::now()) {
+                $attempts->mobile_attempt = 0;
+                $attempts->email_attempt = 0;
+                $attempts->save();
+            }
+
             if ($attempts->mobile_attempt >= 3) {
                 return errorResponse('Maximum number of attempts exceeded.');
             }
 
-            $attempts->increment('mobile_attempt');
+            $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
+            $attempts->save();
 
             if (! $this->sendOtp($user->mobile_code.$user->mobile)) {
                 return errorResponse('Error occurred while sending OTP.');
             }
-
-            $user->mobile_verified = 1;
-            $user->save();
 
             return successResponse('OTP send successfully.');
         } catch (\Exception $e) {
@@ -197,11 +202,18 @@ class AuthController extends BaseAuthController
 
         $attempts->save();
 
+        if ($attempts->updated_at->addDay() < Carbon::now()) {
+            $attempts->mobile_attempt = 0;
+            $attempts->email_attempt = 0;
+            $attempts->save();
+        }
+
         if ($attempts->mobile_attempt >= 3) {
             return errorResponse('Maximum number of attempts exceeded.');
         }
 
-        $attempts->increment('mobile_attempt');
+        $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
+        $attempts->save();
 
         if (! $this->sendForReOtp($user->mobile_code.$user->mobile, $type)) {
             return errorResponse('Error occurred while sending OTP.');
@@ -229,13 +241,20 @@ class AuthController extends BaseAuthController
 
         $attempts->save();
 
-        if ($attempts->email_attemp >= 3) {
+        if ($attempts->updated_at->addDay() < Carbon::now()) {
+            $attempts->mobile_attempt = 0;
+            $attempts->email_attempt = 0;
+            $attempts->save();
+        }
+
+        if ($attempts->email_attempt >= 3) {
             return errorResponse('Maximum number of attempts exceeded.');
         }
 
         $this->sendActivation($email, $method);
 
-        $attempts->increment('email_attempt');
+        $attempts->email_attempt = (int) $attempts->email_attempt + 1;
+        $attempts->save();
 
         if ($method == 'POST') {
             return successResponse('Email resend successfully.');
@@ -270,7 +289,7 @@ class AuthController extends BaseAuthController
             if (! $this->sendVerifyOTP($otp, $user->mobile_code.$user->mobile)) {
                 return errorResponse('Invalid OTP.');
             }
-            $user->mobile_verified = 0;
+            $user->mobile_verified = 1;
             $user->save();
 
             return successResponse('OTP Verified successfully.');

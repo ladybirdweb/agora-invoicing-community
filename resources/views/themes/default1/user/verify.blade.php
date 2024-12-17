@@ -323,6 +323,7 @@
         const timerDisplay = document.getElementById("timer");
         const emailOtpButton = document.getElementById("otpButtonn");
         const emailTimerDisplay = document.getElementById("timerEmail");
+        let timerInterval;
         const eid = @json($eid);
 
         let countdown = 120;
@@ -338,12 +339,14 @@
         }
 
         function startTimer(button, display, duration) {
+            clearInterval(timerInterval);
+            var countdown = countdown;
             button.disabled = true;
             additionalButton.disabled = true;
             display.style.display = "block";
             countdown = duration;
             updateTimer(display, countdown);
-            const timerInterval = setInterval(() => {
+            timerInterval = setInterval(() => {
                 countdown--;
                 if (countdown <= 0) {
                     clearInterval(timerInterval);
@@ -456,6 +459,11 @@
                 }
                 else if(fieldSet === 'fieldSetTwo'){
                     startTimer(emailOtpButton, emailTimerDisplay, countdown);
+                }
+                else if(fieldSet === 'fieldSetThree'){
+                    setTimeout(() => {
+                        window.location.href = "{{url('/')}}";
+                    }, 5000);
                 }
                 fieldsets[fieldSet].style.display = 'block';
                 progressList[fieldSet].classList.add('active');

@@ -176,7 +176,7 @@ class AuthController extends BaseAuthController
         $default_type = $request->input('default_type');
 
         return match ($default_type) {
-            'email' => $this->sendEmail($request, 'POST'),
+            'email' => $this->sendEmail($request, 'GET'),
             'mobile' => $this->resendOTP($request),
         };
     }
@@ -222,7 +222,7 @@ class AuthController extends BaseAuthController
         return successResponse('OTP resend successfully.');
     }
 
-    public function sendEmail(Request $request, $method = 'GET')
+    public function sendEmail(Request $request, $method = 'POST')
     {
         $request->validate([
             'eid' => 'required|string',
@@ -249,6 +249,10 @@ class AuthController extends BaseAuthController
 
         if ($attempts->email_attempt >= 3) {
             return errorResponse('Maximum number of attempts exceeded.');
+        }
+
+        if(AccountActivate::where('email', $email)->first()){
+            return successResponse('Email already send please check your email.');
         }
 
         $this->sendActivation($email, $method);

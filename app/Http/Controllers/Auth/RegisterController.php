@@ -86,7 +86,7 @@ class RegisterController extends Controller
             $userInput = User::create($user);
             $userId = User::get()->last()->id;
 
-            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
+//            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
 
             $mailchimpStatus = StatusSetting::value('mailchimp_status');
             if ($mailchimpStatus == 1) {
@@ -96,7 +96,11 @@ class RegisterController extends Controller
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
-            return response()->json($emailMobileStatusResponse);
+            $need_verify = $user && ($userInput->active !== 1 || $userInput->mobile_verified !== 1) ? 1 : 0;
+
+            \Session::put('user', $userInput);
+
+            return successResponse('Registered Successfully', ['need_verify' => $need_verify]);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];

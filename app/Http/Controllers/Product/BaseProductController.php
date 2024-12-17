@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
+use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -436,5 +438,25 @@ class BaseProductController extends ExtendedBaseProductController
         }
 
         return $this->streamProduct($filePath);
+    }
+
+
+    public function getProductUsingLicenseCode(Request $request)
+    {
+        $license_code = $request->input('license_code');
+
+        $license = new LicenseController();
+
+        $product = $license->searchProductUsingLicense($license_code);
+
+        if (!$product) {
+            return errorResponse(\Lang::get('message.product_not_found'));
+        }
+
+        $data = [
+          'product_id' => $product[0]['product_id'],
+        ];
+
+        return successResponse('Product details retrieved successfully', $data);
     }
 }

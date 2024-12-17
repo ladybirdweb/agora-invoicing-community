@@ -637,4 +637,5 @@ Route::get('404', function () {
     return view('errors.404');
 })->name('error404');
 Route::get('/api/download/agents', [Product\BaseProductController::class, 'agentProductDownload']);
+Route::get('/product/detail', [Product\BaseProductController::class, 'getProductUsingLicenseCode']);
 // });

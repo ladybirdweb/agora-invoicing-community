@@ -417,11 +417,11 @@ class BaseProductController extends ExtendedBaseProductController
     {
         $product_id = $request->input('product_id');
         $version_number = $request->input('version_number');
-        $version = !empty($version_number) ? $version_number : ProductUpload::where('product_id', $product_id)
+        $version = ! empty($version_number) ? $version_number : ProductUpload::where('product_id', $product_id)
             ->latest()
             ->value('version');
 
-        if (!$version) {
+        if (! $version) {
             return errorResponse(\Lang::get('message.file_not_exist'));
         }
 
@@ -431,11 +431,10 @@ class BaseProductController extends ExtendedBaseProductController
 
         $filePath = 'products/'.$product->file;
 
-        if (!$product || !$this->fileExists($filePath)) {
+        if (! $product || ! $this->fileExists($filePath)) {
             return errorResponse(\Lang::get('message.file_not_exist'));
         }
 
         return $this->streamProduct($filePath);
     }
-
 }

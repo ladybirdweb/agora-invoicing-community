@@ -251,7 +251,7 @@ class AuthController extends BaseAuthController
             return errorResponse('Maximum number of attempts exceeded.');
         }
 
-        if(AccountActivate::where('email', $email)->first()){
+        if (AccountActivate::where('email', $email)->first()) {
             return successResponse('Email already send please check your email.');
         }
 

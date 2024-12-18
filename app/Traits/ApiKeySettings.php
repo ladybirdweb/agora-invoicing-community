@@ -54,7 +54,7 @@ trait ApiKeySettings
         $status = $request->input('status');
         $key = $request->input('msg91_auth_key');
         StatusSetting::find(1)->update(['msg91_status' => $status]);
-        ApiKey::find(1)->update(['msg91_auth_key' => $key, 'msg91_sender' => $request->input('msg91_sender')]);
+        ApiKey::find(1)->update(['msg91_auth_key' => $key, 'msg91_sender' => $request->input('msg91_sender'), 'msg91_template_id' => $request->input('msg91_template_id')]);
 
         return ['message' => 'success', 'update' => 'Msg91 settings saved'];
     }

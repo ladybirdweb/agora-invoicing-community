@@ -4,6 +4,9 @@ namespace App\Model\Product;
 
 use App\BaseModel;
 use App\Facades\Attach;
+use App\Model\Configure\ConfigOption;
+use App\Model\Configure\PluginCompatibleWithProducts;
+use App\Model\Configure\ProductPluginGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -20,7 +23,7 @@ class Product extends BaseModel
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually',
         'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner',
         'github_repository',
-        'deny_after_subscription', 'version', 'parent', 'subscription', 'product_sku', 'perpetual_license', 'id'];
+        'deny_after_subscription', 'version', 'parent', 'subscription', 'product_sku', 'perpetual_license', 'product_description'];
 
     protected static $logName = 'Product';
 
@@ -140,8 +143,31 @@ class Product extends BaseModel
         return LogOptions::defaults();
     }
 
-    public function plans()
+    // Define the relationship with ProductPluginGroup (as product)
+    public function productPluginGroupsAsProduct()
     {
-        return $this->hasMany(\App\Model\Payment\Plan::class, 'product', 'id');
+        return $this->hasMany(ProductPluginGroup::class, 'product_id');
+    }
+
+    // Define the relationship with ProductPluginGroup (as plugin)
+    public function productPluginGroupsAsPlugin()
+    {
+        return $this->hasMany(ProductPluginGroup::class, 'plugin_id');
+    }
+
+    public function configOptions()
+    {
+        return $this->hasMany(ConfigOption::class, 'product_id');
+    }
+
+    public function productCompWith()
+    {
+        return $this->hasMany(PluginCompatibleWithProducts::class, 'product_id');
+    }
+
+    // Define the relationship with Product (as plugin)
+    public function pluginCompWith()
+    {
+        return $this->hasMany(PluginCompatibleWithProducts::class, 'plugin_id');
     }
 }

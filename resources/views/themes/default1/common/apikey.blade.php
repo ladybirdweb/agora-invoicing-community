@@ -66,6 +66,9 @@
     overflow:scroll;
     height:600px;
 }
+        .error-border {
+            border-color: red;
+        }
 
 
 </style>
@@ -302,6 +305,11 @@
                                     {!! Form::label('mobile',Lang::get('message.msg91_sender')) !!}
                                     {!! Form::text('msg91_sender',$msg91Sender,['class' => 'form-control sender','id'=>'sender']) !!}
                                     <h6 id="sender_check"></h6>
+
+                                    <input type ="hidden" id="hiddenTemplate" value="{{$msg91TemplateId}}">
+                                    {!! Form::label('mobile',Lang::get('message.msg91_template_id')) !!}
+                                    {!! Form::text('msg91_template_id',$msg91TemplateId,['class' => 'form-control template_id','id'=>'template_id']) !!}
+                                    <h6 id="template_check"></h6>
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
@@ -900,80 +908,116 @@
                 $('#mobile').prop('checked',true);
                 $('.mobile_authkey').attr('enabled', true);
                 $('.sender').attr('enabled', true);
+                $('.template_id').attr('enabled',true)
             } else if(mobilestatus ==0){
                 $('#mobile').prop('checked',false);
                 $('.mobile_authkey').attr('disabled', true);
                 $('.sender').attr('disabled', true);
+                $('.template_id').attr('disabled', true)
             }
         });
         $("#mobile").on('change',function (){
             if($(this).prop('checked')) {
                 var mobilekey =  $('#hiddenMobValue').val();
                 var sender =  $('#hiddenSender').val();
+                var template =  $('#hiddenTemplate').val();
                 $('.mobile_authkey').attr('disabled', false);
                 $('.sender').attr('disabled', false);
+                $('.template_id').attr('disabled',false)
                 $('#mobile_authkey').val(mobilekey);
                 $('#sender').val(sender);
+                $('#template_id').val(template);
+
 
             } else {
                 $('.mobile_authkey').attr('disabled', true);
                 $('.sender').attr('disabled', true);
+                $('.template_id').attr('disabled',true)
                 $('.mobile_authkey').val('');
                 $('.sender').val('');
+                $('.template_id').val('');
 
             }
         });
         //Validate and pass value through ajax
-        $("#submit3").on('click',function (){ //When Submit button is checked
-            if ($('#mobile').prop('checked')) {//if button is on
+        $("#submit3").on('click', function () {
+            if ($('#mobile').prop('checked')) { // If checkbox is checked
                 var mobilestatus = 1;
-                if ($('#mobile_authkey').val() == "") { //if value is not entered
-                    $('#mobile_check').show();
-                    $('#mobile_check').html("Please Enter Auth Key");
-                    $('#mobile_authkey').css("border-color","red");
-                    $('#mobile_check').css({"color":"red","margin-top":"5px"});
-                    return false;
-                } if($('#sender').val() != "") {
-                    var sender =  new RegExp(/^[a-zA-Z]{0,6}$/);
-                    if (sender.test($('#sender').val())){
-                        $('#sender_check').hide();
-                        $('#sender').css("border-color","");
-                    } else{
-                        $('#sender_check').show();
-                        $('#sender_check').html("Sender can only be alphabets and maximum 6 characters");
-                        $('#sender').css("border-color","red");
-                        $('#sender_check').css({"color":"red","margin-top":"5px"});
-                        return false;
 
+                // Validate Auth Key
+                if ($('#mobile_authkey').val() === "") {
+                    $('#mobile_check').show().text("Please Enter Auth Key").css({ "color": "red", "margin-top": "5px" });
+                    $('#mobile_authkey').addClass('error-border');
+                    return false;
+                } else {
+                    $('#mobile_check').hide();
+                    $('#mobile_authkey').removeClass('error-border');
+                }
+
+                // Validate Sender
+                if ($('#sender').val() !== "") {
+                    const senderRegex = /^[a-zA-Z]{0,6}$/;
+                    if (senderRegex.test($('#sender').val())) {
+                        $('#sender_check').hide();
+                        $('#sender').removeClass('error-border');
+                    } else {
+                        $('#sender_check').show().text("Sender can only be alphabets and maximum 6 characters").css({ "color": "red", "margin-top": "5px" });
+                        $('#sender').addClass('error-border');
+                        return false;
                     }
                 }
-            } else {
-                $('#mobile_check').html("");
-                $('#sender').html("");
-                $('#mobile_authkey').css("border-color","");
-                var mobilestatus = 0;
 
+                // Validate Template ID
+                if ($('#template_id').val() === "") {
+                    $('#template_id').addClass('error-border');
+                    $('#template_check').show().text("Please Enter Template ID").css({ "color": "red", "margin-top": "5px" });
+                    return false;
+                } else {
+                    $('#template_id').removeClass('error-border');
+                    $('#template_check').hide();
+                }
+            } else {
+                // Reset fields when mobile is unchecked
+                $('#mobile_authkey, #sender, #template_id').removeClass('error-border');
+                $('#mobile_check, #sender_check, #template_check').hide().text("");
+                mobilestatus = 0;
             }
-            $("#submit3").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
-            $.ajax ({
+
+            // Show loading state
+            $("#submit3").html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+
+            // AJAX request
+            $.ajax({
                 url: '{{url("updatemobileDetails")}}',
-                type : 'post',
+                type: 'POST',
                 data: {
                     "status": mobilestatus,
                     "msg91_auth_key": $('#mobile_authkey').val(),
                     "msg91_sender": $('#sender').val(),
+                    "msg91_template_id": $('#template_id').val(),
                 },
                 success: function (data) {
-                    $('#alertMessage').show();
-                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
-                    $('#alertMessage').html(result+ ".");
+                    const result = `
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong><i class="fa fa-check"></i> Success! </strong>${data.update}.
+                </div>`;
+                    $('#alertMessage').show().html(result);
                     $("#submit3").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+
+                    console.log("in");
+
                     setInterval(function(){
                         $('#alertMessage').slideUp(3000);
                     }, 1000);
                 },
-            })
+                error: function () {
+                    $('#alertMessage').html("<div class='alert alert-danger'>An error occurred. Please try again.</div>").show();
+                    $("#submit3").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                }
+            });
         });
+
 
 
 

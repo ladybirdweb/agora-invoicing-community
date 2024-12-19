@@ -811,8 +811,6 @@ return [
     'error_occured_while_downloading' => 'An error occurred while downloading the file.',
     'file_exist' => 'File exists',
 
-
-
     'verify_mobile' => 'Verify Mobile',
     'verify_email' => 'Verify Email',
     'all_set' => 'You are all set',
@@ -859,7 +857,5 @@ return [
         'email_verified' => 'Email verified successfully.',
         'email_not_verified' => 'Email not verified. Please verify to proceed.',
     ],
-
-
 
 ];

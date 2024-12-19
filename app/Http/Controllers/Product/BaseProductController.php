@@ -428,6 +428,7 @@ class BaseProductController extends ExtendedBaseProductController
 
         $product = ProductUpload::where('product_id', $product_id)
             ->where('version', $version)
+            ->latest()
             ->first();
 
         $filePath = 'products/'.$product->file;

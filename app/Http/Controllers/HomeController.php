@@ -397,7 +397,7 @@ class HomeController extends BaseHomeController
                      */
                     match ($request->input('release_type')) {
                         'pre_release' => array_unshift($releases, 'pre_release'),
-                        'beta' => array_unshift($releases, 'beta'),
+                        'beta' => array_unshift($releases, 'beta', 'pre_release'),
 
                         default => $releases
                     };
@@ -479,7 +479,7 @@ class HomeController extends BaseHomeController
              */
             match ($request->input('release_type')) {
                 'pre_release' => array_unshift($releases, 'pre_release'),
-                'beta' => array_unshift($releases, 'beta'),
+                'beta' => array_unshift($releases, 'beta', 'pre_release'),
                 default => $releases
             };
 

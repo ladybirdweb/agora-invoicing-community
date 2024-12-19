@@ -187,7 +187,7 @@ class AuthController extends BaseAuthController
             'eid' => 'required|string',
             'type' => 'required|string|in:text,voice',
         ]);
-        try{
+        try {
             $email = Crypt::decrypt($request->eid);
             $type = $request->input('type');
 
@@ -220,7 +220,7 @@ class AuthController extends BaseAuthController
             }
 
             return successResponse(__('message.otp_verification.resend_send_success'));
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return errorResponse(__('message.otp_verification.resend_send_failure'));
         }
     }
@@ -230,7 +230,7 @@ class AuthController extends BaseAuthController
         $request->validate([
             'eid' => 'required|string',
         ]);
-        try{
+        try {
             $email = Crypt::decrypt($request->eid);
 
             $user = User::where('email', $email)->firstOrFail();
@@ -254,7 +254,7 @@ class AuthController extends BaseAuthController
                 return errorResponse(__('message.email_verification.max_attempts_exceeded'));
             }
 
-            if(AccountActivate::where('email', $email)->first() && $method !== 'GET'){
+            if (AccountActivate::where('email', $email)->first() && $method !== 'GET') {
                 return successResponse(\Lang::get('message.email_verification.already_sent'));
             }
 
@@ -268,7 +268,7 @@ class AuthController extends BaseAuthController
             }
 
             return successResponse(__('message.email_verification.send_success'));
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return errorResponse(__('message.email_verification.send_failure'));
         }
     }
@@ -328,7 +328,7 @@ class AuthController extends BaseAuthController
             return errorResponse(__('message.email_verification.email_not_verified'));
         }
 
-        if(!\Auth::check()){
+        if (! \Auth::check()) {
             \Session::flash('success', __('message.registration_complete'));
         }
 

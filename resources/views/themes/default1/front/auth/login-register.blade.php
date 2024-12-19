@@ -931,8 +931,10 @@ foreach($scripts as $script) {
                         // Re-enable the register button
                         $("#register").attr('disabled', false);
 
-                        // Prepare success alert
-                        var result = `
+                        if (response.data.need_verify === 1) {
+                            window.location.href = "{{ url('/verify') }}";
+                        }else {
+                            var result = `
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -943,13 +945,8 @@ foreach($scripts as $script) {
         </div>
     `;
 
-                        $('#alertMessage1').html(result);
-                        window.scrollTo(0,0);
-
-                        if (response.data.need_verify === 1) {
-                            setTimeout(function () {
-                                window.location.href = "{{ url('/verify') }}";
-                            }, 5000);
+                            $('#alertMessage1').html(result);
+                            window.scrollTo(0,0);
                         }
                     }
                     ,

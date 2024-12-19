@@ -811,4 +811,55 @@ return [
     'error_occured_while_downloading' => 'An error occurred while downloading the file.',
     'file_exist' => 'File exists',
 
+
+
+    'verify_mobile' => 'Verify Mobile',
+    'verify_email' => 'Verify Email',
+    'all_set' => 'You are all set',
+
+    'enter_code' => 'Enter Code',
+    'otp_placeholder' => 'Enter OTP',
+    'otp_description' => 'Enter the OTP code for verification which you have received on your registered mobile.',
+    'resend_otp' => 'Resend OTP',
+    'otp_call' => 'Get OTP on call',
+    'verify' => 'Verify',
+
+    'email_verification_sent' => 'Verification link has been sent to your email. Please check your inbox and spam folder.',
+    'resend_email' => 'Resend Email',
+    'all_success' => 'SUCCESS !',
+
+    'trouble_logging_in' => 'Encountering trouble logging in?',
+    'click_here' => 'Click here',
+
+    'otp_required' => 'Enter the OTP.',
+    'otp_invalid_format' => 'Enter a valid 6-digit OTP.',
+    'otp_invalid' => 'Invalid OTP. Try again.',
+    'mobile_already_verified' => 'Mobile number already verified.',
+    'user_does_not_exist' => 'Account not found.',
+    'otp_verified' => 'OTP verified.',
+    'error_occurred_while_verify' => 'Couldn’t verify OTP. Try again.',
+    'registration_complete' => 'You’re all set! Registration complete.',
+
+    'otp_verification' => [
+        'max_attempts_exceeded' => 'You’ve reached the daily limit for OTP requests. Try again tomorrow.',
+        'send_failure' => 'Couldn’t send OTP. Try again later.',
+        'send_success' => 'OTP sent. Check your messages.',
+        'resend_max_attempts_exceeded' => 'Daily limit reached for resending OTP. Try again tomorrow.',
+        'resend_failure' => 'Couldn’t resend OTP. Try again later.',
+        'resend_send_failure' => 'Error sending OTP. Try again later.',
+        'resend_send_success' => 'OTP resent. Check your messages.',
+    ],
+
+    'email_verification' => [
+        'max_attempts_exceeded' => 'Daily email verification limit reached.',
+        'send_failure' => 'Couldn’t send the email. Try again later.',
+        'send_success' => 'Verification email sent. Check your inbox.',
+        'resend_success' => 'Verification email resent.',
+        'already_sent' => 'Verification email already sent. Check your inbox.',
+        'email_verified' => 'Email verified successfully.',
+        'email_not_verified' => 'Email not verified. Please verify to proceed.',
+    ],
+
+
+
 ];

@@ -10,11 +10,11 @@
 @stop
 @section('breadcrumb')
     @if(Auth::check())
-        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('my-invoices')}}">{{ __('message.home') }}</a></li>
     @else
-        <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('login')}}">{{ __('message.home') }}</a></li>
     @endif
-    <li class="active text-dark">verify</li>
+    <li class="active text-dark">{{ __('message.verify') }}</li>
 @stop
 @section('main-class')
     main
@@ -213,15 +213,15 @@
     </style>
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
+            <div class="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
 
                     <form id="msform">
                         <!-- progressbar -->
                         <ul id="progressbar">
-                            <li class="active" id="otp_li"><strong>Verify OTP</strong></li>
-                            <li id="email_li"><strong>Verify Email address</strong></li>
-                            <li id="success_li"><strong>You are all set</strong></li>
+                            <li class="active" id="otp_li"><strong>{{ __('message.verify_mobile') }}</strong></li>
+                            <li id="email_li"><strong>{{ __('message.verify_email') }}</strong></li>
+                            <li id="success_li"><strong>{{ __('message.all_set') }}</strong></li>
                         </ul>
                         <br>
                         <!-- fieldsets -->
@@ -230,12 +230,10 @@
 
                                 <div id="alert-container"></div>
 
-                                <p class="text-left">Enter Code <span class="text-color-danger"> *</span></p>
+                                <p class="text-left text-color-dark text-3">{{ __('message.enter_code') }} <span class="text-color-danger"> *</span></p>
 
-                                <input class="form-control" type="text" id="otp" name="otp" placeholder="Enter OTP"/>
-                                <p class="mt-3">Enter the OTP code for verification which you have received on your
-                                    registered
-                                    mobile</p>
+                                <input class="form-control h-100" type="text" id="otp" name="otp" placeholder="{{ __('message.otp_placeholder') }}"/>
+                                <p class="mt-3">{{ __('message.otp_description') }}</p>
                                 <div class="col-12">
                                     <div class="row">
                                         <div class="col-6 px-0">
@@ -243,7 +241,7 @@
                                                 <button id="otpButton" type="button"
                                                         onclick="resendOTP('mobile','text')" class="btn border-0 p-0"
                                                         style="width: 110px;">
-                                                    <i class="fa fa-refresh"></i> Resend OTP
+                                                    <i class="fa fa-refresh"></i> {{ __('message.resend_otp') }}
                                                 </button>
                                                 <div id="timer"></div>
                                             </div>
@@ -251,13 +249,13 @@
                                                 <button id="additionalButton" type="button"
                                                         onclick="resendOTP('mobile','voice')"
                                                         class="border-0 px-1 background-transparent"
-                                                        disabled><i class="fa fa-phone"></i> Get OTP on call
+                                                        disabled><i class="fa fa-phone"></i> {{ __('message.otp_call') }}
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="col-6 px-0">
                                             <input type="button" onclick="submitOtp()" name="next"
-                                                   class="next action-button float-right" value="Next"/>
+                                                   class="next action-button float-right" value="{{ __('message.verify') }}"/>
 
                                         </div>
                                     </div>
@@ -270,7 +268,7 @@
                                 <div id="alert-container-email"></div>
 
                                 <div class="emailalert mt-2 text-center">
-                                    Verification link has been sent to your email. Please check mail inbox and spam.
+                                    {{ __('message.email_verification_sent') }}
                                 </div>
                                 <div class="col-12 mt-4">
                                     <div class="row">
@@ -279,14 +277,14 @@
                                                 <button id="otpButtonn" type="button" onclick="resendOTP('email',null)"
                                                         class="btn border-0 p-0 d-inline-flex align-items-center"
                                                         style="width: 110px; white-space: nowrap;">
-                                                    <i class="fa fa-refresh mr-1"></i>Resend Email
+                                                    <i class="fa fa-refresh mr-1"></i>{{ __('message.resend_email') }}
                                                 </button>
                                                 <div id="timerEmail" class="ml-2"></div>
                                             </div>
                                         </div>
                                         <div class="col-6 px-0">
                                             <input onclick="isEmailVerified()" type="button" name="next"
-                                                   class="next action-button float-right" value="Verify"/>
+                                                   class="next action-button float-right" value="{{ __('message.verify') }}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -295,14 +293,14 @@
                         <fieldset id="fieldset_success">
                             <div class="form-card">
 
-                                <h2 class="purple-text text-center"><strong>SUCCESS !</strong></h2>
+                                <h2 class="purple-text text-center"><strong>{{ __('message.all_success') }}</strong></h2>
                             </div>
                         </fieldset>
 
                     </form>
 
                     <div class="mt-2 text-start text-2">
-                        Encountering trouble logging in? <a href="#" class="text-decoration-underline">click here</a>
+                        {{ __('message.trouble_logging_in') }} <a href="#" class="text-decoration-underline">{{ __('message.click_here') }}</a>
                     </div>
                 </div>
             </div>
@@ -408,12 +406,12 @@
             $('.error').remove();
 
             if (!otpValue) {
-                showError(otpField, 'OTP is required');
+                showError(otpField, {{ __('message.otp_required') }});
                 return;
             }
 
             if (!otpRegex.test(otpValue)) {
-                showError(otpField, 'OTP must be a 6-digit number');
+                showError(otpField, {{ __('message.otp_invalid_format') }});
                 return;
             }
 
@@ -423,12 +421,9 @@
                 type: 'POST',
                 data: data,
                 success: function (response) {
-                    showAlert('success', response.message, '#alert-container');
-                    setTimeout(() => {
-                        activateFieldset("fieldSetTwo");
-                        sendEmail();
-                        startTimer(emailOtpButton, emailTimerDisplay, countdown);
-                    }, 5000);
+                    activateFieldset("fieldSetTwo");
+                    sendEmail();
+                    startTimer(emailOtpButton, emailTimerDisplay, countdown);
                 },
                 error: function (error) {
                     showAlert('danger', error.responseJSON.message, '#alert-container');
@@ -460,11 +455,6 @@
                 else if(fieldSet === 'fieldSetTwo'){
                     startTimer(emailOtpButton, emailTimerDisplay, countdown);
                 }
-                else if(fieldSet === 'fieldSetThree'){
-                    setTimeout(() => {
-                        window.location.href = "{{url('/')}}";
-                    }, 5000);
-                }
                 fieldsets[fieldSet].style.display = 'block';
                 progressList[fieldSet].classList.add('active');
             }
@@ -492,10 +482,7 @@
                 type: 'POST',
                 data: data,
                 success: function (response) {
-                    showAlert('success', response.message, '#alert-container-email');
-                    setTimeout(() => {
-                        activateFieldset("fieldSetThree");
-                    }, 5000);
+                    window.location.href = "{{ url('/login') }}";
                 },
                 error: function (error) {
                     showAlert('danger', error.responseJSON.message, '#alert-container-email');

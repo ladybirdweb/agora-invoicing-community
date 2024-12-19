@@ -84,9 +84,6 @@ class RegisterController extends Controller
             ];
 
             $userInput = User::create($user);
-            $userId = User::get()->last()->id;
-
-//            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
 
             $mailchimpStatus = StatusSetting::value('mailchimp_status');
             if ($mailchimpStatus == 1) {
@@ -98,9 +95,9 @@ class RegisterController extends Controller
 
             $need_verify = $user && ($userInput->active !== 1 || $userInput->mobile_verified !== 1) ? 1 : 0;
 
-            \Session::put('user', $userInput);
+            \Session::flash('user', $userInput);
 
-            return successResponse('Registered Successfully', ['need_verify' => $need_verify]);
+            return successResponse(__('message.registration_complete'), ['need_verify' => $need_verify]);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];

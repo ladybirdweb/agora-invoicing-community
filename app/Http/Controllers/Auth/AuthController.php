@@ -136,11 +136,11 @@ class AuthController extends BaseAuthController
             $user = User::where('email', $email)->firstOrFail();
 
             if (! $user) {
-                return errorResponse('User not found.');
+                return errorResponse(__('message.user_does_not_exist'));
             }
 
             if ($user->mobile_verified) {
-                return errorResponse('Mobile already verified.');
+                return errorResponse(__('message.mobile_already_verified'));
             }
 
             // Handle verification attempts
@@ -155,19 +155,19 @@ class AuthController extends BaseAuthController
             }
 
             if ($attempts->mobile_attempt >= 3) {
-                return errorResponse('Maximum number of attempts exceeded.');
+                return errorResponse(__('message.otp_verification.max_attempts_exceeded'));
             }
 
             $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
             $attempts->save();
 
             if (! $this->sendOtp($user->mobile_code.$user->mobile)) {
-                return errorResponse('Error occurred while sending OTP.');
+                return errorResponse(__('message.otp_verification.send_failure'));
             }
 
-            return successResponse('OTP send successfully.');
+            return successResponse(__('message.otp_verification.send_success'));
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Error processing request.'], 500);
+            return errorResponse(__('message.otp_verification.send_failure'));
         }
     }
 
@@ -187,39 +187,42 @@ class AuthController extends BaseAuthController
             'eid' => 'required|string',
             'type' => 'required|string|in:text,voice',
         ]);
+        try{
+            $email = Crypt::decrypt($request->eid);
+            $type = $request->input('type');
 
-        $email = Crypt::decrypt($request->eid);
-        $type = $request->input('type');
+            $user = User::where('email', $email)->firstOrFail();
 
-        $user = User::where('email', $email)->firstOrFail();
+            if (! $user) {
+                return errorResponse(__('message.user_does_not_exist'));
+            }
 
-        if (! $user) {
-            return errorResponse('User not found.');
-        }
+            // Handle verification attempts
+            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
 
-        // Handle verification attempts
-        $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
-
-        $attempts->save();
-
-        if ($attempts->updated_at->addDay() < Carbon::now()) {
-            $attempts->mobile_attempt = 0;
-            $attempts->email_attempt = 0;
             $attempts->save();
+
+            if ($attempts->updated_at->addDay() < Carbon::now()) {
+                $attempts->mobile_attempt = 0;
+                $attempts->email_attempt = 0;
+                $attempts->save();
+            }
+
+            if ($attempts->mobile_attempt >= 3) {
+                return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded'));
+            }
+
+            $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
+            $attempts->save();
+
+            if (! $this->sendForReOtp($user->mobile_code.$user->mobile, $type)) {
+                return errorResponse(__('message.otp_verification.resend_failure'));
+            }
+
+            return successResponse(__('message.otp_verification.resend_send_success'));
+        }catch (\Exception $exception){
+            return errorResponse(__('message.otp_verification.resend_send_failure'));
         }
-
-        if ($attempts->mobile_attempt >= 3) {
-            return errorResponse('Maximum number of attempts exceeded.');
-        }
-
-        $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
-        $attempts->save();
-
-        if (! $this->sendForReOtp($user->mobile_code.$user->mobile, $type)) {
-            return errorResponse('Error occurred while sending OTP.');
-        }
-
-        return successResponse('OTP resend successfully.');
     }
 
     public function sendEmail(Request $request, $method = 'POST')
@@ -227,44 +230,47 @@ class AuthController extends BaseAuthController
         $request->validate([
             'eid' => 'required|string',
         ]);
+        try{
+            $email = Crypt::decrypt($request->eid);
 
-        $email = Crypt::decrypt($request->eid);
+            $user = User::where('email', $email)->firstOrFail();
 
-        $user = User::where('email', $email)->firstOrFail();
+            if (! $user) {
+                return errorResponse(__('message.user_does_not_exist'));
+            }
 
-        if (! $user) {
-            return errorResponse('User not found.');
-        }
+            // Handle verification attempts
+            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
 
-        // Handle verification attempts
-        $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
-
-        $attempts->save();
-
-        if ($attempts->updated_at->addDay() < Carbon::now()) {
-            $attempts->mobile_attempt = 0;
-            $attempts->email_attempt = 0;
             $attempts->save();
+
+            if ($attempts->updated_at->addDay() < Carbon::now()) {
+                $attempts->mobile_attempt = 0;
+                $attempts->email_attempt = 0;
+                $attempts->save();
+            }
+
+            if ($attempts->email_attempt >= 3) {
+                return errorResponse(__('message.email_verification.max_attempts_exceeded'));
+            }
+
+            if(AccountActivate::where('email', $email)->first() && $method !== 'GET'){
+                return successResponse(\Lang::get('message.email_verification.already_sent'));
+            }
+
+            $this->sendActivation($email, $method);
+
+            $attempts->email_attempt = (int) $attempts->email_attempt + 1;
+            $attempts->save();
+
+            if ($method == 'GET') {
+                return successResponse(__('message.email_verification.resend_success'));
+            }
+
+            return successResponse(__('message.email_verification.send_success'));
+        }catch (\Exception $exception){
+            return errorResponse(__('message.email_verification.send_failure'));
         }
-
-        if ($attempts->email_attempt >= 3) {
-            return errorResponse('Maximum number of attempts exceeded.');
-        }
-
-        if (AccountActivate::where('email', $email)->first() && $method !== 'GET') {
-            return successResponse('Email already send please check your email.');
-        }
-
-        $this->sendActivation($email, $method);
-
-        $attempts->email_attempt = (int) $attempts->email_attempt + 1;
-        $attempts->save();
-
-        if ($method == 'POST') {
-            return successResponse('Email resend successfully.');
-        }
-
-        return successResponse('Email send successfully.');
     }
 
     public function verifyOtp(Request $request)
@@ -287,18 +293,18 @@ class AuthController extends BaseAuthController
 
             // Validate OTP
             if (! is_numeric($request->otp)) {
-                return errorResponse('Invalid OTP format.');
+                return errorResponse(__('message.otp_invalid_format'));
             }
 
             if (! $this->sendVerifyOTP($otp, $user->mobile_code.$user->mobile)) {
-                return errorResponse('Invalid OTP.');
+                return errorResponse(__('message.otp_invalid'));
             }
             $user->mobile_verified = 1;
             $user->save();
 
-            return successResponse('OTP Verified successfully.');
+            return successResponse(__('message.otp_verified'));
         } catch (\Exception $e) {
-            return errorResponse('Error processing request.');
+            return errorResponse(__('message.error_occurred_while_verify'));
         }
     }
 
@@ -307,18 +313,26 @@ class AuthController extends BaseAuthController
         $request->validate([
             'eid' => 'required|string',
         ]);
+
+        if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
+            return errorResponse(__('message.email_verification.max_attempts_exceeded'));
+        }
         // Decrypt the email
         $email = Crypt::decrypt($request->eid);
 
         $user = User::where('email', $email)->first();
         if (! $user) {
-            return errorResponse('User does not exist.');
+            return errorResponse(__('message.user_does_not_exist'));
         }
         if ($user->active !== 1) {
-            return errorResponse('Email not verified.');
+            return errorResponse(__('message.email_verification.email_not_verified'));
         }
 
-        return successResponse('Email verified successfully.');
+        if(!\Auth::check()){
+            \Session::flash('success', __('message.registration_complete'));
+        }
+
+        return successResponse(__('message.email_verification.email_verified'));
     }
 
     public function checkVerify($user)

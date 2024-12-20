@@ -818,6 +818,7 @@ return [
     'enter_code' => 'Enter Code',
     'otp_placeholder' => 'Enter OTP',
     'otp_description' => 'Enter the OTP code for verification which you have received on your registered mobile.',
+    'email_otp_description' => 'Enter the OTP code for verification which you have received on your registered email.',
     'resend_otp' => 'Resend OTP',
     'otp_call' => 'Get OTP on call',
     'verify' => 'Verify',
@@ -855,7 +856,9 @@ return [
         'resend_success' => 'Verification email resent.',
         'already_sent' => 'Verification email already sent. Check your inbox.',
         'email_verified' => 'Email verified successfully.',
-        'email_not_verified' => 'Email not verified. Please verify to proceed.',
+        'invalid_email_otp' => 'Invalid OTP. Try again.',
+        'invalid_token' => 'The OTP provided is invalid.',
+        'token_expired' => 'The OTP has expired. Please request a new one.'
     ],
 
 ];

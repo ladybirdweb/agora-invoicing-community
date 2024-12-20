@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmail;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -191,14 +192,22 @@ class BaseAuthController extends Controller
             $activate_model = new AccountActivate();
 
             if ($method == 'GET') {
-                $activate_model = $activate_model->where('email', $email)->first();
-                $token = $activate_model->token;
+                $response = $activate_model->where('email', $email)->first();
+
+                if ($response) {
+                    $token = mt_rand(100000, 999999);
+                    $activate_model->update(['token' => $token]);
+                } else {
+                    // Create a new record if it doesn't exist
+                    $token = mt_rand(100000, 999999);
+                    $activate_model->create(['email' => $email, 'token' => $token]);
+                }
             } else {
-                $token = Str::random(40);
+                // For non-GET methods, always create a new record
+                $token = mt_rand(100000, 999999);
                 $activate_model->create(['email' => $email, 'token' => $token]);
             }
 
-            $url = url("activate/$token");
 
             // Check the settings
             $settings = \App\Model\Common\Setting::find(1);
@@ -209,7 +218,7 @@ class BaseAuthController extends Controller
             $replace = [
                 'name' => $user->first_name.' '.$user->last_name,
                 'username' => $user->email,
-                'url' => $url,
+                'otp' => $token,
                 'website_url' => $website_url,
                 'contact' => $contact['contact'],
                 'logo' => $contact['logo'],
@@ -224,8 +233,7 @@ class BaseAuthController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
+            SendEmail::dispatch($settings->email, $user->email, $template->data, $template->name, $replace, $type);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

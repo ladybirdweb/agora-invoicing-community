@@ -858,7 +858,7 @@ return [
         'email_verified' => 'Email verified successfully.',
         'invalid_email_otp' => 'Invalid OTP. Try again.',
         'invalid_token' => 'The OTP provided is invalid.',
-        'token_expired' => 'The OTP has expired. Please request a new one.'
+        'token_expired' => 'The OTP has expired. Please request a new one.',
     ],
 
 ];

@@ -13,7 +13,6 @@ use App\User;
 use App\VerificationAttempt;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class BaseAuthController extends Controller
 {
@@ -207,7 +206,6 @@ class BaseAuthController extends Controller
                 $token = mt_rand(100000, 999999);
                 $activate_model->create(['email' => $email, 'token' => $token]);
             }
-
 
             // Check the settings
             $settings = \App\Model\Common\Setting::find(1);

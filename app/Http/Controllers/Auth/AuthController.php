@@ -328,7 +328,7 @@ class AuthController extends BaseAuthController
             return errorResponse(__('message.user_does_not_exist'));
         }
 
-        $account = AccountActivate::where('email', $email)->latest()->first(['token','updated_at']);
+        $account = AccountActivate::where('email', $email)->latest()->first(['token', 'updated_at']);
 
         if ($account->token !== $otp) {
             return errorResponse(__('message.email_verification.invalid_token'));
@@ -343,7 +343,7 @@ class AuthController extends BaseAuthController
         $user->active = 1;
         $user->save();
 
-        if(!\Auth::check()){
+        if (! \Auth::check()) {
             \Session::flash('success', __('message.registration_complete'));
         }
 

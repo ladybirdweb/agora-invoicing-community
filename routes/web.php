@@ -602,16 +602,7 @@ Route::middleware('installAgora')->group(function () {
     Route::post('email/verify', [Auth\AuthController::class, 'verifyEmail']);
     Route::post('resend_otp', [Auth\AuthController::class, 'retryOTP']);
     Route::post('send-email', [Auth\AuthController::class, 'sendEmail']);
-    Route::get('verify', function () {
-        $user = \Session::get('user');
-        if ($user) {
-            $eid = Crypt::encrypt($user->email);
-
-            return view('themes.default1.user.verify', compact('user', 'eid'));
-        }
-
-        return redirect('login');
-    });
+    Route::get('verify', [Auth\AuthController::class, 'verify']);
 
     Route::prefix('api')->withoutMiddleware(['web'])->middleware(['api'])->group(function () {
         Route::post('productDownload', [Product\BaseProductController::class, 'productDownload']);

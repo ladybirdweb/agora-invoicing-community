@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Common\SettingsController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
@@ -302,6 +303,10 @@ class AuthController extends BaseAuthController
             $user->mobile_verified = 1;
             $user->save();
 
+            if(!\Auth::check() && StatusSetting::first()->value('emailverification_status') !== 1){
+                \Session::flash('success', __('message.registration_complete'));
+            }
+
             return successResponse(__('message.otp_verified'));
         } catch (\Exception $e) {
             return errorResponse(__('message.error_occurred_while_verify'));
@@ -343,7 +348,7 @@ class AuthController extends BaseAuthController
         $user->active = 1;
         $user->save();
 
-        if (! \Auth::check()) {
+        if(!\Auth::check() && StatusSetting::first()->value('emailverification_status') === 1){
             \Session::flash('success', __('message.registration_complete'));
         }
 
@@ -456,5 +461,18 @@ class AuthController extends BaseAuthController
         ];
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
+    }
+
+    public function verify()
+    {
+        $user = \Session::get('user');
+        if ($user) {
+            $eid = Crypt::encrypt($user->email);
+            $setting = StatusSetting::first(['emailverification_status', 'msg91_status']);
+
+            return view('themes.default1.user.verify', compact('user', 'eid', 'setting'));
+        }
+
+        return redirect('login');
     }
 }

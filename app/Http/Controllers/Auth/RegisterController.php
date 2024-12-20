@@ -93,7 +93,7 @@ class RegisterController extends Controller
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
-            $need_verify = $user && ($userInput->active !== 1 || $userInput->mobile_verified !== 1) ? 1 : 0;
+            $need_verify = $this->getEmailMobileStatusResponse($userInput);
 
             \Session::flash('user', $userInput);
 
@@ -106,27 +106,30 @@ class RegisterController extends Controller
         }
     }
 
-    protected function getEmailMobileStatusResponse($user, $userId)
+    protected function getEmailMobileStatusResponse($user)
     {
-        $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
-        if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 1) {
-            $user['mobile_verified'] = 0;
-            $user['active'] = 1;
-            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
-        } elseif ($emailMobileSetting->emailverification_status == 1 && $emailMobileSetting->msg91_status == 0) {
-            $user['mobile_verified'] = 1;
-            $user['active'] = 0;
-            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
-        } elseif ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 0) {
-            $user['mobile_verified'] = 1;
-            $user['active'] = 1;
-            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your have been Registered Successfully.'];
-        } else {
-            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
+        $response = StatusSetting::first(['emailverification_status', 'msg91_status']);
+
+        // Set default values
+        $user->mobile_verified = 0;
+        $user->active = 0;
+
+        if ($response->msg91_status === 1) {
+            $user->active = $response->emailverification_status !== 1 ? 1 : 0;
         }
 
-        return $response;
+        if ($response->emailverification_status === 1 && $response->msg91_status !== 1) {
+            $user->mobile_verified = 1;
+        }
+
+        $user->save();
+
+        // Determine the need to verify
+        $need_verify = ($response->emailverification_status === 0 && $response->msg91_status === 0) ? 0 : 1;
+
+        return $need_verify;
     }
+
 
     protected function getUserCurrency($userCountry)
     {

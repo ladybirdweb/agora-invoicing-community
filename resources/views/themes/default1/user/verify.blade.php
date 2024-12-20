@@ -99,29 +99,33 @@
             font-weight: normal;
         }
 
-        /*Icon progressbar*/
+        /* Centering the progress bar container */
         #progressbar {
             margin-bottom: 30px;
             overflow: hidden;
             color: lightgrey;
-            margin-left: -30px;
+            display: flex; /* Use flexbox to center items */
+            justify-content: center; /* Center the progress bar horizontally */
+            padding: 0;
+            margin-left: 0; /* Reset margin-left */
         }
 
+        /* Styling the progress steps */
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 33.33%; /* Distribute steps evenly */
+            text-align: center; /* Center the text */
+            font-weight: 400;
+            position: relative;
+        }
+
+        /* Active step color */
         #progressbar .active {
             color: #099fdc;
         }
 
-        #progressbar li {
-            list-style-type: none;
-            font-size: 15px;
-            /* width: 25%; */
-            width: 33.33%;
-            float: left;
-            position: relative;
-            font-weight: 400;
-        }
-
-        /*Icons in the ProgressBar*/
+        /* Icons in the ProgressBar */
         #progressbar #otp_li:before {
             font-family: FontAwesome;
             content: "\f13e";
@@ -137,7 +141,7 @@
             content: "\f087";
         }
 
-        /*Icon ProgressBar before any progress*/
+        /* Icon styling before any progress */
         #progressbar li:before {
             width: 50px;
             height: 50px;
@@ -147,11 +151,11 @@
             color: #ffffff;
             background: lightgray;
             border-radius: 50%;
-            margin: 0 auto 10px auto;
+            margin: 0 auto 10px;
             padding: 2px;
         }
 
-        /*ProgressBar connectors*/
+        /* ProgressBar connectors */
         #progressbar li:after {
             content: '';
             width: 100%;
@@ -163,8 +167,9 @@
             z-index: -1;
         }
 
-        /*Color number of the step and the connector before it*/
-        #progressbar li.active:before, #progressbar li.active:after {
+        /* Active step and its connector */
+        #progressbar li.active:before,
+        #progressbar li.active:after {
             background: #099fdc;
         }
 
@@ -219,8 +224,12 @@
                     <form id="msform">
                         <!-- progressbar -->
                         <ul id="progressbar">
-                            <li class="active" id="otp_li"><strong>{{ __('message.verify_mobile') }}</strong></li>
-                            <li id="email_li"><strong>{{ __('message.verify_email') }}</strong></li>
+                            @if($setting->msg91_status === 1)
+                                <li class="active" id="otp_li"><strong>{{ __('message.verify_mobile') }}</strong></li>
+                            @endif
+                            @if($setting->emailverification_status === 1)
+                                    <li id="email_li"><strong>{{ __('message.verify_email') }}</strong></li>
+                                @endif
                             <li id="success_li"><strong>{{ __('message.all_set') }}</strong></li>
                         </ul>
                         <br>
@@ -423,9 +432,12 @@
                 type: 'POST',
                 data: data,
                 success: function (response) {
+                    @if($setting->emailverification_status === 1)
                     activateFieldset("fieldSetTwo");
-                    sendEmail();
                     startTimer(emailOtpButton, emailTimerDisplay, countdown);
+                    @else
+                        window.location.href = "{{ url('/login') }}";
+                    @endif
                 },
                 error: function (error) {
                     showAlert('danger', error.responseJSON.message, '#alert-container');
@@ -456,6 +468,7 @@
                 }
                 else if(fieldSet === 'fieldSetTwo'){
                     startTimer(emailOtpButton, emailTimerDisplay, countdown);
+                    sendEmail();
                 }
                 fieldsets[fieldSet].style.display = 'block';
                 progressList[fieldSet].classList.add('active');

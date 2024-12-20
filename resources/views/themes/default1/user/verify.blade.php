@@ -311,7 +311,7 @@
                     </form>
 
                     <div class="mt-2 text-start text-2">
-                        {{ __('message.trouble_logging_in') }} <a href="#" class="text-decoration-underline">{{ __('message.click_here') }}</a>
+                        {{ __('message.trouble_logging_in') }} <a href="{{ url('/contact-us') }}" class="text-decoration-underline" target="_blank">{{ __('message.click_here') }}</a>
                     </div>
                 </div>
             </div>

@@ -195,7 +195,7 @@ class BaseAuthController extends Controller
 
                 if ($response) {
                     $token = mt_rand(100000, 999999);
-                    $activate_model->update(['token' => $token]);
+                    $response->update(['token' => $token]);
                 } else {
                     // Create a new record if it doesn't exist
                     $token = mt_rand(100000, 999999);
@@ -231,7 +231,8 @@ class BaseAuthController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            SendEmail::dispatch($settings->email, $user->email, $template->data, $template->name, $replace, $type);
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

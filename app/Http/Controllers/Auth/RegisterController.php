@@ -130,7 +130,6 @@ class RegisterController extends Controller
         return $need_verify;
     }
 
-
     protected function getUserCurrency($userCountry)
     {
         $currency = Setting::find(1)->default_currency;

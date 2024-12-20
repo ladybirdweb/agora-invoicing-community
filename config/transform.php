@@ -26,7 +26,7 @@ return[
         'website_url' => '{{website_url}}',
         'name' => '{{name}}',
         'username' => '{{username}}',
-        'url' => '{{url}}',
+        'otp' => '{{otp}}',
         'logo' => '{{logo}}',
         'contact' => '{{contact}}',
         'reply_email' => '{{reply_email}}',

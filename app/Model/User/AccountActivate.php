@@ -9,4 +9,6 @@ class AccountActivate extends Model
     protected $table = 'account_activates';
 
     protected $fillable = ['email', 'token'];
+
+    protected $primaryKey = 'email';
 }

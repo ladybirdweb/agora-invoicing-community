@@ -312,7 +312,10 @@ class AuthController extends BaseAuthController
     {
         $request->validate([
             'eid' => 'required|string',
+            'otp' => 'required|string|size:6',
         ]);
+
+        $otp = $request->input('otp');
 
         if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
             return errorResponse(__('message.email_verification.max_attempts_exceeded'));
@@ -324,11 +327,23 @@ class AuthController extends BaseAuthController
         if (! $user) {
             return errorResponse(__('message.user_does_not_exist'));
         }
-        if ($user->active !== 1) {
-            return errorResponse(__('message.email_verification.email_not_verified'));
+
+        $account = AccountActivate::where('email', $email)->latest()->first(['token','updated_at']);
+
+        if ($account->token !== $otp) {
+            return errorResponse(__('message.email_verification.invalid_token'));
         }
 
-        if (! \Auth::check()) {
+        if ($account->updated_at->addMinutes(10) < Carbon::now()) {
+            return errorResponse(__('message.email_verification.token_expired'));
+        }
+
+        AccountActivate::where('email', $email)->delete();
+
+        $user->active = 1;
+        $user->save();
+
+        if(!\Auth::check()){
             \Session::flash('success', __('message.registration_complete'));
         }
 

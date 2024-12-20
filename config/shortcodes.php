@@ -6,6 +6,7 @@ return [
     '{{username}}' => 'User\'s username',
     '{{password}}' => 'User\'s password',
     '{{url}}' => 'URL of the resource',
+    '{{otp}}' => 'Email OTP',
     '{{logo}}' => 'Logo URL',
     '{{contact}}' => 'Contact information',
     '{{reply_email}}' => 'Email address for replies',

@@ -267,9 +267,11 @@
 
                                 <div id="alert-container-email"></div>
 
-                                <div class="emailalert mt-2 text-center">
-                                    {{ __('message.email_verification_sent') }}
-                                </div>
+                                <p class="text-left text-color-dark text-3">{{ __('message.enter_code') }} <span class="text-color-danger"> *</span></p>
+
+                                <input class="form-control h-100" type="text" id="email_otp" name="email_otp" placeholder="{{ __('message.otp_placeholder') }}"/>
+                                <p class="mt-3">{{ __('message.email_otp_description') }}</p>
+
                                 <div class="col-12 mt-4">
                                     <div class="row">
                                         <div class="col-6 px-0">
@@ -406,12 +408,12 @@
             $('.error').remove();
 
             if (!otpValue) {
-                showError(otpField, {{ __('message.otp_required') }});
+                showError(otpField, "{{ __('message.otp_required') }}");
                 return;
             }
 
             if (!otpRegex.test(otpValue)) {
-                showError(otpField, {{ __('message.otp_invalid_format') }});
+                showError(otpField, "{{ __('message.otp_invalid_format') }}");
                 return;
             }
 
@@ -476,7 +478,24 @@
         }
 
         function isEmailVerified() {
-            const data = {eid: eid};
+            const otpField = $('#email_otp');
+            const otpValue = otpField.val();
+            const otpRegex = /^[0-9]{6}$/;
+
+            otpField.removeClass('is-invalid').css('border-color', '');
+            $('.error').remove();
+
+            if (!otpValue) {
+                showError(otpField, "{{ __('message.otp_required') }}");
+                return;
+            }
+
+            if (!otpRegex.test(otpValue)) {
+                showError(otpField, "{{ __('message.otp_invalid_format') }}");
+                return;
+            }
+
+            const data = {eid, otp: otpValue};
             $.ajax({
                 url: '{{ url('email/verify') }}',
                 type: 'POST',

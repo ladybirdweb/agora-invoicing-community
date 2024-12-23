@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiKey;
 use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
@@ -16,6 +17,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class HomeController extends BaseHomeController
@@ -615,5 +617,68 @@ class HomeController extends BaseHomeController
         $group = ProductGroup::where('hidden', '0')->pluck('id', 'name');
 
         return response()->json(['group' => $group]);
+    }
+
+    public function getDetailedBillingInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $order = $request->input('order');
+        // Fetch the order details
+        $user = Order::where('number', $order)->value('client');
+
+        $email = User::where('id', $user)->value('email');
+
+        if (! $email) {
+            return response()->json([]);
+        }
+
+        return response()->json([
+            'billing_client_email' => $email,
+        ]);
+    }
+
+    public function getDetailsForAClient(Request $request)
+    {
+        $client = $request->input('client');
+
+        $license = $request->input('license');
+
+        $user = User::where('email', $client)->value('id');
+
+        $licenses = Order::where('client', $user)
+            ->whereHas('product', function ($query) {
+                $query->where('product_type', 'plugin');
+            })
+            ->pluck('serial_key')
+            ->toArray();
+
+        $licenses = array_merge([$license], $licenses);
+
+        $client = new Client(['verify' => false]);
+
+        $licenseUrl = ApiKey::value('license_url');
+
+        $response = $client->get($licenseUrl.'api/pluginLicense', [
+            'query' => ['license_code' => json_encode($licenses)],
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    public function getProductRelease(Request $request)
+    {
+        $product_id = $request->input('product_id');
+
+        $version = $request->input('version');
+
+        $product_upload = ProductUpload::where('product_id', $product_id)
+            ->where('is_private', 0)
+            ->where('version', $version)
+            ->orderByDesc('version') // Order by version in descending order
+            ->select('version', 'title', 'description', 'dependencies', 'updated_at')
+            ->first(); // Get the first result (latest version)
+
+        $product = Product::where('id', $product_id)->select('name', 'description', 'shoping_cart_link', 'product_description')->first();
+
+        return ['product' => $product, 'release' => $product_upload];
     }
 }

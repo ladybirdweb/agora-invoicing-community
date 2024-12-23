@@ -808,5 +808,6 @@ return [
     'path_tooltip' => 'Specify the path for storing all files (accessible by the application and following the server\'s directory structure).',
     'error_occured_while_downloading' => 'An error occurred while downloading the file.',
     'file_exist' => 'File exists',
-
+    'product_description' => 'Product Description',
+    'price_description' => 'Price Description',
 ];

@@ -485,7 +485,7 @@ class ClientController extends AdvanceSearchController
         $template = \App\Model\Common\Template::find($template_type->id);
 
         // Check if settings or template is missing
-        if (!$settings || !$template) {
+        if (! $settings || ! $template) {
             return;
         }
 
@@ -509,7 +509,6 @@ class ClientController extends AdvanceSearchController
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
     }
-
 
     /**
      * Gets baseQuery for user search by appending all the allowed filters.

@@ -12,6 +12,7 @@ use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Product\Product;
+use App\Rules\CaptchaValidation;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -94,14 +95,11 @@ class MailChimpController extends BaseMailChimpController
     //Update to Mailchimp For Paid Product
     public function addSubscriberByClientPanel(Request $request)
     {
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
         $this->validate($request, [
             'email' => 'required|email',
-            'mailchimp-recaptcha-response-1' => $captchaRule,
+            'mailchimp-recaptcha-response-1' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
         ], [
             'mailchimp-recaptcha-response-1.required' => 'Robot Verification Failed.',
-            'mailchimp-recaptcha-response-1.captcha' => 'Robot Verification Failed.',
         ]);
 
         try {

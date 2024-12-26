@@ -243,6 +243,12 @@
 
                                 <input class="form-control h-100" type="text" id="otp" name="otp" placeholder="{{ __('message.otp_placeholder') }}"/>
                                 <p class="mt-3">{{ __('message.otp_description') }}</p>
+
+                                @if ($setting->recaptcha_status === 1)
+                                    <div id="recaptchaMobile"></div>
+                                @elseif($setting->v3_recaptcha_status === 1)
+                                    <input type="hidden" id="g-recaptcha-mobile" class="g-recaptcha-token" name="g-recaptcha-response">
+                                @endif
                                 <div class="col-12">
                                     <div class="row">
                                         <div class="col-6 px-0">
@@ -280,7 +286,11 @@
 
                                 <input class="form-control h-100" type="text" id="email_otp" name="email_otp" placeholder="{{ __('message.otp_placeholder') }}"/>
                                 <p class="mt-3">{{ __('message.email_otp_description') }}</p>
-
+                                @if ($setting->recaptcha_status === 1)
+                                    <div id="recaptchaEmail"></div>
+                                @elseif($setting->v3_recaptcha_status === 1)
+                                    <input type="hidden" id="g-recaptcha-email" class="g-recaptcha-token" name="g-recaptcha-response">
+                               @endif
                                 <div class="col-12 mt-4">
                                     <div class="row">
                                         <div class="col-6 px-0">
@@ -307,7 +317,6 @@
                                 <h2 class="purple-text text-center"><strong>{{ __('message.all_success') }}</strong></h2>
                             </div>
                         </fieldset>
-
                     </form>
 
                     <div class="mt-2 text-start text-2">
@@ -320,7 +329,7 @@
 
 @stop
 @section('script')
-
+@extends('mini_views.recaptcha')
     <script>
         <?php
         $isMobileVerified = $user->mobile_verified ? true : false;
@@ -336,6 +345,15 @@
         const eid = @json($eid);
 
         let countdown = 120;
+
+        let mobile_recaptcha_id;
+        let email_recaptcha_id;
+        let recaptcha;
+
+        recaptchaFunctionToExecute.push(() => {
+            mobile_recaptcha_id = grecaptcha.render('recaptchaMobile', { 'sitekey': siteKey });
+            email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
+        });
 
         $.ajaxSetup({
             headers: {
@@ -426,7 +444,20 @@
                 return;
             }
 
-            const data = {eid, otp: otpValue};
+            @if($setting->recaptcha_status === 1)
+                recaptcha = $('#recaptchaMobile');
+                recaptchaToken = getRecaptchaTokenFromId(mobile_recaptcha_id);
+                if(getRecaptchaTokenFromId(mobile_recaptcha_id) === ''){
+                    showError(recaptcha, "{{ __('message.recaptcha_required') }}");
+                    return;
+                }
+            @elseif($setting->v3_recaptcha_status === 1)
+                updateRecaptchaTokens();
+                recaptchaToken = $('#g-recaptcha-mobile').val();
+            @endif
+
+            const data = {eid, otp: otpValue, 'g-recaptcha-response': recaptchaToken ?? ''};
+
             $.ajax({
                 url: '{{ url('otp/verify') }}',
                 type: 'POST',
@@ -508,7 +539,19 @@
                 return;
             }
 
-            const data = {eid, otp: otpValue};
+            @if($setting->recaptcha_status === 1)
+                recaptcha = $('#recaptchaEmail');
+                recaptchaToken = getRecaptchaTokenFromId(email_recaptcha_id);
+            if(getRecaptchaTokenFromId(email_recaptcha_id) === ''){
+                showError(recaptcha, "{{ __('message.recaptcha_required') }}");
+                return;
+            }
+            @elseif($setting->v3_recaptcha_status === 1)
+                updateRecaptchaTokens();
+                recaptchaToken = $('#g-recaptcha-email').val();
+            @endif
+
+            const data = {eid, otp: otpValue, 'g-recaptcha-response':recaptchaToken ?? ''};
             $.ajax({
                 url: '{{ url('email/verify') }}',
                 type: 'POST',

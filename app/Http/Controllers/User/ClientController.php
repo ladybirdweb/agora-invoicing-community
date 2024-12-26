@@ -261,7 +261,7 @@ class ClientController extends AdvanceSearchController
             $userInput = User::create($user);
 
             if (emailSendingStatus()) {
-                $this->sendWelcomeMail($user);
+                $this->sendWelcomeMail($userInput);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
             if ($mailchimpStatus == 1) {
@@ -478,44 +478,38 @@ class ClientController extends AdvanceSearchController
 
     public function sendWelcomeMail($user)
     {
+        // Retrieve necessary data
         $contact = getContactData();
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings::find(1);
-        $from = $setting->email;
-        $to = $user['email'];
-        if (! $user['active']) {
-            $activate_model = new AccountActivate();
-            $str = str_random(40);
-            $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
-            $token = $activate->token;
-            $url = url("activate/$token");
-            //check in the settings
+        $settings = \App\Model\Common\Setting::find(1);
+        $template_type = \App\Model\Common\TemplateType::where('name', 'registration_mail')->first();
+        $template = \App\Model\Common\Template::find($template_type->id);
 
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->welcome_mail;
-            $template = $templates::find($temp_id);
-
-            $subject = $template->name;
-            $data = $template->data;
-            $website_url = url('/');
-            $replace = ['name' => $user['first_name'].' '.$user['last_name'],
-                'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, 'contact' => $contact['contact'],
-                'logo' => $contact['logo'], 'reply_email' => $setting->company_email, ];
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type::find($type_id)->name;
-            }
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($from, $to, $data, $subject, $replace, $type);
-        } else {
-            $loginData = 'You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass';
-
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->SendEmail($from, $to, $loginData, 'Login details ');
+        // Check if settings or template is missing
+        if (!$settings || !$template) {
+            return;
         }
+
+        // Prepare dynamic data for email template
+        $replace = [
+            'name' => $user->first_name.' '.$user->last_name,
+            'username' => $user->email,
+            'password' => 'demopass',
+            'website_url' => url('/'),
+            'contact' => $contact['contact'] ?? '',
+            'logo' => $contact['logo'] ?? '',
+            'company_email' => $settings->company_email,
+            'reply_email' => $settings->company_email,
+        ];
+
+        // Get template type name
+
+        $type = $template->type ? \App\Model\Common\TemplateType::find($template->type)->name : '';
+
+        // Send the email
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->SendEmail($settings->email, $user->email, $template->data, $template->name, $replace, $type);
     }
+
 
     /**
      * Gets baseQuery for user search by appending all the allowed filters.

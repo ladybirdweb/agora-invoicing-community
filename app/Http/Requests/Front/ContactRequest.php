@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Front;
 
 use App\Model\Common\StatusSetting;
+use App\Rules\CaptchaValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ContactRequest extends FormRequest
@@ -22,8 +23,6 @@ class ContactRequest extends FormRequest
      */
     public function rules(): array
     {
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|captcha' : 'sometimes|';
         if ($this->is('contact-us')) {
             return [
                 'conName' => 'required',
@@ -31,7 +30,7 @@ class ContactRequest extends FormRequest
                 'conmessage' => 'required',
                 'Mobile' => 'required',
                 'country_code' => 'required',
-                'congg-recaptcha-response-1' => "$captchaRule|captcha",
+                'congg-recaptcha-response-1' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
             ];
         } elseif ($this->is('demo-request')) {
             return [
@@ -40,7 +39,7 @@ class ContactRequest extends FormRequest
                 'country_code' => 'required',
                 'Mobile' => 'required',
                 'demomessage' => 'required',
-                'demo-recaptcha-response-1' => "$captchaRule|captcha",
+                'demo-recaptcha-response-1' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
             ];
         }
     }
@@ -57,9 +56,7 @@ class ContactRequest extends FormRequest
             'demomessage' => 'The message field is required',
             'demoemail' => 'The email field is required',
             'congg-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-            'congg-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
             'demo-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-            'demo-recaptcha-response-1.captcha' => 'Invalid reCAPTCHA response.',
         ];
     }
 }

@@ -3,6 +3,7 @@
 use App\FileSystemSettings;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\InstallationDetail;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
@@ -733,4 +734,11 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
 
     // Return true if the rate limit is exceeded, false otherwise
     return ! $isAllowed;
+}
+
+function isCaptchaRequired()
+{
+    $settings = StatusSetting::find(1);
+    $status = $settings->v3_recaptcha_status === 1 || $settings->recaptcha_status === 1;
+    return $status ? ['status' => 1, 'is_required' => 'required'] : ['status' => 0, 'is_required' => 'sometimes'];
 }

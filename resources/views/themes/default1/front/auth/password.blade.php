@@ -55,12 +55,12 @@ main
                                 <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="{{url('login')}}">I know my password</a>
                             </div>
                         </div>
-                           @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                {!! NoCaptcha::display(['id' => 'pass-recaptcha-1', 'data-callback' => 'PassonRecaptcha']) !!}
-                                <input type="hidden" id="pass-recaptcha-response-1" name="pass-recaptcha-response-1">
-                                <div class="pass-verification" id="passcaptcha"></div>
+                           @if ($status->recaptcha_status == 1)
+                                <div id="recaptchaEmail"></div>
                                 <span id="passcaptchacheck"></span><br>
-                            @endif
+                            @elseif($status->v3_recaptcha_status === 1)
+                                 <input type="hidden" id="g-recaptcha-token" name="g-recaptcha-response-1">
+                             @endif
 
                         <div class="row">
 
@@ -75,23 +75,22 @@ main
         </div>
 @stop 
 @section('script')
-
+@extends('mini_views.recaptcha')
 <script>
 
-   var recaptchaValid = false;
-        function PassonRecaptcha(response) {
-        if (response === '') {
-            recaptchaValid = false; // reCAPTCHA validation failed
-        } else {
-            recaptchaValid = true; // reCAPTCHA validation succeeded
-            $('#pass-recaptcha-response-1').val(response);
-        }
-        }
+    let email_recaptcha_id;
+    let recaptcha;
+    let recaptchaToken;
+
+    recaptchaFunctionToExecute.push(() => {
+        email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
+    });
+
     
          function PassvalidateRecaptcha() {
-                 var recaptchaResponse = $('#pass-recaptcha-response-1').val();
-
-                if (recaptchaResponse === '') {
+             @if($status->recaptcha_status === 1)
+                 recaptchaToken = getRecaptchaTokenFromId(email_recaptcha_id);
+                if (getRecaptchaTokenFromId(email_recaptcha_id) === '') {
                     $('#passcaptchacheck').show();
                     $('#passcaptchacheck').html("Robot verification failed, please try again.");
                     $('#passcaptchacheck').focus();
@@ -102,6 +101,10 @@ main
                     $('#passcaptchacheck').hide();
                     return true;
                 }
+                @elseif($status->v3_recaptcha_status === 1)
+                recaptchaToken = $('#g-recaptcha-token').val();
+                 return true
+             @endif
          }
    $('#email').keyup(function(){
                  verify_mail_check();
@@ -155,8 +158,7 @@ main
                           $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                     var data = {
                                         "email":   $('#email').val(),
-                                        "pass-recaptcha-response-1":$('#pass-recaptcha-response-1').val(),
-                                      
+                                        "pass-recaptcha-response-1":recaptchaToken,
                                     };
                                     $.ajax({
                                         url: '{{url('password/email')}}',

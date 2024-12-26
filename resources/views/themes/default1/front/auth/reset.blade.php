@@ -28,8 +28,8 @@ main
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    {!!  Form::open(['url'=>'/password/reset', 'method'=>'post' , 'id' => 'changePasswordForm']) !!}
-                            <input type="hidden" name="token" value="{{ $reset_token }}">
+                    {!! Form::open(['url' => '/password/reset','method' => 'post','id' => 'changePasswordForm', 'onsubmit' => $status->recaptcha_status === 1 ? 'return validateCaptcha()' : null]) !!}
+                    <input type="hidden" name="token" value="{{ $reset_token }}">
                             <input type="hidden" name="email" value="{{ $email }}">
 
                         <div class="row">
@@ -74,6 +74,13 @@ main
                             </div>
                         </div>
 
+                    @if ($status->recaptcha_status === 1)
+                        <div id="recaptchaReset"></div>
+                        <div class="loginrobot-verification"></div><br>
+                    @elseif($status->v3_recaptcha_status === 1)
+                        <input type="hidden" id="g-recaptcha-token" name="g-recaptcha-response">
+                    @endif
+
                         <div class="row">
 
                             <div class="form-group col">
@@ -86,8 +93,24 @@ main
                 </div>
             </div>
         </div>
-
+     @extends('mini_views.recaptcha')
     <script>
+        let reset_recaptcha_id;
+
+        recaptchaFunctionToExecute.push(() => {
+            reset_recaptcha_id = grecaptcha.render('recaptchaReset', { 'sitekey': siteKey });
+        });
+
+        function validateCaptcha() {
+                if(getRecaptchaTokenFromId(reset_recaptcha_id) == ''){
+                    $('.loginrobot-verification').empty()
+                    $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+                    return false;
+                }
+                else{
+                    return true;
+                }
+        }
         $(document).ready(function() {
             const requiredFields = {
                 password: @json(trans('message.password_required')),

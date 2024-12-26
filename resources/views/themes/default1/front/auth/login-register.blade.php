@@ -102,7 +102,7 @@ foreach($scripts as $script) {
         <div class="col-md-12">
 
             <section>
-                <div class="col-md-12 tab-pane active" id="step1">
+                <div class="col-md-12 tab-pane active">
                             <div class="featured-boxes">
                                 <div id="error">
                                 </div>
@@ -121,7 +121,7 @@ foreach($scripts as $script) {
 
                     <h2 class="font-weight-bold text-5 mb-0">Login</h2>
 
-                     @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                     @if ($status->recaptcha_status==1)
                         {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
                     @else
                         {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
@@ -172,12 +172,13 @@ foreach($scripts as $script) {
                             </div>
                         </div>
 
-                        @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                                    {!! NoCaptcha::renderJs() !!}
-                                                    {!! NoCaptcha::display(['id' => 'recaptcha1']) !!}
-                                                    <div class="loginrobot-verification"></div><br>
+                        @if ($status->recaptcha_status === 1)
+                              <div id="login_recaptcha"></div>
+                              <div class="loginrobot-verification"></div><br>
+                        @elseif($status->v3_recaptcha_status === 1)
+                              <input type="hidden" class="g-recaptcha-token" name="g-recaptcha-response">
                         @endif
-                   
+
                         <div class="row">
 
                             <div class="form-group col">
@@ -222,7 +223,7 @@ foreach($scripts as $script) {
                         </div>
                    {!! Form::close() !!}
                 </div>
-                                    
+
                 <div class="col-md-6 col-lg-6 ps-5">
 
 
@@ -371,11 +372,12 @@ foreach($scripts as $script) {
 
                         <div class="form-row">
                         <div class="form-group col-lg-6">
-                            @if ($status->recaptcha_status == 1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                {!! NoCaptcha::display(['id' => 'g-recaptcha-1', 'data-callback' => 'onRecaptcha']) !!}
-                                <input type="hidden" id="g-recaptcha-response-1" name="g-recaptcha-response-1">
+                            @if ($status->recaptcha_status === 1)
+                               <div id="register_recaptcha"></div>
                                 <div class="robot-verification" id="captcha"></div>
                                 <span id="captchacheck"></span>
+                            @elseif($status->v3_recaptcha_status === 1)
+                                <input type="hidden" id="g-recaptcha-register" class="g-recaptcha-token" name="g-recaptcha-response-1">
                             @endif
                         </div>
                     </div>
@@ -423,26 +425,23 @@ foreach($scripts as $script) {
 @stop
 @section('script')
     <!--<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>-->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-
-    <script>
-        ///////////////////////////////////////////////////////////////////////////////
-        ///Google Recaptcha
-        function recaptchaCallback() {
-            document.querySelectorAll('.g-recaptcha').forEach(function (el) {
-                grecaptcha.render(el);
-            });
-        }
-
-        ///////////////////////////////////////////////////////////////////////////////////
-    </script>
+@extends('mini_views.recaptcha')
     <!--Start of Tawk.to Script-->
     {!! $everyPageScripts !!}
     <!--End of Tawk.to Script-->
 
 
     <script type="text/javascript">
+// Recaptcha v2
+let login_recaptcha_id;
+let register_recaptcha_id;
+        @if($status->recaptcha_status === 1)
+        recaptchaFunctionToExecute.push(() => {
+            login_recaptcha_id = grecaptcha.render('login_recaptcha', { 'sitekey': siteKey });
+            register_recaptcha_id = grecaptcha.render('register_recaptcha', { 'sitekey': siteKey });
+        });
+        @endif
+
 
         $(document).ready(function () {
             // Cache the selectors for better performance
@@ -496,7 +495,24 @@ foreach($scripts as $script) {
 
 
     <script type="text/javascript">
+
+        let recaptchaToken;
         {{--window.location.href = "{{url('/verify')}}";--}}
+
+        function validateform() {
+            @if($status->recaptcha_status === 1)
+            if(getRecaptchaTokenFromId(login_recaptcha_id) == ''){
+                $('.loginrobot-verification').empty()
+                $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+                return false;
+            }
+            else{
+                return true;
+            }
+            @else
+                return true;
+            @endif
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Registration Form Validation
@@ -798,7 +814,6 @@ foreach($scripts as $script) {
                 $('#termscheck').css({"color": "red", "margin-top": "5px"});
                 // userErr =false;
                 return false;
-                ;
             } else {
                 $('#termscheck').hide();
                 $('#term').css("border-color", "");
@@ -819,9 +834,9 @@ foreach($scripts as $script) {
         }
 
         function validateRecaptcha() {
-            var recaptchaResponse = $('#g-recaptcha-response-1').val();
-
-            if (recaptchaResponse === '') {
+            @if($status->recaptcha_status === 1)
+                recaptchaToken = getRecaptchaTokenFromId(register_recaptcha_id);
+            if (getRecaptchaTokenFromId(register_recaptcha_id) == '') {
                 $('#captchacheck').show();
                 $('#captchacheck').html("Robot verification failed, please try again.");
                 $('#captchacheck').focus();
@@ -832,6 +847,10 @@ foreach($scripts as $script) {
                 $('#captchacheck').hide();
                 return true;
             }
+            @elseif($status->v3_recaptcha_status === 1)
+            recaptchaToken = $('#g-recaptcha-register').val();
+                return true;
+            @endif
         }
 
 
@@ -900,6 +919,8 @@ foreach($scripts as $script) {
 
                 $("#register").attr('disabled', true);
                 $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+
+                recaptchaToken = recaptchaToken ?? '';
                 $.ajax({
                     url: '{{url("auth/register")}}',
                     type: 'POST',
@@ -921,7 +942,7 @@ foreach($scripts as $script) {
                         "user_name": $('#user_name').val(),
                         "password": $('#password').val(),
                         "password_confirmation": $('#confirm_pass').val(),
-                        "g-recaptcha-response-1": $('#g-recaptcha-response-1').val(),
+                        "g-recaptcha-response-1": recaptchaToken ?? '',
                         "terms": $('#term').val(),
 
                         "_token": "{!! csrf_token() !!}",

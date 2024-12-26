@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
+use App\Rules\CaptchaValidation;
 use App\User;
 use App\VerificationAttempt;
 use Carbon\Carbon;
@@ -282,6 +283,7 @@ class AuthController extends BaseAuthController
         $request->validate([
             'eid' => 'required|string',
             'otp' => 'required|string|size:6',
+            'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ]);
         try {
             // Decrypt the email
@@ -317,6 +319,7 @@ class AuthController extends BaseAuthController
         $request->validate([
             'eid' => 'required|string',
             'otp' => 'required|string|size:6',
+            'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ]);
 
         $otp = $request->input('otp');
@@ -467,7 +470,7 @@ class AuthController extends BaseAuthController
         $user = \Session::get('user');
         if ($user) {
             $eid = Crypt::encrypt($user->email);
-            $setting = StatusSetting::first(['emailverification_status', 'msg91_status']);
+            $setting = StatusSetting::first(['recaptcha_status','v3_recaptcha_status','emailverification_status', 'msg91_status']);
 
             return view('themes.default1.user.verify', compact('user', 'eid', 'setting'));
         }

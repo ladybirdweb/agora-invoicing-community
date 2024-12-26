@@ -860,5 +860,5 @@ return [
         'invalid_token' => 'The OTP provided is invalid.',
         'token_expired' => 'The OTP has expired. Please request a new one.',
     ],
-
+    'recaptcha_required' => 'Please verify that you are not a robot.',
 ];

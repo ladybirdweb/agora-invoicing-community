@@ -246,7 +246,7 @@
                                 <td class="col-md-2">
                                     <label class="switch toggle_event_editing">
 
-                                        <input type="checkbox" value="{{$captchaStatus}}"  name="modules_settings"
+                                        <input type="checkbox" value="{{ $captchaStatus || $v3CaptchaStatus}}"  name="modules_settings"
                                                class="checkbox2" id="captcha">
                                         <span class="slider round"></span>
                                     </label>
@@ -265,7 +265,16 @@
                                     <h6 id=""></h6>
                                 </td>
                                 <td class="col-md-4 captchaField hide">
-
+                                    <div class="form-group m-1 d-flex">
+                                        <div class="custom-control custom-radio m-2">
+                                            <input class="custom-control-input" type="radio" id="captchaRadioV2" name="customRadio" {{ $captchaStatus === 1 ? 'checked' : '' }}>
+                                            <label for="captchaRadioV2" class="custom-control-label">reCAPTCHA v2</label>
+                                        </div>
+                                        <div class="custom-control custom-radio m-2">
+                                            <input class="custom-control-input" type="radio" id="captchaRadioV3" name="customRadio" {{ $v3CaptchaStatus === 1 ? 'checked' : '' }}>
+                                            <label for="captchaRadioV3" class="custom-control-label">reCAPTCHA v3</label>
+                                        </div>
+                                    </div>
 
                                     <!-- last name -->
                                     {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
@@ -800,6 +809,7 @@
                 type : 'post',
                 data: {
                     "status": checkboxvalue,
+                    "recaptcha_type": $('#captchaRadioV2').prop('checked') ? 'v2' : 'v3',
                     "nocaptcha_sitekey": $('#nocaptcha_sitekey').val(),
                     "nocaptcha_secret" :$('#nocaptcha_secret').val(),
                 },
@@ -881,6 +891,7 @@
                 type : 'post',
                 data: {
                     "status": checkboxvalue,
+                    "recaptcha_type": $('#captchaRadioV2').prop('checked') ? 'v2' : 'v3',
                     "captcha_sitekey": $('#captcha_sitekey').val(),
                     "captcha_secret" :$('#captcha_secret').val(),
                 },

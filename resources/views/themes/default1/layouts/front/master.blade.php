@@ -129,7 +129,7 @@ $days = $pay->where('product','117')->value('days');
 <body>
 <?php
 $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-$status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+$status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
 $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
 $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
 $location = getLocation();
@@ -809,7 +809,7 @@ $days = $pay->where('product','117')->value('days');
                         $socialMedia .= '</ul>';
                     }
 
-                    $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+                    $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
 
                     $mailchimpSection = '';
                      if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
@@ -824,13 +824,23 @@ $days = $pay->where('product','117')->value('days');
                                                             <label>Leave this field empty</label>
                                                             <input type="text" name="mailhoneypot_field" value="">
                                                         </div>';
-                        if ($status->recaptcha_status) {
-                            $mailchimpSection .= '<div class="mb-3">' . NoCaptcha::display(['id' => 'g-recaptcha-mailchimp', 'data-callback' => 'mailchimponRecaptcha']) . '</div>';
-                            $mailchimpSection .= '<input type="hidden" id="mailchimp-recaptcha-response-1" name="mailchimp-recaptcha-response-1">
-                                                  <div class="robot-verification mb-3" id="mailchimpcaptcha"></div>
-                                                  <span id="mailchimpcaptchacheck"></span>';
-                        }
-                        $mailchimpSection .= '<button class="btn btn-primary mb-3" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
+                         if ($status->recaptcha_status === 1 || $status->v3_recaptcha_status === 1) {
+
+                             if ($status->recaptcha_status === 1) {
+                                 $mailchimpSection .= '
+            <div class="mb-3">
+                <div id="mailchimp_recaptcha"></div>
+                <div class="robot-verification mb-3" id="mailchimpcaptcha"></div>
+                <span id="mailchimpcaptchacheck"></span>
+            </div>
+        ';
+                             } elseif ($status->v3_recaptcha_status === 1) {
+                                 $mailchimpSection .= '
+                <input type="hidden" id="g-recaptcha-mailchimp" class="g-recaptcha-token" name="g-recaptcha-response">
+        ';
+                             }
+                         }
+                         $mailchimpSection .= '<button class="btn btn-primary mb-3" id="mailchimp-subscription" type="submit"><strong>GO!</strong></button>
                                             </form>
                                           </div>';
                     }
@@ -934,19 +944,6 @@ $days = $pay->where('product','117')->value('days');
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <!-- Current Page Vendor and Views -->
 <script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
- <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-
-    <script>
-        ///////////////////////////////////////////////////////////////////////////////
-        ///Google Recaptcha
-        function recaptchaCallback() {
-            document.querySelectorAll('.g-recaptcha-mailchimp').forEach(function (el) {
-                grecaptcha.render(el);
-            });
-        }
-        ///////////////////////////////////////////////////////////////////////////////////
-    </script>
 
 
 
@@ -978,30 +975,32 @@ $(document).ready(function() {
 </script>
 
   <script>
-      var recaptchaValid = false;
-        function mailchimponRecaptcha(response) {
-        if (response === '') {
-            recaptchaValid = false; 
-        } else {
-            recaptchaValid = true; 
-            $('#mailchimp-recaptcha-response-1').val(response);
-        }
-        }
-    
-         function mailchimpvalidateRecaptcha() {
-                 var recaptchaResponse = $('#mailchimp-recaptcha-response-1').val();
 
-                if (recaptchaResponse === '') {
-                    $('#mailchimpcaptchacheck').show();
-                    $('#mailchimpcaptchacheck').html("Robot verification failed, please try again.");
-                    $('#mailchimpcaptchacheck').focus();
-                    $('#mailchimpcaptcha').css("border-color", "red");
-                    $('#mailchimpcaptchacheck').css({"color": "red", "margin-top": "5px"});
-                    return false;
-                } else {
-                    $('#mailchimpcaptchacheck').hide();
-                    return true;
-                }
+      let mailchimp_recaptcha_id;
+      let recaptchaTokenMailChimp;
+      @if($status->recaptcha_status === 1)
+      recaptchaFunctionToExecute.push(() => {
+          mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
+      });
+      @endif
+         function mailchimpvalidateRecaptcha() {
+                 @if($status->recaptcha_status === 1)
+                     recaptchaTokenMailChimp = getRecaptchaTokenFromId(mailchimp_recaptcha_id);
+
+                 if ( getRecaptchaTokenFromId(mailchimp_recaptcha_id) === '') {
+                     $('#mailchimpcaptchacheck').show();
+                     $('#mailchimpcaptchacheck').html("Robot verification failed, please try again.");
+                     $('#mailchimpcaptchacheck').focus();
+                     $('#mailchimpcaptcha').css("border-color", "red");
+                     $('#mailchimpcaptchacheck').css({"color": "red", "margin-top": "5px"});
+                     return false;
+                 } else {
+                     $('#mailchimpcaptchacheck').hide();
+                     return true;
+                 }
+                 @elseif($status->v3_recaptcha_status === 1)
+                     return true
+                 @endif
          }
     </script>
 <script>
@@ -1032,7 +1031,6 @@ $(document).ready(function() {
         }
 
         var honeypot = $('input[name=honeypot_field]').val();
-        var captcha = $('#mailchimp-recaptcha-response-1').val();
 
         $('#mailchimp-subscription').html("Wait...");
 
@@ -1043,7 +1041,7 @@ $(document).ready(function() {
                 'email': email, 
                 '_token': "{!! csrf_token() !!}",
                 'honeypot_field': honeypot,
-                'mailchimp-recaptcha-response-1': captcha
+                'mailchimp-recaptcha-response-1': recaptchaTokenMailChimp ?? $('#g-recaptcha-mailchimp').val() ?? '',
             },
             success: function(data) {
                 emailInput.val('');

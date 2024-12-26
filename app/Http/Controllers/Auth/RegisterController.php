@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
+use App\Rules\CaptchaValidation;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -45,12 +46,8 @@ class RegisterController extends Controller
 
     public function postRegister(ProfileRequest $request, User $user)
     {
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
-            'g-recaptcha-response-1' => $captchaRule.'captcha',
-        ], [
-            'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+            'g-recaptcha-response-1' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
         ]);
         try {
             $location = getLocation();

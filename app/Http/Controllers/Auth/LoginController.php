@@ -8,6 +8,7 @@ use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
+use App\Rules\CaptchaValidation;
 use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -51,7 +52,7 @@ class LoginController extends Controller
     {
         try {
             $bussinesses = Bussiness::pluck('name', 'short')->toArray();
-            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $status = StatusSetting::select('recaptcha_status', 'v3_recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
             $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
             $location = getLocation();
@@ -70,13 +71,10 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-            'g-recaptcha-response' => $captchaRule.'captcha',
+            'g-recaptcha-response' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',

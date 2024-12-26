@@ -93,13 +93,13 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                                     <label>Leave this field empty</label>
                                     <input type="text" name="conatcthoneypot_field" value="">
                                 </div>
-                                
-                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                 {!! NoCaptcha::display(['id' => 'g-recaptcha-1', 'data-callback' => 'onRecaptcha']) !!}
-                                <input type="hidden" id="congg-recaptcha-response-1" name="congg-recaptcha-response-1">
-                                <div class="robot-verification" id="captcha"></div>
-                                <span id="captchacheck"></span>
-                                @endif
+
+                         @if ($status->recaptcha_status === 1)
+                             <div id="recaptchaContact"></div>
+                             <span id="captchacheck"></span>
+                         @elseif($status->v3_recaptcha_status === 1)
+                             <input type="hidden" id="g-recaptcha-contact" class="g-recaptcha-token" name="g-recaptcha-response">
+                         @endif
                                 <br>
 
                         <div class="row">
@@ -135,34 +135,20 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
         </div>
 @stop
 @section('script')
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@extends('mini_views.recaptcha')
 
-
-    <script>
-        ///////////////////////////////////////////////////////////////////////////////
-        ///Google Recaptcha
-        function recaptchaCallback() {
-            document.querySelectorAll('.g-recaptcha-1').forEach(function (el) {
-                grecaptcha.render(el);
-            });
-        }
-        ///////////////////////////////////////////////////////////////////////////////////
-    </script>
         <script>
-      var recaptchaValid = false;
-        function onRecaptcha(response) {
-        if (response === '') {
-            recaptchaValid = false; 
-        } else {
-            recaptchaValid = true; 
-            $('#congg-recaptcha-response-1').val(response);
-        }
-        }
+            let contact_recaptcha_id;
+            let recaptchaToken;
+
+            recaptchaFunctionToExecute.push(() => {
+                contact_recaptcha_id = grecaptcha.render('recaptchaContact', { 'sitekey': siteKey });
+            });
     
          function validateRecaptcha() {
-                 var recaptchaResponse = $('#congg-recaptcha-response-1').val();
-
-                if (recaptchaResponse === '') {
+             @if($status->recaptcha_status === 1)
+                 recaptchaToken = getRecaptchaTokenFromId(contact_recaptcha_id);
+                if (getRecaptchaTokenFromId(contact_recaptcha_id) === '') {
                     $('#captchacheck').show();
                     $('#captchacheck').html("Robot verification failed, please try again.");
                     $('#captchacheck').focus();
@@ -173,6 +159,9 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                     $('#captchacheck').hide();
                     return true;
                 }
+                @elseif($status->v3_recaptcha_status === 1)
+                 return true
+             @endif
          }
     </script>
 @if(request()->path() === 'contact-us')
@@ -254,19 +243,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 <script>
 $(document).ready(function() {
     $('#contactForm').submit(function(event) {
-        event.preventDefault(); 
-
-
-       var formData = {
-            "conName": $('#conName').val(),
-            "email": $('#email').val(),
-            "country_code": $('#mobile_code_hiddenco').val().replace(/\s/g, ''),
-            "Mobile": $('#mobilenumcon').val().replace(/[\. ,:-]+/g, ''),
-            "conmessage": $('#conmessage').val(),
-            "conatcthoneypot_field": $('input[name=conatcthoneypot_field]').val(),
-            "congg-recaptcha-response-1": $('#congg-recaptcha-response-1').val(),
-            "_token": "{{ csrf_token() }}"
-        };
+        event.preventDefault();
         
         var recaptchaEnabled = '{{ $status->recaptcha_status }}';
         if (recaptchaEnabled == 1) {
@@ -280,7 +257,18 @@ $(document).ready(function() {
         $('#errorMessage').empty();
         $("#contactSubmit").attr('disabled',true);
         $("#contactSubmit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
-     
+
+        var formData = {
+            "conName": $('#conName').val(),
+            "email": $('#email').val(),
+            "country_code": $('#mobile_code_hiddenco').val().replace(/\s/g, ''),
+            "Mobile": $('#mobilenumcon').val().replace(/[\. ,:-]+/g, ''),
+            "conmessage": $('#conmessage').val(),
+            "conatcthoneypot_field": $('input[name=conatcthoneypot_field]').val(),
+            "congg-recaptcha-response-1":  recaptchaToken ?? $('#g-recaptcha-contact').val() ?? '',
+            "_token": "{{ csrf_token() }}"
+        };
+
         $.ajax({
             type: 'POST',
             url: 'contact-us',

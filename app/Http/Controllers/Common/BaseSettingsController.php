@@ -307,6 +307,7 @@ class BaseSettingsController extends PaymentSettingsController
     public function captchaDetails(Request $request)
     {
         $status = $request->input('status');
+        $recaptchaType = $request->input('recaptcha_type');
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
@@ -343,8 +344,14 @@ class BaseSettingsController extends PaymentSettingsController
             $file_contents_secretchek = str_replace([env('NOCAPTCHA_SECRET'), env('NOCAPTCHA_SITEKEY')], [$captcha_secretCheck, $nocaptcha_sitekey], $file_contents);
             file_put_contents($path_to_file, $file_contents_secretchek);
         }
+        $recaptchaStatus = !$status ? 0 : ($recaptchaType === 'v2' ? 1 : 0);
+        $v3RecaptchaStatus = !$status ? 0 : ($recaptchaType === 'v3' ? 1 : 0);
 
-        StatusSetting::where('id', 1)->update(['recaptcha_status' => $status]);
+        // Update StatusSetting
+        StatusSetting::where('id', 1)->update([
+            'recaptcha_status' => $recaptchaStatus,
+            'v3_recaptcha_status' => $v3RecaptchaStatus,
+        ]);
         ApiKey::where('id', 1)->update(['nocaptcha_sitekey' => $nocaptcha_sitekey,
             'captcha_secretCheck' => $captcha_secretCheck, ]);
 

@@ -849,8 +849,8 @@ let register_recaptcha_id;
             }
             @elseif($status->v3_recaptcha_status === 1)
             recaptchaToken = $('#g-recaptcha-register').val();
-                return true;
             @endif
+                return true;
         }
 
 

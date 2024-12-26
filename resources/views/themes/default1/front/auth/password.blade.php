@@ -82,9 +82,11 @@ main
     let recaptcha;
     let recaptchaToken;
 
+    @if($status->recaptcha_status === 1)
     recaptchaFunctionToExecute.push(() => {
         email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
     });
+    @endif
 
     
          function PassvalidateRecaptcha() {
@@ -103,8 +105,8 @@ main
                 }
                 @elseif($status->v3_recaptcha_status === 1)
                 recaptchaToken = $('#g-recaptcha-token').val();
-                 return true
              @endif
+                 return true
          }
    $('#email').keyup(function(){
                  verify_mail_check();

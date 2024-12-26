@@ -97,9 +97,11 @@ main
     <script>
         let reset_recaptcha_id;
 
+        @if($status->recaptcha_status === 1)
         recaptchaFunctionToExecute.push(() => {
             reset_recaptcha_id = grecaptcha.render('recaptchaReset', { 'sitekey': siteKey });
         });
+        @endif
 
         function validateCaptcha() {
                 if(getRecaptchaTokenFromId(reset_recaptcha_id) == ''){

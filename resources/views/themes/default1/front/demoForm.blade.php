@@ -1,5 +1,5 @@
 <?php
-$status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+$status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
 ?>
 
     <div class="modal fade" id="demo-req" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
@@ -87,12 +87,13 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
                                     <input type="text" name="honeypot_field" value="">
                                 </div>
 
-                                @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                 {!! NoCaptcha::display(['id' => 'g-recaptcha-demo', 'data-callback' => 'demoonRecaptcha']) !!}
-                                <input type="hidden" id="demo-recaptcha-response-1" name="demo-recaptcha-response-1">
+                            @if ($status->recaptcha_status === 1)
+                                <div id="demo_recaptcha"></div>
                                 <div class="robot-verification" id="democaptcha"></div>
                                 <span id="democaptchacheck"></span>
-                                @endif
+                            @elseif($status->v3_recaptcha_status === 1)
+                                <input type="hidden" id="g-recaptcha-demo" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                            @endif
                                 <br>
                             
                         </div>
@@ -109,64 +110,42 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_sta
             </form>
         </div>
     </div>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-
-    <script>
-        ///////////////////////////////////////////////////////////////////////////////
-        ///Google Recaptcha
-        function recaptchaCallback() {
-            document.querySelectorAll('.g-recaptcha-demo').forEach(function (el) {
-                grecaptcha.render(el);
-            });
-        }
-        ///////////////////////////////////////////////////////////////////////////////////
-    </script>
         <script>
-      var recaptchaValid = false;
-        function demoonRecaptcha(response) {
-        if (response === '') {
-            recaptchaValid = false; 
-        } else {
-            recaptchaValid = true; 
-            $('#demo-recaptcha-response-1').val(response);
-        }
-        }
+            let demo_recaptcha_id;
+            let recaptchaTokenDemo;
+
+            recaptchaFunctionToExecute.push(() => {
+                demo_recaptcha_id = grecaptcha.render('demo_recaptcha', { 'sitekey': siteKey });
+            });
+
     
          function demovalidateRecaptcha() {
-                 var recaptchaResponse = $('#demo-recaptcha-response-1').val();
+             @if($status->recaptcha_status === 1)
+                 recaptchaTokenDemo = getRecaptchaTokenFromId(demo_recaptcha_id);
 
-                if (recaptchaResponse === '') {
-                    $('#democaptchacheck').show();
-                    $('#democaptchacheck').html("Robot verification failed, please try again.");
-                    $('#democaptchacheck').focus();
-                    $('#democaptcha').css("border-color", "red");
-                    $('#democaptchacheck').css({"color": "red", "margin-top": "5px"});
-                    return false;
-                } else {
-                    $('#democaptchacheck').hide();
-                    return true;
-                }
+             if (getRecaptchaTokenFromId(demo_recaptcha_id) === '') {
+                 $('#democaptchacheck').show();
+                 $('#democaptchacheck').html("Robot verification failed, please try again.");
+                 $('#democaptchacheck').focus();
+                 $('#democaptcha').css("border-color", "red");
+                 $('#democaptchacheck').css({"color": "red", "margin-top": "5px"});
+                 return false;
+             } else {
+                 $('#democaptchacheck').hide();
+                 return true;
+             }
+             @elseif($status->v3_recaptcha_status === 1)
+             updateRecaptchaTokens();
+                 return true;
+             @endif
          }
     </script>
 
 <script>
 $(document).ready(function() {
     $('#demoForm').submit(function(event) {
-        event.preventDefault(); 
-
-
-
-       var formData = {
-            "demoname": $('#demoname').val(),
-            "demoemail": $('#demoemail').val(),
-            "country_code": $('#mobile_code_hiddenDemo').val().replace(/[\. ,:-]+/g, ''),
-            "Mobile": $('#mobilenumdemo').val().replace(/[\. ,:-]+/g, ''),
-            "demomessage": $('#demomessage').val(),
-            "honeypot_field": $('input[name=honeypot_field]').val(),
-            "demo-recaptcha-response-1": $('#demo-recaptcha-response-1').val(),
-            "_token": "{{ csrf_token() }}"
-        };
+        event.preventDefault();
         
         var recaptchaEnabled = '{{ $status->recaptcha_status }}';
         if (recaptchaEnabled == 1) {
@@ -180,7 +159,18 @@ $(document).ready(function() {
         $('#errorMessage').empty();
         $("#demoregister").attr('disabled',true);
         $("#demoregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
-     
+
+        var formData = {
+            "demoname": $('#demoname').val(),
+            "demoemail": $('#demoemail').val(),
+            "country_code": $('#mobile_code_hiddenDemo').val().replace(/[\. ,:-]+/g, ''),
+            "Mobile": $('#mobilenumdemo').val().replace(/[\. ,:-]+/g, ''),
+            "demomessage": $('#demomessage').val(),
+            "honeypot_field": $('input[name=honeypot_field]').val(),
+            "demo-recaptcha-response-1": recaptchaTokenDemo ?? $('#g-recaptcha-demo').val() ?? '',
+            "_token": "{{ csrf_token() }}"
+        };
+
         $.ajax({
             type: 'POST',
             url: 'demo-request',

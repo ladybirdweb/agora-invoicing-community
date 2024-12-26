@@ -241,4 +241,14 @@ return[
         'date' => '{{date}}',
     ],
 
+    'registration_mail' => [
+        'name' => '{{name}}',
+        'username' => '{{username}}',
+        'password' => '{{password}}',
+        'website_url' => '{{website_url}}',
+        'logo' => '{{logo}}',
+        'contact' => '{{contact}}',
+        'reply_email' => '{{reply_email}}',
+    ],
+
 ];

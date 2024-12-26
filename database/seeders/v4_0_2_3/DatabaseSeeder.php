@@ -4,6 +4,7 @@ namespace Database\Seeders\v4_0_2_3;
 
 use App\FileSystemSettings;
 use App\Model\Common\Template;
+use App\Model\Common\TemplateType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -74,5 +75,67 @@ class DatabaseSeeder extends Seeder
         </tbody>
         </table>
         <p>&nbsp;</p>']);
+
+
+        TemplateType::create([
+            'id' => 24,
+            'name' => 'registration_mail',
+        ]);
+
+        Template::create([
+            'id' => 24,
+            'name' => 'Registration Details',
+            'type' => 24,
+            'url' => 'null',
+            'reply_to' => '{{reply_email}}',
+            'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td style="width: 30px;">&nbsp;</td>
+            <td style="width: 640px; padding-top: 30px;">
+                <h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;">
+                    {{logo}}
+                </h2>
+            </td>
+            <td style="width: 30px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 30px;">&nbsp;</td>
+            <td style="width: 640px; padding-top: 30px;">
+                <table style="width: 640px; border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px;">&nbsp;</td>
+                            <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 20px; width: 560px;">
+                                <p style="font-family: Arial, sans-serif; color: #333; font-size: 14px; line-height: 1.5;">
+                                    Dear {{name}},<br /><br />
+                                    Your account has been successfully registered! Below are your login details:<br /><br />
+                                    <strong>Login Details:</strong><br />
+                                    <strong>URL:</strong> <a href="{{website_url}}" style="color: #0073aa; text-decoration: none;">{{website_url}}</a><br />
+                                    <strong>Username:</strong> {{username}}<br />
+                                    <strong>Password:</strong> {{password}}<br /><br />
+                                    For your security, we recommend changing your password after logging in for the first time.<br />
+                                    <strong><a href="{{website_url}}/password/reset" style="color: #0073aa; text-decoration: none;">Click here to change your password.</a></strong><br /><br />
+                                    Thank you for joining us!<br />
+                                </p>
+                            </td>
+                            <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px;">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="width: 30px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 30px; padding-top: 10px;">&nbsp;</td>
+            <td style="padding: 20px 0 10px; width: 640px;" align="left">
+                {{contact}}
+            </td>
+            <td style="width: 30px; padding-top: 10px;">&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+'
+        ]);
     }
 }

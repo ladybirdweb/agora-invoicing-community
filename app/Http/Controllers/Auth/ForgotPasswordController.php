@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
+use App\Rules\CaptchaValidation;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,7 @@ class ForgotPasswordController extends Controller
 
     public function showLinkRequestForm()
     {
-        $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+        $status = StatusSetting::select('recaptcha_status','v3_recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
         $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
 
         return view('themes.default1.front.auth.password', compact('status', 'apiKeys'));
@@ -50,11 +51,9 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         try {
-            $apiKeys = StatusSetting::value('recaptcha_status');
-            $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
             $this->validate($request,
                 ['email' => 'required|email|exists:users,email',
-                    'pass-recaptcha-response-1' => $captchaRule.'captcha',
+                    'pass-recaptcha-response-1' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
                 ]
             );
             $email = $request->email;

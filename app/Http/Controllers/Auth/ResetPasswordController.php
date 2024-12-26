@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
+use App\Rules\CaptchaValidation;
 use App\Rules\StrongPassword;
 use App\User;
 use Carbon\Carbon;
@@ -49,8 +50,7 @@ class ResetPasswordController extends Controller
             $reset = \DB::table('password_resets')->select('email', 'created_at')->where('token', $token)->first();
 
             if ($reset && Carbon::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Carbon::now()) {
-                $captchaStatus = StatusSetting::value('recaptcha_status');
-                $captchaKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
+                $status = StatusSetting::find(1,['recaptcha_status','v3_recaptcha_status']);
 
                 $user = User::where('email', $reset->email)->first();
 
@@ -61,7 +61,7 @@ class ResetPasswordController extends Controller
                     return redirect('verify-2fa');
                 }
 
-                return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))
+                return view('themes.default1.front.auth.reset', compact('status'))
                     ->with(['reset_token' => $token, 'email' => $reset->email]);
             } else {
                 return redirect('login')->with('fails', \Lang::get('message.reset_link_expired'));
@@ -87,9 +87,8 @@ class ResetPasswordController extends Controller
                 'confirmed',
                 new StrongPassword(),
             ],
-            'g-recaptcha-response' => 'sometimes|required|captcha',
+            'g-recaptcha-response' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
         ], ['g-recaptcha-response.required' => 'Please verify that you are not a robot.',
-            'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.',
         ]);
         try {
             $token = $request->input('token');

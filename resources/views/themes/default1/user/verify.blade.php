@@ -349,11 +349,14 @@
         let mobile_recaptcha_id;
         let email_recaptcha_id;
         let recaptcha;
+        let recaptchaToken;
 
+        @if($setting->recaptcha_status === 1)
         recaptchaFunctionToExecute.push(() => {
             mobile_recaptcha_id = grecaptcha.render('recaptchaMobile', { 'sitekey': siteKey });
             email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
         });
+        @endif
 
         $.ajaxSetup({
             headers: {

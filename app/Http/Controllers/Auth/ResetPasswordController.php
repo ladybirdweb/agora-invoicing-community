@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Rules\CaptchaValidation;
@@ -50,7 +49,7 @@ class ResetPasswordController extends Controller
             $reset = \DB::table('password_resets')->select('email', 'created_at')->where('token', $token)->first();
 
             if ($reset && Carbon::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Carbon::now()) {
-                $status = StatusSetting::find(1,['recaptcha_status','v3_recaptcha_status']);
+                $status = StatusSetting::find(1, ['recaptcha_status', 'v3_recaptcha_status']);
 
                 $user = User::where('email', $reset->email)->first();
 
@@ -87,7 +86,7 @@ class ResetPasswordController extends Controller
                 'confirmed',
                 new StrongPassword(),
             ],
-            'g-recaptcha-response' => [ isCaptchaRequired()['is_required'] ,new CaptchaValidation()],
+            'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ], ['g-recaptcha-response.required' => 'Please verify that you are not a robot.',
         ]);
         try {

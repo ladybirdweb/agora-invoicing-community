@@ -4,9 +4,9 @@ namespace App\Rules;
 
 use App\ApiKey;
 use App\Model\Common\StatusSetting;
+use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Closure;
 
 class CaptchaValidation implements ValidationRule
 {
@@ -33,7 +33,7 @@ class CaptchaValidation implements ValidationRule
                 return; // Skip validation if disabled
             }
             // Get the secret key
-            $secretKey = !empty(env('NOCAPTCHA_SECRET')) ? env('NOCAPTCHA_SECRET') : ApiKey::find(1)->captcha_secretCheck;
+            $secretKey = ! empty(env('NOCAPTCHA_SECRET')) ? env('NOCAPTCHA_SECRET') : ApiKey::find(1)->captcha_secretCheck;
 
             // Make the reCAPTCHA request
             $client = new Client();
@@ -47,7 +47,7 @@ class CaptchaValidation implements ValidationRule
             $responseBody = json_decode($response->getBody(), true);
 
             // Validate response
-            if (!$responseBody['success']) {
+            if (! $responseBody['success']) {
                 $fail($this->message);
             }
         } catch (\Exception $e) {

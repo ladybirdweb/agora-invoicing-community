@@ -585,6 +585,7 @@ class LicenseController extends Controller
             $api_key_secret = $this->api_key_secret;
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
+
             return $this->getCurl($url.'api/admin/getProductIdbyKey', "api_key_secret=$api_key_secret&product_key=$productKey", $token);
         } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');

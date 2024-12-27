@@ -416,7 +416,11 @@ class BaseProductController extends ExtendedBaseProductController
 
     public function agentProductDownload(Request $request)
     {
-        $product_id = $request->input('product_id');
+        $product_key = $request->input('product_key');
+        $license = new LicenseController();
+
+        $product_id = $license->searchProductUsingProductKey($product_key);
+
         $version_number = $request->input('version_number');
         $version = ! empty($version_number) ? $version_number : ProductUpload::where('product_id', $product_id)
             ->latest()

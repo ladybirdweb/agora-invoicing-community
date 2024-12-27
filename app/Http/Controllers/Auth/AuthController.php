@@ -136,23 +136,18 @@ class AuthController extends BaseAuthController
             // Find the user by email
             $user = User::where('email', $email)->firstOrFail();
 
-            if (! $user) {
-                return errorResponse(__('message.user_does_not_exist'));
-            }
-
             if ($user->mobile_verified) {
                 return errorResponse(__('message.mobile_already_verified'));
             }
 
             // Handle verification attempts
-            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+            $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            $attempts->save();
-
-            if ($attempts->updated_at->addDay() < Carbon::now()) {
-                $attempts->mobile_attempt = 0;
-                $attempts->email_attempt = 0;
-                $attempts->save();
+            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+                $attempts->update([
+                    'mobile_attempt' => 0,
+                    'email_attempt' => 0,
+                ]);
             }
 
             if ($attempts->mobile_attempt >= 3) {
@@ -194,19 +189,14 @@ class AuthController extends BaseAuthController
 
             $user = User::where('email', $email)->firstOrFail();
 
-            if (! $user) {
-                return errorResponse(__('message.user_does_not_exist'));
-            }
-
             // Handle verification attempts
-            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+            $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            $attempts->save();
-
-            if ($attempts->updated_at->addDay() < Carbon::now()) {
-                $attempts->mobile_attempt = 0;
-                $attempts->email_attempt = 0;
-                $attempts->save();
+            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+                $attempts->update([
+                    'mobile_attempt' => 0,
+                    'email_attempt' => 0,
+                ]);
             }
 
             if ($attempts->mobile_attempt >= 3) {
@@ -234,21 +224,16 @@ class AuthController extends BaseAuthController
         try {
             $email = Crypt::decrypt($request->eid);
 
-            $user = User::where('email', $email)->first();
-
-            if (! $user) {
-                return errorResponse(__('message.user_does_not_exist'));
-            }
+            $user = User::where('email', $email)->firstOrFail();
 
             // Handle verification attempts
-            $attempts = VerificationAttempt::firstOrNew(['user_id' => $user->id]);
+            $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            $attempts->save();
-
-            if ($attempts->updated_at->addDay() < Carbon::now()) {
-                $attempts->mobile_attempt = 0;
-                $attempts->email_attempt = 0;
-                $attempts->save();
+            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+                $attempts->update([
+                    'mobile_attempt' => 0,
+                    'email_attempt' => 0,
+                ]);
             }
 
             if ($attempts->email_attempt >= 3) {
@@ -264,11 +249,12 @@ class AuthController extends BaseAuthController
             $attempts->email_attempt = (int) $attempts->email_attempt + 1;
             $attempts->save();
 
-            if ($method == 'GET') {
-                return successResponse(__('message.email_verification.resend_success'));
-            }
+            return successResponse(
+                $method === 'GET'
+                    ? __('message.email_verification.resend_success')
+                    : __('message.email_verification.send_success')
+            );
 
-            return successResponse(__('message.email_verification.send_success'));
         } catch (\Exception $exception) {
             return errorResponse(__('message.email_verification.send_failure'));
         }
@@ -322,39 +308,40 @@ class AuthController extends BaseAuthController
             'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ]);
 
-        $otp = $request->input('otp');
+        try{
+            $otp = $request->input('otp');
 
-        if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
-            return errorResponse(__('message.email_verification.max_attempts_exceeded'));
-        }
-        // Decrypt the email
-        $email = Crypt::decrypt($request->eid);
+            if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
+                return errorResponse(__('message.email_verification.max_attempts_exceeded'));
+            }
+            // Decrypt the email
+            $email = Crypt::decrypt($request->eid);
 
-        $user = User::where('email', $email)->first();
-        if (! $user) {
-            return errorResponse(__('message.user_does_not_exist'));
-        }
+            $user = User::where('email', $email)->firstOrFail();
 
-        $account = AccountActivate::where('email', $email)->latest()->first(['token', 'updated_at']);
+            $account = AccountActivate::where('email', $email)->latest()->first(['token', 'updated_at']);
 
-        if ($account->token !== $otp) {
+            if ($account->token !== $otp) {
+                return errorResponse(__('message.email_verification.invalid_token'));
+            }
+
+            if ($account->updated_at->addMinutes(10) < Carbon::now()) {
+                return errorResponse(__('message.email_verification.token_expired'));
+            }
+
+            AccountActivate::where('email', $email)->delete();
+
+            $user->active = 1;
+            $user->save();
+
+            if (! \Auth::check() && StatusSetting::first()->value('emailverification_status') === 1) {
+                \Session::flash('success', __('message.registration_complete'));
+            }
+
+            return successResponse(__('message.email_verification.email_verified'));
+        }catch (\Exception $e){
             return errorResponse(__('message.email_verification.invalid_token'));
         }
-
-        if ($account->updated_at->addMinutes(10) < Carbon::now()) {
-            return errorResponse(__('message.email_verification.token_expired'));
-        }
-
-        AccountActivate::where('email', $email)->delete();
-
-        $user->active = 1;
-        $user->save();
-
-        if (! \Auth::check() && StatusSetting::first()->value('emailverification_status') === 1) {
-            \Session::flash('success', __('message.registration_complete'));
-        }
-
-        return successResponse(__('message.email_verification.email_verified'));
     }
 
     public function checkVerify($user)

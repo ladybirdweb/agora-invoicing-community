@@ -150,7 +150,7 @@ class AuthControllerTest extends TestCase
 
         $response = json_decode($this->authController->sendEmail($request)->getContent());
 
-        $this->assertEquals(__('message.user_does_not_exist'), $response->message);
+        $this->assertEquals(__('message.email_verification.send_failure'), $response->message);
     }
 
     /** @test */

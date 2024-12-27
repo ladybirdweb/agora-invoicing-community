@@ -59,7 +59,7 @@ main
                                 <div id="recaptchaEmail"></div>
                                 <span id="passcaptchacheck"></span><br>
                             @elseif($status->v3_recaptcha_status === 1)
-                                 <input type="hidden" id="g-recaptcha-token" name="g-recaptcha-response-1">
+                                 <input type="hidden" id="g-recaptcha-email" class="g-recaptcha-token" name="g-recaptcha-response-1">
                              @endif
 
                         <div class="row">
@@ -104,7 +104,7 @@ main
                     return true;
                 }
                 @elseif($status->v3_recaptcha_status === 1)
-                recaptchaToken = $('#g-recaptcha-token').val();
+                recaptchaToken = $('#g-recaptcha-email').val();
              @endif
                  return true
          }

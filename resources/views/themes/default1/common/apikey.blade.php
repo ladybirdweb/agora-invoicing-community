@@ -277,15 +277,15 @@
                                     </div>
 
                                     <!-- last name -->
+                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!}
+                                    {!! Form::text('nocaptcha_sitekey',$siteKey,['class' => 'form-control','id'=>'nocaptcha_sitekey']) !!}
+                                    <h6 id="captcha_sitekeyCheck"></h6>
+
+                                    <!-- last name -->
                                     {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
                                     {!! Form::text('nocaptcha_secret',$secretKey,['class' => 'form-control','id'=>'nocaptcha_secret']) !!}
                                     <h6 id="captcha_secretCheck"></h6>
                                     <br/>
-
-                                    <!-- last name -->
-                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
-                                    {!! Form::text('nocaptcha_sitekey',$siteKey,['class' => 'form-control','id'=>'nocaptcha_sitekey']) !!}
-                                    <h6 id="captcha_sitekeyCheck"></h6>
 
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>

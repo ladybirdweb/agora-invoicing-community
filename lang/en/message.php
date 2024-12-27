@@ -636,8 +636,8 @@ return [
      */
     'log_setting' => 'System Logs',
     'cleanup_log' => 'Cleanup Logs',
-    'nocaptcha_secret' => 'NOCAPTCHA_SECRET',
-    'nocaptcha_sitekey' => 'NOCAPTCHA_SITEKEY',
+    'nocaptcha_secret' => 'Google reCAPTCHA Secret Key',
+    'nocaptcha_sitekey' => 'Google reCAPTCHA Site Key',
 
     /*
      * License

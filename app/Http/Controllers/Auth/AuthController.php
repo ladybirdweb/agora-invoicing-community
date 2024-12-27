@@ -254,7 +254,6 @@ class AuthController extends BaseAuthController
                     ? __('message.email_verification.resend_success')
                     : __('message.email_verification.send_success')
             );
-
         } catch (\Exception $exception) {
             return errorResponse(__('message.email_verification.send_failure'));
         }
@@ -308,7 +307,7 @@ class AuthController extends BaseAuthController
             'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ]);
 
-        try{
+        try {
             $otp = $request->input('otp');
 
             if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
@@ -339,7 +338,7 @@ class AuthController extends BaseAuthController
             }
 
             return successResponse(__('message.email_verification.email_verified'));
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return errorResponse(__('message.email_verification.invalid_token'));
         }
     }

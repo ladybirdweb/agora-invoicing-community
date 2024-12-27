@@ -554,27 +554,4 @@ class LicenseController extends Controller
             throw new \Exception('Please configure the valid license details in Apikey settings.');
         }
     }
-
-    public function searchProductUsingLicense($licenseCode)
-    {
-        try {
-            $url = $this->url;
-            $api_key_secret = $this->api_key_secret;
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
-            $details = json_decode($getLicenseId,true);
-            if (
-                $details &&
-                ($details['api_error_detected'] ?? 1) == 0 &&
-                isset($details['page_message'][0])
-            ) {
-                return collect($details['page_message'])->toArray();
-            }
-
-            return [];
-        } catch (\Exception $ex) {
-            throw new \Exception('Please configure the valid license details in Apikey settings.');
-        }
-    }
 }

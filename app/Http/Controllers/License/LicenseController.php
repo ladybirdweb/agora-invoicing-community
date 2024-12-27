@@ -563,7 +563,7 @@ class LicenseController extends Controller
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
             $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
-            $details = json_decode($getLicenseId, true);
+            $details = json_decode($getLicenseId,true);
             if (
                 $details &&
                 ($details['api_error_detected'] ?? 1) == 0 &&

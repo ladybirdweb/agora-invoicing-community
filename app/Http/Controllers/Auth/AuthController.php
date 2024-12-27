@@ -234,7 +234,7 @@ class AuthController extends BaseAuthController
         try {
             $email = Crypt::decrypt($request->eid);
 
-            $user = User::where('email', $email)->firstOrFail();
+            $user = User::where('email', $email)->first();
 
             if (! $user) {
                 return errorResponse(__('message.user_does_not_exist'));

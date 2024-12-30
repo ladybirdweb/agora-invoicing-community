@@ -818,7 +818,7 @@ return [
     'enter_code' => 'Enter Code',
     'otp_placeholder' => 'Enter OTP',
     'otp_description' => 'Enter the OTP code for verification which you have received on your registered mobile.',
-    'email_otp_description' => 'Enter the OTP code for verification which you have received on your registered email.',
+    'email_otp_description' => 'Enter the OTP code for verification that you have received on your registered email. Please check your inbox and spam folder.',
     'resend_otp' => 'Resend OTP',
     'otp_call' => 'Get OTP on call',
     'verify' => 'Verify',
@@ -844,6 +844,7 @@ return [
         'send_failure' => 'Couldn’t send OTP. Try again later.',
         'send_success' => 'OTP sent. Check your messages.',
         'resend_max_attempts_exceeded' => 'Daily limit reached for resending OTP. Try again tomorrow.',
+        'resend_voice_send_success' => 'OTP resent via voice. Check your phone.',
         'resend_failure' => 'Couldn’t resend OTP. Try again later.',
         'resend_send_failure' => 'Error sending OTP. Try again later.',
         'resend_send_success' => 'OTP resent. Check your messages.',
@@ -861,4 +862,6 @@ return [
         'token_expired' => 'The OTP has expired. Please request a new one.',
     ],
     'recaptcha_required' => 'Please verify that you are not a robot.',
+    'recaptcha_v2' => 'reCAPTCHA v2',
+    'recaptcha_v3' => 'reCAPTCHA v3',
 ];

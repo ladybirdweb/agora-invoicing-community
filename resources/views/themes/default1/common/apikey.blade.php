@@ -268,11 +268,11 @@
                                     <div class="form-group m-1 d-flex">
                                         <div class="custom-control custom-radio m-2">
                                             <input class="custom-control-input" type="radio" id="captchaRadioV2" name="customRadio" {{ $captchaStatus === 1 ? 'checked' : '' }}>
-                                            <label for="captchaRadioV2" class="custom-control-label">reCAPTCHA v2</label>
+                                            <label for="captchaRadioV2" class="custom-control-label">{{ __('message.recaptcha_v2') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio m-2">
                                             <input class="custom-control-input" type="radio" id="captchaRadioV3" name="customRadio" {{ $v3CaptchaStatus === 1 ? 'checked' : '' }}>
-                                            <label for="captchaRadioV3" class="custom-control-label">reCAPTCHA v3</label>
+                                            <label for="captchaRadioV3" class="custom-control-label">{{ __('message.recaptcha_v2') }}</label>
                                         </div>
                                     </div>
 

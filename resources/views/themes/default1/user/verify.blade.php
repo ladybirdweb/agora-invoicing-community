@@ -128,7 +128,7 @@
         /* Icons in the ProgressBar */
         #progressbar #otp_li:before {
             font-family: FontAwesome;
-            content: "\f13e";
+            content: "\f095";
         }
 
         #progressbar #email_li:before {

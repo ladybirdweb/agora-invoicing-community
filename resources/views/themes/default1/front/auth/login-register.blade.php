@@ -980,7 +980,6 @@ let register_recaptcha_id;
 
                         // Create the alert box
                         var html = '<div class="alert alert-danger alert-dismissable">' +
-                            '<strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' +
                             response.message +
                             ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                             '<br><ul>';
@@ -997,8 +996,7 @@ let register_recaptcha_id;
                         // Pick the message or set a default message
                         var message = response.message ? response.message : 'An error occurred. Please try again.';
 
-                        var html = '<div class="alert alert-danger alert-dismissable">' +
-                            '<strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' + message +
+                        var html = '<div class="alert alert-danger alert-dismissable">' + message +
                             ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>';
 
                         // If there are errors, loop through and add to the alert

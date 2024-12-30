@@ -115,9 +115,11 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
             let demo_recaptcha_id;
             let recaptchaTokenDemo;
 
+            @if($status->recaptcha_status === 1)
             recaptchaFunctionToExecute.push(() => {
                 demo_recaptcha_id = grecaptcha.render('demo_recaptcha', { 'sitekey': siteKey });
             });
+            @endif
 
     
          function demovalidateRecaptcha() {

@@ -978,7 +978,7 @@ $(document).ready(function() {
 
       let mailchimp_recaptcha_id;
       let recaptchaTokenMailChimp;
-      @if($status->recaptcha_status === 1)
+      @if($status->recaptcha_status === 1 && $mailchimpKey !== null && $widget->allow_mailchimp == 1)
       recaptchaFunctionToExecute.push(() => {
           mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
       });

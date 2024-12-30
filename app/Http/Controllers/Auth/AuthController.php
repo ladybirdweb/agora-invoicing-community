@@ -210,7 +210,7 @@ class AuthController extends BaseAuthController
                 return errorResponse(__('message.otp_verification.resend_failure'));
             }
 
-            if( $type === 'voice' ) {
+            if ($type === 'voice') {
                 return successResponse(__('message.otp_verification.resend_voice_send_success'));
             }
 

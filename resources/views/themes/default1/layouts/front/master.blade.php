@@ -874,7 +874,9 @@ $days = $pay->where('product','117')->value('days');
                 foreach ($footerWidgetTypes as $widgetType) {
                     $widget = \App\Model\Front\Widgets::where('publish', 1)->where('type', $widgetType)->select('name', 'content', 'allow_tweets', 'allow_mailchimp', 'allow_social_media')->first();
                     $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
-
+                    if($widget->allow_mailchimp === 1){
+                        $isV2RecaptchaEnabledForNewsletter = 1;
+                    }
                     if ($widget) {
                         echo renderWidget($widget, $set, $social, $mailchimpKey);
                     }
@@ -982,7 +984,7 @@ $(document).ready(function() {
 
       let mailchimp_recaptcha_id;
       let recaptchaTokenMailChimp;
-      @if($status->recaptcha_status === 1 && $mailchimpKey !== null && $widget->allow_mailchimp == 1)
+      @if($status->recaptcha_status === 1 && isset($isV2RecaptchaEnabledForNewsletter) && $isV2RecaptchaEnabledForNewsletter === 1)
       recaptchaFunctionToExecute.push(() => {
           mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
       });

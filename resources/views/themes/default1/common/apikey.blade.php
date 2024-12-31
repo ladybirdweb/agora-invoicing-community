@@ -272,7 +272,7 @@
                                         </div>
                                         <div class="custom-control custom-radio m-2">
                                             <input class="custom-control-input" type="radio" id="captchaRadioV3" name="customRadio" {{ $v3CaptchaStatus === 1 ? 'checked' : '' }}>
-                                            <label for="captchaRadioV3" class="custom-control-label">{{ __('message.recaptcha_v2') }}</label>
+                                            <label for="captchaRadioV3" class="custom-control-label">{{ __('message.recaptcha_v3') }}</label>
                                         </div>
                                     </div>
 

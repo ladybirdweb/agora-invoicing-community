@@ -24,6 +24,10 @@
     border-color: #777;
     outline: none; 
 }
+/*This is added because of the eye icon is automatically added in edge browser*/
+        input[type="password"]::-ms-reveal {
+            display: none !important;
+        }
 
 
 </style>

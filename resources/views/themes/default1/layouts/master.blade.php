@@ -88,6 +88,11 @@
         padding: 8px 10px ;
     }
 
+        /*This is added because of the eye icon is automatically added in edge browser*/
+        input[type="password"]::-ms-reveal {
+            display: none !important;
+        }
+
     </style>
     <?php
     $set = new \App\Model\Common\Setting();

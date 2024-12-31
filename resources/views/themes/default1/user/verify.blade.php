@@ -358,6 +358,12 @@
         });
         @endif
 
+        ['email_otp', 'otp'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+            });
+        });
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': csrfToken

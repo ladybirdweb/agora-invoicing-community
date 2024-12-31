@@ -874,7 +874,7 @@ $days = $pay->where('product','117')->value('days');
                 foreach ($footerWidgetTypes as $widgetType) {
                     $widget = \App\Model\Front\Widgets::where('publish', 1)->where('type', $widgetType)->select('name', 'content', 'allow_tweets', 'allow_mailchimp', 'allow_social_media')->first();
                     $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
-                    if($widget->allow_mailchimp === 1){
+                    if($widget && $widget->allow_mailchimp === 1){
                         $isV2RecaptchaEnabledForNewsletter = 1;
                     }
                     if ($widget) {

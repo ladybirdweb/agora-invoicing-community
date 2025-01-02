@@ -864,4 +864,5 @@ return [
     'recaptcha_required' => 'Please verify that you are not a robot.',
     'recaptcha_v2' => 'reCAPTCHA v2',
     'recaptcha_v3' => 'reCAPTCHA v3',
+    'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in 15 minutes.',
 ];

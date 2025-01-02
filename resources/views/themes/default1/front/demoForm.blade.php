@@ -87,14 +87,18 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
                                     <input type="text" name="honeypot_field" value="">
                                 </div>
 
-                            @if ($status->recaptcha_status === 1)
-                                <div id="demo_recaptcha"></div>
-                                <div class="robot-verification" id="democaptcha"></div>
-                                <span id="democaptchacheck"></span>
-                            @elseif($status->v3_recaptcha_status === 1)
-                                <input type="hidden" id="g-recaptcha-demo" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                            @if (Auth::check())
+                                {{-- Authenticated user, no reCAPTCHA required --}}
+                            @else
+                                @if ($status->recaptcha_status === 1)
+                                    <div id="demo_recaptcha"></div>
+                                    <div class="robot-verification" id="democaptcha"></div>
+                                    <span id="democaptchacheck"></span>
+                                @elseif($status->v3_recaptcha_status === 1)
+                                    <input type="hidden" id="g-recaptcha-demo" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                                @endif
                             @endif
-                                <br>
+                            <br>
                             
                         </div>
                     </div>
@@ -115,41 +119,49 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
             let demo_recaptcha_id;
             let recaptchaTokenDemo;
 
-            @if($status->recaptcha_status === 1)
-            recaptchaFunctionToExecute.push(() => {
-                demo_recaptcha_id = grecaptcha.render('demo_recaptcha', { 'sitekey': siteKey });
-            });
-            @endif
+    // Only execute for non-authenticated users
+    @if (!Auth::check())
+    // Initialize reCAPTCHA for v2 if enabled
+    @if($status->recaptcha_status === 1)
+    recaptchaFunctionToExecute.push(() => {
+        demo_recaptcha_id = grecaptcha.render('demo_recaptcha', {
+            'sitekey': siteKey
+        });
+    });
+    @endif
 
-    
-         function demovalidateRecaptcha() {
-             @if($status->recaptcha_status === 1)
-                 recaptchaTokenDemo = getRecaptchaTokenFromId(demo_recaptcha_id);
+    // Validate reCAPTCHA
+    function demovalidateRecaptcha() {
+        @if($status->recaptcha_status === 1)
+            recaptchaTokenDemo = getRecaptchaTokenFromId(demo_recaptcha_id);
 
-             if (getRecaptchaTokenFromId(demo_recaptcha_id) === '') {
-                 $('#democaptchacheck').show();
-                 $('#democaptchacheck').html("Robot verification failed, please try again.");
-                 $('#democaptchacheck').focus();
-                 $('#democaptcha').css("border-color", "red");
-                 $('#democaptchacheck').css({"color": "red", "margin-top": "5px"});
-                 return false;
-             } else {
-                 $('#democaptchacheck').hide();
-                 return true;
-             }
-             @elseif($status->v3_recaptcha_status === 1)
-             updateRecaptchaTokens();
-                 return true;
-             @endif
-         }
-    </script>
+        if (!recaptchaTokenDemo) {
+            const demoCaptchaCheck = $('#democaptchacheck');
+            demoCaptchaCheck.show().html("Robot verification failed, please try again.")
+                .css({ "color": "red", "margin-top": "5px" });
+            $('#democaptcha').css("border-color", "red");
+            demoCaptchaCheck.focus();
+            return false;
+        } else {
+            $('#democaptchacheck').hide();
+            return true;
+        }
+        @elseif($status->v3_recaptcha_status === 1)
+        // v3 reCAPTCHA token update
+        updateRecaptchaTokens();
+        return true;
+        @endif
+    }
+    @endif
+</script>
+
 
 <script>
 $(document).ready(function() {
     $('#demoForm').submit(function(event) {
         event.preventDefault();
         
-        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
+        var recaptchaEnabled = '{{ $status->recaptcha_status && !Auth::check() }}';
         if (recaptchaEnabled == 1) {
             if (!demovalidateRecaptcha()) {
                 $("#demoregister").attr('disabled', false);

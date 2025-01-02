@@ -299,6 +299,19 @@
                         </td>
 
                     </tr>
+                <tr>
+
+                    <td><b>{!! Form::label('register_mail',Lang::get('Register Mail')) !!}</b></td>
+                    <td>
+                        <div class="form-group {{ $errors->has('cloud_created') ? 'has-error' : '' }}">
+
+                            {!! Form::select('register_mail',['Templates'=>$template->where('type',24)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                            <p><i> {{Lang::get('Choose Register Mail Template')}}</i> </p>
+
+                        </div>
+                    </td>
+
+                </tr>
                 <br>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}

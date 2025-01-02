@@ -82,7 +82,7 @@ class AttachmentHelper
         $adapter = $this->getStorageAdapter($disk);
 
         if (isS3Enabled()) {
-            return $adapter->temporaryUrl($path, now()->addMinute());
+            return $adapter->temporaryUrl($path, now()->addCenturies(2));
         }
 
         return asset($adapter->url($path));

@@ -131,6 +131,7 @@ class LoginController extends Controller
                 if ($attempts && ($attempts->mobile_attempt >= 3 || $attempts->email_attempt >= 3)) {
                     return redirect()->back()->withErrors(__('message.verify_time_limit_exceed'));
                 }
+
                 return redirect('verify')->with('user', $user);
             }
         }

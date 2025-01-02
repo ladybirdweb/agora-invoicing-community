@@ -717,23 +717,36 @@ function downloadExternalFile($url, $filename)
     ]);
 }
 
-function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
+/**
+ * Apply rate limiting based on a unique key and IP address.
+ *
+ * @param string $key          The base key for rate limiting.
+ * @param int    $maxAttempts  Maximum number of allowed attempts.
+ * @param int    $decayMinutes Time (in minutes) before the rate limit resets.
+ * @param string $ip           The IP address of the client.
+ *
+ * @return bool Returns true if the rate limit is exceeded, false otherwise.
+ */
+function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip): bool
 {
-    $IpKey = $key.':'.$request->ip();
+    $IpKey = $key . ':' . $ip;
 
     $decaySeconds = $decayMinutes * 60;
 
-    // Attempt to apply the rate limit
-    $isAllowed = RateLimiter::attempt(
-        $IpKey,
-        $maxAttempts,
-        function () {
-        },
-        $decaySeconds
-    );
+    // Check if the cache driver is non-persistent (e.g., 'array').
+    if (Cache::getStore() instanceof Illuminate\Cache\ArrayStore) {
+        $attempts = session()->get($IpKey, 0);
 
-    // Return true if the rate limit is exceeded, false otherwise
-    return ! $isAllowed;
+        if ($attempts >= $maxAttempts) {
+            return true;
+        }
+
+        session()->put($IpKey, $attempts + 1);
+
+        return false;
+    }
+
+    return !RateLimiter::attempt($IpKey, $maxAttempts, function () {}, $decaySeconds);
 }
 
 function isCaptchaRequired()

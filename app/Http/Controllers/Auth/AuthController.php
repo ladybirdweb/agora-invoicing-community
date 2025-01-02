@@ -265,7 +265,7 @@ class AuthController extends BaseAuthController
 
     public function verifyOtp(Request $request)
     {
-        if (rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request)) {
+        if (rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request->ip())) {
             return errorResponse('Too Many attempts.');
         }
 
@@ -314,7 +314,7 @@ class AuthController extends BaseAuthController
         try {
             $otp = $request->input('otp');
 
-            if (rateLimitForKeyIp('request_email', 5, 1, $request)) {
+            if (rateLimitForKeyIp('request_email', 5, 1, $request->ip())) {
                 return errorResponse(__('message.email_verification.max_attempts_exceeded'));
             }
             // Decrypt the email

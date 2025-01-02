@@ -720,16 +720,15 @@ function downloadExternalFile($url, $filename)
 /**
  * Apply rate limiting based on a unique key and IP address.
  *
- * @param string $key          The base key for rate limiting.
- * @param int    $maxAttempts  Maximum number of allowed attempts.
- * @param int    $decayMinutes Time (in minutes) before the rate limit resets.
- * @param string $ip           The IP address of the client.
- *
+ * @param  string  $key  The base key for rate limiting.
+ * @param  int  $maxAttempts  Maximum number of allowed attempts.
+ * @param  int  $decayMinutes  Time (in minutes) before the rate limit resets.
+ * @param  string  $ip  The IP address of the client.
  * @return bool Returns true if the rate limit is exceeded, false otherwise.
  */
 function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip): bool
 {
-    $IpKey = $key . ':' . $ip;
+    $IpKey = $key.':'.$ip;
 
     $decaySeconds = $decayMinutes * 60;
 
@@ -746,7 +745,8 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip): bool
         return false;
     }
 
-    return !RateLimiter::attempt($IpKey, $maxAttempts, function () {}, $decaySeconds);
+    return ! RateLimiter::attempt($IpKey, $maxAttempts, function () {
+    }, $decaySeconds);
 }
 
 function isCaptchaRequired()

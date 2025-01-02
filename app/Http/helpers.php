@@ -739,7 +739,7 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $request)
 function isCaptchaRequired()
 {
     $settings = StatusSetting::find(1);
-    $status = ($settings->v3_recaptcha_status === 1 || $settings->recaptcha_status === 1) && !Auth::check();
+    $status = ($settings->v3_recaptcha_status === 1 || $settings->recaptcha_status === 1) && ! Auth::check();
 
     return $status ? ['status' => 1, 'is_required' => 'required'] : ['status' => 0, 'is_required' => 'sometimes'];
 }

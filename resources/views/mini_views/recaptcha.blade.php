@@ -89,6 +89,8 @@ $apiKeys = ApiKey::find(1);
             }
         };
 
+        setInterval(updateRecaptchaTokens, 120000);
+
         @endif
     </script>
 @endif

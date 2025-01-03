@@ -151,7 +151,8 @@ class AuthController extends BaseAuthController
             }
 
             if ($attempts->mobile_attempt >= 3) {
-                return errorResponse(__('message.otp_verification.max_attempts_exceeded'));
+                $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
+                return errorResponse(__('message.otp_verification.max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
             }
 
             $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
@@ -200,7 +201,8 @@ class AuthController extends BaseAuthController
             }
 
             if ($attempts->mobile_attempt >= 3) {
-                return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded'));
+                $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
+                return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
             }
 
             $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
@@ -241,7 +243,8 @@ class AuthController extends BaseAuthController
             }
 
             if ($attempts->email_attempt >= 3) {
-                return errorResponse(__('message.email_verification.max_attempts_exceeded'));
+                $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
+                return errorResponse(__('message.email_verification.max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
             }
 
             if (AccountActivate::where('email', $email)->first() && $method !== 'GET') {
@@ -265,7 +268,7 @@ class AuthController extends BaseAuthController
 
     public function verifyOtp(Request $request)
     {
-        if (rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request->ip())) {
+        if (rateLimitForKeyIp('verify_mobile_otp', 5, 1, $request->ip())['status']) {
             return errorResponse('Too Many attempts.');
         }
 
@@ -290,6 +293,8 @@ class AuthController extends BaseAuthController
             if (! $this->sendVerifyOTP($otp, $user->mobile_code.$user->mobile)) {
                 return errorResponse(__('message.otp_invalid'));
             }
+
+            VerificationAttempt::find($user->id)->update(['mobile_attempt' => 0]);
             $user->mobile_verified = 1;
             $user->save();
 
@@ -314,7 +319,7 @@ class AuthController extends BaseAuthController
         try {
             $otp = $request->input('otp');
 
-            if (rateLimitForKeyIp('request_email', 5, 1, $request->ip())) {
+            if (rateLimitForKeyIp('request_email', 5, 1, $request->ip())['status']) {
                 return errorResponse(__('message.email_verification.max_attempts_exceeded'));
             }
             // Decrypt the email
@@ -334,6 +339,7 @@ class AuthController extends BaseAuthController
 
             AccountActivate::where('email', $email)->delete();
 
+            VerificationAttempt::find($user->id)->update(['email_attempt' => 0]);
             $user->active = 1;
             $user->save();
 

@@ -22,7 +22,7 @@ class FileManagerController extends Controller
             fpassthru($fileStream);
         }, 200, [
             'Content-Type' => $fileMetadata['type'],
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"'
+            'Content-Disposition' => 'inline; filename="'.$fileName.'"',
         ]);
     }
 }

@@ -103,7 +103,7 @@ class AttachmentHelper
     }
 
     /**
-     * get file meta data
+     * get file meta data.
      *
      * @return array
      *

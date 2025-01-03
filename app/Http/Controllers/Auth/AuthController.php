@@ -143,7 +143,7 @@ class AuthController extends BaseAuthController
             // Handle verification attempts
             $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+            if ($attempts->updated_at->lte(Carbon::now()->subHours(6))) {
                 $attempts->update([
                     'mobile_attempt' => 0,
                     'email_attempt' => 0,
@@ -192,7 +192,7 @@ class AuthController extends BaseAuthController
             // Handle verification attempts
             $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+            if ($attempts->updated_at->lte(Carbon::now()->subHours(6))) {
                 $attempts->update([
                     'mobile_attempt' => 0,
                     'email_attempt' => 0,
@@ -233,7 +233,7 @@ class AuthController extends BaseAuthController
             // Handle verification attempts
             $attempts = VerificationAttempt::firstOrCreate(['user_id' => $user->id]);
 
-            if ($attempts->updated_at->lte(Carbon::now()->subDay())) {
+            if ($attempts->updated_at->lte(Carbon::now()->subHours(6))) {
                 $attempts->update([
                     'mobile_attempt' => 0,
                     'email_attempt' => 0,

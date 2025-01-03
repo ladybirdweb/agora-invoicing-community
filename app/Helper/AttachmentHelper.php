@@ -82,7 +82,7 @@ class AttachmentHelper
         $adapter = $this->getStorageAdapter($disk);
 
         if (isS3Enabled()) {
-            return $adapter->temporaryUrl($path, now()->addWeek());
+            return asset('preview-file?path='.$path);
         }
 
         return asset($adapter->url($path));
@@ -100,5 +100,24 @@ class AttachmentHelper
         $adapter = $this->getStorageAdapter($disk);
 
         return $adapter->readStream($path);
+    }
+
+    /**
+     * get file meta data
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    public function getMetadata($path, $disk = null)
+    {
+        $disk = $this->getStorageAdapter($disk);
+
+        return [
+            'type' => $disk->mimeType($path),
+            'path' => $path,
+            'timestamp' => $disk->lastModified($path),
+            'size' => $disk->size($path),
+        ];
     }
 }

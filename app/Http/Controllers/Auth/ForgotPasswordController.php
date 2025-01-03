@@ -65,8 +65,8 @@ class ForgotPasswordController extends Controller
                     return response()->json([
                         'type' => 'fails',
                         'message' => __('message.too_many_forgot_attempts', [
-                            'time' => $rateLimit['remainingTime']
-                        ])
+                            'time' => $rateLimit['remainingTime'],
+                        ]),
                     ]);
                 }
             }

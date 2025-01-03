@@ -58,8 +58,17 @@ class ForgotPasswordController extends Controller
             );
             $email = $request->email;
 
-            if (rateLimitForKeyIp('forgot_password'.$email, 3, 15, $request->ip())) {
-                return response()->json(['type' => 'fails', 'message' => __('message.too_many_forgot_attempts')]);
+            $rateLimit = rateLimitForKeyIp('forgot_password'.$email, 3, 360, $request->ip());
+
+            if ($rateLimit['status']) {
+                if ($rateLimit['status']) {
+                    return response()->json([
+                        'type' => 'fails',
+                        'message' => __('message.too_many_forgot_attempts', [
+                            'time' => $rateLimit['remainingTime']
+                        ])
+                    ]);
+                }
             }
 
             $token = str_random(40);

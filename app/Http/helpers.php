@@ -724,30 +724,60 @@ function downloadExternalFile($url, $filename)
  * @param  int  $maxAttempts  Maximum number of allowed attempts.
  * @param  int  $decayMinutes  Time (in minutes) before the rate limit resets.
  * @param  string  $ip  The IP address of the client.
- * @return bool Returns true if the rate limit is exceeded, false otherwise.
+ * @return array Returns an array with rate limit status and remaining time.
  */
-function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip): bool
+function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip)
 {
-    $IpKey = $key.':'.$ip;
-
+    $IpKey = $key . ':' . $ip;
     $decaySeconds = $decayMinutes * 60;
 
-    // Check if the cache driver is non-persistent (e.g., 'array').
+    // Command 1: Check and handle non-persistent cache.
     if (Cache::getStore() instanceof Illuminate\Cache\ArrayStore) {
-        $attempts = session()->get($IpKey, 0);
-
-        if ($attempts >= $maxAttempts) {
-            return true;
-        }
-
-        session()->put($IpKey, $attempts + 1);
-
-        return false;
+        return handleArrayStoreRateLimit($IpKey, $maxAttempts, $decaySeconds);
     }
 
-    return ! RateLimiter::attempt($IpKey, $maxAttempts, function () {
-    }, $decaySeconds);
+    // Command 2: Handle persistent cache using RateLimiter.
+    if (!RateLimiter::attempt($IpKey, $maxAttempts, function () {}, $decaySeconds)) {
+        $remainingTime = RateLimiter::availableIn($IpKey);
+        return ['status' => true, 'remainingTime' => formatDuration($remainingTime)];
+    }
+
+    return ['status' => false, 'remainingTime' => 0];
 }
+
+/**
+ * Handle rate limiting for ArrayStore cache driver.
+ *
+ * @param  string  $IpKey  The unique key for rate limiting.
+ * @param  int  $maxAttempts  Maximum number of allowed attempts.
+ * @param  int  $decaySeconds  Time (in seconds) before the rate limit resets.
+ * @return array Returns an array with rate limit status and remaining time.
+ */
+function handleArrayStoreRateLimit($IpKey, $maxAttempts, $decaySeconds)
+{
+    $attempts = session()->get($IpKey, 0);
+    $lastAttemptTime = session()->get($IpKey . '_time', 0);
+    $elapsedTime = time() - $lastAttemptTime;
+
+    // Reset attempts if the decay time has passed.
+    if ($elapsedTime > $decaySeconds) {
+        session()->put($IpKey, 0);
+        session()->put($IpKey . '_time', time());
+        $attempts = 0;
+    }
+
+    if ($attempts >= $maxAttempts) {
+        $remainingTime = $decaySeconds - $elapsedTime;
+        return ['status' => true, 'remainingTime' => max($remainingTime, 0)];
+    }
+
+    // Increment attempts and update time.
+    session()->put($IpKey, $attempts + 1);
+    session()->put($IpKey . '_time', time());
+
+    return ['status' => false, 'remainingTime' => 0];
+}
+
 
 function isCaptchaRequired()
 {
@@ -755,4 +785,32 @@ function isCaptchaRequired()
     $status = ($settings->v3_recaptcha_status === 1 || $settings->recaptcha_status === 1) && ! Auth::check();
 
     return $status ? ['status' => 1, 'is_required' => 'required'] : ['status' => 0, 'is_required' => 'sometimes'];
+}
+
+/**
+ * Convert a time duration in seconds to a human-readable format.
+ * If the time exceeds 60 minutes, return both hours and minutes.
+ * Otherwise, return minutes only if the duration is below 60 minutes.
+ *
+ * @param  int  $seconds  The time in seconds.
+ * @return string  A human-readable time string (hours and minutes or just minutes).
+ */
+function formatDuration($seconds)
+{
+    // Calculate hours, minutes, and remaining seconds
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
+
+    // If the time exceeds or equals 60 minutes, return both hours and minutes
+    if ($seconds >= 3600) {
+        return "{$hours} hour" . ($hours > 1 ? 's' : '') . " {$minutes} minute" . ($minutes > 1 ? 's' : '');
+    }
+
+    // If the time is less than 60 minutes, just return minutes
+    if ($seconds >= 60) {
+        return "{$minutes} minute" . ($minutes > 1 ? 's' : '');
+    }
+
+    // Otherwise, return seconds
+    return "{$seconds} second" . ($seconds > 1 ? 's' : '');
 }

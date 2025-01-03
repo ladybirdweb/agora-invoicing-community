@@ -840,10 +840,10 @@ return [
     'registration_complete' => 'You’re all set! Registration complete.',
 
     'otp_verification' => [
-        'max_attempts_exceeded' => 'You’ve reached the daily limit for OTP requests. Please try again tomorrow.',
+        'max_attempts_exceeded' => 'You’ve reached the limit for OTP requests. Please try again :time .',
         'send_failure' => 'Couldn’t send OTP. Please try again later.',
         'send_success' => 'OTP sent. Please check your messages.',
-        'resend_max_attempts_exceeded' => 'Daily limit reached for resending OTP. Please try again tomorrow.',
+        'resend_max_attempts_exceeded' => 'You’ve reached the limit for resending OTP. Please try again :time .',
         'resend_voice_send_success' => 'OTP resent via voice. Please check your phone.',
         'resend_failure' => 'Couldn’t resend OTP. Please try again later.',
         'resend_send_failure' => 'Error sending OTP. Please try again later.',
@@ -851,7 +851,7 @@ return [
     ],
 
     'email_verification' => [
-        'max_attempts_exceeded' => 'Daily email verification limit reached.',
+        'max_attempts_exceeded' => 'You’ve reached the limit for email OTP requests. Please try again :time .',
         'send_failure' => 'Couldn’t send the email. Please try again later.',
         'send_success' => 'Verification email sent. Please check your inbox.',
         'resend_success' => 'Verification email resent.',
@@ -864,6 +864,6 @@ return [
     'recaptcha_required' => 'Please verify that you are not a robot.',
     'recaptcha_v2' => 'reCAPTCHA v2',
     'recaptcha_v3' => 'reCAPTCHA v3',
-    'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in 15 minutes.',
-    'verify_time_limit_exceed' => 'Oops! It looks like you\'ve reached the maximum verification attempts. Please try again tomorrow.',
+    'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in :time ',
+    'verify_time_limit_exceed' => 'Oops! It looks like you\'ve reached the maximum verification attempts.  Please try again in :time ',
 ];

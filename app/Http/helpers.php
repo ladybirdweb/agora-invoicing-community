@@ -728,7 +728,7 @@ function downloadExternalFile($url, $filename)
  */
 function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip)
 {
-    $IpKey = $key . ':' . $ip;
+    $IpKey = $key.':'.$ip;
     $decaySeconds = $decayMinutes * 60;
 
     // Command 1: Check and handle non-persistent cache.
@@ -737,8 +737,10 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip)
     }
 
     // Command 2: Handle persistent cache using RateLimiter.
-    if (!RateLimiter::attempt($IpKey, $maxAttempts, function () {}, $decaySeconds)) {
+    if (! RateLimiter::attempt($IpKey, $maxAttempts, function () {
+    }, $decaySeconds)) {
         $remainingTime = RateLimiter::availableIn($IpKey);
+
         return ['status' => true, 'remainingTime' => formatDuration($remainingTime)];
     }
 
@@ -756,28 +758,28 @@ function rateLimitForKeyIp($key, $maxAttempts, $decayMinutes, $ip)
 function handleArrayStoreRateLimit($IpKey, $maxAttempts, $decaySeconds)
 {
     $attempts = session()->get($IpKey, 0);
-    $lastAttemptTime = session()->get($IpKey . '_time', 0);
+    $lastAttemptTime = session()->get($IpKey.'_time', 0);
     $elapsedTime = time() - $lastAttemptTime;
 
     // Reset attempts if the decay time has passed.
     if ($elapsedTime > $decaySeconds) {
         session()->put($IpKey, 0);
-        session()->put($IpKey . '_time', time());
+        session()->put($IpKey.'_time', time());
         $attempts = 0;
     }
 
     if ($attempts >= $maxAttempts) {
         $remainingTime = $decaySeconds - $elapsedTime;
+
         return ['status' => true, 'remainingTime' => max($remainingTime, 0)];
     }
 
     // Increment attempts and update time.
     session()->put($IpKey, $attempts + 1);
-    session()->put($IpKey . '_time', time());
+    session()->put($IpKey.'_time', time());
 
     return ['status' => false, 'remainingTime' => 0];
 }
-
 
 function isCaptchaRequired()
 {
@@ -793,7 +795,7 @@ function isCaptchaRequired()
  * Otherwise, return minutes only if the duration is below 60 minutes.
  *
  * @param  int  $seconds  The time in seconds.
- * @return string  A human-readable time string (hours and minutes or just minutes).
+ * @return string A human-readable time string (hours and minutes or just minutes).
  */
 function formatDuration($seconds)
 {
@@ -803,14 +805,14 @@ function formatDuration($seconds)
 
     // If the time exceeds or equals 60 minutes, return both hours and minutes
     if ($seconds >= 3600) {
-        return "{$hours} hour" . ($hours > 1 ? 's' : '') . " {$minutes} minute" . ($minutes > 1 ? 's' : '');
+        return "{$hours} hour".($hours > 1 ? 's' : '')." {$minutes} minute".($minutes > 1 ? 's' : '');
     }
 
     // If the time is less than 60 minutes, just return minutes
     if ($seconds >= 60) {
-        return "{$minutes} minute" . ($minutes > 1 ? 's' : '');
+        return "{$minutes} minute".($minutes > 1 ? 's' : '');
     }
 
     // Otherwise, return seconds
-    return "{$seconds} second" . ($seconds > 1 ? 's' : '');
+    return "{$seconds} second".($seconds > 1 ? 's' : '');
 }

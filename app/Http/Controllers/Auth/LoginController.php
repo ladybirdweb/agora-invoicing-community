@@ -12,6 +12,7 @@ use App\Rules\CaptchaValidation;
 use App\SocialLogin;
 use App\User;
 use App\VerificationAttempt;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,6 +129,11 @@ class LoginController extends Controller
 
             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
                 $attempts = VerificationAttempt::find($user->id);
+                if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
+                $attempts->update([
+                    'mobile_attempt' => 0,
+                    'email_attempt' => 0,
+                ]);}
                 if ($attempts && ($attempts->mobile_attempt >= 3 || $attempts->email_attempt >= 3)) {
                     return redirect()->back()->withErrors(__('message.verify_time_limit_exceed'));
                 }

@@ -611,7 +611,7 @@ Route::middleware('installAgora')->group(function () {
     });
 
     //preview image
-    Route::get('preview-file', [FileManagerController::class,'previewFile']);
+    Route::get('preview-file', [FileManagerController::class, 'previewFile']);
 });
 /*
 * Faveo APIs

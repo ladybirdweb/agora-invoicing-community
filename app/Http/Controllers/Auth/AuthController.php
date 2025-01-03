@@ -297,7 +297,11 @@ class AuthController extends BaseAuthController
                 return errorResponse(__('message.otp_invalid'));
             }
 
-            VerificationAttempt::find($user->id)->update(['mobile_attempt' => 0]);
+            $verificationAttempt = VerificationAttempt::find($user->id);
+            if ($verificationAttempt) {
+                $verificationAttempt->update(['mobile_attempt' => 0]);
+            }
+
             $user->mobile_verified = 1;
             $user->save();
 
@@ -342,7 +346,10 @@ class AuthController extends BaseAuthController
 
             AccountActivate::where('email', $email)->delete();
 
-            VerificationAttempt::find($user->id)->update(['email_attempt' => 0]);
+            $verificationAttempt = VerificationAttempt::find($user->id);
+            if ($verificationAttempt) {
+                $verificationAttempt->update(['email_attempt' => 0]);
+            }
             $user->active = 1;
             $user->save();
 

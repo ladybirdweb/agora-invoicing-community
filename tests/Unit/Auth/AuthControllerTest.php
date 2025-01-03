@@ -140,7 +140,8 @@ class AuthControllerTest extends TestCase
 
         $response = json_decode($this->authController->sendEmail($request)->getContent());
 
-        $this->assertEquals(__('message.email_verification.max_attempts_exceeded'), $response->message);
+        $expectedMessage = __('message.email_verification.max_attempts_exceeded', ['time' => '5 hours 59 minutes']);
+        $this->assertEquals($expectedMessage, $response->message);
     }
 
     /** @test */

@@ -152,7 +152,8 @@ class AuthController extends BaseAuthController
 
             if ($attempts->mobile_attempt >= 3) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
-                return errorResponse(__('message.otp_verification.max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
+
+                return errorResponse(__('message.otp_verification.max_attempts_exceeded', ['time' => formatDuration($remainingTime)]));
             }
 
             $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
@@ -202,7 +203,8 @@ class AuthController extends BaseAuthController
 
             if ($attempts->mobile_attempt >= 3) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
-                return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
+
+                return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded', ['time' => formatDuration($remainingTime)]));
             }
 
             $attempts->mobile_attempt = (int) $attempts->mobile_attempt + 1;
@@ -244,7 +246,8 @@ class AuthController extends BaseAuthController
 
             if ($attempts->email_attempt >= 3) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
-                return errorResponse(__('message.email_verification.max_attempts_exceeded',['time' => formatDuration($remainingTime)]));
+
+                return errorResponse(__('message.email_verification.max_attempts_exceeded', ['time' => formatDuration($remainingTime)]));
             }
 
             if (AccountActivate::where('email', $email)->first() && $method !== 'GET') {

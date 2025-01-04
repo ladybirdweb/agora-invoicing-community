@@ -771,7 +771,7 @@ function handleArrayStoreRateLimit($IpKey, $maxAttempts, $decaySeconds)
     if ($attempts >= $maxAttempts) {
         $remainingTime = $decaySeconds - $elapsedTime;
 
-        return ['status' => true, 'remainingTime' => max($remainingTime, 0)];
+        return ['status' => true, 'remainingTime' => formatDuration(max($remainingTime, 0))];
     }
 
     // Increment attempts and update time.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\v4_0_2_3;
+namespace Database\Seeders\v4_0_2_3_RC_1;
 
 use App\FileSystemSettings;
 use App\Model\Common\Template;

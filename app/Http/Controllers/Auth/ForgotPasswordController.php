@@ -61,14 +61,12 @@ class ForgotPasswordController extends Controller
             $rateLimit = rateLimitForKeyIp('forgot_password'.$email, 3, 360, $request->ip());
 
             if ($rateLimit['status']) {
-                if ($rateLimit['status']) {
-                    return response()->json([
-                        'type' => 'fails',
-                        'message' => __('message.too_many_forgot_attempts', [
-                            'time' => $rateLimit['remainingTime'],
-                        ]),
-                    ]);
-                }
+                return response()->json([
+                    'type' => 'fails',
+                    'message' => __('message.too_many_forgot_attempts', [
+                        'time' => $rateLimit['remainingTime'],
+                    ]),
+                ]);
             }
 
             $token = str_random(40);
@@ -82,10 +80,8 @@ class ForgotPasswordController extends Controller
             $url = url("password/reset/$token");
 
             $user = new \App\User();
-            $user = $user->where('email', $email)->first();
-            if (! $user) {
-                return redirect()->back()->with('fails', 'Invalid Email');
-            }
+            $user = $user->where('email', $email)->firstOrFail();
+
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $setting = $settings::find(1);

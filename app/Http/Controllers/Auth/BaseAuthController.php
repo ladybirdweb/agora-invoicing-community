@@ -74,6 +74,8 @@ class BaseAuthController extends Controller
 
     public function sendOtp(string $mobile): bool
     {
+        // Remove any non-numeric characters
+        $mobile = preg_replace('/\D/', '', $mobile);
         $msgKey = ApiKey::find(1, ['msg91_auth_key', 'msg91_sender', 'msg91_template_id']);
         $sender = $msgKey->msg91_sender;
         $templateId = $msgKey->msg91_template_id;
@@ -92,6 +94,8 @@ class BaseAuthController extends Controller
 
     public function sendForReOtp(string $mobile, string $type): bool
     {
+        // Remove any non-numeric characters
+        $mobile = preg_replace('/\D/', '', $mobile);
         $queryParams = [
             'mobile' => $mobile,
             'retrytype' => $type,
@@ -104,6 +108,8 @@ class BaseAuthController extends Controller
 
     public function sendVerifyOTP(string $otp, string $mobile): bool
     {
+        // Remove any non-numeric characters
+        $mobile = preg_replace('/\D/', '', $mobile);
         $queryParams = [
             'otp' => $otp,
             'mobile' => $mobile,

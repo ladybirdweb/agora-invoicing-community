@@ -74,17 +74,9 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
 
 <script type="text/javascript">
@@ -120,7 +112,7 @@
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch": "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50px; display: block; position: fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:50%;left:50%; transform: translate(-50%, -50%); width: 50px; height:50px; display: block; position: fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
             columnDefs: [
                 {

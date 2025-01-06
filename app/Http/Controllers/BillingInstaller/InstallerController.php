@@ -11,7 +11,6 @@ use Artisan;
 use Cache;
 use Exception;
 use Illuminate\Http\Request;
-use Predis\Client;
 use Session;
 
 class InstallerController extends Controller
@@ -265,7 +264,7 @@ class InstallerController extends Controller
                     'redis_port' => $request->input('redis_port'),
                 ]);
 
-                try{
+                try {
                     $redis = new \Predis\Client([
                         'scheme' => 'tcp',
                         'host' => $redisConfig['redis_host'],
@@ -274,8 +273,7 @@ class InstallerController extends Controller
                     ]);
 
                     $redis->ping();
-                }
-                catch (Exception $exception){
+                } catch (Exception $exception) {
                     return errorResponse($exception->getMessage(), 400);
                 }
 

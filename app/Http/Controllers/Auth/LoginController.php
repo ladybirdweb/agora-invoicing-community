@@ -135,7 +135,7 @@ class LoginController extends Controller
                         'email_attempt' => 0,
                     ]);
                 }
-                if ($attempts && ($attempts->mobile_attempt >= 3 || $attempts->email_attempt >= 3)) {
+                if ($attempts && ($attempts->mobile_attempt >= 2 || $attempts->email_attempt >= 3)) {
                     $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
 
                     return redirect()->back()->withErrors(__('message.verify_time_limit_exceed', ['time' => formatDuration($remainingTime)]));

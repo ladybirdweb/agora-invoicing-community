@@ -84,7 +84,7 @@ return [
 
     // Next Step
     'next_step' => 'Next Step',
-    'login_button' => 'Login to Billing',
+    'login_button' => 'Login to Agora Invoicing',
 
     'pre_migration_success' => 'Pre migration has been tested successfully',
     'migrating_tables' => 'Migrating tables in database',

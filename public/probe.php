@@ -684,15 +684,12 @@ $lang = fetchLang();
 
                                     <div class="col-6">
 
-                                        <p class="lead"><?= $lang['learn_more'] ?></p>
-
                                         <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank"><?= $lang['knowledge_base'] ?></a></p>
                                         <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com"><?= $lang['email_support'] ?></a></p>
                                     </div>
 
                                     <div class="col-6">
 
-                                        <p class="lead"><?= $lang['next_step'] ?></p>
                                         <a href="<?php echo getBaseUrl() ?>">
                                             <div class="btn btn-primary"><?= $lang['login_button'] ?>&nbsp;<i class="fas fa-arrow-right"></i></div>
                                         </a>

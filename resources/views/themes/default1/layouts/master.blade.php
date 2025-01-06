@@ -466,7 +466,7 @@
         <!-- /.content-wrapper -->
         <footer class="main-footer">
             <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}">{{$set->company}}</a>.</strong>
-            All rights reserved. Powered by <a href="https://ladybirdweb.com" target="_blank"><img src="{{asset('storage/common/images/Ladybird1.png')}}" alt="Ladybird"></a>
+            All rights reserved. Powered by <a href="{{$set->website}}" class="text-color-grey text-color-hover-primary font-weight-bold" target="_blank">Faveo</a>
             <div class="float-right d-none d-sm-inline-block">
                 <b>{{Lang::get('message.version')}}</b> {{Config::get('app.version')}}
             </div>

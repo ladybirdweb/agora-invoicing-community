@@ -11,6 +11,7 @@ use Artisan;
 use Cache;
 use Exception;
 use Illuminate\Http\Request;
+use Predis\Client;
 use Session;
 
 class InstallerController extends Controller
@@ -256,6 +257,33 @@ class InstallerController extends Controller
 
         try {
             // Create the user
+            // Redis configuration based on environment
+            if ($request->input('cache_driver') === 'redis') {
+                $redisConfig = array_filter([
+                    'redis_host' => $request->input('redis_host'),
+                    'redis_password' => $request->input('redis_password'),
+                    'redis_port' => $request->input('redis_port'),
+                ]);
+
+                try{
+                    $redis = new \Predis\Client([
+                        'scheme' => 'tcp',
+                        'host' => $redisConfig['redis_host'],
+                        'password' => $redisConfig['redis_password'] ?? null,
+                        'port' => $redisConfig['redis_port'],
+                    ]);
+
+                    $redis->ping();
+                }
+                catch (Exception $exception){
+                    return errorResponse($exception->getMessage(), 400);
+                }
+
+                $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'), $redisConfig);
+            } else {
+                $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'));
+            }
+
             $user = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
@@ -266,18 +294,6 @@ class InstallerController extends Controller
                 'role' => 'admin',
                 'mobile_verified' => 1,
             ]);
-            // Redis configuration based on environment
-            if ($request->input('cache_driver') === 'redis') {
-                $redisConfig = array_filter([
-                    'redis_host' => $request->input('redis_host'),
-                    'redis_password' => $request->input('redis_password'),
-                    'redis_port' => $request->input('redis_port'),
-                ]);
-
-                $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'), $redisConfig);
-            } else {
-                $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'));
-            }
 
             Session::flush();
             \Cache::flush();

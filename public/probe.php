@@ -252,6 +252,8 @@ $lang = fetchLang();
                         </div>
                     </div>
 
+                    <div id="alert-container"></div>
+
                     <div id="server" class="collapse show" role="tabpanel" data-bs-parent="#accordionExample">
 
                         <div class="card">
@@ -847,6 +849,36 @@ $lang = fetchLang();
             validateData();
         }
     }
+    function showAlert(message, alertType = 'danger', autoDismiss = true, dismissTime = 5000) {
+        // Get the alert container
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            // Clear any previous alerts
+            alertContainer.innerHTML = '';
+
+            // Create the new alert HTML
+            const alertHTML = `
+            <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+
+            // Append the new alert to the container
+            alertContainer.innerHTML = alertHTML;
+        }
+
+        // Auto-dismiss the alert after the specified time
+        if (autoDismiss) {
+            setTimeout(() => {
+                if (alertContainer) {
+                    alertContainer.innerHTML = '';
+                }
+            }, dismissTime);
+        }
+    }
     function submitForm() {
         // Cache input elements
         const fields = {
@@ -949,7 +981,6 @@ $lang = fetchLang();
                 gotoStep('final');
             },
             error: function(error) {
-                console.error('Error submitting form', error);
                 let errors = error.responseJSON.message;
                 const fieldMapping = {
                     first_name: '#admin_first_name',
@@ -972,6 +1003,9 @@ $lang = fetchLang();
                         showError(fieldElement, errorMessages.join(', '));
                     }
                 });
+                if(error.status === 400){
+                    showAlert(error.responseJSON.message, 'danger', true, 5000);
+                }
             }
         });
     }

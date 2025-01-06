@@ -676,13 +676,11 @@ $lang = fetchLang();
 
                                 <p class="text-center lead text-bold"><?= $lang['final_setup'] ?>!</p>
 
-                                <div class="alert" style="background:#f5f5f5;">
-                                    <?= $lang['installation_complete'] ?>
-                                </div>
-
                                 <div class="row">
 
                                     <div class="col-6">
+
+                                        <p class="lead"><?= $lang['learn_more'] ?></p>
 
                                         <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank"><?= $lang['knowledge_base'] ?></a></p>
                                         <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com"><?= $lang['email_support'] ?></a></p>

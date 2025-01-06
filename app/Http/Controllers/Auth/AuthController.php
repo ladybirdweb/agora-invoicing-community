@@ -150,7 +150,7 @@ class AuthController extends BaseAuthController
                 ]);
             }
 
-            if ($attempts->mobile_attempt >= 3) {
+            if ($attempts->mobile_attempt >= 2) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
 
                 return errorResponse(__('message.otp_verification.max_attempts_exceeded', ['time' => formatDuration($remainingTime)]));
@@ -201,7 +201,7 @@ class AuthController extends BaseAuthController
                 ]);
             }
 
-            if ($attempts->mobile_attempt >= 3) {
+            if ($attempts->mobile_attempt >= 2) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
 
                 return errorResponse(__('message.otp_verification.resend_max_attempts_exceeded', ['time' => formatDuration($remainingTime)]));

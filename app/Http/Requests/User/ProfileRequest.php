@@ -49,7 +49,7 @@ class ProfileRequest extends Request
                 'first_name' => 'required|min:3|max:30',
                 'last_name' => 'required|max:30',
                 'mobile' => 'required|regex:/[0-9]/|min:5|max:20',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:users,email,'.$userid,
                 'company' => 'required|max:50',
                 'address' => 'required',
                 'mobile' => 'required',

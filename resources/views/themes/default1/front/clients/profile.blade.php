@@ -203,14 +203,14 @@ input:checked + .slider:before {
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('company') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">Company</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Company</label>
                                         <div class="col-lg-9">
                                             {!! Form::text('company',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Company']) !!}
                                              <h6 id="companyCheck"></h6>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('address') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">Address</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Address</label>
                                         <div class="col-lg-9">
                                         {!! Form::textarea('address',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Address']) !!}
                                            <h6 id="addressCheck"></h6>

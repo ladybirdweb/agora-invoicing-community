@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Facades\Attach;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
@@ -10,6 +11,7 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExtendedBaseProductController extends Controller
 {
@@ -180,16 +182,27 @@ class ExtendedBaseProductController extends Controller
             if ($this->downloadValidation(true, $id, $invoice, $api)) {
                 $release = $this->downloadProductAdmin($id, $beta);
                 $name = Product::where('id', $id)->value('name');
-                if (is_array($release) && array_key_exists('type', $release)) {
-                    header('Location: '.$release['release']);
-                    exit;
+                if (isS3Enabled()) {
+                    if (! Attach::exists('products/'.explode('?', urldecode(basename($release)))[0])) {
+                        return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                    }
+
+                    return downloadExternalFile($release, $name);
                 } else {
-                    header('Content-type: Zip');
-                    header('Content-Description: File Transfer');
-                    header('Content-Disposition: attachment; filename = '.$name.'.zip');
-                    header('Content-Length: '.filesize($release));
-                    readfile($release);
-                    // ob_end_clean();
+                    if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+                        return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                    }
+                    $customFileName = "{$name}.zip";
+
+                    $release->headers->set(
+                        'Content-Disposition',
+                        $release->headers->makeDisposition(
+                            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                            $customFileName
+                        )
+                    );
+
+                    return $release;
                 }
             } else {
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));

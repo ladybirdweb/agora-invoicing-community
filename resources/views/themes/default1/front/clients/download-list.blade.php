@@ -8,19 +8,6 @@
         display: none;
     }
 
-    .modal-dialog {
-        max-width:75% !important;
-        min-width: 75% !important;
-    }
-
-    @media only screen and (max-width: 600px) {
-        .modal-dialog {
-            max-width: 90% !important;
-            min-width: 90% !important;
-            width: 90% !important;
-        }
-    }
-
     .modal-body {
         overflow-y: auto; /* Enable vertical scrolling */
         overflow-x: auto; /* Enable horizontal scrolling */
@@ -48,7 +35,7 @@
 
 <!-- Modal Structure -->
 <div class="modal fade" id="list" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:75% !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Product Versions</h5>

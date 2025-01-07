@@ -7,6 +7,20 @@
     .more-text {
         display: none;
     }
+
+    .modal-dialog {
+        max-width:75% !important;
+        min-width: 75% !important;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .modal-dialog {
+            max-width: 90% !important;
+            min-width: 90% !important;
+            width: 90% !important;
+        }
+    }
+
     .modal-body {
         overflow-y: auto; /* Enable vertical scrolling */
         overflow-x: auto; /* Enable horizontal scrolling */
@@ -23,20 +37,18 @@
         overflow: hidden;      /* Hides overflow content */
         text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
     }
-    @media (max-width: 600px) {
-        #version-table {
-            display: block; /* Change display for mobile */
-        }
-        #version-table tr {
-            display: flex;
-            flex-direction: column; /* Stack rows vertically */
-        }
+
+    table.dataTable.display tbody tr:first-child td {
+        width : max-content;
+        min-width : 100%;
+        max-width : 100px;
+        overflow: auto !important;
     }
 </style>
 
 <!-- Modal Structure -->
 <div class="modal fade" id="list" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 60%;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Product Versions</h5>

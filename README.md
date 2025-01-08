@@ -1,62 +1,76 @@
-<h3>About Agora Invoicing</h3>
+# Agora Invoicing
 
+[![StyleCI](https://styleci.io/repos/51429040/shield)](https://styleci.io/repos/51429040)  
+[![License](https://img.shields.io/badge/License-OSL-blue.svg)](https://opensource.org/licenses/OSL)  
+[![Quality Score](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing)  
+[![Travis CI](https://travis-ci.org/ladybirdweb/agora-invoicing-community.svg?branch=development)](https://travis-ci.org/ladybirdweb/agora-invoicing-community)  
+[![PHP CodeSniffer](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html)
 
-<a href="https://styleci.io/repos/51429040"><img src="https://styleci.io/repos/51429040/shield" alt="StyleCI"></a>&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg">&nbsp;<img src="https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=development" alt="Scrutinizer CI">&nbsp;<img src="https://travis-ci.org/ladybirdweb/agora-invoicing-community.svg?branch=development">&nbsp;&nbsp;<a href="http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html" target="_blank"><img src="http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg"></a>&nbsp;
+Agora is a comprehensive billing and subscription management system designed for SaaS and other software businesses. It efficiently handles signups, provisioning, billing, and support, making it the ideal solution for subscription-based models.
 
-Agora is a billing and subscription management system for SaaS and other software businesses, handling signups, provisioning, billing, and support.
+Agora can be customized according to your business requirements, and we offer professional customization services.
 
-Agora can also be customized according to requirements, and we undertake such requests.
+Agora Invoicing is integrated with **Agora License Manager** for software licensing management.
 
-Agora is designed and developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
+Developed and launched by [Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/) in **March 2016**.
 
-Requirements
---------------------------
-To run Agora, your host just needs a couple of things:
+## Requirements
 
-* PHP Version: 8.2+
-* Database: MySQL 8.0.x or Postgres or SQLite or SQL Server
-* Web Server: Apache / IIS / Nginx
-* PHP Extensions: Mcrypt, OpenSSL, Mbstring, Tokenizer
-* Web Server Extension: Pretty URLs or Search Engine Friendly URLs must be enabled in your web server configuration
+To run Agora Invoicing, your server should meet the following requirements:
 
-Installation Guide
---------------------------
-The installation steps for Agora are the same as those for Faveo. Please refer to our <a href="https://docs.faveohelpdesk.com/" target="_blank">Installation Guide</a> for steps.
+- **PHP Version**: 8.2+
+- **Laravel Framework**: 10+
+- **Database**: MySQL 8.0.x, PostgreSQL, SQLite, or SQL Server
+- **Web Server**: Apache, IIS, or Nginx
+- **PHP Extensions**: Mcrypt, OpenSSL, Mbstring, Tokenizer
+- **Web Server Extensions**: Pretty URLs or Search Engine Friendly URLs must be enabled
 
-Credits
---------------------------
-* Laravel Framework
-* Admin LTE Theme
+## Installation Guide
 
-Agora Features
---------------------------
-https://github.com/ladybirdweb/agorainvoicing/wiki/Agora-Features
+The installation process for Agora Invoicing is identical to that of [Faveo Helpdesk](https://www.faveohelpdesk.com/). Please refer to the [Faveo Installation Guide](https://docs.faveohelpdesk.com/) for detailed step-by-step instructions.
 
-Error Reporting
---------------------------
-Agora uses [Bugsnag](https://www.bugsnag.com/) to monitor application stability in a production environment. It helps us provide bug fixes and feature updates after analyzing the logs and crash reports for the application. **If you are customizing the application in a development environment, we request you to disable this error reporting.** This will allow us to ignore the errors that occur during your development cycle, enabling us to focus more on the exceptions/bugs occurring in the live system of other users in the Faveo community. It can be easily disabled from the "Error logs and debugging" option in the admin panel or by updating your app environment to development in `.env`.
+## Credits
 
-You can still report issues on our [GitHub Issue page](https://github.com/ladybirdweb/agora-invoicing-community/issues) by providing proper information about the changes you are trying to implement. We assure you that the Faveo community will help you, and your customization can be a part of the Faveo application if it follows our contributing guidelines.
+- Laravel Framework
+- Admin LTE Theme
 
-# Security Policy
+## Features
 
-## Supported Versions
+Check out the detailed features of Agora Invoicing in our [Agora Features Wiki](https://github.com/ladybirdweb/agora-invoicing-community/wiki/Agora-Features).
 
-Check-mark versions are supported with security patches.
+## Error Reporting
 
-| Version   | Supported          |
-|-----------| ------------------ |
-| 4.0.2.2   | :white_check_mark: |
-| < 4.0.2.1 | :x:                |
+Agora Invoicing uses [Bugsnag](https://www.bugsnag.com/) to monitor application stability in production environments. This helps us quickly identify issues and release bug fixes and updates.
 
-## Supported Updates
+### Disable Error Reporting for Development
+If you are customizing the application in a development environment, we recommend disabling error reporting to avoid unnecessary alerts. You can easily disable error reporting from the **Error Logs and Debugging** section in the admin panel, or by setting the environment to `development` in your `.env` file.
 
-Security updates will be released once a month. If it's high priority, we will make it twice a month
+### Reporting Issues or Customizations
+You can still report any issues or share your customizations via our [GitHub Issues page](https://github.com/ladybirdweb/agora-invoicing-community/issues). If your changes follow our [contributing guidelines](https://github.com/ladybirdweb/agora-invoicing-community/blob/development/CONTRIBUTING.md), we may integrate them into the main application.
 
-## Reporting a Vulnerability
+## Security Policy
 
-Please report (suspected) security vulnerabilities to support@faveohelpdesk.com. You will receive a response from us within 48 hours. If the issue is confirmed, we will release a patch as soon as possible, depending on its complexity, but historically, this has been within a few days.
+### Supported Versions
 
-Help
---------------------------
-Visit the <a href="https://github.com/ladybirdweb/agora-invoicing-community/issues">issue</a> page. If you'd like professional help, commercial support is available; please email us through the <a href="https://billing.faveohelpdesk.com/contact-us/">contact form</a>.
+The following versions are actively supported and receive security patches:
+
+| Version     | Supported          |
+|-------------|--------------------|
+| 4.0.2.3     | :white_check_mark: |
+| < 4.0.2.2.1 | :x:                |
+
+### Supported Updates
+
+- **Security updates** are released monthly. In case of critical vulnerabilities, updates may be released twice a month.
+
+### Reporting a Vulnerability
+
+If you suspect a security vulnerability, please report it to [support@faveohelpdesk.com](mailto:support@faveohelpdesk.com). You will receive a response within 48 hours. If the issue is confirmed, we will aim to release a patch as quickly as possible—usually within a few days, depending on the complexity of the issue.
+
+## User Manual
+
+For detailed guidance on using Agora Invoicing, please refer to the [Agora Invoicing Wiki](https://github.com/ladybirdweb/agora-invoicing-community/wiki).
+
+## Commercial Support
+
+If you'd like professional support or need custom development, please reach out via our [contact form](https://www.faveohelpdesk.com/contact-us/).

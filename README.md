@@ -1,16 +1,13 @@
+Read me file of agora ivoicing, please refind it
 # Agora Invoicing
 
-[![StyleCI](https://styleci.io/repos/51429040/shield)](https://styleci.io/repos/51429040)  
-[![License](https://img.shields.io/badge/License-OSL-blue.svg)](https://opensource.org/licenses/OSL)  
-[![Quality Score](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing)  
-[![Travis CI](https://travis-ci.org/ladybirdweb/agora-invoicing-community.svg?branch=development)](https://travis-ci.org/ladybirdweb/agora-invoicing-community)  
-[![PHP CodeSniffer](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html)
+[![StyleCI](https://styleci.io/repos/51429040/shield)](https://styleci.io/repos/51429040) [![License](https://img.shields.io/badge/License-OSL-blue.svg)](https://opensource.org/licenses/OSL)  [![Quality Score](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing)  [![Travis CI](https://travis-ci.org/ladybirdweb/agora-invoicing-community.svg?branch=development)](https://travis-ci.org/ladybirdweb/agora-invoicing-community)  [![PHP CodeSniffer](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html)
 
 Agora is a comprehensive billing and subscription management system designed for SaaS and other software businesses. It efficiently handles signups, provisioning, billing, and support, making it the ideal solution for subscription-based models.
 
 Agora can be customized according to your business requirements, and we offer professional customization services.
 
-Agora Invoicing is integrated with **Agora License Manager** for software licensing management.
+Additionally, **Agora Invoicing** integrates with **Agora License Manager** for efficient software licensing management. To explore the integration further, check out our [sample integration app](https://github.com/ladybirdweb/agora-integration-sample).
 
 Developed and launched by [Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/) in **March 2016**.
 

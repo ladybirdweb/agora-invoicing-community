@@ -1,4 +1,3 @@
-Read me file of agora ivoicing, please refind it
 # Agora Invoicing
 
 [![StyleCI](https://styleci.io/repos/51429040/shield)](https://styleci.io/repos/51429040) [![License](https://img.shields.io/badge/License-OSL-blue.svg)](https://opensource.org/licenses/OSL)  [![Quality Score](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing)  [![Travis CI](https://travis-ci.org/ladybirdweb/agora-invoicing-community.svg?branch=development)](https://travis-ci.org/ladybirdweb/agora-invoicing-community)  [![PHP CodeSniffer](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html)

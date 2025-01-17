@@ -57,7 +57,7 @@ active
                     <div class="overflow-hidden mb-1">
 
                          @if($set->logo)
-                        <img alt="Logo" width="150" height="100" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
+                        <img alt="Logo" width="150" height="100" src="{{ $set->logo }}" style="margin-top: -2px">
                          @endif
 
                         <h2 class="font-weight-normal text-7 mb-0">Invoice &nbsp;<span class="text-0 text-color-grey">#{{$invoice->number}}</span></h2>

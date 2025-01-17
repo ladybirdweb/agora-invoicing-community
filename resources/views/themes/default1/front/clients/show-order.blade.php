@@ -128,7 +128,6 @@
             margin-left: 3px;
             background-color: transparent;
 }
-        }
         #showpayment-table_paginate{
         margin-right: -20px !important;
 
@@ -165,6 +164,7 @@ function generateMerchantRandomString($length = 10) {
 $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
 $apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
+$stripe_key = app\ApiKey::where('id', 1)->value('stripe_key');
 $api = new Api($rzp_key, $rzp_secret);
 $displayCurrency = getCurrencyForClient(\Auth::user()->country);
 $symbol = getCurrencyForClient(\Auth::user()->country);
@@ -806,7 +806,7 @@ $price = $order->price_override;
 
 
                 <div class="tab-pane tab-pane-navigation" id="auto-renew" role="tabpanel">
-            
+
                     <div class="row">
 
                         <div class="col">
@@ -1253,45 +1253,10 @@ $price = $order->price_override;
                                 <!-- Card No. input -->
                                 <div class="form-group row">
                                     <div class="col-md-12">
-                                        <input id="card_no" type="tel" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
-                                        @error('card_no')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
+                                        <div id="card-element" class="form-control"></div>
                                     </div>
                                 </div>
-                                <!-- Exp. Month and Exp. Year inputs -->
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
-                                        @error('exp_month')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(20)" autofocus>
-                                        @error('exp_year')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <!-- CVV input -->
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
-                                        @error('cvv')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <!-- Amount input -->
+
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
@@ -1352,121 +1317,23 @@ $price = $order->price_override;
 
     </form>
 
-
-
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
-        function refreshPage() {
-            location.reload();
-        }
+        var stripe = Stripe("{{ $stripe_key }}");
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+        cardElement.mount('#card-element');
 
-        $(document).ready(function() {
-            $("#valid-modal").validate({
-                rules: {
-                    card_no: {
-                        required: true,
-                        digits: true,
-                        minlength: 15,
-                        maxlength: 16,
-                    },
-                    exp_month: {
-                        required: true,
-                        digits: true,
-                        minlength: 2,
-                        maxlength: 2,
-                        range: [1, 12]
-                    },
-                    exp_year: {
-                        required: true,
-                        digits: true,
-                        minlength: 2,
-                        maxlength: 2,
-                        notPastYear: true
-                    },
-                    cvv: {
-                        required: true,
-                        digits: true,
-                        rangelength: [3, 4]
+        async function generateStripeToken() {
+            return new Promise((resolve, reject) => {
+                stripe.createToken(cardElement).then(function (result) {
+                    if (result.error) {
+                        reject(result.error);
+                    } else {
+                        resolve(result.token.id);
                     }
-                },
-                messages: {
-                    card_no: {
-                        required: "Card number is required",
-                        digits: "Please enter digits only",
-                        minlength: "Card number must be at least 15 digits",
-                        maxlength: "Card number cannot exceed 16 digits"
-                    },
-                    exp_month: {
-                        required: "Expiration month is required",
-                        digits: "Please enter digits only",
-                        minlength: "Expiration month must be 2 digits",
-                        maxlength: "Expiration month must be 2 digits",
-                        range: "Expiration month cannot exceed 12"
-                    },
-                    exp_year: {
-                        required: "Expiration year is required",
-                        digits: "Please enter digits only",
-                        minlength: "Expiration year must be 2 digits",
-                        maxlength: "Expiration year must be 2 digits",
-                        notPastYear: "Expiration year cannot be in the past"
-                    },
-                    cvv: {
-                        required: "CVV is required",
-                        digits: "Please enter digits only",
-                        rangelength: "CVV must be either 3 or 4 digits"
-                    }
-                },
-                errorElement: "span",
-                errorPlacement: function(error, element) {
-                    error.addClass("invalid-feedback");
-                    error.insertAfter(element);
-                },
-                highlight: function(element, errorClass, validClass) {
-                    $(element).addClass("is-invalid").removeClass("is-valid");
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).removeClass("is-invalid").addClass("is-valid");
-                }
+                });
             });
-
-            var $form = $("#submit_total");
-            var $cardNo = $("#card_no");
-            var $expMonth = $("#exp_month");
-            var $expYear = $("#exp_year");
-            var $cvv = $("#cvv");
-            var $payButton = $("#pay");
-
-            $form.on("submit", function(event) {
-                // Check if each field is valid
-                var isCardNoValid = $cardNo.valid();
-                var isExpMonthValid = $expMonth.valid();
-                var isExpYearValid = $expYear.valid();
-                var isCvvValid = $cvv.valid();
-
-                if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
-                    $payButton.prop("disabled", true);
-                    $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
-                } else {
-                    event.preventDefault();
-                }
-            });
-
-            $.validator.addMethod("notPastYear", function(value, element) {
-                var currentYear = new Date().getFullYear() % 100;
-                var enteredYear = parseInt(value, 10);
-                return enteredYear >= currentYear;
-            }, "Expiration year cannot be in the past");
-        });
-
-
-        function validateForm() {
-            var isValid = $("#valid-modal").valid();
-            var isCardNoValid = $('#card_no').valid();
-            var isExpMonthValid = $('#exp_month').valid();
-            var isExpYearValid = $('#exp_year').valid();
-            var isCvvValid = $('#cvv').valid();
-
-            return isValid && isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid;
         }
 
     </script>
@@ -1577,24 +1444,20 @@ $price = $order->price_override;
                     $('#renewal-modal').modal('hide');
                     $('#stripe-Modal').modal('show');
 
-                    $('#pay').on('click', function () {
-                        var isValid = validateForm();
-                        if (isValid) {
-                            $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
-                            $.ajax({
-                                url: '{{url("strRenewal-enable")}}',
-                                type: 'POST',
-                                data: {
-                                    "order_id": id,
-                                    "card_no": $('#card_no').val(),
-                                    "exp_month": $('#exp_month').val(),
-                                    "exp_year": $('#exp_year').val(),
-                                    "cvv": $('#cvv').val(),
-                                    "amount": $('#amount').val(),
-                                    "_token": "{!! csrf_token() !!}",
-                                },
-                                success: function (response) {
-                                    if(response.type == 'success'){
+                    $('#pay').on('click',async function () {
+                        $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
+                        const stripeToken = await generateStripeToken();
+                        await $.ajax({
+                            url: '{{url("strRenewal-enable")}}',
+                            type: 'POST',
+                            data: {
+                                "order_id": id,
+                                "stripeToken": stripeToken,
+                                "amount": $('#amount').val(),
+                                "_token": "{!! csrf_token() !!}",
+                            },
+                            success: function (response) {
+                                if(response.type == 'success'){
                                     $('#stripe-Modal').modal('hide');
                                     $('#alertMessage-2').show();
                                     $('#updateButton').show();
@@ -1611,19 +1474,18 @@ $price = $order->price_override;
                                     }
                                    
 
-                                },
-                                error: function (data) {
-                                    var errorMessage = data.responseJSON.result;
-                                    $('#stripe-Modal').modal('hide');
-                                    $("#pay").attr('disabled', false);
-                                    $("#pay").html("Pay now");
-                                    $('html, body').animate({ scrollTop: 0 }, 500);
-                                    var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                                    $('#error-1').show();
-                                    document.getElementById('error-1').innerHTML = html;
-                                }
-                            });
-                        }
+                            },
+                            error: function (data) {
+                                var errorMessage = data.responseJSON.result;
+                                $('#stripe-Modal').modal('hide');
+                                $("#pay").attr('disabled', false);
+                                $("#pay").html("Pay now");
+                                $('html, body').animate({ scrollTop: 0 }, 500);
+                                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                                $('#error-1').show();
+                                document.getElementById('error-1').innerHTML = html;
+                            }
+                        });
                     });
                 } else if (pay == 'razorpay') {
                     $('#renewal-modal').modal('hide');

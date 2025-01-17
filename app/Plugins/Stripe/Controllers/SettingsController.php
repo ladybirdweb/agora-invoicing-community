@@ -3,7 +3,6 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\ApiKey;
-use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Plugins\Stripe\Model\StripePayment;
@@ -11,7 +10,6 @@ use App\Traits\Payment\PostPaymentHandle;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;
-use Validator;
 
 class SettingsController extends Controller
 {
@@ -176,7 +174,7 @@ class SettingsController extends Controller
 
             // Create a Stripe customer with user's information
             $customer = \Stripe\Customer::create([
-                'name' => $user->first_name . ' ' . $user->last_name,
+                'name' => $user->first_name.' '.$user->last_name,
                 'email' => $user->email,
                 'address' => [
                     'line1' => optional($user)->address,

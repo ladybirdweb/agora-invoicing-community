@@ -74,75 +74,73 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email1' => 'required',
+            'email_username' => 'required',
             'password1' => 'required',
             'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-            'email1.required' => 'Please Enter an Email',
+            'email_username.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
         ]);
-        $usernameinput = $request->input('email1');
-        $password = $request->input('password1');
-        $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
 
-        if (! \Hash::check($password, User::where('email', $usernameinput)->value('password'))) { //Check for correct password
-            return redirect()->back()
-                ->withInput()
-                ->withErrors([
-                    'password1' => 'Please Enter a valid Password',
-                ]);
+        $loginInput = $request->input('email_username');
+        $password = $request->input('password1');
+
+        // Find user by email or username
+        $user = User::where('email', $loginInput)->first();
+
+        if (! $user) {
+            return redirect()->back()->withInput()->withErrors([
+                'login' => 'Please Enter a valid Email',
+            ]);
         }
 
-        if (optional(User::where('email', $usernameinput))->value('is_2fa_enabled') == 1) {
-            $userId = User::where('email', $usernameinput)->value('id');
-            $request->session()->put('2fa:user:id', $userId);
+        // Validate password
+        if (! \Hash::check($password, $user->password)) {
+            return redirect()->back()->withInput()->withErrors([
+                'password' => 'Please Enter a valid Password',
+            ]);
+        }
+
+        // Check account activation and mobile verification
+        if ($user->active != 1 || $user->mobile_verified != 1) {
+            $attempts = VerificationAttempt::find($user->id);
+
+            if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
+                $attempts->update([
+                    'mobile_attempt' => 0,
+                    'email_attempt' => 0,
+                ]);
+            }
+            if ($attempts && ($attempts->mobile_attempt >= 2 || $attempts->email_attempt >= 3)) {
+                $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
+
+                return redirect()->back()->withErrors(__('message.verify_time_limit_exceed', ['time' => formatDuration($remainingTime)]));
+            }
+
+            return redirect('verify')->with('user', $user);
+        }
+
+        // Check if 2FA is enabled
+        if ($user->is_2fa_enabled) {
+            $request->session()->put('2fa:user:id', $user->id);
             $request->session()->put('remember:user:id', $request->has('remember'));
 
             return redirect('2fa/validate');
         }
 
-        $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
+        // Attempt login
+        $auth = \Auth::attempt([
+            'email' => $user->email,
+            'password' => $password,
+            'active' => 1,
+            'mobile_verified' => 1,
+        ], $request->has('remember'));
 
-        if (! $auth) { //Check for correct email
-            $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
-            $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
-        }
-
-        if (! $auth) { //Check for correct username
-            $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-            if (! $user) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'email1' => 'Please Enter a valid Email',
-                    ]);
-            }
-
-            if (! \Hash::check($password, $user->password)) { //Check for correct password
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'password1' => 'Please Enter a valid Password',
-                    ]);
-            }
-
-            if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
-                $attempts = VerificationAttempt::find($user->id);
-                if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
-                    $attempts->update([
-                        'mobile_attempt' => 0,
-                        'email_attempt' => 0,
-                    ]);
-                }
-                if ($attempts && ($attempts->mobile_attempt >= 2 || $attempts->email_attempt >= 3)) {
-                    $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
-
-                    return redirect()->back()->withErrors(__('message.verify_time_limit_exceed', ['time' => formatDuration($remainingTime)]));
-                }
-
-                return redirect('verify')->with('user', $user);
-            }
+        if (! $auth) {
+            return redirect()->back()->withInput()->withErrors([
+                'login' => 'Authentication failed. Please try again.',
+            ]);
         }
 
         $this->convertCart();

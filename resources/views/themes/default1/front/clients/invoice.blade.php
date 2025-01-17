@@ -187,57 +187,90 @@
         </div>
     </div>
 
+   <!-- Delete Confirmation Modal -->
+   <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                   <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+               </div>
+               <div class="modal-body">
+                   Are you sure you want to delete this invoice?
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-light" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                   <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Delete</button>
+               </div>
+           </div>
+       </div>
+   </div>
 
-
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-                    
+        $(document).ready(function () {
+            var deleteId; // Store the invoice ID temporarily
+
+            // Show modal on delete button click
             $('#invoice-table').on('click', '.delete-btn', function () {
-                var id = $(this).data('id');
-                var messageContainer = $('#message-container');
-                if (confirm('Are you sure you want to delete this invoice?')) {
-                    // Send AJAX request to delete item
-                    $.ajax({
-                        url: "{{ url('invoices/delete/') }}/" + id,
-                        type: 'DELETE',
-                        success: function (response) {
-                            // Display success message
-                            var successMessage = '<div class="alert alert-success">' +
-                                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                                 '<span aria-hidden="true">&times;</span></button>' +
-                                                 '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
-                                                 response.message + '!</div>';
-                            messageContainer.html(successMessage);
-                            // Reload the DataTable
-                            setTimeout(function(){
-                                messageContainer.empty();
-                                location.reload();
-                            }, 3000);
-                        },
-                        error: function (xhr, status, error) {
-                            // Display error message
-                            var errorMessage = '<div class="alert alert-danger">' +
-                                               '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                               '<span aria-hidden="true">&times;</span></button>' +
-                                               '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
-                            var errors = xhr.responseJSON.errors;
-                            $.each(errors, function(key, value){
-                                errorMessage += '<li>' + value + '</li>';
-                            });
-                            errorMessage += '</ul></div>';
-                            messageContainer.html(errorMessage);
-                            setTimeout(function(){
-                                messageContainer.empty();
-                                location.reload();
-                            }, 5000);
-                        }
-                    });
-                }
+                deleteId = $(this).data('id'); // Get the invoice ID
+                $('#deleteConfirmationModal').modal('show'); // Show the modal
             });
-  
+
+            // Handle delete confirmation
+            $('#confirmDeleteBtn').on('click', function () {
+                var messageContainer = $('#message-container');
+
+                // Send AJAX request to delete item
+                $.ajax({
+                    url: "{{ url('invoices/delete/') }}/" + deleteId,
+                    type: 'DELETE',
+                    beforeSend: function () {
+                        $('#deleteConfirmationModal').modal('hide');
+                    },
+                    success: function (response) {
+                        // Display success message
+                        var successMessage = '<div class="alert alert-success">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span></button>' +
+                            '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                            response.message + '!</div>';
+                        messageContainer.html(successMessage);
+
+                        // Reload the DataTable
+                        setTimeout(function () {
+                            messageContainer.empty();
+                            location.reload();
+                        }, 5000);
+                    },
+                    error: function (xhr, status, error) {
+
+                        // Display error message
+                        var errorMessage = '<div class="alert alert-danger">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span></button>' +
+                            '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            errorMessage += '<li>' + value + '</li>';
+                        });
+                        errorMessage += '</ul></div>';
+                        messageContainer.html(errorMessage);
+
+                        setTimeout(function () {
+                            messageContainer.empty();
+                            location.reload();
+                        }, 5000);
+                    },
+                    complete: function () {
+                        $('#deleteConfirmationModal').modal('hide');
+                        window.scrollTo(0, 0);
+                    }
+                });
+            });
+        });
+
     </script>
     <script type="text/javascript">
 

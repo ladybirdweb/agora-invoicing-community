@@ -14,36 +14,46 @@ Settings
     </div><!-- /.col -->
 @stop
 @section('content')
-<style>
-    .settingdivblue:hover {
-        border: 5px double #3C8DBC;
-    }
-    .settingdivblue a:hover {
-        /*            color: #61C5FF;*/
-        /*            background-color: darkgrey;*/
-    }
-    .settingdivblue a {
-        color: #3A83AD;
-    }
-    .settingiconblue p {
-        text-align: center;
-        word-wrap: break-word;
-        font-variant: small-caps;
-        font-weight: bold;
-        line-height: 30px;
-    }
-    .settingdivblue {
-        width: 46%;
-        height: 80px;
-        margin: 0 auto;
-        text-align: center;
-        border: 5px solid #C4D8E4;
-        border-radius: 100%;
-    }
-    .fa-stack {
-        position:inherit;
-    }
-</style>
+    <style scoped>
+
+        .icons-color {
+            color: #3c8dbc;
+        }
+
+        .settingiconblue {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .settingdivblue {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 80px;
+            margin: 0 auto;
+            text-align: center;
+            border: 5px solid #C4D8E4;
+            border-radius: 100%;
+            padding-top: 5px;
+        }
+
+        .settingdivblue span {
+            text-align: center;
+        }
+
+
+        .fw_400 { font-weight: 400; }
+
+        .settingiconblue p{
+            text-align: center;
+            font-size: 16px;
+            word-wrap: break-word;
+            font-variant: small-caps;
+            font-weight: 500;
+            line-height: 30px;
+        }
+    </style>
 <div class="card card-secondary card-outline">
 
     <!-- /.box-header -->
@@ -56,13 +66,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/system') }}">
+                            <a class="icons-color" href="{{ url('settings/system') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-laptop fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">System Settings</p>
+                        <div class="text-center text-sm fw_400">System Settings</div>
                     </div>
                 </div>
 
@@ -70,13 +80,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('job-scheduler')}}">
+                            <a class="icons-color" href="{{url('job-scheduler')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-tachometer-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >{!! Lang::get('message.cron') !!}</p>
+                        <div class="text-center text-sm fw_400">{!! Lang::get('message.cron') !!}</div>
                     </div>
                 </div>
 
@@ -85,91 +95,91 @@ Settings
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('license-type')}}">
+                            <a class="icons-color" href="{{url('license-type')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-file fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >License Type</p>
+                        <div class="text-center text-sm fw_400">License Type</div>
                     </div>
                 </div>
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('license-permissions')}}">
+                            <a class="icons-color" href="{{url('license-permissions')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-sitemap fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">License Permissions</p>
+                        <div class="text-center text-sm fw_400">License Permissions</div>
                     </div>
                 </div>
 
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('file-storage')}}">
+                            <a class="icons-color" href="{{url('file-storage')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-file-archive fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >File Storage</p>
+                        <div class="text-center text-sm fw_400">File Storage</div>
                     </div>
                 </div>
 
                   <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('plugin') }}">
+                            <a class="icons-color" href="{{ url('plugin') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-credit-card fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Payment Gateways</p>
+                        <div class="text-center text-sm fw_400">Payment Gateways</div>
                     </div>
                 </div>
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('system-managers')}}">
+                            <a class="icons-color" href="{{url('system-managers')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-users fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >System Managers</p>
+                        <div class="text-center text-sm fw_400">System Managers</div>
                     </div>
                 </div>
 
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('third-party-keys')}}">
+                            <a class="icons-color" href="{{url('third-party-keys')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-file-signature fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Third party apps</p>
+                        <div class="text-center text-sm fw_400">Third party apps</div>
                     </div>
                 </div>
 
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('view/tenant')}}">
+                            <a class="icons-color" href="{{url('view/tenant')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-cloud fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Cloud Hub</p>
+                        <div class="text-center text-sm fw_400">Cloud Hub</div>
                     </div>
                 </div>
 
@@ -177,13 +187,13 @@ Settings
                   <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('LocalizedLicense')}}">
+                            <a class="icons-color" href="{{url('LocalizedLicense')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-file-word fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">Localized License</p>
+                        <div class="text-center text-sm fw_400">Localized License</div>
                     </div>
                 </div>
 
@@ -192,26 +202,26 @@ Settings
                   <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('debugg')}}">
+                            <a class="icons-color" href="{{url('debugg')}}">
                                 <span class="fa-stack fa-2x">
-                                   <i style="margin-right: 5px;margin-top: 25%;"  class="fa fa-bug" aria-hidden="true"></i>
+                                   <i class="fa fa-bug fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">Debug</p>
+                        <div class="text-center text-sm fw_400">Debug</div>
                     </div>
                 </div>
              @if(env('APP_DEBUG') == 'true')
                     <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('clockwork/app')}}">
+                            <a class="icons-color" href="{{url('clockwork/app')}}">
                                 <span class="fa-stack fa-2x">
-                                   <i style="margin-right: 5px;margin-top: 25%;" class="fa fa-clock fa-lg" aria-hidden="true"></i>
+                                   <i class="fa fa-clock fa-lg fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">ClockWork</p>
+                        <div class="text-center text-sm fw_400">ClockWork</div>
                     </div>
                 </div>
                 @endif
@@ -219,13 +229,13 @@ Settings
                  <div class="col-md-2 col-sm-6">
                 <div class="settingiconblue">
                     <div class="settingdivblue">
-                        <a href="{{url('social-logins')}}">
+                        <a class="icons-color" href="{{url('social-logins')}}">
                             <span class="fa-stack fa-2x">
                                 <i class="fas fa-globe fa-stack-1x"></i>
                             </span>
                         </a>
                     </div>
-                    <p class="box-title">Social Logins</p>
+                    <div class="text-center text-sm fw_400">Social Logins</div>
                 </div>
             </div>
 
@@ -251,52 +261,52 @@ Settings
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('log-viewer') }}">
+                            <a class="icons-color" href="{{ url('log-viewer') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-bug fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Error Log</p>
+                        <div class="text-center text-sm fw_400">Error Log</div>
                     </div>
                 </div>
 
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/activitylog') }}">
+                            <a class="icons-color" href="{{ url('settings/activitylog') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-history fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Activity Log</p>
+                        <div class="text-center text-sm fw_400">Activity Log</div>
                     </div>
                 </div>
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/maillog') }}">
+                            <a class="icons-color" href="{{ url('settings/maillog') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-envelope-square fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Email Log</p>
+                        <div class="text-center text-sm fw_400">Email Log</div>
                     </div>
                 </div>
 
                    <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/paymentlog') }}">
+                            <a class="icons-color" href="{{ url('settings/paymentlog') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-money-check-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Payment Log</p>
+                        <div class="text-center text-sm fw_400">Payment Log</div>
                     </div>
                 </div>
 
@@ -337,13 +347,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/email') }}">
+                            <a class="icons-color" href="{{ url('settings/email') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-envelope fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Email Settings</p>
+                        <div class="text-center text-sm fw_400">Email Settings</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -351,13 +361,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/template') }}">
+                            <a class="icons-color" href="{{ url('settings/template') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-folder fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Template Settings</p>
+                        <div class="text-center text-sm fw_400">Template Settings</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -365,13 +375,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('template')}}">
+                            <a class="icons-color" href="{{url('template')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-file-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Templates</p>
+                        <div class="text-center text-sm fw_400">Templates</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -379,13 +389,13 @@ Settings
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('queue')}}">
+                            <a class="icons-color" href="{{url('queue')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-upload fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Queues</p>
+                        <div class="text-center text-sm fw_400">Queues</div>
                     </div>
                 </div>
 
@@ -393,13 +403,13 @@ Settings
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('horizon')}}" target="_blank">
+                            <a class="icons-color" href="{{url('horizon')}}" target="_blank">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-desktop fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Queue Monitoring</p>
+                        <div class="text-center text-sm fw_400">Queue Monitoring</div>
                     </div>
                 </div>
                 @endif
@@ -421,13 +431,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('github') }}">
+                            <a class="icons-color" href="{{ url('github') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fab fa-github-square fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Github</p>
+                        <div class="text-center text-sm fw_400">Github</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -439,13 +449,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('mailchimp') }}">
+                            <a class="icons-color" href="{{ url('mailchimp') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fab fa-mailchimp fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Mail Chimp</p>
+                        <div class="text-center text-sm fw_400">Mail Chimp</div>
                     </div>
                 </div>
                 @endif
@@ -453,13 +463,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('apikeys') }}">
+                            <a class="icons-color" href="{{ url('apikeys') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-cogs fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Api Keys</p>
+                        <div class="text-center text-sm fw_400">Api Keys</div>
                     </div>
                 </div>
         </div>
@@ -479,13 +489,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('tax')}}">
+                            <a class="icons-color" href="{{url('tax')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-money-check-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Tax</p>
+                        <div class="text-center text-sm fw_400">Tax</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -493,26 +503,26 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('currency')}}">
+                            <a class="icons-color" href="{{url('currency')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-dollar-sign fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Currency</p>
+                        <div class="text-center text-sm fw_400">Currency</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('get-country')}}">
+                            <a class="icons-color" href="{{url('get-country')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-flag-checkered fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Country List</p>
+                        <div class="text-center text-sm fw_400">Country List</div>
                     </div>
                 </div>
 
@@ -533,13 +543,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('widgets') }}">
+                            <a class="icons-color" href="{{ url('widgets') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-list-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Footer</p>
+                        <div class="text-center text-sm fw_400">Footer</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -547,13 +557,13 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('social-media') }}">
+                            <a class="icons-color" href="{{ url('social-media') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-cubes fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Social Media</p>
+                        <div class="text-center text-sm fw_400">Social Media</div>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -561,13 +571,13 @@ Settings
                     <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('chat') }}">
+                            <a class="icons-color" href="{{ url('chat') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-code fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Analytics/Custom Code</p>
+                        <div class="text-center text-sm fw_400">Analytics/Custom Code</div>
                     </div>
                 </div>
         </div>

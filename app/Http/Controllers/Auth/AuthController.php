@@ -306,6 +306,7 @@ class AuthController extends BaseAuthController
             $user->save();
 
             if (! \Auth::check() && StatusSetting::first()->value('emailverification_status') !== 1) {
+                $this->addUserToExternalServices($user);
                 \Session::flash('success', __('message.registration_complete'));
             }
 
@@ -352,6 +353,8 @@ class AuthController extends BaseAuthController
             }
             $user->active = 1;
             $user->save();
+
+            $this->addUserToExternalServices($user);
 
             if (! \Auth::check() && StatusSetting::first()->value('emailverification_status') === 1) {
                 \Session::flash('success', __('message.registration_complete'));
@@ -482,5 +485,16 @@ class AuthController extends BaseAuthController
         }
 
         return redirect('login');
+    }
+
+    public function addUserToExternalServices($user)
+    {
+        try {
+            $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
+            $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
+            $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
+            $this->addUserToMailchimp($user, $status->mailchimp_status);
+        } catch (\Exception $exception) {
+        }
     }
 }

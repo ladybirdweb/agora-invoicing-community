@@ -262,6 +262,7 @@ Create User
                         {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                          <input class="form-control"  id="mobile_code" name="mobile" value="{{ old('mobile') }}" type="tel">
+                        {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                          <span id="valid-msg" class="hide"></span>
                           <span id="error-msg" class="hide"></span>
                     </div>
@@ -335,20 +336,12 @@ Create User
             } else {
                 $('#state-list').val(state)
             }
-             
 
-// get the country data from the plugin
-var countryData = $.fn.intlTelInput.getCountryData(),
 
   telInput = $("#mobile_code"),
    errorMsg = document.querySelector("#error-msg"),
     validMsg = document.querySelector("#valid-msg"),
   addressDropdown = $("#country");
-// init plugin
-telInput.intlTelInput({
-   separateDialCode: true,
-   utilsScript: "{{asset('js/intl/js/utils.js')}}"
-});
 
   var reset = function() {
   errorMsg.innerHTML = "";
@@ -356,10 +349,6 @@ telInput.intlTelInput({
   validMsg.classList.add("hide");
 };
 
-// populate the country dropdown
-$.each(countryData, function(i, country) {
-  addressDropdown.append($("<option></option>").attr("value", country.iso2).text(country.name));
-});
 // set it's initial value
 // var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
 // addressDropdown.val(initialCountry);
@@ -371,7 +360,7 @@ telInput.on("countrychange", function(e, countryData) {
     telInput.on('input blur', function () {
       reset();
         if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
@@ -385,12 +374,10 @@ telInput.on("countrychange", function(e, countryData) {
         }
     });
 
-// listen to the address dropdown for changes
- telInput.intlTelInput("setCountry", addressDropdown.val().toLowerCase());
 addressDropdown.change(function() {
-  telInput.intlTelInput("setCountry", addressDropdown.val().toLowerCase());
+    updateCountryCodeAndFlag(telInput.get(0), addressDropdown.val());
        if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               errorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
@@ -404,9 +391,11 @@ addressDropdown.change(function() {
         }
 });
 
-$('form').on('submit', function (e) {
-        $('input[name=mobile_code]').attr('value', $('.selected-dial-code').text());
-    });
+            $('form').on('submit', function (e) {
+                $('#mobile_country_iso').val(telInput.attr('data-country-iso'));
+                $('input[name=mobile_code]').val(telInput.attr('data-dial-code'));
+                telInput.val(telInput.val().replace(/\D/g, ''));
+            });
 });
 
     function getCountryAttr(val) {

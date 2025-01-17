@@ -10,6 +10,9 @@ $apiKeys = ApiKey::find(1);
     <script>
         const siteKey = "{{ !empty(env('NOCAPTCHA_SITEKEY')) ? env('NOCAPTCHA_SITEKEY') : $apiKeys->nocaptcha_sitekey }}";
         let recaptchaFunctionToExecute = [];
+        var recaptchaEnabled = {{ $statusSetting->recaptcha_status === 1 ? 'true' : 'false' }};
+        var recaptchaV3Enabled = {{ $statusSetting->v3_recaptcha_status === 1 ? 'true' : 'false' }};
+
         @if($statusSetting->recaptcha_status === 1)
 
         // Include reCAPTCHA v2

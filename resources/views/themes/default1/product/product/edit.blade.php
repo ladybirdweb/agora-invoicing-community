@@ -431,6 +431,7 @@ Edit Product
             </div>
 
             <!-- <div id="response"></div> -->
+            <div id="product-alert-container"></div>
             <div class="card-body table-responsive">
                 <div class="row" >
                     <div class="col-md-12" >
@@ -453,6 +454,29 @@ Edit Product
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Added modal-dialog-centered -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the selected files?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDelete" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_product';
@@ -669,39 +693,100 @@ Edit Product
         function checking(e){
            $('#upload-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
      }
-    
-     $(document).on('click','#bulk_delete',function(){
-      var id=[];
-      if (confirm("Are you sure you want to delete this?"))
-        {
-            $('.upload_checkbox:checked').each(function(){
-              id.push($(this).val())
-            });
-            if(id.length >0)
-            {
-               $.ajax({
-                      url:"{!! Url('uploads-delete') !!}",
-                      method:"delete",
-                      data: $('#checks:checked').serialize(),
-                      beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                  
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
-               })
-            }
-            else
-            {
-                alert("Please select at least one checkbox");
-            }
-        }  
 
-     });
-   </script>
+        $(document).ready(function () {
+            var selectedIds = [];
+
+            let alertTimeout;
+            function showAlert(type, messageOrResponse) {
+                // Generate appropriate HTML
+                var html = generateAlertHtml(type, messageOrResponse);
+
+                // Clear any existing alerts and remove the timeout
+                $('#product-alert-container').html(html);
+                clearTimeout(alertTimeout); // Clear the previous timeout if it exists
+
+                // Display alert
+                $('html, body').animate({
+                    scrollTop: $('#product-alert-container').offset().top
+                }, 500);
+
+                // Auto-dismiss after 5 seconds, then reload the page
+                alertTimeout = setTimeout(function() {
+                    $('#product-alert-container .alert').fadeOut('slow', function() {
+                        location.reload(); // Reload after alert hides
+                    });
+                }, 5000);
+            }
+
+
+
+            function generateAlertHtml(type, response) {
+                // Determine alert styling based on type
+                const isSuccess = type === 'success';
+                const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+                const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+                // Extract message and errors
+                const message = response.message || response || 'An error occurred. Please try again.';
+                const errors = response.errors || null;
+
+                // Build base HTML
+                let html = `<div class="alert ${alertClass} alert-dismissible">` +
+                    `<i class="fa ${iconClass}"></i> ` +
+                    `${message}` +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+                html += '</div>';
+
+                return html;
+            }
+
+            // Open modal when delete button is clicked
+            $(document).on('click', '#bulk_delete', function () {
+                selectedIds = [];
+
+                $('.upload_checkbox:checked').each(function () {
+                    selectedIds.push($(this).val());
+                });
+
+                if (selectedIds.length > 0) {
+                    $('#deleteModal').modal('show'); // Show Bootstrap modal
+                } else {
+                    alert("Please select at least one checkbox");
+                }
+            });
+
+            // Confirm delete inside modal
+            $('#confirmDelete').click(function () {
+                $.ajax({
+                    url: "{!! url('uploads-delete') !!}",
+                    method: "POST",
+                    contentType: "application/json", // Send JSON format
+                    dataType: "json",
+                    data: JSON.stringify({
+                        _method: "DELETE",
+                        _token: document.querySelector('meta[name="csrf-token"]').content, // CSRF Token
+                        ids: selectedIds // Send the selected IDs
+                    }),
+                    beforeSend: function () {
+                        $('#gif').show();
+                    },
+                    success: function (response) {
+                        showAlert('success', response.message);
+                    },
+                    error: function (xhr) {
+                        showAlert('error', xhr.responseJSON.message);
+                    },
+                    complete: function (){
+                        $('#deleteModal').modal('hide');
+                    }
+                });
+            });
+        });
+
+
+        </script>
 
 
       

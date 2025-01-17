@@ -152,7 +152,8 @@ input:checked + .slider:before {
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                      <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-                    {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'mobile_code']) !!}
+                    {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                    {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                     <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
                 </div>
@@ -527,36 +528,16 @@ input:checked + .slider:before {
     addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
     validMsg = document.querySelector("#valid-msg");
-    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.country = country;
-
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
-            });
-        },
-        separateDialCode: true,
-       utilsScript: "{{asset('js/intl/js/utils.js')}}"
-    });
      var reset = function() {
       errorMsg.innerHTML = "";
       errorMsg.classList.add("hide");
       validMsg.classList.add("hide");
     };
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
      $('.intl-tel-input').css('width', '100%');
     telInput.on('input blur', function () {
       reset();
         if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
@@ -573,7 +554,7 @@ input:checked + .slider:before {
      addressDropdown.change(function() {
      telInput.intlTelInput("setCountry", $(this).val());
              if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               errorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
@@ -591,7 +572,8 @@ input:checked + .slider:before {
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=mobileds]').attr('value', $('.selected-dial-code').text());
+        $('#mobile_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
+        telInput.val(telInput.val().replace(/\D/g, ''));
     });
 
 

@@ -97,7 +97,8 @@ foreach($scripts as $script) {
 
     </style>
     
-    <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> 
+    <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <div id="alert-container"></div>
     <div class="row">
         <div class="col-md-12">
 
@@ -121,11 +122,7 @@ foreach($scripts as $script) {
 
                     <h2 class="font-weight-bold text-5 mb-0">Login</h2>
 
-                     @if ($status->recaptcha_status==1)
-                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
-                    @else
-                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
-                    @endif
+                    {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
 
                         <div class="row">
 
@@ -133,7 +130,8 @@ foreach($scripts as $script) {
 
                                 <label class="form-label text-color-dark text-3">Username or E-mail Address <span class="text-color-danger">*</span></label>
 
-                                 {!! Form::text('email1',null,['class' => 'form-control form-control-lg text-4','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
+                                 {!! Form::email('email_username',null,['class' => 'form-control form-control-lg text-4','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
+                                <div id="error-login-email"></div>
                             </div>
                         </div>
 
@@ -152,6 +150,7 @@ foreach($scripts as $script) {
                                         </span>
                                     </div>
                                 </div>
+                                <div id="error-login-password"></div>
                             </div>
                         </div>
 
@@ -174,7 +173,7 @@ foreach($scripts as $script) {
 
                         @if ($status->recaptcha_status === 1)
                               <div id="login_recaptcha"></div>
-                              <div class="loginrobot-verification"></div><br>
+                              <div id="loginrobot-verification"></div><br>
                         @elseif($status->v3_recaptcha_status === 1)
                               <input type="hidden" class="g-recaptcha-token" name="g-recaptcha-response">
                         @endif
@@ -290,7 +289,7 @@ foreach($scripts as $script) {
                                 <label class="form-label text-color-dark text-3">Country <span class="text-color-danger">*</span></label>
 
                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10', 'onChange' => 'updateToMobile(this.value)','id'=>'country']) !!}
                                 <span id="countrycheck"></span>
                             </div>
                         </div>
@@ -301,9 +300,10 @@ foreach($scripts as $script) {
 
                                 <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
 
-                                {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
+{{--                                {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}--}}
                                 <input class="form-control form-control-lg text-4" id="mobilenum" name="mobile" type="tel">
-                                {!! Form::hidden('mobile_code',null,['class'=>'form-control form-control-lg text-4','disabled','id'=>'mobile_code']) !!}
+                                {!! Form::hidden('mobile_code',null,['class'=>'form-control form-control-lg text-4','id'=>'mobile_code']) !!}
+                                {!! Form::hidden('mobile_county_iso',null,['id'=>'mobile_country_iso']) !!}
                                 <span id="valid-msg" class="hide"></span>
                                 <span id="error-msg" class="hide"></span>
                                 <span id="mobile_codecheck"></span>
@@ -374,10 +374,9 @@ foreach($scripts as $script) {
                         <div class="form-group col-lg-6">
                             @if ($status->recaptcha_status === 1)
                                <div id="register_recaptcha"></div>
-                                <div class="robot-verification" id="captcha"></div>
                                 <span id="captchacheck"></span>
                             @elseif($status->v3_recaptcha_status === 1)
-                                <input type="hidden" id="g-recaptcha-register" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                                <input type="hidden" id="g-recaptcha-register" class="g-recaptcha-token" name="g-recaptcha-response">
                             @endif
                         </div>
                     </div>
@@ -392,17 +391,15 @@ foreach($scripts as $script) {
                                 </div>
                             </div>
                             @else
-
-                            <div class="form-group col">
-
-                                <div class="form-check" style="padding-left: 0px;">
-
-                                    <input type="checkbox" value="false" name="terms" id="term" ><a href="{{$apiKeys->terms_url}}" target="_blank">
-                                        Agree to terms and conditions
-                                    </a>
-                                    <br><span id="termscheck"></span>
+                                <div class="form-group col-md-auto">
+                                    <div class="custom-control custom-checkbox" style="padding-right: 100px;">
+                                        <input type="checkbox" value="false" name="terms" id="term" class="custom-control-input">
+                                        <label class="custom-control-label text-2 cur-pointer" for="term">
+                                            <a href="{{$apiKeys->terms_url}}" target="_blank" class="text-decoration-none">Agree to terms and conditions</a>
+                                        </label>
+                                        <br><span id="termscheck"></span>
+                                    </div>
                                 </div>
-                            </div>
                             @endif
                         </div>
 
@@ -410,7 +407,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col">
 
-                                <button type="button" name="register" id="register" onclick="registerUser()" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Register</button>
+                                <button type="submit" name="register" id="register" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading..." data-original-text="Register">Register</button>
 
                             </div>
                         </div>
@@ -430,15 +427,21 @@ foreach($scripts as $script) {
     {!! $everyPageScripts !!}
     <!--End of Tawk.to Script-->
 
-
     <script type="text/javascript">
-// Recaptcha v2
-let login_recaptcha_id;
-let register_recaptcha_id;
+
+        var input = document.querySelector("#mobilenum");
+
+        function updateToMobile(value) {
+            updateCountryCodeAndFlag(input, value)
+        }
+
+        // Recaptcha v2
+        let login_recaptcha_id;
+        let register_recaptcha_id;
         @if($status->recaptcha_status === 1)
         recaptchaFunctionToExecute.push(() => {
-            login_recaptcha_id = grecaptcha.render('login_recaptcha', { 'sitekey': siteKey });
-            register_recaptcha_id = grecaptcha.render('register_recaptcha', { 'sitekey': siteKey });
+            login_recaptcha_id = grecaptcha.render('login_recaptcha', {'sitekey': siteKey});
+            register_recaptcha_id = grecaptcha.render('register_recaptcha', {'sitekey': siteKey});
         });
         @endif
 
@@ -493,555 +496,303 @@ let register_recaptcha_id;
 
 
 
+    {{--     Login validation--}}
+    <script>
+        $(document).ready(function () {
+            function gtag_report_conversion(tag) {
+                window.dataLayer = window.dataLayer || [];
 
-    <script type="text/javascript">
-
-        let recaptchaToken;
-        {{--window.location.href = "{{url('/verify')}}";--}}
-
-        function validateform() {
-            @if($status->recaptcha_status === 1)
-            if(getRecaptchaTokenFromId(login_recaptcha_id) == ''){
-                $('.loginrobot-verification').empty()
-                $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
-                return false;
-            }
-            else{
-                return true;
-            }
-            @else
-                return true;
-            @endif
-        }
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //Registration Form Validation
-
-        function first_namecheck() {
-            var firrstname_val = $('#first_name').val();
-            if (firrstname_val.length == '') {
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Please Enter First Name");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color", "red");
-                $('#first_namecheck').css("color", "red");
-                // userErr =false;
-
-                $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            }
-
-            if (firrstname_val.length > 30) {
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Max 30 characters allowed ");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color", "red");
-                $('#first_namecheck').css("color", "red");
-                // userErr =false;
-
-                $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            }
-
-            var pattern = new RegExp(/[^a-zA-Z0-9]/);
-            if (pattern.test(firrstname_val)) {
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Special characters not allowed");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color", "red");
-                $('#first_namecheck').css("color", "red");
-
-                $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            } else {
-                $('#first_namecheck').hide();
-                $('#first_name').css("border-color", "");
-                return true;
-            }
-        }
-
-        //Validating last name field
-        function last_namecheck() {
-            var lastname_val = $('#last_name').val();
-            if (lastname_val.length == '') {
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Please Enter Last Name");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color", "red");
-                $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-
-                    scrollTop: $("#last_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            }
-
-            if (lastname_val.length > 30) {
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Maximum 30 characters allowed");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color", "red");
-                $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-
-                    scrollTop: $("#last_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            }
-
-
-            var pattern = new RegExp(/[^a-zA-Z0-9]/);
-            if (pattern.test(lastname_val)) {
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Special characters not allowed");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color", "red");
-                $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-
-                    scrollTop: $("#last_namecheck").offset().top - 200
-                }, 1000)
-                return false;
-            } else {
-                $('#last_namecheck').hide();
-                $('#last_name').css("border-color", "");
-                return true;
-            }
-        }
-
-        //Validating email field
-        function emailcheck() {
-
-            var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-            if (pattern.test($('#email').val())) {
-                $('#emailcheck').hide();
-                $('#email').css("border-color", "");
-                return true;
-
-            } else {
-                $('#emailcheck').show();
-                $('#emailcheck').html("Please Enter a valid email");
-                $('#emailcheck').focus();
-                $('#email').css("border-color", "red");
-                $('#emailcheck').css({"color": "red", "margin-top": "5px"});
-                // mail_error = false;
-                $('html, body').animate({
-                    scrollTop: $("#emailcheck").offset().top - 200
-                }, 1000)
-            }
-
-        }
-
-        function companycheck() {
-            var company_val = $('#company').val();
-            if (company_val.length == '') {
-                $('#companycheck').show();
-                $('#companycheck').html("Please Enter Company Name");
-                $('#companycheck').focus();
-                $('#company').css("border-color", "red");
-                $('#companycheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#companycheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#companycheck').hide();
-                $('#company').css("border-color", "");
-                return true;
-            }
-        }
-
-
-        function addresscheck() {
-            var address_val = $('#address').val();
-            if (address_val.length == '') {
-                $('#addresscheck').show();
-                $('#addresscheck').html("Please Enter Address ");
-                $('#addresscheck').focus();
-                $('#address').css("border-color", "red");
-                $('#addresscheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#addresscheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#addresscheck').hide();
-                $('#address').css("border-color", "");
-                return true;
-            }
-        }
-
-
-        function countrycheck() {
-            var country_val = $('#country').val();
-            if (country_val == '') {
-                $('#countrycheck').show();
-                $('#countrycheck').html("Please Select One Country ");
-                $('#countrycheck').focus();
-                $('#country').css("border-color", "red");
-                $('#countrycheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#countrycheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#countrycheck').hide();
-                $('#country').css("border-color", "");
-                return true;
-            }
-        }
-
-        function mobile_codecheck() {
-            var mobile_val = $('#mobilenum').val();
-            if (mobile_val.length == '') {
-                $('#mobile_codecheck').show();
-                $('#mobile_codecheck').html("Please Enter Mobile No. ");
-                $('#mobile_codecheck').focus();
-                $('#mobilenum').css("border-color", "red");
-                $('#mobile_codecheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#mobile_codecheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#mobile_codecheck').hide();
-                $('#mobilenum').css("border-color", "");
-                return true;
-            }
-        }
-
-
-        function towncheck() {
-            var town_val = $('#city').val();
-            if (town_val.length == '') {
-                $('#towncheck').show();
-                $('#towncheck').html("Please Enter Town ");
-                $('#towncheck').focus();
-                $('#city').css("border-color", "red");
-                $('#towncheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#towncheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#towncheck').hide();
-                $('#city').css("border-color", "");
-                return true;
-            }
-        }
-
-        function statecheck() {
-            var state_val = $('#state-list').val();
-            if (state_val.length == '') {
-                $('#statecheck').show();
-                $('#statecheck').html("Please Select a State ");
-                $('#statecheck').focus();
-                $('#state-list').css("border-color", "red");
-                $('#statecheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#statecheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#statecheck').hide();
-                $('#state-list').css("border-color", "");
-                return true;
-            }
-        }
-
-
-        function password1check() {
-            var pattern = new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/);
-            if (pattern.test($('#password').val())) {
-                $('#password1check').hide();
-                $('#password').css("border-color", "");
-                return true;
-
-            } else {
-                $('#password1check').show();
-                $('#password1check').html(@json(\Lang::get('message.strong_password')));
-                $('#password1check').focus();
-                $('#password').css("border-color", "red");
-                $('#password1check').css({"color": "red", "margin-top": "0px"});
-
-                // mail_error = false;
-                return false;
-
-            }
-
-        }
-
-
-        //    $('#conpassword').keyup(function(){
-        //     con_password_check();
-        // });
-
-        function conpasscheck() {
-            var confirmPassStore = $('#confirm_pass').val();
-            var passwordStore = $('#password').val();
-            if (confirmPassStore != passwordStore) {
-                $('#conpasscheck').show();
-                $('#conpasscheck').html("Passwords Don't Match");
-                $('#conpasscheck').focus();
-                $('#confirm_pass').css("border-color", "red");
-                $('#conpasscheck').css("color", "red");
-                $('html, body').animate({
-                    scrollTop: $("#conpasscheck").offset().top - 200
-                }, 1000)
-            } else {
-                $('#conpasscheck').hide();
-                $('#confirm_pass').css("border-color", "");
-                return true;
-            }
-        }
-
-        function terms() {
-            var term_val = $('#term').val();
-            if (term_val == 'false') {
-                $('#termscheck').show();
-                $('#termscheck').html("Terms must be accepted");
-                $('#termscheck').focus();
-                $('#term').css("border-color", "red");
-                $('#termscheck').css({"color": "red", "margin-top": "5px"});
-                // userErr =false;
-                return false;
-            } else {
-                $('#termscheck').hide();
-                $('#term').css("border-color", "");
-                return true;
-            }
-        }
-
-
-        var recaptchaValid = false;
-
-        function onRecaptcha(response) {
-            if (response === '') {
-                recaptchaValid = false; // reCAPTCHA validation failed
-            } else {
-                recaptchaValid = true; // reCAPTCHA validation succeeded
-                $('#g-recaptcha-response-1').val(response);
-            }
-        }
-
-        function validateRecaptcha() {
-            @if($status->recaptcha_status === 1)
-                recaptchaToken = getRecaptchaTokenFromId(register_recaptcha_id);
-            if (getRecaptchaTokenFromId(register_recaptcha_id) == '') {
-                $('#captchacheck').show();
-                $('#captchacheck').html("Robot verification failed, please try again.");
-                $('#captchacheck').focus();
-                $('#captcha').css("border-color", "red");
-                $('#captchacheck').css({"color": "red", "margin-top": "5px"});
-                return false;
-            } else {
-                $('#captchacheck').hide();
-                return true;
-            }
-            @elseif($status->v3_recaptcha_status === 1)
-            recaptchaToken = $('#g-recaptcha-register').val();
-            @endif
-                return true;
-        }
-
-
-        ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
-        ///
-        ///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
-        $(document).on('change', '#term', function () {
-            if ($(this).val() == "false") {
-                $(this).val("true");
-            } else {
-                $(this).val("false");
-            }
-        })
-
-        //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
-        function gtag_report_conversion(tag) {
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-
-            gtag('js', new Date());
-
-            gtag('config', tag);
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function registerUser() {
-
-            $('#first_namecheck').hide();
-            $('#last_namecheck').hide();
-            $('#emailcheck').hide();
-            $('#companycheck').hide();
-            $('#countrycheck').hide();
-            $('#mobile_codecheck').hide();
-            $('#addresscheck').hide();
-            $('#towncheck').hide();
-            $('#statecheck').hide();
-            $('#password1check').hide();
-            $('#conpasscheck').hide();
-            $('#termscheck').hide();
-
-
-            var first_nameErr = true;
-            var last_nameErr = true;
-            var emailErr = true;
-            var companyeErr = true;
-            var countryErr = true;
-            var addressErr = true;
-            var mobile_codeErr = true;
-            var password1Err = true;
-            var conPassErr = true;
-            var termsErr = true;
-            // con_password_check();
-
-
-            if (first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck() && countrycheck() && password1check() && conpasscheck() && terms() &&
-                validateRecaptcha()) {
-
-
-                var tag = "<?php echo $analyticsTag; ?>";
-                if (tag !== "") {
-                    gtag_report_conversion(tag);
+                function gtag() {
+                    dataLayer.push(arguments);
                 }
 
-                $("#register").attr('disabled', true);
-                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+                gtag('js', new Date());
 
-                recaptchaToken = recaptchaToken ?? '';
-                $.ajax({
-                    url: '{{url("auth/register")}}',
-                    type: 'POST',
-                    data: {
-                        "first_name": $('#first_name').val(),
-                        "last_name": $('#last_name').val(),
-                        "email": $('#email').val(),
-                        "company": $('#company').val(),
-                        "bussiness": $('#business').val(),
-                        "company_type": $('#company_type').val(),
-                        "company_size": $('#company_size').val(),
-                        "country": $('#country').val(),
-                        "mobile_code": $('#mobile_code').val().replace(/\s/g, ''),
-                        "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
-                        "address": $('#address').val(),
-                        "city": $('#city').val(),
-                        "state": $('#state-list').val(),
-                        "zip": $('#zip').val(),
-                        "user_name": $('#user_name').val(),
-                        "password": $('#password').val(),
-                        "password_confirmation": $('#confirm_pass').val(),
-                        "g-recaptcha-response-1": recaptchaToken ?? '',
-                        "terms": $('#term').val(),
+                gtag('config', tag);
+            }
+            function placeErrorMessage(error, element, errorMapping = null) {
+                if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                    $(errorMapping[element.attr("name")]).html(error);
+                } else {
+                    error.insertAfter(element);
+                }
+            }
 
-                        "_token": "{!! csrf_token() !!}",
+            let alertTimeout;
+
+            function showAlert(type, messageOrResponse) {
+
+                // Generate appropriate HTML
+                var html = generateAlertHtml(type, messageOrResponse);
+
+                // Clear any existing alerts and remove the timeout
+                $('#alert-container').html(html);
+                clearTimeout(alertTimeout); // Clear the previous timeout if it exists
+
+                // Display alert
+                window.scrollTo(0, 0);
+
+                // Auto-dismiss after 5 seconds
+                alertTimeout = setTimeout(function() {
+                    $('#alert-container .alert').fadeOut('slow');
+                }, 5000);
+            }
+
+
+            function generateAlertHtml(type, response) {
+                // Determine alert styling based on type
+                const isSuccess = type === 'success';
+                const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+                const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+                // Extract message and errors
+                const message = response.message || response || 'An error occurred. Please try again.';
+                const errors = response.errors || null;
+
+                // Build base HTML
+                let html = `<div class="alert ${alertClass} alert-dismissible">` +
+                    `<i class="fa ${iconClass}"></i> ` +
+                    `${message}` +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+                html += '</div>';
+
+                return html;
+            }
+
+            $.validator.addMethod("email_or_username", function(value, element) {
+                // Email regex (improved version)
+                var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                var isEmail = emailRegex.test(value);
+
+                return this.optional(element) || isEmail;
+            }, "Please enter a valid email address");
+
+            $.validator.addMethod("regex", function(value, element, regexp) {
+                var re = new RegExp(regexp);
+                return this.optional(element) || re.test(value);
+            }, "Invalid format.");
+
+            $.validator.addMethod("validPhone", function(value, element) {
+                return validatePhoneNumber(element);
+            }, "Please enter a valid phone number.");
+
+            $.validator.addMethod("recaptchaRequired", function(value, element) {
+                try {
+                    if(!recaptchaEnabled) {
+                        return false;
+                    }
+                }catch (ex){
+                    return false
+                }
+                return value.trim() !== "";
+            }, "Please verify that you are not a robot.");
+
+            $(document).on('change', '#term', function () {
+                $(this).val($(this).val() === "false" ? "true" : "false");
+            });
+
+
+            $('#formoid').validate({
+                ignore: ":hidden:not(.g-recaptcha-response)",
+                rules: {
+                    email_username: {
+                        required: true,
+                        email:false,
+                        email_or_username: true
                     },
-                    success: function (response) {
-
-                        // Re-enable the register button
-                        $("#register").attr('disabled', false);
-
-                        if (response.data.need_verify === 1) {
-                            window.location.href = "{{ url('/verify') }}";
-                        }else {
-                            var result = `
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <strong>
-                <i class="far fa-thumbs-up"></i> Thank You!
-            </strong> ${response.message} !!
-        </div>
-    `;
-
-                            $('#alertMessage1').html(result);
-                            window.scrollTo(0,0);
-                        }
+                    password1: {
+                        required: true,
+                    },
+                    "g-recaptcha-response": {
+                        recaptchaRequired: true
                     }
-                    ,
-                    error: function (data) {
-                        $("#register").attr('disabled', false);
-                        $("#register").html("Register");
-                        $('html, body').animate({scrollTop: 0}, 500);
-                        // Parse the error response
-                        var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+                },
+                messages: {
+                    email_username: {
+                        required: "Please enter your username or email address.",
+                        email_or_username: "Please enter a valid email address."
+                    },
+                    password1: {
+                        required: "Please enter your password.",
+                    },
+                    "g-recaptcha-response": {
+                        recaptchaRequired: "Please verify that you are not a robot."
+                    }
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass("is-valid");
+                },
+                errorPlacement: function (error, element) {
+                    var errorMapping = {
+                        "email_username": "#error-login-email",
+                        "password1": "#error-login-password",
+                        "g-recaptcha-response": "#loginrobot-verification"
+                    };
 
-                        // Create the alert box
-                        var html = '<div class="alert alert-danger alert-dismissable">' +
-                            response.message +
-                            ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            '<br><ul>';
+                    placeErrorMessage(error, element, errorMapping);
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
 
-                        // Loop through errors and display them
-                        if (response.errors) {
-                            for (var key in response.errors) {
-                                if (response.errors.hasOwnProperty(key)) {
-                                    html += '<li>' + response.errors[key][0] + '</li>';
-                                }
+            $("#regiser-form").validate({
+                ignore: ":hidden:not(.g-recaptcha-response)",
+                rules: {
+                    first_name: {
+                        required: true,
+                    },
+                    last_name: {
+                        required: true,
+                    },
+                    email: {
+                        required: true,
+                        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    },
+                    company: {
+                        required: true
+                    },
+                    address: {
+                        required: true,
+                    },
+                    country: {
+                        required: true
+                    },
+                    mobile: {
+                        required: true,
+                        validPhone: true
+                    },
+                    password: {
+                        required: true,
+                        regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~*!@$#%_+.?:,{ }])[A-Za-z\d~*!@$#%_+.?:,{ }]{8,16}$/,
+                    },
+                    password_confirmation: {
+                        required: true,
+                        equalTo: "#password"
+                    },
+                    terms: {
+                        required: true
+                    },
+                    "g-recaptcha-response": {
+                        recaptchaRequired: true
+                    }
+                },
+                messages: {
+                    first_name: {
+                        required: "First name is required",
+                        minlength: "First name must be at least 2 characters"
+                    },
+                    last_name: {
+                        required: "Last name is required",
+                        minlength: "Last name must be at least 2 characters"
+                    },
+                    email: {
+                        required: "Email is required",
+                        regex: "Enter a valid email address"
+                    },
+                    company: {
+                        required: "Company name is required"
+                    },
+                    address: {
+                        required: "Address is required",
+                        minlength: "Address must be at least 10 characters"
+                    },
+                    country: {
+                        required: "Please select a country"
+                    },
+                    mobile: {
+                        required: "Mobile number is required",
+                    },
+                    password: {
+                        required: "Password is required",
+                        regex: "{{ __('message.strong_password') }}"
+                    },
+                    password_confirmation: {
+                        required: "Confirm password is required",
+                        equalTo: "Passwords do not match"
+                    },
+                    terms: {
+                        required: "You must agree to the terms and conditions"
+                    },
+                    "g-recaptcha-response": {
+                        recaptchaRequired: "Please verify that you are not a robot."
+                    }
+
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass("is-valid"); // Remove "is-invalid" but don't add "is-valid"
+                },
+                errorPlacement: function (error, element) {
+                    var errorMapping = {
+                        "first_name": "#first_namecheck",
+                        "last_name": "#last_namecheck",
+                        "email": "#emailcheck",
+                        "company": "#companycheck",
+                        "address": "#addresscheck",
+                        "country": "#countrycheck",
+                        "mobile": "#mobile_codecheck",
+                        "password": "#password1check",
+                        "password_confirmation": "#conpasscheck",
+                        "terms": "#termscheck",
+                        "g-recaptcha-response": "#captchacheck"
+                    };
+
+                    placeErrorMessage(error, element, errorMapping);
+                },
+                submitHandler: function (form) {
+                    var formData = $(form).serialize();
+                    let submitButton = $('#register');
+                    $('#mobile_code').val(input.getAttribute('data-dial-code'));
+                    $('#mobile_country_iso').val(input.getAttribute('data-country-iso').toUpperCase());
+                    input.value = input.value.replace(/\D/g, '');
+                    var tag = "<?php echo $analyticsTag; ?>";
+                    if (tag !== "") {
+                        gtag_report_conversion(tag);
+                    }
+                    $.ajax({
+                        url: '{{url("auth/register")}}',
+                        method: 'POST',
+                        data: formData,
+                        beforeSend: function () {
+                            submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
+                        },
+                        success: function(response) {
+                            document.getElementById('term').value = false;
+                            form.reset();
+                            if (response.data.need_verify === 1) {
+                                window.location.href = "{{ url('/verify') }}";
+                            }else {
+                                showAlert('success', response.message);
                             }
+                        },
+                        error: function(data, status, error) {
+                            var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+
+                            if (response.errors) {
+                                $.each(response.errors, function(field, messages) {
+                                    var validator = $('#regiser-form').validate();
+
+                                    var fieldSelector = $(`[name="${field}"]`).attr('name');  // Get the name attribute of the selected field
+
+                                    validator.showErrors({
+                                        [fieldSelector]: messages[0]
+                                    });
+                                });
+                            } else {
+                                showAlert('error', response);
+                            }
+                        },
+                        complete: function () {
+                            submitButton.prop('disabled', false).html(submitButton.data('original-text'));
                         }
+                    });
 
-                        // Pick the message or set a default message
-                        var message = response.message ? response.message : 'An error occurred. Please try again.';
-
-                        var html = '<div class="alert alert-danger alert-dismissable">' + message +
-                            ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>';
-
-                        // If there are errors, loop through and add to the alert
-                        // if (response.errors) {
-                        //     html += '<ul>';
-                        //     for (var key in response.errors) {
-                        //         html += '<li>' + response.errors[key][0] + '</li>';
-                        //     }
-                        //     html += '</ul>';
-                        // }
-
-                        html += '</div>';
-
-                        $('#error').show();
-                        $('#error').html(html);
-
-                        setTimeout(function () {
-                            $('#error').slideUp(3000);
-                        }, 8000);
-                    }
-                });
-            } else {
-                return false;
-            }
-        };
-
-
-        //get login tab1
-
-
-        $(document).ready(function () {
-            var printitem = localStorage.getItem('successmessage');
-            if (printitem != null) {
-                var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>' + printitem + '!</div>';
-                $('#alertMessage2').html(result);
-                localStorage.removeItem('successmessage');
-                localStorage.clear();
-            }
-
+                    return false;
+                }
+            });
         });
-
-
     </script>
-
-
 
     <script>
 
@@ -1237,145 +988,6 @@ let register_recaptcha_id;
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script type="text/javascript">
-        var telInput = $('#mobilenum'),
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg"),
-            addressDropdown = $("#country");
-
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {
-                }, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-        });
-        var reset = function () {
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        telInput.on('input blur', function () {
-            reset();
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color", "");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled', false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-
-                    $('#mobilenum').css("border-color", "red");
-                    $('#error-msg').css({"color": "red", "margin-top": "5px"});
-                    $('#register').attr('disabled', true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function () {
-            telInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color", "");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled', false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-                    $('#mobilenum').css("border-color", "red");
-                    $('#error-msg').css({"color": "red", "margin-top": "5px"});
-                    $('#register').attr('disabled', true);
-                }
-            }
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
-    <script>
-        var tel = $('.phone'),
-            country = $('#country').val();
-        addressDropdown = $("#country");
-        errorMsg1 = document.querySelector("#error-msg1"),
-            validMsg1 = document.querySelector("#valid-msg1");
-        tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {
-                }, "jsonp").always(function (resp) {
-                    resp.country = country;
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            // hiddenInput: "full_number",
-            initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            separateDialCode: true,
-
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
-        var reset = function () {
-            errorMsg1.innerHTML = "";
-            errorMsg1.classList.add("hide");
-            validMsg1.classList.add("hide");
-        };
-
-        addressDropdown.change(function () {
-
-            tel.intlTelInput("setCountry", $(this).val());
-        });
-
-        tel.on('input blur', function () {
-            reset();
-            if ($.trim(tel.val())) {
-                if (tel.intlTelInput("isValidNumber")) {
-                    $('.phone').css("border-color", "");
-                    validMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled', false);
-                } else {
-
-                    errorMsg1.classList.remove("hide");
-                    errorMsg1.innerHTML = "Please enter a valid number";
-                    $('.phone').css("border-color", "red");
-                    $('#error-msg1').css({"color": "red", "margin-top": "5px"});
-                    $('#sendOtp').attr('disabled', true);
-                }
-            }
-        });
-
-
-        tel.on("countrychange", function (e, countryData) {
-            var countryCodeLog = countryData.dialCode;
-            $("#verify_country_code").val(countryCodeLog);
-        });
-
-        $('.intl-tel-input').css('width', '100%');
-
-
-    </script>
     <noscript>
         <img height="1" width="1"
              src="https://www.facebook.com/tr?id=308328899511239&ev=PageView

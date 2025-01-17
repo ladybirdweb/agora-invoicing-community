@@ -11,27 +11,41 @@ $(document).ready(function(){
             location.reload();
         })
 
-         function copyRecoveryCode()
-         {
-            $('#next_rec_code').attr('disabled',false);
-             $("#loader").css("display", "block");
-            $("#copyBtn").css('display', 'none');
-             var copyText = document.getElementById("recoverycode");
-              copyText.select();
-              copyText.setSelectionRange(0, 99999)
-              document.execCommand("copy");
-               $("#copyBtn").css('display', 'block');
-                $("#loader").css("display", "none");
-              $("#copied").css("display", "block");
-      
-              $('#copied').fadeIn("slow","swing");
-              $('#copied').fadeOut("slow","swing");
-             
-         }
+function copyRecoveryCode() {
+    var icon = document.getElementById('copy_icon_recovery');
+    var copyText = document.getElementById('recoverycode');
+    var nextRecCodeButton = $('#next_rec_code');
+
+    // Check if Clipboard API is available
+    if (!navigator.clipboard) {
+        console.error('Clipboard API is not supported by your browser.');
+        return;
+    }
+
+    // Copy the text to clipboard using Clipboard API
+    navigator.clipboard.writeText(copyText.value).then(function() {
+        // Change icon to indicate success
+        icon.classList.remove('fa-clipboard');
+        icon.classList.add('fa-check', 'text-success');
+        nextRecCodeButton.prop('disabled', false); // Enable the button
+
+        // Reset the icon after 1 second
+        setTimeout(function () {
+            icon.classList.remove('fa-check', 'text-success');
+            icon.classList.add('fa-clipboard');
+        }, 1000);
+        setTimeout(function(){
+            nextRecCodeButton.prop('disabled', true); // Disable button again after 2 seconds
+        }, 5000);
+    }).catch(function(error) {
+        console.error('Failed to copy text: ', error);
+    });
+}
 
 
 
-        $('#2fa').on('change',function () {
+
+$('#2fa').on('change',function () {
         if ($(this).prop("checked")) {
             // checked
             
@@ -121,7 +135,7 @@ $(document).ready(function(){
                                                         $('#2fa-modal4').modal('show');
                                                         setTimeout(function(){
                                                             location.reload();
-                                                        },2000);
+                                                        },5000);
                                                     },
                                                     error: function (data) {
                                                         $("#pass_btn").attr('disabled',false);
@@ -164,23 +178,32 @@ $(document).ready(function(){
    
         } else {
             $('#2fa-modal5').modal('show');
-            $('#turnoff2fa').on('click',function(){
-                $("#turnoff2fa").attr('disabled',true);
+            $('#turnoff2fa').on('click', function () {
+                $("#turnoff2fa").attr('disabled', true);
                 $("#turnoff2fa").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait..");
+
                 $.ajax({
-                    url : "2fa/disable",
-                    method : 'post',
-                    success: function(response){
-                        $("#turnoff2fa").attr('disabled',false);
+                    url: "2fa/disable",
+                    method: 'post',
+                    success: function (response) {
+                        $("#turnoff2fa").attr('disabled', false);
                         $("#turnoff2fa").html("<i class='fa fa-power-off'></i>TURNED OFF");
-                        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong></strong>'+response.message+'.</div>';
-                            $('#alertMessage').html(result+ ".");
-                            setTimeout(function(){
-                                location.reload();
-                            },2000);
+
+                        var result = '<div class="alert alert-success alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            '<strong></strong>' + response.message + '.</div>';
+
+                        $('#alertMessage').html(result);
+
+                        setTimeout(function () {
+                            location.reload();
+                        }, 5000);
                     },
-                })
-            })
+                    complete: function () {
+                        $('#2fa-modal5').modal('hide');
+                    }
+                });
+            });
         }
     })
 
@@ -217,19 +240,22 @@ $(document).ready(function(){
         })
      })
 
+function copyNewRecoveryCode() {
+    var icon = document.getElementById('copy_icon');
+    var copyText = document.getElementById('newrecoverycode');
 
-     function copyNewRecoveryCode()
-     {
-            $("#newloader").css("display", "block");
-            $("#copyNewCodeBtn").css('display', 'none');
-             var copyText = document.getElementById("newrecoverycode");
-              copyText.select();
-              copyText.setSelectionRange(0, 99999)
-              document.execCommand("copy");
-               $("#copyNewCodeBtn").css('display', 'block');
-                $("#newloader").css("display", "none");
-                 $("#copied-new").css("display", "block");
-      
-              $('#copied-new').fadeIn("slow","swing");
-              $('#copied-new').fadeOut("slow","swing");
-     }
+    // Copy the text to clipboard using Clipboard API
+    navigator.clipboard.writeText(copyText.value).then(function() {
+        // Change icon to indicate success
+        icon.classList.remove('fa-clipboard');
+        icon.classList.add('fa-check', 'text-success');
+
+        // Reset the icon after 1 second
+        setTimeout(function () {
+            icon.classList.remove('fa-check', 'text-success');
+            icon.classList.add('fa-clipboard');
+        }, 1000);
+    }).catch(function(error) {
+        console.error('Failed to copy text: ', error);
+    });
+}

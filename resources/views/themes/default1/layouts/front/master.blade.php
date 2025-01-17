@@ -19,6 +19,9 @@
     width: 86%;
 
 }
+        .custom-input.newsletterEmail.is-invalid {
+            border-color: #dc3545 !important;
+        }
 
 .custom-input:focus {
     border-color: #777;
@@ -27,6 +30,14 @@
 /*This is added because of the eye icon is automatically added in edge browser*/
         input[type="password"]::-ms-reveal {
             display: none !important;
+        }
+
+        .form-control.is-invalid {
+            background-image: none !important;
+        }
+
+        .form-control.is-valid {
+            background-image: none !important;
         }
 
 
@@ -99,13 +110,19 @@ foreach($scripts as $script) {
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{asset('client/porto/css-2/custom.css')}}">
 
-    <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+    <link rel="stylesheet" href="{{asset('common/intl-tel-input/css/intlTelInput.css')}}">
 
     <!-- Head Libs -->
     <script src="{{asset('client/porto/js-2/modernizr.min.js')}}"></script>
     <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
     <!--<script src="{{asset('common/js/jquery-2.1.4.js')}}" type="text/javascript"></script>-->
+
+{{--this need to be change in local when package updated--}}
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+    <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 
     <style>
 
@@ -168,7 +185,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <a href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                    <img alt="Porto" width="130" height="75" src="{{ $setting->logo }}">
+                                    <img alt="Logo" width="130" height="75" src="{{ $setting->logo }}">
                                 </a>
                             </div>
                         </div>
@@ -250,7 +267,7 @@ $days = $pay->where('product','117')->value('days');
 
                                                         <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                                            <img alt="Porto" width="75" height="50" src="{{ $setting->logo }}">
+                                                            <img alt="Logo" width="75" height="50" src="{{ $setting->logo }}">
                                                         </a>
                                                     </li>
 
@@ -819,7 +836,7 @@ $days = $pay->where('product','117')->value('days');
                      if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
                         $mailchimpSection .= '<div id="mailchimp-message" style="width: 86%;"></div>
                                                 <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
-                                                    <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
+                                                    <form id="newsletterForm" class="form-style-3 w-100">
                                                         <div class="input-group mb-3">
                                                             <input class="custom-input newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
                                                         </div>
@@ -947,11 +964,11 @@ $days = $pay->where('product','117')->value('days');
 
 <!-- Theme Initialization Files -->
 <script src="{{asset('client/porto/js-2/theme.init.js')}}"></script>
-<script src="{{asset('common/js/intlTelInput.js')}}"></script>
+<script src="{{asset('common/intl-tel-input/js/intlTelInputWithUtils.js')}}"></script>
 <!-- Current Page Vendor and Views -->
 <script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
 
-
+@extends('mini_views.intl_tel_input')
 
 <script type="text/javascript">
 
@@ -976,7 +993,28 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': csrfToken
         }
     });
+
+    // Refresh recaptcha token for every ajax request
+    $( document ).on( "ajaxComplete", function() {
+        try {
+            if(recaptchaV3Enabled) {
+                updateRecaptchaTokens();
+            }
+        }catch (ex){
+        }
+    });
+
+    // Always allow email type only in lowercase
+    document.addEventListener("input", function (event) {
+        if (event.target.matches('input[type="email"]')) {
+            event.target.value = event.target.value.toLowerCase();
+        }
+    });
 });
+
+setTimeout(function() {
+    $('.alert').alert('close');
+}, 5000);
 
 </script>
 
@@ -984,102 +1022,103 @@ $(document).ready(function() {
 
       let mailchimp_recaptcha_id;
       let recaptchaTokenMailChimp;
-      @if($status->recaptcha_status === 1 && isset($isV2RecaptchaEnabledForNewsletter) && $isV2RecaptchaEnabledForNewsletter === 1)
+      @if(!Auth::check() && $status->recaptcha_status === 1 && isset($isV2RecaptchaEnabledForNewsletter) && $isV2RecaptchaEnabledForNewsletter === 1)
       recaptchaFunctionToExecute.push(() => {
           mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
       });
       @endif
-         function mailchimpvalidateRecaptcha() {
-                 @if($status->recaptcha_status === 1)
-                     recaptchaTokenMailChimp = getRecaptchaTokenFromId(mailchimp_recaptcha_id);
-
-                 if ( getRecaptchaTokenFromId(mailchimp_recaptcha_id) === '') {
-                     $('#mailchimpcaptchacheck').show();
-                     $('#mailchimpcaptchacheck').html("Robot verification failed, please try again.");
-                     $('#mailchimpcaptchacheck').focus();
-                     $('#mailchimpcaptcha').css("border-color", "red");
-                     $('#mailchimpcaptchacheck').css({"color": "red", "margin-top": "5px"});
-                     return false;
-                 } else {
-                     $('#mailchimpcaptchacheck').hide();
-                     return true;
-                 }
-                 @elseif($status->v3_recaptcha_status === 1)
-                     return true
-                 @endif
-         }
     </script>
 <script>
 
-
-    
     $(document).ready(function() {
-    var emailInput = $('.newsletterEmail');
+        $('#mailchimp-subscription').on('click', function(e) {
+            e.preventDefault();
+            console.log("in");
 
-    $('#newsletterForm').submit(function(e) {
-        e.preventDefault(); 
-        var email = emailInput.val();
+            // Select elements using jQuery
+            var $form = $('#newsletterForm');
+            var form = $form[0]; // raw DOM element for FormData
+            var $honeypot = $('input[name="mailhoneypot_field"]');
+            var $recaptchaResponse = $('input[name="g-recaptcha-response"]');
+            var $emailField = $('#newsletterEmail');
+            var $mailchimpMessage = $('#mailchimp-message');
+            var alertTimeout;
 
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // Function to display inline error messages
+            function placeErrorMessage(error, $element) {
+                $element.addClass("is-invalid");
+                // Remove any existing error message
+                $element.next('.invalid-feedback').remove();
+                // Insert the error message
+                $element.after(`<div class="invalid-feedback">${error}</div>`);
+            }
 
-        if (!emailRegex.test(email)) {
-            $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-            return;
-        }
+            // Function to show alerts
+            function showAlert(type, message) {
+                // Convert "error" to "danger" for Bootstrap styling
+                var alertType = type === 'error' ? 'danger' : type;
+                var $alertDiv = $(`
+        <div class="alert alert-${alertType} alert-dismissible">
+          <i class="fa ${alertType === 'success' ? 'fa-check-circle' : 'fa-ban'}"></i> ${message}
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        </div>
+      `);
+                // Clear any previous message and display the new alert
+                $mailchimpMessage.html($alertDiv);
 
-        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
-        if (recaptchaEnabled == 1) {
-            if (!mailchimpvalidateRecaptcha()) {
-                $("#mailchimp-subscription").attr('disabled', false);
-                $("#mailchimp-subscription").html("Send Message");
+                if (alertTimeout) {
+                    clearTimeout(alertTimeout);
+                }
+                alertTimeout = setTimeout(function() {
+                    $alertDiv.fadeOut();
+                }, 5000);
+            }
+
+            // Stop processing if the honeypot field is filled
+            if ($honeypot.val()) {
+                return false;
+            }
+
+            // Validate email field
+            if (!$emailField.val()) {
+                placeErrorMessage("Please enter a valid email address.", $emailField);
                 return;
             }
-        }
 
-        var honeypot = $('input[name=honeypot_field]').val();
-
-        $('#mailchimp-subscription').html("Wait...");
-
-        $.ajax({
-            type: 'POST',
-            url: '{{url("mail-chimp/subcribe")}}',
-            data: {
-                'email': email, 
-                '_token': "{!! csrf_token() !!}",
-                'honeypot_field': honeypot,
-                'mailchimp-recaptcha-response-1': recaptchaTokenMailChimp ?? $('#g-recaptcha-mailchimp').val() ?? '',
-            },
-            success: function(data) {
-                emailInput.val('');
-                $("#mailchimp-subscription").html("Go");
-                $('#mailchimp-message').show();
-                var result = '<br><div class="alert alert-success"><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + ' <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                $('#mailchimp-message').html(result + ".");
-            },
-            error: function(response) {
-                emailInput.val('');
-                $("#mailchimp-subscription").html("Go");
-
-                if (response.status == 400) {
-                    var myJSON = response.responseJSON.message;
-                    var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                    $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show();
-                } else {
-                    var myJSON = response.responseJSON.errors;
-                    var html = '<br><button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in myJSON) {
-                        html += '<li>' + myJSON[key][0] + '</li>';
-                    }
-                    html += '</ul></div>';
-                    $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show();
-                }
+            // Validate recaptcha response if it exists
+            if ({{ isCaptchaRequired()['status'] }} && recaptchaEnabled && $recaptchaResponse.length && !$recaptchaResponse.val().trim()) {
+                placeErrorMessage("Please verify that you are not a robot.", $recaptchaResponse);
+                return;
             }
+
+            // Prepare form data for AJAX submission
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{url("mail-chimp/subcribe")}}',  // Fixed the endpoint URL
+                data: formData,
+                processData: false,  // Required for FormData
+                contentType: false,  // Required for FormData
+                beforeSend: function() {
+                    $('#mailchimp-subscription').html('Wait ...')
+                },
+                success: function(data) {
+                    showAlert('success', data.message);
+                },
+                error: function(jqXHR, status, error) {
+                    // Extract an error message if available
+                    var errorMsg = (jqXHR.responseJSON && jqXHR.responseJSON.message) ?
+                        jqXHR.responseJSON.message :
+                        'An error occurred. Please try again.';
+                    showAlert('error', errorMsg);
+                },
+                complete: function() {
+                    $('#mailchimp-subscription').html('GO!')
+                }
+            });
         });
     });
-});
-
     function removeItem(id) {
         $.ajax({
             type: "post",
@@ -1238,17 +1277,6 @@ $(document).ready(function() {
             validMsgdemo = document.querySelector("#valid-msgdemo"),
             addressDropdowndemo = $("#country");
 
-        demotelInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCodedemo = (resp && resp.country) ? resp.country : "";
-                    callback(countryCodedemo);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
         var resetdemo = function() {
             errorMsgdemo.innerHTML = "";
             errorMsgdemo.classList.add("hide");
@@ -1260,8 +1288,7 @@ $(document).ready(function() {
         demotelInput.on('input blur', function () {
             resetdemo();
             if ($.trim(demotelInput.val())) {
-
-                if (demotelInput.intlTelInput("isValidNumber")) {
+                if (validatePhoneNumber(demotelInput.get(0))) {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
@@ -1279,9 +1306,8 @@ $(document).ready(function() {
             $(this).parent().removeClass('has-error');
         });
         addressDropdowndemo.change(function() {
-            demotelInput.intlTelInput("setCountry", $(this).val());
             if ($.trim(demotelInput.val())) {
-                if (demotelInput.intlTelInput("isValidNumber")) {
+                if (validatePhoneNumber(demotelInput.get(0))) {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
@@ -1296,12 +1322,6 @@ $(document).ready(function() {
             }
         });
 
-       $('form').on('submit', function (e) {
-        var selectedCountry = demotelInput.intlTelInput('getSelectedCountryData');
-        var countryCode = '+' + selectedCountry.dialCode;
-        $('#mobile_code_hiddenDemo').val(countryCode);
-
-        });
 
         $(document).ready(function() {
             $('#tenancy').on('shown.bs.modal', function () {

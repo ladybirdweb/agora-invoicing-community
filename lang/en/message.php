@@ -866,4 +866,10 @@ return [
     'recaptcha_v3' => 'reCAPTCHA v3',
     'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in :time ',
     'verify_time_limit_exceed' => 'Oops! It looks like you\'ve reached the maximum verification attempts.  Please try again in :time ',
+
+    'enter_card_details' => 'Enter card details',
+    'required_stripe_key' => 'Please Enter Stripe Key',
+    'max_stripe_key' => 'Stripe Key cannot exceed 200 characters',
+    'required_stripe_secret' => 'Please Enter Stripe Secret',
+    'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
 ];

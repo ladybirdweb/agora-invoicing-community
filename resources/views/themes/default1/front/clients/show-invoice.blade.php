@@ -57,7 +57,7 @@ active
                     <div class="overflow-hidden mb-1">
 
                          @if($set->logo)
-                        <img alt="Logo" width="150" height="100" src="{{asset('storage/images/'.$set->logo)}}" style="margin-top: -2px">
+                        <img alt="Logo" width="150" height="100" src="{{ $set->logo }}" style="margin-top: -2px">
                          @endif
 
                         <h2 class="font-weight-normal text-7 mb-0">Invoice &nbsp;<span class="text-0 text-color-grey">#{{$invoice->number}}</span></h2>
@@ -118,9 +118,9 @@ active
                                 {{getStateByCode($set->state)['name']}}
                                 @endif
                                 {{$set->zip}}<br/>
-                                Country: {{getCountryByCode($set->country)}}<br/>
-                                Mobile: <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
-                                Email: {{$set->company_email}}</li>
+                                <strong>Country: </strong>{{getCountryByCode($set->country)}}<br/>
+                                <strong>Mobile: </strong><b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
+                                <strong>Email: </strong>{{$set->company_email}}</li>
 
                          @if($set->gstin)
                         <li class="mb-0 mt-2 text-4"><b class="text-dark">GSTIN:</b> #{{$set->gstin}}</li>
@@ -148,9 +148,9 @@ active
                             {{getStateByCode($user->state)['name']}}
                         @endif
                         {{$user->zip}}<br/>
-                        Country: {{getCountryByCode($user->country)}}<br/>
-                        Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
-                        Email: {{$user->email}}<br />
+                        <strong>Country: </strong>{{getCountryByCode($user->country)}}<br/>
+                        <strong>Mobile: </strong>@if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif {{$user->mobile}}<br/>
+                        <strong>Email: </strong> {{$user->email}}<br />
                         @if($user->gstin)
                             <b>GSTIN:</b>  &nbsp; #{{$user->gstin}}
                             <br>
@@ -193,7 +193,7 @@ active
                            
                                 @elseif($order != '--')
                                 <td>{!! $order !!}
-                                <span class='badge badge-warning'>Renewed</span></td>
+                                <span class='badge badge-primary'>Renewed</span></td>
                                 @else
                                 <td>--</td>
                             @endif
@@ -370,7 +370,9 @@ active
 
             <div class="mt-4">
 
-                <a href="{{url('pdf?invoiceid='.$invoice->id)}}" onclick="refreshPage()"  class="btn btn-dark float-end ms-2"><i class="fa fa-download"></i> Generate PDF</a>
+                <button id="invoice-pdf" onclick="downloadPdf({{ $invoice->id }})" data-loading-text="Generating PDF" data-original-text="Generate PDF" class="btn btn-dark float-end ms-2">
+                    <i class="fa fa-download"></i> Generate PDF
+                </button>
 
                  @if($invoice->status !='Success')
                     <a href="{{url('paynow/'.$invoice->id)}}" target="_blank" class="btn btn-dark float-end ms-2"><i class="fa fa-credit-card"></i> Pay Now</a>
@@ -379,12 +381,36 @@ active
             </div>
         </div>
 <script>
-  function refreshPage() {
-    // Wait for 3 seconds (3000 milliseconds) before refreshing the page
-    setTimeout(function() {
-      // Reload the current page
-      location.reload();
-    }, 4000); // 3000 milliseconds = 3 seconds
-  }
+    function downloadPdf(invoiceId) {
+        $btn = $("#invoice-pdf");
+        $.ajax({
+            url: "{{ url('pdf') }}",
+            type: "GET",
+            data: { invoiceid: invoiceId },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            beforeSend: function() {
+                $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>  '+$btn.data('loading-text'));
+            },
+            success: function(response) {
+                var blob = new Blob([response], { type: "application/pdf" });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = `invoice_${invoiceId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            },
+            error: function(xhr, status, error) {
+                console.error("Download failed:", error);
+                alert("Failed to generate PDF. Please try again.");
+            },
+            complete: function() {
+                $btn.prop('disabled', false).html('<i class="fa fa-download"></i>  '+$btn.data('original-text'));
+            }
+        });
+    }
 </script>
 @stop

@@ -6,7 +6,9 @@ Agora is a comprehensive billing and subscription management system designed for
 
 Agora can be customized according to your business requirements, and we offer professional customization services.
 
-Additionally, **Agora Invoicing** integrates with **Agora License Manager** for efficient software licensing management. To explore the integration further, check out our [sample integration app](https://github.com/ladybirdweb/agora-integration-sample).
+Additionally, **Agora Invoicing** integrates with **[Agora License Manager](https://github.com/ladybirdweb/agora-license-manager)** for efficient software licensing management. To explore the integration further, check out our [sample integration app](https://github.com/ladybirdweb/agora-integration-sample).
+
+The [Agora Invoicing WordPress plugin](https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin) is available to integrate Agora invoicing with your website.
 
 Developed and launched by [Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/) in **March 2016**.
 

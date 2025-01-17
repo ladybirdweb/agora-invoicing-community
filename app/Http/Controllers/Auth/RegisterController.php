@@ -47,7 +47,7 @@ class RegisterController extends Controller
     public function postRegister(ProfileRequest $request, User $user)
     {
         $this->validate($request, [
-            'g-recaptcha-response-1' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
+            'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ]);
         try {
             $location = getLocation();
@@ -65,6 +65,7 @@ class RegisterController extends Controller
                 'mobile_verified' => 0,
                 'mobile' => ltrim($request->input('mobile'), '0'),
                 'mobile_code' => $request->input('mobile_code'),
+                'mobile_country_iso' => $request->input('mobile_country_iso'),
                 'country' => $request->input('country'),
                 'role' => 'user',
                 'company' => strip_tags($request->input('company')),
@@ -91,6 +92,11 @@ class RegisterController extends Controller
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             $need_verify = $this->getEmailMobileStatusResponse($userInput);
+
+            if (! $need_verify) {
+                $authController = new AuthController();
+                $authController->addUserToExternalServices($userInput);
+            }
 
             \Session::flash('user', $userInput);
 

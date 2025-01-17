@@ -550,47 +550,27 @@ class ProductController extends BaseProductController
     public function fileDestroy(Request $request)
     {
         try {
-            $ids = $request->input('select');
+            $ids = $request->input('ids');
             $storagePath = Setting::find(1)->value('file_storage');
-            if (! empty($ids)) {
-                foreach ($ids as $id) {
-                    $product = $this->product_upload->where('id', $id)->first();
-                    if ($product) {
-                        $file = $product->file;
-                        unlink($storagePath.'/'.$file);
-                        $product->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
-                </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                    echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
-                </div>';
-                }
-            } else {
-                echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
-                </div>';
-                //echo \Lang::get('message.select-a-row');
+
+            if (empty($ids)) {
+                return successResponse(__('message.select-a-row'));
             }
+
+            foreach ($ids as $id) {
+                $product = $this->product_upload->find($id);
+                if ($product) {
+                    $filePath = $storagePath.'/'.$product->file;
+                    if (Attach::exists($filePath)) {
+                        Attach::delete($filePath);
+                    }
+                    $product->delete();
+                }
+            }
+
+            return successResponse(__('message.deleted-successfully'));
         } catch (\Exception $e) {
-            echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
+            return errorResponse('Error Occured while delete the product : '.$e->getMessage());
         }
     }
 

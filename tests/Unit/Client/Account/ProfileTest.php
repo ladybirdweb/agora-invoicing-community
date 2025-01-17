@@ -2,49 +2,99 @@
 
 namespace Tests\Unit\Client\Account;
 
+use Hash;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Storage;
 use Tests\DBTestCase;
 
 class ProfileTest extends DBTestCase
 {
     use DatabaseTransactions;
 
-    /** @group my-profile */
-    public function test_profile_whenClientUpdatesProfile()
+    protected function setUp(): void
     {
-        $this->withoutMiddleware();
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $response = $this->call('PATCH', 'my-profile', [
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'company' => $user->company,
-            'country' => 'IN',
-            'mobile_code' => '91',
-            'mobile' => '9901541237',
-            'address' => $user->address,
-            'town' => $user->town,
-            'timezone_id' => '114',
-            'state' => $user->state,
-            'zip' => '560038',
-            'profile_pic' => '',
-        ]);
-        $response->assertStatus(302);
+        parent::setUp();
+        self::withoutMiddleware();
+        self::getLoggedInUser();
     }
 
-    /** @group my-profile */
-    public function test_profile_whenOldAndNewPasswordDoesNotMatch()
+    public function test_postProfile_successful_update()
     {
-        $this->withoutMiddleware();
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $response = $this->call('PATCH', 'my-password', [
-            'old_password' => $user->password,
-            'new_password' => 'Faveo@12345',
-            'confirm_password' => 'Faveo@123',
+        Storage::fake('local');
 
+        $file = UploadedFile::fake()->image('profile.jpg');
+
+        $response = $this->patchJson('/my-profile', [
+            'profile_pic' => $file,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'company' => 'Test Company',
+            'mobile' => '1234567890',
+            'address' => '123 Street',
+            'country' => 'In',
         ]);
-        $response->assertStatus(302);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'first_name' => 'John',
+        ]);
+    }
+
+    public function test_postProfile_validation_failure()
+    {
+        $response = $this->patchJson('/my-profile', [
+            'email' => 'invalid-email',
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors([
+            'first_name',
+            'last_name',
+            'mobile',
+            'email',
+            'company',
+            'address',
+            'country',
+        ]);
+    }
+
+    public function test_postPassword_successful_update()
+    {
+        $this->user->update(['password' => Hash::make('oldpassword')]);
+        $response = $this->patchJson('/my-password', [
+            'old_password' => 'oldpassword',
+            'new_password' => 'Newpassword@123',
+            'confirm_password' => 'Newpassword@123',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue(Hash::check('Newpassword@123', $this->user->fresh()->password));
+    }
+
+    public function test_postPassword_incorrect_old_password()
+    {
+        $response = $this->patchJson('/my-password', [
+            'old_password' => 'wrongpassword',
+            'new_password' => 'Newpassword@123',
+            'confirm_password' => 'Newpassword@123',
+        ]);
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Incorrect old password']);
+    }
+
+    public function test_postPassword_with_short_new_password()
+    {
+        $response = $this->patchJson('/my-password', [
+            'old_password' => 'oldpassword',
+            'new_password' => '123',
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors([
+            'new_password',
+            'confirm_password',
+        ]);
     }
 }

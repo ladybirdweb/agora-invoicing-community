@@ -37,11 +37,27 @@ class SettingsControllerTest extends DBTestCase
         $requestMock = Mockery::mock(Request::class);
         $requestMock->shouldReceive('all')->andReturn($requestData);
         $requestMock->shouldReceive('isPrecognitive')->andReturn(null);
+        $requestMock->shouldReceive('validate')->andReturn($requestData);
         foreach ($requestData as $key => $value) {
             $requestMock->shouldReceive('get')->with($key)->andReturn($value);
         }
 
         return $requestMock;
+    }
+
+    protected function stripeTokenGenerate($cardNumber = '4242424242424242')
+    {
+        $stripe = Stripe::make('sk_test_FIPEe0BihQ4Rn2exN1BhOotg');
+        $stripeToken = $stripe->tokens()->create([
+            'card' => [
+                'number' => $cardNumber,
+                'exp_month' => 12,
+                'exp_year' => 25,
+                'cvc' => '123',
+            ],
+        ]);
+
+        return $stripeToken;
     }
 
     // Helper method to set up the Auth user
@@ -67,22 +83,24 @@ class SettingsControllerTest extends DBTestCase
     // Test case for handling 3DS authentication
     public function test_handlePayment_3DS_authentication()
     {
-        $requestData = ['card_no' => '4000003560000008', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
+        $stripeToken = $this->stripeTokenGenerate('4000003560000008');
+        $requestData = ['stripeToken' => $stripeToken['id']];
         $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
-        $status = 'require_action';
+        $status = 'requires_action';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
         $requestMock = $this->setupRequestMock($requestData);
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
         $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
         $this->assertEquals('requires_action', $response['status']);
-        $this->assertEquals('https://example.com/return-url', $response->next_action->redirect_to_url->return_url);
+        $this->assertEquals('https://example.com/return-url', $response['next_action']['redirect_to_url']['return_url']);
     }
 
     // Test case for handling Non 3DS card
     public function test_handlePayment_return_non_3ds_values()
     {
-        $requestData = ['card_no' => '4242424242424242', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
+        $stripeToken = $this->stripeTokenGenerate();
+        $requestData = ['stripeToken' => $stripeToken['id']];
         $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
         $status = 'require_action';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
@@ -93,19 +111,18 @@ class SettingsControllerTest extends DBTestCase
         $this->assertEquals('succeeded', $response['status']);
     }
 
-    // Test case for handling incorrect card values
+    // Test case for handling incorrect stripe token
     public function test_handlePayment_return_exception_incorrect_values()
     {
-        $requestData = ['card_no' => '1234567890123456', 'exp_month' => '12', 'exp_year' => '25', 'cvv' => '123'];
+        $requestData = ['stripeToken' => '12345678904567890'];
         $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
         $status = 'require_action';
         $stripeClientConstructorMock = $this->setupStripeClientMock($expectedArguments, $status);
         $requestMock = $this->setupRequestMock($requestData);
         $this->SetAuthUser();
         $controller = new SettingsController($stripeClientConstructorMock);
-        $this->expectException(\Stripe\Exception\CardException::class);
         $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
-        $this->assertEquals('Your card number is incorrect.', $response->getSession()->get('fails'));
+        $this->assertEquals('Invalid token id: 12345678904567890', $response->getMessage());
     }
 
     // Test case for handling autopay for 3ds with incomplete status

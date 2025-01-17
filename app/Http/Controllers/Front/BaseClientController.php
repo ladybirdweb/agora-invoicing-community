@@ -10,7 +10,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
-use Hash;
 use Illuminate\Http\Request;
 
 class BaseClientController extends Controller
@@ -118,6 +117,7 @@ class BaseClientController extends Controller
             $user->email = strip_tags($request->input('email'));
             $user->company = strip_tags($request->input('company'));
             $user->mobile_code = strip_tags($request->input('mobile_code'));
+            $user->mobile_country_iso = strip_tags($request->input('mobile_country_iso'));
             $user->gstin = strip_tags($request->input('gstin'));
             $user->mobile = strip_tags($request->input('mobile'));
             $user->address = strip_tags($request->input('address'));
@@ -130,9 +130,9 @@ class BaseClientController extends Controller
             $user->bussiness = $request->input('bussiness');
             $user->save();
 
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            return successResponse(__('message.updated-successfully'));
         } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return errorResponse('Failed to update profile');
         }
     }
 
@@ -143,27 +143,27 @@ class BaseClientController extends Controller
     {
         try {
             $user = \Auth::user();
-            $oldpassword = $request->input('old_password');
-            $currentpassword = $user->getAuthPassword();
-            $newpassword = $request->input('new_password');
-            if (\Hash::check($oldpassword, $currentpassword)) {
-                $user->password = Hash::make($newpassword);
-                $user->save();
+            $oldPassword = $request->input('old_password');
+            $newPassword = $request->input('new_password');
 
-                //logout all other session when password is updated
-                \Auth::logoutOtherDevices($newpassword);
-
-                \DB::table('password_resets')->where('email', $user->email)->delete();
-
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            if (! \Hash::check($oldPassword, $user->getAuthPassword())) {
+                return errorResponse('Incorrect old password');
             }
 
-            return redirect()->back()->with('fails', 'Incorrect old password');
+            $user->password = \Hash::make($newPassword);
+            $user->save();
+
+            // Logout all other sessions if using web guard
+            \Auth::logoutOtherDevices($newPassword);
+
+            // Remove password reset records
+            \DB::table('password_resets')->where('email', $user->email)->delete();
+
+            return successResponse(\Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
-            $result = [$e->getMessage()];
 
-            return response()->json(compact('result'), 500);
+            return errorResponse('Failed to update password');
         }
     }
 

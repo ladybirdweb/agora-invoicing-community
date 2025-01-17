@@ -74,6 +74,7 @@ class ProcessController extends Controller
         try {
             $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
             $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+            $stripe_key = ApiKey::where('id', 1)->value('stripe_key');
             $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
             $path = app_path().'/Plugins/Stripe/views';
             $total = intval(\Cart::getTotal());
@@ -100,7 +101,7 @@ class ProcessController extends Controller
                 }
                 \Session::put('totalToBePaid', $amount);
                 \View::addNamespace('plugins', $path);
-                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'creditBalance', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key'));
+                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'creditBalance', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key', 'stripe_key'));
             } else {
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
@@ -111,7 +112,7 @@ class ProcessController extends Controller
                 $amount = rounding(\Cart::getTotal());
                 \View::addNamespace('plugins', $path);
 
-                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'gateway', 'rzp_key', 'rzp_secret', 'apilayer_key', 'stripe_key'))->render();
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

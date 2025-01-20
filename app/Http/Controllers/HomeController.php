@@ -7,6 +7,7 @@ use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
 use App\Model\Common\Country;
+use App\Model\License\LicenseType;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
@@ -641,22 +642,18 @@ class HomeController extends BaseHomeController
         $client = $request->input('client');
 
         $license = $request->input('license');
-
         $user = User::where('email', $client)->value('id');
+        $licenseType = LicenseType::where('name', 'plugin')->value('id');
 
-        $licenses = Order::where('client', $user)
-            ->whereHas('product', function ($query) {
-                $query->where('product_type', 'plugin');
-            })
+        $product = Product::where('type', $licenseType)->pluck('id')->toArray();
+
+        $licenses = Order::where('client', $user)->whereIn('product', $product)
             ->pluck('serial_key')
             ->toArray();
-
         $licenses = array_merge([$license], $licenses);
-
         $client = new Client(['verify' => false]);
 
-        $licenseUrl = ApiKey::value('license_url');
-
+        $licenseUrl = ApiKey::value('license_api_url');
         $response = $client->get($licenseUrl.'api/pluginLicense', [
             'query' => ['license_code' => json_encode($licenses)],
         ]);

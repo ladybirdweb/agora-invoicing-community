@@ -650,8 +650,10 @@ class HomeController extends BaseHomeController
         $licenses = Order::where('client', $user)->whereIn('product', $product)
             ->pluck('serial_key')
             ->toArray();
+
         $licenses = array_merge([$license], $licenses);
-        $client = new Client(['verify' => false]);
+
+        $client = new Client();
 
         $licenseUrl = ApiKey::value('license_api_url');
         $response = $client->get($licenseUrl.'api/pluginLicense', [

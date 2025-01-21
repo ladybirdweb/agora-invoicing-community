@@ -92,7 +92,7 @@ class RegisterController extends Controller
 
             $need_verify = $this->getEmailMobileStatusResponse($userInput);
 
-            if(!$need_verify){
+            if (! $need_verify) {
                 $authController = new AuthController();
                 $authController->addUserToExternalServices($userInput);
             }

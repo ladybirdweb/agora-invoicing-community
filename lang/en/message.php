@@ -867,6 +867,5 @@ return [
     'too_many_forgot_attempts' => 'Too many forgot password attempts. Please try again in :time ',
     'verify_time_limit_exceed' => 'Oops! It looks like you\'ve reached the maximum verification attempts.  Please try again in :time ',
 
-
     'enter_card_details' => 'Enter card details',
 ];

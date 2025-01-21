@@ -92,7 +92,7 @@ class SubscriptionController extends Controller
                 $day = (int) $day;
                 $startDate = Carbon::now()->toDateString();
                 $endDate = Carbon::now()->addDays($day)->toDateString();
-                $subscriptionsForDay = Subscription::whereBetween('update_ends_at', [$startDate, $endDate])
+                $subscriptionsForDay = Subscription::select('subscriptions.*')->whereBetween('update_ends_at', [$startDate, $endDate])
                 ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
                 ->where('orders.order_status', 'executed')
                 ->where('is_subscribed', 1)

@@ -92,6 +92,11 @@ class RegisterController extends Controller
 
             $need_verify = $this->getEmailMobileStatusResponse($userInput);
 
+            if(!$need_verify){
+                $authController = new AuthController();
+                $authController->addUserToExternalServices($userInput);
+            }
+
             \Session::flash('user', $userInput);
 
             return successResponse(__('message.registration_complete'), ['need_verify' => $need_verify]);

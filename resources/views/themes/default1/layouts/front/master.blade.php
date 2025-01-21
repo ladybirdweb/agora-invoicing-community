@@ -168,7 +168,7 @@ $days = $pay->where('product','117')->value('days');
 
                                 <a href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                    <img alt="Porto" width="130" height="75" src="{{ $setting->logo }}">
+                                    <img alt="Logo" width="130" height="75" src="{{ $setting->logo }}">
                                 </a>
                             </div>
                         </div>
@@ -250,7 +250,7 @@ $days = $pay->where('product','117')->value('days');
 
                                                         <a class="nav-link" href="{{Auth::check() ? url('client-dashboard') : url('login')}}">
 
-                                                            <img alt="Porto" width="75" height="50" src="{{ $setting->logo }}">
+                                                            <img alt="Logo" width="75" height="50" src="{{ $setting->logo }}">
                                                         </a>
                                                     </li>
 

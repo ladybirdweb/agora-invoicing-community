@@ -763,7 +763,7 @@ $json = json_encode($data);
         <div class="modal-content" style="padding: 16px;">
              <div class="modal-header">
             <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" aria-hidden="true">&times;</button>
-                <h4 style="white-space: nowrap;" class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
+                <h4 style="white-space: nowrap;" class="modal-title" id="defaultModalLabel">{{ __('message.enter_card_details') }}</h4>
 
          <div class="horizontal-images">
         <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
@@ -788,7 +788,7 @@ $json = json_encode($data);
                         </div>
                             <div class="form-group row">
                                 <div class="col-md-12">
-                                    <input id="amount" type="text" value={{currencyFormat($amount,$code=$currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                    <input id="amount" type="text" value={{currencyFormat($amount,$code=$currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" disabled>
                                     @error('amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

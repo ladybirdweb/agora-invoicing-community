@@ -488,7 +488,7 @@ $cartSubtotalWithoutCondition = 0;
 
                                                     {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
 
-                                                    <img alt="{{$gateway}}" width="111" src="{{asset('storage/client/images/'.$gateway.'.png')}}">
+                                                    <img alt="{{$gateway}}" width="111" src="{{asset('images/logo/'.$gateway.'.png')}}">
 
                                                         <p class="text-color-dark" id="fee" style="display:none;font-family: sans-serif;">An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p>
 

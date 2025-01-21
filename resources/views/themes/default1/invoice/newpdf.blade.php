@@ -46,7 +46,7 @@
                         <div class="col-12">
                             <h4 style="position:relative;top: 2%;">
                                 @if($set->logo)
-                                <img alt="Logo" width="100" height="50" src="{{asset('storage/images/'.$set->logo)}}">
+                                <img alt="Logo" width="100" height="50" src="{{ $set->logo }}">
                                     @else
                                     {{ucfirst($set->company)}}
                                 @endif

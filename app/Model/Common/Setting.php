@@ -49,7 +49,7 @@ class Setting extends Model
 
     public function getAdminLogoAttribute($value)
     {
-        return $this->getImage($value, 'admin/images' , asset('images/admin-logo/faveo.png'));
+        return $this->getImage($value, 'admin/images', asset('images/admin-logo/faveo.png'));
     }
 
     public function getFavIconAttribute($value)

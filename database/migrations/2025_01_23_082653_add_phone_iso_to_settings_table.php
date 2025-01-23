@@ -17,7 +17,7 @@ return new class extends Migration
         DB::table('settings')
             ->whereNotNull('country')
             ->update([
-                'phone_country_iso' => DB::raw('country')
+                'phone_country_iso' => DB::raw('country'),
             ]);
     }
 

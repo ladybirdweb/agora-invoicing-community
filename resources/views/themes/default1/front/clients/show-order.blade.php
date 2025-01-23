@@ -1231,7 +1231,7 @@ $price = $order->price_override;
             <div class="modal-content">
                 <div class="modal-header">
                     <button style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; background-color: black;" type="button" class="close custom-close" data-dismiss="modal" aria-hidden="true" onclick="refreshPage()">&times;</button>
-                    <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">Stripe payment</h4>
+                    <h4 class="modal-title" id="defaultModalLabel" style="white-space: nowrap;">{{ __('message.enter_card_details') }}</h4>
                     <div class="horizontal-images">
                         <img class="img-responsive" src="https://static.vecteezy.com/system/resources/previews/020/975/567/non_2x/visa-logo-visa-icon-transparent-free-png.png">
                         <img class="img-responsive" src="https://pngimg.com/d/mastercard_PNG23.png">
@@ -1259,7 +1259,7 @@ $price = $order->price_override;
 
                                 <div class="form-group row">
                                     <div class="col-md-12">
-                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" disabled>
                                         @error('amount')
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

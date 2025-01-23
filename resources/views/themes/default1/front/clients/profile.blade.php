@@ -197,7 +197,8 @@ input:checked + .slider:before {
                                               {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
                                                <!--<input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-                                            {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'incode']) !!}
+                                            {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'incode' , 'data-country-iso' => $user->mobile_country_iso]) !!}
+                                            {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                                             <span id="invalid-msg" class="hide"></span>
                                                <span id="inerror-msg" class="hide"></span>
                                         </div>
@@ -659,36 +660,16 @@ input:checked + .slider:before {
     inaddressDropdown = $("#country");
     proerrorMsg = document.querySelector("#inerror-msg"),
     provalidMsg = document.querySelector("#invalid-msg");
-    var inerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-     let currentCountry="";
-    intelInput.intlTelInput({
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.incountry = incountry;
-
-                var countryCode = (resp && resp.incountry) ? resp.incountry : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
-            });
-        },
-        separateDialCode: true,
-      utilsScript: "{{asset('js/intl/js/utils.js')}}"
-    });
      var reset = function() {
       proerrorMsg.innerHTML = "";
       proerrorMsg.classList.add("hide");
       provalidMsg.classList.add("hide");
     };
-    setTimeout(()=>{
-         intelInput.intlTelInput("setCountry", currentCountry);
-    },500)
      $('.intl-tel-input').css('width', '100%');
     intelInput.on('input blur', function () {
         reset();
         if ($.trim(intelInput.val())) {
-            if (intelInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(intelInput.get(0))) {
               $('#incode').css("border-color","");
               provalidMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
@@ -702,29 +683,13 @@ input:checked + .slider:before {
         }
     });
 
-     inaddressDropdown.change(function() {
-     intelInput.intlTelInput("setCountry", $(this).val());
-             reset();
-             if ($.trim(intelInput.val())) {
-            if (intelInput.intlTelInput("isValidNumber")) {
-              $('#incode').css("border-color","");
-              proerrorMsg.classList.add("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-            proerrorMsg.classList.remove("hide");
-             proerrorMsg.innerHTML = "Please enter a valid number";
-             $('#incode').css("border-color","red");
-             $('#inerror-msg').css({"color":"red","margin-top":"5px"});
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=sds]').attr('value', $('.selected-dial-code').text());
+        $('#mobile_country_iso').val(intelInput.attr('data-country-iso').toUpperCase());
+        intelInput.val(intelInput.val().replace(/\D/g, ''));
     });
 
 

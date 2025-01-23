@@ -489,9 +489,13 @@ class AuthController extends BaseAuthController
 
     public function addUserToExternalServices($user)
     {
-        $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
-        $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
-        $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
-        $this->addUserToMailchimp($user, $status->mailchimp_status);
+        try {
+            $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
+            $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
+            $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
+            $this->addUserToMailchimp($user, $status->mailchimp_status);
+        }catch (\Exception $exception){
+
+        }
     }
 }

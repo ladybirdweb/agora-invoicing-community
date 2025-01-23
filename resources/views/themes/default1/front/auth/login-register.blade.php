@@ -290,7 +290,7 @@ foreach($scripts as $script) {
                                 <label class="form-label text-color-dark text-3">Country <span class="text-color-danger">*</span></label>
 
                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10', 'onChange' => 'updateToMobile(this.value)','id'=>'country']) !!}
                                 <span id="countrycheck"></span>
                             </div>
                         </div>
@@ -304,6 +304,7 @@ foreach($scripts as $script) {
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
                                 <input class="form-control form-control-lg text-4" id="mobilenum" name="mobile" type="tel">
                                 {!! Form::hidden('mobile_code',null,['class'=>'form-control form-control-lg text-4','disabled','id'=>'mobile_code']) !!}
+                                {!! Form::hidden('mobile_county_iso',null,['id'=>'mobile_country_iso']) !!}
                                 <span id="valid-msg" class="hide"></span>
                                 <span id="error-msg" class="hide"></span>
                                 <span id="mobile_codecheck"></span>
@@ -430,6 +431,30 @@ foreach($scripts as $script) {
     {!! $everyPageScripts !!}
     <!--End of Tawk.to Script-->
 
+
+    <script>
+        var input = document.querySelector("#mobilenum");
+        var errorMsg = document.querySelector("#error-msg");
+        input.addEventListener('input', function() {
+            if (validatePhoneNumber(input)) {
+                $('#mobilenum').css("border-color","");
+                $("#error-msg").html('');
+                errorMsg.classList.add("hide");
+                $('#register').attr('disabled',false);
+            } else {
+                errorMsg.classList.remove("hide");
+                errorMsg.innerHTML = "Please enter a valid number";
+                $('#mobilenum').css("border-color","red");
+                $('#error-msg').css({"color":"red","margin-top":"5px"});
+                $('#register').attr('disabled',true);
+            }
+        });
+
+        function updateToMobile(value){
+            updateCountryCodeAndFlag(input,value)
+        }
+
+    </script>
 
     <script type="text/javascript">
 // Recaptcha v2
@@ -921,6 +946,8 @@ let register_recaptcha_id;
                 $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
 
                 recaptchaToken = recaptchaToken ?? '';
+                $('#mobile_code').val(input.getAttribute('data-dial-code'));
+                $('#mobile_country_iso').val(input.getAttribute('data-country-iso').toUpperCase());
                 $.ajax({
                     url: '{{url("auth/register")}}',
                     type: 'POST',
@@ -935,6 +962,7 @@ let register_recaptcha_id;
                         "country": $('#country').val(),
                         "mobile_code": $('#mobile_code').val().replace(/\s/g, ''),
                         "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
+                        "mobile_country_iso": $('#mobile_country_iso').val(),
                         "address": $('#address').val(),
                         "city": $('#city').val(),
                         "state": $('#state-list').val(),
@@ -1237,145 +1265,6 @@ let register_recaptcha_id;
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script type="text/javascript">
-        var telInput = $('#mobilenum'),
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg"),
-            addressDropdown = $("#country");
-
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {
-                }, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-        });
-        var reset = function () {
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        telInput.on('input blur', function () {
-            reset();
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color", "");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled', false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-
-                    $('#mobilenum').css("border-color", "red");
-                    $('#error-msg').css({"color": "red", "margin-top": "5px"});
-                    $('#register').attr('disabled', true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function () {
-            telInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color", "");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled', false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-                    $('#mobilenum').css("border-color", "red");
-                    $('#error-msg').css({"color": "red", "margin-top": "5px"});
-                    $('#register').attr('disabled', true);
-                }
-            }
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
-    <script>
-        var tel = $('.phone'),
-            country = $('#country').val();
-        addressDropdown = $("#country");
-        errorMsg1 = document.querySelector("#error-msg1"),
-            validMsg1 = document.querySelector("#valid-msg1");
-        tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {
-                }, "jsonp").always(function (resp) {
-                    resp.country = country;
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            // hiddenInput: "full_number",
-            initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            separateDialCode: true,
-
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
-        var reset = function () {
-            errorMsg1.innerHTML = "";
-            errorMsg1.classList.add("hide");
-            validMsg1.classList.add("hide");
-        };
-
-        addressDropdown.change(function () {
-
-            tel.intlTelInput("setCountry", $(this).val());
-        });
-
-        tel.on('input blur', function () {
-            reset();
-            if ($.trim(tel.val())) {
-                if (tel.intlTelInput("isValidNumber")) {
-                    $('.phone').css("border-color", "");
-                    validMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled', false);
-                } else {
-
-                    errorMsg1.classList.remove("hide");
-                    errorMsg1.innerHTML = "Please enter a valid number";
-                    $('.phone').css("border-color", "red");
-                    $('#error-msg1').css({"color": "red", "margin-top": "5px"});
-                    $('#sendOtp').attr('disabled', true);
-                }
-            }
-        });
-
-
-        tel.on("countrychange", function (e, countryData) {
-            var countryCodeLog = countryData.dialCode;
-            $("#verify_country_code").val(countryCodeLog);
-        });
-
-        $('.intl-tel-input').css('width', '100%');
-
-
-    </script>
     <noscript>
         <img height="1" width="1"
              src="https://www.facebook.com/tr?id=308328899511239&ev=PageView

@@ -12,7 +12,7 @@ class Setting extends Model
 
     protected $table = 'settings';
 
-    protected $fillable = ['company', 'website', 'phone', 'logo',
+    protected $fillable = ['company', 'website', 'phone', 'logo', 'phone_country_iso',
         'address', 'host', 'port', 'encryption', 'email', 'password',
         'error_log', 'error_email', 'state', 'city', 'country',
         'invoice', 'download', 'subscription_over', 'subscription_going_to_end',
@@ -35,25 +35,25 @@ class Setting extends Model
         $this->attributes['password'] = $value;
     }
 
-    public function getImage($value, $path)
+    public function getImage($value, $path, $default = null)
     {
         return $value
             ? Attach::getUrlPath($path.'/'.$value)
-            : null;
+            : $default;
     }
 
     public function getLogoAttribute($value)
     {
-        return $this->getImage($value, 'images');
+        return $this->getImage($value, 'images', asset('images/agora-invoicing.png'));
     }
 
     public function getAdminLogoAttribute($value)
     {
-        return $this->getImage($value, 'admin/images');
+        return $this->getImage($value, 'admin/images' , asset('images/admin-logo/faveo.png'));
     }
 
     public function getFavIconAttribute($value)
     {
-        return $this->getImage($value, 'common/images');
+        return $this->getImage($value, 'common/images', asset('images/admin-logo/faveo.png'));
     }
 }

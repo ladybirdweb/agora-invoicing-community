@@ -103,10 +103,10 @@ System Setting
                             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('phone',null,['class' => 'form-control selected-dial-code', 'type'=>'tel','id'=>'phone']) !!}
-                                
-                                 {!! Form::hidden('phone_code',null,['id'=>'phone_code_hidden']) !!}
-     
+                                {!! Form::input('tel', 'phone', null, ['class' => 'form-control selected-dial-code', 'id' => 'phone', 'data-country-iso' => $set->phone_country_iso]) !!}
+
+                                {!! Form::hidden('phone_code',null,['id'=>'phone_code_hidden']) !!}
+                                {!! Form::hidden('phone_country_iso',null,['id' => 'phone_country_iso']) !!}
                                 <span id="valid-msg" class="hide"></span>
                                 <span id="error-msg" class="hide"></span>
                                
@@ -274,17 +274,23 @@ System Setting
                         <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
+                                   {{ __('Upload Application Logo') }}
 
-                                
-                                <p><i> {{Lang::get('Upload Application logo')}}</i> </p>
-                                @if($set->admin_logo) 
-                                <img src='{{ $set->admin_logo }}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
-                                
+                                <div class="d-flex align-items-center mt-1">
+                                    @if($set->admin_logo)
+                                        <img src="{{ $set->admin_logo }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Application Logo">
+                                    @endif
 
-                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
-                                @else
-                                {!! Form::file('admin-logo') !!}
+                                    <div class="custom-file ml-3">
+                                        {!! Form::file('admin-logo', ['class' => 'custom-file-input', 'id' => 'admin-logo']) !!}
+                                        <label class="custom-file-label" for="admin-logo">{{ __('Choose file') }}</label>
+                                    </div>
+                                </div>
+
+                                @if($errors->has('logo'))
+                                    <small class="form-text text-danger mt-1">
+                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('logo') }}
+                                    </small>
                                 @endif
                             </div>
                         </td>
@@ -297,18 +303,23 @@ System Setting
 
                         <td>
                             <div class="form-group {{ $errors->has('icon') ? 'has-error' : '' }}">
+                                    {{ __('Upload favicon for Admin and Client Panel') }}
 
-                               
-                                <p><i> {{Lang::get('Upload favicon for Admin and Client Panel')}}</i> </p>
-                                @if($set->fav_icon) 
-                                <img src='{{ $set->fav_icon }}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
+                                <div class="d-flex align-items-center mt-1">
+                                    @if($set->fav_icon)
+                                        <img src="{{ $set->fav_icon }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Favicon">
+                                    @endif
 
-                      
+                                    <div class="custom-file ml-3">
+                                        {!! Form::file('fav-icon', ['class' => 'custom-file-input', 'id' => 'fav-icon']) !!}
+                                        <label class="custom-file-label" for="fav-icon">{{ __('Choose file') }}</label>
+                                    </div>
+                                </div>
 
-                                      <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="fav" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
-                                @else
-                                 {!! Form::file('fav-icon') !!}
+                                @if($errors->has('icon'))
+                                    <small class="form-text text-danger mt-1">
+                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('icon') }}
+                                    </small>
                                 @endif
                             </div>
                         </td>
@@ -352,17 +363,24 @@ System Setting
                         <td><b>{!! Form::label('logo',Lang::get('message.client-logo')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
+                                   {{ __('Upload the company logo') }}
 
-                                
-                                <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
-                                @if($set->logo) 
-                                <img src='{{ $set->logo }}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
-                                 
-                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
-                                @else
-                                {!! Form::file('logo') !!}
+                                <div class="d-flex align-items-center mt-1">
+                                    @if($set->logo)
+                                        <img src="{{ $set->logo }}" class="img-thumbnail shadow-sm border"
+                                             style="height: 50px; width: 100px;" alt="Company Logo">
+                                    @endif
 
+                                    <div class="custom-file ml-3">
+                                        {!! Form::file('logo', ['class' => 'custom-file-input', 'id' => 'logo']) !!}
+                                        <label class="custom-file-label" for="logo">{{ __('Choose file') }}</label>
+                                    </div>
+                                </div>
+
+                                @if($errors->has('logo'))
+                                    <small class="form-text text-danger mt-1">
+                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('logo') }}
+                                    </small>
                                 @endif
                             </div>
                         </td>
@@ -382,8 +400,15 @@ System Setting
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
-      $(document).ready(function(){
+
+    $(document).ready(function () {
+        $('.custom-file-input').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass('selected').html(fileName);
+        });
+    });
+
+    $(document).ready(function(){
          $(function () {
              //Initialize Select2 Elements
              $('.select2').select2()
@@ -399,42 +424,21 @@ System Setting
     addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
     validMsg = document.querySelector("#valid-msg");
-    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.country = country;
-
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
-            });
-        },
-        separateDialCode: true,
-       utilsScript: "{{asset('js/intl/js/utils.js')}}"
-    });
      var reset = function() {
       errorMsg.innerHTML = "";
       errorMsg.classList.add("hide");
       validMsg.classList.add("hide");
     };
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
      $('.intl-tel-input').css('width', '100%');
-    telInput.on('blur', function () {
+    telInput.on('input blur submit', function () {
       reset();
         if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#phone').css("border-color","");
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+             errorMsg.innerHTML = "Please enter a valid number";
              $('#phone').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
              errorMsg.classList.remove("hide");
@@ -444,15 +448,15 @@ System Setting
     });
 
      addressDropdown.change(function() {
-     telInput.intlTelInput("setCountry", $(this).val());
+         updateCountryCodeAndFlag(telInput.get(0), addressDropdown.val());
              if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
+            if (validatePhoneNumber(telInput.get(0))) {
               $('#phone').css("border-color","");
               errorMsg.classList.add("hide");
+                errorMsg.innerHTML = "";
               $('#submit').attr('disabled',false);
             } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
+                errorMsg.innerHTML = "Please enter a valid number";
              $('#phone').css("border-color","red");
              $('#error-msg').css({"color":"red","margin-top":"5px"});
              errorMsg.classList.remove("hide");
@@ -465,7 +469,8 @@ System Setting
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=mobileds]').attr('value', $('.selected-dial-code').text());
+        $('#phone_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
+        telInput.val(telInput.val().replace(/\D/g, ''));
     });
 
 

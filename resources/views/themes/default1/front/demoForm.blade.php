@@ -174,6 +174,10 @@ $(document).ready(function() {
         $("#demoregister").attr('disabled',true);
         $("#demoregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
 
+        var mobilecode  = document.getElementById('mobilenumdemo').getAttribute('data-dial-code');
+        var countryCode = '+' + mobilecode;
+        $('#mobile_code_hiddenDemo').val(countryCode);
+
         var formData = {
             "demoname": $('#demoname').val(),
             "demoemail": $('#demoemail').val(),

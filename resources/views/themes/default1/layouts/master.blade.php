@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="{{asset('admin/css/icheck-bootstrap.min.css')}}">
 
         <!-- Custom css/js -->
-        <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+        <link rel="stylesheet" href="{{ asset('common/intl-tel-input/css/intlTelInput.css') }}">
 
         <script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>
         <script src="{{asset('https://code.jquery.com/jquery-3.5.1.min.js')}}"></script>
@@ -65,9 +65,6 @@
         </script>
         <!-- AdminLTE Skins. Choose a skin from the css/skins
              folder instead of downloading all of them to reduce the load. -->
-
-
-         <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
 
     </head>
@@ -170,7 +167,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:35px;height: 50px;margin-left: 5.5rem;" src='{{ $set->admin_logo }}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width:54px; height: 50px;margin-left: 5.5rem;" src='{{ $set->admin_logo }}' alt="Admin-Logo" class="brand-image"
                      style="opacity: .8;"></span>
                         </a>
                 @endif
@@ -521,7 +518,7 @@
 
 
 {{-------------------------------------Custom---------------------------------------------------------}}
-    <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+    <script src="{{ asset('common/intl-tel-input/js/intlTelInputWithUtils.js') }}"></script>
 
     <script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>
 
@@ -536,6 +533,7 @@
     // for sidebar menu entirely but not cover treeview
     
     </script>
+    @extends('mini_views.intl_tel_input')
     
     @yield('icheck')
     @yield('datepicker')

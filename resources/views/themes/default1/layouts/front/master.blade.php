@@ -99,7 +99,7 @@ foreach($scripts as $script) {
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{asset('client/porto/css-2/custom.css')}}">
 
-    <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+    <link rel="stylesheet" href="{{asset('common/intl-tel-input/css/intlTelInput.css')}}">
 
     <!-- Head Libs -->
     <script src="{{asset('client/porto/js-2/modernizr.min.js')}}"></script>
@@ -947,11 +947,11 @@ $days = $pay->where('product','117')->value('days');
 
 <!-- Theme Initialization Files -->
 <script src="{{asset('client/porto/js-2/theme.init.js')}}"></script>
-<script src="{{asset('common/js/intlTelInput.js')}}"></script>
+<script src="{{asset('common/intl-tel-input/js/intlTelInputWithUtils.js')}}"></script>
 <!-- Current Page Vendor and Views -->
 <script src="{{asset('client/porto/js-2/view.contact.js')}}"></script>
 
-
+@extends('mini_views.intl_tel_input')
 
 <script type="text/javascript">
 
@@ -1238,17 +1238,6 @@ $(document).ready(function() {
             validMsgdemo = document.querySelector("#valid-msgdemo"),
             addressDropdowndemo = $("#country");
 
-        demotelInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCodedemo = (resp && resp.country) ? resp.country : "";
-                    callback(countryCodedemo);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
         var resetdemo = function() {
             errorMsgdemo.innerHTML = "";
             errorMsgdemo.classList.add("hide");
@@ -1260,8 +1249,7 @@ $(document).ready(function() {
         demotelInput.on('input blur', function () {
             resetdemo();
             if ($.trim(demotelInput.val())) {
-
-                if (demotelInput.intlTelInput("isValidNumber")) {
+                if (validatePhoneNumber(demotelInput.get(0))) {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
@@ -1279,9 +1267,8 @@ $(document).ready(function() {
             $(this).parent().removeClass('has-error');
         });
         addressDropdowndemo.change(function() {
-            demotelInput.intlTelInput("setCountry", $(this).val());
             if ($.trim(demotelInput.val())) {
-                if (demotelInput.intlTelInput("isValidNumber")) {
+                if (validatePhoneNumber(demotelInput.get(0))) {
                     $('#mobilenumdemo').css("border-color","");
                     $("#error-msgdemo").html('');
                     errorMsgdemo.classList.add("hide");
@@ -1296,12 +1283,6 @@ $(document).ready(function() {
             }
         });
 
-       $('form').on('submit', function (e) {
-        var selectedCountry = demotelInput.intlTelInput('getSelectedCountryData');
-        var countryCode = '+' + selectedCountry.dialCode;
-        $('#mobile_code_hiddenDemo').val(countryCode);
-
-        });
 
         $(document).ready(function() {
             $('#tenancy').on('shown.bs.modal', function () {

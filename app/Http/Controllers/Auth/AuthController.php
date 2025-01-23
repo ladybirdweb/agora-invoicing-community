@@ -494,8 +494,7 @@ class AuthController extends BaseAuthController
             $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
             $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
             $this->addUserToMailchimp($user, $status->mailchimp_status);
-        }catch (\Exception $exception){
-
+        } catch (\Exception $exception) {
         }
     }
 }

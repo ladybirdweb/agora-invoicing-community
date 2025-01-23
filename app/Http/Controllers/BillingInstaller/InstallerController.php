@@ -5,10 +5,12 @@ namespace App\Http\Controllers\BillingInstaller;
 use App;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
+use App\Model\Common\Setting;
 use App\Model\Mailjob\QueueService;
 use App\User;
 use Artisan;
 use Cache;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Session;
@@ -292,6 +294,16 @@ class InstallerController extends Controller
                 'role' => 'admin',
                 'mobile_verified' => 1,
             ]);
+
+            // Update the initial company settings
+            DB::transaction(function () {
+                Setting::where('id', 1)
+                    ->update([
+                        'title' => 'Agora Invoicing',
+                        'favicon_title' => 'Agora Invoicing',
+                        'favicon_title_client' => 'Agora Invoicing'
+                    ]);
+            });
 
             Session::flush();
             \Cache::flush();

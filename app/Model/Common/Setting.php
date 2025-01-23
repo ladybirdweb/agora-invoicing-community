@@ -49,7 +49,7 @@ class Setting extends Model
 
     public function getAdminLogoAttribute($value)
     {
-        return $this->getImage($value, 'admin/images' , asset('images/agora_admin_logo.png'));
+        return $this->getImage($value, 'admin/images', asset('images/agora_admin_logo.png'));
     }
 
     public function getFavIconAttribute($value)

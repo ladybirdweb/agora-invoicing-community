@@ -301,7 +301,7 @@ class InstallerController extends Controller
                     ->update([
                         'title' => 'Agora Invoicing',
                         'favicon_title' => 'Agora Invoicing',
-                        'favicon_title_client' => 'Agora Invoicing'
+                        'favicon_title_client' => 'Agora Invoicing',
                     ]);
             });
 

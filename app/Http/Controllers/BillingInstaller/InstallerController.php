@@ -302,6 +302,9 @@ class InstallerController extends Controller
                         'title' => 'Agora Invoicing',
                         'favicon_title' => 'Agora Invoicing',
                         'favicon_title_client' => 'Agora Invoicing',
+                        'admin_logo' => null,
+                        'logo' => null,
+                        'fav_icon' => null,
                     ]);
             });
 

@@ -273,23 +273,23 @@ System Setting
                      
                         <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('admin-logo') ? 'has-error' : '' }}">
                                    {{ __('Upload Application Logo') }}
 
                                 <div class="d-flex align-items-center mt-1">
                                     @if($set->admin_logo)
-                                        <img src="{{ $set->admin_logo }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Application Logo">
+                                        <img src="{{ $set->admin_logo }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Application Logo" id="preview-admin-logo">
                                     @endif
 
                                     <div class="custom-file ml-3">
-                                        {!! Form::file('admin-logo', ['class' => 'custom-file-input', 'id' => 'admin-logo']) !!}
-                                        <label class="custom-file-label" for="admin-logo">{{ __('Choose file') }}</label>
+                                        {!! Form::file('admin-logo', ['class' => 'custom-file-input cursor-pointer', 'id' => 'admin-logo' , 'role' => 'button']) !!}
+                                        <label role="button" class="custom-file-label cursor-pointer" for="admin-logo">{{ __('Choose file') }}</label>
                                     </div>
                                 </div>
 
-                                @if($errors->has('logo'))
+                                @if($errors->has('admin-logo'))
                                     <small class="form-text text-danger mt-1">
-                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('logo') }}
+                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('admin-logo') }}
                                     </small>
                                 @endif
                             </div>
@@ -302,23 +302,23 @@ System Setting
                         <td><b>{!! Form::label('icon',Lang::get('message.fav-icon')) !!}</b></td>
 
                         <td>
-                            <div class="form-group {{ $errors->has('icon') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('fav-icon') ? 'has-error' : '' }}">
                                     {{ __('Upload favicon for Admin and Client Panel') }}
 
                                 <div class="d-flex align-items-center mt-1">
                                     @if($set->fav_icon)
-                                        <img src="{{ $set->fav_icon }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Favicon">
+                                        <img src="{{ $set->fav_icon }}" class="img-thumbnail shadow-sm border" style="height: 50px; width: 100px;" alt="Favicon" id="preview-fav-icon">
                                     @endif
 
                                     <div class="custom-file ml-3">
-                                        {!! Form::file('fav-icon', ['class' => 'custom-file-input', 'id' => 'fav-icon']) !!}
-                                        <label class="custom-file-label" for="fav-icon">{{ __('Choose file') }}</label>
+                                        {!! Form::file('fav-icon', ['class' => 'custom-file-input', 'id' => 'fav-icon' ,'role' => 'button']) !!}
+                                        <label role="button" class="custom-file-label" for="fav-icon">{{ __('Choose file') }}</label>
                                     </div>
                                 </div>
 
-                                @if($errors->has('icon'))
+                                @if($errors->has('fav-icon'))
                                     <small class="form-text text-danger mt-1">
-                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('icon') }}
+                                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('fav-icon') }}
                                     </small>
                                 @endif
                             </div>
@@ -368,12 +368,12 @@ System Setting
                                 <div class="d-flex align-items-center mt-1">
                                     @if($set->logo)
                                         <img src="{{ $set->logo }}" class="img-thumbnail shadow-sm border"
-                                             style="height: 50px; width: 100px;" alt="Company Logo">
+                                             style="height: 50px; width: 100px;" alt="Company Logo" id="preview-logo">
                                     @endif
 
                                     <div class="custom-file ml-3">
-                                        {!! Form::file('logo', ['class' => 'custom-file-input', 'id' => 'logo']) !!}
-                                        <label class="custom-file-label" for="logo">{{ __('Choose file') }}</label>
+                                        {!! Form::file('logo', ['class' => 'custom-file-input', 'id' => 'logo', 'role' => 'button', 'onchange' => 'previewImage("preview-logo", "logo")']) !!}
+                                        <label role="button" class="custom-file-label" for="logo">{{ __('Choose file') }}</label>
                                     </div>
                                 </div>
 
@@ -590,6 +590,40 @@ System Setting
     $('[data-toggle="tooltip"]').tooltip();
 });
 
+
+    ['logo', 'admin-logo', 'fav-icon'].forEach((id) => {
+        const input = document.getElementById(id);
+        const preview = document.getElementById(`preview-${id}`);
+
+        if (input && preview) {
+            input.addEventListener('change', () => {
+                // Clear previous preview if file selection is canceled
+                if (!input.files.length) {
+                    preview.src = '';
+                    return;
+                }
+                previewImage(input, preview);
+            });
+        }
+    });
+
+    function previewImage(input, preview) {
+        const file = input.files?.[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+        };
+
+        reader.onerror = () => {
+            input.value = '';
+        };
+
+        reader.readAsDataURL(file);
+    }
 </script>
 
 

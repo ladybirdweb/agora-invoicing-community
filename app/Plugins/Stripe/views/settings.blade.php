@@ -53,7 +53,7 @@
                         @enderror
                         <small id="stripe_secretcheck" class="text-danger"></small>
                     </div>
-                    <button type="button" class="btn btn-primary" id="key_update">
+                    <button type="submit" class="btn btn-primary" id="key_update">
                         <i class="fa fa-sync-alt"></i> Update
                     </button>
                 </form>
@@ -63,47 +63,62 @@
 
     <script>
         $(document).ready(function() {
-            $("#key_update").on('click', function () {
-                $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
-                $("#key_update").attr('disabled', true);
+            function placeErrorMessage(error, element, errorMapping) {
+                var errorContainer = errorMapping[element.attr("name")];
 
-                let valid = true;
-
-                // Validation
-                if ($('#stripe_key').val().trim() === "") {
-                    valid = false;
-                    $('#stripe_keycheck').html("Please Enter Stripe Key").show();
-                    $('#stripe_key').addClass('is-invalid');
+                if (errorContainer) {
+                    $(errorContainer).html(error);
                 } else {
-                    $('#stripe_keycheck').hide();
-                    $('#stripe_key').removeClass('is-invalid');
+                    error.insertAfter(element);
                 }
-
-                if ($('#stripe_secret').val().trim() === "") {
-                    valid = false;
-                    $('#stripe_secretcheck').html("Please Enter Stripe Secret").show();
-                    $('#stripe_secret').addClass('is-invalid');
-                } else {
-                    $('#stripe_secretcheck').hide();
-                    $('#stripe_secret').removeClass('is-invalid');
-                }
-
-                if (!valid) {
-                    $("#key_update").attr('disabled', false);
-                    $('#key_update').html("<i class='fa fa-sync-alt'></i> Update");
-                    return false;
-                }
-
-                // AJAX Request
-                $.ajax({
-                    url: '{{ url("update-api-key/payment-gateway/stripe") }}',
-                    type: 'GET',
-                    data: {
-                        "stripe_key": $('#stripe_key').val(),
-                        "stripe_secret": $('#stripe_secret').val()
+            }
+            $("#stripeForm").validate({
+                rules: {
+                    stripe_key: {
+                        required: true,
+                        maxlength: 100
                     },
-                    success: function (data) {
-                        $('#alertMessage').html(`<div class="alert alert-success alert-dismissable">
+                    stripe_secret: {
+                        required: true,
+                        maxlength: 100
+                    }
+                },
+                messages: {
+                    stripe_key: {
+                        required: {{ __('message.required_stripe_key') }},
+                        maxlength: {{ __('message.max_stripe_key') }}
+                    },
+                    stripe_secret: {
+                        required: {{ __('message.required_stripe_secret') }},
+                        maxlength: {{ __('message.max_stripe_secret') }}
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    var errorMapping = {
+                        "stripe_key": "#stripe_keycheck",
+                        "stripe_secret": "#stripe_secretcheck"
+                    };
+
+                    element.addClass('is-invalid');
+
+                    placeErrorMessage(error, element, errorMapping);
+                },
+
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i> Please Wait...");
+                    $("#key_update").attr('disabled', true);
+
+                    // AJAX Request if validation passes
+                    $.ajax({
+                        url: '{{ url("update-api-key/payment-gateway/stripe") }}',
+                        type: 'GET',
+                        data: {
+                            "stripe_key": $('#stripe_key').val(),
+                            "stripe_secret": $('#stripe_secret').val()
+                        },
+                        success: function(data) {
+                            $('#alertMessage').html(`<div class="alert alert-success alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <strong><i class="fa fa-check"></i> Success! </strong>${data.message.message}.
                     </div>`).slideDown();
@@ -115,9 +130,30 @@
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <strong><i class="fa fa-ban"></i> Failed! </strong>${data.responseJSON.message}
                     </div>`).slideDown();
-                        $("#key_update").html("<i class='fa fa-sync-alt'></i> Update").attr('disabled', false);
+                            $("#key_update").html("<i class='fa fa-sync-alt'></i> Update").attr('disabled', false);
+                        }
+                    });
+                },
+                onfocusout: function (element) {
+                    $(element).removeClass('is-invalid');
+                    var errorContainer = {
+                        "stripe_key": "#stripe_keycheck",
+                        "stripe_secret": "#stripe_secretcheck"
+                    }[element.name];
+                    if (errorContainer) {
+                        $(errorContainer).html('');
                     }
-                });
+                },
+                onkeyup: function (element) {
+                    $(element).removeClass('is-invalid');
+                    var errorContainer = {
+                        "stripe_key": "#stripe_keycheck",
+                        "stripe_secret": "#stripe_secretcheck"
+                    }[element.name];
+                    if (errorContainer) {
+                        $(errorContainer).html('');
+                    }
+                }
             });
         });
     </script>

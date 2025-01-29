@@ -36,6 +36,7 @@ class SyncBillingToLatestVersion
             $this->clearViewCache();
             $this->clearConfig();
             isInstall() && $this->restartHorizon();
+            $this->storageLink();
         } catch (Exception $ex) {
             if (! isInstall()) {
                 //if system is not installed chances are logs tables are not present
@@ -171,6 +172,12 @@ class SyncBillingToLatestVersion
         }
 
         Artisan::call('horizon:terminate');
+        $this->handleArtisanLogs();
+    }
+
+    private function storageLink()
+    {
+        Artisan::call('storage:link');
         $this->handleArtisanLogs();
     }
 }

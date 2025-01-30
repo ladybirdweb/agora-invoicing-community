@@ -178,7 +178,7 @@ class SubscriptionController extends Controller
                 $stripe_payment_details = Auto_renewal::where('user_id', $userid)->where('order_id', $subscription->order_id)->where('payment_method', 'stripe')->latest()->first(['customer_id', 'payment_intent_id']);
                 $planid = Plan::where('product', $product_details->id)->value('id');
 
-                $subscription = Subscription::where('id', $subscription->id)->first();
+//                $subscription = Subscription::where('id', $subscription->id)->first();
                 $productType = Product::find($subscription->product_id);
                 $countryids = \App\Model\Common\Country::where('country_code_char2', $user->country)->first();
                 $currency = getCurrencyForClient($user->country);

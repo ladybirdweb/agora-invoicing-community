@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Comment;
 use App\ExportDetail;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
 use App\Jobs\ReportExport;
@@ -263,11 +264,10 @@ class ClientController extends AdvanceSearchController
             if (emailSendingStatus()) {
                 $this->sendWelcomeMail($userInput);
             }
-            $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
-            if ($mailchimpStatus == 1) {
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user);
-            }
+
+            $authController = new AuthController();
+
+            $authController->addUserToExternalServices($userInput);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {

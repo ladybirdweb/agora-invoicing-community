@@ -76,21 +76,21 @@
                 rules: {
                     stripe_key: {
                         required: true,
-                        maxlength: 100
+                        maxlength: 200
                     },
                     stripe_secret: {
                         required: true,
-                        maxlength: 100
+                        maxlength: 200
                     }
                 },
                 messages: {
                     stripe_key: {
-                        required: {{ __('message.required_stripe_key') }},
-                        maxlength: {{ __('message.max_stripe_key') }}
+                        required: "{{ __('message.required_stripe_key') }}",
+                        maxlength: "{{ __('message.max_stripe_key') }}"
                     },
                     stripe_secret: {
-                        required: {{ __('message.required_stripe_secret') }},
-                        maxlength: {{ __('message.max_stripe_secret') }}
+                        required: "{{ __('message.required_stripe_secret') }}",
+                        maxlength: "{{ __('message.max_stripe_secret') }}"
                     }
                 },
                 errorPlacement: function (error, element) {

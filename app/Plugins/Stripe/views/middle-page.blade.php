@@ -839,101 +839,13 @@ $json = json_encode($data);
                location.reload();
                });
 $(document).ready(function() {
-    $("#submit_total").validate({
-        rules: {
-            card_no: {
-                required: true,
-                digits: true,
-                minlength: 15,
-                maxlength: 16,
-            },
-            exp_month: {
-                required: true,
-                digits: true,
-                minlength: 2,
-                maxlength: 2,
-                range: [1, 12] 
-            },
-            exp_year: {
-                required: true,
-                digits: true,
-                minlength: 2,
-                maxlength: 2,
-                notPastYear: true
-            },
-            cvv: {
-                required: true,
-                digits: true,
-                rangelength: [3, 4] 
-            }
-        },
-        messages: {
-            card_no: {
-                required: "Card number is required",
-                digits: "Please enter digits only",
-                minlength: "Card number must be at least 15 digits",
-                maxlength: "Card number cannot exceed 16 digits"
-            },
-            exp_month: {
-                required: "Expiration month is required",
-                digits: "Please enter digits only",
-                minlength: "Expiration month must be 2 digits",
-                maxlength: "Expiration month must be 2 digits",
-                range: "Expiration month cannot exceed 12"
-            },
-            exp_year: {
-                required: "Expiration year is required",
-                digits: "Please enter digits only",
-                minlength: "Expiration year must be 2 digits",
-                maxlength: "Expiration year must be 2 digits",
-                notPastYear: "Expiration year cannot be in the past"
-            },
-            cvv: {
-                required: "CVV is required",
-                digits: "Please enter digits only",
-                rangelength: "CVV must be either 3 or 4 digits"
-            }
-        },
-        errorElement: "span",
-        errorPlacement: function(error, element) {
-            error.addClass("invalid-feedback");
-            error.insertAfter(element);
-        },
-        highlight: function(element, errorClass, validClass) {
-            $(element).addClass("is-invalid").removeClass("is-valid");
-        },
-        unhighlight: function(element, errorClass, validClass) {
-            $(element).removeClass("is-invalid").addClass("is-valid");
-        }
-    });
-
     var $form = $("#submit_total");
-    var $cardNo = $("#card_no");
-    var $expMonth = $("#exp_month");
-    var $expYear = $("#exp_year");
-    var $cvv = $("#cvv");
     var $payButton = $("#pay_now");
 
     $form.on("submit", function(event) {
-        // Check if each field is valid
-        var isCardNoValid = $cardNo.valid();
-        var isExpMonthValid = $expMonth.valid();
-        var isExpYearValid = $expYear.valid();
-        var isCvvValid = $cvv.valid();
-
-        if (isCardNoValid && isExpMonthValid && isExpYearValid && isCvvValid) {
-            $payButton.prop("disabled", true);
-            $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
-        } else {
-                event.preventDefault();
-        }
+        $payButton.prop("disabled", true);
+        $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
     });
-
-    $.validator.addMethod("notPastYear", function(value, element) {
-        var currentYear = new Date().getFullYear() % 100;
-        var enteredYear = parseInt(value, 10);
-        return enteredYear >= currentYear;
-    }, "Expiration year cannot be in the past");
 });
 
 

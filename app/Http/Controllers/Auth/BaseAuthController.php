@@ -259,9 +259,9 @@ class BaseAuthController extends Controller
 
                 // Create Person
                 $personResponse = $pipedrive->persons()->add([
-                    'name'  => $user->first_name . ' ' . $user->last_name,
+                    'name' => $user->first_name.' '.$user->last_name,
                     'email' => $user->email,
-                    'phone' => '+' . $user->mobile_code . $user->mobile,
+                    'phone' => '+'.$user->mobile_code.$user->mobile,
                     'org_id' => $orgId,
                 ]);
 
@@ -269,9 +269,9 @@ class BaseAuthController extends Controller
 
                 // Create Deal
                 $pipedrive->deals()->add([
-                    'title'     => $user->company . ' deal',
+                    'title' => $user->company.' deal',
                     'person_id' => $personId,
-                    'org_id'    => $orgId,
+                    'org_id' => $orgId,
                 ]);
             }
         }

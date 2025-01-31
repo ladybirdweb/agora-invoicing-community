@@ -679,7 +679,6 @@ class HomeController extends BaseHomeController
         return json_decode($response->getBody()->getContents(), true);
     }
 
-
     public function getProductRelease(Request $request)
     {
         $product_id = $request->input('product_id');

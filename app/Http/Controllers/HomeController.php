@@ -7,6 +7,8 @@ use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Requests\ProductRenewalRequest;
 use App\Model\Common\Country;
+use App\Model\Configure\PluginCompatibleWithProducts;
+use App\Model\Configure\ProductPluginGroup;
 use App\Model\License\LicenseType;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
@@ -642,12 +644,26 @@ class HomeController extends BaseHomeController
         $client = $request->input('client');
 
         $license = $request->input('license');
+
+        $product_id = $request->input('product_id');
+
         $user = User::where('email', $client)->value('id');
+
         $licenseType = LicenseType::where('name', 'plugin')->value('id');
 
-        $product = Product::where('type', $licenseType)->pluck('id')->toArray();
+        $products = Product::where('type', $licenseType)->pluck('id')->toArray();
 
-        $licenses = Order::where('client', $user)->whereIn('product', $product)
+        $productComp = PluginCompatibleWithProducts::where('product_id', $product_id)->pluck('plugin_id')->toArray();
+
+        $product = array_intersect($products, $productComp);
+
+        $productsLinked = ProductPluginGroup::where('product_id', $product_id)->pluck('plugin_id')->toArray();
+
+        $uniqueElements = array_merge(array_diff($product, $productsLinked), array_diff($productsLinked, $product));
+
+        $uniqueElements = array_values($uniqueElements);
+
+        $licenses = Order::where('client', $user)->whereIn('product', $uniqueElements)
             ->pluck('serial_key')
             ->toArray();
 
@@ -662,6 +678,7 @@ class HomeController extends BaseHomeController
 
         return json_decode($response->getBody()->getContents(), true);
     }
+
 
     public function getProductRelease(Request $request)
     {

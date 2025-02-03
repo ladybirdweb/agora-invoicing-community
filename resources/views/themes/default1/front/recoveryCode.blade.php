@@ -26,7 +26,7 @@ main
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    {!!  Form::open(['route'=>'verify-recovery-code', 'method'=>'post']) !!}
+                    {!!  Form::open(['route'=>'verify-recovery-code', 'method'=>'post', 'id'=>'recovery_form']) !!}
 
 
                         <div class="row">
@@ -35,7 +35,7 @@ main
 
                                 <label class="form-label text-color-dark text-3">Enter recovery code <span class="text-color-danger">*</span></label>
 
-                                <input type="text" name="rec_code"  value="" class="form-control form-control-lg text-4" required>
+                                <input type="text" name="rec_code"  value="" class="form-control form-control-lg text-4">
                             </div>
                             <h6 id="codecheck"></h6>
                         </div>
@@ -65,4 +65,36 @@ main
             </div>
 
         </div>
+        <script>
+            $(document).ready(function() {
+                function placeErrorMessage(error, element, errorMapping = null) {
+                    if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                        $(errorMapping[element.attr("name")]).html(error);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+                $('#recovery_form').validate({
+                    rules: {
+                        rec_code: {
+                            required: true
+                        },
+                    },
+                    messages: {
+                        rec_code: {
+                            required: "Please enter the recovery code",
+                        },
+                    },
+                    unhighlight: function (element) {
+                        $(element).removeClass("is-valid");
+                    },
+                    errorPlacement: function (error, element) {
+                        placeErrorMessage(error, element);
+                    },
+                    submitHandler: function (form) {
+                        form.submit();
+                    }
+                });
+            });
+        </script>
 @stop 

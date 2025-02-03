@@ -22,30 +22,23 @@ Forgot Password
 main
 @stop
 @section('content')
+    <div id="alert-container"></div>
         <div class="container py-4">
-            <div id="errorMessage" class="alert alert-success alert-dismissible fade show" style="display: none;max-width: 500px;width: 100%;margin-left: 300px;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <span id="errorMessageText"></span>
-        </div>
-         <div id="alertMessage"></div>
-        <div id="errorMessage"></div>
 
             <div class="row justify-content-center">
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    <p class="text-2">Lost your password?</p>
+                    <form id="resetPasswordForm">
                         <div class="row">
 
                             <div class="form-group col">
 
                                 <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
 
-                                <input name="email" value="" id="email" class="form-control form-control-lg text-4" required>
+                                <input name="email" value="" id="email" type="email" class="form-control form-control-lg text-4">
+                                <h6 id="resetpasswordcheck"></h6>
                             </div>
-                            <h6 id="resetpasswordcheck"></h6>
                         </div>
 
                         <div class="row justify-content-between">
@@ -59,17 +52,18 @@ main
                                 <div id="recaptchaEmail"></div>
                                 <span id="passcaptchacheck"></span><br>
                             @elseif($status->v3_recaptcha_status === 1)
-                                 <input type="hidden" id="g-recaptcha-email" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                                 <input type="hidden" id="g-recaptcha-email" class="g-recaptcha-token" name="g-recaptcha-response">
                              @endif
 
                         <div class="row">
 
                             <div class="form-group col">
 
-                                <button type="button" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading..." name="sendOtp" id="resetmail" onclick="resetpassword()">Send Mail</button>
+                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Sending..." data-original-text="Send Mail" name="sendOtp" id="resetmail">Send Mail</button>
 
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -77,139 +71,144 @@ main
 @section('script')
 @extends('mini_views.recaptcha')
 <script>
-
     let email_recaptcha_id;
     let recaptcha;
     let recaptchaToken;
 
     @if($status->recaptcha_status === 1)
     recaptchaFunctionToExecute.push(() => {
-        email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
+        email_recaptcha_id = grecaptcha.render('recaptchaEmail', {'sitekey': siteKey});
     });
     @endif
+</script>
 
-    
-         function PassvalidateRecaptcha() {
-             @if($status->recaptcha_status === 1)
-                 recaptchaToken = getRecaptchaTokenFromId(email_recaptcha_id);
-                if (getRecaptchaTokenFromId(email_recaptcha_id) === '') {
-                    $('#passcaptchacheck').show();
-                    $('#passcaptchacheck').html("Robot verification failed, please try again.");
-                    $('#passcaptchacheck').focus();
-                    $('#passcaptcha').css("border-color", "red");
-                    $('#passcaptchacheck').css({"color": "red", "margin-top": "5px"});
+<script>
+    $(document).ready(function(){
+        function placeErrorMessage(error, element, errorMapping = null) {
+            if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                $(errorMapping[element.attr("name")]).html(error);
+            } else {
+                error.insertAfter(element);
+            }
+        }
+        let alertTimeout;
+
+        function showAlert(type, messageOrResponse) {
+
+            // Generate appropriate HTML
+            var html = generateAlertHtml(type, messageOrResponse);
+
+            // Clear any existing alerts and remove the timeout
+            $('#alert-container').html(html);
+            clearTimeout(alertTimeout); // Clear the previous timeout if it exists
+
+            // Display alert
+            window.scrollTo(0, 0);
+
+            // Auto-dismiss after 5 seconds
+            alertTimeout = setTimeout(function() {
+                $('#alert-container .alert').slideUp(3000, function() {
+                    // Then fade out after slideUp finishes
+                    $(this).fadeOut('slow');
+                });
+            }, 5000);
+        }
+
+
+        function generateAlertHtml(type, response) {
+            // Determine alert styling based on type
+            const isSuccess = type === 'success';
+            const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+            const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+            // Extract message and errors
+            const message = response.message || response || 'An error occurred. Please try again.';
+
+            // Build base HTML
+            let html = `<div class="alert ${alertClass} alert-dismissible">` +
+                `<i class="fa ${iconClass}"></i> ` +
+                `${message}` +
+                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+            html += '</div>';
+
+            return html;
+        }
+        $.validator.addMethod("recaptchaRequired", function(value, element) {
+            try {
+                if(!recaptchaEnabled) {
                     return false;
-                } else {
-                    $('#passcaptchacheck').hide();
-                    return true;
                 }
-                @elseif($status->v3_recaptcha_status === 1)
-                recaptchaToken = $('#g-recaptcha-email').val();
-             @endif
-                 return true
-         }
-   $('#email').keyup(function(){
-                 verify_mail_check();
-                 
-            });
-           function verify_mail_check(){
-               var pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-               var email_val = $('#email').val();
-               if(email_val.length == ''){
-                $('#resetpasswordcheck').show();
-                $('#resetpasswordcheck').html("Please Enter an Email");
-                $('#resetpasswordcheck').focus();
-                $('#email').css("border-color","red");
-                $('#resetpasswordcheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-
-                    scrollTop: $("#emailcheck").offset().top - 200
-                }, 1000)
-                return false;
+            }catch (ex){
+                return false
             }
-              if(pattern.test($('#email').val())){
-                 $('#resetpasswordcheck').hide();
-                  $('#email').css("border-color","");
-                 return true;
-               
-              }
-              
-              else{
-                 $('#resetpasswordcheck').show();
-                $('#resetpasswordcheck').html("Please Enter a valid email");
-                 $('#resetpasswordcheck').focus();
-                $('#email').css("border-color","red");
-                $('#resetpasswordcheck').css({"color":"red","margin-top":"5px"});
+            return value.trim() !== "";
+        }, "Please verify that you are not a robot.");
+        $.validator.addMethod("regex", function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        }, "Invalid format.");
 
-                   // mail_error = false;
-                return false;
-                
-              }
+        $('#resetPasswordForm').validate({
+            ignore: ":hidden:not(.g-recaptcha-response)",
+            rules: {
+                email: {
+                    required: true,
+                    regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: true
+                }
+            },
+            messages: {
+                email: {
+                    required: "Please enter your email.",
+                    regex: "Please enter a valid email address."
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: "Please verify that you are not a robot."
+                }
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-valid");
+            },
+            errorPlacement: function (error, element) {
+                var errorMapping = {
+                    "email": "#resetpasswordcheck",
+                    "g-recaptcha-response": "#passcaptchacheck"
+                };
 
-            }
-
-                        function resetpassword() 
-                        {  
-                            
-                           var mail_error = true;
-                           var mobile_error = true;
-                           $('#resetpasswordcheck').hide();
-                                                        
-                           if (verify_mail_check() && PassvalidateRecaptcha()) {
-                          $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
-                                    var data = {
-                                        "email":   $('#email').val(),
-                                        "pass-recaptcha-response-1":recaptchaToken,
-                                    };
-                                    $.ajax({
-                                        url: '{{url('password/email')}}',
-                                        type: 'POST',
-                                        data: data,
-                                       
-                                        success: function (response) {
-                                            
-                                        if(response.type == 'success'){
-                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+response.message+'!</div>';
-                                            $('#error').hide(); 
-                                            $('#alertMessage').show();
-                                            $('#alertMessage').html(result);
-                                            // $('#alertMessage2').html(result);
-                                            $("#resetmail").html("Send Email");
-                                             setTimeout(function() {
-                                                 window.location.href = '{{ route('login') }}';
-                                             }, 10000);
-                                          
-                                              // response.success("Success");
-                                           }  else {
-                                               
-                                             var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+response.message+'!</div>';
-                                            $('#error').hide(); 
-                                            $('#alertMessage').show();
-                                            $('#alertMessage').html(result);
-                                            // $('#alertMessage2').html(result);
-                                            $("#resetmail").html("Send Email");
-                                             setTimeout(function() {
-                                                 window.location.href = '{{ route('login') }}';
-                                             }, 10000);
-                                           }
-                                        },
-                                     error: function(ex) {
-                                        var myJSON = JSON.parse(ex.responseText);
-                                        var errorMessage = myJSON.result && myJSON.result.length > 0 ? myJSON.result[0] : "An error occurred.";
-                                        $('#errorMessageText').text(errorMessage);
-                                        $('#errorMessage').show();
-                                        $("#resetmail").html("Send Email");
-                                         setTimeout(function() {
-                                             window.location.href = '{{ route('login') }}';
-                                         }, 10000);
-                                    }
-                                    });
-                                  }
-                                  else{
-                                    return false;
-                                  }
-                                }
-                              </script>
+                placeErrorMessage(error, element, errorMapping);
+            },
+            submitHandler: function (form) {
+                var formData = $(form).serialize();
+                var submitButton = $('#resetmail');
+                    $.ajax({
+                        url: '{{url('password/email')}}',
+                        type: 'POST',
+                        data: formData,
+                        dataType: 'json', // Expect JSON response
+                        beforeSend: function () {
+                            submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
+                        },
+                        success: function (response) {
+                            form.reset();
+                            showAlert('success', response.message);
+                        },
+                        error: function (data) {
+                            var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+                            showAlert('error', response);
+                        },
+                        complete: function () {
+                            submitButton.prop('disabled', false).html(submitButton.data('original-text'));
+                            setTimeout(function() {
+                                window.location.href = "{{ url('login') }}";
+                            }, 3500);
+                        }
+                    });
+                }
+        });
+    });
+</script>
 @stop
                               

@@ -146,7 +146,7 @@ input:checked + .slider:before {
                     <div class="tab-pane tab-pane-navigation active" id="profile" role="tabpanel">
 
                            <div class="row">
-                             {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
+                             {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true , 'id' => 'client_form']) !!}
                                                 <div class="d-flex justify-content-center mb-4" id="profile_img">
 
                                             <div class="profile-image-outer-container">
@@ -200,7 +200,7 @@ input:checked + .slider:before {
                                             {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'incode' , 'data-country-iso' => $user->mobile_country_iso]) !!}
                                             {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                                             <span id="invalid-msg" class="hide"></span>
-                                               <span id="inerror-msg" class="hide"></span>
+                                               <span id="inerror-msg"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('company') ? 'has-error' : '' }}">
@@ -656,46 +656,10 @@ input:checked + .slider:before {
 
     getCode(incountry);
 
-    var intelInput = $('#incode');
-    inaddressDropdown = $("#country");
-    proerrorMsg = document.querySelector("#inerror-msg"),
-    provalidMsg = document.querySelector("#invalid-msg");
-     var reset = function() {
-      proerrorMsg.innerHTML = "";
-      proerrorMsg.classList.add("hide");
-      provalidMsg.classList.add("hide");
-    };
-     $('.intl-tel-input').css('width', '100%');
-    intelInput.on('input blur', function () {
-        reset();
-        if ($.trim(intelInput.val())) {
-            if (validatePhoneNumber(intelInput.get(0))) {
-              $('#incode').css("border-color","");
-              provalidMsg.classList.remove("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-            proerrorMsg.classList.remove("hide");
-             proerrorMsg.innerHTML = "Please enter a valid number";
-             $('#incode').css("border-color","red");
-             $('#inerror-msg').css({"color":"red","margin-top":"5px"});
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
 
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
-
-    $('form').on('submit', function (e) {
-        $('#mobile_country_iso').val(intelInput.attr('data-country-iso').toUpperCase());
-        intelInput.val(intelInput.val().replace(/\D/g, ''));
-    });
-
-
-
-
-
 });
 
 
@@ -739,6 +703,112 @@ input:checked + .slider:before {
     }
 
 
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $.validator.addMethod("validPhone", function(value, element) {
+            return validatePhoneNumber(element);
+        }, "Please enter a valid phone number.");
+        function placeErrorMessage(error, element, errorMapping = null) {
+            if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                $(errorMapping[element.attr("name")]).html(error);
+            } else {
+                error.insertAfter(element);
+            }
+        }
+        $.validator.addMethod("regex", function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        }, "Invalid format.");
+        $("#client_form").validate({
+            rules: {
+                first_name: {
+                    required: true,
+                },
+                last_name: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                    regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                },
+                mobile: {
+                    required: true,
+                    validPhone: true
+                },
+                company: {
+                    required: true
+                },
+                address: {
+                    required: true
+                },
+                town: {
+                    required: true
+                },
+                state: {
+                    required: true
+                },
+                country: {
+                    required: true
+                },
+                timezone_id: {
+                    required: true
+                }
+            },
+            messages: {
+                first_name: {
+                    required: "Please enter your first name.",
+                },
+                last_name: {
+                    required: "Please enter your last name.",
+                },
+                email: {
+                    required: "Please enter your email.",
+                    regex: "Please enter a valid email address."
+                },
+                mobile: {
+                    required: "Please enter your mobile number.",
+                    validPhone: "Please enter a valid phone number."
+                },
+                company: {
+                    required: "Please enter your company name."
+                },
+                address: {
+                    required: "Please enter your address."
+                },
+                town: {
+                    required: "Please enter your town."
+                },
+                state: {
+                    required: "Please select your state."
+                },
+                country: {
+                    required: "Please enter your country."
+                },
+                timezone_id: {
+                    required: "Please select a timezone."
+                }
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-valid");
+            },
+            errorPlacement: function (error, element) {
+                var errorMapping = {
+                    "mobile": "#inerror-msg",
+                };
+
+                placeErrorMessage(error, element, errorMapping);
+            },
+            submitHandler: function (form) {
+                var intelInput = $('#incode');
+                $('#mobile_country_iso').val(intelInput.attr('data-country-iso').toUpperCase());
+                intelInput.val(intelInput.val().replace(/\D/g, ''));
+                form.submit();
+            }
+        });
+    });
 </script>
 <!-- <script src="{{asset('common/js/licCode.js')}}"></script> -->
 

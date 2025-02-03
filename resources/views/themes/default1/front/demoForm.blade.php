@@ -18,8 +18,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div id="demosuccessMessage"></div>
-                <div id="demoerrorMessage"></div>
+                <div id="alert-container-demo"></div>
 
                 <div class="modal-body">
 
@@ -92,10 +91,9 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
                             @else
                                 @if ($status->recaptcha_status === 1)
                                     <div id="demo_recaptcha"></div>
-                                    <div class="robot-verification" id="democaptcha"></div>
                                     <span id="democaptchacheck"></span>
                                 @elseif($status->v3_recaptcha_status === 1)
-                                    <input type="hidden" id="g-recaptcha-demo" class="g-recaptcha-token" name="g-recaptcha-response-1">
+                                    <input type="hidden" id="g-recaptcha-demo" class="g-recaptcha-token" name="g-recaptcha-response">
                                 @endif
                             @endif
                             <br>
@@ -129,112 +127,165 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
         });
     });
     @endif
-
-    // Validate reCAPTCHA
-    function demovalidateRecaptcha() {
-        @if($status->recaptcha_status === 1)
-            recaptchaTokenDemo = getRecaptchaTokenFromId(demo_recaptcha_id);
-
-        if (!recaptchaTokenDemo) {
-            const demoCaptchaCheck = $('#democaptchacheck');
-            demoCaptchaCheck.show().html("Robot verification failed, please try again.")
-                .css({ "color": "red", "margin-top": "5px" });
-            $('#democaptcha').css("border-color", "red");
-            demoCaptchaCheck.focus();
-            return false;
-        } else {
-            $('#democaptchacheck').hide();
-            return true;
-        }
-        @elseif($status->v3_recaptcha_status === 1)
-        // v3 reCAPTCHA token update
-        updateRecaptchaTokens();
-        return true;
-        @endif
-    }
     @endif
 </script>
 
 
 <script>
-$(document).ready(function() {
-    $('#demoForm').submit(function(event) {
-        event.preventDefault();
-        
-        var recaptchaEnabled = '{{ $status->recaptcha_status && !Auth::check() }}';
-        if (recaptchaEnabled == 1) {
-            if (!demovalidateRecaptcha()) {
-                $("#demoregister").attr('disabled', false);
-                $("#demoregister").html("Send Message");
-                return;
+
+    $(document).ready(function() {
+        function placeErrorMessage(error, element, errorMapping = null) {
+            if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                $(errorMapping[element.attr("name")]).html(error);
+            } else {
+                error.insertAfter(element);
             }
         }
-        $('#successMessage').empty();
-        $('#errorMessage').empty();
-        $("#demoregister").attr('disabled',true);
-        $("#demoregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        let alertTimeout;
 
-        var mobilecode  = document.getElementById('mobilenumdemo').getAttribute('data-dial-code');
-        var countryCode = '+' + mobilecode;
-        $('#mobile_code_hiddenDemo').val(countryCode);
+        function showAlert(type, messageOrResponse) {
 
-        var formData = {
-            "demoname": $('#demoname').val(),
-            "demoemail": $('#demoemail').val(),
-            "country_code": $('#mobile_code_hiddenDemo').val().replace(/[\. ,:-]+/g, ''),
-            "Mobile": $('#mobilenumdemo').val().replace(/[\. ,:-]+/g, ''),
-            "demomessage": $('#demomessage').val(),
-            "honeypot_field": $('input[name=honeypot_field]').val(),
-            "demo-recaptcha-response-1": recaptchaTokenDemo ?? $('#g-recaptcha-demo').val() ?? '',
-            "_token": "{{ csrf_token() }}"
-        };
+            // Generate appropriate HTML
+            var html = generateAlertHtml(type, messageOrResponse);
 
-        $.ajax({
-            type: 'POST',
-            url: 'demo-request',
-            data: formData,
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                $("#demoregister").attr('disabled',false);
-                $("#demoregister").html("Send Message");
-                $('#demosuccessMessage').html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.message + '</div>');
-                $('#demoForm')[0].reset();
-                setTimeout(function() {
-                    window.location.reload();
-                }, 5000);
+            // Clear any existing alerts and remove the timeout
+            $('#alert-container-demo').html(html);
+            clearTimeout(alertTimeout); // Clear the previous timeout if it exists
 
-            },
-            error: function(response) {
-                $("#demoregister").attr('disabled', false);
-                $("#demoregister").html("Send Message");
-            
-                var errorMessageHtml = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-                
-                if (response.responseJSON && response.responseJSON.errors) {
+            // Display alert
+            window.scrollTo(0, 0);
 
-                    for (var key in response.responseJSON.errors) {
-                        errorMessageHtml += '<li>' + response.responseJSON.errors[key][0] + '</li>';
-                    }
-            
-                    errorMessageHtml += '</ul>';
-                } else if (response.responseJSON && response.responseJSON.message) {
-                    errorMessageHtml += response.responseJSON.message;
+            // Auto-dismiss after 5 seconds
+            alertTimeout = setTimeout(function() {
+                $('#alert-container-demo .alert').slideUp(3000, function() {
+                    // Then fade out after slideUp finishes
+                    $(this).fadeOut('slow');
+                });
+            }, 5000);
+        }
+
+
+        function generateAlertHtml(type, response) {
+            // Determine alert styling based on type
+            const isSuccess = type === 'success';
+            const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+            const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+            // Extract message and errors
+            const message = response.message || response || 'An error occurred. Please try again.';
+            const errors = response.errors || null;
+
+            // Build base HTML
+            let html = `<div class="alert ${alertClass} alert-dismissible">` +
+                `<i class="fa ${iconClass}"></i> ` +
+                `${message}` +
+                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+            html += '</div>';
+
+            return html;
+        }
+        $.validator.addMethod("validPhone", function(value, element) {
+            return validatePhoneNumber(element);
+        }, "Please enter a valid phone number.");
+
+        $.validator.addMethod("recaptchaRequired", function(value, element) {
+            try {
+                if(!recaptchaEnabled) {
+                    return false;
                 }
-            
-                errorMessageHtml += '</div>';
-            
-                $('#demoerrorMessage').html(errorMessageHtml);
+            }catch (ex){
+                return false
             }
+            return value.trim() !== "";
+        }, "Please verify that you are not a robot.");
 
+        $.validator.addMethod("regex", function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        }, "Invalid format.");
 
+        $('#demoForm').validate({
+            ignore: ":hidden:not(.g-recaptcha-response)",
+            rules: {
+                demoname: {
+                    required: true
+                },
+                demoemail: {
+                    required: true,
+                    regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                },
+                Mobile: {
+                    required: true,
+                    validPhone: true
+                },
+                demomessage: {
+                    required: true
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: true
+                }
+            },
+            messages: {
+                demoname: {
+                    required: "Please enter your name."
+                },
+                demoemail: {
+                    required: "Please enter your email.",
+                    regex: "Please enter a valid email address."
+                },
+                Mobile: {
+                    required: "Please enter your mobile number.",
+                    validPhone: "Please enter a valid mobile number."
+                },
+                demomessage: {
+                    required: "Please enter your message."
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: "Please verify that you are not a robot."
+                }
+            },
+            unhighlight: function(element) {
+                $(element).removeClass("is-valid");
+            },
+            errorPlacement: function(error, element) {
+                var errorMapping = {
+                    "Mobile": "#mobile_codecheckdemo",
+                    "g-recaptcha-response": "#democaptchacheck"
+                };
 
+                placeErrorMessage(error, element, errorMapping);
+            },
+            submitHandler: function(form) {
+                $('#mobile_code_hiddenDemo').val('+' + $('#mobilenumdemo').attr('data-dial-code'));
+                $('#mobilenumdemo').val($('#mobilenumdemo').val().replace(/\D/g, ''));
+                var formData = $(form).serialize();
+                var submitButton = $('#demoregister');
+                $.ajax({
+                    url: 'demo-request',
+                    type: 'POST',
+                    data: formData,
+                    beforeSend: function() {
+                        submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
+                    },
+                    success: function(response) {
+                        form.reset();
+                        showAlert('success', response.message);
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 3500);
+                    },
+                    error: function(data) {
+                        var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+                        showAlert('error', response);
+                    },
+                    complete: function() {
+                        submitButton.prop('disabled', false).html(submitButton.data('original-text'));
+                    }
+                });
+            }
         });
-        
     });
-});
 </script>
 
      

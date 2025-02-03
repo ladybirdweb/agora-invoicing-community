@@ -53,7 +53,7 @@ class ForgotPasswordController extends Controller
         try {
             $this->validate($request,
                 ['email' => 'required|email|exists:users,email',
-                    'pass-recaptcha-response-1' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
+                    'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
                 ]
             );
             $email = $request->email;
@@ -61,12 +61,7 @@ class ForgotPasswordController extends Controller
             $rateLimit = rateLimitForKeyIp('forgot_password'.$email, 3, 360, $request->ip());
 
             if ($rateLimit['status']) {
-                return response()->json([
-                    'type' => 'fails',
-                    'message' => __('message.too_many_forgot_attempts', [
-                        'time' => $rateLimit['remainingTime'],
-                    ]),
-                ]);
+                return errorResponse(__('message.too_many_forgot_attempts', ['time' => $rateLimit['remainingTime']]));
             }
 
             $token = str_random(40);
@@ -108,16 +103,14 @@ class ForgotPasswordController extends Controller
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $replace, $type);
-                $response = ['type' => 'success',   'message' => 'Reset instructions have been mailed to '.$user->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
+                return successResponse('Reset instructions have been mailed to '.$user->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.');
             } else {
-                $response = ['type' => 'fails',   'message' => 'System email is not configured. Please contact admin.'];
+                return errorResponse('System email is not configured. Please contact admin.');
             }
 
-            return response()->json($response);
+            return successResponse('Reset instructions have been mailed to '.$user->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.');
         } catch (\Exception $ex) {
-            $result = ['Reset instructions have been mailed to '.$request->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
-
-            return response()->json(compact('result'), 500);
+            return successResponse('Reset instructions have been mailed to '.$request->email.'. Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.');
         }
     }
 }

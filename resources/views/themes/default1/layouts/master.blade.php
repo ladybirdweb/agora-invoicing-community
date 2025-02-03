@@ -563,6 +563,14 @@
             });
 
 
+            // Always allow email type only in lowercase
+            document.addEventListener("input", function (event) {
+                if (event.target.matches('input[type="email"]')) {
+                    event.target.value = event.target.value.toLowerCase();
+                }
+            });
+
+
 
 $("document").ready(function(){
     setTimeout(function(){

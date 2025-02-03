@@ -33,8 +33,7 @@ $state = \DB::table('states_subdivisions')->where('state_subdivision_code',$set-
 $country = \DB::table('countries')->where('country_code_char2',$set->country)->value('country_name');
 
 ?>
-<div id="successMessage"></div>
-<div id="errorMessage"></div>
+<div id="alert-container"></div>
 
         <div class="container">
 
@@ -53,14 +52,14 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 <label class="form-label mb-1 text-2">Name <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="conName" id="conName" required>
+                                <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="conName" id="conName">
                             </div>
 
                             <div class="form-group col-lg-6">
 
                                 <label class="form-label mb-1 text-2">E-mail Address <span class="text-color-danger">*</span></label>
 
-                                <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" required>
+                                <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" >
                             </div>
                         </div>
 
@@ -71,7 +70,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                                 <label class="form-label mb-1 text-2">Mobile <span class="text-color-danger">*</span></label>
 
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenco','name'=>'country_code']) !!}
-                                <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel" required>
+                                <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel">
                                 {!! Form::hidden('mobile_code',null,['class'=>'form-control text-3 h-auto py-2','disabled','id'=>'mobile_codecon']) !!}
                                 <span id="valid-msgcon" class="hide"></span>
                                 <span id="error-msgcon" class="hide"></span>
@@ -85,7 +84,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 <label class="form-label mb-1 text-2">Message <span class="text-color-danger">*</span></label>
 
-                                <textarea maxlength="5000" data-msg-required="Please enter your message." rows="8" class="form-control text-3 h-auto py-2" name="conmessage" id="conmessage" required></textarea>
+                                <textarea maxlength="5000" data-msg-required="Please enter your message." rows="8" class="form-control text-3 h-auto py-2" name="conmessage" id="conmessage"></textarea>
                             </div>
                         </div>
                          <!-- Honeypot fields (hidden) -->
@@ -106,7 +105,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col">
 
-                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading..." id="contactSubmit">Send Message</button>
+                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading..." data-original-text="Send Message" id="contactSubmit">Send Message</button>
                             </div>
                         </div>
                     </form>
@@ -144,173 +143,178 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
             recaptchaFunctionToExecute.push(() => {
                 contact_recaptcha_id = grecaptcha.render('recaptchaContact', { 'sitekey': siteKey });
             });
-    
-         function validateRecaptcha() {
-             @if($status->recaptcha_status === 1)
-                 recaptchaToken = getRecaptchaTokenFromId(contact_recaptcha_id);
-                if (getRecaptchaTokenFromId(contact_recaptcha_id) === '') {
-                    $('#captchacheck').show();
-                    $('#captchacheck').html("Robot verification failed, please try again.");
-                    $('#captchacheck').focus();
-                    $('#captcha').css("border-color", "red");
-                    $('#captchacheck').css({"color": "red", "margin-top": "5px"});
-                    return false;
-                } else {
-                    $('#captchacheck').hide();
-                    return true;
-                }
-                @elseif($status->v3_recaptcha_status === 1)
-                 return true
-             @endif
-         }
     </script>
-@if(request()->path() === 'contact-us')
-<script type="text/javascript">
-    
-    
-            var telInput = $('#mobilenumcon'),
-            errorMsg = document.querySelector("#error-msgcon"),
-            validMsg = document.querySelector("#valid-msgcon"),
-            addressDropdown = $("#country");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
-        var reset = function() {
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        telInput.on('input blur', function () {
-            reset();
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenumcon').css("border-color","");
-                    $("#error-msgcon").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-                    $('#mobilenumcon').css("border-color","red");
-                    $('#error-msgcon').css({"color":"red","margin-top":"5px"});
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function() {
-            telInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenumcon').css("border-color","");
-                    $("#error-msgcon").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
-                    $('#mobilenumcon').css("border-color","red");
-                    $('#error-msgcon').css({"color":"red","margin-top":"5px"});
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-
-               $('form').on('submit', function (e) {
-                var selectedCountry = demotelInput.intlTelInput('getSelectedCountryData');
-                var countryCode = '+' + selectedCountry.dialCode;
-                $('#mobile_code_hiddenco').val(countryCode);
-        
-                });
-
-</script>
-@endif
 <script>
 $(document).ready(function() {
-    $('#contactForm').submit(function(event) {
-        event.preventDefault();
-        
-        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
-        if (recaptchaEnabled == 1) {
-            if (!validateRecaptcha()) {
-                $("#contactSubmit").attr('disabled', false);
-                $("#contactSubmit").html("Send Message");
-                return;
-            }
+    function placeErrorMessage(error, element, errorMapping = null) {
+        if (errorMapping !== null && errorMapping[element.attr("name")]) {
+            $(errorMapping[element.attr("name")]).html(error);
+        } else {
+            error.insertAfter(element);
         }
-        $('#successMessage').empty();
-        $('#errorMessage').empty();
-        $("#contactSubmit").attr('disabled',true);
-        $("#contactSubmit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+    }
+    let alertTimeout;
 
-        var formData = {
-            "conName": $('#conName').val(),
-            "email": $('#email').val(),
-            "country_code": $('#mobile_code_hiddenco').val().replace(/\s/g, ''),
-            "Mobile": $('#mobilenumcon').val().replace(/[\. ,:-]+/g, ''),
-            "conmessage": $('#conmessage').val(),
-            "conatcthoneypot_field": $('input[name=conatcthoneypot_field]').val(),
-            "congg-recaptcha-response-1":  recaptchaToken ?? $('#g-recaptcha-contact').val() ?? '',
-            "_token": "{{ csrf_token() }}"
-        };
+    function showAlert(type, messageOrResponse) {
 
-        $.ajax({
-            type: 'POST',
-            url: 'contact-us',
-            data: formData,
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                $("#contactSubmit").attr('disabled',false);
-                $("#contactSubmit").html("Send Message");
-                $('#successMessage').html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.message + '</div>');
-                $('#contactForm')[0].reset();
-                setTimeout(function() {
-                    window.location.reload();
-                }, 5000);
+        // Generate appropriate HTML
+        var html = generateAlertHtml(type, messageOrResponse);
 
-            },
-            error: function(response) {
-                $("#contactSubmit").attr('disabled', false);
-                $("#contactSubmit").html("Send Message");
-            
-                var errorMessageHtml = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-                
-                if (response.responseJSON && response.responseJSON.errors) {
-                    for (var key in response.responseJSON.errors) {
-                        errorMessageHtml += '<li>' + response.responseJSON.errors[key][0] + '</li>';
-                    }
-            
-                    errorMessageHtml += '</ul>';
-                } else if (response.responseJSON && response.responseJSON.message) {
-                    errorMessageHtml += response.responseJSON.message;
-                }
-            
-                errorMessageHtml += '</div>';
-            
-                $('#errorMessage').html(errorMessageHtml);
+        // Clear any existing alerts and remove the timeout
+        $('#alert-container').html(html);
+        clearTimeout(alertTimeout); // Clear the previous timeout if it exists
+
+        // Display alert
+        window.scrollTo(0, 0);
+
+        // Auto-dismiss after 5 seconds
+        alertTimeout = setTimeout(function() {
+            $('#alert-container .alert').slideUp(3000, function() {
+                // Then fade out after slideUp finishes
+                $(this).fadeOut('slow');
+            });
+        }, 5000);
+    }
+
+
+    function generateAlertHtml(type, response) {
+        // Determine alert styling based on type
+        const isSuccess = type === 'success';
+        const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+        const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+        // Extract message and errors
+        const message = response.message || response || 'An error occurred. Please try again.';
+        const errors = response.errors || null;
+
+        // Build base HTML
+        let html = `<div class="alert ${alertClass} alert-dismissible">` +
+            `<i class="fa ${iconClass}"></i> ` +
+            `${message}` +
+            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+        html += '</div>';
+
+        return html;
+    }
+    $.validator.addMethod("validPhone", function(value, element) {
+        return validatePhoneNumber(element);
+    }, "Please enter a valid phone number.");
+
+    $.validator.addMethod("regex", function(value, element, regexp) {
+        var re = new RegExp(regexp);
+        return this.optional(element) || re.test(value);
+    }, "Invalid format.");
+
+    $.validator.addMethod("recaptchaRequired", function(value, element) {
+        try {
+            if(!recaptchaEnabled) {
+                return false;
             }
+        }catch (ex){
+            return false
+        }
+        return value.trim() !== "";
+    }, "Please verify that you are not a robot.");
+    $('#contactForm').validate({
+        ignore: ":hidden:not(.g-recaptcha-response)",
+        rules: {
+            conName: {
+                required: true
+            },
+            email: {
+                required: true,
+                regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            },
+            country_code: {
+                required: true
+            },
+            Mobile: {
+                required: true,
+                validPhone: true
+            },
+            conmessage: {
+                required: true
+            },
+            "g-recaptcha-response": {
+                recaptchaRequired: true
+            }
+        },
+        messages: {
+            conName: {
+                required: "Please enter your name."
+            },
+            email: {
+                required: "Please enter your email.",
+                regex: "Please enter a valid email address."
+            },
+            country_code: {
+                required: "Please enter your country code."
+            },
+            Mobile: {
+                required: "Please enter your mobile number.",
+                validPhone: "Please enter a valid mobile number."
+            },
+            conmessage: {
+                required: "Please enter your message."
+            },
+            "g-recaptcha-response": {
+                recaptchaRequired: "Please verify that you are not a robot."
+            }
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("is-valid");
+        },
+        errorPlacement: function (error, element) {
+            var errorMapping = {
+                "Mobile": "#mobile_codecheckcon",
+                "g-recaptcha-response": "#captchacheck"
+            };
 
+            placeErrorMessage(error, element,errorMapping);
+        },
+        submitHandler: function (form) {
+            $('#mobile_code_hiddenco').val('+' + $('#mobilenumcon').attr('data-dial-code'));
+            $('#mobilenumcon').val($('#mobilenumcon').val().replace(/\D/g, ''));
 
-        });
-        
+            var formData = $(form).serialize();
+
+            var submitButton = $('#contactSubmit');
+
+            $.ajax({
+                type: 'POST',
+                url: 'contact-us',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function () {
+                    submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
+                },
+                success: function (response) {
+                    form.reset();
+                    showAlert('success', response.message);
+                },
+                error: function (data, status, error) {
+                    var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+
+                    if (response.errors) {
+                        $.each(response.errors, function(field, messages) {
+                            var validator = $('#contactForm').validate();
+
+                            var fieldSelector = $(`[name="${field}"]`).attr('name');  // Get the name attribute of the selected field
+
+                            validator.showErrors({
+                                [fieldSelector]: messages[0]
+                            });
+                        });
+                    } else {
+                        showAlert('error', response);
+                    }
+                },
+                complete: function () {
+                    submitButton.prop('disabled', false).html(submitButton.data('original-text'));
+                }
+            });
+        }
     });
 });
 </script>

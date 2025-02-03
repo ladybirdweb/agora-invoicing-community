@@ -104,7 +104,6 @@ class LoginController extends Controller
 
         // Check account activation and mobile verification
         if ($user->active != 1 || $user->mobile_verified != 1) {
-
             $attempts = VerificationAttempt::find($user->id);
 
             if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
@@ -116,8 +115,8 @@ class LoginController extends Controller
             if ($attempts && ($attempts->mobile_attempt >= 2 || $attempts->email_attempt >= 3)) {
                 $remainingTime = Carbon::parse($attempts->updated_at)->addHours(6)->diffInSeconds(Carbon::now());
 
-                    return redirect()->back()->withErrors(__('message.verify_time_limit_exceed', ['time' => formatDuration($remainingTime)]));
-                }
+                return redirect()->back()->withErrors(__('message.verify_time_limit_exceed', ['time' => formatDuration($remainingTime)]));
+            }
 
             return redirect('verify')->with('user', $user);
         }
@@ -135,7 +134,7 @@ class LoginController extends Controller
             'email' => $user->email,
             'password' => $password,
             'active' => 1,
-            'mobile_verified' => 1
+            'mobile_verified' => 1,
         ], $request->has('remember'));
 
         if (! $auth) {

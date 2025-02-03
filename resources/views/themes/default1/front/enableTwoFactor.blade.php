@@ -26,7 +26,7 @@ main
 
                 <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'get']) !!}
+                    {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'get', 'id' => '2fa_form']) !!}
 
 
                         <div class="row">
@@ -35,7 +35,7 @@ main
 
                                 <label class="form-label text-color-dark text-3">Enter Authentication Code <span class="text-color-danger">*</span></label>
 
-                                <input type="text" name="totp"  id="2fa_code" value="" class="form-control form-control-lg text-4" required>
+                                <input type="text" name="totp"  id="2fa_code" value="" class="form-control form-control-lg text-4">
                             </div>
                             <h6 id="codecheck"></h6>
                         </div>
@@ -68,4 +68,36 @@ main
             </div>
 
         </div>
+    <script>
+        $(document).ready(function() {
+            function placeErrorMessage(error, element, errorMapping = null) {
+                if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                    $(errorMapping[element.attr("name")]).html(error);
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+            $('#2fa_form').validate({
+                rules: {
+                    totp: {
+                        required: true
+                    },
+                },
+                messages: {
+                    totp: {
+                        required: "Please enter the authentication code"
+                    },
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass("is-valid");
+                },
+                errorPlacement: function (error, element) {
+                    placeErrorMessage(error, element);
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
 @stop 

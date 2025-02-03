@@ -29,6 +29,14 @@
             display: none !important;
         }
 
+        .form-control.is-invalid {
+            background-image: none !important;
+        }
+
+        .form-control.is-valid {
+            background-image: none !important;
+        }
+
 
 </style>
   <html>
@@ -982,6 +990,23 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': csrfToken
         }
     });
+
+    // Refresh recaptcha token for every ajax request
+    $( document ).on( "ajaxComplete", function() {
+        try {
+            if(recaptchaV3Enabled) {
+                updateRecaptchaTokens();
+            }
+        }catch (ex){
+        }
+    });
+
+    // Always allow email type only in lowercase
+    document.addEventListener("input", function (event) {
+        if (event.target.matches('input[type="email"]')) {
+            event.target.value = event.target.value.toLowerCase();
+        }
+    });
 });
 
 </script>
@@ -1028,6 +1053,10 @@ $(document).ready(function() {
 
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+        if(email === '') {
+            $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Email address is required!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            return;
+        }
         if (!emailRegex.test(email)) {
             $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             return;

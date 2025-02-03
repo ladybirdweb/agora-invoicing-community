@@ -193,7 +193,7 @@ active
                            
                                 @elseif($order != '--')
                                 <td>{!! $order !!}
-                                <span class='badge badge-warning'>Renewed</span></td>
+                                <span class='badge badge-primary'>Renewed</span></td>
                                 @else
                                 <td>--</td>
                             @endif

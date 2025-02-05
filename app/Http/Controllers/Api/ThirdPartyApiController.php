@@ -58,7 +58,11 @@ class ThirdPartyApiController extends Controller
             ]
         );
         try {
-            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', strtolower($request->input('productname')))->select('id')->first();
+            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', strtolower($request->input('productname')))
+                ->orWhere('id', $request->input('product_id'))
+                ->select('id')
+                ->first();
+
             if ($product_id) {
                 $this->product_upload->product_id = $product_id->id;
                 $this->product_upload->title = $request->input('producttitle');

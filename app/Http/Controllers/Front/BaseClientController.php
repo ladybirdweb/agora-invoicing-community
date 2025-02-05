@@ -10,7 +10,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
-use Hash;
 use Illuminate\Http\Request;
 
 class BaseClientController extends Controller
@@ -133,7 +132,7 @@ class BaseClientController extends Controller
 
             return successResponse(__('message.updated-successfully'));
         } catch (Exception $ex) {
-           return errorResponse('Failed to update profile');
+            return errorResponse('Failed to update profile');
         }
     }
 
@@ -147,7 +146,7 @@ class BaseClientController extends Controller
             $oldPassword = $request->input('old_password');
             $newPassword = $request->input('new_password');
 
-            if (!\Hash::check($oldPassword, $user->getAuthPassword())) {
+            if (! \Hash::check($oldPassword, $user->getAuthPassword())) {
                 return errorResponse('Incorrect old password');
             }
 

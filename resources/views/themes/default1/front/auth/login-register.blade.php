@@ -122,11 +122,7 @@ foreach($scripts as $script) {
 
                     <h2 class="font-weight-bold text-5 mb-0">Login</h2>
 
-                     @if ($status->recaptcha_status==1)
-                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
-                    @else
-                        {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
-                    @endif
+                    {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
 
                         <div class="row">
 
@@ -135,7 +131,7 @@ foreach($scripts as $script) {
                                 <label class="form-label text-color-dark text-3">Username or E-mail Address <span class="text-color-danger">*</span></label>
 
                                  {!! Form::email('email_username',null,['class' => 'form-control form-control-lg text-4','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
-                                <div class="error-login-email"></div>
+                                <div id="error-login-email"></div>
                             </div>
                         </div>
 
@@ -154,7 +150,7 @@ foreach($scripts as $script) {
                                         </span>
                                     </div>
                                 </div>
-                                <div class="error-login-password"></div>
+                                <div id="error-login-password"></div>
                             </div>
                         </div>
 
@@ -177,7 +173,7 @@ foreach($scripts as $script) {
 
                         @if ($status->recaptcha_status === 1)
                               <div id="login_recaptcha"></div>
-                              <div class="loginrobot-verification"></div><br>
+                              <div id="loginrobot-verification"></div><br>
                         @elseif($status->v3_recaptcha_status === 1)
                               <input type="hidden" class="g-recaptcha-token" name="g-recaptcha-response">
                         @endif
@@ -609,6 +605,7 @@ foreach($scripts as $script) {
                 rules: {
                     email_username: {
                         required: true,
+                        email:false,
                         email_or_username: true
                     },
                     password1: {
@@ -635,9 +632,9 @@ foreach($scripts as $script) {
                 },
                 errorPlacement: function (error, element) {
                     var errorMapping = {
-                        "email_username": ".error-login-email",
-                        "password1": ".error-login-password",
-                        "g-recaptcha-response": ".loginrobot-verification"
+                        "email_username": "#error-login-email",
+                        "password1": "#error-login-password",
+                        "g-recaptcha-response": "#loginrobot-verification"
                     };
 
                     placeErrorMessage(error, element, errorMapping);
@@ -768,6 +765,7 @@ foreach($scripts as $script) {
                             submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
                         },
                         success: function(response) {
+                            document.getElementById('term').value = false;
                             form.reset();
                             if (response.data.need_verify === 1) {
                                 window.location.href = "{{ url('/verify') }}";

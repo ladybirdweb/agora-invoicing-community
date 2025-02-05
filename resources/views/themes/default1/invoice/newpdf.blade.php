@@ -70,9 +70,9 @@
                                 {{getStateByCode($set->state)['name']}}
                                 @endif
                                 {{$set->zip}}<br/>
-                                Country : {{getCountryByCode($set->country)}}<br/>
-                                Mobile: <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
-                                Email: {{$set->company_email}}
+                                <strong>Country :</strong> {{getCountryByCode($set->country)}}<br/>
+                                <strong>Mobile :</strong> <b>+</b>{{$set->phone_code}} {{$set->phone}}<br/>
+                                <strong>Email :</strong> {{$set->company_email}}
                             </address>
                             
                             
@@ -106,9 +106,9 @@
                                 {{getStateByCode($user->state)['name']}}
                                 @endif
                                 {{$user->zip}}<br>
-                                Country : {{getCountryByCode($user->country)}}<br>
-                                Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}} @endif{{$user->mobile}}<br/>
-                                Email : {{$user->email}}
+                                <strong>Country :</strong> {{getCountryByCode($user->country)}}<br>
+                                <strong>Mobile :</strong> @if($user->mobile_code)<b>+</b>{{$user->mobile_code}} @endif{{$user->mobile}}<br/>
+                                <strong>Email :</strong> {{$user->email}}
                             </address>
                         </div><!-- /.col -->
                        

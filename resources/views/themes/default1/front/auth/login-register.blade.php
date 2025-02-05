@@ -534,10 +534,7 @@ foreach($scripts as $script) {
 
                 // Auto-dismiss after 5 seconds
                 alertTimeout = setTimeout(function() {
-                    $('#alert-container .alert').slideUp(3000, function() {
-                        // Then fade out after slideUp finishes
-                        $(this).fadeOut('slow');
-                    });
+                    $('#alert-container .alert').fadeOut('slow');
                 }, 5000);
             }
 

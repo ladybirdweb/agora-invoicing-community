@@ -125,7 +125,9 @@ class SettingsController extends Controller
             $currency = strtolower($invoice->currency);
             $url = url('/confirm/payment');
             $confirm = $this->handlePayment($request, $amount, $currency, $url, $invoice);
-            if ($confirm->status === 'succeeded') {
+
+            // Check if payment was successful
+            if (isset($confirm->status) && $confirm->status === 'succeeded') {
                 $result = $this->processPaymentSuccess($invoice, $currency);
                 \Session::forget(['items', 'code', 'codevalue', 'totalToBePaid', 'invoice', 'cart_currency']);
                 \Cart::removeCartCondition('Processing fee');
@@ -146,6 +148,7 @@ class SettingsController extends Controller
             }
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
+                $user = auth()->user();
                 $this->sendFailedPaymenttoAdmin($invoice, $invoice->grand_total, $invoice->invoiceItem()->first()->product_name, $e->getMessage(), $user);
             }
             \Session::put('amount', $amount);

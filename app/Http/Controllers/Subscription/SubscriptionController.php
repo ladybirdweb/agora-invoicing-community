@@ -190,7 +190,7 @@ class SubscriptionController extends Controller
                 $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : $price;
 
                 if ($this->shouldCancelSubscription($product_details, $price)) {
-                    $subscription->update(['is_subscribed' => 0]);
+                    Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
 
                 //Do not create invoices for invoices that are already unpaid

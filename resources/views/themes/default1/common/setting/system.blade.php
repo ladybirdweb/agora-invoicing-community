@@ -59,7 +59,7 @@ System Setting
                             <div class="form-group {{ $errors->has('company_email') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('company_email',null,['class' => 'form-control']) !!}
+                                {!! Form::email('company_email', null, ['class' => 'form-control']) !!}
                                 
 
 

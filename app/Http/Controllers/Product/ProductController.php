@@ -554,13 +554,13 @@ class ProductController extends BaseProductController
             $storagePath = Setting::find(1)->value('file_storage');
 
             if (empty($ids)) {
-                return successResponse( __('message.select-a-row') );
+                return successResponse(__('message.select-a-row'));
             }
 
             foreach ($ids as $id) {
                 $product = $this->product_upload->find($id);
                 if ($product) {
-                    $filePath = $storagePath . '/' . $product->file;
+                    $filePath = $storagePath.'/'.$product->file;
                     if (Attach::exists($filePath)) {
                         Attach::delete($filePath);
                     }
@@ -569,9 +569,8 @@ class ProductController extends BaseProductController
             }
 
             return successResponse(__('message.deleted-successfully'));
-
         } catch (\Exception $e) {
-            return errorResponse("Error Occured while delete the product : ".$e->getMessage());
+            return errorResponse('Error Occured while delete the product : '.$e->getMessage());
         }
     }
 

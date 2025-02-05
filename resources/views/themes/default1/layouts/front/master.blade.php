@@ -19,6 +19,9 @@
     width: 86%;
 
 }
+        .custom-input.newsletterEmail.is-invalid {
+            border-color: #dc3545 !important;
+        }
 
 .custom-input:focus {
     border-color: #777;
@@ -1020,100 +1023,132 @@ $(document).ready(function() {
           mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
       });
       @endif
-         function mailchimpvalidateRecaptcha() {
-                 @if($status->recaptcha_status === 1)
-                     recaptchaTokenMailChimp = getRecaptchaTokenFromId(mailchimp_recaptcha_id);
-
-                 if ( getRecaptchaTokenFromId(mailchimp_recaptcha_id) === '') {
-                     $('#mailchimpcaptchacheck').show();
-                     $('#mailchimpcaptchacheck').html("Robot verification failed, please try again.");
-                     $('#mailchimpcaptchacheck').focus();
-                     $('#mailchimpcaptcha').css("border-color", "red");
-                     $('#mailchimpcaptchacheck').css({"color": "red", "margin-top": "5px"});
-                     return false;
-                 } else {
-                     $('#mailchimpcaptchacheck').hide();
-                     return true;
-                 }
-                 @elseif($status->v3_recaptcha_status === 1)
-                     return true
-                 @endif
-         }
     </script>
 <script>
 
 
-    
-    $(document).ready(function() {
-    var emailInput = $('.newsletterEmail');
 
-    $('#newsletterForm').submit(function(e) {
-        e.preventDefault(); 
-        var email = emailInput.val();
+    $(document).ready(function () {
+        let alertTimeout;
+        function showAlert(type, messageOrResponse) {
 
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // Generate appropriate HTML
+            var html = generateAlertHtml(type, messageOrResponse);
 
-        if(email === '') {
-            $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Email address is required!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-            return;
+            // Clear any existing alerts and remove the timeout
+            $('#mailchimp-message').html(html);
+            clearTimeout(alertTimeout); // Clear the previous timeout if it exists
+
+            // Auto-dismiss after 5 seconds
+            alertTimeout = setTimeout(function() {
+                $('#mailchimp-message .alert').fadeOut('slow');
+            }, 5000);
         }
-        if (!emailRegex.test(email)) {
-            $('#mailchimp-message').html('<br><div class="alert alert-danger"><strong></strong>Please enter a valid email address!<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-            return;
-        }
 
-        var recaptchaEnabled = '{{ $status->recaptcha_status }}';
-        if (recaptchaEnabled == 1) {
-            if (!mailchimpvalidateRecaptcha()) {
-                $("#mailchimp-subscription").attr('disabled', false);
-                $("#mailchimp-subscription").html("Send Message");
-                return;
+
+        function generateAlertHtml(type, response) {
+            // Determine alert styling based on type
+            const isSuccess = type === 'success';
+            const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
+            const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+
+            // Extract message and errors
+            const message = response.message || response || 'An error occurred. Please try again.';
+            const errors = response.errors || null;
+
+            // Build base HTML
+            let html = `<div class="alert ${alertClass} alert-dismissible">` +
+                `<i class="fa ${iconClass}"></i> ` +
+                `${message}` +
+                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+
+            html += '</div>';
+
+            return html;
+        }
+        function placeErrorMessage(error, element, errorMapping = null) {
+            if (errorMapping !== null && errorMapping[element.attr("name")]) {
+                $(errorMapping[element.attr("name")]).html(error);
+            } else {
+                error.insertAfter(element);
             }
         }
-
-        var honeypot = $('input[name=honeypot_field]').val();
-
-        $('#mailchimp-subscription').html("Wait...");
-
-        $.ajax({
-            type: 'POST',
-            url: '{{url("mail-chimp/subcribe")}}',
-            data: {
-                'email': email, 
-                '_token': "{!! csrf_token() !!}",
-                'honeypot_field': honeypot,
-                'mailchimp-recaptcha-response-1': recaptchaTokenMailChimp ?? $('#g-recaptcha-mailchimp').val() ?? '',
-            },
-            success: function(data) {
-                emailInput.val('');
-                $("#mailchimp-subscription").html("Go");
-                $('#mailchimp-message').show();
-                var result = '<br><div class="alert alert-success"><strong><i class="fa fa-check"></i> Success! </strong>' + data.message + ' <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                $('#mailchimp-message').html(result + ".");
-            },
-            error: function(response) {
-                emailInput.val('');
-                $("#mailchimp-subscription").html("Go");
-
-                if (response.status == 400) {
-                    var myJSON = response.responseJSON.message;
-                    var html = '<br><div class="alert alert-warning"><strong> Whoops! </strong>' + myJSON + '.<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                    $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show();
-                } else {
-                    var myJSON = response.responseJSON.errors;
-                    var html = '<br><button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in myJSON) {
-                        html += '<li>' + myJSON[key][0] + '</li>';
-                    }
-                    html += '</ul></div>';
-                    $('#mailchimp-message').html(html);
-                    $('#mailchimp-message').show();
+        $.validator.addMethod("recaptchaRequired", function(value, element) {
+            try {
+                if(!recaptchaEnabled) {
+                    return false;
                 }
+            }catch (ex){
+                return false
+            }
+            return value.trim() !== "";
+        }, "Please verify that you are not a robot.");
+        $("#newsletterForm").validate({
+            ignore: ":hidden:not(.g-recaptcha-response)",
+            rules: {
+                newsletterEmail: {
+                    required: true,
+                    email: true
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: true
+                }
+            },
+            messages: {
+                newsletterEmail: {
+                    required: "Email is required",
+                    email: "Enter a valid email address"
+                },
+                "g-recaptcha-response": {
+                    recaptchaRequired: "Please verify that you are not a robot."
+                }
+            },
+            unhighlight: function(element) {
+                $(element).removeClass("is-valid"); // Remove "is-invalid" but don't add "is-valid"
+            },
+            errorPlacement: function (error, element) {
+                var errorMapping = {
+                    'g-recaptcha-response': '#mailchimpcaptcha',
+                }
+                placeErrorMessage(error, element, errorMapping);
+            },
+            submitHandler: function (form, event) {
+                var formData = $(form).serialize();
+                var honeypot = $('input[name=mailhoneypot_field]').val();
+
+                if (honeypot) {
+                    return false; // Stop submission if honeypot is filled
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url("mail-chimp/subcribe")}}',
+                    data: formData,
+                    success: function (data) {
+                        form.reset();
+                        showAlert('success', data.message);
+                    },
+                    error: function (data, status, error) {
+
+                        var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
+
+                        if (response.errors) {
+                            $.each(response.errors, function(field, messages) {
+                                var validator = $('#newsletterForm').validate();
+
+                                var fieldSelector = $(`[name="${field}"]`).attr('name');  // Get the name attribute of the selected field
+
+                                validator.showErrors({
+                                    [fieldSelector]: messages[0]
+                                });
+                            });
+                        } else {
+                            showAlert('error', response);
+                        }
+                    },
+                });
             }
         });
     });
-});
 
     function removeItem(id) {
         $.ajax({

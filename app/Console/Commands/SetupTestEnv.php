@@ -149,7 +149,7 @@ class SetupTestEnv extends Command
         $seedersPath = database_path('seeders');
         $seederVersions = scandir($seedersPath);
         $seederVersions = array_filter($seederVersions, function ($dir) {
-            return preg_match('/^v\d+_\d+_\d+$/', $dir);
+            return preg_match('/^v[\d_]+(?:_[A-Za-z\d]+)*$/', $dir);
         });
         natsort($seederVersions);
         foreach ($seederVersions as $version) {

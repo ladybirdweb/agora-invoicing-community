@@ -1018,7 +1018,7 @@ $(document).ready(function() {
 
       let mailchimp_recaptcha_id;
       let recaptchaTokenMailChimp;
-      @if($status->recaptcha_status === 1 && isset($isV2RecaptchaEnabledForNewsletter) && $isV2RecaptchaEnabledForNewsletter === 1)
+      @if(!Auth::check() && $status->recaptcha_status === 1 && isset($isV2RecaptchaEnabledForNewsletter) && $isV2RecaptchaEnabledForNewsletter === 1)
       recaptchaFunctionToExecute.push(() => {
           mailchimp_recaptcha_id = grecaptcha.render('mailchimp_recaptcha', { 'sitekey': siteKey });
       });

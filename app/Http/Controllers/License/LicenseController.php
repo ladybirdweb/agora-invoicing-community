@@ -563,18 +563,18 @@ class LicenseController extends Controller
         return $installation_details;
     }
 
-    public function updateInstallationLogs($root_url, $version_number, $installation_ip)
-    {
-        try {
-            $url = $this->url;
-            $api_key_secret = $this->api_key_secret;
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            $details = json_decode($this->postCurl($url.'api/admin/updateInstallationLogs', "api_key_secret=$api_key_secret&root_url=$root_url&version_number=$version_number&installation_ip=$installation_ip", $token));
-        } catch (\Exception $ex) {
-            throw new \Exception('Please configure the valid license details in Apikey settings.');
+        public function updateInstallationLogs($root_url, $version_number, $installation_ip, $licenseCode)
+        {
+            try {
+                $url = $this->url;
+                $api_key_secret = $this->api_key_secret;
+                $OauthDetails = $this->oauthAuthorization();
+                $token = $OauthDetails->access_token;
+                $details = json_decode($this->postCurl($url.'api/admin/updateInstallationLogs', "api_key_secret=$api_key_secret&root_url=$root_url&version_number=$version_number&installation_ip=$installation_ip&license_code=$licenseCode", $token));
+            } catch (\Exception $ex) {
+                throw new \Exception('Please configure the valid license details in Apikey settings.');
+            }
         }
-    }
 
     public function searchProductUsingLicense($licenseCode)
     {

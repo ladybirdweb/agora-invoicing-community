@@ -79,7 +79,7 @@ class LoginController extends Controller
             'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-            'email_username.required' => 'Please Enter an Email or Username',
+            'email_username.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
         ]);
 
@@ -87,11 +87,11 @@ class LoginController extends Controller
         $password = $request->input('password1');
 
         // Find user by email or username
-        $user = User::where('email', $loginInput)->orWhere('user_name', $loginInput)->first();
+        $user = User::where('email', $loginInput)->first();
 
         if (! $user) {
             return redirect()->back()->withInput()->withErrors([
-                'login' => 'Please Enter a valid Email or Username',
+                'login' => 'Please Enter a valid Email',
             ]);
         }
 

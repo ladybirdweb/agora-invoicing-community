@@ -96,14 +96,14 @@ class MailChimpController extends BaseMailChimpController
     public function addSubscriberByClientPanel(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|email',
+            'newsletterEmail' => 'required|email',
             'g-recaptcha-response' => [isCaptchaRequired()['is_required'], new CaptchaValidation()],
         ], [
             'mailchimp-recaptcha-response-1.required' => 'Robot Verification Failed.',
         ]);
 
         try {
-            $email = $request->input('email');
+            $email = $request->input('newsletterEmail');
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status' => $this->mailchimp_set->subscribe_status,
                 'email_address' => $email,

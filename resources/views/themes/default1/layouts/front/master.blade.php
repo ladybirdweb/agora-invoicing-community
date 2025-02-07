@@ -836,7 +836,7 @@ $days = $pay->where('product','117')->value('days');
                      if ($mailchimpKey !== null && $widget->allow_mailchimp == 1) {
                         $mailchimpSection .= '<div id="mailchimp-message" style="width: 86%;"></div>
                                                 <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
-                                                    <form id="newsletterForm" class="form-style-3 w-100" action="../php/newsletter-subscribe.php" method="POST" novalidate="novalidate">
+                                                    <form id="newsletterForm" class="form-style-3 w-100">
                                                         <div class="input-group mb-3">
                                                             <input class="custom-input newsletterEmail" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="email">
                                                         </div>
@@ -1011,6 +1011,10 @@ $(document).ready(function() {
         }
     });
 });
+
+setTimeout(function() {
+    $('.alert').alert('close');
+}, 5000);
 
 </script>
 

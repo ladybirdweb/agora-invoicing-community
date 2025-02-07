@@ -615,7 +615,7 @@ foreach($scripts as $script) {
                 messages: {
                     email_username: {
                         required: "Please enter your username or email address.",
-                        email_or_username: "Please enter a valid username or email address."
+                        email_or_username: "Please enter a valid email address."
                     },
                     password1: {
                         required: "Please enter your password.",

@@ -565,12 +565,8 @@ foreach($scripts as $script) {
                 var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 var isEmail = emailRegex.test(value);
 
-                // Username regex (alphanumeric, dots, underscores, dashes, min 3 chars)
-                var usernameRegex = /^[a-zA-Z0-9._-]{3,}$/;
-                var isUsername = usernameRegex.test(value);
-
-                return this.optional(element) || isEmail || isUsername;
-            }, "Please enter a valid email or username");
+                return this.optional(element) || isEmail;
+            }, "Please enter a valid email address");
 
             $.validator.addMethod("regex", function(value, element, regexp) {
                 var re = new RegExp(regexp);

@@ -10,11 +10,11 @@ Profile
 @stop
 @section('breadcrumb')
 @if(Auth::check())
-        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('my-invoices')}}">{{ __('message.home')}}</a></li>
     @else
-         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+         <li><a class="text-primary" href="{{url('login')}}">{{ __('message.home')}}</a></li>
     @endif
-     <li class="active text-dark">Profile</li>
+     <li class="active text-dark">{{ __('message.profile')}}</li>
 @stop
 @section('content')
 <style>
@@ -125,17 +125,17 @@ input:checked + .slider:before {
 
                             <li class="nav-item">
 
-                                <a class="nav-link active" id="profile_detail" href="#profile" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">My Profile</a>
+                                <a class="nav-link active" id="profile_detail" href="#profile" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">{{ __('message.my_profile')}}</a>
                             </li>
 
                             <li class="nav-item">
 
-                                <a class="nav-link" id="change_password" href="#password" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">Change Password</a>
+                                <a class="nav-link" id="change_password" href="#password" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">{{ __('message.change_password')}}</a>
                             </li>
 
                             <li class="nav-item">
 
-                                <a class="nav-link" id="two_fa" href="#twofa" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">Setup 2 Step Verification</a>
+                                <a class="nav-link" id="two_fa" href="#twofa" data-bs-toggle="tab" data-hash data-hash-offset="0" data-hash-offset-lg="500" data-hash-delay="500">{{ __('message.setup_2fa')}}</a>
                             </li>
                         </ul>
                     </aside>
@@ -171,28 +171,28 @@ input:checked + .slider:before {
                             <div class="col-lg-12 order-1 order-lg-2">
 
                                     <div class="form-group row {{ $errors->has('first_name') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">First name</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.first_name')}}</label>
                                         <div class="col-lg-9">
                                         {!! Form::text('first_name',null,['class' => 'form-control text-3 h-auto py-2 ','id'=>'firstName']) !!}
                                         <h6 id="firstNameCheck"></h6>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('last_name') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Last name</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.last_name')}}</label>
                                         <div class="col-lg-9">
                                          {!! Form::text('last_name',null,['class' => 'form-control text-3 h-auto py-2','id'=>'lastName']) !!}
                                          <h6 id="lastNameCheck"></h6>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('email') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Email</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.email')}}</label>
                                         <div class="col-lg-9">
                                              {!! Form::text('email',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Email']) !!}
                                              <h6 id="emailCheck"></h6>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Mobile</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.mobile')}}</label>
                                         <div class="col-lg-9">
                                               {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
                                                <!--<input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
@@ -204,14 +204,14 @@ input:checked + .slider:before {
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('company') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Company</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.front_company')}}</label>
                                         <div class="col-lg-9">
                                             {!! Form::text('company',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Company']) !!}
                                              <h6 id="companyCheck"></h6>
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('address') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Address</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.address')}}</label>
                                         <div class="col-lg-9">
                                         {!! Form::textarea('address',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Address']) !!}
                                            <h6 id="addressCheck"></h6>
@@ -241,7 +241,7 @@ input:checked + .slider:before {
                                             </div>
                                     </div>
                                      <div class="form-group row {{ $errors->has('=country') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">Country</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">{{ __('message.country')}}</label>
                                         <div class="col-lg-9">
                                             {!! Form::text('country', $selectedCountry, [ 'class' => 'form-control input-lg','onChange' => 'getCountryAttr(this.value);','readonly' => 'readonly','title' => 'Contact admin to update your country','data-toggle' => 'tooltip',
                                              'data-placement' => 'top'
@@ -253,7 +253,7 @@ input:checked + .slider:before {
                                         </div>
                                     </div>
                                     <div class="form-group row {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">Time Zone</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">{{ __('message.time_zone')}}</label>
                                         <div class="col-lg-9">
                                             <div class="custom-select-1">
                                             {!! Form::select('timezone_id',[Lang::get('message.choose')=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
@@ -266,7 +266,7 @@ input:checked + .slider:before {
 
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading...">Update</button>
+                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading...">{{ __('message.update')}}</button>
                                         </div>
                                     </div>
 
@@ -287,7 +287,7 @@ input:checked + .slider:before {
                                 {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH' , 'id' => 'changePasswordForm']) !!}
 
                                     <div class="form-group row {{ $errors->has('old_password') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Old Password</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.old_password')}}</label>
                                         <div class="col-lg-9">
                                             <div class="input-group">
                                             {!! Form::password('old_password',['class' => 'form-control text-3 h-auto py-2','id'=>'old_password']) !!}
@@ -302,7 +302,7 @@ input:checked + .slider:before {
                                     </div>
 
                                     <div class="form-group row {{ $errors->has('new_password') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">New Password</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.new_password')}}</label>
                                         <div class="col-lg-9">
                                             <div class="input-group">
                                             {!! Form::password('new_password',['class' => 'form-control text-3 h-auto py-2','id'=>'new_password']) !!}
@@ -325,7 +325,7 @@ input:checked + .slider:before {
                                     </div>
 
                                     <div class="form-group row {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
-                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Confirm password</label>
+                                        <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">{{ __('message.confirm_password')}}</label>
                                         <div class="col-lg-9">
                                             <div class="input-group">
                                             {!! Form::password('confirm_password',['class' => 'form-control text-3 h-auto py-2','id'=>'confirm_password']) !!}
@@ -343,7 +343,7 @@ input:checked + .slider:before {
 
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <button type="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading..." id="password">Update</button>
+                                            <button type="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="{{ __('message.loading')}}" id="password">{{ __('message.update')}}</button>
                                         </div>
                                     </div>
                                {!! Form::close() !!}
@@ -361,13 +361,13 @@ input:checked + .slider:before {
 
 
                                     @if($is2faEnabled ==0)
-                                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
+                                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;{{ __('message.authenticator_app')}}
                                 @else
-                                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
+                                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;{{ __('message.two_step_verfication')}} {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
                                     <br><br><br>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" id="viewRecCode" style="width: 250px !important;">View Recovery Code</button>
+                                            <button class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" id="viewRecCode" style="width: 250px !important;">{{ __('message.recovery_code')}}</button>
                                         </div>
                                     </div>
                                 @endif

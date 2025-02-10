@@ -57,10 +57,10 @@
                     <table id="version-table" class="table display" cellspacing="0" width="100%">
                         <thead>
                         <tr>
-                            <th>Version</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>File</th>
+                            <th>{{ __('message.version')}}</th>
+                            <th>{{ __('message.title')}}</th>
+                            <th>{{ __('message.description')}}</th>
+                            <th>{{ __('message.file')}}</th>
                         </tr>
                         </thead>
                         <tbody>

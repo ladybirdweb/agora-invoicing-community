@@ -10,11 +10,11 @@ Sign in or Register
 @stop
 @section('breadcrumb')
     @if(Auth::check())
-        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('my-invoices')}}">{{ __('message.home') }}</a></li>
     @else
-         <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+         <li><a class="text-primary" href="{{url('login')}}">{{ __('message.home') }}</a></li>
     @endif
-     <li class="active text-dark">Sign in &nbsp;&nbsp;or&nbsp;&nbsp; Register</li>
+     <li class="active text-dark">{{ __('message.sign-in') }} &nbsp;&nbsp;{{ __('message.or') }}&nbsp;&nbsp; {{ __('message.register') }}</li>
 @stop 
 @section('main-class')
     main
@@ -119,7 +119,7 @@ foreach($scripts as $script) {
                                 <div class="row justify-content-center">
                                           <div class="col-md-6 col-lg-6 mb-5 mb-lg-0 pe-5">
 
-                    <h2 class="font-weight-bold text-5 mb-0">Login</h2>
+                    <h2 class="font-weight-bold text-5 mb-0">{{ __('message.login') }}</h2>
 
                      @if ($status->recaptcha_status==1)
                         {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
@@ -131,7 +131,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Username or E-mail Address <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.username_register') }}<span class="text-color-danger">*</span></label>
 
                                  {!! Form::text('email1',null,['class' => 'form-control form-control-lg text-4','id'=>'username','autocomplete'=>"off", 'style' => 'height: calc(1.5em + 0.75rem + 2px);' ]) !!}
                             </div>
@@ -141,7 +141,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.password') }} <span class="text-color-danger">*</span></label>
 
                                 <div class="input-group">
                                     {!! Form::password('password1', ['class' => 'form-control form-control-lg text-4', 'id' => 'pass', 'style' => 'height: calc(1.5em + 0.75rem + 2px);']) !!}
@@ -162,13 +162,13 @@ foreach($scripts as $script) {
                                 <div class="custom-control custom-checkbox" style="padding-right: 100px;">
 
                                     {!! Form::checkbox('remember', '1', false, ['class' => 'custom-control-input', 'id' => 'rememberme']) !!}
-                                    <label class="form-label custom-control-label cur-pointer text-2" for="rememberme">Remember Me</label>
+                                    <label class="form-label custom-control-label cur-pointer text-2" for="rememberme">{{ __('message.remember-me') }}</label>
                                 </div>
                             </div>
 
                             <div class="form-group col-md-auto {{ $errors->has('password1') ? 'has-error' : '' }}">
 
-                                <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="{{url('password/reset')}}" style="padding-left: 100px;">({{Lang::get('message.forgot-my-password')}})</a>
+                                <a class="text-decoration-none text-color-primary font-weight-semibold text-2" href="{{url('password/reset')}}" style="padding-left: 100px;">{{ __('message.forgot-my-password')}}</a>
                             </div>
                         </div>
 
@@ -183,40 +183,40 @@ foreach($scripts as $script) {
 
                             <div class="form-group col">
 
-                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Login</button>
+                                <button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">{{ __('message.login')}}</button>
                                 @if($google_status == 1 || $twitter_status == 1 || $github_status == 1 ||$linkedin_status == 1)
 
                                 <div class="divider">
 
-                                    <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">or</span>
+                                    <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">{{ __('message.or')}}</span>
                                 </div>
                                 @endif
                                 @if($google_status == 1)
 
                                 <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
 
-                                    <i class="fab fa-google text-5 me-2"></i> Login With Google
+                                    <i class="fab fa-google text-5 me-2"></i> {{ __('message.login_google')}}
                                 </a><br><br>
                                 @endif
                                 @if($twitter_status == 1)
 
                                 <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
 
-                                    <i class="fab fa-twitter text-5 me-2"></i> Login With Twitter
+                                    <i class="fab fa-twitter text-5 me-2"></i> {{ __('message.login_twitter')}}
                                 </a><br><br>
                                 @endif
                                 @if($github_status == 1 )
 
                                 <a href="{{ url('/auth/redirect/github') }}"  class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
 
-                                    <i class="fab fa-github text-5 me-2"></i> Login With Github
+                                    <i class="fab fa-github text-5 me-2"></i> {{ __('message.login_github')}}
                                 </a><br><br>
                                 @endif
                                  @if($linkedin_status == 1 )
 
                                 <a href="{{ url('/auth/redirect/linkedin') }}"  class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3" data-loading-text="Loading...">
 
-                                    <i class="fab fa-linkedin-in text-5 me-2"></i> Login With Linkedin
+                                    <i class="fab fa-linkedin-in text-5 me-2"></i> {{ __('message.login_linkedin')}}
                                 </a><br><br>
                                 @endif
                             </div>
@@ -227,7 +227,7 @@ foreach($scripts as $script) {
                 <div class="col-md-6 col-lg-6 ps-5">
 
 
-                    <h2 class="font-weight-bold text-5 mb-0">Register</h2>
+                    <h2 class="font-weight-bold text-5 mb-0">{{ __('message.register')}}</h2>
 
                     <form name="registerForm" id="regiser-form">
 
@@ -235,7 +235,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('first_name') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">First Name <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.first_name')}} <span class="text-color-danger">*</span></label>
 
                                  {!! Form::text('first_name',null,['class'=>'form-control form-control-lg text-4', 'id'=>'first_name']) !!}
                                 <span id="first_namecheck"></span>
@@ -243,7 +243,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('last_name') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Last Name <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.last_name')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::text('last_name',null,['class'=>'form-control form-control-lg text-4', 'id'=>'last_name']) !!}
                                 <span id="last_namecheck"></span>
@@ -254,7 +254,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">E-mail Address <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.email_address')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::email('email',null,['class'=>'form-control form-control-lg text-4', 'id'=>'email']) !!}
                                 <span id="emailcheck"></span>
@@ -265,7 +265,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Company Name <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.company_name')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::text('company',null,['class'=>'form-control form-control-lg text-4', 'id'=>'company']) !!}
                                 <span id="companycheck"></span>
@@ -276,7 +276,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Address <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.address')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::textarea('address',null,['class'=>'form-control form-control-lg text-4','rows'=>4, 'id'=>'address']) !!}
                                  <span id="addresscheck"></span>
@@ -287,7 +287,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Country <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.country')}} <span class="text-color-danger">*</span></label>
 
                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                 {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-select form-control h-auto py-2 selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
@@ -299,7 +299,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Mobile <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.mobile')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
                                 <input class="form-control form-control-lg text-4" id="mobilenum" name="mobile" type="tel">
@@ -334,7 +334,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Password <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.password')}} <span class="text-color-danger">*</span></label>
                                 <div class="input-group">
                                 {!! Form::password('password',['class'=>'form-control form-control-lg text-4', 'id'=>'password']) !!}
                                     <div class="input-group-append">
@@ -348,7 +348,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
 
-                                <label class="form-label text-color-dark text-3">Re-enter Password <span class="text-color-danger">*</span></label>
+                                <label class="form-label text-color-dark text-3">{{ __('message.re_enter_password')}} <span class="text-color-danger">*</span></label>
                                 <div class="input-group">
                                {!! Form::password('password_confirmation',['class'=>'form-control form-control-lg text-4', 'id'=>'confirm_pass']) !!}
                                     <div class="input-group-append">
@@ -398,7 +398,7 @@ foreach($scripts as $script) {
                                 <div class="form-check" style="padding-left: 0px;">
 
                                     <input type="checkbox" value="false" name="terms" id="term" ><a href="{{$apiKeys->terms_url}}" target="_blank">
-                                        Agree to terms and conditions
+                                        {{ __('message.agree_term')}}
                                     </a>
                                     <br><span id="termscheck"></span>
                                 </div>
@@ -410,7 +410,7 @@ foreach($scripts as $script) {
 
                             <div class="form-group col">
 
-                                <button type="button" name="register" id="register" onclick="registerUser()" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">Register</button>
+                                <button type="button" name="register" id="register" onclick="registerUser()" class="btn btn-dark btn-modern w-100 text-uppercase font-weight-bold text-3 py-3" data-loading-text="Loading...">{{ __('message.register')}}</button>
 
                             </div>
                         </div>
@@ -503,7 +503,7 @@ let register_recaptcha_id;
             @if($status->recaptcha_status === 1)
             if(getRecaptchaTokenFromId(login_recaptcha_id) == ''){
                 $('.loginrobot-verification').empty()
-                $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+                $('.loginrobot-verification').append("<p style='color:red'>{{ __('message.robot_verification')}}</p>")
                 return false;
             }
             else{
@@ -521,7 +521,7 @@ let register_recaptcha_id;
             var firrstname_val = $('#first_name').val();
             if (firrstname_val.length == '') {
                 $('#first_namecheck').show();
-                $('#first_namecheck').html("Please Enter First Name");
+                $('#first_namecheck').html("{{ __('message.error_firstname')}}");
                 $('#first_namecheck').focus();
                 $('#first_name').css("border-color", "red");
                 $('#first_namecheck').css("color", "red");
@@ -535,7 +535,7 @@ let register_recaptcha_id;
 
             if (firrstname_val.length > 30) {
                 $('#first_namecheck').show();
-                $('#first_namecheck').html("Max 30 characters allowed ");
+                $('#first_namecheck').html("{{ __('message.error_characters')}}");
                 $('#first_namecheck').focus();
                 $('#first_name').css("border-color", "red");
                 $('#first_namecheck').css("color", "red");
@@ -550,7 +550,7 @@ let register_recaptcha_id;
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if (pattern.test(firrstname_val)) {
                 $('#first_namecheck').show();
-                $('#first_namecheck').html("Special characters not allowed");
+                $('#first_namecheck').html("{{ __('message.error_special_characters')}}");
                 $('#first_namecheck').focus();
                 $('#first_name').css("border-color", "red");
                 $('#first_namecheck').css("color", "red");
@@ -571,7 +571,7 @@ let register_recaptcha_id;
             var lastname_val = $('#last_name').val();
             if (lastname_val.length == '') {
                 $('#last_namecheck').show();
-                $('#last_namecheck').html("Please Enter Last Name");
+                $('#last_namecheck').html("{{ __('message.error_lastname')}}");
                 $('#last_namecheck').focus();
                 $('#last_name').css("border-color", "red");
                 $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
@@ -585,7 +585,7 @@ let register_recaptcha_id;
 
             if (lastname_val.length > 30) {
                 $('#last_namecheck').show();
-                $('#last_namecheck').html("Maximum 30 characters allowed");
+                $('#last_namecheck').html("{{ __('message.error_characters')}}");
                 $('#last_namecheck').focus();
                 $('#last_name').css("border-color", "red");
                 $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
@@ -601,7 +601,7 @@ let register_recaptcha_id;
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if (pattern.test(lastname_val)) {
                 $('#last_namecheck').show();
-                $('#last_namecheck').html("Special characters not allowed");
+                $('#last_namecheck').html("{{ __('message.error_special_characters')}}");
                 $('#last_namecheck').focus();
                 $('#last_name').css("border-color", "red");
                 $('#last_namecheck').css({"color": "red", "margin-top": "5px"});
@@ -629,7 +629,7 @@ let register_recaptcha_id;
 
             } else {
                 $('#emailcheck').show();
-                $('#emailcheck').html("Please Enter a valid email");
+                $('#emailcheck').html("{{ __('message.error_email')}}");
                 $('#emailcheck').focus();
                 $('#email').css("border-color", "red");
                 $('#emailcheck').css({"color": "red", "margin-top": "5px"});
@@ -645,7 +645,7 @@ let register_recaptcha_id;
             var company_val = $('#company').val();
             if (company_val.length == '') {
                 $('#companycheck').show();
-                $('#companycheck').html("Please Enter Company Name");
+                $('#companycheck').html("{{ __('message.error_company')}}");
                 $('#companycheck').focus();
                 $('#company').css("border-color", "red");
                 $('#companycheck').css({"color": "red", "margin-top": "5px"});
@@ -665,7 +665,7 @@ let register_recaptcha_id;
             var address_val = $('#address').val();
             if (address_val.length == '') {
                 $('#addresscheck').show();
-                $('#addresscheck').html("Please Enter Address ");
+                $('#addresscheck').html("{{ __('message.error_address')}}");
                 $('#addresscheck').focus();
                 $('#address').css("border-color", "red");
                 $('#addresscheck').css({"color": "red", "margin-top": "5px"});
@@ -685,7 +685,7 @@ let register_recaptcha_id;
             var country_val = $('#country').val();
             if (country_val == '') {
                 $('#countrycheck').show();
-                $('#countrycheck').html("Please Select One Country ");
+                $('#countrycheck').html("{{ __('message.error_one_country')}}");
                 $('#countrycheck').focus();
                 $('#country').css("border-color", "red");
                 $('#countrycheck').css({"color": "red", "margin-top": "5px"});
@@ -704,7 +704,7 @@ let register_recaptcha_id;
             var mobile_val = $('#mobilenum').val();
             if (mobile_val.length == '') {
                 $('#mobile_codecheck').show();
-                $('#mobile_codecheck').html("Please Enter Mobile No. ");
+                $('#mobile_codecheck').html("{{ __('message.error_mobile')}}");
                 $('#mobile_codecheck').focus();
                 $('#mobilenum').css("border-color", "red");
                 $('#mobile_codecheck').css({"color": "red", "margin-top": "5px"});
@@ -724,7 +724,7 @@ let register_recaptcha_id;
             var town_val = $('#city').val();
             if (town_val.length == '') {
                 $('#towncheck').show();
-                $('#towncheck').html("Please Enter Town ");
+                $('#towncheck').html("{{ __('message.error_town')}}");
                 $('#towncheck').focus();
                 $('#city').css("border-color", "red");
                 $('#towncheck').css({"color": "red", "margin-top": "5px"});
@@ -743,7 +743,7 @@ let register_recaptcha_id;
             var state_val = $('#state-list').val();
             if (state_val.length == '') {
                 $('#statecheck').show();
-                $('#statecheck').html("Please Select a State ");
+                $('#statecheck').html("{{ __('message.error_state')}}");
                 $('#statecheck').focus();
                 $('#state-list').css("border-color", "red");
                 $('#statecheck').css({"color": "red", "margin-top": "5px"});
@@ -790,7 +790,7 @@ let register_recaptcha_id;
             var passwordStore = $('#password').val();
             if (confirmPassStore != passwordStore) {
                 $('#conpasscheck').show();
-                $('#conpasscheck').html("Passwords Don't Match");
+                $('#conpasscheck').html("{{ __('message.error_password')}}");
                 $('#conpasscheck').focus();
                 $('#confirm_pass').css("border-color", "red");
                 $('#conpasscheck').css("color", "red");
@@ -808,7 +808,7 @@ let register_recaptcha_id;
             var term_val = $('#term').val();
             if (term_val == 'false') {
                 $('#termscheck').show();
-                $('#termscheck').html("Terms must be accepted");
+                $('#termscheck').html("{{ __('message.error_terms')}}");
                 $('#termscheck').focus();
                 $('#term').css("border-color", "red");
                 $('#termscheck').css({"color": "red", "margin-top": "5px"});
@@ -838,7 +838,7 @@ let register_recaptcha_id;
                 recaptchaToken = getRecaptchaTokenFromId(register_recaptcha_id);
             if (getRecaptchaTokenFromId(register_recaptcha_id) == '') {
                 $('#captchacheck').show();
-                $('#captchacheck').html("Robot verification failed, please try again.");
+                $('#captchacheck').html("{{ __('message.robot_verification')}}");
                 $('#captchacheck').focus();
                 $('#captcha').css("border-color", "red");
                 $('#captchacheck').css({"color": "red", "margin-top": "5px"});
@@ -918,7 +918,7 @@ let register_recaptcha_id;
                 }
 
                 $("#register").attr('disabled', true);
-                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>{{ __('message.please_wait')}}");
 
                 recaptchaToken = recaptchaToken ?? '';
                 $.ajax({
@@ -994,7 +994,7 @@ let register_recaptcha_id;
                         }
 
                         // Pick the message or set a default message
-                        var message = response.message ? response.message : 'An error occurred. Please try again.';
+                        var message = response.message ? response.message : '{{ __('message.error_occurred')}}';
 
                         var html = '<div class="alert alert-danger alert-dismissable">' + message +
                             ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>';
@@ -1030,7 +1030,7 @@ let register_recaptcha_id;
         $(document).ready(function () {
             var printitem = localStorage.getItem('successmessage');
             if (printitem != null) {
-                var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>' + printitem + '!</div>';
+                var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>{{ __('message.well_done')}}</strong>' + printitem + '!</div>';
                 $('#alertMessage2').html(result);
                 localStorage.removeItem('successmessage');
                 localStorage.clear();
@@ -1058,7 +1058,7 @@ let register_recaptcha_id;
                 getState(val);
                 getCode(val);
             } else {
-                $("#state-list").html('<option value="">Please select Country</option>').val('');
+                $("#state-list").html('<option value="">{{ __('message.error_select_country')}}</option>').val('');
             }
 
 //        getCurrency(val);
@@ -1072,7 +1072,7 @@ let register_recaptcha_id;
                 data: {'country_id': val, '_token': "{{csrf_token()}}"},//'country_id=' + val,
                 success: function (data) {
 
-                    $("#state-list").html('<option value="">Please select Country</option>').val('');
+                    $("#state-list").html('<option value="">{{ __('message.error_select_country')}}</option>').val('');
 
 
                     $("#state-list").html(data).val(state.id);
@@ -1272,7 +1272,7 @@ let register_recaptcha_id;
                     $('#register').attr('disabled', false);
                 } else {
                     errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
+                    errorMsg.innerHTML = "{{ __('message.error_valid_number')}}";
 
                     $('#mobilenum').css("border-color", "red");
                     $('#error-msg').css({"color": "red", "margin-top": "5px"});
@@ -1293,7 +1293,7 @@ let register_recaptcha_id;
                     $('#register').attr('disabled', false);
                 } else {
                     errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
+                    errorMsg.innerHTML = "{{ __('message.error_valid_number')}}";
                     $('#mobilenum').css("border-color", "red");
                     $('#error-msg').css({"color": "red", "margin-top": "5px"});
                     $('#register').attr('disabled', true);
@@ -1358,7 +1358,7 @@ let register_recaptcha_id;
                 } else {
 
                     errorMsg1.classList.remove("hide");
-                    errorMsg1.innerHTML = "Please enter a valid number";
+                    errorMsg1.innerHTML = "{{ __('message.error_valid_number')}}";
                     $('.phone').css("border-color", "red");
                     $('#error-msg1').css({"color": "red", "margin-top": "5px"});
                     $('#sendOtp').attr('disabled', true);

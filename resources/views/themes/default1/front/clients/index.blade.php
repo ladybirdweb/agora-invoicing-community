@@ -49,7 +49,7 @@ $updated_ends_at = 'expired';
                                                 </div>
                                             </div>
 
-                                            <h4 class="card-title mb-2 ps-2 mt-2 text-4 font-weight-bold">PENDING INVOICES</h4>
+                                            <h4 class="card-title mb-2 ps-2 mt-2 text-4 font-weight-bold">{{ __('message.pending_invoices')}}</h4>
                                         </div>
                                     </div>
                                 </a>
@@ -104,7 +104,7 @@ $updated_ends_at = 'expired';
                                                 </div>
                                             </div>
 
-                                            <h4 class="card-title mb-2 ps-2 mt-2 text-4 font-weight-bold">ORDER RENEWALS</h4>
+                                            <h4 class="card-title mb-2 ps-2 mt-2 text-4 font-weight-bold">{{ __('message.order_renewals')}}</h4>
                                         </div>
                                     </div>
                                 </a>

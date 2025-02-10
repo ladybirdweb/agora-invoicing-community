@@ -53,7 +53,6 @@ function fetchLang() {
 
 $lang = fetchLang();
 
-
 ?>
 <!Doctype html>
 <html lang="en">
@@ -120,6 +119,16 @@ $lang = fetchLang();
 
                 <img src="./images/agora-invoicing.png" alt="Agora Logo" class="brand-image install-img">
             </a>
+            <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                        <img id="flagIcon" src="" width="25px" alt="Flag Icon">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right p-0" style="left: inherit; right: 0px;" id="language-dropdown">
+                        <!-- Language options will be populated here -->
+                    </div>
+                </li>
+            </ul>
         </div>
     </nav>
 

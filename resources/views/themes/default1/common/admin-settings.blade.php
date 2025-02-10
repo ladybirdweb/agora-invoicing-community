@@ -4,12 +4,12 @@ Settings
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Application Settings</h1>
+        <h1>{{ __('message.application_settings') }}</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item active">Settings</li>
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{ __('message.home') }}</a></li>
+            <li class="breadcrumb-item active">{{ __('message.settings') }}</li>
         </ol>
     </div><!-- /.col -->
 @stop
@@ -48,7 +48,7 @@ Settings
 
     <!-- /.box-header -->
         <div class="card-header">
-            <h3 class="card-title">Settings</h3>
+            <h3 class="card-title">{{ __('message.settings') }}</h3>
         </div>
     <div class="card-body">
         <div class="row">
@@ -62,7 +62,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">System Settings</p>
+                        <p class="box-title">{{ __('message.system-settings') }}</p>
                     </div>
                 </div>
 
@@ -91,7 +91,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >License Type</p>
+                        <p class="box-title" >{{ __('message.lic_type') }}</p>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">License Permissions</p>
+                        <p class="box-title">{{ __('message.license_permission') }}</p>
                     </div>
                 </div>
 
@@ -117,7 +117,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >File Storage</p>
+                        <p class="box-title" >{{ __('message.file_storage') }}</p>
                     </div>
                 </div>
 
@@ -130,7 +130,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Payment Gateways</p>
+                        <p class="box-title" >{{ __('message.payment_gateway') }}</p>
                     </div>
                 </div>
 
@@ -143,7 +143,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >System Managers</p>
+                        <p class="box-title" >{{ __('message.system_managers') }}</p>
                     </div>
                 </div>
 
@@ -156,7 +156,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Third party apps</p>
+                        <p class="box-title" >{{ __('message.third_party_apps') }}</p>
                     </div>
                 </div>
 
@@ -169,7 +169,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Cloud Hub</p>
+                        <p class="box-title" >{{ __('message.cloud_hub') }}</p>
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">Localized License</p>
+                        <p class="box-title">{{ __('message.localized_license') }}</p>
                     </div>
                 </div>
 
@@ -198,7 +198,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">Debug</p>
+                        <p class="box-title">{{ __('message.debug') }}</p>
                     </div>
                 </div>
              @if(env('APP_DEBUG') == 'true')
@@ -211,7 +211,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title">ClockWork</p>
+                        <p class="box-title">{{ __('message.clockwork') }}</p>
                     </div>
                 </div>
                 @endif
@@ -225,7 +225,7 @@ Settings
                             </span>
                         </a>
                     </div>
-                    <p class="box-title">Social Logins</p>
+                    <p class="box-title">{{ __('message.social_logins') }}</p>
                 </div>
             </div>
 
@@ -257,7 +257,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Error Log</p>
+                        <p class="box-title" >{{ __('message.err_log') }}</p>
                     </div>
                 </div>
 
@@ -270,7 +270,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Activity Log</p>
+                        <p class="box-title" >{{ __('message.activity_log') }}</p>
                     </div>
                 </div>
 
@@ -283,7 +283,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Email Log</p>
+                        <p class="box-title" >{{ __('message.email_log') }}</p>
                     </div>
                 </div>
 
@@ -296,7 +296,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Payment Log</p>
+                        <p class="box-title" >{{ __('message.payment_log') }}</p>
                     </div>
                 </div>
 
@@ -328,7 +328,7 @@ Settings
 
 <div class="card card-secondary card-outline">
     <div class="card-header">
-        <h3 class="card-title">Email</h3>
+        <h3 class="card-title">{{ __('message.email') }}</h3>
     </div>
     <!-- /.box-header -->
     <div class="card-body">
@@ -343,7 +343,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Email Settings</p>
+                        <p class="box-title" >{{ __('message.email_settings') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -357,7 +357,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Template Settings</p>
+                        <p class="box-title" >{{ __('message.template_settings') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -371,7 +371,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Templates</p>
+                        <p class="box-title" >{{ __('message.templates') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -385,7 +385,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Queues</p>
+                        <p class="box-title" >{{ __('message.queues') }}</p>
                     </div>
                 </div>
 
@@ -399,7 +399,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Queue Monitoring</p>
+                        <p class="box-title" >{{ __('message.queue_monitoring') }}</p>
                     </div>
                 </div>
                 @endif
@@ -412,7 +412,7 @@ Settings
 
 <div class="card card-secondary card-outline">
     <div class="card-header">
-        <h3 class="card-title">Api</h3>
+        <h3 class="card-title">{{ __('message.api') }}</h3>
     </div>
     <!-- /.box-header -->
     <div class="card-body">
@@ -427,7 +427,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Github</p>
+                        <p class="box-title" >{{ __('message.github') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -445,7 +445,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Mail Chimp</p>
+                        <p class="box-title" >{{ __('message.mail_chimp') }}</p>
                     </div>
                 </div>
                 @endif
@@ -459,7 +459,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Api Keys</p>
+                        <p class="box-title" >{{ __('message.key') }}</p>
                     </div>
                 </div>
         </div>
@@ -470,7 +470,7 @@ Settings
 
 <div class="card card-secondary card-outline">
     <div class="card-header">
-        <h3 class="card-title">Common</h3>
+        <h3 class="card-title">{{ __('message.common') }}</h3>
     </div>
     <!-- /.box-header -->
     <div class="card-body">
@@ -485,7 +485,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Tax</p>
+                        <p class="box-title" >{{ __('message.tax') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -499,7 +499,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Currency</p>
+                        <p class="box-title" >{{ __('message.currency') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -512,7 +512,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Country List</p>
+                        <p class="box-title" >{{ __('message.country_list') }}</p>
                     </div>
                 </div>
 
@@ -524,7 +524,7 @@ Settings
 </div>
 <div class="card card-secondary card-outline">
     <div class="card-header">
-        <h3 class="card-title">Widgets</h3>
+        <h3 class="card-title">{{ __('message.widgets') }}</h3>
     </div>
     <!-- /.box-header -->
     <div class="card-body">
@@ -539,7 +539,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Footer</p>
+                        <p class="box-title" >{{ __('message.footer') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -553,7 +553,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Social Media</p>
+                        <p class="box-title" >{{ __('message.social-media') }}</p>
                     </div>
                 </div>
                 <!--/.col-md-2-->
@@ -567,7 +567,7 @@ Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Analytics/Custom Code</p>
+                        <p class="box-title" >{{ __('message.analytics_custom_code') }}</p>
                     </div>
                 </div>
         </div>

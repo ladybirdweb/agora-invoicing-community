@@ -14,7 +14,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                 <div class="modal-header">
 
-                    <h4 class="modal-title" id="demoModalLabel">Book a Demo</h4>
+                    <h4 class="modal-title" id="demoModalLabel">{{ __('message.book_a_demo')}}</h4>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
@@ -29,12 +29,12 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
    
                                 <div class="contact-form-success alert alert-success d-none mt-4">
 
-                                    <strong>Success!</strong> Your message has been sent to us.
+                                    <strong>{{ __('message.success')}}!</strong> {{ __('message.message_sent')}}
                                 </div>
 
                                 <div class="contact-form-error alert alert-danger d-none mt-4">
 
-                                    <strong>Error!</strong> There was an error sending your message.
+                                    <strong>{{ __('message.error')}}</strong> {{ __('message.error_sending_message')}}
 
                                     <span class="mail-error-message text-1 d-block"></span>
                                 </div>
@@ -43,16 +43,16 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                                     <div class="form-group col-lg-6">
 
-                                        <label class="form-label mb-1 text-2">Name <span class="text-danger"> *</span> </label>
+                                        <label class="form-label mb-1 text-2">{{ __('message.name_page')}} <span class="text-danger"> *</span> </label>
 
-                                        <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="demoname" id="demoname" required>
+                                        <input type="text" value="" data-msg-required="{{ __('message.contact_error_name')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="demoname" id="demoname" required>
                                     </div>
 
                                     <div class="form-group col-lg-6">
 
-                                        <label class="form-label mb-1 text-2">E-mail Address <span class="text-danger"> *</span></label>
+                                        <label class="form-label mb-1 text-2">{{ __('message.email_address')}} <span class="text-danger"> *</span></label>
 
-                                        <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="demoemail" id="demoemail" required>
+                                        <input type="email" value="" data-msg-required="{{ __('message.error_email_address')}}" data-msg-email="{{ __('message.error_email_address')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="demoemail" id="demoemail" required>
                                     </div>
                                 </div>
 
@@ -60,7 +60,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                                     <div class="form-group col">
 
-                                        <label class="form-label mb-1 text-2">Mobile <span class="text-danger"> *</span></label>
+                                        <label class="form-label mb-1 text-2">{{ __('message.mobile')}} <span class="text-danger"> *</span></label>
 
                                          {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenDemo','name'=>'country_code']) !!}
                                         <input class="form-control input-lg" id="mobilenumdemo" name="Mobile" type="tel" required>
@@ -75,15 +75,15 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                                     <div class="form-group col">
 
-                                        <label class="form-label mb-1 text-2">Message <span class="text-danger"> *</span></label>
+                                        <label class="form-label mb-1 text-2">{{ __('message.contact_message')}} <span class="text-danger"> *</span></label>
 
-                                   <textarea maxlength="5000" data-msg-required="Please enter your message." rows="3" class="form-control" name="demomessage" id="demomessage" required></textarea>
+                                   <textarea maxlength="5000" data-msg-required="{{ __('message.contact_error_message')}}" rows="3" class="form-control" name="demomessage" id="demomessage" required></textarea>
                                     </div>
                                 </div>
                                 
                                   <!-- Honeypot fields (hidden) -->
                                 <div style="display: none;">
-                                    <label>Leave this field empty</label>
+                                    <label>{{ __('message.leave_this_field_empty')}}</label>
                                     <input type="text" name="honeypot_field" value="">
                                 </div>
 
@@ -106,9 +106,9 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('message.close')}}</button>&nbsp;&nbsp;&nbsp;
 
-                    <button type="submit" class="btn btn-primary" name="demoregister" id="demoregister">Book a Demo</button>
+                    <button type="submit" class="btn btn-primary" name="demoregister" id="demoregister">{{ __('message.book_a_demo')}}</button>
                 </div>
             </div>
             </form>
@@ -137,7 +137,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
 
         if (!recaptchaTokenDemo) {
             const demoCaptchaCheck = $('#democaptchacheck');
-            demoCaptchaCheck.show().html("Robot verification failed, please try again.")
+            demoCaptchaCheck.show().html("{{ __('message.robot_verification')}}")
                 .css({ "color": "red", "margin-top": "5px" });
             $('#democaptcha').css("border-color", "red");
             demoCaptchaCheck.focus();
@@ -165,14 +165,14 @@ $(document).ready(function() {
         if (recaptchaEnabled == 1) {
             if (!demovalidateRecaptcha()) {
                 $("#demoregister").attr('disabled', false);
-                $("#demoregister").html("Send Message");
+                $("#demoregister").html("{{ __('message.contact_send_msg')}}");
                 return;
             }
         }
         $('#successMessage').empty();
         $('#errorMessage').empty();
         $("#demoregister").attr('disabled',true);
-        $("#demoregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $("#demoregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>{{ __('message.please_wait')}}");
 
         var formData = {
             "demoname": $('#demoname').val(),
@@ -195,7 +195,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 $("#demoregister").attr('disabled',false);
-                $("#demoregister").html("Send Message");
+                $("#demoregister").html("{{ __('message.contact_send_msg')}}");
                 $('#demosuccessMessage').html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.message + '</div>');
                 $('#demoForm')[0].reset();
                 setTimeout(function() {
@@ -205,7 +205,7 @@ $(document).ready(function() {
             },
             error: function(response) {
                 $("#demoregister").attr('disabled', false);
-                $("#demoregister").html("Send Message");
+                $("#demoregister").html("{{ __('message.contact_send_msg')}}");
             
                 var errorMessageHtml = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
                 

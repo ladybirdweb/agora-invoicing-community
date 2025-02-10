@@ -10,11 +10,11 @@ Contact us
 @stop
 @section('breadcrumb')
 @if(Auth::check())
-        <li><a class="text-primary" href="{{url('my-invoices')}}">Home</a></li>
+        <li><a class="text-primary" href="{{url('my-invoices')}}">{{ __('message.home')}}</a></li>
 @else
-     <li><a class="text-primary" href="{{url('login')}}">Home</a></li>
+     <li><a class="text-primary" href="{{url('login')}}">{{ __('message.home')}}</a></li>
 @endif
- <li class="active text-dark">Contact us</li>
+ <li class="active text-dark">{{ __('message.contact_us')}}</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')   
@@ -42,7 +42,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                 <div class="col-lg-6">
 
-                    <p class="mb-4">Feel free to ask for details, don't save any questions!</p>
+                    <p class="mb-4">{{ __('message.feel_free')}}</p>
 
                      <form id="contactForm" method="post">
 
@@ -51,16 +51,16 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col-lg-6">
 
-                                <label class="form-label mb-1 text-2">Name <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">{{ __('message.contact_name')}} <span class="text-color-danger">*</span></label>
 
-                                <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control text-3 h-auto py-2" name="conName" id="conName" required>
+                                <input type="text" value="" data-msg-required="{{ __('message.contact_error_name')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="conName" id="conName" required>
                             </div>
 
                             <div class="form-group col-lg-6">
 
-                                <label class="form-label mb-1 text-2">E-mail Address <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">{{ __('message.email_address')}} <span class="text-color-danger">*</span></label>
 
-                                <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" required>
+                                <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="{{ __('message.contact_error_email')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" required>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col">
 
-                                <label class="form-label mb-1 text-2">Mobile <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">{{ __('message.mobile')}} <span class="text-color-danger">*</span></label>
 
                                 {!! Form::hidden('mobile',null,['id'=>'mobile_code_hiddenco','name'=>'country_code']) !!}
                                 <input class="form-control input-lg" id="mobilenumcon" name="Mobile" type="tel" required>
@@ -83,14 +83,14 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col">
 
-                                <label class="form-label mb-1 text-2">Message <span class="text-color-danger">*</span></label>
+                                <label class="form-label mb-1 text-2">{{ __('message.contact_message')}} <span class="text-color-danger">*</span></label>
 
-                                <textarea maxlength="5000" data-msg-required="Please enter your message." rows="8" class="form-control text-3 h-auto py-2" name="conmessage" id="conmessage" required></textarea>
+                                <textarea maxlength="5000" data-msg-required="{{ __('message.contact_message')}}" rows="8" class="form-control text-3 h-auto py-2" name="conmessage" id="conmessage" required></textarea>
                             </div>
                         </div>
                          <!-- Honeypot fields (hidden) -->
                                 <div style="display: none;">
-                                    <label>Leave this field empty</label>
+                                    <label>{{ __('message.contact_leave')}}</label>
                                     <input type="text" name="conatcthoneypot_field" value="">
                                 </div>
 
@@ -106,7 +106,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                             <div class="form-group col">
 
-                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading..." id="contactSubmit">Send Message</button>
+                                <button type="submit" class="btn btn-dark btn-modern text-3" data-loading-text="Loading..." id="contactSubmit">{{ __('message.contact_send_msg')}}</button>
                             </div>
                         </div>
                     </form>
@@ -117,15 +117,15 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                     <div>
 
-                        <h4 class="mt-2 mb-1"><strong>Our Office</strong></h4>
+                        <h4 class="mt-2 mb-1"><strong>{{ __('message.our_office')}}</strong></h4>
 
                         <ul class="list list-icons list-icons-style-2 mt-2">
 
-                            <li><i class="fas fa-map-marker-alt top-6"></i> <strong class="text-dark">Address:</strong> {{ $address }}<br>{{ implode(', ', array_filter([$set->city, $state, $country, $set->zip])) }}</li>
+                            <li><i class="fas fa-map-marker-alt top-6"></i> <strong class="text-dark">{{ __('message.address')}}:</strong> {{ $address }}<br>{{ implode(', ', array_filter([$set->city, $state, $country, $set->zip])) }}</li>
 
-                            <li><i class="fas fa-phone top-6"></i> <strong class="text-dark">Phone:</strong> +</b>{{$set->phone_code}} {{$set->phone}}</li>
+                            <li><i class="fas fa-phone top-6"></i> <strong class="text-dark">{{ __('message.phone')}}:</strong> +</b>{{$set->phone_code}} {{$set->phone}}</li>
 
-                            <li><i class="fas fa-envelope top-6"></i> <strong class="text-dark">Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
+                            <li><i class="fas fa-envelope top-6"></i> <strong class="text-dark">{{ __('message.email')}}:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
                         </ul>
                     </div>
 
@@ -150,7 +150,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                  recaptchaToken = getRecaptchaTokenFromId(contact_recaptcha_id);
                 if (getRecaptchaTokenFromId(contact_recaptcha_id) === '') {
                     $('#captchacheck').show();
-                    $('#captchacheck').html("Robot verification failed, please try again.");
+                    $('#captchacheck').html("{{ __('message.robot_verification')}}");
                     $('#captchacheck').focus();
                     $('#captcha').css("border-color", "red");
                     $('#captchacheck').css({"color": "red", "margin-top": "5px"});
@@ -203,7 +203,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                     $('#register').attr('disabled',false);
                 } else {
                     errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
+                    errorMsg.innerHTML = "{{ __('message.error_valid_number')}}";
                     $('#mobilenumcon').css("border-color","red");
                     $('#error-msgcon').css({"color":"red","margin-top":"5px"});
                     $('#register').attr('disabled',true);
@@ -223,7 +223,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
                     $('#register').attr('disabled',false);
                 } else {
                     errorMsg.classList.remove("hide");
-                    errorMsg.innerHTML = "Please enter a valid number";
+                    errorMsg.innerHTML = "{{ __('message.error_valid_number')}}";
                     $('#mobilenumcon').css("border-color","red");
                     $('#error-msgcon').css({"color":"red","margin-top":"5px"});
                     $('#register').attr('disabled',true);
@@ -249,14 +249,14 @@ $(document).ready(function() {
         if (recaptchaEnabled == 1) {
             if (!validateRecaptcha()) {
                 $("#contactSubmit").attr('disabled', false);
-                $("#contactSubmit").html("Send Message");
+                $("#contactSubmit").html("{{ __('message.contact_send_msg')}}");
                 return;
             }
         }
         $('#successMessage').empty();
         $('#errorMessage').empty();
         $("#contactSubmit").attr('disabled',true);
-        $("#contactSubmit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $("#contactSubmit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>{{ __('message.please_wait')}}");
 
         var formData = {
             "conName": $('#conName').val(),
@@ -279,7 +279,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 $("#contactSubmit").attr('disabled',false);
-                $("#contactSubmit").html("Send Message");
+                $("#contactSubmit").html("{{ __('message.contact_send_msg')}}");
                 $('#successMessage').html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.message + '</div>');
                 $('#contactForm')[0].reset();
                 setTimeout(function() {
@@ -289,7 +289,7 @@ $(document).ready(function() {
             },
             error: function(response) {
                 $("#contactSubmit").attr('disabled', false);
-                $("#contactSubmit").html("Send Message");
+                $("#contactSubmit").html("{{ __('message.contact_send_msg')}}");
             
                 var errorMessageHtml = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
                 

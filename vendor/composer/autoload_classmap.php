@@ -2076,6 +2076,7 @@ return array(
     'Database\\Seeders\\v4_0_2_1\\ReportSettingSeeder' => $baseDir . '/database/seeders/v4_0_2_1/DatabaseSeeder.php',
     'Database\\Seeders\\v4_0_2_1\\TemplateTableSeeder' => $baseDir . '/database/seeders/v4_0_2_1/DatabaseSeeder.php',
     'Database\\Seeders\\v4_0_2_2_1\\DatabaseSeeder' => $baseDir . '/database/seeders/v4_0_2_2_1/DatabaseSeeder.php',
+    'Database\\Seeders\\v4_0_2_3\\DatabaseSeeder' => $baseDir . '/database/seeders/v4_0_2_3/DatabaseSeeder.php',
     'Database\\Seeders\\v4_0_2_3_RC_1\\DatabaseSeeder' => $baseDir . '/database/seeders/v4_0_2_3_RC_1/DatabaseSeeder.php',
     'DateError' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
     'DateException' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/DateException.php',

@@ -6,6 +6,7 @@ use App;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Http\Requests\StoreLanguageRequest;
+use App\Model\Common\Setting;
 use App\Model\Mailjob\QueueService;
 use App\User;
 use Artisan;
@@ -14,6 +15,7 @@ use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use Session;
 
 class InstallerController extends Controller

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BillingInstaller\InstallerController;
+use App\Http\Controllers\Common\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('db-setup', [InstallerController::class, 'configuration'])->name('db-setup');

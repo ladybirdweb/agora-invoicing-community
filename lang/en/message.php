@@ -1831,4 +1831,22 @@ return [
      'deactivate' => "Deactivate",
      'provider' => "Provider",
 
+    //github template
+    'github_setting' => 'Github Setting',
+    'enter_github_username' => 'Please Enter github Username',
+    'enter_github_password' => 'Please Enter Github Password',
+    'enter_github_clientid' => 'Please Enter Client Id',
+    'enter_github_client_secret_key' => 'Please Enter Client Secret Key',
+
+    //invoice template
+    'edit_invoice' => ' Edit Invoice',
+    'view_user' => ' View User',
+    'pending' => 'Pending',
+    'no_invoices' => 'No Invoices',
+    'amount_to_credit' => 'Amount To Credit :',
+    'generate_an_invoice' => 'Generate An Invoice',
+    'view_invoices' => 'View Invoices',
+    'generate_invoice' => 'Generate Invoice',
+    'add_plan_product' => 'Add a plan for the product',
+
 ];

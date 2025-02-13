@@ -1364,16 +1364,11 @@ return [
 
     //       @json(__('message.enter_domain_form')))
 
+    //    {{ __('message.success') }}
 
+    //       @json(__('message.enter_domain_form')))
 
-//    {{ __('message.success') }}
-
-
-
-
-//       @json(__('message.enter_domain_form')))
-
-//    Lang::get('message.configure_tweet')
+    //    Lang::get('message.configure_tweet')
 
     //    Lang::get('message.configure_tweet')
 

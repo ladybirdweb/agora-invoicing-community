@@ -6,7 +6,6 @@ use App;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Http\Requests\StoreLanguageRequest;
-use App\Model\Common\Setting;
 use App\Model\Mailjob\QueueService;
 use App\User;
 use Artisan;
@@ -15,7 +14,6 @@ use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Lang;
 use Session;
 
 class InstallerController extends Controller
@@ -375,6 +373,7 @@ class InstallerController extends Controller
             return successResponse('', collect($languages)->sortBy('name')->values()->all());
         } catch (\Exception $exception) {
             \Log::error($exception);
+
             return errorResponse($exception->getMessage());
         }
     }
@@ -386,6 +385,7 @@ class InstallerController extends Controller
             if (! Auth::check()) {
                 \Illuminate\Support\Facades\Session::put('language', $language);
                 \Illuminate\Support\Facades\Cache::forever('language_temp', $language);
+
                 return successResponse();
             }
 
@@ -396,12 +396,13 @@ class InstallerController extends Controller
             return successResponse();
         } catch (\Exception $exception) {
             \Log::exception($exception);
+
             return errorResponse('error could not change the language');
         }
     }
 
-    public function getCurrentLang(){
+    public function getCurrentLang()
+    {
         return successResponse('', ['language' => Session::get('language', 'en')]);
     }
-
 }

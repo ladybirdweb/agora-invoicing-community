@@ -65,7 +65,7 @@ $lang = fetchLang();
 
     <link rel="shortcut icon" href="./images/faveo.png" type="image/x-icon" />
 
-<!--    <link rel="apple-touch-icon" href="./agora.png">-->
+    <!--    <link rel="apple-touch-icon" href="./agora.png">-->
 
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
@@ -93,9 +93,9 @@ $lang = fetchLang();
 
     <style>
         .cursor-default { cursor: default !important; }
-         .timeline::before {
-             bottom: 10px;
-         }
+        .timeline::before {
+            bottom: 10px;
+        }
         .text-bold,
         .active {
             font-weight: bold;
@@ -122,7 +122,7 @@ $lang = fetchLang();
             <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                        <img id="flagIcon" src="" width="25px" alt="Flag Icon">
+                        <i id="flagIcon" class="flag-icon flag-icon-us"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right p-0" style="left: inherit; right: 0px;" id="language-dropdown">
                         <!-- Language options will be populated here -->
@@ -141,33 +141,33 @@ $lang = fetchLang();
                     <div class="accordion" id="accordionExample">
                         <div class="card">
                             <form action="probe.php" method="post">
-                            <div class="card-body">
-                                <p class="text-center lead text-bold"><?= $lang['title'] ?></p>
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <label for="inputEmail1" class="col-sm-12 col-form-label">
-                                            <?= $lang['magic_phrase'] ?><span style="color: red;">*</span>
-                                        </label>
-                                        <input type="password"
-                                               class="form-control <?= $showError ? 'is-invalid' : '' ?>"
-                                               id="phrase"
-                                               name="passPhrase"
-                                               placeholder="Enter magic phrase"
-                                               value="<?= isset($_POST['passPhrase']) ? htmlspecialchars($_POST['passPhrase']) : '' ?>">
+                                <div class="card-body">
+                                    <p class="text-center lead text-bold"><?= $lang['title'] ?></p>
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <label for="inputEmail1" class="col-sm-12 col-form-label">
+                                                <?= $lang['magic_phrase'] ?><span style="color: red;">*</span>
+                                            </label>
+                                            <input type="password"
+                                                   class="form-control <?= $showError ? 'is-invalid' : '' ?>"
+                                                   id="phrase"
+                                                   name="passPhrase"
+                                                   placeholder="Enter magic phrase"
+                                                   value="<?= isset($_POST['passPhrase']) ? htmlspecialchars($_POST['passPhrase']) : '' ?>">
 
-                                        <?php if (isset($showError) && $showError): ?>
-                                            <span class="error invalid-feedback"><?= $lang['magic_phrase_not_work'] ?></span>
-                                        <?php endif; ?>
+                                            <?php if (isset($showError) && $showError): ?>
+                                                <span class="error invalid-feedback"><?= $lang['magic_phrase_not_work'] ?></span>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
+                                <div class="card-footer">
 
-                                <button class="btn btn-primary float-right" name="submit" id="magic-phrase-submit">
-                                    Continue&nbsp;
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
+                                    <button class="btn btn-primary float-right" name="submit" id="magic-phrase-submit">
+                                        Continue&nbsp;
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -212,506 +212,506 @@ $lang = fetchLang();
         </script>
 
     <?php } else { ?>
-    <div class="content-wrapper" style="margin-top: 80px;">
+        <div class="content-wrapper" style="margin-top: 80px;">
 
-        <div class="content">
+            <div class="content">
 
-            <div class="container pt-3 pb-3">
+                <div class="container pt-3 pb-3">
 
-                <div class="accordion" id="accordionExample">
+                    <div class="accordion" id="accordionExample">
 
-                    <div class="steps">
+                        <div class="steps">
 
-                        <progress id="progress" value=0 max=100></progress>
+                            <progress id="progress" value=0 max=100></progress>
 
-                        <div class="step-item">
+                            <div class="step-item">
 
-                            <button id="btn-server" class="step-button text-center cursor-default" type="button" aria-expanded="true" aria-controls="server">
-                                1
-                            </button>
-
-                            <div class="step-title mt-2 text-bold"><?= $lang['server_requirements'] ?></div>
-                        </div>
-
-                        <div class="step-item">
-
-                            <button id="btn-database" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="database">
-                                2
-                            </button>
-
-                            <div class="step-title mt-2"><?= $lang['database_setup'] ?></div>
-                        </div>
-
-                        <div class="step-item">
-
-                            <button id="btn-start" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="start">
-                                3
-                            </button>
-
-                            <div class="step-title mt-2"><?= $lang['getting_started'] ?></div>
-                        </div>
-
-                        <div class="step-item">
-
-                            <button id="btn-final" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="final">
-                                4
-                            </button>
-
-                            <div class="step-title mt-2"><?= $lang['final'] ?></div>
-                        </div>
-                    </div>
-
-                    <div id="alert-container"></div>
-
-                    <div id="server" class="collapse show" role="tabpanel" data-bs-parent="#accordionExample">
-
-                        <div class="card">
-
-                            <div class="card-body">
-
-                                <p class="text-center lead text-bold"><?= $lang['server_requirements'] ?></p>
-
-
-                                <div class="row">
-
-                                    <table class="table table-bordered">
-
-                                        <thead style="background: #f5f5f5;">
-
-                                        <tr><th style="width:50%;"><?= $lang['directory'] ?></th><th><?= $lang['permissions'] ?></th></tr>
-                                        </thead>
-
-                                        <tbody>
-                                        <?php
-                                        $errorCount = 0;
-                                        $basePath = substr(__DIR__, 0, -6);
-                                        $billingController = new BillingDependencyController('probe');
-                                        $details = $billingController->validateDirectory($basePath, $errorCount);
-
-                                        foreach ($details as $item): ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($item['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                <td class="text-<?= htmlspecialchars($item['color'], ENT_QUOTES, 'UTF-8'); ?>">
-                                                    <?= htmlspecialchars($item['message'], ENT_QUOTES, 'UTF-8'); ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="row">
-
-                                    <table class="table table-bordered">
-
-                                        <thead style="background: #f5f5f5;">
-
-                                        <tr><th style="width:50%;"><?= $lang['requisites'] ?></th><th><?= $lang['status'] ?></th></tr>
-                                        </thead>
-
-                                        <tbody>
-                                        <?php
-                                        $details = (new BillingDependencyController('probe'))->validateRequisites($errorCount);
-                                        foreach ($details as $detail): ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($detail['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                <td style="color: <?= htmlspecialchars($detail['color'], ENT_QUOTES, 'UTF-8'); ?>;">
-                                                    <?= $detail['connection']; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="row">
-
-                                    <table class="table table-bordered">
-
-                                        <thead style="background: #f5f5f5;">
-
-                                        <tr><th style="width:50%;"><?= $lang['php_extensions'] ?></th><th><?= $lang['status'] ?></th></tr>
-                                        </thead>
-
-                                        <tbody>
-                                        <?php
-                                        $details = (new BillingDependencyController('probe'))->validatePHPExtensions($errorCount);
-
-                                        $extString = $lang['extension_not_enabled'];
-
-                                        $phpIniFile = php_ini_loaded_file();
-                                        $extensionName = $detail['extensionName'];
-                                        $url = 'https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation';
-
-                                        $extString = str_replace(
-                                            [':php_ini_file', ':extensionName', ':url'],
-                                            [$phpIniFile, $extensionName, $url],
-                                            $extString
-                                        );
-                                        foreach ($details as $item): ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($item['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                <td class="<?= $item['key'] === 'no-error' ? 'text-success' : 'text-warning'; ?>">
-                                                    <?= $item['key'] === 'no-error' ? 'Enabled' : $extString; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row">
-
-                                    <table class="table table-bordered">
-
-                                        <thead style="background: #f5f5f5;">
-
-                                        <tr><th style="width:50%;"><?= $lang['mod_rewrite'] ?></th><th><?= $lang['status'] ?></th></tr>
-                                        </thead>
-                                        <?php
-                                        function getLicenseUrl()
-                                        {
-                                            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-                                                $url = 'https://';
-                                            } else {
-                                                $url = 'http://';
-                                            }
-                                            // Append the host(domain name, ip) to the URL.
-                                            $url .= $_SERVER['HTTP_HOST'];
-
-                                            // Append the requested resource location to the URL
-                                            $url .= $_SERVER['REQUEST_URI'];
-
-                                            return str_replace('probe.php', 'db-setup', $url);
-                                        }
-                                        function checkUserFriendlyUrl()
-                                        {
-                                            if (function_exists('curl_init') === true) {
-                                                try {
-                                                    $ch = curl_init(getLicenseUrl());
-                                                    curl_setopt($ch, CURLOPT_HEADER, true);
-                                                    curl_setopt($ch, CURLOPT_NOBODY, true);
-                                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                                                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                                                    curl_exec($ch);
-                                                    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                                                    curl_close($ch);
-
-                                                    return $httpcode != 404;
-                                                } catch (Exception $e) {
-                                                    return null;
-                                                }
-                                            }
-
-                                            return null;
-                                        }
-
-                                        // Rewrite Engine Check
-                                        $redirect = function_exists('apache_get_modules') ? (int) in_array('mod_rewrite', apache_get_modules()) : 2;
-                                        $rewriteStatusColor = 'green';
-                                        $rewriteStatusString = 'Enabled';
-                                        if ($redirect == 2) {
-                                            $rewriteStatusColor = '#F89C0D';
-                                            $rewriteStatusString = 'Unable to detect';
-                                        } elseif (!$redirect) {
-                                            $errorCount++;
-                                            $rewriteStatusColor = 'red';
-                                            $rewriteStatusString = 'OFF';
-                                        }
-
-                                        // User Friendly URL Check
-                                        $userFriendlyUrl = checkUserFriendlyUrl();
-                                        $userFriendlyUrlStatusColor = 'green';
-                                        $userFriendlyUrlStatusString = 'Enabled';
-
-                                        if ($userFriendlyUrl === false) {
-                                            $errorCount++;
-                                            $userFriendlyUrlStatusColor = 'red';
-                                            $userFriendlyUrlStatusString = $lang['off_apache'];
-                                        } elseif ($userFriendlyUrl !== true) {
-                                            $userFriendlyUrlStatusColor = '#F89C0D';
-                                            $userFriendlyUrlStatusString = 'Unable to detect';
-                                        }
-                                        ?>
-                                        <tbody>
-                                        <tr>
-                                            <td><?= $lang['rewrite_engine'] ?></td>
-                                            <td style='color: <?= htmlspecialchars($rewriteStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
-                                                <?= htmlspecialchars($rewriteStatusString, ENT_QUOTES, 'UTF-8'); ?>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><?= $lang['user_url'] ?></td>
-                                            <td style='color: <?= htmlspecialchars($userFriendlyUrlStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
-                                                <?= htmlspecialchars($userFriendlyUrlStatusString, ENT_QUOTES, 'UTF-8'); ?>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-
-                                <button class="btn btn-primary float-right"
-                                    <?php if ($errorCount === 0): ?>
-                                        onclick="gotoStep('database')"
-                                    <?php else: ?>
-                                        disabled
-                                    <?php endif; ?>>
-                                    Continue&nbsp;
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="database" class="collapse" role="tabpanel" aria-labelledby="database-trigger">
-                        <div class="card">
-
-                            <div class="card-body">
-
-                                <p class="text-center lead text-bold">Database Setup</p>
-
-                                <div id="db_fields">
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="host" class="col-form-label">
-                                                <?= $lang['host'] ?> <span style="color: red;">*</span>
-                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['host_tooltip'] ?>"></i>
-                                            </label>
-                                            <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="database_name" class="col-form-label">Database name <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" id="database_name" placeholder="Database">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="mysql_port" class="col-form-label">
-                                                <?= $lang['mysql_port_label'] ?>
-                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['mysql_port_tooltip'] ?>"></i>
-                                            </label>
-                                            <input type="text" class="form-control" id="mysql_port" placeholder="Port Number">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="username" class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" id="username" placeholder="User name">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="password" class="col-form-label"><?= $lang['password'] ?></label>
-                                            <input type="password" class="form-control" id="password" placeholder="Password">
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div id="db_config">
-                                    <h6 class="mt-1 mb-3"><?= $lang['test_prerequisites_message'] ?></h6>
-
-                                    <div class="timeline timeline-inverse "  id="timeline-container">
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-
-                                <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; <?= $lang['previous'] ?></button>
-
-                                <button class="btn btn-primary float-right" type="submit" id="validate"><?= $lang['continue'] ?> &nbsp;
-                                    <i class="fas fa-arrow-right"></i>
+                                <button id="btn-server" class="step-button text-center cursor-default" type="button" aria-expanded="true" aria-controls="server">
+                                    1
                                 </button>
 
-                                <button class="btn btn-primary float-right" onclick="gotoStep('start')" id="continue"><?= $lang['continue'] ?> &nbsp;
-                                    <i class="fas fa-arrow-right"></i>
+                                <div class="step-title mt-2 text-bold"><?= $lang['server_requirements'] ?></div>
+                            </div>
+
+                            <div class="step-item">
+
+                                <button id="btn-database" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="database">
+                                    2
                                 </button>
+
+                                <div class="step-title mt-2"><?= $lang['database_setup'] ?></div>
+                            </div>
+
+                            <div class="step-item">
+
+                                <button id="btn-start" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="start">
+                                    3
+                                </button>
+
+                                <div class="step-title mt-2"><?= $lang['getting_started'] ?></div>
+                            </div>
+
+                            <div class="step-item">
+
+                                <button id="btn-final" class="step-button text-center collapsed cursor-default" type="button" aria-expanded="false" aria-controls="final">
+                                    4
+                                </button>
+
+                                <div class="step-title mt-2"><?= $lang['final'] ?></div>
                             </div>
                         </div>
-                    </div>
 
-                    <div id="start" class="collapse" role="tabpanel" aria-labelledby="start-trigger">
+                        <div id="alert-container"></div>
 
-                        <div class="card">
+                        <div id="server" class="collapse show" role="tabpanel" data-bs-parent="#accordionExample">
 
-                            <div class="card-body">
+                            <div class="card">
 
-                                <p class="text-center lead text-bold"><?= $lang['getting_started'] ?></p>
+                                <div class="card-body">
 
-                                <div class="card card-light">
+                                    <p class="text-center lead text-bold"><?= $lang['server_requirements'] ?></p>
 
-                                    <div class="card-header">
 
-                                        <h3 class="card-title"><?= $lang['sign_up_as_admin'] ?></h3>
-                                    </div>
+                                    <div class="row">
 
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['first_name'] ?><span style="color: red;">*</span></label>
-                                                <input type="text" id="admin_first_name" class="form-control" placeholder="First Name">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['last_name'] ?><span style="color: red;">*</span></label>
-                                                <input type="text" id="admin_last_name" class="form-control" placeholder="Last Name">
-                                            </div>
-                                        </div>
+                                        <table class="table table-bordered">
 
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span>
-                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['username_info'] ?>"></i>
-                                                </label>
-                                                <input type="text" id="admin_username" class="form-control" placeholder="User name">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['email'] ?> <span style="color: red;">*</span></label>
-                                                <input type="email" id="email" class="form-control" placeholder="User email">
-                                            </div>
-                                        </div>
+                                            <thead style="background: #f5f5f5;">
 
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['password'] ?> <span style="color: red;">*</span></label>
-                                                <input type="password" id="admin_password" class="form-control" placeholder="Password">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['confirm_password'] ?><span style="color: red;">*</span></label>
-                                                <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
-                                            </div>
-                                        </div>
-                                        <small class="form-text text-muted" id="pswd_info" style="display: none;">
-                                            <?= $lang['password_requirements'] ?>
+                                            <tr><th style="width:50%;"><?= $lang['directory'] ?></th><th><?= $lang['permissions'] ?></th></tr>
+                                            </thead>
+
+                                            <tbody>
                                             <?php
-                                            echo '<ul>';
-                                            foreach ($lang['password_requirements_list'] as $value) {
-                                                echo '<li id="' . $value['id'] . '" class="text-danger">' . $value['text'] . '</li>';
+                                            $errorCount = 0;
+                                            $basePath = substr(__DIR__, 0, -6);
+                                            $billingController = new BillingDependencyController('probe');
+                                            $details = $billingController->validateDirectory($basePath, $errorCount);
+
+                                            foreach ($details as $item): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($item['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                    <td class="text-<?= htmlspecialchars($item['color'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                        <?= htmlspecialchars($item['message'], ENT_QUOTES, 'UTF-8'); ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <table class="table table-bordered">
+
+                                            <thead style="background: #f5f5f5;">
+
+                                            <tr><th style="width:50%;"><?= $lang['requisites'] ?></th><th><?= $lang['status'] ?></th></tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <?php
+                                            $details = (new BillingDependencyController('probe'))->validateRequisites($errorCount);
+                                            foreach ($details as $detail): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($detail['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                    <td style="color: <?= htmlspecialchars($detail['color'], ENT_QUOTES, 'UTF-8'); ?>;">
+                                                        <?= $detail['connection']; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <table class="table table-bordered">
+
+                                            <thead style="background: #f5f5f5;">
+
+                                            <tr><th style="width:50%;"><?= $lang['php_extensions'] ?></th><th><?= $lang['status'] ?></th></tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <?php
+                                            $details = (new BillingDependencyController('probe'))->validatePHPExtensions($errorCount);
+
+                                            $extString = $lang['extension_not_enabled'];
+
+                                            $phpIniFile = php_ini_loaded_file();
+                                            $extensionName = $detail['extensionName'];
+                                            $url = 'https://support.faveohelpdesk.com/show/how-to-enable-required-php-extension-on-different-servers-for-faveo-installation';
+
+                                            $extString = str_replace(
+                                                [':php_ini_file', ':extensionName', ':url'],
+                                                [$phpIniFile, $extensionName, $url],
+                                                $extString
+                                            );
+                                            foreach ($details as $item): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($item['extensionName'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                    <td class="<?= $item['key'] === 'no-error' ? 'text-success' : 'text-warning'; ?>">
+                                                        <?= $item['key'] === 'no-error' ? 'Enabled' : $extString; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+
+                                        <table class="table table-bordered">
+
+                                            <thead style="background: #f5f5f5;">
+
+                                            <tr><th style="width:50%;"><?= $lang['mod_rewrite'] ?></th><th><?= $lang['status'] ?></th></tr>
+                                            </thead>
+                                            <?php
+                                            function getLicenseUrl()
+                                            {
+                                                if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+                                                    $url = 'https://';
+                                                } else {
+                                                    $url = 'http://';
+                                                }
+                                                // Append the host(domain name, ip) to the URL.
+                                                $url .= $_SERVER['HTTP_HOST'];
+
+                                                // Append the requested resource location to the URL
+                                                $url .= $_SERVER['REQUEST_URI'];
+
+                                                return str_replace('probe.php', 'db-setup', $url);
                                             }
-                                            echo '</ul>';
+                                            function checkUserFriendlyUrl()
+                                            {
+                                                if (function_exists('curl_init') === true) {
+                                                    try {
+                                                        $ch = curl_init(getLicenseUrl());
+                                                        curl_setopt($ch, CURLOPT_HEADER, true);
+                                                        curl_setopt($ch, CURLOPT_NOBODY, true);
+                                                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                                        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                                                        curl_exec($ch);
+                                                        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                                                        curl_close($ch);
+
+                                                        return $httpcode != 404;
+                                                    } catch (Exception $e) {
+                                                        return null;
+                                                    }
+                                                }
+
+                                                return null;
+                                            }
+
+                                            // Rewrite Engine Check
+                                            $redirect = function_exists('apache_get_modules') ? (int) in_array('mod_rewrite', apache_get_modules()) : 2;
+                                            $rewriteStatusColor = 'green';
+                                            $rewriteStatusString = 'Enabled';
+                                            if ($redirect == 2) {
+                                                $rewriteStatusColor = '#F89C0D';
+                                                $rewriteStatusString = 'Unable to detect';
+                                            } elseif (!$redirect) {
+                                                $errorCount++;
+                                                $rewriteStatusColor = 'red';
+                                                $rewriteStatusString = 'OFF';
+                                            }
+
+                                            // User Friendly URL Check
+                                            $userFriendlyUrl = checkUserFriendlyUrl();
+                                            $userFriendlyUrlStatusColor = 'green';
+                                            $userFriendlyUrlStatusString = 'Enabled';
+
+                                            if ($userFriendlyUrl === false) {
+                                                $errorCount++;
+                                                $userFriendlyUrlStatusColor = 'red';
+                                                $userFriendlyUrlStatusString = $lang['off_apache'];
+                                            } elseif ($userFriendlyUrl !== true) {
+                                                $userFriendlyUrlStatusColor = '#F89C0D';
+                                                $userFriendlyUrlStatusString = 'Unable to detect';
+                                            }
                                             ?>
-                                        </small>
+                                            <tbody>
+                                            <tr>
+                                                <td><?= $lang['rewrite_engine'] ?></td>
+                                                <td style='color: <?= htmlspecialchars($rewriteStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
+                                                    <?= htmlspecialchars($rewriteStatusString, ENT_QUOTES, 'UTF-8'); ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><?= $lang['user_url'] ?></td>
+                                                <td style='color: <?= htmlspecialchars($userFriendlyUrlStatusColor, ENT_QUOTES, 'UTF-8'); ?>'>
+                                                    <?= htmlspecialchars($userFriendlyUrlStatusString, ENT_QUOTES, 'UTF-8'); ?>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-
                                 </div>
 
-                                <div class="card card-light">
+                                <div class="card-footer">
 
-                                    <div class="card-header">
-
-                                        <h3 class="card-title"><?= $lang['system_information'] ?></h3>
-                                    </div>
-                                    <div class="card-body">
-
-                                        <!-- Uncomment and apply layout for Timezone when built
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Timezone</label>
-                                            <div class="col-sm-10">
-                                                <select id="timezone" name="timezone" class="form-control select2">
-                                                </select>
-                                            </div>
-                                        </div>
-                                        -->
-
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['environment'] ?> <span style="color: red;">*</span></label>
-                                                <select id="environment" name="environment" class="form-control select2">
-                                                    <option value="production" selected>Production</option>
-                                                    <option value="development">Development</option>
-                                                    <option value="testing">Testing</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['cache_driver'] ?><span style="color: red;">*</span></label>
-                                                <select id="driver" name="driver" class="form-control select2">
-                                                    <option value="file" selected>File</option>
-                                                    <option value="redis">Redis</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="card card-light" id="redis-setup">
-
-                                    <div class="card-header">
-
-                                        <h3 class="card-title"><?= $lang['redis_setup'] ?></h3>
-                                    </div>
-                                    <div class="card-body">
-
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['redis_host'] ?><span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="redis_host" placeholder="Redis Host">
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['redis_port'] ?><span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="redis_port" placeholder="Redis Port">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <label class="col-form-label"><?= $lang['redis_password'] ?></label>
-                                                <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-
-                                <button class="btn btn-primary float-right" onclick="submitForm()"><?= $lang['continue'] ?> &nbsp;
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="final" class="collapse" role="tabpanel" aria-labelledby="final-trigger">
-
-                        <div class="card">
-
-                            <div class="card-body">
-
-                                <p class="text-center lead text-bold"><?= $lang['final_setup'] ?>!</p>
-
-                                <div class="row">
-
-                                    <div class="col-6">
-
-                                        <p class="lead"><?= $lang['learn_more'] ?></p>
-
-                                        <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank"><?= $lang['knowledge_base'] ?></a></p>
-                                        <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com"><?= $lang['email_support'] ?></a></p>
-                                    </div>
-
-                                    <div class="col-6">
-
-                                        <a href="<?php echo getBaseUrl() ?>">
-                                            <div class="btn btn-primary"><?= $lang['login_button'] ?>&nbsp;<i class="fas fa-arrow-right"></i></div>
-                                        </a>
-                                    </div>
+                                    <button class="btn btn-primary float-right"
+                                        <?php if ($errorCount === 0): ?>
+                                            onclick="gotoStep('database')"
+                                        <?php else: ?>
+                                            disabled
+                                        <?php endif; ?>>
+                                        Continue&nbsp;
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                        <div id="database" class="collapse" role="tabpanel" aria-labelledby="database-trigger">
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <p class="text-center lead text-bold">Database Setup</p>
+
+                                    <div id="db_fields">
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label for="host" class="col-form-label">
+                                                    <?= $lang['host'] ?> <span style="color: red;">*</span>
+                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['host_tooltip'] ?>"></i>
+                                                </label>
+                                                <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="database_name" class="col-form-label">Database name <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" id="database_name" placeholder="Database">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label for="mysql_port" class="col-form-label">
+                                                    <?= $lang['mysql_port_label'] ?>
+                                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['mysql_port_tooltip'] ?>"></i>
+                                                </label>
+                                                <input type="text" class="form-control" id="mysql_port" placeholder="Port Number">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="username" class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" id="username" placeholder="User name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <label for="password" class="col-form-label"><?= $lang['password'] ?></label>
+                                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="db_config">
+                                        <h6 class="mt-1 mb-3"><?= $lang['test_prerequisites_message'] ?></h6>
+
+                                        <div class="timeline timeline-inverse "  id="timeline-container">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+
+                                    <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; <?= $lang['previous'] ?></button>
+
+                                    <button class="btn btn-primary float-right" type="submit" id="validate"><?= $lang['continue'] ?> &nbsp;
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+
+                                    <button class="btn btn-primary float-right" onclick="gotoStep('start')" id="continue"><?= $lang['continue'] ?> &nbsp;
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="start" class="collapse" role="tabpanel" aria-labelledby="start-trigger">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <p class="text-center lead text-bold"><?= $lang['getting_started'] ?></p>
+
+                                    <div class="card card-light">
+
+                                        <div class="card-header">
+
+                                            <h3 class="card-title"><?= $lang['sign_up_as_admin'] ?></h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['first_name'] ?><span style="color: red;">*</span></label>
+                                                    <input type="text" id="admin_first_name" class="form-control" placeholder="First Name">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['last_name'] ?><span style="color: red;">*</span></label>
+                                                    <input type="text" id="admin_last_name" class="form-control" placeholder="Last Name">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span>
+                                                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['username_info'] ?>"></i>
+                                                    </label>
+                                                    <input type="text" id="admin_username" class="form-control" placeholder="User name">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['email'] ?> <span style="color: red;">*</span></label>
+                                                    <input type="email" id="email" class="form-control" placeholder="User email">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['password'] ?> <span style="color: red;">*</span></label>
+                                                    <input type="password" id="admin_password" class="form-control" placeholder="Password">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['confirm_password'] ?><span style="color: red;">*</span></label>
+                                                    <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted" id="pswd_info" style="display: none;">
+                                                <?= $lang['password_requirements'] ?>
+                                                <?php
+                                                echo '<ul>';
+                                                foreach ($lang['password_requirements_list'] as $value) {
+                                                    echo '<li id="' . $value['id'] . '" class="text-danger">' . $value['text'] . '</li>';
+                                                }
+                                                echo '</ul>';
+                                                ?>
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="card card-light">
+
+                                        <div class="card-header">
+
+                                            <h3 class="card-title"><?= $lang['system_information'] ?></h3>
+                                        </div>
+                                        <div class="card-body">
+
+                                            <!-- Uncomment and apply layout for Timezone when built
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Timezone</label>
+                                                <div class="col-sm-10">
+                                                    <select id="timezone" name="timezone" class="form-control select2">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            -->
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['environment'] ?> <span style="color: red;">*</span></label>
+                                                    <select id="environment" name="environment" class="form-control select2">
+                                                        <option value="production" selected>Production</option>
+                                                        <option value="development">Development</option>
+                                                        <option value="testing">Testing</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['cache_driver'] ?><span style="color: red;">*</span></label>
+                                                    <select id="driver" name="driver" class="form-control select2">
+                                                        <option value="file" selected>File</option>
+                                                        <option value="redis">Redis</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="card card-light" id="redis-setup">
+
+                                        <div class="card-header">
+
+                                            <h3 class="card-title"><?= $lang['redis_setup'] ?></h3>
+                                        </div>
+                                        <div class="card-body">
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['redis_host'] ?><span style="color: red;">*</span></label>
+                                                    <input type="text" class="form-control" id="redis_host" placeholder="Redis Host">
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['redis_port'] ?><span style="color: red;">*</span></label>
+                                                    <input type="text" class="form-control" id="redis_port" placeholder="Redis Port">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label"><?= $lang['redis_password'] ?></label>
+                                                    <input type="password" class="form-control" id="redis_password" placeholder="Redis Password">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+
+                                    <button class="btn btn-primary float-right" onclick="submitForm()"><?= $lang['continue'] ?> &nbsp;
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="final" class="collapse" role="tabpanel" aria-labelledby="final-trigger">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <p class="text-center lead text-bold"><?= $lang['final_setup'] ?>!</p>
+
+                                    <div class="row">
+
+                                        <div class="col-6">
+
+                                            <p class="lead"><?= $lang['learn_more'] ?></p>
+
+                                            <p><i class="fas fa-newspaper"></i>&nbsp;&nbsp;<a href="https://github.com/ladybirdweb/agora-invoicing-community/wiki" target="_blank"><?= $lang['knowledge_base'] ?></a></p>
+                                            <p><i class="fas fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:support@ladybirdweb.com"><?= $lang['email_support'] ?></a></p>
+                                        </div>
+
+                                        <div class="col-6">
+
+                                            <a href="<?php echo getBaseUrl() ?>">
+                                                <div class="btn btn-primary"><?= $lang['login_button'] ?>&nbsp;<i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php } ?>
 
     <footer class="main-footer">
@@ -731,7 +731,7 @@ $lang = fetchLang();
 
 <script>
     document.getElementById('admin_username').addEventListener('input',function (){
-       this.value = this.value.toLowerCase();
+        this.value = this.value.toLowerCase();
     });
     document.getElementById('email').addEventListener('input',function (){
         this.value = this.value.toLowerCase();
@@ -1300,22 +1300,78 @@ $lang = fetchLang();
     // })
 </script>
 
-<script>
-
+<script type="module">
     var body = document.body;
-    var currentDir = body.getAttribute('dir');
+    // var currentDir = body.getAttribute('dir');
 
     var defaultStyles = document.querySelectorAll('[id^="default-styles"]');
     var rtlStyles = document.querySelectorAll('[id^="rtl-styles"]');
 
     const flagIcon = document.getElementById('flagIcon');
-    const englishOption = document.getElementById('englishOption');
-    const arabicOption = document.getElementById('arabicOption');
+    const languageDropdown = document.getElementById('language-dropdown');
 
-    englishOption.addEventListener('click', function() {
-        flagIcon.className = 'flag-icon flag-icon-us';
-        flagIcon.alt = 'English';
-        body.setAttribute('dir', 'ltr');
+    $(document).ready(function() {
+        $.ajax({
+            url: '<?php echo getBaseUrl() ?>/language',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(response) {
+                const localeMap = { 'ar': 'ae', 'bsn': 'bs', 'de': 'de', 'en': 'us', 'en-gb': 'gb', 'es': 'es', 'fr': 'fr', 'id': 'id', 'it': 'it', 'kr': 'kr', 'mt': 'mt', 'nl': 'nl', 'no': 'no', 'pt': 'pt', 'ru': 'ru', 'vi': 'vn', 'zh-hans': 'cn', 'zh-hant': 'cn' };
+                $.each(response.data, function(key, value) {
+                    console.log(value)
+                    const mappedLocale = localeMap[value.locale] || value.locale;
+                    const isSelected = value.locale === '{{ app()->getLocale() }}' ? 'selected' : '';
+                    $('#language-dropdown').append(
+                        '<a href="javascript:;" class="dropdown-item" data-locale="' + value.locale + '" ' + isSelected + '>' +
+                        '<i class="flag-icon flag-icon-' + mappedLocale + ' mr-2"></i> ' + value.name +
+                        '</a>'
+                    );
+                });
+
+                // Add event listeners for the dynamically added language options
+                $(document).on('click', '.dropdown-item', function() {
+                    const selectedLanguage = $(this).data('locale');
+                    const mappedLocale = localeMap[selectedLanguage] || selectedLanguage;
+                    const flagClass = 'flag-icon flag-icon-' + mappedLocale;
+                    const dir = selectedLanguage === 'ar' ? 'rtl' : 'ltr';
+                    updateLanguage(selectedLanguage, flagClass, dir);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching languages:', error);
+            }
+        });
+
+        $.ajax({
+            url: '<?php echo getBaseUrl() ?>/current-language',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(response) {
+                const currentLanguage = response.data.language;
+                const flagClass = 'flag-icon flag-icon-' + currentLanguage;
+                $('#flagIcon').attr('class', flagClass);
+            },
+            error: function(error) {
+                console.error('Error fetching current language:', error);
+            }
+        });
+    });
+
+    function updateLanguage(language, flagClass, dir) {
+        $('#flagIcon').attr('class', flagClass);
+        $('body').attr('dir', dir);
+
+        $.ajax({
+            url: '<?php echo getBaseUrl() ?>/update/language',
+            type: 'POST',
+            data: { language: language },
+            success: function(response) {
+                window.location.reload();
+            },
+            error: function(error) {
+                console.error('Error updating language:', error);
+            }
+        });
 
         defaultStyles.forEach(function(link) {
             link.disabled = false;
@@ -1323,27 +1379,7 @@ $lang = fetchLang();
         rtlStyles.forEach(function(link) {
             link.disabled = true;
         });
-    });
-
-    arabicOption.addEventListener('click', function() {
-        flagIcon.className = 'flag-icon flag-icon-ar';
-        flagIcon.alt = 'Arabic';
-        body.setAttribute('dir', 'rtl');
-
-        defaultStyles.forEach(function(link) {
-            link.disabled = true;
-        });
-        rtlStyles.forEach(function(link) {
-            link.disabled = false;
-        });
-    });
-
-    defaultStyles.forEach(function(link) {
-        link.disabled = false;
-    });
-    rtlStyles.forEach(function(link) {
-        link.disabled = true;
-    });
+    }
 </script>
 </body>
 </html>

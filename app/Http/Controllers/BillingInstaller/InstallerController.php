@@ -5,6 +5,7 @@ namespace App\Http\Controllers\BillingInstaller;
 use App;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
+use App\Http\Requests\StoreLanguageRequest;
 use App\Model\Common\Setting;
 use App\Model\Mailjob\QueueService;
 use App\User;
@@ -13,6 +14,8 @@ use Cache;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use Session;
 
 class InstallerController extends Controller
@@ -338,15 +341,67 @@ class InstallerController extends Controller
 
     public function getLang(Request $request)
     {
-        $set_lang = $request->input('set_lang');
-
-        if (! empty($set_lang)) {
-            App::setLocale($set_lang);
-        }
-        // Fetch all keys from the 'messages' language file
-        $lang = \Lang::get('installer_messages');
-
-        // Return the language array as a JSON response
-        return response()->json($lang);
+        return response()->json(\Lang::get('installer_messages'));
     }
+
+    public function setLang(Request $request)
+    {
+        $lang = $request->input('lang');
+
+        Session::put('language', $lang);
+        Cache::forever('language', $lang);
+
+        App::setLocale($lang);
+
+        return response()->json(['success' => \Lang::get('installer_messages.lang_set')]);
+    }
+
+    public function languageList(Request $request)
+    {
+        try {
+            $languageList = array_map('basename', \Illuminate\Support\Facades\File::directories(lang_path()));
+            $languages = [];
+
+            foreach ($languageList as $key => $langLocale) {
+                $language = [];
+                $language['id'] = $key;
+                $language['locale'] = $langLocale;
+                $languageArray = \Config::get("languages.$langLocale", ['', '']);
+                $language['name'] = $languageArray[0];
+                $language['translation'] = $languageArray[1];
+                $languages[] = $language;
+            }
+
+            return successResponse('', collect($languages)->sortBy('name')->values()->all());
+        } catch (\Exception $exception) {
+            \Log::error($exception);
+            return errorResponse($exception->getMessage());
+        }
+    }
+
+    public function storeLanguage(StoreLanguageRequest $request)
+    {
+        try {
+            $language = $request->input('language');
+            if (! Auth::check()) {
+                \Illuminate\Support\Facades\Session::put('language', $language);
+                \Illuminate\Support\Facades\Cache::forever('language_temp', $language);
+                return successResponse();
+            }
+
+            $user = Auth::user();
+            $user->language = $request->language;
+            $user->save();
+
+            return successResponse();
+        } catch (\Exception $exception) {
+            \Log::exception($exception);
+            return errorResponse('error could not change the language');
+        }
+    }
+
+    public function getCurrentLang(){
+        return successResponse('', ['language' => Session::get('language', 'en')]);
+    }
+
 }

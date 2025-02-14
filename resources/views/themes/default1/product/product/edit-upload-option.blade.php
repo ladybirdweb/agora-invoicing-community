@@ -109,7 +109,7 @@ Edit Product Uploads
 
     </div>
   </div>
- <script src="https://cdn.tiny.cloud/1/xwipon86uuwdgyhfmkh3a8egpljmtsmujlqix4fd73lc2uvd/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+ <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
                                     
    <script>
     $(function () {

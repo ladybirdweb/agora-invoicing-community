@@ -8,7 +8,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
 use App\Model\Configure\ProductPluginGroup;
 use App\Model\Order\Order;
-use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -215,7 +214,6 @@ class BaseOrderController extends ExtendedOrderController
             } else {
                 $planid = $days->id;
                 $period = $days->periods()->where('name', 'One Time')->get();
-
 
                 $licenseExpiry = (! $period->isEmpty()) ? '' : $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);

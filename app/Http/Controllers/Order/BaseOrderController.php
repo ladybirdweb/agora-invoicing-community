@@ -214,8 +214,8 @@ class BaseOrderController extends ExtendedOrderController
                 $supportExpiry = $expiryDate;
             } else {
                 $planid = $days->id;
-                $periodId = \DB::table('plans_periods_relation')->where('plan_id', $planid)->pluck('period_id');
-                $period = Period::where('id', $periodId)->where('name', 'One Time')->get();
+                $period = $days->periods()->where('name', 'One Time')->get();
+
 
                 $licenseExpiry = (! $period->isEmpty()) ? '' : $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days->days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days->days);

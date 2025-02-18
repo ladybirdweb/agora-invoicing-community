@@ -9,6 +9,7 @@ use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
 use App\Jobs\ReportExport;
 use App\Model\Common\Country;
+use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\QueueService;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -126,7 +127,7 @@ class ClientController extends AdvanceSearchController
                             return getDateHtml($model->created_at);
                         })
                         ->addColumn('active', function ($model) {
-                            return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);
+                            return $this->getActiveLabel($model->mobile_verified, $model->email_verified, $model->is_2fa_enabled);
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
@@ -239,10 +240,11 @@ class ClientController extends AdvanceSearchController
                 'password' => $password,
                 'company' => $request->input('company'),
                 'bussiness' => $request->input('bussiness'),
-                'active' => $request->input('active'),
+                'email_verified' => $request->input('active'),
                 'mobile_verified' => $request->input('mobile_verified'),
                 'role' => $request->input('role'),
                 'position' => $request->input('position'),
+                'mobile_country_iso' => $request->input('mobile_country_iso'),
                 'company_type' => $request->input('company_type'),
                 'company_size' => $request->input('company_size'),
                 'address' => $request->input('address'),
@@ -258,6 +260,11 @@ class ClientController extends AdvanceSearchController
                 'account_manager' => $request->input('account_manager'),
                 'ip' => $location['ip'],
             ];
+
+            $statusSetting = StatusSetting::first(['emailverification_status', 'msg91_status']);
+
+            $user['active'] = ($statusSetting->emailverification_status === 1 && $request->input('active') === 1) && ($statusSetting->msg91_status === 1 && $request->input('mobile_verified') === 1) ? 1 : 0;
+
             $userInput = User::create($user);
 
             if (emailSendingStatus()) {
@@ -521,7 +528,7 @@ class ClientController extends AdvanceSearchController
         ->select('id', 'first_name', 'last_name', 'email',
             \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
             \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
-            'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
+            'country_name as country', 'created_at', 'active', 'mobile_verified','email_verified', 'is_2fa_enabled', 'role', 'position'
         );
         // Apply other conditions based on the request
         $baseQuery = $baseQuery->when($request->company, function ($query) use ($request) {
@@ -540,8 +547,8 @@ class ClientController extends AdvanceSearchController
             $query->where('manager', $request->salesmanager);
         })->when($request->filled('mobile_verified'), function ($query) use ($request) {
             $query->where('mobile_verified', $request->mobile_verified);
-        })->when($request->filled('active'), function ($query) use ($request) {
-            $query->where('active', $request->active);
+        })->when($request->filled('email_verified'), function ($query) use ($request) {
+            $query->where('email_verified', $request->email_verified);
         })->when($request->filled('is_2fa_enabled'), function ($query) use ($request) {
             $query->where('is_2fa_enabled', $request->is_2fa_enabled);
         });

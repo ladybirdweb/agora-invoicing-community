@@ -15,7 +15,7 @@ Create Group
     </div><!-- /.col -->
 
 
-@stop
+@endsection
 
 @section('content')
 
@@ -116,7 +116,7 @@ Create Group
                            <div class="form-group">
                             
                             <div class="col-md-4">
-                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
                             <input type="radio" name= 'pricing_templates_id' value='{{$template->id}}' style="text-align: center;">
                             {{$template->name}}
@@ -260,7 +260,7 @@ Create Group
         return this.id == 'group';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
-@stop
+
 <script src="{{asset('plugins/jQuery/jquery.js')}}"></script>
 
 <script>
@@ -275,7 +275,7 @@ Create Group
                 $('#groupslug').val(data);
             }
          })
-        }); 
+        });
     })
 
 </script>
@@ -303,4 +303,4 @@ $(document).ready(function () {
 });
 </script>
 
-
+@stop

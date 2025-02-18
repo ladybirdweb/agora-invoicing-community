@@ -103,7 +103,7 @@ class LoginController extends Controller
         }
 
         // Check account activation and mobile verification
-        if ($user->active != 1 || $user->mobile_verified != 1) {
+        if ( $user->active != 1 ) {
             $attempts = VerificationAttempt::find($user->id);
 
             if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
@@ -134,7 +134,6 @@ class LoginController extends Controller
             'email' => $user->email,
             'password' => $password,
             'active' => 1,
-            'mobile_verified' => 1,
         ], $request->has('remember'));
 
         if (! $auth) {

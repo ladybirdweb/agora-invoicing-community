@@ -215,13 +215,10 @@ Edit User
                        <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                           {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                           {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code']) !!}
                            {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
-                           <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
-                       <!-- {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!} -->
                        <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
-                    <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
                 </div>
                    
                   
@@ -331,9 +328,11 @@ Edit User
         $(this).parent().removeClass('has-error');
     });
 
+    var mobInput = document.querySelector("#mobile_code");
+    updateCountryCodeAndFlag(mobInput, "{{ $user->mobile_country_iso }}")
     $('form').on('submit', function (e) {
-        $('#mobile_country_iso').val(telInput.attr('data-country-iso'));
-        $('input[name=mobile_code]').val(telInput.attr('data-dial-code'));
+        $('#mobile_code_hidden').val(telInput.attr('data-dial-code'));
+        $('#mobile_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
         telInput.val(telInput.val().replace(/\D/g, ''));
     });
 });

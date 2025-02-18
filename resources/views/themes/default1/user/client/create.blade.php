@@ -392,7 +392,7 @@ addressDropdown.change(function() {
 });
 
             $('form').on('submit', function (e) {
-                $('#mobile_country_iso').val(telInput.attr('data-country-iso'));
+                $('#mobile_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
                 $('input[name=mobile_code]').val(telInput.attr('data-dial-code'));
                 telInput.val(telInput.val().replace(/\D/g, ''));
             });

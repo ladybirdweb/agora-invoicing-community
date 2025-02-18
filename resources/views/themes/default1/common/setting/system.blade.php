@@ -103,7 +103,7 @@ System Setting
                             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
 
 
-                                {!! Form::input('tel', 'phone', null, ['class' => 'form-control selected-dial-code', 'id' => 'phone', 'data-country-iso' => $set->phone_country_iso]) !!}
+                                {!! Form::input('tel', 'phone', null, ['class' => 'form-control selected-dial-code', 'id' => 'phone']) !!}
 
                                 {!! Form::hidden('phone_code',null,['id'=>'phone_code_hidden']) !!}
                                 {!! Form::hidden('phone_country_iso',null,['id' => 'phone_country_iso']) !!}
@@ -468,7 +468,10 @@ System Setting
         $(this).parent().removeClass('has-error');
     });
 
+    var mobInput = document.querySelector("#phone");
+    updateCountryCodeAndFlag(mobInput, "{{ $set->phone_country_iso }}")
     $('form').on('submit', function (e) {
+        $('#phone_code_hidden').val(telInput.attr('data-dial-code'));
         $('#phone_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
         telInput.val(telInput.val().replace(/\D/g, ''));
     });

@@ -91,12 +91,14 @@ class RegisterController extends Controller
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
-            $need_verify = $this->getEmailMobileStatusResponse($userInput);
+            $need_verify = $this->getEmailMobileStatusResponse();
 
             if (! $need_verify) {
+                $userInput->active = 1;
                 $authController = new AuthController();
                 $authController->addUserToExternalServices($userInput);
             }
+            $userInput->save();
 
             \Session::flash('user', $userInput);
 
@@ -109,28 +111,11 @@ class RegisterController extends Controller
         }
     }
 
-    protected function getEmailMobileStatusResponse($user)
+    protected function getEmailMobileStatusResponse()
     {
         $response = StatusSetting::first(['emailverification_status', 'msg91_status']);
 
-        // Set default values
-        $user->mobile_verified = 0;
-        $user->active = 0;
-
-        if ($response->msg91_status === 1) {
-            $user->active = $response->emailverification_status !== 1 ? 1 : 0;
-        }
-
-        if ($response->emailverification_status === 1 && $response->msg91_status !== 1) {
-            $user->mobile_verified = 1;
-        }
-
-        $user->save();
-
-        // Determine the need to verify
-        $need_verify = ($response->emailverification_status === 0 && $response->msg91_status === 0) ? 0 : 1;
-
-        return $need_verify;
+        return ($response->emailverification_status || $response->msg91_status) ? 1 : 0;
     }
 
     protected function getUserCurrency($userCountry)

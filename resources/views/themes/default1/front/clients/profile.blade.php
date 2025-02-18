@@ -147,25 +147,20 @@ input:checked + .slider:before {
 
                            <div class="row">
                              {!! Form::model($user,['method' => 'PATCH','files'=>true , 'id' => 'client_form']) !!}
-                                                <div class="d-flex justify-content-center mb-4" id="profile_img">
-
-                                            <div class="profile-image-outer-container">
-                                                  <?php
-                                            $user = \DB::table('users')->find(\Auth::user()->id);
-                                            ?>
-
-
-                                                <div class="profile-image-inner-container bg-color-primary">
-                                                       <img src="{{ Auth::user()->profile_pic }}">
-                                                    <span class="profile-image-button bg-color-dark">
-
-                                                        <i class="fas fa-camera text-light"></i>
-                                                    </span>
-                                                </div>
-
-                                                <input type="file"  name="profile_pic" id="profilePic" class="form-control profile-image-input">
-                                            </div>
-                                        </div>
+                               <div class="d-flex justify-content-center mb-4" id="profile_img">
+                                   <div class="profile-image-outer-container">
+                                       <?php
+                                       $user = \DB::table('users')->find(\Auth::user()->id);
+                                       ?>
+                                       <div class="profile-image-inner-container bg-color-primary">
+                                           <img id="previewImage" src="{{ Auth::user()->profile_pic }}" alt="Profile Picture">
+                                           <span class="profile-image-button bg-color-dark">
+                <i class="fas fa-camera text-light"></i>
+            </span>
+                                       </div>
+                                       <input type="file" name="profile_pic" id="profilePic" class="form-control profile-image-input" accept="image/*" onchange="previewImage(this, document.getElementById('previewImage'))">
+                                   </div>
+                               </div>
 
 
                             <div class="col-lg-12 order-1 order-lg-2">
@@ -194,10 +189,10 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2 required">Mobile</label>
                                         <div class="col-lg-9">
-                                              {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
+                                              {!! Form::hidden('mobile_code',null,['id'=>'code_hidden']) !!}
                                                <!--<input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-                                            {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'incode' , 'data-country-iso' => $user->mobile_country_iso]) !!}
+                                            {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'incode' ]) !!}
                                             {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                                             <span id="invalid-msg" class="hide"></span>
                                                <span id="inerror-msg"></span>
@@ -266,7 +261,7 @@ input:checked + .slider:before {
 
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading...">Update</button>
+                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-original-text="Update" data-loading-text="Loading...">Update</button>
                                         </div>
                                     </div>
 
@@ -392,7 +387,16 @@ input:checked + .slider:before {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
                     <script>
-
+                        document.getElementById('profilePic').addEventListener('change', function(event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    document.getElementById('previewImage').src = e.target.result;
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
                         $(document).ready(function() {
                             // Cache the selectors for better performance
                             var $pswdInfo = $('#pswd_info');
@@ -495,8 +499,6 @@ input:checked + .slider:before {
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-
-                // $("#mobile_code").val(data);
                 $("#code_hidden").val(data);
             }
         });
@@ -508,6 +510,8 @@ input:checked + .slider:before {
 
 <script>
     $(document).ready(function() {
+        var mobInput = document.querySelector("#incode");
+        updateCountryCodeAndFlag(mobInput, "{{ $user->mobile_country_iso }}")
         let alertTimeout;
         function showAlert(type, messageOrResponse) {
 
@@ -644,15 +648,22 @@ input:checked + .slider:before {
             },
             submitHandler: function (form) {
                 var intelInput = $('#incode');
+                $('#code_hidden').val(mobInput.getAttribute('data-dial-code'));
+                let submitButton = $('#submit');
                 $('#mobile_country_iso').val(intelInput.attr('data-country-iso').toUpperCase());
                 intelInput.val(intelInput.val().replace(/\D/g, ''));
-                var formData = $(form).serialize();
+                var formData = new FormData(form);
                 $.ajax({
                     url: '{{url('my-profile')}}',
-                    type: 'PATCH',
+                    type: 'POST',
                     data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function (response) {
                         showAlert('success', response);
+                    },
+                    beforeSend: function () {
+                        submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
                     },
                     error: function (data) {
                         var response = data.responseJSON ? data.responseJSON : JSON.parse(data.responseText);
@@ -670,6 +681,9 @@ input:checked + .slider:before {
                         } else {
                             showAlert('error', response);
                         }
+                    },
+                    complete: function () {
+                        submitButton.prop('disabled', false).html(submitButton.data('original-text'));
                     }
                 });
             }

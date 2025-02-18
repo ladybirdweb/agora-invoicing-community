@@ -152,7 +152,7 @@ input:checked + .slider:before {
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                      <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-                    {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                    {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code']) !!}
                     {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                     <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
@@ -571,8 +571,11 @@ input:checked + .slider:before {
         $(this).parent().removeClass('has-error');
     });
 
+    var mobInput = document.querySelector("#mobile_code");
+    updateCountryCodeAndFlag(mobInput, "{{ $user->mobile_country_iso }}")
     $('form').on('submit', function (e) {
         $('#mobile_country_iso').val(telInput.attr('data-country-iso').toUpperCase());
+        $('#mobile_code_hidden').val(telInput.attr('data-dial-code'));
         telInput.val(telInput.val().replace(/\D/g, ''));
     });
 

@@ -690,6 +690,7 @@ class PageController extends Controller
             $product = Product::find($id);
             $offer = $this->getOfferprice($id);
 
+            $planId = Plan::where('product', $id)->pluck('id')->first();
             $prices = [];
             foreach ($plans as $plan) {
                 if ($plan->days == 365 || $plan->days == 366) {
@@ -707,7 +708,7 @@ class PageController extends Controller
                 if (! empty($prices)) {
                     $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                     $finalPrice = str_replace($prices[1], '', $format);
-                    $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                    $cost = '<span class="price-unit" id="'.$planId.'">'.$prices[1].'</span>'.$finalPrice;
                 }
             }
 

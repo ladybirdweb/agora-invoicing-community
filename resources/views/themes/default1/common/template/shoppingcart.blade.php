@@ -301,6 +301,43 @@ $(document).ready(function() {
     }
 });
 
+  document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".content-switcher").forEach(function (switcher) {
+          const card = switcher.closest(".card");
+          const priceElement = card.querySelector(".price");
+          const priceUnit = priceElement.querySelector(".price-unit");
+          const stylePlanSelect = card.querySelector(".stylePlan");
+
+          if (stylePlanSelect && priceUnit) {
+              stylePlanSelect.value = priceUnit.id;
+          }
+
+          switcher.addEventListener("click", function () {
+              // Reuse the card reference in case of dynamic changes
+              const card = this.closest(".card");
+              const priceElement = card.querySelector(".price");
+              const priceUnit = priceElement.querySelector(".price-unit");
+              // Using nextSibling for the numeric price element as before
+              const priceValue = priceUnit ? priceUnit.nextSibling : null;
+
+              // Retrieve the active option or default to the first option
+              const activeOption =
+                  this.querySelector("select.stylePlan option:checked") ||
+                  this.querySelector("select.stylePlan option");
+
+              if (activeOption) {
+                  const newPrice = activeOption.getAttribute("data-price");
+                  const newCurrency = activeOption.textContent.trim().charAt(0);
+
+                  if (priceUnit && priceValue && newPrice) {
+                      priceUnit.textContent = newCurrency;
+                      priceValue.textContent = newPrice;
+                  }
+              }
+          });
+      });
+  });
+
 
 </script>
 @stop

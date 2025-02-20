@@ -333,6 +333,7 @@ class TemplateController extends Controller
             \Session::put('toggleState', 'monthly');
         }
     }
+
     public function getPriceList($id)
     {
         try {

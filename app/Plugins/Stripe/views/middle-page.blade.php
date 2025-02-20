@@ -776,14 +776,16 @@ $json = json_encode($data);
             </div>
             <div class="col-md-12 ">
             <div class="modal-body">
-     
+
                     <form method="POST" class="require-validation" id="submit_total" action="{{ url('stripe') }}" >
                         <div id="payment-element">
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
+                                <div id="card-errors" style="display: none;"></div>
                                 <div id="card-element" class="form-control"></div>
                                 <input type="hidden" name="stripeToken" id="stripe-token" value="">
+                                <div id="card-errors" style="color: red; margin-top: 10px;"></div>
                             </div>
                         </div>
                             <div class="form-group row">
@@ -821,8 +823,22 @@ $json = json_encode($data);
 
     function generateStripeToken(event) {
         event.preventDefault();
+
+        // Reset previous error message
+        var alertBox = document.getElementById('card-errors');
+        alertBox.style.display = 'none';
+        alertBox.innerHTML = '';
+
         stripe.createToken(cardElement).then(function(result) {
             if (result.error) {
+                // Show Bootstrap alert with error message
+                alertBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${result.error.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+                alertBox.style.display = 'block';
+                $("#pay_now").prop("disabled", false);
+                $("#pay_now").html("{{ __('PAY NOW') }}");
             } else {
                 if (result.token) {
                     document.getElementById('stripe-token').value = result.token.id;

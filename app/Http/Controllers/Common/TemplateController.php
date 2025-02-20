@@ -218,11 +218,16 @@ class TemplateController extends Controller
             if ($plans == []) {
                 return '';
             }
-            if ($plans && $status->status != 1) {
-                $plan_form = \Form::select('subscription', ['Plans' => $plans], null, ['class' => 'stylePlan']);
-            } else {
-                $plan_form = \Form::select('subscription', ['Plans' => $plans], null, ['class' => 'planhide']);
+            $priceList = $this->getPriceList($id);
+            $plan_options = '';
+
+            foreach ($priceList as $planId => $planPrice) {
+                $plan_options .= '<option value="'.$planId.'" data-price="'.$planPrice.'">'.$plans[$planId].'</option>';
             }
+
+            $plan_class = ($plans && $status->status != 1) ? 'stylePlan' : 'planhide';
+            $plan_form = '<select name="subscription" class="'.$plan_class.'">'.$plan_options.'</select>';
+
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
@@ -326,6 +331,32 @@ class TemplateController extends Controller
         } elseif ($status == 'unselected') {
             \Session::forget('toggleState');
             \Session::put('toggleState', 'monthly');
+        }
+    }
+    public function getPriceList($id)
+    {
+        try {
+            $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
+            $prices = [];
+
+            foreach ($plans as $plan) {
+                $planDetails = userCurrencyAndPrice('', $plan);
+                $cost = rounding($planDetails['plan']->add_price); // Get price and round it
+                $currencyCode = $planDetails['currency']; // Get currency code
+
+                // Format the price similar to YearlyAmount but without symbol
+                $formattedPrice = currencyFormat($cost, $code = $currencyCode);
+                $finalPrice = str_replace($planDetails['symbol'], '', $formattedPrice); // Remove symbol
+
+                // Store only the formatted price with plan ID as key
+                $prices[$plan->id] = trim($finalPrice);
+            }
+
+            return $prices;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            return [];
         }
     }
 }

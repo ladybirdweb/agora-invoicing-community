@@ -14,6 +14,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Set up Authenticator</h4>
+                    <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
@@ -31,7 +34,6 @@
                     <span id="passerror"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                     <button type="button" id="verify_password" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Validate</button>
                 </div>
             </div>
@@ -43,6 +45,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Set up Authenticator</h4>
+                    <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -53,7 +58,6 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left closeandrefresh" data-bs-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                     <button type="button" id="verify_password" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Validate</button>
                 </div>
             </div>
@@ -66,6 +70,9 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Recovery Code</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div id="alertMessagecopied"></div>
@@ -91,7 +98,6 @@
                 <span id="passerror"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                 <button type="button" id="next_rec_code" class="btn btn-primary">Next&nbsp;&nbsp;<i class="fa fa-arrow-right"></i></button>
             </div>
         </div>
@@ -103,6 +109,9 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Set up Authenticator</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="text-center">
                 <div class="modal-body bar-code">
@@ -134,7 +143,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                 <button type="button" id="scan_complete" class="btn btn-primary">Next&nbsp;&nbsp;<i class="fa fa-arrow-right"></i></button>
             </div>
         </div>
@@ -146,24 +154,24 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Set up Authenticator</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body modal-body-spacing">
                 {!! Form::label('name', Lang::get('message.enter_6_digit_code'), ['class' => 'required']) !!}
-                <div class="row">
-                    <div class="col-sm-8 text-left form-group form-field-template">
-                        <input type="text" name="password" id="passcode" placeholder="Enter Passcode..." class="form-control" required="required">
-                        <span id="passcodeerror"></span>
-                    </div>
-                    <div class="col-sm-4">
-                        <button type="button" id="pass_btn" class="btn btn-primary pull-right float-right">
-                            <i class="fa fa-check"></i> Verify
-                        </button>
-                    </div>
+                <div class="form-group form-field-template">
+                    <input type="text" name="password" id="passcode" placeholder="Enter Passcode..." class="form-control" required="required">
+                    <span id="passcodeerror"></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                <button type="button" id="prev_button" class="btn btn-primary float-right"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Previous</button>
+                <button type="button" id="prev_button" class="btn btn-default pull-right float-right">
+                    <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Previous
+                </button>
+                <button type="button" id="pass_btn" class="btn ml-auto btn-primary pull-right float-right">
+                    <i class="fa fa-check"></i> Verify
+                </button>
             </div>
         </div>
     </div>
@@ -174,6 +182,9 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Set up Authenticator</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
@@ -192,6 +203,9 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Turn off Two-Factor-Authentication</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div id="alertMessage"></div>
@@ -201,7 +215,6 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger pull-right float-right" id="turnoff2fa"><i class="fa fa-power-off"></i> TURN OFF</button>
-                <button type="button" class="btn btn-default pull-left closeandrefresh" data-bs-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
             </div>
         </div>
     </div>
@@ -213,6 +226,9 @@
         <div class="modal-content" style="width:700px;">
             <div class="modal-header">
                 <h4 class="modal-title">Recovery Code</h4>
+                <button type="button" class="close closeandrefresh" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <p>Recovery code can be used only once. Make sure to generate a new one each time you use the code to log in.</p>
@@ -235,7 +251,6 @@
                 <span id="passerror"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                 <button class="btn btn-dark" id="generateNewCode">Generate New</button>
             </div>
         </div>

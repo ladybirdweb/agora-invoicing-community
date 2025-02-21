@@ -184,13 +184,13 @@ class ExtendedBaseProductController extends Controller
                 $name = Product::where('id', $id)->value('name');
                 if (isS3Enabled()) {
                     if (! Attach::exists('products/'.explode('?', urldecode(basename($release)))[0])) {
-                        return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                        return redirect('my-orders')->with('fails', __('message.file_not_exist'));
                     }
 
                     return downloadExternalFile($release, $name);
                 } else {
                     if (! $release instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
-                        return redirect()->back()->with('fails', \Lang::get('message.file_not_exist'));
+                        return redirect('my-orders')->with('fails', \Lang::get('message.file_not_exist'));
                     }
                     $customFileName = "{$name}.zip";
 

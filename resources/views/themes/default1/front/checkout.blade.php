@@ -24,16 +24,13 @@ Checkout
         display: inline-block;
     }
     .remove-icon {
-        position: absolute;
-        top: 23.5%;
-        left: 76%; 
-        margin-left: 5px; 
         font-size: 17px;
         background: none;
         border: none;
-
-        }
-        .fa-1x {
+        margin-left: 8px; /* Ensures spacing between price and button */
+        cursor: pointer;
+    }
+    .fa-1x {
             font-size: 15px;
             margin-right: 3.4px;
         }
@@ -268,7 +265,8 @@ $cartSubtotalWithoutCondition = 0;
                                         <td class="border-top-0">
                                             <strong class="d-block text-color-dark line-height-1 font-weight-semibold">Discount</strong>
                                         </td>
-                                        <td class=" align-top border-top-0 text-end">
+                                         <td class="align-top border-top-0 text-end">
+                                             <div class="d-flex align-items-center justify-content-end">
                                             <span class="amount font-weight-medium text-color-grey">
                                                  <?php
                                             if (strpos(\Session::get('codevalue'), '%') == true) {
@@ -286,6 +284,7 @@ $cartSubtotalWithoutCondition = 0;
                                                     <i class="fas fa-times-circle"></i>
                                                 </button>
                                             </form>
+                                             </div>
                                         </td>
                                     </tr>
 

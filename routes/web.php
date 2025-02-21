@@ -69,7 +69,7 @@ Route::middleware('installAgora')->group(function () {
 
     Route::get('checkout', [Front\CheckoutController::class, 'checkoutForm']);
     Route::match(['post', 'patch'], 'checkout-and-pay', [Front\CheckoutController::class, 'postCheckout']);
-    Route::get('checkout-and-pay', function (){
+    Route::get('checkout-and-pay', function () {
         return redirect('show/cart');
     });
 

@@ -69,6 +69,9 @@ Route::middleware('installAgora')->group(function () {
 
     Route::get('checkout', [Front\CheckoutController::class, 'checkoutForm']);
     Route::match(['post', 'patch'], 'checkout-and-pay', [Front\CheckoutController::class, 'postCheckout']);
+    Route::get('checkout-and-pay', function (){
+        return redirect('show/cart');
+    });
 
     Route::post('pricing/update', [Front\CartController::class, 'addCouponUpdate']);
     Route::post('mail-chimp/subcribe', [Common\MailChimpController::class, 'addSubscriberByClientPanel']);

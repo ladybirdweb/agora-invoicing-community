@@ -1193,24 +1193,30 @@ setTimeout(function() {
                 $('#createTenant').attr('disabled',false)
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                if(response.status == 422) {
 
-                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in response.responseJSON.errors)
-                    {
-                        html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
+                var html = '<div class="alert alert-danger alert-dismissable">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                    '<strong>Whoops! </strong>Something went wrong<ul>';
+
+                if (response.status == 422) {
+                    for (var key in response.responseJSON.errors) {
+                        html += '<li>' + response.responseJSON.errors[key][0] + '</li>';
                     }
 
                 } else {
-                    var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + response.responseJSON.message + '</li>'
+                    html += '<li>' + response.responseJSON.message + '</li>';
                 }
 
                 html += '</ul></div>';
+
                 $('#clouderror').show();
                 $('#cloudsuccess').hide();
-                document.getElementById('error').innerHTML = html;
+                document.getElementById('clouderror').innerHTML = html;
 
+                // Hide the error message after 5 seconds (5000 milliseconds)
+                setTimeout(function () {
+                    $('#clouderror').fadeOut('slow');
+                }, 5000);
             }
 
 

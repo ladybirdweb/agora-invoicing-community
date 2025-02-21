@@ -679,9 +679,9 @@ class HomeController extends BaseHomeController
 
         $updatedProducts = [];
         $products = json_decode($response->getBody()->getContents(), true);
-        $realProducts = json_decode($products['data'],true);
-        foreach($realProducts as $realprod){
-            foreach($realprod as $real){
+        $realProducts = json_decode($products['data'], true);
+        foreach ($realProducts as $realprod) {
+            foreach ($realprod as $real) {
                 $dependency = \DB::table('product_uploads')
                     ->where('product_id', $real['product_id'])
                     ->where('version', $real['version'])

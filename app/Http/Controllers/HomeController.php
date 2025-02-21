@@ -672,11 +672,28 @@ class HomeController extends BaseHomeController
         $client = new Client();
 
         $licenseUrl = ApiKey::value('license_api_url');
+
         $response = $client->get($licenseUrl.'api/pluginLicense', [
             'query' => ['license_code' => json_encode($licenses)],
         ]);
 
-        return json_decode($response->getBody()->getContents(), true);
+        $updatedProducts = [];
+        $products = json_decode($response->getBody()->getContents(), true);
+        $realProducts = json_decode($products['data'],true);
+        foreach($realProducts as $realprod){
+            foreach($realprod as $real){
+                $dependency = \DB::table('product_uploads')
+                    ->where('product_id', $real['product_id'])
+                    ->where('version', $real['version'])
+                    ->value('dependencies');
+
+                $real['dependency'] = $dependency ?? null;
+
+                $updatedProducts[] = $real;
+            }
+        }
+
+        return json_encode($updatedProducts);
     }
 
     public function getProductRelease(Request $request)

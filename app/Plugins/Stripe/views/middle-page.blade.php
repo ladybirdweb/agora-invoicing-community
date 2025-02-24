@@ -55,9 +55,36 @@
             border-color: lightgrey;
 
         }
-     
 
-    </style>
+        #card-number, #card-expiry, #card-cvc {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-color: rgba(0, 0, 0, 0.09);
+            height: calc(1.5em + 0.75rem + 2px);
+            min-height: calc(1.5em + 1rem + 2px);
+            display: block;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top-color: rgb(206, 212, 218);
+            border-right-color: rgb(206, 212, 218);
+            border-bottom-color: rgb(206, 212, 218);
+            border-left-color: rgb(206, 212, 218);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: .375rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            align-content: center;
+        }
+        .StripeElement--invalid {
+            border: 1px solid #df1b41 !important;
+        }
+ </style>
 <script src="https://js.stripe.com/v3/"></script>
 
 @section('main-class') "main shop" @stop
@@ -776,39 +803,53 @@ $json = json_encode($data);
             </div>
             <div class="col-md-12 ">
             <div class="modal-body">
+                <div id="card-errors"></div>
+                <form id="payment-form" class="mx-auto" style="max-width: 500px;">
+                    <!-- Card Number Field (with built-in Stripe icon) -->
+                    <div class="mb-3">
+                        <label for="card-number" class="form-label">Card Number</label>
+                        <div id="card-number" class="StripeElement"></div>
+                        <div id="card-number-errors" class="text-danger mt-1" role="alert"></div>
+                    </div>
 
-                    <form method="POST" class="require-validation" id="submit_total" action="{{ url('stripe') }}" >
-                        <div id="payment-element">
-                        @csrf
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <div id="card-errors" style="display: none;"></div>
-                                <div id="card-element" class="form-control"></div>
-                                <input type="hidden" name="stripeToken" id="stripe-token" value="">
-                                <div id="card-errors" style="color: red; margin-top: 10px;"></div>
-                            </div>
+                    <!-- Row for Expiry Date and CVC -->
+                    <div class="row mb-3">
+                        <!-- Expiry Date Field -->
+                        <div class="col-md-6 mb-3">
+                            <label for="card-expiry" class="form-label">Expiry Date</label>
+                            <div id="card-expiry" class="StripeElement"></div>
+                            <div id="card-expiry-errors" class="text-danger mt-1" role="alert"></div>
                         </div>
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <input id="amount" type="text" value={{currencyFormat($amount,$code=$currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" disabled>
-                                    @error('amount')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        <div class="form-group row mb-0">
-                            <div class="col-md-12">
-                                <button type="submit" id="pay_now" class="btn btn-primary btn-block">
-                                    {{ __('PAY NOW') }}
-                                </button>
+
+                        <!-- CVC Field -->
+                        <div class="col-md-6 mb-3">
+                            <label for="card-cvc" class="form-label">CVC</label>
+                            <div id="card-cvc" class="StripeElement"></div>
+                            <div id="card-cvc-errors" class="text-danger mt-1" role="alert"></div>
+                        </div>
+                    </div>
+
+                    <!-- Total Summary -->
+                    <div class="d-grid mb-4">
+                        <div class="btn btn-lg btn-outline-dark disabled" style="pointer-events: none;">
+                            <div class="d-flex justify-content-between w-100">
+                                <span>Total</span>
+                                <span id="order-total">{{ currencyFormat($amount, $code=$currency) }}</span>
                             </div>
                         </div>
                     </div>
-                    </form>
-   
-        </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button type="submit" id="pay_now" class="btn btn-primary btn-block">
+                                {{ __('PAY NOW') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <form id="token-form" method="POST" action="{{ url('stripe') }}">
+                    <input type="hidden" id="stripe-token" name="stripeToken">
+                </form>
+            </div>
         </div>
         </div>
     </div>
@@ -816,53 +857,90 @@ $json = json_encode($data);
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe("{{ $stripe_key }}");
-    var elements = stripe.elements();
-    var cardElement = elements.create('card');
-    cardElement.mount('#card-element');
+    // Initialize Stripe
+    const stripe = Stripe("{{ $stripe_key }}",{
+        locale: 'en' // Set locale if needed
+    });
 
-    function generateStripeToken(event) {
-        event.preventDefault();
+    // Define appearance options as per Stripe's Appearance API docs
+    const appearance = {
+        theme: 'stripe',
+        variables: {
+            fontFamily: 'Arial, sans-serif',
+            fontSizeBase: '16px',
+            colorPrimary: '#0570de',
+            colorBackground: '#ffffff',
+            colorText: '#30313d',
+            colorDanger: '#df1b41',
+            borderRadius: '4px'
+        },
+        rules: {
+            '.Input': { padding: '10px' },
+            '.StripeElement--invalid': {
+                borderColor: '#df1b41',
+                borderWidth: '1px',
+                borderStyle: 'solid'
+            }
+        }
+    };
 
-        // Reset previous error message
-        var alertBox = document.getElementById('card-errors');
-        alertBox.style.display = 'none';
-        alertBox.innerHTML = '';
+    // Create an instance of Elements with the appearance configuration
+    const elements = stripe.elements({ appearance });
 
-        stripe.createToken(cardElement).then(function(result) {
-            if (result.error) {
-                // Show Bootstrap alert with error message
-                alertBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    ${result.error.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-                alertBox.style.display = 'block';
-                $("#pay_now").prop("disabled", false);
-                $("#pay_now").html("{{ __('PAY NOW') }}");
+    // Create card elements
+    const cardNumber = elements.create('cardNumber', {
+        showIcon: true,
+        iconStyle: 'solid'
+    });
+    cardNumber.mount('#card-number');
+
+    const cardExpiry = elements.create('cardExpiry');
+    cardExpiry.mount('#card-expiry');
+
+    const cardCvc = elements.create('cardCvc');
+    cardCvc.mount('#card-cvc');
+
+    // Helper function to handle error events for each element
+    function setupErrorHandling(element, errorElementId, containerId) {
+        element.addEventListener('change', (event) => {
+            const errorDiv = document.getElementById(errorElementId);
+            const container = document.getElementById(containerId);
+            if (event.error) {
+                errorDiv.textContent = event.error.message;
+                container.classList.add('StripeElement--invalid');
             } else {
-                if (result.token) {
-                    document.getElementById('stripe-token').value = result.token.id;
-                    document.getElementById('submit_total').submit();
-                }
+                errorDiv.textContent = '';
+                container.classList.remove('StripeElement--invalid');
             }
         });
     }
 
-    document.getElementById('submit_total').addEventListener('submit', generateStripeToken);
+    // Set up error handling for each field
+    setupErrorHandling(cardNumber, 'card-number-errors', 'card-number');
+    setupErrorHandling(cardExpiry, 'card-expiry-errors', 'card-expiry');
+    setupErrorHandling(cardCvc, 'card-cvc-errors', 'card-cvc');
+
+    // Handle form submission and generate Stripe token
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Generate a token using the card number element
+        const { token, error } = await stripe.createToken(cardNumber);
+
+        if(token) {
+            var $payButton = $("#pay_now");
+            $payButton.prop("disabled", true);
+            $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
+            document.getElementById('stripe-token').value = token.id;
+            document.getElementById('token-form').submit();
+        }
+    });
 </script>
 <script>
      $('.custom-close').click(function(){
                location.reload();
                });
-$(document).ready(function() {
-    var $form = $("#submit_total");
-    var $payButton = $("#pay_now");
-
-    $form.on("submit", function(event) {
-        $payButton.prop("disabled", true);
-        $payButton.html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
-    });
-});
 
 
 </script>

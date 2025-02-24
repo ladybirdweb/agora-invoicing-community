@@ -118,7 +118,7 @@ main
         {
            display: block;
             width: 100%;
-            text-align: center; 
+            text-align: center;
         }
 
          .stylePlan {
@@ -138,12 +138,12 @@ main
 
 .plan-features li {
     position: relative;
-    padding-left: 30px; 
+    padding-left: 30px;
     margin-bottom: 10px;
 }
 
 .plan-features li::before {
-    content: "\f00c"; 
+    content: "\f00c";
     font-family: FontAwesome;
     position: absolute;
     left: 0;
@@ -171,7 +171,7 @@ main
     margin-top: 100px !important;
 }
 .box-shadow-6:not(.box-shadow-hover) {
-     box-shadow: unset; 
+     box-shadow: unset;
 }
 .price.text-color-primary {
     font-size: 50px !important;
@@ -228,15 +228,15 @@ main
           @endif
         <h4 style="text-align: center;">{{$tagline}} </h4>
 
-       
-   
+
+
 
 
         <div class="row mb-5 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="100">
                     <div class="col">
                         <div class="owl-carousel nav-outside nav-arrows-1 custom-carousel-box-shadow-2 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="750" data-plugin-options="{'responsive': {'0': {'items': 1}, '479': {'items': 1}, '768': {'items': 2}, '979': {'items': 3}, '1199': {'items': 3}}, 'autoplay': false, 'autoplayTimeout': 5000, 'autoplayHoverPause': true, 'dots': false, 'nav': true, 'loop': false, 'margin': 20, 'stagePadding': '75'}">
                              {!! html_entity_decode($templates) !!}
-                           
+
 
                           </div>
                       </div>
@@ -265,7 +265,7 @@ main
       priceDisplay.text(yearlyPrice);
       $.ajax({
         type: 'POST',
-        url: "{{ url('store_toggle_state') }}", 
+        url: "{{ url('store_toggle_state') }}",
         data: { toggleState: 'selected' },
         success: function(response) {
           console.log('Selected state value sent to the controller successfully.');
@@ -281,8 +281,8 @@ main
       priceDisplay.text(monthlyPrice);
       $.ajax({
         type: 'POST',
-        url: "{{ url('store_toggle_state') }}", 
-        data: { toggleState: 'unselected' }, 
+        url: "{{ url('store_toggle_state') }}",
+        data: { toggleState: 'unselected' },
         success: function(response) {
           console.log('Unselected state value sent to the controller successfully.');
         },
@@ -292,8 +292,8 @@ main
       });
     }
   });
-  
-  
+
+
 $(document).ready(function() {
     var numberOfTemplates = $('.owl-carousel.nav-outside .owl-item').length;
     if (numberOfTemplates < 3) {
@@ -310,33 +310,22 @@ $(document).ready(function() {
 
           if (stylePlanSelect && priceUnit) {
               stylePlanSelect.value = priceUnit.id;
-          }
 
-          switcher.addEventListener("click", function () {
-              // Reuse the card reference in case of dynamic changes
-              const card = this.closest(".card");
-              const priceElement = card.querySelector(".price");
-              const priceUnit = priceElement.querySelector(".price-unit");
-              // Using nextSibling for the numeric price element as before
-              const priceValue = priceUnit ? priceUnit.nextSibling : null;
+              // Listen for change event on the select element
+              stylePlanSelect.addEventListener("change", function () {
+                  const selectedOption = this.options[this.selectedIndex];
+                  const newPrice = selectedOption.getAttribute("data-price");
+                  const newCurrency = selectedOption.textContent.trim().charAt(0);
 
-              // Retrieve the active option or default to the first option
-              const activeOption =
-                  this.querySelector("select.stylePlan option:checked") ||
-                  this.querySelector("select.stylePlan option");
-
-              if (activeOption) {
-                  const newPrice = activeOption.getAttribute("data-price");
-                  const newCurrency = activeOption.textContent.trim().charAt(0);
-
-                  if (priceUnit && priceValue && newPrice) {
+                  if (priceUnit && newPrice) {
                       priceUnit.textContent = newCurrency;
-                      priceValue.textContent = newPrice;
+                      priceUnit.nextSibling.textContent = newPrice;
                   }
-              }
-          });
+              });
+          }
       });
   });
+
 
 
 </script>

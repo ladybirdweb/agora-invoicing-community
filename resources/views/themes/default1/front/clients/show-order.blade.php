@@ -135,7 +135,34 @@
     .table th{
         border-top: unset !important;
     }
-    
+        #card-number, #card-expiry, #card-cvc {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-color: rgba(0, 0, 0, 0.09);
+            height: calc(1.5em + 0.75rem + 2px);
+            min-height: calc(1.5em + 1rem + 2px);
+            display: block;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top-color: rgb(206, 212, 218);
+            border-right-color: rgb(206, 212, 218);
+            border-bottom-color: rgb(206, 212, 218);
+            border-left-color: rgb(206, 212, 218);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: .375rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            align-content: center;
+        }
+        .StripeElement--invalid {
+            border: 1px solid #df1b41 !important;
+        }
 
     </style>
     @if(Auth::check())
@@ -1242,40 +1269,55 @@ $price = $order->price_override;
                 <div id="error-1"></div>
                 <div class="col-md-12 ">
                     <div class="modal-body">
-                        <form id="valid-modal">
-                            <div id="payment-element">
-                                <!-- Information or instructions -->
-                                <div class="form-group row">
-                                    <div class="col-md-12 alert alert-info">
-                                        Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}}, which will be automatically reversed within a week.
-                                    </div>
+                        <form id="payment-form" class="mx-auto" style="max-width: 500px;">
+                            <div class="form-group row">
+                                <div class="col-md-12 alert alert-info">
+                                    Your card information is secure with us. We are performing a verification check of {{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}}, which will be automatically reversed within a week.
                                 </div>
-                                <!-- Card No. input -->
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <div id="card-element" class="form-control"></div>
-                                    </div>
+                            </div>
+                            <!-- Card Number Field (with built-in Stripe icon) -->
+                            <div class="mb-3">
+                                <label for="card-number" class="form-label">Card Number</label>
+                                <div id="card-number" class="StripeElement"></div>
+                                <div id="card-number-errors" class="text-danger mt-1" role="alert"></div>
+                            </div>
+
+                            <!-- Row for Expiry Date and CVC -->
+                            <div class="row mb-3">
+                                <!-- Expiry Date Field -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-expiry" class="form-label">Expiry Date</label>
+                                    <div id="card-expiry" class="StripeElement"></div>
+                                    <div id="card-expiry-errors" class="text-danger mt-1" role="alert"></div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" disabled>
-                                        @error('amount')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
+                                <!-- CVC Field -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-cvc" class="form-label">CVC</label>
+                                    <div id="card-cvc" class="StripeElement"></div>
+                                    <div id="card-cvc-errors" class="text-danger mt-1" role="alert"></div>
                                 </div>
-                                <!-- Pay button -->
-                                <div class="form-group row mb-0">
-                                    <div class="col-md-12">
-                                        <button type="button" id="pay" class="btn btn-primary btn-block">
-                                            {{ __('PAY NOW') }}
-                                        </button>
+                            </div>
+
+                            <!-- Total Summary -->
+                            <div class="d-grid mb-4">
+                                <div class="btn btn-lg btn-outline-dark disabled" style="pointer-events: none;">
+                                    <div class="d-flex justify-content-between w-100">
+                                        <span>Total</span>
+                                        <span id="order-total">{{ currencyFormat(1,getCurrencyForClient(\Auth::user()->country)) }}</span>
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="submit" id="pay" class="btn btn-primary btn-block">
+                                        {{ __('PAY NOW') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form id="token-form">
+                            <input type="hidden" id="stripe-token" name="stripeToken">
                         </form>
                     </div>
                 </div>
@@ -1319,23 +1361,68 @@ $price = $order->price_override;
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        var stripe = Stripe("{{ $stripe_key }}");
-        var elements = stripe.elements();
-        var cardElement = elements.create('card');
-        cardElement.mount('#card-element');
+        // Initialize Stripe
+        const stripe = Stripe("{{ $stripe_key }}",{
+            locale: 'en' // Set locale if needed
+        });
 
-        async function generateStripeToken() {
-            return new Promise((resolve, reject) => {
-                stripe.createToken(cardElement).then(function (result) {
-                    if (result.error) {
-                        reject(result.error);
-                    } else {
-                        resolve(result.token.id);
-                    }
-                });
+        // Define appearance options as per Stripe's Appearance API docs
+        const appearance = {
+            theme: 'stripe',
+            variables: {
+                fontFamily: 'Arial, sans-serif',
+                fontSizeBase: '16px',
+                colorPrimary: '#0570de',
+                colorBackground: '#ffffff',
+                colorText: '#30313d',
+                colorDanger: '#df1b41',
+                borderRadius: '4px'
+            },
+            rules: {
+                '.Input': { padding: '10px' },
+                '.StripeElement--invalid': {
+                    borderColor: '#df1b41',
+                    borderWidth: '1px',
+                    borderStyle: 'solid'
+                }
+            }
+        };
+
+        // Create an instance of Elements with the appearance configuration
+        const elements = stripe.elements({ appearance });
+
+        // Create card elements
+        const cardNumber = elements.create('cardNumber', {
+            showIcon: true,
+            iconStyle: 'solid'
+        });
+        cardNumber.mount('#card-number');
+
+        const cardExpiry = elements.create('cardExpiry');
+        cardExpiry.mount('#card-expiry');
+
+        const cardCvc = elements.create('cardCvc');
+        cardCvc.mount('#card-cvc');
+
+        // Helper function to handle error events for each element
+        function setupErrorHandling(element, errorElementId, containerId) {
+            element.addEventListener('change', (event) => {
+                const errorDiv = document.getElementById(errorElementId);
+                const container = document.getElementById(containerId);
+                if (event.error) {
+                    errorDiv.textContent = event.error.message;
+                    container.classList.add('StripeElement--invalid');
+                } else {
+                    errorDiv.textContent = '';
+                    container.classList.remove('StripeElement--invalid');
+                }
             });
         }
 
+        // Set up error handling for each field
+        setupErrorHandling(cardNumber, 'card-number-errors', 'card-number');
+        setupErrorHandling(cardExpiry, 'card-expiry-errors', 'card-expiry');
+        setupErrorHandling(cardCvc, 'card-cvc-errors', 'card-cvc');
     </script>
     <script type="text/javascript">
 
@@ -1444,48 +1531,54 @@ $price = $order->price_override;
                     $('#renewal-modal').modal('hide');
                     $('#stripe-Modal').modal('show');
 
-                    $('#pay').on('click',async function () {
-                        $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
-                        const stripeToken = await generateStripeToken();
-                        await $.ajax({
-                            url: '{{url("strRenewal-enable")}}',
-                            type: 'POST',
-                            data: {
-                                "order_id": id,
-                                "stripeToken": stripeToken,
-                                "amount": $('#amount').val(),
-                                "_token": "{!! csrf_token() !!}",
-                            },
-                            success: function (response) {
-                                if(response.type == 'success'){
-                                    $('#stripe-Modal').modal('hide');
-                                    $('#alertMessage-2').show();
-                                    $('#updateButton').show();
-                                    var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
-                                    $('#alertMessage-2').html(result + ".");
-                                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                                    setTimeout(function() {
-                                        location.reload();
-                                    }, 3000);
+                    $('#pay').off('click').on('click', async function () {
+                        const { token, error } = await stripe.createToken(cardNumber);
+                        if (error) {
+                            console.log(error)
+                            $('#payerr').show().html(error.message);
+                            return;
+                        }
+                        document.getElementById('stripe-token').value = token.id;
+                        $('#pay').prop("disabled", true);
+                        $('#pay').html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
+                        const stripeToken = document.getElementById('stripe-token').value;
 
-                                    }
-                                    else{
-                                    window.location.href = response;
-                                    }
-                                   
+                        try {
+                            const response = await $.ajax({
+                                url: '{{url("strRenewal-enable")}}',
+                                type: 'POST',
+                                data: {
+                                    "order_id": id,
+                                    "stripeToken": stripeToken,
+                                    "amount": $('#amount').val(),
+                                    "_token": "{!! csrf_token() !!}",
+                                }
+                            });
 
-                            },
-                            error: function (data) {
-                                var errorMessage = data.responseJSON.result;
+                            if (response.type === 'success') {
                                 $('#stripe-Modal').modal('hide');
-                                $("#pay").attr('disabled', false);
-                                $("#pay").html("Pay now");
-                                $('html, body').animate({ scrollTop: 0 }, 500);
-                                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
-                                $('#error-1').show();
-                                document.getElementById('error-1').innerHTML = html;
+                                $('#alertMessage-2').show().html(`
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <strong><i class="fa fa-check"></i> Success! </strong> ${response.message}
+                            </div>
+                        `);
+                                $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i> Save");
+                                setTimeout(() => location.reload(), 3000);
+                            } else {
+                                window.location.href = response;
                             }
-                        });
+                        } catch (error) {
+                            var errorMessage = error.responseJSON.result;
+                            $('#stripe-Modal').modal('hide');
+                            $("#pay").attr('disabled', false).html("Pay now");
+                            $('#error-1').show().html(`
+                        <div class="alert alert-danger alert-dismissable alert-content">
+                            <strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong> ${errorMessage}
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    `);
+                        }
                     });
                 } else if (pay == 'razorpay') {
                     $('#renewal-modal').modal('hide');

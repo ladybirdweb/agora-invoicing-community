@@ -23,7 +23,7 @@ Edit Group
         <div class="card card-secondary card-outline">
 
 
-            {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch']) !!}
+            {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch','id'=>'groupForm']) !!}
             <div class="card-body">
 
 
@@ -33,13 +33,18 @@ Edit Group
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('message.name'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 
                                 <div class='row'>
                                     <div class="col-md-10">
                                         {!! Form::text('name',null,['class' => 'form-control']) !!}
+                                        @error('name')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
+                                        <div class="input-group-append">
+                                        </div>
                                     </div>
 
                                 </div>
@@ -75,6 +80,9 @@ Edit Group
                                 <div class='row'>
                                     <div class="col-md-10">
                                         {!! Form::text('tagline',null,['class' => 'form-control']) !!}
+                                        @error('tagline')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
                                     </div>
 
                                 </div>
@@ -127,6 +135,9 @@ Edit Group
                             {{$template->name}}
 
                              <br/><br/>
+                                @error('pricing_template_id')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
                         </div>
                    
                           
@@ -175,6 +186,73 @@ Edit Group
 
 
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        const userRequiredFields = {
+            name:@json(trans('message.group_details.group_name')),
+
+
+        };
+
+        $('#groupForm').on('submit', function (e) {
+            const userFields = {
+                name:$('#name'),
+
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['name'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+    });
+
+</script>
+
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'group';
@@ -185,7 +263,7 @@ Edit Group
         return this.id == 'group';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
-@stop
+
 <script src="{{asset('plugins/jQuery/jquery.js')}}"></script>
 
 <script>
@@ -235,5 +313,5 @@ $(document).ready(function () {
         })
     });
 </script>
-
+@stop
 

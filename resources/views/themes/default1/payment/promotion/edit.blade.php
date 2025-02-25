@@ -27,7 +27,7 @@ Edit Coupon
                         
 
             <div class="card-body table-responsive">
-                {!! Form::model($promotion,['url'=>'promotions/'.$promotion->id,'method'=>'patch']) !!}
+                {!! Form::model($promotion,['url'=>'promotions/'.$promotion->id,'method'=>'patch','id'=>'myform']) !!}
 
 
 
@@ -45,6 +45,11 @@ Edit Coupon
                                 <div class='row'>
                                     <div class="col-md-6">
                                         {!! Form::text('code',null,['class' => 'form-control','id'=>'code']) !!}
+                                        @error('code')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
+                                        <div class="input-group-append">
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <a href="#" class="btn btn-primary" onclick="getCode();"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
@@ -64,7 +69,11 @@ Edit Coupon
 
 
                                 {!! Form::select('type',[''=>'Select','Types'=>$type],null,['class' => 'form-control']) !!}
-
+                                @error('type')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
 
                             </div>
                         </td>
@@ -78,8 +87,9 @@ Edit Coupon
 
                                  <?php $valueWithoutPercentage = rtrim($promotion->value, '%'); ?>
                                 {!! Form::text('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
-
-
+                                @error('value')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
                             </div>
                         </td>
 
@@ -92,7 +102,11 @@ Edit Coupon
 
 
                                 {!! Form::text('uses',null,['class' => 'form-control']) !!}
-
+                                @error('uses')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
 
                             </div>
                         </td>
@@ -104,8 +118,12 @@ Edit Coupon
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
 
-                                 {!! Form::select('applied',[''=>'Choose','Products'=>$product],$selectedProduct,['class' => 'form-control select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
-
+                                 {!! Form::select('applied',[''=>'Choose','Products'=>$product],$selectedProduct,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
+                                @error('applied')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
                                 
 
                             </div>
@@ -119,12 +137,14 @@ Edit Coupon
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
                                 <div class="input-group date" id="startDate" data-target-input="nearest" style="width: 50%;">
                                      {!! Form::text('start',$startDate,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
-
-                                   
                                     <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
-
+                                    @error('start')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
 
                             </div>
@@ -142,12 +162,14 @@ Edit Coupon
                                 <div class="input-group date" id="endDate" data-target-input="nearest" style="width: 50%;">
 
                                      {!! Form::text('expiry',$expiryDate,['class' => 'form-control datetimepicker-input','title'=>'Date on which Coupon Expires','data-target'=>'#endDate']) !!}
-
-                                    
                                     <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
-
+                                    @error('expiry')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
 
                             </div>
@@ -174,6 +196,101 @@ Edit Coupon
 
 
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        const userRequiredFields = {
+            code:@json(trans('message.coupon_details.add_code')),
+            type:@json(trans('message.coupon_details.add_type')),
+            uses:@json(trans('message.coupon_details.add_uses')),
+            applied:@json(trans('message.coupon_details.add_applied')),
+            expiry:@json(trans('message.coupon_details.add_expiry')),
+            start:@json(trans('message.coupon_details.add_start')),
+            value:@json(trans('message.coupon_details.add_value')),
+
+        };
+
+        $('#myform').on('submit', function (e) {
+            const userFields = {
+                code:$('#code'),
+                value:$('#value'),
+                type:$('#type'),
+                uses:$('#uses'),
+                expiry:$('#expiry'),
+                start:$('#start'),
+                applied:$('#applied'),
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+
+            if(isValid && !isValidDate(userFields.start.val())){
+                console.log(44);
+                showError(userFields.start, @json(trans('message.invoice_details.add_valid_date')));
+                isValid = false;
+            }
+
+            if(isValid && !isValidDate(userFields.expiry.val())){
+                console.log(44);
+                showError(userFields.expiry, @json(trans('message.invoice_details.add_valid_date')));
+                isValid = false;
+            }
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['code','uses','applied','expiry','start','value','type'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+
+        function isValidDate(dateString) {
+            const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+
+            return regex.test(dateString);
+        }
+
+    });
+
+</script>
+
 
 <script>
      $('ul.nav-sidebar a').filter(function() {

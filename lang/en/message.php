@@ -872,9 +872,164 @@ return [
     'max_stripe_key' => 'Stripe Key cannot exceed 200 characters',
     'required_stripe_secret' => 'Please Enter Stripe Secret',
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
-    'product_description' => 'Product Description',
-    'price_description' => 'Price Description',
 
-    'image_allowed' => 'Only PNG, JPG, and JPEG files are allowed.',
-    'image_max' => 'The image may not be greater than 2 MB.',
+    'user_edit_details' => [
+        'add_first_name' => 'Enter first name',
+        'add_last_name' => 'Enter last name',
+        'add_email' => 'Enter email address',
+        'add_address' => 'Enter address',
+        'add_phone_number' => 'Enter mobile number',
+        'add_company' => 'Enter company name',
+        'add_valid_email' => 'Enter a valid email address',
+        'add_valid_phone' => 'Enter a valid mobile number',
+        'add_user_name' => 'Enter username',
+        'add_country' => 'Enter country',
+        'add_timezone' => 'Enter timezone',
+        'add_mobile' => 'Enter mobile number',
+    ],
+
+    'invoice_details' => [
+        'add_user' => 'Enter client',
+        'add_date' => 'Enter date',
+        'add_product' => 'Enter product',
+        'add_price' => 'Enter price',
+        'payment_date' => 'Enter payment date',
+        'total' => 'Enter invoice total',
+        'add_valid_date' => 'Enter a valid date',
+    ],
+
+    'page_details' => [
+        'add_name' => 'Enter name',
+        'add_slug' => 'Enter slug',
+        'add_url' => 'Enter URL',
+        'add_content' => 'Enter content',
+        'add_publish' => 'Enter publish status',
+        'publish_date' => 'Enter publishing date',
+        'default_page' => 'Enter default page',
+        'valid_url' => 'Enter a valid URL',
+    ],
+
+    'product_details' => [
+        'add_name' => 'Enter name',
+        'add_group' => 'Enter group',
+        'add_license_type' => 'Enter license type',
+        'add_description' => 'Enter description',
+        'add_product_sku' => 'Enter product SKU',
+    ],
+
+    'coupon_details' => [
+        'add_code' => 'Enter coupon code',
+        'add_type' => 'Enter coupon type',
+        'add_value' => 'Enter coupon value',
+        'add_expiry' => 'Enter coupon validity',
+        'add_start' => 'Enter coupon start date',
+        'add_uses' => 'Enter number of uses',
+        'add_applied' => 'Enter product',
+    ],
+
+    'group_details' => [
+        'group_name' => 'Enter group name',
+    ],
+
+    'company_details' => [
+        'company_name' => 'Enter company name',
+        'company_email' => 'Enter company email',
+        'add_address' => 'Enter address',
+        'add_phone' => 'Enter phone number',
+        'add_website' => 'Enter website',
+        'add_country' => 'Enter country',
+        'add_state' => 'Enter state',
+        'default_currency' => 'Enter currency',
+    ],
+
+    'license_details' => [
+        'new_license_type' => 'Enter license type',
+    ],
+
+    'app_details' => [
+        'app_name' => 'Enter app name',
+        'app_key' => 'Enter app key',
+        'app_secret' => 'Enter app secret',
+    ],
+
+    'socialLogin_details' => [
+        'client_id' => 'Enter client ID',
+        'client_secret' => 'Enter the client secret',
+        'redirect_url' => 'Enter redirect URL',
+        'api_id' => 'Enter API ID',
+        'api_secret' => 'Enter API secret',
+    ],
+
+    'templateEdit_details' => [
+        'subject' => 'Enter subject',
+        'template_type' => 'Enter template type',
+        'content' => 'Enter content',
+    ],
+
+    'tax_details' => [
+        'tax_name' => 'Enter tax name',
+        'rate' => 'Enter rate',
+    ],
+
+    'widget_details' => [
+        'name' => 'Enter widget name',
+        'type' => 'Enter widget type',
+        'publish' => 'Enter publishing permission',
+    ],
+
+    'social_details' => [
+        'name' => 'Enter social network name',
+        'link' => 'Enter social network link',
+    ],
+
+    'script_details' => [
+        'name' => 'Enter script name',
+        'content' => 'Enter script content',
+    ],
+
+    'razorpay_details' => [
+        'rzp_key' => 'Enter Razorpay key',
+        'rzp_secret' => 'Enter Razorpay secret',
+        'apilayer_key' => 'Enter Apilayer key',
+    ],
+
+    'system_manager' => [
+        'account_manager' => 'Enter account manager name',
+        'replacement' => 'Enter replacement manager name',
+        'sales_manager' => 'Enter sales manager name',
+    ],
+
+    'plan_details' => [
+        'planname' => 'Enter plan name',
+        'planproduct' => 'Enter product',
+        'plandays' => 'Enter period',
+        'currency' => 'Enter currency',
+        'country' => 'Enter country',
+        'regular_price' => 'Enter regular price',
+        'renewal_price' => 'Enter renewal price',
+        'productquant' => 'Enter product quantity',
+        'agentquant' => 'Enter agent quantity',
+    ],
+
+    'emailSettings_details' => [
+        'driver' => 'Enter email driver',
+        'host' => 'Enter email host',
+        'port' => 'Enter port',
+        'email' => 'Enter email',
+        'password' => 'Enter password',
+        'domain' => 'Enter domain',
+        'region' => 'Enter region',
+        'api_key' => 'Enter API key',
+        'from_name' => 'Enter sender name',
+        'encryption' => 'Enter encryption',
+        'secret' => 'Enter secret field',
+    ],
+
+    'github_details' => [
+        'name' => 'Enter GitHub name',
+        'password' => 'Enter GitHub password',
+        'client' => 'Enter client',
+        'secret' => 'Enter secret field',
+    ],
+
 ];

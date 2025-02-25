@@ -742,11 +742,11 @@ foreach($scripts as $script) {
                     placeErrorMessage(error, element, errorMapping);
                 },
                 submitHandler: function (form) {
-                    var formData = $(form).serialize();
-                    let submitButton = $('#register');
                     $('#mobile_code').val(input.getAttribute('data-dial-code'));
                     $('#mobile_country_iso').val(input.getAttribute('data-country-iso').toUpperCase());
                     input.value = input.value.replace(/\D/g, '');
+                    var formData = $(form).serialize();
+                    let submitButton = $('#register');
                     var tag = "<?php echo $analyticsTag; ?>";
                     if (tag !== "") {
                         gtag_report_conversion(tag);

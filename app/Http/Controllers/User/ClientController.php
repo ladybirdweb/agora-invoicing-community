@@ -9,7 +9,6 @@ use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
 use App\Jobs\ReportExport;
 use App\Model\Common\Country;
-use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\QueueService;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;

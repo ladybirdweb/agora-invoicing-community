@@ -186,6 +186,7 @@ class QueueController extends Controller
                 case 'beanstalkd':
                     $form .= "<div class='row'>";
                     $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'beanstalkd');
+<<<<<<< HEAD
                     if ($driverErrorMessage) {
                         $form .= "<span class='error-message'>{$driverErrorMessage}</span>";
                     }
@@ -197,6 +198,16 @@ class QueueController extends Controller
                     if ($queueErrorMessage) {
                         $form .= "<span class='error-message'>{$queueErrorMessage}</span>";
                     }
+=======
+                    if($driverErrorMessage) {
+                    $form .= "<span class='error-message'>{$driverErrorMessage}</span>";}
+                    $form .= $this->form($short, 'Host', 'host', 'col-md-6 form-group', 'localhost');
+                    if($hostErrorMessage) {
+                        $form .= "<span class='error-message'>{$hostErrorMessage}</span>";}
+                    $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'default');
+                    if($queueErrorMessage) {
+                        $form .= "<span class='error-message'>{$queueErrorMessage}</span>";}
+>>>>>>> 65e62e04e (fixes)
                     $form .= '</div>';
 
                     return $form;

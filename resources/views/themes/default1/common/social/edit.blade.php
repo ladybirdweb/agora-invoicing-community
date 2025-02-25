@@ -60,7 +60,11 @@ Social Media
                                 <p><i> {{Lang::get('message.enter-the-link-of-the-social-media')}}</i> </p>
 
 
+<<<<<<< HEAD
                                 {!! Form::text('link',null,['class' => 'form-control','id'=>'link','placeholder'=>'https://example.com']) !!}
+=======
+                                {!! Form::text('link',null,['class' => 'form-control','id'=>'link']) !!}
+>>>>>>> 65e62e04e (fixes)
                                 @error('link')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror

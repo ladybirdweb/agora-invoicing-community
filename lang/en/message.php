@@ -888,7 +888,6 @@ return [
         'add_mobile' => 'Enter mobile number',
     ],
 
-
     'invoice_details' => [
         'add_user' => 'Enter client',
         'add_date' => 'Enter date',
@@ -898,7 +897,6 @@ return [
         'total' => 'Enter invoice total',
         'add_valid_date' => 'Enter a valid date',
     ],
-
 
     'page_details' => [
         'add_name' => 'Enter name',
@@ -911,7 +909,6 @@ return [
         'valid_url' => 'Enter a valid URL',
     ],
 
-
     'product_details' => [
         'add_name' => 'Enter name',
         'add_group' => 'Enter group',
@@ -919,7 +916,6 @@ return [
         'add_description' => 'Enter description',
         'add_product_sku' => 'Enter product SKU',
     ],
-
 
     'coupon_details' => [
         'add_code' => 'Enter coupon code',
@@ -934,7 +930,6 @@ return [
     'group_details' => [
         'group_name' => 'Enter group name',
     ],
-
 
     'company_details' => [
         'company_name' => 'Enter company name',
@@ -965,7 +960,6 @@ return [
         'api_secret' => 'Enter API secret',
     ],
 
-
     'templateEdit_details' => [
         'subject' => 'Enter subject',
         'template_type' => 'Enter template type',
@@ -993,7 +987,6 @@ return [
         'content' => 'Enter script content',
     ],
 
-
     'razorpay_details' => [
         'rzp_key' => 'Enter Razorpay key',
         'rzp_secret' => 'Enter Razorpay secret',
@@ -1017,8 +1010,6 @@ return [
         'productquant' => 'Enter product quantity',
         'agentquant' => 'Enter agent quantity',
     ],
-
-
 
     'emailSettings_details' => [
         'driver' => 'Enter email driver',

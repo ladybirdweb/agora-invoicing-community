@@ -84,7 +84,11 @@ Create Coupon
                             <div class="form-group col-lg-6 {{ $errors->has('value') ? 'has-error' : '' }}">
 
 
+<<<<<<< HEAD
                                 {!! Form::number('value',null,['class' => 'form-control','title'=>'Value of the Coupon']) !!}
+=======
+                                {!! Form::text('value',null,['class' => 'form-control','title'=>'Value of the Coupon']) !!}
+>>>>>>> 65e62e04e (fixes)
                                 @error('value')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -102,7 +106,11 @@ Create Coupon
                             <div class="form-group col-lg-6 {{ $errors->has('uses') ? 'has-error' : '' }}">
 
 
+<<<<<<< HEAD
                                 {!! Form::number('uses',null,['class' => 'form-control','title'=>'No. Of times the coupon can be Used']) !!}
+=======
+                                {!! Form::text('uses',null,['class' => 'form-control','title'=>'No. Of times the coupon can be Used']) !!}
+>>>>>>> 65e62e04e (fixes)
                                 @error('uses')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -117,15 +125,26 @@ Create Coupon
 
                         <td><b>{!! Form::label('applied',Lang::get('message.applied'),['class'=>'required']) !!}</b></td>
                         <td>
+<<<<<<< HEAD
                             <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}">
+=======
+                            <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
+>>>>>>> 65e62e04e (fixes)
                                 
 
                                 {!! Form::select('applied',[''=>'Choose','Products'=>$product],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
                                 @error('applied')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
+<<<<<<< HEAD
                                 <div class="input-group-append">
                                 </div>
+=======
+
+                                <div class="input-group-append">
+                                </div>
+
+>>>>>>> 65e62e04e (fixes)
                             </div>
                         </td>
 
@@ -135,7 +154,11 @@ Create Coupon
                         <td><b>{!! Form::label('start',Lang::get('message.start'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
+<<<<<<< HEAD
                                 <div class="input-group date col-lg-6" id="startDate" data-target-input="nearest">
+=======
+                                <div class="input-group date col-lg-6" id="startDate" data-target-input="nearest" style="width: 50%;">
+>>>>>>> 65e62e04e (fixes)
 
                                      {!! Form::text('start',null,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
 
@@ -161,7 +184,11 @@ Create Coupon
                         <td><b>{!! Form::label('expiry',Lang::get('message.expiry'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
+<<<<<<< HEAD
                                 <div class="input-group date col-lg-6" id="endDate" data-target-input="nearest">
+=======
+                                <div class="input-group date col-lg-6" id="endDate" data-target-input="nearest" style="width: 50%;">
+>>>>>>> 65e62e04e (fixes)
 
                                     {!! Form::text('expiry',null,['class' => 'form-control datetimepicker-input','title'=>'Date on which Coupon Expires','data-target'=>'#endDate']) !!}
 

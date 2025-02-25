@@ -216,6 +216,10 @@
         }
 
     </style>
+    <?php
+    $isMobileVerified = ($setting->msg91_status == 1 && $user->mobile_verified != 1) ? false : true;
+    $isEmailVerified = ($setting->emailverification_status == 1 && $user->email_verified != 1) ?false : true;
+    ?>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 text-center p-0 mt-3 mb-2">
@@ -224,12 +228,12 @@
                     <form id="msform">
                         <!-- progressbar -->
                         <ul id="progressbar">
-                            @if($setting->msg91_status === 1)
+                            @if(!$isMobileVerified)
                                 <li class="active" id="otp_li"><strong>{{ __('message.verify_mobile') }}</strong></li>
                             @endif
-                            @if($setting->emailverification_status === 1)
-                                    <li id="email_li"><strong>{{ __('message.verify_email') }}</strong></li>
-                                @endif
+                            @if(!$isEmailVerified)
+                                <li id="email_li"><strong>{{ __('message.verify_email') }}</strong></li>
+                            @endif
                             <li id="success_li"><strong>{{ __('message.all_set') }}</strong></li>
                         </ul>
                         <br>
@@ -290,7 +294,7 @@
                                     <div id="recaptchaEmail"></div>
                                 @elseif($setting->v3_recaptcha_status === 1)
                                     <input type="hidden" id="g-recaptcha-email" class="g-recaptcha-token" name="g-recaptcha-response">
-                               @endif
+                                @endif
                                 <div class="col-12 mt-4">
                                     <div class="row">
                                         <div class="col-6 px-0">
@@ -320,7 +324,7 @@
                     </form>
 
                     <div class="mt-2 text-start text-2">
-                        {{ __('message.trouble_logging_in') }} <a href="{{ url('/contact-us') }}" class="text-decoration-underline" target="_blank">{{ __('message.click_here') }}</a>
+                        {{ __('message.trouble_logging_in') }} <a href="{{ url('/contact-us') }}" class="text-decoration-none" target="_blank">{{ __('message.click_here') }}</a>
                     </div>
                 </div>
             </div>
@@ -329,12 +333,8 @@
 
 @stop
 @section('script')
-@extends('mini_views.recaptcha')
+    @extends('mini_views.recaptcha')
     <script>
-        <?php
-        $isMobileVerified = $user->mobile_verified ? true : false;
-        $isEmailVerified = $user->active ? true : false;
-        ?>
 
         const otpButton = document.getElementById("otpButton");
         const additionalButton = document.getElementById("additionalButton");
@@ -356,7 +356,7 @@
             mobile_recaptcha_id = grecaptcha.render('recaptchaMobile', { 'sitekey': siteKey });
             email_recaptcha_id = grecaptcha.render('recaptchaEmail', { 'sitekey': siteKey });
         });
-        @endif
+            @endif
 
         ['email_otp', 'otp'].forEach(id => {
             document.getElementById(id).addEventListener('input', function () {
@@ -455,14 +455,14 @@
 
             @if($setting->recaptcha_status === 1)
                 recaptcha = $('#recaptchaMobile');
-                recaptchaToken = getRecaptchaTokenFromId(mobile_recaptcha_id);
-                if(getRecaptchaTokenFromId(mobile_recaptcha_id) === ''){
-                    showError(recaptcha, "{{ __('message.recaptcha_required') }}");
-                    return;
-                }
+            recaptchaToken = getRecaptchaTokenFromId(mobile_recaptcha_id);
+            if(getRecaptchaTokenFromId(mobile_recaptcha_id) === ''){
+                showError(recaptcha, "{{ __('message.recaptcha_required') }}");
+                return;
+            }
             @elseif($setting->v3_recaptcha_status === 1)
-                updateRecaptchaTokens();
-                recaptchaToken = $('#g-recaptcha-mobile').val();
+            updateRecaptchaTokens();
+            recaptchaToken = $('#g-recaptcha-mobile').val();
             @endif
 
             const data = {eid, otp: otpValue, 'g-recaptcha-response': recaptchaToken ?? ''};
@@ -472,7 +472,7 @@
                 type: 'POST',
                 data: data,
                 success: function (response) {
-                    @if($setting->emailverification_status === 1)
+                    @if(!$isEmailVerified)
                     activateFieldset("fieldSetTwo");
                     startTimer(emailOtpButton, emailTimerDisplay, countdown);
                     @else
@@ -550,14 +550,14 @@
 
             @if($setting->recaptcha_status === 1)
                 recaptcha = $('#recaptchaEmail');
-                recaptchaToken = getRecaptchaTokenFromId(email_recaptcha_id);
+            recaptchaToken = getRecaptchaTokenFromId(email_recaptcha_id);
             if(getRecaptchaTokenFromId(email_recaptcha_id) === ''){
                 showError(recaptcha, "{{ __('message.recaptcha_required') }}");
                 return;
             }
             @elseif($setting->v3_recaptcha_status === 1)
-                updateRecaptchaTokens();
-                recaptchaToken = $('#g-recaptcha-email').val();
+            updateRecaptchaTokens();
+            recaptchaToken = $('#g-recaptcha-email').val();
             @endif
 
             const data = {eid, otp: otpValue, 'g-recaptcha-response':recaptchaToken ?? ''};
@@ -597,9 +597,9 @@
             field.addClass('is-invalid').css('border-color', 'red');
             field.after(`<span class="error invalid-feedback">${message}</span>`);
         }
-        @if(!$isMobileVerified && !$isEmailVerified)
+        @if(!$isMobileVerified)
         activateFieldset('fieldSetOne');
-        @elseif($isMobileVerified && !$isEmailVerified)
+        @elseif(!$isEmailVerified)
         activateFieldset('fieldSetTwo');
         @else
         activateFieldset('fieldSetOne');

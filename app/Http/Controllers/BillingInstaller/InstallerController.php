@@ -284,7 +284,7 @@ class InstallerController extends Controller
                 $this->updateInstallEnv($request->input('environment'), $request->input('cache_driver'));
             }
 
-            $user = User::create([
+            $user = User::where('id', 1)->update([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'user_name' => strtolower($request->input('user_name')),
@@ -293,6 +293,7 @@ class InstallerController extends Controller
                 'active' => 1,
                 'role' => 'admin',
                 'mobile_verified' => 1,
+                'email_verified' => 1,
             ]);
 
             // Update the initial company settings

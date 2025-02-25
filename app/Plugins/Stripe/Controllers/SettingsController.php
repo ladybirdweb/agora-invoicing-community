@@ -166,7 +166,6 @@ class SettingsController extends Controller
             'stripeToken' => 'required|string',
         ]);
 
-        try {
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
 
             \Stripe\Stripe::setApiKey($stripeSecretKey);
@@ -218,11 +217,6 @@ class SettingsController extends Controller
             );
 
             return $confirm;
-        } catch (\Stripe\Exception\CardException $e) {
-            return $e;
-        } catch (\Exception $e) {
-            return $e;
-        }
     }
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)

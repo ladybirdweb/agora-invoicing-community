@@ -642,9 +642,11 @@ foreach($scripts as $script) {
                 rules: {
                     first_name: {
                         required: true,
+                        regex: /^[a-zA-Z][a-zA-Z' -]{0,98}$/
                     },
                     last_name: {
                         required: true,
+                        regex: /^[a-zA-Z][a-zA-Z' -]{0,98}$/
                     },
                     email: {
                         required: true,
@@ -681,11 +683,11 @@ foreach($scripts as $script) {
                 messages: {
                     first_name: {
                         required: "First name is required",
-                        minlength: "First name must be at least 2 characters"
+                        regex: "Please enter a valid first name"
                     },
                     last_name: {
                         required: "Last name is required",
-                        minlength: "Last name must be at least 2 characters"
+                        regex: "Please enter a valid last name"
                     },
                     email: {
                         required: "Email is required",
@@ -696,7 +698,6 @@ foreach($scripts as $script) {
                     },
                     address: {
                         required: "Address is required",
-                        minlength: "Address must be at least 10 characters"
                     },
                     country: {
                         required: "Please select a country"

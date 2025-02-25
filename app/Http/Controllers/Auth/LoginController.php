@@ -103,7 +103,7 @@ class LoginController extends Controller
         }
 
         // Check account activation and mobile verification
-        if ($user->active != 1) {
+        if (!$this->userNeedVerified($user)) {
             $attempts = VerificationAttempt::find($user->id);
 
             if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
@@ -270,5 +270,24 @@ class LoginController extends Controller
             ]);
         }
         Session::forget('toggleState');
+    }
+
+    private function userNeedVerified($user)
+    {
+        $setting = StatusSetting::first(['emailverification_status', 'msg91_status']);
+
+        if ($setting->emailverification_status == 1 && $user->email_verified != 1) {
+            return false;
+        }
+
+        if ($setting->msg91_status == 1 && $user->mobile_verified != 1) {
+            return false;
+        }
+
+        if($user->active != 1){
+            return false;
+        }
+
+        return true;
     }
 }

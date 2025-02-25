@@ -874,4 +874,7 @@ return [
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
     'product_description' => 'Product Description',
     'price_description' => 'Price Description',
+
+    'image_allowed' => 'Only PNG, JPG, and JPEG files are allowed.',
+    'image_max' => 'The image may not be greater than 2 MB.',
 ];

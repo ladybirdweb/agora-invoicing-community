@@ -166,57 +166,57 @@ class SettingsController extends Controller
             'stripeToken' => 'required|string',
         ]);
 
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
 
-            \Stripe\Stripe::setApiKey($stripeSecretKey);
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
 
-            $cost = $this->calculateUnitCost($currency, $amount);
+        $cost = $this->calculateUnitCost($currency, $amount);
 
-            $user = \Auth::user();
+        $user = \Auth::user();
 
-            // Create a Stripe customer with user's information
-            $customer = \Stripe\Customer::create([
-                'name' => $user->first_name.' '.$user->last_name,
-                'email' => $user->email,
-                'address' => [
-                    'line1' => optional($user)->address,
-                    'postal_code' => optional($user)->zip,
-                    'city' => optional($user)->town,
-                    'state' => optional($user)->state,
-                    'country' => optional($user)->country,
-                ],
-            ]);
+        // Create a Stripe customer with user's information
+        $customer = \Stripe\Customer::create([
+            'name' => $user->first_name.' '.$user->last_name,
+            'email' => $user->email,
+            'address' => [
+                'line1' => optional($user)->address,
+                'postal_code' => optional($user)->zip,
+                'city' => optional($user)->town,
+                'state' => optional($user)->state,
+                'country' => optional($user)->country,
+            ],
+        ]);
 
-            // Create a payment method using the provided token
-            $paymentMethod = \Stripe\PaymentMethod::create([
-                'type' => 'card',
-                'card' => [
-                    'token' => $request->stripeToken,
-                ],
-            ]);
+        // Create a payment method using the provided token
+        $paymentMethod = \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'token' => $request->stripeToken,
+            ],
+        ]);
 
-            // Create a payment intent for the transaction
-            $intent = \Stripe\PaymentIntent::create([
-                'amount' => intval($cost),
-                'currency' => $currency,
+        // Create a payment intent for the transaction
+        $intent = \Stripe\PaymentIntent::create([
+            'amount' => intval($cost),
+            'currency' => $currency,
+            'payment_method' => $paymentMethod['id'],
+            'customer' => $customer['id'],
+            'confirmation_method' => 'automatic',
+            'setup_future_usage' => 'off_session',
+            'description' => 'payments for the purchased product',
+        ]);
+
+        // Confirm the payment intent
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $confirm = $stripe->paymentIntents->confirm(
+            $intent['id'],
+            [
                 'payment_method' => $paymentMethod['id'],
-                'customer' => $customer['id'],
-                'confirmation_method' => 'automatic',
-                'setup_future_usage' => 'off_session',
-                'description' => 'payments for the purchased product',
-            ]);
+                'return_url' => $url,
+            ]
+        );
 
-            // Confirm the payment intent
-            $stripe = new \Stripe\StripeClient($stripeSecretKey);
-            $confirm = $stripe->paymentIntents->confirm(
-                $intent['id'],
-                [
-                    'payment_method' => $paymentMethod['id'],
-                    'return_url' => $url,
-                ]
-            );
-
-            return $confirm;
+        return $confirm;
     }
 
     public function handleStripeAutoPay($stripe_payment_details, $product_details, $unit_cost, $currency, $plan)

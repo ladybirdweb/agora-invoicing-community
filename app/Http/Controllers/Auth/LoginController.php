@@ -103,7 +103,7 @@ class LoginController extends Controller
         }
 
         // Check account activation and mobile verification
-        if (!$this->userNeedVerified($user)) {
+        if (! $this->userNeedVerified($user)) {
             $attempts = VerificationAttempt::find($user->id);
 
             if ($attempts && $attempts->updated_at->lte(Carbon::now()->subHours(6))) {
@@ -284,7 +284,7 @@ class LoginController extends Controller
             return false;
         }
 
-        if($user->active != 1){
+        if ($user->active != 1) {
             return false;
         }
 

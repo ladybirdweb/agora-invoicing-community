@@ -238,6 +238,7 @@ class ClientController extends AdvanceSearchController
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'password' => $password,
+                'active' => 1,
                 'company' => $request->input('company'),
                 'bussiness' => $request->input('bussiness'),
                 'email_verified' => $request->input('active'),
@@ -260,10 +261,6 @@ class ClientController extends AdvanceSearchController
                 'account_manager' => $request->input('account_manager'),
                 'ip' => $location['ip'],
             ];
-
-            $statusSetting = StatusSetting::first(['emailverification_status', 'msg91_status']);
-
-            $user['active'] = ($statusSetting->emailverification_status === 1 && $request->input('active') === 1) && ($statusSetting->msg91_status === 1 && $request->input('mobile_verified') === 1) ? 1 : 0;
 
             $userInput = User::create($user);
 

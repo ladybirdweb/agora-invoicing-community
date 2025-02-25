@@ -816,3 +816,9 @@ function formatDuration($seconds)
     // Otherwise, return seconds
     return "{$seconds} second".($seconds > 1 ? 's' : '');
 }
+
+function isJson($string)
+{
+    json_decode($string);
+    return (json_last_error() === JSON_ERROR_NONE);
+}

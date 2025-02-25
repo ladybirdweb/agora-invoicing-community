@@ -305,7 +305,6 @@ class AuthController extends BaseAuthController
             $user->mobile_verified = 1;
 
             if (! \Auth::check() && StatusSetting::first()->value('emailverification_status') !== 1) {
-                $user->active = 1;
                 $this->addUserToExternalServices($user);
                 \Session::flash('success', __('message.registration_complete'));
             }
@@ -354,7 +353,6 @@ class AuthController extends BaseAuthController
                 $verificationAttempt->update(['email_attempt' => 0]);
             }
             $user->email_verified = 1;
-            $user->active = 1;
             $user->save();
 
             $this->addUserToExternalServices($user);

@@ -61,8 +61,9 @@ class RegisterController extends Controller
                 'town' => $location['city'],
                 'password' => \Hash::make($request->input('password')),
                 'profile_pic' => '',
-                'active' => 0,
+                'active' => 1,
                 'mobile_verified' => 0,
+                'email_verified' => 0,
                 'mobile' => ltrim($request->input('mobile'), '0'),
                 'mobile_code' => $request->input('mobile_code'),
                 'mobile_country_iso' => $request->input('mobile_country_iso'),
@@ -94,7 +95,6 @@ class RegisterController extends Controller
             $need_verify = $this->getEmailMobileStatusResponse();
 
             if (! $need_verify) {
-                $userInput->active = 1;
                 $authController = new AuthController();
                 $authController->addUserToExternalServices($userInput);
             }

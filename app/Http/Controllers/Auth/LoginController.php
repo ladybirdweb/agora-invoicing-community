@@ -287,7 +287,6 @@ class LoginController extends Controller
         if ($user->active != 1) {
             return false;
         }
-
         return true;
     }
 }

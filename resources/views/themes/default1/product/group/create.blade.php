@@ -15,7 +15,7 @@ Create Group
     </div><!-- /.col -->
 
 
-@endsection
+@stop
 
 @section('content')
 
@@ -27,7 +27,7 @@ Create Group
           
 
             <div class="card-body">
-                {!! Form::open(['url'=>'groups']) !!}
+                {!! Form::open(['url'=>'groups','id'=>'groupForm']) !!}
         
 
 
@@ -37,13 +37,18 @@ Create Group
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('message.name'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 
                                 <div class='row'>
                                     <div class="col-md-10">
                                         {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
+                                        @error('name')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
+                                        <div class="input-group-append">
+                                        </div>
                                     </div>
 
                                 </div>
@@ -62,6 +67,9 @@ Create Group
                                 <div class='row'>
                                     <div class="col-md-10">
                                         {!! Form::text('headline',null,['class' => 'form-control']) !!}
+                                        @error('headline')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
                                     </div>
 
                                 </div>
@@ -79,6 +87,9 @@ Create Group
                                 <div class='row'>
                                     <div class="col-md-10">
                                         {!! Form::text('tagline',null,['class' => 'form-control']) !!}
+                                        @error('tagline')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
                                     </div>
 
                                 </div>
@@ -116,16 +127,20 @@ Create Group
                            <div class="form-group">
                             
                             <div class="col-md-4">
-                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
-                            <input type="radio" name= 'pricing_templates_id' value='{{$template->id}}' style="text-align: center;">
+                            <input type="radio" name='pricing_templates_id' value='{{$template->id}}' id='template' style="text-align: center;">
                             {{$template->name}}
 
                              <br/><br/>
-                        </div>
+                                <span id="error-message"></span>
+                                @error('pricing_templates_id')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                            </div>
                    
                             
-                            </div> 
+                            </div>
                         </td>
 
                     </tr>
@@ -250,6 +265,82 @@ Create Group
 
 
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        const userRequiredFields = {
+            name:@json(trans('message.group_details.group_name')),
+            template:@json(trans('message.group_details.group_name')),
+
+
+        };
+
+        $('#groupForm').on('submit', function (e) {
+            const userFields = {
+                name:$('#name'),
+                template:$('#template'),
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            if(!document.querySelector('input[name="pricing_templates_id"]:checked')){
+                $('#error-message').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
+                document.getElementById("error-message").textContent = "Please select the template";
+                isValid=false;
+            }else{
+
+                document.getElementById("error-message").textContent = "";
+
+            }
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['name'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+    });
+
+</script>
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'group';
@@ -275,7 +366,7 @@ Create Group
                 $('#groupslug').val(data);
             }
          })
-        });
+        }); 
     })
 
 </script>
@@ -302,5 +393,5 @@ $(document).ready(function () {
     })
 });
 </script>
-
 @stop
+

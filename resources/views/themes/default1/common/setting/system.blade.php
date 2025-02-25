@@ -28,7 +28,7 @@ System Setting
             </div>
 
             <div class="card-body">
-                {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true, 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true, 'enctype' => 'multipart/form-data','id'=>'companyDetailsForm']) !!}
                 <div class="row">
                  <div class="col-md-6">
               
@@ -43,7 +43,11 @@ System Setting
 
 
                                 {!! Form::text('company',null,['class' => 'form-control']) !!}
-                                
+                                @error('company')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
 
 
                             </div>
@@ -60,7 +64,12 @@ System Setting
 
 
                                 {!! Form::email('company_email', null, ['class' => 'form-control']) !!}
-                                
+                                @error('company_email')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <span id="email-error-msg" class="hide"></span>
+                                <div class="input-group-append">
+                                </div>
 
 
                             </div>
@@ -75,8 +84,9 @@ System Setting
 
 
                                 {!! Form::text('title',null,['class' => 'form-control']) !!}
-                                
-
+                                @error('title')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
 
                             </div>
                         </td>
@@ -90,7 +100,11 @@ System Setting
 
 
                                 {!! Form::text('website',null,['class' => 'form-control']) !!}
-                               
+                                @error('website')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
 
                             </div>
                         </td>
@@ -107,9 +121,13 @@ System Setting
 
                                 {!! Form::hidden('phone_code',null,['id'=>'phone_code_hidden']) !!}
                                 {!! Form::hidden('phone_country_iso',null,['id' => 'phone_country_iso']) !!}
+                                @error('phone')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
                                 <span id="valid-msg" class="hide"></span>
                                 <span id="error-msg" class="hide"></span>
-                               
+                                <div class="input-group-append">
+                                </div>
 
                             </div>
                         </td>
@@ -122,7 +140,11 @@ System Setting
                             <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
 
                                 {!! Form::textarea('address',null,['class' => 'form-control','size' => '128x10','id'=>'address']) !!}
-                               
+                                @error('address')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
                             </div>
                         </td>
 
@@ -135,7 +157,9 @@ System Setting
 
 
                                 {!! Form::text('city',null,['class' => 'form-control']) !!}
-                                
+                                @error('city')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
 
                             </div>
                         </td>
@@ -150,7 +174,9 @@ System Setting
 
 
                                 {!! Form::text('zip',null,['class' => 'form-control']) !!}
-                                
+                                @error('zip')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
 
                             </div>
                         </td>
@@ -165,8 +191,12 @@ System Setting
                             <div class="form-group {{ $errors->has('knowledge_base_url') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control']) !!}
-                                
+                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url']) !!}
+                                @error('knowledge_base_url')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <span id="url-error-msg" class="hide"></span>
+
 
                             </div>
                         </td>
@@ -193,7 +223,11 @@ System Setting
                               <option value="{{$key}}" <?php  if(in_array($country, $selectedCountry) ) { echo "selected";} ?>>{{$country}}</option>
                           @endforeach
                           </select>
-
+                                @error('country')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
+                                <div class="input-group-append">
+                                </div>
 
                     </div>
 
@@ -213,7 +247,9 @@ System Setting
 
                                  <td>
                                 {!! Form::text('cin_no',null,['class' => 'form-control','id'=>'cin']) !!}
-
+                                     @error('cin_no')
+                                     <span class="error-message"> {{$message}}</span>
+                                 @enderror
                             </div>
                                      
                                  </td>
@@ -229,6 +265,9 @@ System Setting
                                  <td>
                                      
                                     {!! Form::text('gstin',null,['class' => 'form-control','id'=>'gstin']) !!}
+                                     @error('gstin')
+                                     <span class="error-message"> {{$message}}</span>
+                                  @enderror
                                  </div>
                                  </td>
                           
@@ -250,6 +289,9 @@ System Setting
                             @endforeach
 
                         </select>
+                            @error('state')
+                            <span class="error-message"> {{$message}}</span>
+                            @enderror
                         </td>
                     </tr>
                     <br>
@@ -266,6 +308,11 @@ System Setting
                           @endforeach
 
                         </select>
+                            @error('default_currency')
+                            <span class="error-message"> {{$message}}</span>
+                            @enderror
+                            <div class="input-group-append">
+                            </div>
                         </td>
                     </tr>
                     <br>
@@ -284,6 +331,9 @@ System Setting
                                     <div class="custom-file ml-3">
                                         {!! Form::file('admin-logo', ['class' => 'custom-file-input cursor-pointer', 'id' => 'admin-logo' , 'role' => 'button']) !!}
                                         <label role="button" class="custom-file-label cursor-pointer" for="admin-logo">{{ __('Choose file') }}</label>
+                                        @error('admin_logo')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -334,7 +384,9 @@ System Setting
 
 
                                 {!! Form::text('favicon_title',null,['class' => 'form-control']) !!}
-                                
+                                @error('favicon_title')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
 
 
                             </div>
@@ -350,8 +402,10 @@ System Setting
 
 
                                 {!! Form::text('favicon_title_client',null,['class' => 'form-control']) !!}
-                                
 
+                                @error('favicon_title_client')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
 
                             </div>
                         </td>
@@ -399,7 +453,102 @@ System Setting
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-<script type="text/javascript">
+
+
+    <script>
+
+        $(document).ready(function() {
+            const userRequiredFields = {
+                company:@json(trans('message.company_details.company_name')),
+                company_email:@json(trans('message.company_details.company_email')),
+                website:@json(trans('message.company_details.add_website')),
+                phone_code:@json(trans('message.company_details.add_phone')),
+                address:@json(trans('message.company_details.add_address')),
+                country:@json(trans('message.company_details.add_country')),
+                default_currency:@json(trans('message.company_details.default_currency')),
+                state:@json(trans('message.company_details.add_state')),
+
+            };
+
+            $('#companyDetailsFor').on('submit', function (e) {
+                const userFields = {
+                    company:$('#company'),
+                    company_email:$('#company_email'),
+                    website:$('#website'),
+                    // phone_code:$('#phone'),
+                    address:$('#address'),
+                    // country:$('#country'),
+                    // default_currency:$('#default_currency'),
+                    // state:$('#state'),
+                };
+
+
+                // Clear previous errors
+                Object.values(userFields).forEach(field => {
+                    field.removeClass('is-invalid');
+                    field.next().next('.error').remove();
+
+                });
+
+                let isValid = true;
+
+                const showError = (field, message) => {
+                    field.addClass('is-invalid');
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                };
+
+                // Validate required fields
+                Object.keys(userFields).forEach(field => {
+                    if (!userFields[field].val()) {
+                        showError(userFields[field], userRequiredFields[field]);
+                        isValid = false;
+                    }
+                });
+
+                if(isValid  && !isValidURL(userFields.website.val())){
+                    showError(userFields.website,@json(trans('message.page_details.valid_url')),);
+                    isValid=false;
+                }
+
+
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    console.log(3);
+                    e.preventDefault();
+                }
+            });
+            // Function to remove error when input'id' => 'changePasswordForm'ng data
+            const removeErrorMessage = (field) => {
+                field.classList.remove('is-invalid');
+                const error = field.nextElementSibling;
+                if (error && error.classList.contains('error')) {
+                    error.remove();
+                }
+            };
+
+            // Add input event listeners for all fields
+            ['company','company_email','website','phone','address','country','default_currency','state'].forEach(id => {
+
+                document.getElementById(id).addEventListener('input', function () {
+                    removeErrorMessage(this);
+
+                });
+            });
+
+            function isValidURL(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (err) {
+                    return false;
+                }
+            }
+
+        });
+
+    </script>
+
+    <script type="text/javascript">
 
     $(document).ready(function () {
         $('.custom-file-input').on('change', function() {
@@ -422,14 +571,58 @@ System Setting
     getCode(country);
     var telInput = $('#phone');
     addressDropdown = $("#country");
-     errorMsg = document.querySelector("#error-msg"),
+     errorMsg = document.querySelector("#error-msg");
     validMsg = document.querySelector("#valid-msg");
-     var reset = function() {
+
+    var url=$('#knowledge_base_url');
+    urlerrorMsg = document.querySelector("#url-error-msg");
+
+        var reset = function() {
       errorMsg.innerHTML = "";
       errorMsg.classList.add("hide");
       validMsg.classList.add("hide");
     };
      $('.intl-tel-input').css('width', '100%');
+
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        $('#submit').on('click',function(e) {
+            console.log(44);
+            if(telInput.val()===''){
+                e.preventDefault();
+                console.log(55);
+                errorMsg.classList.remove("hide");
+                errorMsg.innerHTML = @json(trans('message.user_edit_details.add_phone_number'));
+                $('#phone').addClass('is-invalid');
+                $('#phone').css("border-color", "#dc3545");
+                $('#error-msg').css({"width": "100%", "margin-top": ".25rem", "font-size": "80%", "color": "#dc3545"});
+            }
+
+            if(url.val()!== '') {
+                if (!isValidURL(url.val())) {
+                    e.preventDefault();
+                    urlerrorMsg.classList.remove("hide");
+                    urlerrorMsg.innerHTML = @json(trans('message.page_details.valid_url'));
+                    $('#knowledge_base_url').addClass('is-invalid');
+                    $('#knowledge_base_url').css("border-color", "#dc3545");
+                    $('#url-error-msg').css({
+                        "width": "100%",
+                        "margin-top": ".25rem",
+                        "font-size": "80%",
+                        "color": "#dc3545"
+                    });
+
+                }
+            }
+        });
+
     telInput.on('input blur submit', function () {
       reset();
         if ($.trim(telInput.val())) {
@@ -439,13 +632,46 @@ System Setting
               $('#submit').attr('disabled',false);
             } else {
              errorMsg.innerHTML = "Please enter a valid number";
-             $('#phone').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
+                errorMsg.classList.remove("hide");
+                errorMsg.innerHTML = "Please enter a valid number";
+                $('#phone').css("border-color", "#dc3545");
+                $('#error-msg').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
             }
         }
     });
+
+
+        function validateEmail(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        emailErrorMsg = document.querySelector("#email-error-msg");
+        var emailReset = function() {
+            emailErrorMsg.innerHTML = "";
+            emailErrorMsg.classList.add("hide");
+        };
+
+
+        var email=$('#company_email');
+        email.on('input blur', function () {
+            emailReset();
+            if ($.trim(email.val())) {
+                if (validateEmail(email.val())) {
+                    console.log(66);
+                    $('#company_email').css("border-color","");
+                    $('#submit').attr('disabled',false);
+                } else {
+                    console.log(66);
+                    emailErrorMsg.classList.remove("hide");
+                    emailErrorMsg.innerHTML = "Please enter a valid email address";
+                    $('#company_email').css("border-color","#dc3545");
+                    $('#email-error-msg').css({"color":"#dc3545","margin-top":"5px","font-size":"80%"});
+                }
+            }
+        });
+
+
 
      addressDropdown.change(function() {
          updateCountryCodeAndFlag(telInput.get(0), addressDropdown.val());

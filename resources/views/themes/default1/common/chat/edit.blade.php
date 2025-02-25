@@ -20,7 +20,7 @@ Edit
 <div class="card card-secondary card-outline">
 
 
-        {!! Form::model($chat,['url'=>'chat/'.$chat->id,'method'=>'patch']) !!}
+        {!! Form::model($chat,['url'=>'chat/'.$chat->id,'method'=>'patch','id'=>'scriptForm']) !!}
 
 
 
@@ -37,8 +37,12 @@ Edit
                     <div class="col-md-12 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                        {!! Form::text('name',null,['class' => 'form-control']) !!}
-
+                        {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
+                        @error('name')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                   
@@ -53,12 +57,15 @@ Edit
                         <!-- first name -->
                         {!! Form::label('script','Show script',['class'=>'required']) !!}
                         <br>
-                        {!! Form::label('on_registration','On registration') !!}
+{{--                        {!! Form::label('on_registration','On registration') !!}--}}
                         {!! Form::radio('on_registration',1,true) !!}
-                        &nbsp; &nbsp; &nbsp; 
-                        {!! Form::label('on_every_page','On every page') !!}
+                        <label for="on_registration" style="font-weight: normal !important;">On registration</label>
+{{--                        {!! Form::label('on_every_page','On every page') !!}--}}
                         {!! Form::radio('on_registration',0,false) !!}
-
+                        <label for="on_every_page" style="font-weight: normal !important;">On every page</label>
+                        @error('on_registration')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
                      <div class="col-md-3 form-group">
@@ -84,6 +91,11 @@ Edit
 </span>
 
     {!! Form::textarea('script', null, ['class' => 'form-control', 'id' => 'textarea']) !!}
+                        @error('script')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
 </div>
         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>Update</button>
 
@@ -94,7 +106,75 @@ Edit
 
 {!! Form::close() !!}
 
-<script>
+        <script>
+
+            $(document).ready(function() {
+                const userRequiredFields = {
+                    name:@json(trans('message.script_details.name')),
+                    content:@json(trans('message.script_details.content')),
+
+                };
+
+                $('#scriptForm').on('submit', function (e) {
+                    const userFields = {
+                        name:$('#name'),
+                        content:$('#textarea'),
+
+                    };
+
+
+                    // Clear previous errors
+                    Object.values(userFields).forEach(field => {
+                        field.removeClass('is-invalid');
+                        field.next().next('.error').remove();
+
+                    });
+
+                    let isValid = true;
+
+                    const showError = (field, message) => {
+                        field.addClass('is-invalid');
+                        field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                    };
+
+                    // Validate required fields
+                    Object.keys(userFields).forEach(field => {
+                        if (!userFields[field].val()) {
+                            showError(userFields[field], userRequiredFields[field]);
+                            isValid = false;
+                        }
+                    });
+
+
+                    // If validation fails, prevent form submission
+                    if (!isValid) {
+                        console.log(3);
+                        e.preventDefault();
+                    }
+                });
+                // Function to remove error when input'id' => 'changePasswordForm'ng data
+                const removeErrorMessage = (field) => {
+                    field.classList.remove('is-invalid');
+                    const error = field.nextElementSibling;
+                    if (error && error.classList.contains('error')) {
+                        error.remove();
+                    }
+                };
+
+                // Add input event listeners for all fields
+                ['name','publish','type'].forEach(id => {
+
+                    document.getElementById(id).addEventListener('input', function () {
+                        removeErrorMessage(this);
+
+                    });
+                });
+            });
+
+        </script>
+
+
+        <script>
     /*when the admin lte and bootstrap gets upgrade the below code for tooltip-inner code need to be removed*/
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();

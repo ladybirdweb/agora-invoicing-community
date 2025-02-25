@@ -20,7 +20,7 @@ Edit User
 <div class="card card-secondary card-outline">
     <div class="card-body">
 
-         {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
+         {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH','class'=>'userUpdateForm']) !!}
 
         <div class="row">
 
@@ -34,14 +34,22 @@ Edit User
                         <!-- first name -->
                         {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!}
                         {!! Form::text('first_name',null,['class' => 'form-control']) !!}
-
+                        @error('first_name')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                     <div class="col-md-3 form-group {{ $errors->has('last_name') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('last_name',Lang::get('message.last_name'),['class'=>'required']) !!}
                         {!! Form::text('last_name',null,['class' => 'form-control']) !!}
-
+                        @error('last_name')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
 
@@ -49,14 +57,23 @@ Edit User
                         <!-- email -->
                         {!! Form::label('email',Lang::get('message.email'),['class'=>'required']) !!}
                         {!! Form::text('email',null,['class' => 'form-control']) !!}
-
+                        @error('email')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <span id="email-error-msg" class="hide"></span>
+                        <div class="input-group-append">
+                        </div>
                     </div>
                     
                     <div class="col-md-3 form-group {{ $errors->has('user_name') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('user_name',Lang::get('message.user_name')) !!}
+                        <!-- username -->
+                        {!! Form::label('user_name',Lang::get('message.user_name'),['class'=>'required']) !!}
                         {!! Form::text('user_name',null,['class' => 'form-control']) !!}
-
+                        @error('user_name')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                     
@@ -69,10 +86,14 @@ Edit User
                         <!-- company -->
                         {!! Form::label('company',Lang::get('message.company'),['class'=>'required']) !!}
                         {!! Form::text('company',null,['class' => 'form-control']) !!}
-
+                        @error('company')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
-                        <!-- company -->
+                        <!-- industry -->
                         {!! Form::label('bussiness','Industry') !!}
 
                         <!--{!! Form::select('bussiness', [''=>'Choose','Industries'=>$bussinesses],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}-->
@@ -87,36 +108,51 @@ Edit User
 
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
-                         </select> 
-                           
+                         </select>
+                        @error('business')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
 
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- email active -->
                         {!! Form::label('active',Lang::get('message.email')) !!}
+<<<<<<< HEAD
                         <p>{!! Form::radio('email_verified',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('email_verified',0) !!}&nbsp;Inactive</p>
 
+=======
+                        <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
+                        @error('active')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+>>>>>>> 4904f88f9 (fixes)
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('mobile_verified') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- mobile active -->
                         {!! Form::label('mobile_verified',Lang::get('message.mobile')) !!}
                         <p>{!! Form::radio('mobile_verified',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('mobile_verified',0) !!}&nbsp;Inactive</p>
-
+                        @error('mobile_verified')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
-                        <!-- email -->
+                        <!-- role -->
                         {!! Form::label('role',Lang::get('message.role')) !!}
                         {!! Form::select('role',['user'=>'User','admin'=>'Admin'],null,['class' => 'form-control']) !!}
-
+                        @error('role')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
-                        <!-- email -->
+                        <!-- position -->
                         {!! Form::label('position','Position') !!}
                         {!! Form::select('position',['Choose'=>'Choose','manager'=>'Sales Manager','account_manager'=>'Account Manager'],null,['class' => 'form-control']) !!}
-
+                        @error('position')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     <?php
                    $types = DB::table('company_types')->pluck('name','short')->toArray();
@@ -135,8 +171,10 @@ Edit User
                                    <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
                            
                              @endforeach
-                              </select> 
-
+                              </select>
+                         @error('company-type')
+                         <span class="error-message"> {{$message}}</span>
+                         @enderror
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
@@ -151,39 +189,47 @@ Edit User
                            
                              @endforeach
                               </select> -->
-
+                         @error('company_size')
+                         <span class="error-message"> {{$message}}</span>
+                         @enderror
                     </div>
                 </div>
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
-                    <!-- phone number -->
+                    <!-- address -->
                     {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
-
+                    @error('address')
+                    <span class="error-message"> {{$message}}</span>
+                    @enderror
+                    <div class="input-group-append">
+                    </div>
                 </div>
 
                 <div class="row">
 
                     <div class="col-md-3 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- town -->
                         {!! Form::label('town',Lang::get('message.town')) !!}
                         {!! Form::text('town',null,['class' => 'form-control']) !!}
-
+                        @error('town')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
                     <div class="col-md-3 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
-                        <!-- name -->
+                        <!-- country -->
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
                         {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
-
+                        @error('country')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                        <!-- name -->
+                        <!-- state -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-
-
 
                         <select name="state" id="state-list" class="form-control">
 
@@ -195,23 +241,30 @@ Edit User
                             <option value="{{$key}}">{{$value}}</option>
                             @endforeach
                         </select>
-
+                        @error('state')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
                     <div class="col-md-3 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- postal -->
                         {!! Form::label('zip',Lang::get('message.zip')) !!}
                         {!! Form::text('zip',null,['class' => 'form-control']) !!}
-
+                        @error('zip')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- timezone -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
 
                          {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
-
+                        @error('timezone_id')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     
+<<<<<<< HEAD
                        <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
@@ -220,27 +273,52 @@ Edit User
                        <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
                 </div>
+=======
+                    <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                        {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+
+                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+
+                           {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                        {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
+                        @error('mobile')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
+                        <span id="error-msg" class="hide"></span>
+                        <span id="valid-msg" class="hide"></span>
+
+
+                   </div>
+>>>>>>> 4904f88f9 (fixes)
                    
                   
                     <div class="col-md-3 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- skype -->
                         {!! Form::label('skype','Skype') !!}
                         {!! Form::text('skype',null,['class' => 'form-control']) !!}
-
+                        @error('skype')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
                     @if($user->role=='user')
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- manager -->
                         {!! Form::label('manager','Sales Manager') !!}
                         {!! Form::select('manager',[''=>'Choose','Managers'=>$managers],null,['class' => 'form-control']) !!}
-
+                        @error('manager')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
                      <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- account manager -->
                         {!! Form::label('account_manager','Account Manager') !!}
                         {!! Form::select('account_manager',[''=>'Choose','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
-
+                         @error('account_manager')
+                         <span class="error-message"> {{$message}}</span>
+                         @enderror
                     </div>
                     @endif
                 </div>
@@ -272,8 +350,111 @@ Edit User
   size: 4
 });
 
-   
-     $(document).ready(function(){
+    $(document).ready(function() {
+        const userRequiredFields = {
+            first_name:@json(trans('message.user_edit_details.add_first_name')),
+            last_name:@json(trans('message.user_edit_details.add_last_name')),
+            email:@json(trans('message.user_edit_details.add_email')),
+            company:@json(trans('message.user_edit_details.add_company')),
+            address:@json(trans('message.user_edit_details.add_address')),
+            mobile:@json(trans('message.user_edit_details.add_mobile')),
+            user_name:@json(trans('message.user_edit_details.add_user_name')),
+
+        };
+
+        $('.userUpdateForm').on('submit', function (e) {
+            const userFields = {
+                first_name: $('#first_name'),
+                last_name: $('#last_name'),
+                email: $('#email'),
+                company: $('#company'),
+                address: $('#address'),
+                // mobile: $('#mobile_code'),
+                user_name: $('#user_name'),
+
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            {{--if (isValid && !validateEmail(userFields.email.val())) {--}}
+            {{--    showError(userFields.email, @json(trans('message.user_edit_details.add_valid_email')));--}}
+            {{--    isValid = false;--}}
+            {{--}--}}
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['first_name','last_name','email','company','user_name','address','mobile_code','country','timezone_id'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+        function validateEmail(email) {
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            return emailPattern.test(email);
+
+        }
+        emailErrorMsg = document.querySelector("#email-error-msg");
+        var emailReset = function() {
+            emailErrorMsg.innerHTML = "";
+            emailErrorMsg.classList.add("hide");
+        };
+        var email=$('#email');
+        email.on('input blur', function () {
+            emailReset();
+            if ($.trim(email.val())) {
+                if (validateEmail(email.val())) {
+                    $('#email').css("border-color","");
+                    $('#submit').attr('disabled',false);
+                } else {
+                    emailErrorMsg.classList.remove("hide");
+                    emailErrorMsg.innerHTML = @json(trans('message.user_edit_details.add_valid_email'));
+                    $('#email').css("border-color","#dc3545");
+                    $('#email-error-msg').css({"color":"#dc3545","margin-top":"5px","font-size":"80%"});
+                }
+            }
+        });
+
+    });
+
+    $(document).ready(function(){
          $(function () {
              //Initialize Select2 Elements
              $('.select2').select2()
@@ -281,6 +462,7 @@ Edit User
     var country = $('#country').val();
     getCode(country);
 
+    //phone number validation
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
@@ -290,19 +472,32 @@ Edit User
       errorMsg.classList.add("hide");
       validMsg.classList.add("hide");
     };
+        $('#submit').on('click',function(e) {
+            console.log(44);
+            if(telInput.val()===''){
+                console.log(55);
+                errorMsg.classList.remove("hide");
+                errorMsg.innerHTML = @json(trans('message.user_edit_details.add_phone_number'));
+                $('#mobile_code').addClass('is-invalid');
+                $('#mobile_code').css("border-color", "#dc3545");
+                $('#error-msg').css({"width": "100%", "margin-top": ".25rem", "font-size": "80%", "color": "#dc3545"});
+                e.preventDefault();
+            }
+        });
     $('.intl-tel-input').css('width', '100%');
     telInput.on('input blur', function () {
       reset();
-        if ($.trim(telInput.val())) {
+        if ($.trim(telInput.val()) && telInput.val().length>1) {
             if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               validMsg.classList.remove("hide");
               $('#submit').attr('disabled',false);
-            } else {
+            }
+            else {
             errorMsg.classList.remove("hide");
-             errorMsg.innerHTML = "Please enter a valid number";
-             $('#mobile_code').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.innerHTML = @json(trans('message.user_edit_details.add_valid_phone'));
+             $('#mobile_code').css("border-color","#dc3545");
+             $('#error-msg').css({"width":"100%","margin-top":".25rem","font-size":"80%","color":"#dc3545"});
              $('#submit').attr('disabled',true);
             }
         }
@@ -315,11 +510,19 @@ Edit User
               $('#mobile_code').css("border-color","");
               errorMsg.classList.add("hide");
               $('#submit').attr('disabled',false);
-            } else {
+            }else if(telInput.val()==''){
+                errorMsg.classList.remove("hide");
+                errorMsg.innerHTML = @json(trans('message.user_edit_details.add_valid_phone'));
+                $('#mobile_code').css("border-color","red");
+                $('#error-msg').css({"width":"100%","margin-top":".25rem","font-size":"80%","color":"#dc3545"});
+                $('#submit').attr('disabled',true);
+            }
+
+            else {
              errorMsg.classList.remove("hide");
-             errorMsg.innerHTML = "Please enter a valid number";
+             errorMsg.innerHTML = @json(trans('message.user_edit_details.add_valid_phone'));
              $('#mobile_code').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             $('#error-msg').css({"width":"100%","margin-top":".25rem","font-size":"80%","color":"#dc3545"});
              $('#submit').attr('disabled',true);
             }
         }
@@ -381,6 +584,8 @@ Edit User
             }
         });
     }
+
+
 </script>
 
 

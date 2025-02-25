@@ -89,6 +89,10 @@
         input[type="password"]::-ms-reveal {
             display: none !important;
         }
+        .error-message{
+            color: #dc3545;
+            font-size: 80%;
+        }
 
         .dropdown-menu-arrow:before {
             content: ""!important;

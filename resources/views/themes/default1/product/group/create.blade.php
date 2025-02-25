@@ -271,7 +271,11 @@ Create Group
     $(document).ready(function() {
         const userRequiredFields = {
             name:@json(trans('message.group_details.group_name')),
+<<<<<<< HEAD
             template:@json(trans('message.group_details.template')),
+=======
+            template:@json(trans('message.group_details.group_name')),
+>>>>>>> 65e62e04e (fixes)
 
 
         };
@@ -307,7 +311,11 @@ Create Group
 
             if(!document.querySelector('input[name="pricing_templates_id"]:checked')){
                 $('#error-message').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
+<<<<<<< HEAD
                 document.getElementById("error-message").textContent = @json(trans('message.group_details.template'));
+=======
+                document.getElementById("error-message").textContent = "Please select the template";
+>>>>>>> 65e62e04e (fixes)
                 isValid=false;
             }else{
 

@@ -71,7 +71,11 @@ Edit Page
                     <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
+<<<<<<< HEAD
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
+=======
+                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
+>>>>>>> 65e62e04e (fixes)
                         @error('url')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -238,8 +242,13 @@ Edit Page
               slug:@json(trans('message.page_details.add_slug')),
               url:@json(trans('message.page_details.add_url')),
               content:@json(trans('message.page_details.add_content')),
+<<<<<<< HEAD
               // default_page:@jason(trans('message.page_details.default_page')),
               created_at:@json(trans('message.page_details.publish_date')),
+=======
+              created_at:@json(trans('message.page_details.publish_date')),
+              default_page_id:@jason(trans('message.page_details.default_page')),
+>>>>>>> 65e62e04e (fixes)
           };
 
           $('#createPage').on('submit', function (e) {
@@ -250,7 +259,11 @@ Edit Page
                   url:$('#url'),
                   content:$('#textarea'),
                   created_at:$('#created_at'),
+<<<<<<< HEAD
                   // default_page:$('#default_page_id'),
+=======
+                  default_page:$('#default_page_id'),
+>>>>>>> 65e62e04e (fixes)
               };
 
 
@@ -276,7 +289,14 @@ Edit Page
                   }
               });
 
+<<<<<<< HEAD
 
+=======
+              if (isValid && userRequiredFields.default_page.val()==null) {
+                  showError(userFields.email, @json(trans('message.page_details.default_page')));
+                  isValid = false;
+              }
+>>>>>>> 65e62e04e (fixes)
 
               if(isValid && !isValidURL(userFields.url.val())){
                   showError(userFields.url,@json(trans('message.page_details.valid_url')),);
@@ -285,7 +305,10 @@ Edit Page
 
               // If validation fails, prevent form submission
               if (!isValid) {
+<<<<<<< HEAD
                   console.log(3);
+=======
+>>>>>>> 65e62e04e (fixes)
                   e.preventDefault();
               }
           });

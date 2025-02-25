@@ -158,7 +158,7 @@ input:checked + .slider:before {
                 <i class="fas fa-camera text-light"></i>
             </span>
                                        </div>
-                                       <input type="file" name="profile_pic" id="profilePic" class="form-control profile-image-input" accept="image/*" onchange="previewImage(this, document.getElementById('previewImage'))">
+                                       <input type="file" name="profile_pic" id="profilePic" class="form-control profile-image-input" accept="image/*">
                                    </div>
                                </div>
 
@@ -387,16 +387,6 @@ input:checked + .slider:before {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
                     <script>
-                        document.getElementById('profilePic').addEventListener('change', function(event) {
-                            const file = event.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = function(e) {
-                                    document.getElementById('previewImage').src = e.target.result;
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        });
                         $(document).ready(function() {
                             // Cache the selectors for better performance
                             var $pswdInfo = $('#pswd_info');
@@ -567,13 +557,39 @@ input:checked + .slider:before {
             var re = new RegExp(regexp);
             return this.optional(element) || re.test(value);
         }, "Invalid format.");
+        document.getElementById('profilePic').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            // Allowed image types
+            const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('error',"{{ __('message.image_allowed') }}");
+                return;
+            }
+
+            // Check file size (2MB limit)
+            if (file.size > 2097152) {
+                showAlert('error',"{{ __('message.image_max') }}");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
         $("#client_form").validate({
             rules: {
                 first_name: {
                     required: true,
+                    regex: /^[a-zA-Z][a-zA-Z' -]{0,98}$/
                 },
                 last_name: {
                     required: true,
+                    regex: /^[a-zA-Z][a-zA-Z' -]{0,98}$/
                 },
                 email: {
                     required: true,
@@ -605,9 +621,11 @@ input:checked + .slider:before {
             messages: {
                 first_name: {
                     required: "Please enter your first name.",
+                    regex: "Please enter a valid first name"
                 },
                 last_name: {
                     required: "Please enter your last name.",
+                    regex: "Please enter a valid last name"
                 },
                 email: {
                     required: "Please enter your email.",

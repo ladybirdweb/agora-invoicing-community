@@ -97,6 +97,8 @@ class ProfileRequest extends Request
             'mobile_code.required' => 'Enter Country code (mobile)',
             'state.required_if' => 'The state field is required when country is India.',
             'email.unique' => 'The email address has already been taken. Please choose a different email.',
+            'profile_pic.mimes' => __('message.image_allowed'),
+            'profile_pic.max' => __('message.image_max'),
         ];
     }
 }

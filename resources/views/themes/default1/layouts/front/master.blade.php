@@ -1013,7 +1013,7 @@ $(document).ready(function() {
 });
 
 setTimeout(function() {
-    $('.alert-dismissable').alert('close');
+    $('.alert-success, .alert-danger').alert('close');
 }, 5000);
 
 </script>

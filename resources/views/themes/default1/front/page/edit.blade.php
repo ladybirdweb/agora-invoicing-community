@@ -18,7 +18,7 @@ Edit Page
 @section('content')
 <div class="card card-secondary card-outline">
 
-      {!! Form::model($page,['url'=>'pages/'.$page->id,'method'=>'patch']) !!}
+      {!! Form::model($page,['url'=>'pages/'.$page->id,'method'=>'patch','id'=>'createPage']) !!}
 
 
     <div class="card-body table-responsive">
@@ -35,21 +35,33 @@ Edit Page
                         <!-- first name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                         {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
-
+                        @error('name')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('publish') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('publish',Lang::get('message.publish'),['class'=>'required']) !!}
                         {!! Form::select('publish',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
-
+                        @error('publish')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('slug') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('slug',Lang::get('message.slug'),['class'=>'required']) !!}
                         {!! Form::text('slug',null,['class' => 'form-control','id'=>'slug']) !!}
-
+                        @error('slug')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
 
@@ -60,7 +72,11 @@ Edit Page
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
-
+                        @error('url')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
@@ -74,6 +90,9 @@ Edit Page
                            
                              @endforeach
                         </select>
+                        @error('parent_page_id')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
                     </div>
 
                      <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
@@ -96,15 +115,19 @@ Edit Page
                            
                              @endforeach
                               </select>
-
+                           @error('default_page_id')
+                           <span class="error-message"> {{$message}}</span>
+                           @enderror
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('publish_date',Lang::get('message.publish-date'),['class'=>'required']) !!}
 
                         <div class="input-group date" id="publishing_date" data-target-input="nearest">
-                        <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date"/>
-
+                        <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date" id="created_at"/>
+                            @error('created_at')
+                            <span class="error-message"> {{$message}}</span>
+                            @enderror
                         <div class="input-group-append" data-target="#publishing_date"  data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
@@ -176,7 +199,11 @@ Edit Page
 
                         {!! Form::label('content',Lang::get('message.content'),['class'=>'required']) !!}
                         {!! Form::textarea('content',null,['class'=>'form-control','id'=>'textarea']) !!}
-
+                        @error('content')
+                        <span class="error-message"> {{$message}}</span>
+                        @enderror
+                        <div class="input-group-append">
+                        </div>
                     </div>
 
 
@@ -203,7 +230,99 @@ Edit Page
 {!! Form::close() !!}
 
   <script>
-    $(document).on('input', '#name', function () {
+
+      $(document).ready(function() {
+          const userRequiredFields = {
+              name:@json(trans('message.page_details.add_name')),
+              publish:@json(trans('message.page_details.add_publish')),
+              slug:@json(trans('message.page_details.add_slug')),
+              url:@json(trans('message.page_details.add_url')),
+              content:@json(trans('message.page_details.add_content')),
+              created_at:@json(trans('message.page_details.publish_date')),
+              default_page_id:@jason(trans('message.page_details.default_page')),
+          };
+
+          $('#createPage').on('submit', function (e) {
+              const userFields = {
+                  name:$('#name'),
+                  publish:$('#publish'),
+                  slug:$('#slug'),
+                  url:$('#url'),
+                  content:$('#textarea'),
+                  created_at:$('#created_at'),
+                  default_page:$('#default_page_id'),
+              };
+
+
+              // Clear previous errors
+              Object.values(userFields).forEach(field => {
+                  field.removeClass('is-invalid');
+                  field.next().next('.error').remove();
+
+              });
+
+              let isValid = true;
+
+              const showError = (field, message) => {
+                  field.addClass('is-invalid');
+                  field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+              };
+
+              // Validate required fields
+              Object.keys(userFields).forEach(field => {
+                  if (!userFields[field].val()) {
+                      showError(userFields[field], userRequiredFields[field]);
+                      isValid = false;
+                  }
+              });
+
+              if (isValid && userRequiredFields.default_page.val()==null) {
+                  showError(userFields.email, @json(trans('message.page_details.default_page')));
+                  isValid = false;
+              }
+
+              if(isValid && !isValidURL(userFields.url.val())){
+                  showError(userFields.url,@json(trans('message.page_details.valid_url')),);
+                  isValid=false;
+              }
+
+              // If validation fails, prevent form submission
+              if (!isValid) {
+                  e.preventDefault();
+              }
+          });
+          // Function to remove error when input'id' => 'changePasswordForm'ng data
+          const removeErrorMessage = (field) => {
+              field.classList.remove('is-invalid');
+              const error = field.nextElementSibling;
+              if (error && error.classList.contains('error')) {
+                  error.remove();
+              }
+          };
+
+          // Add input event listeners for all fields
+          ['name','publish','url','slug','content'].forEach(id => {
+
+              document.getElementById(id).addEventListener('input', function () {
+                  removeErrorMessage(this);
+
+              });
+          });
+
+
+          function isValidURL(string) {
+              try {
+                  new URL(string);
+                  return true;
+              } catch (err) {
+                  return false;
+              }
+          }
+      });
+
+
+
+      $(document).on('input', '#name', function () {
 
         $.ajax({
             type: "get",

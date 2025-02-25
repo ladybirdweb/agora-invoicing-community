@@ -46,13 +46,15 @@ Create Invoice
                     <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
                      <style>
                         .select2-container--default .select2-selection--multiple .select2-selection__choice {
-                            background-color: #1b1818 !important;
+                            background-color: #1b1818 !important;}
                     </style>
 
                 <div class="col-sm-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients'),['class'=>'required']) !!}
-                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users"]) !!}
-                 
+                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2",'id'=>"users"]) !!}
+
+                    <span class="error-message" id="user-msg"></span>
+                    <h6 id ="productusercheck"></h6>
                 </div>
                 @endif
                 <div class="col-md-4 lg-4 form-group {{ $errors->has('invoice_status') ? 'has-error' : '' }}">
@@ -64,7 +66,8 @@ Create Invoice
                             <div class="input-group-append" data-target="#invoice_date" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>                           
                             </div>
-                        </div>
+                             <span class="error-message" id="invoice-msg"></span>
+                         </div>
                     </div>
 
                 <div class="col-md-4 lg-4 form-group">
@@ -75,6 +78,10 @@ Create Invoice
                               <option value={{$key}}>{{$product}}</option>
                           @endforeach
                           </select>
+
+                    <span class="error-message" id="product-msg"></span>
+
+                    <span id="user-error-msg" class="hide"></span>
                     <h6 id ="productnamecheck"></h6>
                 </div>
                 <div id="fields1" class="col-md-4">
@@ -82,12 +89,14 @@ Create Invoice
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}
-                    {!! Form::text('price',null,['class'=>'form-control','id'=>'price']) !!}
+                    {!! Form::number('price',null,['class'=>'form-control','id'=>'price']) !!}
+                    <span class="error-message" id="price-msg"></span>
                       <h6 id ="pricecheck"></h6>
                 </div>
                 <div class="col-md-4 form-group">
                     {!! Form::label('code','Coupon code') !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
+                    <span class="error-message" id="code-msg"></span>
                 </div>
 
                     <div id="agents" class="col-md-4">
@@ -130,6 +139,122 @@ Create Invoice
 </script>
 
 <script>
+
+    $(document).ready(function() {
+
+        $('#users').on('change', function () {
+            if ($(this).val() !== '') {
+                document.querySelector('.select2-selection').style.cssText = `
+                        border: 1px solid silver;
+                        background-image:null;
+                        background-repeat: no-repeat;
+                        background-position: right 10px center;
+                        background-size: 16px 16px;`;
+                removeErrorMessage(this);
+            }
+        });
+
+
+        const userRequiredFields = {
+            user:@json(trans('message.invoice_details.add_user')),
+            datepicker:@json(trans('message.invoice_details.add_date')),
+            product:@json(trans('message.invoice_details.add_product')),
+            price:@json(trans('message.invoice_details.add_price')),
+            plan:@json(trans('message.invoice_details.add_price')),
+
+        };
+
+
+
+
+        $('#generate').on('click', function (e) {
+           if($('#users').val()==''){
+               console.log($('#users').val());
+               document.querySelector('.select2-selection').style.cssText = `
+                        border: 1px solid #dc3545;
+                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+                        background-repeat: no-repeat;
+                        background-position: right 10px center;
+                        background-size: 16px 16px;`;
+           }else{
+               document.querySelector('.select2-selection').style.border='1px solid silver';
+
+           }
+
+
+            const userFields = {
+                user:$('#users'),
+                datepicker:$('#datepicker'),
+                product:$('#product'),
+                price:$('#price'),
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val() || (typeof userFields[field].val() == 'object' && userFields[field].val().length === 0)) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            if(isValid && !isValidDate(userFields.datepicker.val())){
+                console.log(44);
+                showError(userFields.datepicker, @json(trans('message.invoice_details.add_valid_date')));
+                isValid = false;
+            }
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                console.log(34);
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['users','product','price','datepicker'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+
+        function isValidDate(dateString) {
+            console.log(dateString);
+            const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+
+            return regex.test(dateString);
+        }
+
+    });
+
+
+
     function getPrice(val) {
          var user = document.getElementsByName('user')[0].value;
 
@@ -292,6 +417,7 @@ Create Invoice
                 }
             },
             error: function (response) {
+                console.log(response.responseJSON.errors['user']);
                 $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
                 if(response.responseJSON.success == false) {
                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
@@ -308,7 +434,12 @@ Create Invoice
                 }                
                  html += '</ul></div>';
                  $('#error').show();
+
                   document.getElementById('error').innerHTML = html;
+                document.getElementById('price-msg').innerHTML = response.responseJSON.errors['price'];
+                document.getElementById('product-msg').innerHTML = response.responseJSON.errors['product'];
+                document.getElementById('user-msg').innerHTML = response.responseJSON.errors['user'];
+
             }
         });
 

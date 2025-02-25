@@ -41,7 +41,7 @@ Create Product
  </script>
     <style>
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #1b1818 !important;
+            background-color: #1b1818 !important;}
     </style>
 
 </head>
@@ -62,10 +62,6 @@ Create Product
 
     <div class="card-body table-responsive">
 
-
-
-
-
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
@@ -74,32 +70,44 @@ Create Product
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id' =>'productname']) !!}
-                                <h6 id = "namecheck"></h6>
-
+                                    @error('name')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
 
                                  <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
-
+                                     @error('type')
+                                     <span class="error-message"> {{$message}}</span>
+                                     @enderror
+                                     <div class="input-group-append">
+                                     </div>
                                 </div>
 
 
                                 <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
-                          <select name="group" value= "Choose" class="form-control">
-                             <option value="">Choose</option>
-                           @foreach($group as $key=>$value)
-                               @if (Request::old('group') == $key)
-                             <option value={{$key}} selected>{{$value}}</option>
-                             @else
-                             <option value={{$key}}>{{$value}}</option>
-                             @endif
-                          @endforeach
-                          </select>
-  
+                                    {!! Form::select('group',[''=>'Choose','Groups'=>$group],null,['class' => 'form-control','id'=>'groups']) !!}
+{{--                                    <select name="group" class="form-control" >--}}
+{{--                                         <option value="">Choose</option>--}}
+{{--                                       @foreach($group as $key=>$value)--}}
+{{--                                           @if (Request::old('group') == $key)--}}
+{{--                                         <option value={{$key}} selected>{{$value}}</option>--}}
+{{--                                         @else--}}
+{{--                                         <option value={{$key}}>{{$value}}</option>--}}
+{{--                                         @endif--}}
+{{--                                      @endforeach--}}
+{{--                                      </select>--}}
+                                    @error('group')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
                                 
 
@@ -108,40 +116,51 @@ Create Product
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                    <!-- last name -->
                                      <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
                                     
                                     <script>
-                                    tinymce.init({
-                                         selector: 'textarea',
-                                         height: 500,
-                                         theme: 'silver',
-                                         relative_urls: true,
-                                         remove_script_host: false,
-                                         convert_urls: false,
-                                         plugins: [
-                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
-                                          'insertdatetime media nonbreaking save table contextmenu directionality',
-                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
-                                          ],
-                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
-                                          image_advtab: true,
-                                          templates: [
-                                              {title: 'Test template 1', content: 'Test 1'},
-                                              {title: 'Test template 2', content: 'Test 2'}
-                                          ],
-                                          content_css: [
-                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-                                              '//www.tinymce.com/css/codepen.min.css'
-                                          ]
-                                    });
+                                        $(document).ready(function() {
+                                            tinymce.init({
+                                                selector: 'textarea',
+                                                height: 500,
+                                                theme: 'silver',
+                                                relative_urls: true,
+                                                remove_script_host: false,
+                                                convert_urls: false,
+                                                plugins: [
+                                                    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                                    'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                                    'insertdatetime media nonbreaking save table contextmenu directionality',
+                                                    'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                                ],
+                                                toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                                toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                                image_advtab: true,
+                                                templates: [
+                                                    {title: 'Test template 1', content: 'Test 1'},
+                                                    {title: 'Test template 2', content: 'Test 2'}
+                                                ],
+                                                content_css: [
+                                                    '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                                    '//www.tinymce.com/css/codepen.min.css'
+                                                ],
+                                                setup: function(editor) {
+                                                    editor.on('init', function () {
+                                                        document.querySelector(".tox-tinymce").style.border = "1px solid silver"; // Change 'green' to any color
+                                                    });
+                                                },
+                                            });
+                                        });
                                     </script>
 
 
+
+
                                     {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
-                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
+                                    {!! Form::textarea('description',null,['class' => 'form-control ','id'=>'textarea12']) !!}
+                                    @error('description')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
                                 <h6 id= "descheck"></h6>
                                 </div>
                                 <div class="col-md-6">
@@ -154,8 +173,12 @@ Create Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
-                                                {!! Form::text('product_sku',null,['class' => 'form-control']) !!}
-
+                                                {!! Form::text('product_sku',null,['class' => 'form-control','id'=>'product_sku']) !!}
+                                                @error('product_sku')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
+                                                <div class="input-group-append">
+                                                </div>
                                             </div>
                                         </li>
 
@@ -164,7 +187,9 @@ Create Product
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
                                                 {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
-
+                                                @error('parent[]')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
                                         <li>
@@ -172,7 +197,9 @@ Create Product
                                             <!-- last name -->
                                             {!! Form::label('image',Lang::get('message.image')) !!}
                                             {!! Form::file('image') !!}
-
+                                            @error('image')
+                                            <span class="error-message"> {{$message}}</span>
+                                            @enderror
                                         </div>
                                         </li>
                            
@@ -181,7 +208,9 @@ Create Product
                                                 <!-- last name -->
                                                 {!! Form::label('require_domain',Lang::get('message.require_domain')) !!}
                                                 <p>{!! Form::checkbox('require_domain',1) !!} {{Lang::get('message.tick-to-show-domain-registration-options')}}</p>
-
+                                                @error('require_domain')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
 
@@ -190,7 +219,9 @@ Create Product
                                                 <!-- last name -->
                                                 {!! Form::label('shoping_cart_link',Lang::get('message.shoping-cart-link')) !!}
                                                 {!! Form::text('shoping_cart_link',$cartUrl,['class'=>'form-control']) !!}
-
+                                                @error('shooping_cart_link')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
 
@@ -219,9 +250,11 @@ Create Product
                                                 <!-- first name -->
                                                <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
                                                 <label data-toggle="tooltip" data-placement="top" title="">Contact to sales</label>
-                                               
-                                                <p>{!! Form::checkbox('add_to_contact') !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
 
+                                                <p>{!! Form::checkbox('add_to_contact') !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
+                                                @error('add_to_contact')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
                                     </ul>
@@ -252,7 +285,8 @@ Create Product
                                     <div class="col-md-10" id="allowmulagent" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_agent',1) !!}  {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
                                     </div>
-                                   </td>
+
+                                    </td>
                                  </div>
                                 </tr>
                                 <tr>
@@ -266,7 +300,10 @@ Create Product
                                      <div class="col-md-10" id="allowmulproduct" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_quantity',1) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
                                     </div>
-                                
+                                        @error('show_agent')
+                                        <span class="error-message"> {{$message}}</span>
+                                        @enderror
+                                        <span class='error' id="error-message"></span>
                                     </td>
                                 </tr>
                               </table>
@@ -284,7 +321,9 @@ Create Product
                                                         <option value={{$key}}>{{$value}}</option> 
                                                         @endforeach
                                                     </select>
-                                                
+                                                    @error('tax')
+                                                    <span class="error-message"> {{$message}}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
 
@@ -311,6 +350,117 @@ Create Product
     </div>
 
     <script>
+
+        $(document).ready(function() {
+
+            $('#textarea12').on('change',function(){
+                console.log('bbs');
+                if($('#textarea12').val() !==''){
+                    let editorContainer = document.querySelector(".tox-tinymce");
+                    editorContainer.style.border = "1px solid silver";
+                    removeErrorMessage(this);
+                }
+            });
+
+
+            const userRequiredFields = {
+                name:@json(trans('message.product_details.add_name')),
+                type:@json(trans('message.product_details.add_license_type')),
+                group:@json(trans('message.product_details.add_group')),
+                product_sku:@json(trans('message.product_details.add_product_sku')),
+                description:@json(trans('message.product_details.add_description')),
+                agent:@json(trans('message.product_details.add_description')),
+                quantity:@json(trans('message.product_details.add_description')),
+
+            };
+
+            $('#createproduct').on('submit', function (e) {
+
+                if ($('#textarea12').val() === '') {
+                    console.log(24);
+                    let editorContainer = document.querySelector(".tox-tinymce");
+                    editorContainer.style.border = "1px solid #dc3545";
+                }
+                else if($('#textarea12').val() !== ''){
+                    let editorContainer = document.querySelector(".tox-tinymce");
+                    editorContainer.style.border = "1px solid silver";
+                }else{
+                    let editorContainer = document.querySelector(".tox-tinymce");
+                    editorContainer.style.border = "1px solid silver";
+                }
+
+                const userFields = {
+                    name:$('#productname'),
+                    type:$('#type'),
+                    group:$('#groups'),
+                    product_sku:$('#product_sku'),
+                    description:$('#textarea12'),
+                    agent:$('#agent'),
+                };
+
+
+                // Clear previous errors
+                Object.values(userFields).forEach(field => {
+                    field.removeClass('is-invalid');
+                    field.next().next('.error').remove();
+
+                });
+
+                let isValid = true;
+
+                const showError = (field, message) => {
+                    field.addClass('is-invalid');
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                };
+
+                // Validate required fields
+                Object.keys(userFields).forEach(field => {
+                    if (!userFields[field].val()) {
+                        showError(userFields[field], userRequiredFields[field]);
+                        isValid = false;
+                    }
+                });
+
+                // if (isValid && userRequiredFields.description.val()==null) {
+                //     isValid = false;
+                // }
+
+                if(!document.querySelector('input[name="show_agent"]:checked')){
+                    $('#error-message').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
+                    document.getElementById("error-message").textContent = "Please enter type of cart page";
+                    isValid=false;
+                }else{
+
+                    document.getElementById("error-message").textContent = "";
+
+                }
+
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+            // Function to remove error when input'id' => 'changePasswordForm'ng data
+            const removeErrorMessage = (field) => {
+                field.classList.remove('is-invalid');
+                const error = field.nextElementSibling;
+                if (error && error.classList.contains('error')) {
+                    error.remove();
+                }
+            };
+
+            // Add input event listeners for all fields
+            ['productname','type','groups','product_sku','agent','quantity'].forEach(id => {
+
+                document.getElementById(id).addEventListener('input', function () {
+                    removeErrorMessage(this);
+
+                });
+            });
+
+        });
+
+
         $(document).ready(function() {
             $("#Tax").select2({
                 placeholder: 'Select Taxes',

@@ -60,7 +60,7 @@ Edit Product
 </script>
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #1b1818 !important;
+    background-color: #1b1818 !important;}
 </style>
 <div class="card card-secondary card-tabs">
 
@@ -84,15 +84,22 @@ Edit Product
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id'=>'productname']) !!}
-                                    <h6 id= "namecheck"></h6>
-
+                                    @error('name')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
 
                                 <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
-
+                                    @error('type')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
                                 <?php
                                $groups = DB::table('product_groups')->pluck('name', 'id')->toarray();
@@ -100,15 +107,12 @@ Edit Product
                                 <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
-                                        <select name="group"  class="form-control">
-                            <option >Choose</option>
-                            @foreach($groups as $key=>$group)
-                                   <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
-                                    echo "selected";
-                                } ?>>{{$group}}</option>
-                           
-                             @endforeach
-                              </select>
+                                    {!! Form::select('group',[''=>'Choose','Groups'=>$groups],null,['class' => 'form-control','id'=>'groups']) !!}
+                                    @error('group')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
+                                    <div class="input-group-append">
+                                    </div>
                                 </div>
                                 
                                 
@@ -118,13 +122,46 @@ Edit Product
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                    
-                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
-                                    <!--{!! Form::text('description',null,['class' => 'form-control','id'=>'textarea1']) !!}-->
-                                    <textarea hidden class="form-control"  name="description" id='textarea1'>{!! $product->description !!}</textarea>
 
-                                    
-                                   
+                                    <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+                                    <script>
+                                        tinymce.init({
+                                            selector: 'textarea',
+                                            height: 500,
+                                            theme: 'silver',
+                                            relative_urls: true,
+                                            remove_script_host: false,
+                                            convert_urls: false,
+                                            plugins: [
+                                                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                                'insertdatetime media nonbreaking save table contextmenu directionality',
+                                                'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                            ],
+                                            toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                            toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                            image_advtab: true,
+                                            templates: [
+                                                {title: 'Test template 1', content: 'Test 1'},
+                                                {title: 'Test template 2', content: 'Test 2'}
+                                            ],
+                                            content_css: [
+                                                '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                                '//www.tinymce.com/css/codepen.min.css'
+                                            ],
+                                            setup: function(editor) {
+                                                editor.on('init', function () {
+                                                    document.querySelector(".tox-tinymce").style.border = "1px solid silver"; // Change 'green' to any color
+                                                });
+                                            },
+                                        });
+                                    </script>
+                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
+                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'text']) !!}
+                                    @error('description')
+                                    <span class="error-message"> {{$message}}</span>
+                                    @enderror
                                      <h6 id= "descheck"></h6>
                                      </div>
                                    <div class="col-md-6">
@@ -133,8 +170,12 @@ Edit Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
-                                                {!! Form::text('product_sku',null,['class' => 'form-control']) !!}
-
+                                                {!! Form::text('product_sku',null,['class' => 'form-control','id'=>'product_sku']) !!}
+                                                @error('product_sku')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
+                                                <div class="input-group-append">
+                                                </div>
                                             </div>
                                         </li>
                                         <li>
@@ -142,7 +183,9 @@ Edit Product
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
                                                 {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
-
+                                                @error('parent[]')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
 
@@ -155,7 +198,9 @@ Edit Product
                                                 @if($product->image)
                                                <img src="{{$product->image }}" width="100px" alt="slider Image">
                                                @endif
-
+                                            @error('image')
+                                            <span class="error-message"> {{$message}}</span>
+                                            @enderror
                                         </div>
                                                 </li>
                                       
@@ -208,6 +253,9 @@ Edit Product
                                                         </label>
                                                     </td>
                                                 </tr>
+                                                @error('chkTax')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                              </table>
                                        
                                         <li>
@@ -216,7 +264,9 @@ Edit Product
                                                 {!! Form::label('require_domain',Lang::get('message.require_domain')) !!}
                                                 {!! Form::hidden('require_domain', 0) !!}
                                                 <p>{!! Form::checkbox('require_domain',1) !!} {{Lang::get('message.tick-to-show-domain-registration-options')}}</p>
-
+                                                @error('require_domain')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
                                         <li>
@@ -224,7 +274,9 @@ Edit Product
                                                 <!-- last name -->
                                                 {!! Form::label('shoping_cart_link',Lang::get('message.shoping-cart-link')) !!}
                                                 {!! Form::text('shoping_cart_link',null,['class'=>'form-control']) !!}
-
+                                                @error('shoping_cart_link')
+                                                <span class="error-message"> {{$message}}</span>
+                                                @enderror
                                             </div>
                                         </li>
                                          <li>
@@ -260,7 +312,9 @@ Edit Product
                                                 }
                                                 ?>
                                                 <p>{!! Form::checkbox('highlight',1,$value) !!}  {{Lang::get('message.tick-to-highlight-product')}}</p>
-
+                                                   @error('highlight')
+                                                   <span class="error-message"> {{$message}}</span>
+                                                   @enderror
                                             </div>
 
                                             </div>
@@ -280,12 +334,14 @@ Edit Product
                                                 }
                                                 ?>
                                                 <p>{!! Form::checkbox('add_to_contact',1,$value) !!}  {{Lang::get('message.tick-to-add_to_contact-product')}}</p>
-
+                                                   @error('add_to_contact')
+                                                   <span class="error-message"> {{$message}}</span>
+                                                   @enderror
                                             </div>
 
                                             </div>
                                         </li>
-                                   
+                                    </ul>
                                 </div>
 
                             </div>
@@ -331,6 +387,9 @@ Edit Product
                                   
                                     </td>
                                 </tr>
+                                @error('show_agent')
+                                <span class="error-message"> {{$message}}</span>
+                                @enderror
                         </table>
                                 
                                 <tr>
@@ -347,9 +406,11 @@ Edit Product
                                                         
                                                        @endforeach
                                                     </select>
-                                                    
-                                                   
-                                                   
+
+
+                                                    @error('tax[]')
+                                                    <span class="error-message"> {{$message}}</span>
+                                                    @enderror
                                                 </div>
 
                                                
@@ -387,7 +448,7 @@ Edit Product
 
                                                             ?>
                                                             <td>{{round((int) $months)}}</td>
-                                                            <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-secondary btn-xs".{!! tooltip('Edit') !!}<i class='fa fa-edit' style='color:white;'></i></a></td>
+                                                             <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-secondary btn-xs".{!! tooltip('Edit') !!}<i class='fa fa-edit' style='color:white;'></i></a></td>
                                                         </tr>
                                                      @endforeach
                                                 </table>
@@ -404,18 +465,9 @@ Edit Product
           {!! Form::close() !!}
                       
                 <!-- nav-tabs-custom -->
-
-
-
-
-                              </div>
-
-
-
-          
-
+            </div>
        </div>
-                   </div>
+</div>
 
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
@@ -494,311 +546,100 @@ Edit Product
         });
     });
 </script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
- <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
-<script>
-                                        $(function(){
-                                          tinymce.init({
-                                         selector: '#product-description',
-                                         height: 500,
-                                       //  theme: 'modern',
-                                         relative_urls: true,
-                                         remove_script_host: false,
-                                         convert_urls: false,
-                                         plugins: [
-                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
-                                          'insertdatetime media nonbreaking save table contextmenu directionality',
-                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
-                                          ],
-                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
-                                          image_advtab: true,
-                                          templates: [
-                                              {title: 'Test template 1', content: 'Test 1'},
-                                              {title: 'Test template 2', content: 'Test 2'}
-                                          ],
-                                          content_css: [
-                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-                                              '//www.tinymce.com/css/codepen.min.css'
-                                          ]
-                                          });
-                                          tinymce.init({
-                                         selector: '#textarea1',
-                                         height: 500,
-                                       //  theme: 'modern',
-                                         relative_urls: true,
-                                         remove_script_host: false,
-                                         convert_urls: false,
-                                         plugins: [
-                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
-                                          'insertdatetime media nonbreaking save table contextmenu directionality',
-                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
-                                          ],
-                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
-                                          image_advtab: true,
-                                          templates: [
-                                              {title: 'Test template 1', content: 'Test 1'},
-                                              {title: 'Test template 2', content: 'Test 2'}
-                                          ],
-                                          content_css: [
-                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-                                              '//www.tinymce.com/css/codepen.min.css'
-                                          ]
-                                    });
-                                              tinymce.init({
-                                         selector: '#textarea3',
-                                         height: 300,
-                                       //  theme: 'modern',
-                                         relative_urls: true,
-                                         remove_script_host: false,
-                                         convert_urls: false,
-                                         plugins: [
-                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
-                                          'insertdatetime media nonbreaking save table contextmenu directionality',
-                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
-                                          ],
-                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
-                                          image_advtab: true,
-                                          templates: [
-                                              {title: 'Test template 1', content: 'Test 1'},
-                                              {title: 'Test template 2', content: 'Test 2'}
-                                          ],
-                                          content_css: [
-                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-                                              '//www.tinymce.com/css/codepen.min.css'
-                                          ]
-                                    });
-                                });
-                                    </script>
-<script type="text/javascript">
-        function readmore(){
-                        var maxLength = 300;
-                        $("#upload-table tbody tr td").each(function(){
-                            var myStr = $(this).text();
-                            if($.trim(myStr).length > maxLength){
-                                var newStr = myStr.substring(0, maxLength);
-                                 $(this).empty().html(newStr);
-                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
-                                $(this).append('<span class="more-text">' + removedStr + '</span>');
-                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
-                            }
-                          }); 
-                         }
-        $('#upload-table').DataTable({
-              destroy: true,
-            "initComplete": function(settings, json) {
-                         readmore();
-            },
-            processing: true,
-            serverSide: true,
-               order: [[ 0, "desc" ]],
-               
-             ajax: '{!! route('get-upload',$product->id) !!}',
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-            },
-                columnDefs: [
-                { 
-                    targets: 'no-sort', 
-                    orderable: false,
-                    order: []
-                }
-            ],
-            columns: [
-                {data: 'checkbox', name: 'checkbox'},
-                {data: 'title', name: 'title'},
-                {data: 'description', name: 'description'},
-                {data: 'version', name: 'version'},
-                {data: 'releasetype', name: 'releasetype'},
-                {data: 'file', name: 'file'},
-                {data: 'action', name: 'action'}
-            ],
-            "fnDrawCallback": function( oSettings ) {
-                bindEditButton();
-                $('.loader').css('display', 'none');
-            },
-            "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
-        });
-        
-  
-     
-        function bindEditButton() {
-                $('[data-toggle="tooltip"]').tooltip({
-                    container : 'body'
-                });
-        $('.editUploadsOption').click(function(){
-        var upload_id = $(this).attr('data-id');
-        var title =  $(this).attr('data-title');
-        var version=  $(this).attr('data-version');
-        var description =  $(this).attr('data-description');
-        tinymce.get('product-description').setContent(description);
-         $('#edit-uplaod-option').modal('show');
-          $("#uploadid").val(upload_id);
-         $("#product-title").val(title);
-        $("#product-version").val(version);
-    })
-      }
 
-         $("#editProductUpload").on('click',function(){
-      $("#editProductUpload").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
-    var upload_id = $('#uploadid').val();
-    var productname = $('#editName').val();
-    var producttitle = $('#product-title').val();
-    var description = tinyMCE.get('product-description').getContent()
-    var version = $('#product-version').val();
-    $.ajax({
-       type : "PATCH",
-       url  :  "{{url('upload/')}}"+"/"+upload_id,
-       data :  {'productname': productname , 'producttitle': producttitle, 
-       'description': description,'version':version},
-       success: function(response) {
-         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
-        $('#alertMessage2').show();
-        $('#error1').hide();
-        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
-        $('#alertMessage2').html(result+ ".");
-       } ,
-       error: function(ex) {
-         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
-        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-        for (key in ex.responseJSON.errors) {
-           html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
-        }
-          html += '</ul></div>';
-           $('#error1').show(); 
-           document.getElementById('error1').innerHTML = html;
-       }
+<script>
+
+    $(document).ready(function() {
+
+        $('#text').on('change',function(){
+            $('.tox-tinymce').css('border', '1px solid silver');
+            removeErrorMessage(this);
+        });
+
+        const userRequiredFields = {
+            name:@json(trans('message.product_details.add_name')),
+            type:@json(trans('message.product_details.add_license_type')),
+            group:@json(trans('message.product_details.add_group')),
+            product_sku:@json(trans('message.product_details.add_product_sku')),
+            description:@json(trans('message.product_details.add_description')),
+        };
+
+        $('#editproduct').on('submit', function (e) {
+
+            if ($('#text').val() === '') {
+                console.log(24);
+                let editorContainer = document.querySelector(".tox-tinymce");
+                editorContainer.style.border = "1px solid #dc3545";
+            }
+            else if($('#text').val() !== ''){
+                let editorContainer = document.querySelector(".tox-tinymce");
+                editorContainer.style.border = "1px solid silver";
+            }else{
+                let editorContainer = document.querySelector(".tox-tinymce");
+                editorContainer.style.border = "1px solid silver";
+            }
+
+            const userFields = {
+                name:$('#productname'),
+                type:$('#type'),
+                group:$('#groups'),
+                product_sku:$('#product_sku'),
+                description:$('#text'),
+
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['name','type','group','product_sku','text'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
     });
 
- })
-      
+</script>
 
-    
-        </script>
-        <script>
-        function checking(e){
-           $('#upload-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
-     }
-
-        $(document).ready(function () {
-            var selectedIds = [];
-
-            let alertTimeout;
-            function showAlert(type, messageOrResponse) {
-                // Generate appropriate HTML
-                var html = generateAlertHtml(type, messageOrResponse);
-
-                // Clear any existing alerts and remove the timeout
-                $('#product-alert-container').html(html);
-                clearTimeout(alertTimeout); // Clear the previous timeout if it exists
-
-                // Display alert
-                $('html, body').animate({
-                    scrollTop: $('#product-alert-container').offset().top
-                }, 500);
-
-                // Auto-dismiss after 5 seconds, then reload the page
-                alertTimeout = setTimeout(function() {
-                    $('#product-alert-container .alert').fadeOut('slow', function() {
-                        location.reload(); // Reload after alert hides
-                    });
-                }, 5000);
-            }
-
-
-
-            function generateAlertHtml(type, response) {
-                // Determine alert styling based on type
-                const isSuccess = type === 'success';
-                const iconClass = isSuccess ? 'fa-check-circle' : 'fa-ban';
-                const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
-
-                // Extract message and errors
-                const message = response.message || response || 'An error occurred. Please try again.';
-                const errors = response.errors || null;
-
-                // Build base HTML
-                let html = `<div class="alert ${alertClass} alert-dismissible">` +
-                    `<i class="fa ${iconClass}"></i> ` +
-                    `${message}` +
-                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-
-                html += '</div>';
-
-                return html;
-            }
-
-            // Open modal when delete button is clicked
-            $(document).on('click', '#bulk_delete', function () {
-                selectedIds = [];
-
-                $('.upload_checkbox:checked').each(function () {
-                    selectedIds.push($(this).val());
-                });
-
-                if (selectedIds.length > 0) {
-                    $('#deleteModal').modal('show'); // Show Bootstrap modal
-                } else {
-                    alert("Please select at least one checkbox");
-                }
-            });
-
-            // Confirm delete inside modal
-            $('#confirmDelete').click(function () {
-                $.ajax({
-                    url: "{!! url('uploads-delete') !!}",
-                    method: "POST",
-                    contentType: "application/json", // Send JSON format
-                    dataType: "json",
-                    data: JSON.stringify({
-                        _method: "DELETE",
-                        _token: document.querySelector('meta[name="csrf-token"]').content, // CSRF Token
-                        ids: selectedIds // Send the selected IDs
-                    }),
-                    beforeSend: function () {
-                        $('#gif').show();
-                    },
-                    success: function (response) {
-                        showAlert('success', response.message);
-                    },
-                    error: function (xhr) {
-                        showAlert('error', xhr.responseJSON.message);
-                    },
-                    complete: function (){
-                        $('#deleteModal').modal('hide');
-                    }
-                });
-            });
-        });
-
-
-        </script>
-
-
-      
-   
-  
-   
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-<script>
+   <script>
         $(document).on('click','#upload-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');
         $(this).siblings(".more-text").html(text);
@@ -810,7 +651,6 @@ Edit Product
        // Jquery validation for Product Creation
     $(document).ready(function(){
         $('#namecheck').hide();
-        $('#descheck').hide();
 
         var nameErr= true;
         var desErr = true;
@@ -819,8 +659,8 @@ Edit Product
             function name_check(){
                 var name = $('#productname').val();
                 if (name.length == ''){
-                   $('#namecheck').show(); 
-                   $('#namecheck').html('This field is required'); 
+                   $('#namecheck').show();
+                   $('#namecheck').html('This field is required');
                    $('#namecheck').focus();
                    $('#productname').css("border-color","red");
                    $('#namecheck').css({"color":"red","margin-top":"5px"});
@@ -832,21 +672,21 @@ Edit Product
                      }
             }
 
-            function des_check(){
-                var des = $('#textarea1').val();
-                if (des.length == ''){
-                    $('#descheck').show();
-                    $('#descheck').html('This field is required');
-                    $('#descheck').focus();
-                    $('#textarea1').css("border-color","red");
-                    $('#descheck').css({"color":"red","margin-top":"5px"});
-                }
-                else{
-                     $('#descheck').hide();
-                     $('#textarea1').css("border-color","");
-                     return true;
-                }
-            }
+            // function des_check(){
+            //     var des = $('#textarea1').val();
+            //     if (des.length == ''){
+            //         $('#descheck').show();
+            //         $('#descheck').html('This field is required');
+            //         $('#descheck').focus();
+            //         $('#textarea1').css("border-color","red");
+            //         $('#descheck').css({"color":"red","margin-top":"5px"});
+            //     }
+            //     else{
+            //          $('#descheck').hide();
+            //          $('#textarea1').css("border-color","");
+            //          return true;
+            //     }
+            // }
             name_check();
             des_check();
              if(name_check() && des_check()){
@@ -862,7 +702,7 @@ Edit Product
 <script>
     $(document).ready(function(){
         var githubstatus =  $('#gitstatus').val();
-        
+
         if( $("input[type=radio][name='show_agent']:checked").val() == 1) {
             $('#agent').prop('checked',true);
             $('#allowmulagent').show();
@@ -895,7 +735,7 @@ Edit Product
             document.getElementById("hide").style.display="block";
             $("#uploads").show();
         }
-        
+
     // })
 
 });
@@ -906,7 +746,7 @@ Edit Product
             if($('#agent').is(":checked")) {
                $("#allowmulagent").show();
                $("#allowmulproduct").hide();
-            } 
+            }
         })
 
     })
@@ -916,7 +756,7 @@ Edit Product
             if($('#quantity').is(":checked")) {
                $("#allowmulagent").hide();
                $("#allowmulproduct").show();
-            } 
+            }
         })
 
     })
@@ -934,7 +774,7 @@ Edit Product
 </script>
 <script>
  $(document).ready(function(){
-     
+
 var $ = window.$; // use the global jQuery instance
 
 var $fileUpload = $('#resumable-browse');
@@ -997,7 +837,7 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
 })
 
  //------------------------------------------------------------------------------------------------------------//
- 
+
 function privateRelease()
 {
     // val = $('#p_release').val();
@@ -1042,7 +882,7 @@ function preRelease()
     $.ajax({
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
-       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
+       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle,
        'description': description,'dependencies':dependencies,'version':version,'is_private': private,'is_restricted': restricted,'release_type': releaseType,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
          $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
@@ -1058,7 +898,7 @@ function preRelease()
            html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
         }
           html += '</ul></div>';
-           $('#error').show(); 
+           $('#error').show();
            document.getElementById('error').innerHTML = html;
        }
     });

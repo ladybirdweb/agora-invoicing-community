@@ -114,7 +114,7 @@ class SettingsControllerTest extends DBTestCase
     // Test case for handling incorrect stripe token
     public function test_handlePayment_return_exception_incorrect_values()
     {
-        try{
+        try {
             $requestData = ['stripeToken' => '12345678904567890'];
             $expectedArguments = ['payment_method' => 'pm_card_visa', 'return_url' => 'https://example.com/return-url'];
             $status = 'require_action';
@@ -123,7 +123,7 @@ class SettingsControllerTest extends DBTestCase
             $this->SetAuthUser();
             $controller = new SettingsController($stripeClientConstructorMock);
             $response = $controller->handlePayment($requestMock, 50, 'INR', 'https://example.com/return-url', null);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertEquals('Invalid token id: 12345678904567890', $exception->getMessage());
         }
     }

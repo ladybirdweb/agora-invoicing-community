@@ -1569,7 +1569,7 @@ $price = $order->price_override;
                                 window.location.href = response;
                             }
                         } catch (error) {
-                            var errorMessage = error.responseJSON.result;
+                            var errorMessage = error.responseJSON.error;
                             $('#stripe-Modal').modal('hide');
                             $("#pay").attr('disabled', false).html("Pay now");
                             $('#error-1').show().html(`
@@ -1578,6 +1578,7 @@ $price = $order->price_override;
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         </div>
                     `);
+                            setTimeout(() => location.reload(), 5000);
                         }
                     });
                 } else if (pay == 'razorpay') {

@@ -372,7 +372,10 @@ class ClientController extends BaseClientController
     public function getInvoice($id)
     {
         try {
-            $invoice = $this->invoice->findOrFail($id);
+            $invoice = $this->invoice->find($id);
+            if (!$invoice) {
+                throw new \Exception('Invoice not found.');
+            }
             $payments = $invoice->payment;
             $user = \Auth::user();
             if ($invoice->user_id != $user->id) {
@@ -385,7 +388,7 @@ class ClientController extends BaseClientController
 
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order', 'payments'));
         } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->route('my-invoices')->with('fails', $ex->getMessage());
         }
     }
 

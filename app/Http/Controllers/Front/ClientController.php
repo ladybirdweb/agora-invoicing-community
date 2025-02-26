@@ -373,7 +373,7 @@ class ClientController extends BaseClientController
     {
         try {
             $invoice = $this->invoice->find($id);
-            if (!$invoice) {
+            if (! $invoice) {
                 throw new \Exception('Invoice not found.');
             }
             $payments = $invoice->payment;

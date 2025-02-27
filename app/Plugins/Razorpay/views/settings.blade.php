@@ -27,49 +27,66 @@ Razorpay
           <div class="card-header">
         <h3 class="card-title">Api Keys</h3>
 
-        
+
     </div>
                 
                 <div class="card-body table-responsive">
 
         <div class="row">
 
-               
 
 
-
-                   
-                    
+            <table class="table table-condensed">
                     <tr>
 
                         <td>
                           <!-- last name -->
-                        {!! Form::label('rzp_key','Razorpay key',['class'=>'required']) !!}
-                        {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
-                           <span id="rzp_keycheck"></span>
+                                {!! Form::label('rzp_key','Razorpay key',['class'=>'required']) !!}
+                            <div class="form-group col-lg-5 pl-0">
+                            {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
+                                   <span id="rzp_keycheck"></span>
+                            </div>
                          </td>
+                        </tr>
 
-                         
-                         <br>
+                <tr>
                         <td>
                           <!-- last name -->
-                        {!! Form::label('rzp_secret','Razorpay Secret', ['class'=>'required']) !!} 
-                        {!! Form::text('rzp_secret',$rzpKeys->rzp_secret,['class' => 'form-control rzp_secret','id'=>'rzp_secret']) !!}
+                            {!! Form::label('rzp_secret','Razorpay Secret', ['class'=>'required']) !!}
+                            <div class="form-group col-lg-5 pl-0">
+                            <div class="input-group">
+{{--                        {!! Form::text('rzp_secret',$rzpKeys->rzp_secret,['class' => 'form-control rzp_secret','id'=>'rzp_secret']) !!}--}}
+{{--                            {!! Form::password('rzp_secret',['class' => 'form-control rzp_secret','id'=>'rzp_secret']) !!}--}}
+                             <input type="password" name="rzp_secret" value="{{$rzpKeys->rzp_secret}}"  class="form-control rzp_secret" id="rzp_secret">
+
+
+                                <div class="input-group-append">
+                                        <span class="input-group-text" role="button" onclick="togglePasswordVisibility(this)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </span>
+                            </div>
+                            </div>
                            <span id="rzp_secretcheck"></span>
+                            </div>
                          </td>
+                </tr>
                           <br>
+                <tr>
                           <td>
                           <!-- last name -->
-                        {!! Form::label('apilayer_key','ApiLayer Access Key(For Exchange Rate Conversion)', ['class'=>'required']) !!} 
-                        {!! Form::text('apilayer_key',$rzpKeys->apilayer_key,['class' => 'form-control apilayer_key','id'=>'apilayer_key']) !!}
+                        {!! Form::label('apilayer_key','ApiLayer Access Key(For Exchange Rate Conversion)', ['class'=>'required']) !!}
+                              <div class="form-group col-lg-5 pl-0">
+                                {!! Form::text('apilayer_key',$rzpKeys->apilayer_key,['class' => 'form-control apilayer_key','id'=>'apilayer_key']) !!}
+
                            <span id="apilayer_check"></span>
+                              </div>
                          </td>
                        
                    
                        
                     </tr>
+            </table>
 
-                
                </div>
                <br>
                 <button type="submit" class="btn btn-primary btn-sm" id="key_update"><i class="fa fa-sync-alt"></i>&nbsp;Update</button>
@@ -79,7 +96,7 @@ Razorpay
 
 
         </div>
-        
+
 
         <!-- /.box -->
 

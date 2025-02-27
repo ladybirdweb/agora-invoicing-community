@@ -98,7 +98,13 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                     </div>
                     <div class="mb-3">
                         <label for="redirect" class="form-label required">Redirect URL</label>
-                        <input type="text" class="form-control" id="redirect"  value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}" name="redirect_url">
+                        <input type="text"
+                               class="form-control"
+                               id="redirect"
+                               value="{{ url('/auth/callback/' . lcfirst($socialLogins->type)) }}"
+                               name="redirect_url"
+                               placeholder='https://example.com'
+                        >
                         @error('redirect_url')
                         <span class="error-message"> {{$message}}</span>
                         @enderror

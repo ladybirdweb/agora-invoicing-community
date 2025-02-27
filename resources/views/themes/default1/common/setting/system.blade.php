@@ -99,7 +99,7 @@ System Setting
                             <div class="form-group {{ $errors->has('website') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('website',null,['class' => 'form-control']) !!}
+                                {!! Form::text('website',null,['class' => 'form-control','placeholder'=>'https://example.com']) !!}
                                 @error('website')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -191,7 +191,7 @@ System Setting
                             <div class="form-group {{ $errors->has('knowledge_base_url') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url']) !!}
+                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url','placeholder'=>'https://example.com']) !!}
                                 @error('knowledge_base_url')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -470,7 +470,7 @@ System Setting
 
             };
 
-            $('#companyDetailsFor').on('submit', function (e) {
+            $('#companyDetailsForm').on('submit', function (e) {
                 const userFields = {
                     company:$('#company'),
                     company_email:$('#company_email'),

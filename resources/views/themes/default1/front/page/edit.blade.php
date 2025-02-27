@@ -71,7 +71,7 @@ Edit Page
                     <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
-                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
+                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
                         @error('url')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -238,8 +238,8 @@ Edit Page
               slug:@json(trans('message.page_details.add_slug')),
               url:@json(trans('message.page_details.add_url')),
               content:@json(trans('message.page_details.add_content')),
+              // default_page:@jason(trans('message.page_details.default_page')),
               created_at:@json(trans('message.page_details.publish_date')),
-              default_page_id:@jason(trans('message.page_details.default_page')),
           };
 
           $('#createPage').on('submit', function (e) {
@@ -250,7 +250,7 @@ Edit Page
                   url:$('#url'),
                   content:$('#textarea'),
                   created_at:$('#created_at'),
-                  default_page:$('#default_page_id'),
+                  // default_page:$('#default_page_id'),
               };
 
 
@@ -276,10 +276,7 @@ Edit Page
                   }
               });
 
-              if (isValid && userRequiredFields.default_page.val()==null) {
-                  showError(userFields.email, @json(trans('message.page_details.default_page')));
-                  isValid = false;
-              }
+
 
               if(isValid && !isValidURL(userFields.url.val())){
                   showError(userFields.url,@json(trans('message.page_details.valid_url')),);
@@ -288,6 +285,7 @@ Edit Page
 
               // If validation fails, prevent form submission
               if (!isValid) {
+                  console.log(3);
                   e.preventDefault();
               }
           });

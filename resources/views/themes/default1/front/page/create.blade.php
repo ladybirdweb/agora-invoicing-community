@@ -75,7 +75,7 @@ Create Page
                     <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
-                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
+                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
                         @error('url')
                         <span class="error-message"> {{$message}}</span>
                         @enderror

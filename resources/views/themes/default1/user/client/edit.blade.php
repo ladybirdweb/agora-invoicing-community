@@ -402,6 +402,21 @@ Edit User
             {{--    isValid = false;--}}
             {{--}--}}
 
+            if (isValid && !validName(userFields.first_name.val())) {
+                showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
+                isValid = false;
+            }
+
+            if (isValid && !validName(userFields.last_name.val())) {
+                showError(userFields.last_name, @json(trans('message.user_edit_details.add_valid_lastname')));
+                isValid = false;
+            }
+
+            if (isValid && !validName(userFields.company.val())) {
+                showError(userFields.company,'Please enter a valid company name.');
+                isValid = false;
+            }
+
             // If validation fails, prevent form submission
             if (!isValid) {
                 e.preventDefault();
@@ -424,6 +439,12 @@ Edit User
 
             });
         });
+
+        function validName(string){
+            nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
+            return nameRegex.test(string);
+        }
+
         function validateEmail(email) {
 
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

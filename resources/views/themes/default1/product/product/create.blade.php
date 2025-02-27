@@ -116,8 +116,8 @@ Create Product
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                     <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
+{{--                                     <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>--}}
+                                    <script src="https://cdn.tiny.cloud/1/vj36xscbbzlnzmp9xo0kjctxdwdwfdll1rna0h0131am535t/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
                                     <script>
                                         $(document).ready(function() {
                                             tinymce.init({
@@ -173,7 +173,7 @@ Create Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
-                                                {!! Form::text('product_sku',null,['class' => 'form-control','id'=>'product_sku']) !!}
+                                                {!! Form::number('product_sku',null,['class' => 'form-control','id'=>'product_sku']) !!}
                                                 @error('product_sku')
                                                 <span class="error-message"> {{$message}}</span>
                                                 @enderror
@@ -348,17 +348,19 @@ Create Product
                         <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                     </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
 
         $(document).ready(function() {
 
-            $('#textarea12').on('change',function(){
-                console.log('bbs');
-                if($('#textarea12').val() !==''){
+            tinymce.get('textarea12').on('change', function() {
+                console.log('hii');
+                let content = tinymce.get('textarea12').getContent();
+                if(content !==''){
                     let editorContainer = document.querySelector(".tox-tinymce");
                     editorContainer.style.border = "1px solid silver";
-                    removeErrorMessage(this);
+                    console.log(this);
+                    removeErrorMessage(document.getElementById('textarea12'));
                 }
             });
 
@@ -377,7 +379,6 @@ Create Product
             $('#createproduct').on('submit', function (e) {
 
                 if ($('#textarea12').val() === '') {
-                    console.log(24);
                     let editorContainer = document.querySelector(".tox-tinymce");
                     editorContainer.style.border = "1px solid #dc3545";
                 }
@@ -425,7 +426,14 @@ Create Product
                 //     isValid = false;
                 // }
 
-                if(!document.querySelector('input[name="show_agent"]:checked')){
+                if(isValid && !document.querySelector('input[name="show_agent"]:checked')){
+                    Swal.fire({
+                        title: 'Incomplete Tax Details',
+                        text: 'Mandatory fields missing in Tax screen.',
+                        icon: 'info',
+                        confirmButtonColor: '#286090'
+                    });
+                    //alert('Please check the tax page as well.')
                     $('#error-message').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
                     document.getElementById("error-message").textContent = "Please enter type of cart page";
                     isValid=false;
@@ -450,7 +458,7 @@ Create Product
             };
 
             // Add input event listeners for all fields
-            ['productname','type','groups','product_sku','agent','quantity'].forEach(id => {
+            ['productname','type','groups','product_sku','agent','quantity','textarea12'].forEach(id => {
 
                 document.getElementById(id).addEventListener('input', function () {
                     removeErrorMessage(this);

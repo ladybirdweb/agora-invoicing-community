@@ -76,10 +76,14 @@ Create Page
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
 <<<<<<< HEAD
+<<<<<<< HEAD
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
 =======
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
 >>>>>>> 65e62e04e (fixes)
+=======
+                        {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
+>>>>>>> f22f6330f (fixes)
                         @error('url')
                         <span class="error-message"> {{$message}}</span>
                         @enderror

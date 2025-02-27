@@ -61,10 +61,14 @@ Social Media
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 {!! Form::text('link',null,['class' => 'form-control','id'=>'link','placeholder'=>'https://example.com']) !!}
 =======
                                 {!! Form::text('link',null,['class' => 'form-control','id'=>'link']) !!}
 >>>>>>> 65e62e04e (fixes)
+=======
+                                {!! Form::text('link',null,['class' => 'form-control','id'=>'link','placeholder'=>'https://example.com']) !!}
+>>>>>>> f22f6330f (fixes)
                                 @error('link')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror

@@ -87,10 +87,14 @@ Edit Coupon
 
                                  <?php $valueWithoutPercentage = rtrim($promotion->value, '%'); ?>
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 {!! Form::number('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
 =======
                                 {!! Form::text('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
 >>>>>>> 65e62e04e (fixes)
+=======
+                                {!! Form::number('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
+>>>>>>> f22f6330f (fixes)
                                 @error('value')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -106,10 +110,14 @@ Edit Coupon
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 {!! Form::number('uses',null,['class' => 'form-control']) !!}
 =======
                                 {!! Form::text('uses',null,['class' => 'form-control']) !!}
 >>>>>>> 65e62e04e (fixes)
+=======
+                                {!! Form::number('uses',null,['class' => 'form-control']) !!}
+>>>>>>> f22f6330f (fixes)
                                 @error('uses')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -125,10 +133,14 @@ Edit Coupon
                         <td><b>{!! Form::label('applied',Lang::get('message.applied'),['class'=>'required']) !!}</b></td>
                         <td>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
 =======
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
 >>>>>>> 65e62e04e (fixes)
+=======
+                            <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
+>>>>>>> f22f6330f (fixes)
 
                                  {!! Form::select('applied',[''=>'Choose','Products'=>$product],$selectedProduct,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
                                 @error('applied')

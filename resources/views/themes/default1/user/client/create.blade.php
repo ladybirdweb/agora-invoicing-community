@@ -391,7 +391,7 @@ Create User
             timezone:@json(trans('message.user_edit_details.add_timezone')),
         };
 
-        $('#userUpdateFor').on('submit', function (e) {
+        $('#userUpdateForm').on('submit', function (e) {
             const userFields = {
                 first_name: $('#first_name'),
                 last_name: $('#last_name'),

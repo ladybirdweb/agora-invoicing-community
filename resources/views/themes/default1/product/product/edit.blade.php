@@ -397,13 +397,13 @@ Edit Product
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                
+
                                                 <div class="col-md-2">
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
-                                                    
+                                                       <option></option>
                                                        @foreach($taxes as $value)
-                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['name'].')'}}</option> 
-                                                        
+                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['name'].')'}}</option>
+
                                                        @endforeach
                                                     </select>
 
@@ -413,13 +413,35 @@ Edit Product
                                                     @enderror
                                                 </div>
 
-                                               
+
                                             </div>
 
                                         </div>
                                     </td>
                                 </tr>
-                                 
+
+{{--                            <tr>--}}
+{{--                                <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>--}}
+{{--                                <td>--}}
+{{--                                    <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">--}}
+{{--                                        <div class="row">--}}
+{{--                                            <div class="col-md-2" >--}}
+
+{{--                                                <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="multiple">--}}
+{{--                                                    <option></option>--}}
+{{--                                                    @foreach($taxes as $key => $value)--}}
+{{--                                                        <option value={{$key}}>{{$value}}</option>--}}
+{{--                                                    @endforeach--}}
+{{--                                                </select>--}}
+{{--                                                @error('tax')--}}
+{{--                                                <span class="error-message"> {{$message}}</span>--}}
+{{--                                                @enderror--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+
+{{--                                    </div>--}}
+{{--                                </td>--}}
+{{--                            </tr>--}}
                                        
 
                                             <br>
@@ -467,7 +489,7 @@ Edit Product
                 <!-- nav-tabs-custom -->
             </div>
        </div>
-</div>
+
 
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">

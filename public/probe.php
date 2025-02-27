@@ -709,7 +709,7 @@ $lang = fetchLang();
 
         <div class="float-right d-none d-sm-inline">Agora Invoicing <?php echo $config['version']; ?></div>
 
-        <strong>Copyright © 2014-2021 <a href="javascript:;">Ladybird Web Solution Pvt Ltd.</a>.</strong> All rights reserved.
+        <strong>Copyright © 2025 <a href="javascript:;">Ladybird Web Solution Pvt Ltd.</a>.</strong> All rights reserved.
     </footer>
 </div>
 

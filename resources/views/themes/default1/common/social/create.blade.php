@@ -62,7 +62,7 @@ Social Media
                             <div class="form-group {{ $errors->has('link') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('link',null,['class' => 'form-control','id'=>'link']) !!}
+                                {!! Form::text('link',null,['class' => 'form-control','id'=>'link','placeholder'=>'https://example.com']) !!}
                                 <i> {{Lang::get('message.enter-the-link-of-the-social-media')}}</i>
                                 @error('link')
                                 <span class="error-message"> {{$message}}</span>

@@ -411,6 +411,9 @@ Edit User
             {{--}--}}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f22f6330f (fixes)
             if (isValid && !validName(userFields.first_name.val())) {
                 showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
                 isValid = false;
@@ -426,8 +429,11 @@ Edit User
                 isValid = false;
             }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 65e62e04e (fixes)
+=======
+>>>>>>> f22f6330f (fixes)
             // If validation fails, prevent form submission
             if (!isValid) {
                 e.preventDefault();
@@ -451,14 +457,20 @@ Edit User
             });
         });
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f22f6330f (fixes)
 
         function validName(string){
             nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
             return nameRegex.test(string);
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 65e62e04e (fixes)
+=======
+>>>>>>> f22f6330f (fixes)
         function validateEmail(email) {
 
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

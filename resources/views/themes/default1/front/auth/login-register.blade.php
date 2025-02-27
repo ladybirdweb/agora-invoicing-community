@@ -382,15 +382,7 @@ foreach($scripts as $script) {
                     </div>
 
                         <div class="row">
-                            @if($status->terms ==0)
-                            <div class="form-group col">
-
-                                <div class="form-check">
-
-                                    <input type="hidden" value="true" name="terms" id="term">
-                                </div>
-                            </div>
-                            @else
+                                @if($status->terms == 1)
                                 <div class="form-group col-md-auto">
                                     <div class="custom-control custom-checkbox" style="padding-right: 100px;">
                                         <input type="checkbox" value="false" name="terms" id="term" class="custom-control-input">
@@ -674,7 +666,9 @@ foreach($scripts as $script) {
                         equalTo: "#password"
                     },
                     terms: {
-                        required: true
+                        required: function() {
+                            return {{ $status->terms == 1 ? 'true' : 'false' }};
+                        }
                     },
                     "g-recaptcha-response": {
                         recaptchaRequired: true
@@ -759,7 +753,9 @@ foreach($scripts as $script) {
                             submitButton.prop('disabled', true).html(submitButton.data('loading-text'));
                         },
                         success: function(response) {
+                            @if($status->terms)
                             document.getElementById('term').value = false;
+                            @endif
                             form.reset();
                             if (response.data.need_verify === 1) {
                                 window.location.href = "{{ url('/verify') }}";

@@ -90,6 +90,39 @@
             display: none !important;
         }
 
+        .dropdown-menu-arrow:before {
+            content: ""!important;
+            position: absolute!important;
+            top: -10px!important;
+            left: 88%;
+            transform: translate(-50%);
+            border-width: 3px 7px 8px;
+            border-style: solid;
+            border-color: transparent transparent #3e4d5d
+        }
+
+        .model-box {
+            margin-top: 8px !important;
+            margin-right: 20px !important;
+            padding-top: 9px !important;
+            width: 170px !important;
+            height: 82px !important;
+            background-color: #4f5962;
+        }
+        .dp-data {
+            background-color: #4f5962;
+            color: #c2c7d0 !important;
+        }
+        .dp-data:hover {
+            background-color: rgba(0,0,0,0.2);
+            color: #c2c7d0;
+        }
+
+        .dropdown-profile{
+            right: 0;
+            left: auto !important;
+        }
+
     </style>
     <?php
     $set = new \App\Model\Common\Setting();
@@ -120,35 +153,25 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Messages Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
+                <li class="nav-item dropdown user-menu">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
                         <?php
                         $user = \DB::table('users')->find(\Auth::user()->id);
                         ?>
-                        <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                        <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
+                        <span class="d-none d-md-inline me-2">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
+                        <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="user-image img-circle shadow d-none d-md-inline" alt="User Image" />
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <div class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
 
-                        <img src="{{ Auth::user()->profile_pic }}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
-                                    </h3>
-                                    <p class="text-sm">{{ucfirst(Auth::user()->role)}}</p>
-                                     <a href="{{url('profile')}}" class="btn btn-primary btn-sm btn-flat">{{Lang::get('message.profile')}}</a>
-                                     <a href="{{url('auth/logout')}}" class="btn btn-danger btn-sm btn-flat">{{Lang::get('message.signout')}}</a>
-
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </div>
-
-
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-sm dropdown-profile dropdown-menu-end rounded model-box text-white dropdown-menu-arrow mt-2" >
+                        <li>
+                            <a href="{{url('profile')}}" class="dropdown-item dp-data">
+                                <i class="fa fa-user pr-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a href="{{url('auth/logout')}}" class="dropdown-item dp-data mb-4 mt-1">
+                                <i class="fas fa-sign-out-alt pr-2"></i>Sign Out</a>
+                        </li>
+                    </ul>
                 </li>
 
             </ul>

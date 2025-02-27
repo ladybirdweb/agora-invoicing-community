@@ -900,7 +900,6 @@ return [
         'add_valid_date' => 'Please enter a valid date.',
     ],
 
-
     'page_details' => [
         'add_name' => 'Please enter a valid page name.',
         'add_slug' => 'Please enter a valid page slug.',
@@ -1015,7 +1014,6 @@ return [
         'agentquant' => 'Please enter the agent quantity.',
     ],
 
-
     'emailSettings_details' => [
         'driver' => 'Please select a valid email driver.',
         'host' => 'Please enter a valid email host.',
@@ -1036,7 +1034,5 @@ return [
         'client' => 'Please enter a valid client ID.',
         'secret' => 'Please enter a valid client secret password.',
     ],
-
-
 
 ];

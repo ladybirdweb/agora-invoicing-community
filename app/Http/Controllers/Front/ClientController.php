@@ -108,7 +108,7 @@ class ClientController extends BaseClientController
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1', 'autoRenew_status' => '1']);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
 
-                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $request->amount, 'Payment method updated');
+                $mail->payment_log(\Auth::user()->email, 'stripe', 'success', Order::where('id', $orderid)->value('number'), null, $amount, 'Payment method updated');
 
                 $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully.'];
 

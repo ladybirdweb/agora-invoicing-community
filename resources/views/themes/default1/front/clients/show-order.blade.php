@@ -1531,55 +1531,48 @@ $price = $order->price_override;
                     $('#renewal-modal').modal('hide');
                     $('#stripe-Modal').modal('show');
 
-                    $('#pay').off('click').on('click', async function () {
-                        const { token, error } = await stripe.createToken(cardNumber);
-                        if (error) {
-                            console.log(error)
-                            $('#payerr').show().html(error.message);
-                            return;
-                        }
-                        document.getElementById('stripe-token').value = token.id;
+                    $('#pay').on('click', async function () {
                         $('#pay').prop("disabled", true);
                         $('#pay').html("<i class='fa fa-circle-o-notch fa-spin fa-1x'></i> Processing ...");
-                        const stripeToken = document.getElementById('stripe-token').value;
+                        const {token, error} = await stripe.createToken(cardNumber);
 
-                        try {
-                            const response = await $.ajax({
-                                url: '{{url("strRenewal-enable")}}',
-                                type: 'POST',
-                                data: {
-                                    "order_id": id,
-                                    "stripeToken": stripeToken,
-                                    "amount": $('#amount').val(),
-                                    "_token": "{!! csrf_token() !!}",
+                        await $.ajax({
+                            url: '{{url("strRenewal-enable")}}',
+                            type: 'POST',
+                            data: {
+                                "order_id": id,
+                                "stripeToken": token.id,
+                                "_token": "{!! csrf_token() !!}",
+                            },
+                            success: function (response) {
+                                if (response.type == 'success') {
+                                    $('#stripe-Modal').modal('hide');
+                                    $('#alertMessage-2').show();
+                                    $('#updateButton').show();
+                                    var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>' + response.message + '.</div>';
+                                    $('#alertMessage-2').html(result + ".");
+                                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 3000);
+
+                                } else {
+                                    window.location.href = response;
                                 }
-                            });
 
-                            if (response.type === 'success') {
+
+                            },
+                            error: function (data) {
+                                var errorMessage = data.responseJSON.error;
                                 $('#stripe-Modal').modal('hide');
-                                $('#alertMessage-2').show().html(`
-                            <div class="alert alert-success alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <strong><i class="fa fa-check"></i> Success! </strong> ${response.message}
-                            </div>
-                        `);
-                                $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i> Save");
-                                setTimeout(() => location.reload(), 3000);
-                            } else {
-                                window.location.href = response;
+                                $("#pay").attr('disabled', false);
+                                $("#pay").html("Pay now");
+                                $('html, body').animate({scrollTop: 0}, 500);
+                                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.error + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                                $('#error-1').show();
+                                document.getElementById('error-1').innerHTML = html;
                             }
-                        } catch (error) {
-                            var errorMessage = error.responseJSON.error;
-                            $('#stripe-Modal').modal('hide');
-                            $("#pay").attr('disabled', false).html("Pay now");
-                            $('#error-1').show().html(`
-                        <div class="alert alert-danger alert-dismissable alert-content">
-                            <strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong> ${errorMessage}
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        </div>
-                    `);
-                            setTimeout(() => location.reload(), 5000);
-                        }
+                        });
                     });
                 } else if (pay == 'razorpay') {
                     $('#renewal-modal').modal('hide');

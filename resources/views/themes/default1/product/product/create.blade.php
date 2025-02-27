@@ -46,7 +46,7 @@ Create Product
 
 </head>
 <div class="card card-secondary card-tabs">
-    {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
+    {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproducts']) !!}
 
     <div class="card-header p-0 pt-1">
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
@@ -352,7 +352,7 @@ Create Product
     <script>
 
         $(document).ready(function() {
-
+            console.log(34);
             tinymce.get('textarea12').on('change', function() {
                 console.log('hii');
                 let content = tinymce.get('textarea12').getContent();
@@ -376,8 +376,8 @@ Create Product
 
             };
 
-            $('#createproduct').on('submit', function (e) {
-
+            $('#createproducts').on('submit', function (e) {
+                console.log(24);
                 if ($('#textarea12').val() === '') {
                     let editorContainer = document.querySelector(".tox-tinymce");
                     editorContainer.style.border = "1px solid #dc3545";

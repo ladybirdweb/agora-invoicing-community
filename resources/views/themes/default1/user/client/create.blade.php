@@ -391,7 +391,7 @@ Create User
             timezone:@json(trans('message.user_edit_details.add_timezone')),
         };
 
-        $('#userUpdateForm').on('submit', function (e) {
+        $('#userUpdateFor').on('submit', function (e) {
             const userFields = {
                 first_name: $('#first_name'),
                 last_name: $('#last_name'),
@@ -434,6 +434,21 @@ Create User
             {{--    isValid = false;--}}
             {{--}--}}
 
+            if (isValid && !validName(userFields.first_name.val())) {
+                showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
+                isValid = false;
+            }
+
+            if (isValid && !validName(userFields.last_name.val())) {
+                showError(userFields.last_name, @json(trans('message.user_edit_details.add_valid_lastname')));
+                isValid = false;
+            }
+
+            if (isValid && !validName(userFields.company.val())) {
+                showError(userFields.company,'Please enter a valid company name.');
+                isValid = false;
+            }
+
             // If validation fails, prevent form submission
             if (!isValid) {
                 e.preventDefault();
@@ -457,6 +472,10 @@ Create User
             });
         });
 
+    function validName(string){
+        nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
+        return nameRegex.test(string);
+    }
     });
 
 

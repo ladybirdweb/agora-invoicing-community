@@ -127,7 +127,7 @@ Create Group
                            <div class="form-group">
                             
                             <div class="col-md-4">
-                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("storage/images/$template->image")}}' alt="Porto Theme" class="img-thumbnail" >
                              <br/>
                             <input type="radio" name='pricing_templates_id' value='{{$template->id}}' id='template' style="text-align: center;">
                             {{$template->name}}
@@ -271,7 +271,7 @@ Create Group
     $(document).ready(function() {
         const userRequiredFields = {
             name:@json(trans('message.group_details.group_name')),
-            template:@json(trans('message.group_details.group_name')),
+            template:@json(trans('message.group_details.template')),
 
 
         };
@@ -307,7 +307,7 @@ Create Group
 
             if(!document.querySelector('input[name="pricing_templates_id"]:checked')){
                 $('#error-message').css({"color": "#dc3545", "margin-top": "5px", "font-size": "80%"});
-                document.getElementById("error-message").textContent = "Please select the template";
+                document.getElementById("error-message").textContent = @json(trans('message.group_details.template'));
                 isValid=false;
             }else{
 

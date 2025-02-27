@@ -169,6 +169,8 @@ input:checked + .slider:before {
                     {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
 
                     {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
+                    <span id="error-msg" class="hide"></span>
+                    <span id="valid-msg" class="hide"></span>
                     <div class="input-group-append">
                     </div>
 
@@ -425,7 +427,7 @@ input:checked + .slider:before {
                 email: $('#email'),
                 company: $('#company'),
                 address: $('#address'),
-                mobile_code: $('#mobile_code'),
+                // mobile_code: $('#mobile_code'),
                 user_name: $('#user_name'),
             };
 
@@ -457,9 +459,19 @@ input:checked + .slider:before {
                 isValid = false;
             }
 
-            if (isValid && !validatePhoneNumber(userFields.mobile.val())) {
-                console.log(validatePhoneNumber(userFields.mobile.val()));
-                showError(userFields.mobile, @json(trans('message.user_edit_details.add_valid_mobile')));
+            {{--if (isValid && !validatePhoneNumber(userFields.mobile.val())) {--}}
+            {{--    console.log(validatePhoneNumber(userFields.mobile.val()));--}}
+            {{--    showError(userFields.mobile, @json(trans('message.user_edit_details.add_valid_mobile')));--}}
+            {{--    isValid = false;--}}
+            {{--}--}}
+
+            if (isValid && !validName(userFields.first_name.val())) {
+                showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
+                isValid = false;
+            }
+
+            if (isValid && !validName(userFields.last_name.val())) {
+                showError(userFields.last_name, @json(trans('message.user_edit_details.add_valid_lastname')));
                 isValid = false;
             }
 
@@ -484,6 +496,19 @@ input:checked + .slider:before {
 
             });
         });
+
+        function validName(string){
+            const nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
+            return nameRegex.test(string);
+        }
+
+        function validateEmail(email) {
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            return emailPattern.test(email);
+
+        }
     });
 
 
@@ -633,6 +658,20 @@ input:checked + .slider:before {
       errorMsg.classList.add("hide");
       validMsg.classList.add("hide");
     };
+
+         $('#submit').on('click',function(e) {
+             console.log(44);
+             if(telInput.val()===''){
+                 e.preventDefault();
+                 console.log(55);
+                 errorMsg.classList.remove("hide");
+                 errorMsg.innerHTML = @json(trans('message.user_edit_details.add_phone_number'));
+                 $('#mobile_code').addClass('is-invalid');
+                 $('#mobile_code').css("border-color", "#dc3545");
+                 $('#error-msg').css({"width": "100%", "margin-top": ".25rem", "font-size": "80%", "color": "#dc3545"});
+             }
+         });
+
      $('.intl-tel-input').css('width', '100%');
     telInput.on('input blur', function () {
       reset();
@@ -640,13 +679,11 @@ input:checked + .slider:before {
             if (validatePhoneNumber(telInput.get(0))) {
               $('#mobile_code').css("border-color","");
               validMsg.classList.remove("hide");
-              $('#submit').attr('disabled',false);
             } else {
             errorMsg.classList.remove("hide");
             errorMsg.innerHTML = "Please enter a valid number";
-             $('#mobile_code').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             $('#submit').attr('disabled',true);
+             $('#mobile_code').css("border-color", "#dc3545");
+             $('#error-msg').css({"width": "100%", "margin-top": ".25rem", "font-size": "80%", "color": "#dc3545"});
             }
         }
     });

@@ -553,9 +553,15 @@ Edit Product
 
     $(document).ready(function() {
 
-        $('#text').on('change',function(){
-            $('.tox-tinymce').css('border', '1px solid silver');
-            removeErrorMessage(this);
+        tinymce.get('text').on('change', function() {
+            console.log('hii');
+            let content = tinymce.get('text').getContent();
+            if(content !==''){
+                let editorContainer = document.querySelector(".tox-tinymce");
+                editorContainer.style.border = "1px solid silver";
+                console.log(this);
+                removeErrorMessage(document.getElementById('text'));
+            }
         });
 
         const userRequiredFields = {

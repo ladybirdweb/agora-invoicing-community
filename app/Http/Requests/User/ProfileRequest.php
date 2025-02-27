@@ -79,7 +79,7 @@ class ProfileRequest extends Request
                 'company' => 'required|max:50',
                 'mobile' => 'required',
                 'address' => 'required',
-                'terms' => 'accepted',
+                'terms' => 'sometimes',
                 'password' => [
                     'required',
                     new StrongPassword(),

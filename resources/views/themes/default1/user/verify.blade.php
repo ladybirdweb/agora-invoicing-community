@@ -1,12 +1,25 @@
 @extends('themes.default1.layouts.front.master')
+<?php
+$isMobileVerified = ($setting->msg91_status == 1 && $user->mobile_verified != 1) ? false : true;
+$isEmailVerified = ($setting->emailverification_status == 1 && $user->email_verified != 1) ?false : true;
+?>
 @section('title')
-    Email/Mobile Verification | Faveo Helpdesk
+    @if(!$isMobileVerified && !$isEmailVerified)
+        Email/Mobile Verification | Faveo Helpdesk
+    @elseif(!$isEmailVerified)
+        Email Verification | Faveo Helpdesk
+    @elseif(!$isMobileVerified)
+        Mobile Verification | Faveo Helpdesk
+    @endif
 @stop
 @section('page-heading')
-    Email/Mobile Verification
-@stop
-@section('page-header')
-    Reset Password
+    @if(!$isMobileVerified && !$isEmailVerified)
+        Email/Mobile Verification
+    @elseif(!$isEmailVerified)
+        Email Verification
+    @elseif(!$isMobileVerified)
+        Mobile Verification
+    @endif
 @stop
 @section('breadcrumb')
     @if(Auth::check())
@@ -216,10 +229,6 @@
         }
 
     </style>
-    <?php
-    $isMobileVerified = ($setting->msg91_status == 1 && $user->mobile_verified != 1) ? false : true;
-    $isEmailVerified = ($setting->emailverification_status == 1 && $user->email_verified != 1) ?false : true;
-    ?>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8 text-center p-0 mt-3 mb-2">

@@ -849,11 +849,13 @@ class CloudExtraActivities extends Controller
 
     public function processFormat(Request $request)
     {
-        if($request->has('planId')) {
-            $plan = Plan::where('id',$request->input('planId'))->first();
+        if ($request->has('planId')) {
+            $plan = Plan::where('id', $request->input('planId'))->first();
             $planDetails = userCurrencyAndPrice(\Auth::user()->id, $plan);
+
             return currencyFormat((int) $planDetails['plan']->renew_price, $planDetails['currency'], true);
         }
+
         return currencyFormat($request->get('totalPrice'), getCurrencyForClient(\Auth::user()->country), true);
     }
 

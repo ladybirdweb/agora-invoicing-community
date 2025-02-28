@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label class="col-form-label">{{trans('installer_messages.email')}} <span style="color: red;">*</span></label>
-                            <input type="email" id="email" class="form-control" placeholder="{{trans('installer_messages.user_email')}}">
+                            <input type="email" id="email" class="form-control" placeholder="{{trans('installer_messages.email')}}">
                         </div>
                     </div>
 

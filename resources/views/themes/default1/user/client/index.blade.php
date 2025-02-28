@@ -58,9 +58,9 @@ Users
             position: relative; 
         }
         
-        .custom-dropdown {
+  /*      .custom-dropdown {
             z-index: 1050; 
-        }
+        }*/
         
         .btn-alldell, #export-report-btn {
             z-index: 1000; 

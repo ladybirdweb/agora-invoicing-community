@@ -115,7 +115,7 @@ return [
     'user_email' => 'User email',
     'password_not_match' => 'Passwords do not match',
     //new
-    'installation_check' => 'This test will check prerequisites required to install Network Discovery',
+    'installation_check' => 'This test will check prerequisites required to install Agora Invoice Community',
     'db_setup_error_1' => 'This either means that the username and password information is incorrect or your host is not reachable.',
     'db_setup_error_2' => 'Are you sure you have a database already existing with the Database name provided?',
     'db_setup_error_3' => 'Are you sure you have the correct database privileges?',

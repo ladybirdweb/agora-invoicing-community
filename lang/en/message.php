@@ -1037,7 +1037,7 @@ return [
 
     'add_files'=>[
         'title'=>'Please enter title.',
-        'version'=>'Please enter version.',
+        'version'=>'Please enter a valid version.',
         'dependencies'=>'Please enter dependencies.',
     ]
 

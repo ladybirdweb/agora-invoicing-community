@@ -482,7 +482,7 @@ class SubscriptionController extends Controller
     {
         if ($subscription->is_subscribed == '1') {
             if ($subscription->autoRenew_status == '1') {
-                $processingFee = \DB::table(strtolower('stripe'))->where('currencies',$currency)->value('processing_fee');
+                $processingFee = \DB::table(strtolower('stripe'))->where('currencies', $currency)->value('processing_fee');
                 $processingFee = (float) $processingFee / 100;
                 $unit_cost += ($unit_cost * $processingFee);
                 $this->handleStripeSubscription($stripe_payment_details, $product_details, $unit_cost, $currency, $plan, $subscription, $invoice, $order, $user, $cost);

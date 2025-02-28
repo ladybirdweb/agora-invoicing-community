@@ -210,7 +210,7 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
                         <!-- town -->
                         {!! Form::label('town',Lang::get('message.town')) !!}
-                        {!! Form::text('town',null,['class' => 'form-control']) !!}
+                        {!! Form::text('town',null,['class' => 'form-control','id'=>'town']) !!}
                         @error('town')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -349,6 +349,10 @@ Edit User
   color: 'white',
   size: 4
 });
+    $('#country').on('change',function(){
+        console.log('hii');
+        document.getElementById('town').value='';
+    });
 
     $(document).ready(function() {
         const userRequiredFields = {

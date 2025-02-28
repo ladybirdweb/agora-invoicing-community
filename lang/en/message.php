@@ -918,7 +918,7 @@ return [
         'add_name' => 'Please enter a valid Product name.',
         'add_group' => 'Please select a valid group.',
         'add_license_type' => 'Please select a License type.',
-        'add_description' => 'Please enter product description.',
+        'add_description' => 'Please enter price description.',
         'add_product_sku' => 'Please enter product SKU.',
     ],
 

@@ -6,7 +6,7 @@
     active
 @stop
 @section('page-heading')
-    Order Details
+    {{ __('message.order_details')}}
 @stop
 @section('breadcrumb')
     <style>
@@ -442,7 +442,7 @@ $price = $order->price_override;
                                     <div class="col-sm-7">
                                         <span id="serialKey">{{$order->serial_key}}</span>
 
-                                        <a href="#" class="btn btn-light-scale-2 text-black btn-sm ms-4" id="copyButton" data-bs-toggle="tooltip" title="Copy">
+                                        <a href="#" class="btn btn-light-scale-2 text-black btn-sm ms-4" id="copyButton" data-bs-toggle="tooltip" title="{{ __('message.copy') }}">
                                             <i class="fas fa-copy"></i>
                                         </a>
 
@@ -451,13 +451,13 @@ $price = $order->price_override;
                                         @if ($licenseStatus == 1)
                                             @if(!in_array($product->id,cloudPopupProducts()) && $price != '0')
 
-                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="{{ __('message.reissue_license') }}" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                                   <i class="fas fa-id-card-alt"></i>
                                                     @elseif(!in_array($product->id,cloudPopupProducts()) && $price == '0')
-                                                        <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                        <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="{{ __('message.reissue_license') }}" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                                           <i class="fas fa-id-card-alt"></i>
                                                             @elseif($product->type == '4' && $price != '0')
-                                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="Reissue License" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                                                <a class="btn btn-light-scale-2 btn-sm text-black btn-sm" data-bs-toggle="tooltip" title="{{ __('message.reissue_license') }}" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                                                  <i class="fas fa-id-card-alt"></i>
                                                                     @endif
 
@@ -1057,7 +1057,7 @@ $price = $order->price_override;
                         <br><br>
 
                         <div class="col-12">
-                            <p class="text-black" id="pricetopaid" style="display: none;"><strong>Price to be paid:</strong> <span id="pricetopay" class="pricetopay"></span></p>
+                            <p class="text-black" id="pricetopaid" style="display: none;"><strong>{{ __('message.price_to_be_paid') }}</strong> <span id="pricetopay" class="pricetopay"></span></p>
                         </div>
                         <div class="overlay" style="display: none;"></div> <!-- Add this line -->
 
@@ -1259,7 +1259,7 @@ $price = $order->price_override;
 
                                 <div class="form-group row">
                                     <div class="col-md-12">
-                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" disabled>
+                                        <input id="amount" type="text" value={{currencyFormat(1,getCurrencyForClient(\Auth::user()->country))}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="{{ __('message.amount') }}" disabled>
                                         @error('amount')
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -1405,7 +1405,7 @@ $price = $order->price_override;
                         $('#alertMessage-2').show();
                         var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> ' + @json(__('message.success')) + '! </strong>' + response.message + '.</div>';
                         $('#alertMessage-2').html(result+ ".");
-                        $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                        $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>{{ __('message.save') }}");
                        setTimeout(function() {
                         $('#alertMessage-2').slideUp(3000, function() {
                             setTimeout(function() {
@@ -1432,7 +1432,7 @@ $price = $order->price_override;
             $('#payment').on('click', function () {
                 var pay = $('#sel-payment').val();
                 if (pay == null) {
-                    $("#payment").html("<i class='fa fa-check'></i> Validate");
+                    $("#payment").html("<i class='fa fa-check'></i> {{ __('message.validate') }}");
                     $('#payerr').show();
                     $('#payerr').html(@json(__('message.select_pay')));
                     $('#payerr').focus();
@@ -1445,7 +1445,7 @@ $price = $order->price_override;
                     $('#stripe-Modal').modal('show');
 
                     $('#pay').on('click',async function () {
-                        $('#pay').html("<i class='fa fa-spinner fa-spin'></i> Please Wait..");
+                        $('#pay').html("<i class='fa fa-spinner fa-spin'></i> {{ __('message.please_wait') }}");
                         const stripeToken = await generateStripeToken();
                         await $.ajax({
                             url: '{{url("strRenewal-enable")}}',
@@ -1463,7 +1463,7 @@ $price = $order->price_override;
                                     $('#updateButton').show();
                                     var result = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> {{ __('message.success')}}! </strong>' + response.message + '.</div>';
                                     $('#alertMessage-2').html(result + ".");
-                                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>{{ __('message.save') }}");
                                     setTimeout(function() {
                                         location.reload();
                                     }, 3000);
@@ -1478,9 +1478,9 @@ $price = $order->price_override;
                                 var errorMessage = data.responseJSON.result;
                                 $('#stripe-Modal').modal('hide');
                                 $("#pay").attr('disabled', false);
-                                $("#pay").html("Pay now");
+                                $("#pay").html("{{ __('message.pay_now') }}");
                                 $('html, body').animate({ scrollTop: 0 }, 500);
-                                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i>{{ __('message.oh_snap') }} </strong>' + data.responseJSON.result + ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                                 $('#error-1').show();
                                 document.getElementById('error-1').innerHTML = html;
                             }
@@ -2013,7 +2013,7 @@ $(document).ready(function() {
                    var errorMessage = {!! json_encode(__('message.something_different_payment')) !!};
                 $('#confirmStripe').modal('hide');
                 $('html, body').animate({ scrollTop: 0 }, 500);
-                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i> Oh Snap! </strong>' + errorMessage + ' <br><ul>';
+                var html = '<div class="alert alert-danger alert-dismissable alert-content"><strong><i class="fas fa-exclamation-triangle"></i> {{ __('message.oh_snap') }} </strong>' + errorMessage + ' <br><ul>';
                 $('#error-1').show();
                 document.getElementById('error-1').innerHTML = html;
                 setTimeout(function() {

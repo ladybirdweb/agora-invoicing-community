@@ -3,7 +3,7 @@
 Invoice
 @stop
 @section('page-heading')
- View Invoice
+    {{ __('message.view_invoice')}}
 @stop
 @section('breadcrumb')
 @section('breadcrumb')

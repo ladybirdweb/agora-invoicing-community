@@ -7,9 +7,11 @@ $passwordMatched = false;
 $showError = false;
 $env = '../.env';
 $envFound = is_file($env);
+$isProbeAccess = 1;
 if ($envFound) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/..');
     $dotenv->load();
+    $isProbeAccess = (int)env('DB_INSTALL') === 1 ? 0 : 1;
 }
 if (isset($_POST['submit'])) {
 
@@ -30,8 +32,8 @@ function getBaseUrl() {
     return $protocol . '://' . $host . $path;
 }
 function fetchLang() {
-    $baseUrl = getBaseUrl();
-    $langUrl = "{$baseUrl}/lang";
+    //$baseUrl = getBaseUrl();
+    $langUrl = getBaseUrl() . "/lang";
     $options = [
         'http' => [
             'method' => 'POST',
@@ -48,7 +50,7 @@ function fetchLang() {
 
     $langData = json_decode($response, true);
 
-    return $langData;
+    return $langData['data'];
 }
 
 $lang = fetchLang();
@@ -68,26 +70,38 @@ $lang = fetchLang();
     <!--    <link rel="apple-touch-icon" href="./agora.png">-->
 
     <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-    <?php
-    // Array of CSS files with optional IDs for each link tag
-    $css_files = [
-        ['file' => './admin/css-1/all.min.css'],
-        ['file' => './admin/css-1/adminlte.min.css', 'id' => 'default-styles'],
-//        ['file' => './admin/css-1/adminlte-rtl.css', 'id' => 'rtl-styles'],
-        ['file' => './admin/css-1/bs-stepper-rtl.css', 'id' => 'rtl-styles-2'],
-        ['file' => './admin/css-1/bs-stepper.css', 'id' => 'default-styles-2'],
-        ['file' => './admin/css-1/flag-icons.min.css'],
-        ['file' => './admin/css-1/probe-rtl.css', 'id' => 'rtl-styles-1'],
-        ['file' => './admin/css-1/probe.css', 'id' => 'default-styles-1'],
-    ];
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">-->
+<!--    --><?php
+//    // Array of CSS files with optional IDs for each link tag
+//    $css_files = [
+//        ['file' => './admin/css-1/all.min.css'],
+//        ['file' => './admin/css-1/adminlte.min.css', 'id' => 'default-styles'],
+////      ['file' => './admin/css-1/adminlte-rtl.css', 'id' => 'rtl-styles'],
+//        ['file' => './admin/css-1/bs-stepper-rtl.css', 'id' => 'rtl-styles-2'],
+//        ['file' => './admin/css-1/bs-stepper.css', 'id' => 'default-styles-2'],
+//            ['file' => './admin/css-1/flag-icons.min.css'],
+//        ['file' => './admin/css-1/probe-rtl.css', 'id' => 'rtl-styles-1'],
+//        ['file' => './admin/css-1/probe.css', 'id' => 'default-styles-1'],
+//    ];
+//
+//    // Loop through the array to generate <link> tags
+//    foreach ($css_files as $css) {
+//        $id = isset($css['id']) ? ' id="' . $css['id'] . '"' : '';
+//        echo '<link rel="stylesheet" href="' . $css['file'] . '"' . $id . '>' . PHP_EOL;
+//    }
+//    ?>
 
-    // Loop through the array to generate <link> tags
-    foreach ($css_files as $css) {
-        $id = isset($css['id']) ? ' id="' . $css['id'] . '"' : '';
-        echo '<link rel="stylesheet" href="' . $css['file'] . '"' . $id . '>' . PHP_EOL;
-    }
-    ?>
+    <link href="admin/css-1/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="admin/css-1/flag-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="client/css/._fontawesome-all.min.css" rel="stylesheet" type="text/css" />
+
+<!--    <link href="admin/css-1/adminlte.min.css" rel="stylesheet" type="text/css" />-->
+<!--    <link href="admin/css-1/adminlte-rtl.css" rel="stylesheet" type="text/css" />-->
+<!--    <link href="admin/css-1/bs-stepper.css" rel="stylesheet" type="text/css" />-->
+<!--    <link href="admin/css-1/bs-stepper-rtl.css" rel="stylesheet" type="text/css" />-->
+<!--    <link href="admin/css-1/probe.css" rel="stylesheet" type="text/css" />-->
+<!--    <link href="admin/css-1/probe-rtl.css" rel="stylesheet" type="text/css" />-->
+
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
@@ -104,10 +118,13 @@ $lang = fetchLang();
         input[type="password"]::-ms-reveal {
             display: none !important;
         }
+        .form-control.is-invalid{
+            background-image: none !important;
+        }
     </style>
 </head>
 
-<body class="layout-top-nav text-sm layout-navbar-fixed" dir="ltr">
+<body class="layout-top-nav text-sm layout-navbar-fixed layout-footer-fixed" dir="ltr">
 
 <div class="wrapper">
 
@@ -121,7 +138,7 @@ $lang = fetchLang();
             </a>
             <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                    <a class="nav-link" id="languageButton" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                         <i id="flagIcon" class="flag-icon flag-icon-us"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right p-0" style="left: inherit; right: 0px;" id="language-dropdown">
@@ -133,7 +150,7 @@ $lang = fetchLang();
     </nav>
 
     <?php
-    if ($envFound && ! $passwordMatched){
+    if (!$isProbeAccess && ! $passwordMatched){
         ?>
         <div class="content-wrapper" style="margin-top: 80px;">
             <div class="content">
@@ -164,8 +181,8 @@ $lang = fetchLang();
                                 <div class="card-footer">
 
                                     <button class="btn btn-primary float-right" name="submit" id="magic-phrase-submit">
-                                        Continue&nbsp;
-                                        <i class="fas fa-arrow-right"></i>
+                                        <?= $lang['continue'] ?>&nbsp;
+                                        <i class="fas fa-arrow-right continue"></i>
                                     </button>
                                 </div>
                             </form>
@@ -452,15 +469,14 @@ $lang = fetchLang();
 
                                 <div class="card-footer">
 
-                                    <button class="btn btn-primary float-right"
-                                        <?php if ($errorCount === 0): ?>
-                                            onclick="gotoStep('database')"
-                                        <?php else: ?>
-                                            disabled
-                                        <?php endif; ?>>
-                                        Continue&nbsp;
-                                        <i class="fas fa-arrow-right"></i>
+                                    <form action="config-check" method="post" class="border-line">
+                                    <input type="hidden" name="count" value="<?php echo $errorCount; ?>" />
+
+                                        <button class="btn btn-primary float-right" type="submit" <?php echo $errorCount > 0 ? 'disabled' : ''; ?>>
+                                        <?= $lang['continue'] ?>&nbsp;
+                                        <i class="fas fa-arrow-right continue"></i>
                                     </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -470,7 +486,7 @@ $lang = fetchLang();
 
                                 <div class="card-body">
 
-                                    <p class="text-center lead text-bold">Database Setup</p>
+                                    <p class="text-center lead text-bold"><?= $lang['database_setup'] ?></p>
 
                                     <div id="db_fields">
                                         <div class="form-group row">
@@ -482,8 +498,8 @@ $lang = fetchLang();
                                                 <input type="text" class="form-control" id="host" placeholder="Host" value="localhost">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label for="database_name" class="col-form-label">Database name <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="database_name" placeholder="Database">
+                                                <label for="database_name" class="col-form-label"><?= $lang['database_name_label'] ?> <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" id="database_name" placeholder="<?= $lang['database'] ?>">
                                             </div>
                                         </div>
 
@@ -497,14 +513,17 @@ $lang = fetchLang();
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="username" class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="username" placeholder="User name">
+                                                <input type="text" class="form-control" id="username" placeholder="<?= $lang['user_name'] ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <div class="col-sm-6">
                                                 <label for="password" class="col-form-label"><?= $lang['password'] ?></label>
-                                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="admin_password" placeholder="<?= $lang['password'] ?>">
+                                                        <span class="input-group-text toggle-password"><i class="fas fa-eye-slash"></i></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -522,14 +541,14 @@ $lang = fetchLang();
 
                                 <div class="card-footer">
 
-                                    <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-left"></i>&nbsp; <?= $lang['previous'] ?></button>
+                                    <button class="btn btn-primary" id="previous" onclick="previous()"><i class="fas fa-arrow-right previous"></i>&nbsp; <?= $lang['previous'] ?></button>
 
                                     <button class="btn btn-primary float-right" type="submit" id="validate"><?= $lang['continue'] ?> &nbsp;
-                                        <i class="fas fa-arrow-right"></i>
+                                        <i class="fas fa-arrow-right continue"></i>
                                     </button>
 
                                     <button class="btn btn-primary float-right" onclick="gotoStep('start')" id="continue"><?= $lang['continue'] ?> &nbsp;
-                                        <i class="fas fa-arrow-right"></i>
+                                        <i class="fas fa-arrow-right continue"></i>
                                     </button>
                                 </div>
                             </div>
@@ -553,12 +572,12 @@ $lang = fetchLang();
                                         <div class="card-body">
                                             <div class="form-group row">
                                                 <div class="col-sm-6">
-                                                    <label class="col-form-label"><?= $lang['first_name'] ?><span style="color: red;">*</span></label>
-                                                    <input type="text" id="admin_first_name" class="form-control" placeholder="First Name">
+                                                    <label class="col-form-label"><?= $lang['first_name'] ?> <span style="color: red;">*</span></label>
+                                                    <input type="text" id="admin_first_name" class="form-control" placeholder="<?= $lang['first_name'] ?>">
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <label class="col-form-label"><?= $lang['last_name'] ?><span style="color: red;">*</span></label>
-                                                    <input type="text" id="admin_last_name" class="form-control" placeholder="Last Name">
+                                                    <label class="col-form-label"><?= $lang['last_name'] ?> <span style="color: red;">*</span></label>
+                                                    <input type="text" id="admin_last_name" class="form-control" placeholder="<?= $lang['last_name'] ?>">
                                                 </div>
                                             </div>
 
@@ -567,22 +586,31 @@ $lang = fetchLang();
                                                     <label class="col-form-label"><?= $lang['username'] ?> <span style="color: red;">*</span>
                                                         <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?= $lang['username_info'] ?>"></i>
                                                     </label>
-                                                    <input type="text" id="admin_username" class="form-control" placeholder="User name">
+                                                    <input type="text" id="admin_username" class="form-control" placeholder="<?= $lang['user_name'] ?>">
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <label class="col-form-label"><?= $lang['email'] ?> <span style="color: red;">*</span></label>
-                                                    <input type="email" id="email" class="form-control" placeholder="User email">
+                                                    <input type="email" id="email" class="form-control" placeholder="<?= $lang['user_email'] ?>">
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
                                                 <div class="col-sm-6">
                                                     <label class="col-form-label"><?= $lang['password'] ?> <span style="color: red;">*</span></label>
-                                                    <input type="password" id="admin_password" class="form-control" placeholder="Password">
+                                                    <div class="input-group">
+                                                    <input type="password" id="admin_password" class="form-control" placeholder="<?= $lang['password'] ?>">
+                                                        <span class="input-group-text toggle-password cursor-pointer"><i class="fa fa-eye-slash"></i></span>
+
+                                                    </div>
                                                 </div>
+
                                                 <div class="col-sm-6">
-                                                    <label class="col-form-label"><?= $lang['confirm_password'] ?><span style="color: red;">*</span></label>
-                                                    <input type="password" id="admin_confirm_password" class="form-control" placeholder="Confirm Password">
+                                                    <label class="col-form-label"><?= $lang['confirm_password'] ?> <span style="color: red;">*</span></label>
+                                                    <div class="input-group">
+                                                    <input type="password" id="admin_confirm_password" class="form-control" placeholder="<?= $lang['confirm_password'] ?>">
+                                                        <span class="input-group-text toggle-confirm-password cursor-pointer"><i class="fa fa-eye-slash"></i></span>
+
+                                                    </div>
                                                 </div>
                                             </div>
                                             <small class="form-text text-muted" id="pswd_info" style="display: none;">
@@ -621,17 +649,16 @@ $lang = fetchLang();
                                                 <div class="col-sm-6">
                                                     <label class="col-form-label"><?= $lang['environment'] ?> <span style="color: red;">*</span></label>
                                                     <select id="environment" name="environment" class="form-control select2">
-                                                        <option value="production" selected>Production</option>
-                                                        <option value="development">Development</option>
-                                                        <option value="testing">Testing</option>
+                                                        <option value="production" selected><?= $lang['production'] ?></option>
+                                                        <option value="development"><?= $lang['development'] ?></option>
                                                     </select>
                                                 </div>
 
                                                 <div class="col-sm-6">
-                                                    <label class="col-form-label"><?= $lang['cache_driver'] ?><span style="color: red;">*</span></label>
+                                                    <label class="col-form-label"><?= $lang['cache_driver'] ?> <span style="color: red;">*</span></label>
                                                     <select id="driver" name="driver" class="form-control select2">
-                                                        <option value="file" selected>File</option>
-                                                        <option value="redis">Redis</option>
+                                                        <option value="file" selected><?= $lang['file'] ?></option>
+                                                        <option value="redis"><?= $lang['redis'] ?></option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -673,7 +700,7 @@ $lang = fetchLang();
                                 <div class="card-footer">
 
                                     <button class="btn btn-primary float-right" onclick="submitForm()"><?= $lang['continue'] ?> &nbsp;
-                                        <i class="fas fa-arrow-right"></i>
+                                        <i class="fas fa-arrow-right continue"></i>
                                     </button>
                                 </div>
                             </div>
@@ -727,9 +754,13 @@ $lang = fetchLang();
 <script src="./admin/js/adminlte.min.js"></script>
 <script src="./admin/js/bs-stepper.min.js"></script>
 
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 
 <script>
+    let value = sessionStorage.getItem("current_page_probe");
+    if (value) {
+        gotoStep(value);
+    }
     document.getElementById('admin_username').addEventListener('input',function (){
         this.value = this.value.toLowerCase();
     });
@@ -808,47 +839,47 @@ $lang = fetchLang();
         // Add event listener for driver select change
         driverSelect.addEventListener('change', toggleRedisSetup);
     });
-    document.addEventListener("DOMContentLoaded", function() {
-        const timezoneSelect = document.getElementById("timezone");
-        const baseUrl = `<?php echo getBaseUrl() ?>`;
-        const endpoint = baseUrl + '/getTimeZone';
-
-        // Function to call the API and populate the timezone select
-        function fetchTimezones() {
-            fetch(endpoint)
-                .then(response => response.json())
-                .then(data => {
-                    // Clear previous options
-                    timezoneSelect.innerHTML = '';
-
-                    // Assuming data is an array of timezones
-                    data.forEach(timezone => {
-                        const option = document.createElement("option");
-                        option.value = timezone.id; // Set the value
-                        option.textContent = timezone.name; // Set the display text
-                        timezoneSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching timezone values:', error));
-        }
-
-        // Use MutationObserver to detect when the 'show' class is added
-        const targetNode = document.getElementById('start');
-        const observerConfig = { attributes: true, attributeFilter: ['class'] };
-
-        const observer = new MutationObserver((mutationsList) => {
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'attributes' && mutation.target.classList.contains('show')) {
-                    fetchTimezones();  // Call the API when 'show' class is added
-                    observer.disconnect();  // Optional: stop observing after the first trigger
-                    break;
-                }
-            }
-        });
-
-        // Start observing the target element
-        observer.observe(targetNode, observerConfig);
-    });
+    //document.addEventListener("DOMContentLoaded", function() {
+    //    const timezoneSelect = document.getElementById("timezone");
+    //    const baseUrl = `<?php //echo getBaseUrl() ?>//`;
+    //    const endpoint = baseUrl + '/getTimeZone';
+    //
+    //    // Function to call the API and populate the timezone select
+    //    function fetchTimezones() {
+    //        fetch(endpoint)
+    //            .then(response => response.json())
+    //            .then(data => {
+    //                // Clear previous options
+    //                timezoneSelect.innerHTML = '';
+    //
+    //                // Assuming data is an array of timezones
+    //                data.forEach(timezone => {
+    //                    const option = document.createElement("option");
+    //                    option.value = timezone.id; // Set the value
+    //                    option.textContent = timezone.name; // Set the display text
+    //                    timezoneSelect.appendChild(option);
+    //                });
+    //            })
+    //            .catch(error => console.error('Error fetching timezone values:', error));
+    //    }
+    //
+    //    // Use MutationObserver to detect when the 'show' class is added
+    //    const targetNode = document.getElementById('start');
+    //    const observerConfig = { attributes: true, attributeFilter: ['class'] };
+    //
+    //    const observer = new MutationObserver((mutationsList) => {
+    //        for (let mutation of mutationsList) {
+    //            if (mutation.type === 'attributes' && mutation.target.classList.contains('show')) {
+    //                fetchTimezones();  // Call the API when 'show' class is added
+    //                observer.disconnect();  // Optional: stop observing after the first trigger
+    //                break;
+    //            }
+    //        }
+    //    });
+    //
+    //    // Start observing the target element
+    //    observer.observe(targetNode, observerConfig);
+    //});
     function previous() {
         const dbConfigStyle = document.getElementById("db_config").style.display;
 
@@ -935,13 +966,13 @@ $lang = fetchLang();
         var username_regex = /^[a-zA-Z0-9 _\-@.]{3,20}$/;
 
         if (!username_regex.test(fields.username.val())) {
-            showError(fields.username, 'Username must be 3-20 characters and can only contain letters, numbers, spaces, underscores, hyphens, periods and @ symbol.');
+            showError(fields.username, '<?= $lang['user_name_regex'] ?>');
             isValid = false;
         }
 
         // Validate passwords match
         if (fields.password.val() !== fields.confirmPassword.val()) {
-            showError(fields.confirmPassword, 'Passwords do not match');
+            showError(fields.confirmPassword, '<?= $lang['password_not_match'] ?>');
             isValid = false;
         }
 
@@ -1204,6 +1235,8 @@ $lang = fetchLang();
 
         var p = document.getElementById("db_config");
 
+        var l = document.getElementById("languageButton")
+
         if (k.style.display == "block") {
 
             k.style.display = "none";
@@ -1224,9 +1257,20 @@ $lang = fetchLang();
 
             p.style.display = "none";
         }
+
+        if(p.style.display == "block") {
+            l.classList.add('disabled');
+            l.setAttribute('aria-disabled', 'true');
+            l.style.pointerEvents = 'none';
+        }else{
+            l.classList.remove('disabled');
+            l.removeAttribute('aria-disabled');
+            l.style.pointerEvents = 'auto';
+        }
     }
 
     function gotoStep(value) {
+        sessionStorage.setItem("current_page_probe", value);
         const progress = document.querySelector('#progress');
         const steps = ['server', 'database', 'start', 'final'];
         const progressValues = {
@@ -1257,6 +1301,17 @@ $lang = fetchLang();
                 btnStep.style.backgroundColor = '#3AA7D9'; // Set to desired previous button color
             } else {
                 btnStep.style.backgroundColor = ''; // Reset for non-previous buttons
+            }
+            //disable flag
+            const languageButton = document.getElementById('languageButton');
+            if (value === 'database') {
+                languageButton.classList.add('disabled');
+                languageButton.setAttribute('aria-disabled', 'true');
+                languageButton.style.pointerEvents = 'none';
+            } else {
+                languageButton.classList.remove('disabled');
+                languageButton.removeAttribute('aria-disabled');
+                languageButton.style.pointerEvents = 'auto';
             }
         });
     }
@@ -1304,21 +1359,18 @@ $lang = fetchLang();
     var body = document.body;
     // var currentDir = body.getAttribute('dir');
 
-    var defaultStyles = document.querySelectorAll('[id^="default-styles"]');
-    var rtlStyles = document.querySelectorAll('[id^="rtl-styles"]');
 
     const flagIcon = document.getElementById('flagIcon');
     const languageDropdown = document.getElementById('language-dropdown');
 
     $(document).ready(function() {
         $.ajax({
-            url: '<?php echo getBaseUrl() ?>/language',
+            url: '<?php echo getBaseUrl() ?>/language/settings',
             type: 'GET',
             dataType: 'JSON',
             success: function(response) {
                 const localeMap = { 'ar': 'ae', 'bsn': 'bs', 'de': 'de', 'en': 'us', 'en-gb': 'gb', 'es': 'es', 'fr': 'fr', 'id': 'id', 'it': 'it', 'kr': 'kr', 'mt': 'mt', 'nl': 'nl', 'no': 'no', 'pt': 'pt', 'ru': 'ru', 'vi': 'vn', 'zh-hans': 'cn', 'zh-hant': 'cn' };
                 $.each(response.data, function(key, value) {
-                    console.log(value)
                     const mappedLocale = localeMap[value.locale] || value.locale;
                     const isSelected = value.locale === '{{ app()->getLocale() }}' ? 'selected' : '';
                     $('#language-dropdown').append(
@@ -1334,6 +1386,7 @@ $lang = fetchLang();
                     const mappedLocale = localeMap[selectedLanguage] || selectedLanguage;
                     const flagClass = 'flag-icon flag-icon-' + mappedLocale;
                     const dir = selectedLanguage === 'ar' ? 'rtl' : 'ltr';
+
                     updateLanguage(selectedLanguage, flagClass, dir);
                 });
             },
@@ -1347,9 +1400,48 @@ $lang = fetchLang();
             type: 'GET',
             dataType: 'JSON',
             success: function(response) {
+                const localeMap = { 'ar': 'ae', 'bsn': 'bs', 'de': 'de', 'en': 'us', 'en-gb': 'gb', 'es': 'es', 'fr': 'fr', 'id': 'id', 'it': 'it', 'kr': 'kr', 'mt': 'mt', 'nl': 'nl', 'no': 'no', 'pt': 'pt', 'ru': 'ru', 'vi': 'vn', 'zh-hans': 'cn', 'zh-hant': 'cn' };
                 const currentLanguage = response.data.language;
-                const flagClass = 'flag-icon flag-icon-' + currentLanguage;
+                const flagClass = 'flag-icon flag-icon-' + localeMap[currentLanguage];
                 $('#flagIcon').attr('class', flagClass);
+                const dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+
+                document.body.setAttribute('dir', dir);
+                console.log('Current language:', currentLanguage);
+                if (currentLanguage === 'ar') {
+                    $('head').append('<link href="admin/css-1/probe-rtl.css" rel="stylesheet" type="text/css" />');
+                    $('head').append('<link href="admin/css-1/adminlte-rtl.css" rel="stylesheet" type="text/css" />');
+                    $('head').append('<link href="admin/css-1/bs-stepper-rtl.css" rel="stylesheet" type="text/css" />');
+                    const arrowElements = document.getElementsByClassName('fas fa-arrow-right');
+                    for (let i = 0; i < arrowElements.length; i++) {
+                        arrowElements[i].className = 'fas fa-arrow-left';
+                    }
+                    const setClassName = (elements, className) => {
+                        Array.from(elements).forEach(element => {
+                            element.className = className;
+                        });
+                    };
+
+                    setClassName(document.getElementsByClassName('continue'), 'fas fa-arrow-left');
+                    setClassName(document.getElementsByClassName('previous'), 'fas fa-arrow-right');
+                } else {
+                    $('head').append('<link href="admin/css-1/adminlte.min.css" rel="stylesheet" type="text/css" />');
+                    $('head').append('<link href="admin/css-1/bs-stepper.css" rel="stylesheet" type="text/css" />');
+                    $('head').append('<link href="admin/css-1/probe.css" rel="stylesheet" type="text/css" />');
+                    const arrowElements = document.getElementsByClassName('fas fa-arrow-left');
+                    for (let i = 0; i < arrowElements.length; i++) {
+                        arrowElements[i].className = 'fas fa-arrow-right';
+                    }
+                    const setClassName = (elements, className) => {
+                        Array.from(elements).forEach(element => {
+                            element.className = className;
+                        });
+                    };
+
+                    setClassName(document.getElementsByClassName('continue'), 'continue fas fa-arrow-right');
+                    setClassName(document.getElementsByClassName('previous'), 'fas fa-arrow-left');
+
+                }
             },
             error: function(error) {
                 console.error('Error fetching current language:', error);
@@ -1359,27 +1451,53 @@ $lang = fetchLang();
 
     function updateLanguage(language, flagClass, dir) {
         $('#flagIcon').attr('class', flagClass);
-        $('body').attr('dir', dir);
-
+        // $('body').attr('dir', dir);
         $.ajax({
             url: '<?php echo getBaseUrl() ?>/update/language',
             type: 'POST',
             data: { language: language },
             success: function(response) {
-                window.location.reload();
+               window.location.reload();
             },
-            error: function(error) {
-                console.error('Error updating language:', error);
+            error: function(xhr, status, error) {
+                console.error('Error updating language:', xhr.responseText);
             }
         });
 
-        defaultStyles.forEach(function(link) {
-            link.disabled = false;
-        });
-        rtlStyles.forEach(function(link) {
-            link.disabled = true;
-        });
+
+        // defaultStyles.forEach(function(link) {
+        //     link.disabled = false;
+        // });
+        // rtlStyles.forEach(function(link) {
+        //     link.disabled = true;
+        // });
     }
+    $('.toggle-password').click(function() {
+        const input = $('#admin_password');
+        const icon = $(this).find('i');
+
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
+
+    $('.toggle-confirm-password').click(function() {
+        const input = $('#admin_confirm_password');
+        const icon = $(this).find('i');
+
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
+
 </script>
 </body>
 </html>

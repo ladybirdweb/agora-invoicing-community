@@ -10,7 +10,7 @@ Cart
 active
 @stop
 @section('page-heading')
- My Orders
+    {{ __('message.my_orders')}}
 @stop
 @section('breadcrumb')
     @if(Auth::check())

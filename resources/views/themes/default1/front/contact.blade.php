@@ -59,7 +59,7 @@ $country = \DB::table('countries')->where('country_code_char2',$set->country)->v
 
                                 <label class="form-label mb-1 text-2">{{ __('message.email_address')}} <span class="text-color-danger">*</span></label>
 
-                                <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="{{ __('message.contact_error_email')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" >
+                                <input type="email" value="" data-msg-required="{{ __('message.error_email_address') }}" data-msg-email="{{ __('message.contact_error_email')}}" maxlength="100" class="form-control text-3 h-auto py-2" name="email" id="email" >
                             </div>
                         </div>
 
@@ -184,7 +184,7 @@ $(document).ready(function() {
         const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
 
         // Extract message and errors
-        const message = response.message || response || 'An error occurred. Please try again.';
+        const message = response.message || response || '{{ __('message.error_occurred') }}';
         const errors = response.errors || null;
 
         // Build base HTML
@@ -199,12 +199,12 @@ $(document).ready(function() {
     }
     $.validator.addMethod("validPhone", function(value, element) {
         return validatePhoneNumber(element);
-    }, "Please enter a valid phone number.");
+    }, "{{ __('message.error_valid_number') }}");
 
     $.validator.addMethod("regex", function(value, element, regexp) {
         var re = new RegExp(regexp);
         return this.optional(element) || re.test(value);
-    }, "Invalid format.");
+    }, "{{ __('message.invalid_format') }}");
 
     $.validator.addMethod("recaptchaRequired", function(value, element) {
         try {
@@ -215,7 +215,7 @@ $(document).ready(function() {
             return false
         }
         return value.trim() !== "";
-    }, "Please verify that you are not a robot.");
+    }, "{{ __('message.recaptcha_required') }}");
     $('#contactForm').validate({
         ignore: ":hidden:not(.g-recaptcha-response)",
         rules: {
@@ -242,24 +242,24 @@ $(document).ready(function() {
         },
         messages: {
             conName: {
-                required: "Please enter your name."
+                required: "{{ __('message.contact_error_name') }}"
             },
             email: {
-                required: "Please enter your email.",
-                regex: "Please enter a valid email address."
+                required: "{{ __('message.enter_your_email') }}",
+                regex: "{{ __('message.contact_error_email') }}"
             },
             country_code: {
-                required: "Please enter your country code."
+                required: "{{ __('message.enter_your_country_code') }}"
             },
             Mobile: {
-                required: "Please enter your mobile number.",
-                validPhone: "Please enter a valid mobile number."
+                required: "{{ __('message.error_mobile') }}",
+                validPhone: "{{ __('message.enter_your_mobile') }}"
             },
             conmessage: {
-                required: "Please enter your message."
+                required: "{{ __('message.contact_error_message') }}"
             },
             "g-recaptcha-response": {
-                recaptchaRequired: "Please verify that you are not a robot."
+                recaptchaRequired: "{{ __('message.recaptcha_required') }}"
             }
         },
         unhighlight: function (element) {

@@ -6,7 +6,7 @@
     Login | Register
 @stop
 @section('page-heading')
-Sign in or Register
+    {{ __('message.sign_lr') }}
 @stop
 @section('breadcrumb')
     @if(Auth::check())

@@ -46,6 +46,9 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LanguageMiddleware::class,
 
         ],
+        'installer' => [
+            \App\Http\Middleware\LanguageMiddleware::class,
+        ],
         'admin' => [\App\Http\Middleware\Admin::class],
         'guest' => [\App\Http\Middleware\RedirectIfAuthenticated::class],
         'auth' => [\Illuminate\Auth\Middleware\Authenticate::class],

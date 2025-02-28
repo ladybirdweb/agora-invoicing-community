@@ -44,11 +44,11 @@ return [
     'confirm_password_required' => 'La confirmación de contraseña es requerida',
     'password_requirements' => 'Tu contraseña debe tener:',
     'password_requirements_list' => [
-        'Entre 8-16 caracteres',
-        'Letras mayúsculas (A-Z)',
-        'Letras minúsculas (a-z)',
-        'Números (0-9)',
-        'Caracteres especiales (~*!@$#%_+.?:,{ })',
+        ['id' => 'length', 'text' => 'Entre 8 y 16 caracteres'],
+        ['id' => 'letter', 'text' => 'Caracteres en minúscula (a-z)'],
+        ['id' => 'capital', 'text' => 'Caracteres en mayúscula (A-Z)'],
+        ['id' => 'number', 'text' => 'Números (0-9)'],
+        ['id' => 'space', 'text' => 'Caracteres especiales (~*!@$#%_+.?:,{ })'],
     ],
 
     // System Information

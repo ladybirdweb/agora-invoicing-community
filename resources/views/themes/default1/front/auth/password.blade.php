@@ -122,7 +122,7 @@ main
             const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
 
             // Extract message and errors
-            const message = response.message || response || 'An error occurred. Please try again.';
+            const message = response.message || response || '{{ __('message.error_occurred') }}';
 
             // Build base HTML
             let html = `<div class="alert ${alertClass} alert-dismissible">` +
@@ -143,11 +143,11 @@ main
                 return false
             }
             return value.trim() !== "";
-        }, "Please verify that you are not a robot.");
+        }, "{{ __('message.recaptcha_required') }}");
         $.validator.addMethod("regex", function(value, element, regexp) {
             var re = new RegExp(regexp);
             return this.optional(element) || re.test(value);
-        }, "Invalid format.");
+        }, "{{ __('message.invalid_format') }}");
 
         $('#resetPasswordForm').validate({
             ignore: ":hidden:not(.g-recaptcha-response)",
@@ -162,11 +162,11 @@ main
             },
             messages: {
                 email: {
-                    required: "Please enter your email.",
-                    regex: "Please enter a valid email address."
+                    required: "{{ __('message.error_email_address') }}",
+                    regex: "{{ __('message.contact_error_email') }}"
                 },
                 "g-recaptcha-response": {
-                    recaptchaRequired: "Please verify that you are not a robot."
+                    recaptchaRequired: "{{ __('message.recaptcha_required') }}"
                 }
             },
             unhighlight: function (element) {

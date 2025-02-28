@@ -7,7 +7,7 @@
     active
 @stop
 @section('page-heading')
-    My Invoices
+    {{ __('message.my_invoices')}}
 @stop
 @section('breadcrumb')
     @if(Auth::check())
@@ -192,17 +192,17 @@
        <div class="modal-dialog">
            <div class="modal-content">
                <div class="modal-header">
-                   <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                   <h5 class="modal-title" id="deleteModalLabel">{{ __('message.confirm_deletion') }}</h5>
                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                        <span aria-hidden="true">&times;</span>
                    </button>
                </div>
                <div class="modal-body">
-                   Are you sure you want to delete this invoice?
+                   {{ __('message.delete_invoice') }}
                </div>
                <div class="modal-footer">
-                   <button type="button" class="btn btn-light" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
-                   <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Delete</button>
+                   <button type="button" class="btn btn-light" data-bs-dismiss="modal" id="cancelBtn">{{ __('message.cancel') }}</button>
+                   <button type="button" class="btn btn-primary" id="confirmDeleteBtn">{{ __('message.delete') }}</button>
                </div>
            </div>
        </div>
@@ -232,9 +232,9 @@
                     success: function (response) {
                         // Display success message
                         var successMessage = '<div class="alert alert-success">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="{{ __('message.close') }}">' +
                             '<span aria-hidden="true">&times;</span></button>' +
-                            '<strong><i class="far fa-thumbs-up"></i> Well Done! </strong>' +
+                            '<strong><i class="far fa-thumbs-up"></i> {{ __('message.well_done') }} </strong>' +
                             response.message + '!</div>';
                         messageContainer.html(successMessage);
 
@@ -248,9 +248,9 @@
 
                         // Display error message
                         var errorMessage = '<div class="alert alert-danger">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="{{ __('message.close') }}">' +
                             '<span aria-hidden="true">&times;</span></button>' +
-                            '<strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                            '<strong>{{ __('message.oh_snap') }} </strong>{{ __('message.something_wrong') }}<br><br><ul>';
                         var errors = xhr.responseJSON.errors;
                         $.each(errors, function (key, value) {
                             errorMessage += '<li>' + value + '</li>';

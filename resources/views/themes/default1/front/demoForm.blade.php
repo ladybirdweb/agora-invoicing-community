@@ -172,7 +172,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
             const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
 
             // Extract message and errors
-            const message = response.message || response || 'An error occurred. Please try again.';
+            const message = response.message || response || '{{ __('message.error_occurred') }}';
             const errors = response.errors || null;
 
             // Build base HTML
@@ -187,7 +187,7 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
         }
         $.validator.addMethod("validPhone", function(value, element) {
             return validatePhoneNumber(element);
-        }, "Please enter a valid phone number.");
+        }, "{{ __('message.error_valid_number') }}");
 
         $.validator.addMethod("recaptchaRequired", function(value, element) {
             try {
@@ -198,12 +198,12 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
                 return false
             }
             return value.trim() !== "";
-        }, "Please verify that you are not a robot.");
+        }, "{{ __('message.recaptcha_required') }}");
 
         $.validator.addMethod("regex", function(value, element, regexp) {
             var re = new RegExp(regexp);
             return this.optional(element) || re.test(value);
-        }, "Invalid format.");
+        }, "{{ __('message.invalid_format') }}");
 
         $('#demoForm').validate({
             ignore: ":hidden:not(.g-recaptcha-response)",
@@ -228,21 +228,21 @@ $status =  App\Model\Common\StatusSetting::select('recaptcha_status','v3_recaptc
             },
             messages: {
                 demoname: {
-                    required: "Please enter your name."
+                    required: "{{ __('message.contact_error_name') }}"
                 },
                 demoemail: {
-                    required: "Please enter your email.",
-                    regex: "Please enter a valid email address."
+                    required: "{{ __('message.enter_your_email') }}",
+                    regex: "{{ __('message.contact_error_email') }}"
                 },
                 Mobile: {
-                    required: "Please enter your mobile number.",
-                    validPhone: "Please enter a valid mobile number."
+                    required: "{{ __('message.error_mobile') }}",
+                    validPhone: "{{ __('message.enter_your_mobile') }}"
                 },
                 demomessage: {
-                    required: "Please enter your message."
+                    required: "{{ __('message.contact_error_message') }}"
                 },
                 "g-recaptcha-response": {
-                    recaptchaRequired: "Please verify that you are not a robot."
+                    recaptchaRequired: "{{ __('message.recaptcha_required') }}"
                 }
             },
             unhighlight: function(element) {

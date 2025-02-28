@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->string('content')->after('timezone');
+            $table->string('content')->after('country');
         });
     }
 

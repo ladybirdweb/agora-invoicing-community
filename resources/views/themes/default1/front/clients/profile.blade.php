@@ -6,7 +6,7 @@ Profile
 active
 @stop
 @section('page-heading')
-Profile
+    {{ __('message.profile')}}
 @stop
 @section('breadcrumb')
 @if(Auth::check())
@@ -197,7 +197,7 @@ input:checked + .slider:before {
                                               {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
                                                <!--<input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-                                            {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'incode' , 'data-country-iso' => $user->mobile_country_iso]) !!}
+                                            {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'dir'=> app()->getLocale() == 'ar' ? 'rtl' : 'ltr', 'id' => 'incode' , 'data-country-iso' => $user->mobile_country_iso]) !!}
                                             {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                                             <span id="invalid-msg" class="hide"></span>
                                                <span id="inerror-msg"></span>
@@ -221,8 +221,7 @@ input:checked + .slider:before {
                                     <div class="form-group row {{ $errors->has('town') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2"></label>
                                         <div class="col-lg-6">
-                                            {!! Form::text('town',null,['class' => 'form-control text-3 h-auto py-2','id'=>'Town', 'placeholder' => 'Enter your town']) !!}
-
+                                            {!! Form::text('town', null, ['class' => 'form-control text-3 h-auto py-2', 'id' => 'Town', 'placeholder' => trans('message.enter_town')]) !!}
                                         </div>
                                         <div class="col-lg-3 {{ $errors->has('state') ? 'has-error' : '' }}">
                                            <select name="state" class="form-control text-3 h-auto py-2">
@@ -231,7 +230,7 @@ input:checked + .slider:before {
 
                                                     <option value="{{$state['id']}}">{{$state['name']}}</option>
 
-                                                <option value="">Select State</option>
+                                                <option value="">{{ __('message.select_state')}}</option>
                                                 @foreach($states as $key=>$value)
 
                                                     <option value="{{$key}}">{{$value}}</option>
@@ -243,9 +242,7 @@ input:checked + .slider:before {
                                      <div class="form-group row {{ $errors->has('=country') ? 'has-error' : '' }}">
                                         <label class="col-lg-3 col-form-label form-control-label line-height-9 pt-2 text-2">{{ __('message.country')}}</label>
                                         <div class="col-lg-9">
-                                            {!! Form::text('country', $selectedCountry, [ 'class' => 'form-control input-lg','onChange' => 'getCountryAttr(this.value);','readonly' => 'readonly','title' => 'Contact admin to update your country','data-toggle' => 'tooltip',
-                                             'data-placement' => 'top'
-                                             ]) !!}
+                                            {!! Form::text('country', $selectedCountry, [ 'class' => 'form-control input-lg', 'onChange' => 'getCountryAttr(this.value);', 'readonly' => 'readonly', 'title' => trans('message.admin_update_country'), 'data-toggle' => 'tooltip', 'data-placement' => 'top' ]) !!}
 
                                             {!! Form::hidden('country',null,['class' => 'form-control input-lg', 'id'=>'country']) !!}
                                          <h6 id="countryCheck"></h6>
@@ -266,7 +263,7 @@ input:checked + .slider:before {
 
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="Loading...">{{ __('message.update')}}</button>
+                                            <button type="submit" id="submit" class="btn btn-dark font-weight-bold text-3 btn-modern float-end" data-loading-text="{{ __('message.loading') }}">{{ __('message.update')}}</button>
                                         </div>
                                     </div>
 
@@ -536,7 +533,7 @@ input:checked + .slider:before {
             const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
 
             // Extract message and errors
-            const message = response.message || response || 'An error occurred. Please try again.';
+            const message = response.message || response || '{{ __('message.error_occurred') }}';
             const errors = response.errors || null;
 
             // Build base HTML
@@ -600,36 +597,36 @@ input:checked + .slider:before {
             },
             messages: {
                 first_name: {
-                    required: "Please enter your first name.",
+                    required: "{{ __('message.contact_error_firstname') }}",
                 },
                 last_name: {
-                    required: "Please enter your last name.",
+                    required: "{{ __('message.contact_error_lastname') }}",
                 },
                 email: {
-                    required: "Please enter your email.",
-                    regex: "Please enter a valid email address."
+                    required: "{{ __('message.enter_your_email') }}",
+                    regex: "{{ __('message.contact_error_email') }}"
                 },
                 mobile: {
-                    required: "Please enter your mobile number.",
-                    validPhone: "Please enter a valid phone number."
+                    required: "{{ __('message.error_mobile') }}",
+                    validPhone: "{{ __('message.error_valid_number') }}"
                 },
                 company: {
-                    required: "Please enter your company name."
+                    required: "{{ __('message.enter_your_company_name') }}"
                 },
                 address: {
-                    required: "Please enter your address."
+                    required: "{{ __('message.enter_your_address') }}"
                 },
                 town: {
-                    required: "Please enter your town."
+                    required: "{{ __('message.enter_your_town') }}"
                 },
                 state: {
-                    required: "Please select your state."
+                    required: "{{ __('message.enter_your_state') }}"
                 },
                 country: {
-                    required: "Please enter your country."
+                    required: "{{ __('message.enter_your_country') }}"
                 },
                 timezone_id: {
-                    required: "Please select a timezone."
+                    required: "{{ __('message.enter_your_timezone') }}"
                 }
             },
             unhighlight: function (element) {

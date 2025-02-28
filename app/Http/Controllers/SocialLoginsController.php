@@ -24,8 +24,7 @@ class SocialLoginsController extends Controller
 
     public function update(Request $request)
     {
-
-        if($request->type=='Twitter'){
+        if ($request->type == 'Twitter') {
             $request->validate([
                 'api_key' => 'required',
                 'api_secret' => 'required',
@@ -62,6 +61,7 @@ class SocialLoginsController extends Controller
                 Session::flash('error', 'An error occurred while updating social login settings');
             }
         }
+
         return redirect()->back();
     }
 }

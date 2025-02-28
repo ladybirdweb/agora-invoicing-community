@@ -873,8 +873,8 @@ return [
     'required_stripe_secret' => 'Please Enter Stripe Secret',
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
 
-    'price_description'=>'Price description',
-    'product_description'=>'Product description',
+    'price_description' => 'Price description',
+    'product_description' => 'Product description',
 
     'user_edit_details' => [
         'add_first_name' => 'Please enter a first name.',
@@ -1038,10 +1038,10 @@ return [
         'secret' => 'Please enter a valid client secret password.',
     ],
 
-    'add_files'=>[
-        'title'=>'Please enter title.',
-        'version'=>'Please enter a valid version.',
-        'dependencies'=>'Please enter dependencies.',
-    ]
+    'add_files' => [
+        'title' => 'Please enter title.',
+        'version' => 'Please enter a valid version.',
+        'dependencies' => 'Please enter dependencies.',
+    ],
 
 ];

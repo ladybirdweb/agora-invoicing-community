@@ -122,8 +122,6 @@ Edit Invoice
             const userFields = {
                 payment_date:$('#payment_date'),
                 total:$('#total'),
-
-
             };
 
 

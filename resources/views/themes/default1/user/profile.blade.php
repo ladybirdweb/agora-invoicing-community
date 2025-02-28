@@ -169,16 +169,9 @@ input:checked + .slider:before {
                     {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
 
                     {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                     <span id="error-msg" class="hide"></span>
                     <span id="valid-msg" class="hide"></span>
-=======
->>>>>>> 65e62e04e (fixes)
-=======
-                    <span id="error-msg" class="hide"></span>
-                    <span id="valid-msg" class="hide"></span>
->>>>>>> f22f6330f (fixes)
                     <div class="input-group-append">
                     </div>
 
@@ -435,15 +428,7 @@ input:checked + .slider:before {
                 email: $('#email'),
                 company: $('#company'),
                 address: $('#address'),
-<<<<<<< HEAD
-<<<<<<< HEAD
                 // mobile_code: $('#mobile_code'),
-=======
-                mobile_code: $('#mobile_code'),
->>>>>>> 65e62e04e (fixes)
-=======
-                // mobile_code: $('#mobile_code'),
->>>>>>> f22f6330f (fixes)
                 user_name: $('#user_name'),
             };
 
@@ -475,10 +460,7 @@ input:checked + .slider:before {
                 isValid = false;
             }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f22f6330f (fixes)
+
             {{--if (isValid && !validatePhoneNumber(userFields.mobile.val())) {--}}
             {{--    console.log(validatePhoneNumber(userFields.mobile.val()));--}}
             {{--    showError(userFields.mobile, @json(trans('message.user_edit_details.add_valid_mobile')));--}}
@@ -492,14 +474,7 @@ input:checked + .slider:before {
 
             if (isValid && !validName(userFields.last_name.val())) {
                 showError(userFields.last_name, @json(trans('message.user_edit_details.add_valid_lastname')));
-<<<<<<< HEAD
-=======
-            if (isValid && !validatePhoneNumber(userFields.mobile.val())) {
-                console.log(validatePhoneNumber(userFields.mobile.val()));
-                showError(userFields.mobile, @json(trans('message.user_edit_details.add_valid_mobile')));
->>>>>>> 65e62e04e (fixes)
-=======
->>>>>>> f22f6330f (fixes)
+
                 isValid = false;
             }
 
@@ -524,10 +499,7 @@ input:checked + .slider:before {
 
             });
         });
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f22f6330f (fixes)
+
 
         function validName(string){
             const nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
@@ -541,11 +513,7 @@ input:checked + .slider:before {
             return emailPattern.test(email);
 
         }
-<<<<<<< HEAD
-=======
->>>>>>> 65e62e04e (fixes)
-=======
->>>>>>> f22f6330f (fixes)
+
     });
 
 

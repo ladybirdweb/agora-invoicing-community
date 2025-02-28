@@ -36,51 +36,24 @@ Razorpay
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-            <table class="table table-condensed">
-=======
 
-                   
-                    
->>>>>>> 65e62e04e (fixes)
-=======
             <table class="table table-condensed">
->>>>>>> f22f6330f (fixes)
                     <tr>
 
                         <td>
-                          <!-- last name -->
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f22f6330f (fixes)
+
                                 {!! Form::label('rzp_key','Razorpay key',['class'=>'required']) !!}
                             <div class="form-group col-lg-5 pl-0">
                             {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
                                    <span id="rzp_keycheck"></span>
                             </div>
-<<<<<<< HEAD
-=======
-                        {!! Form::label('rzp_key','Razorpay key',['class'=>'required']) !!}
-                        {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
-                           <span id="rzp_keycheck"></span>
->>>>>>> 65e62e04e (fixes)
+
                          </td>
                         </tr>
 
-<<<<<<< HEAD
-                <tr>
-=======
-                         
-                         <br>
->>>>>>> 65e62e04e (fixes)
-=======
-                         </td>
-                        </tr>
+
 
                 <tr>
->>>>>>> f22f6330f (fixes)
                         <td>
                           <!-- last name -->
                             {!! Form::label('rzp_secret','Razorpay Secret', ['class'=>'required']) !!}
@@ -100,19 +73,10 @@ Razorpay
                            <span id="rzp_secretcheck"></span>
                             </div>
                          </td>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                 </tr>
-                          <br>
+
                 <tr>
-=======
-                          <br>
->>>>>>> 65e62e04e (fixes)
-=======
-                </tr>
-                          <br>
-                <tr>
->>>>>>> f22f6330f (fixes)
                           <td>
                           <!-- last name -->
                         {!! Form::label('apilayer_key','ApiLayer Access Key(For Exchange Rate Conversion)', ['class'=>'required']) !!}

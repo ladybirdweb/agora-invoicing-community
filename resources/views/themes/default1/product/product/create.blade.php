@@ -421,6 +421,7 @@
                         group:$('#groups'),
                         product_sku:$('#product_sku'),
                         description:$('#textarea1'),
+                        // product_description:('#textarea2'),
                     };
 
                     // Clear previous errors

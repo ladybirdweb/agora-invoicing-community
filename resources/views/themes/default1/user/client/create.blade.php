@@ -23,12 +23,8 @@ Create User
 
     <div class="card card-secondary card-outline">
 
-
-
         <div class="card-body">
             {!! Form::open(['url'=>'clients','method'=>'post','id'=>'userUpdateForm']) !!}
-
-
 
             <div class="row">
 
@@ -215,11 +211,8 @@ Create User
                     <div class="col-md-3 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('town',Lang::get('message.town')) !!}
-<<<<<<< HEAD
                         {!! Form::text('town',null,['class' => 'form-control','id'=>'town']) !!}
-=======
-                        {!! Form::text('town',null,['class' => 'form-control']) !!}
->>>>>>> 65e62e04e (fixes)
+
                         @error('town')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -383,13 +376,9 @@ Create User
 <script>
 
     $(document).ready(function() {
-<<<<<<< HEAD
         $('#country').on('change',function(){
-            console.log('hii');
             document.getElementById('town').value='';
         });
-=======
->>>>>>> 65e62e04e (fixes)
         const userRequiredFields = {
             first_name:@json(trans('message.user_edit_details.add_first_name')),
             last_name:@json(trans('message.user_edit_details.add_last_name')),
@@ -402,7 +391,7 @@ Create User
             timezone:@json(trans('message.user_edit_details.add_timezone')),
         };
 
-        $('#userUpdateFor').on('submit', function (e) {
+        $('#userUpdateForm').on('submit', function (e) {
             const userFields = {
                 first_name: $('#first_name'),
                 last_name: $('#last_name'),
@@ -445,10 +434,7 @@ Create User
             {{--    isValid = false;--}}
             {{--}--}}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f22f6330f (fixes)
+
             if (isValid && !validName(userFields.first_name.val())) {
                 showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
                 isValid = false;
@@ -464,11 +450,7 @@ Create User
                 isValid = false;
             }
 
-<<<<<<< HEAD
-=======
->>>>>>> 65e62e04e (fixes)
-=======
->>>>>>> f22f6330f (fixes)
+
             // If validation fails, prevent form submission
             if (!isValid) {
                 e.preventDefault();
@@ -492,19 +474,12 @@ Create User
             });
         });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f22f6330f (fixes)
+
     function validName(string){
         nameRegex=/^[A-Za-z][A-Za-z-\s]+$/;
         return nameRegex.test(string);
     }
-<<<<<<< HEAD
-=======
->>>>>>> 65e62e04e (fixes)
-=======
->>>>>>> f22f6330f (fixes)
+
     });
 
 

@@ -10,7 +10,7 @@
 
                                         <h4 class="modal-title" id="renewModalLabel">Renew your order</h4>
 
-                                        <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <button type="button" class="btn-close closebutton" data-dismiss="modal" aria-hidden="true">&times;</button>
                                     </div>
 
                                     <div class="modal-body">
@@ -116,7 +116,7 @@
                                  {!! Form::close()  !!} 
                             </div>
                         </div>
-  
+
 <script>
 
 
@@ -154,7 +154,7 @@
                $.ajax({
                    url: 'processFormat', // Update with the correct URL
                    method: 'GET',
-                   data: { totalPrice: someprice },
+                   data: { planId: planId },
                    success: function (data) {
                        $('.price').text(data);
                        shouldFetchPlanCost = true;
@@ -176,12 +176,12 @@
             fetchPlanCost(selectedPlanId,agts); // Call the function to fetch plan cost
         });
 
-        // Call the fetchPlanCost function initially with the default selected plan
-        $(document).ready(function () {
-            var initialPlanId = $('#plan').val();
-            var agt = $('.agents').val();
-            fetchPlanCost(initialPlanId,agt);
-        });
+        // // Call the fetchPlanCost function initially with the default selected plan
+        // $(document).ready(function () {
+        //     var initialPlanId = $('#plan').val();
+        //     var agt = $('.agents').val();
+        //     fetchPlanCost(initialPlanId,agt);
+        // });
 
         // Prevent form submission when Enter key is pressed
         $('form').on('keypress', function (e) {

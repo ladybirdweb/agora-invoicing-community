@@ -215,7 +215,7 @@ Create User
                     <div class="col-md-3 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('town',Lang::get('message.town')) !!}
-                        {!! Form::text('town',null,['class' => 'form-control']) !!}
+                        {!! Form::text('town',null,['class' => 'form-control','id'=>'town']) !!}
                         @error('town')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -379,6 +379,10 @@ Create User
 <script>
 
     $(document).ready(function() {
+        $('#country').on('change',function(){
+            console.log('hii');
+            document.getElementById('town').value='';
+        });
         const userRequiredFields = {
             first_name:@json(trans('message.user_edit_details.add_first_name')),
             last_name:@json(trans('message.user_edit_details.add_last_name')),

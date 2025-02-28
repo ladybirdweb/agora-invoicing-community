@@ -36,11 +36,8 @@ class EmailSettingRequest extends FormRequest
             return [
                 'driver' => 'required',
                 'email' => 'required',
-<<<<<<< HEAD
-                //                'password' => 'required',
-=======
+
 //                'password' => 'required',
->>>>>>> 65e62e04e (fixes)
                 'secret' => 'required',
                 'domain' => 'required',
             ];

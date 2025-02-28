@@ -42,7 +42,7 @@ Edit Coupon
                         <td>
                             <div class="form-group {{ $errors->has('code') ? 'has-error' : '' }}">
 
-                                <div class='row'>
+                                <div class='d-flex'>
                                     <div class="col-md-6 col-lg-6">
                                         {!! Form::text('code',null,['class' => 'form-control','id'=>'code']) !!}
                                         @error('code')
@@ -86,18 +86,13 @@ Edit Coupon
                             <div class="form-group col-lg-6 {{ $errors->has('value') ? 'has-error' : '' }}">
 
                                  <?php $valueWithoutPercentage = rtrim($promotion->value, '%'); ?>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                                 {!! Form::number('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
-=======
-                                {!! Form::text('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
->>>>>>> 65e62e04e (fixes)
-=======
-                                {!! Form::number('value',$valueWithoutPercentage,['class' => 'form-control']) !!}
->>>>>>> f22f6330f (fixes)
                                 @error('value')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
+                                <div class="input-group-append">
+                                </div>
                             </div>
                         </td>
 
@@ -107,17 +102,7 @@ Edit Coupon
                         <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!}&nbsp;&nbsp;<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter here how many times that coupon can be used"></i></b></td>
                         <td>
                             <div class="form-group col-lg-6{{ $errors->has('uses') ? 'has-error' : '' }}">
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
                                 {!! Form::number('uses',null,['class' => 'form-control']) !!}
-=======
-                                {!! Form::text('uses',null,['class' => 'form-control']) !!}
->>>>>>> 65e62e04e (fixes)
-=======
-                                {!! Form::number('uses',null,['class' => 'form-control']) !!}
->>>>>>> f22f6330f (fixes)
                                 @error('uses')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -132,15 +117,8 @@ Edit Coupon
 
                         <td><b>{!! Form::label('applied',Lang::get('message.applied'),['class'=>'required']) !!}</b></td>
                         <td>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                            <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
-=======
-                            <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
->>>>>>> 65e62e04e (fixes)
-=======
-                            <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}" style="width: 53%;">
->>>>>>> f22f6330f (fixes)
+
+                            <div class="form-group col-lg-6{{ $errors->has('applied') ? 'has-error' : '' }}">
 
                                  {!! Form::select('applied',[''=>'Choose','Products'=>$product],$selectedProduct,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
                                 @error('applied')
@@ -159,7 +137,7 @@ Edit Coupon
                         <td><b>{!! Form::label('start',Lang::get('message.start'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
-                                <div class="input-group date" id="startDate" data-target-input="nearest" style="width: 50%;">
+                                <div class="input-group date col-lg-6" id="startDate" data-target-input="nearest">
                                      {!! Form::text('start',$startDate,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
                                     <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -183,7 +161,7 @@ Edit Coupon
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
-                                <div class="input-group date" id="endDate" data-target-input="nearest" style="width: 50%;">
+                                <div class="input-group date col-lg-6" id="endDate" data-target-input="nearest">
 
                                      {!! Form::text('expiry',$expiryDate,['class' => 'form-control datetimepicker-input','title'=>'Date on which Coupon Expires','data-target'=>'#endDate']) !!}
                                     <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">

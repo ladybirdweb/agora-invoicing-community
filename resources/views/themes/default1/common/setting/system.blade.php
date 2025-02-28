@@ -98,16 +98,7 @@ System Setting
                         <td>
                             <div class="form-group {{ $errors->has('website') ? 'has-error' : '' }}">
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
                                 {!! Form::text('website',null,['class' => 'form-control','placeholder'=>'https://example.com']) !!}
-=======
-                                {!! Form::text('website',null,['class' => 'form-control']) !!}
->>>>>>> 65e62e04e (fixes)
-=======
-                                {!! Form::text('website',null,['class' => 'form-control','placeholder'=>'https://example.com']) !!}
->>>>>>> f22f6330f (fixes)
                                 @error('website')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -198,16 +189,7 @@ System Setting
                         <td>
                             <div class="form-group {{ $errors->has('knowledge_base_url') ? 'has-error' : '' }}">
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
                                 {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url','placeholder'=>'https://example.com']) !!}
-=======
-                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url']) !!}
->>>>>>> 65e62e04e (fixes)
-=======
-                                {!! Form::text('knowledge_base_url',null,['class' => 'form-control','id'=>'knowledge_base_url','placeholder'=>'https://example.com']) !!}
->>>>>>> f22f6330f (fixes)
                                 @error('knowledge_base_url')
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
@@ -486,15 +468,8 @@ System Setting
 
             };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
             $('#companyDetailsForm').on('submit', function (e) {
-=======
-            $('#companyDetailsFor').on('submit', function (e) {
->>>>>>> 65e62e04e (fixes)
-=======
-            $('#companyDetailsForm').on('submit', function (e) {
->>>>>>> f22f6330f (fixes)
+
                 const userFields = {
                     company:$('#company'),
                     company_email:$('#company_email'),

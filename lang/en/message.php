@@ -1035,4 +1035,10 @@ return [
         'secret' => 'Please enter a valid client secret password.',
     ],
 
+    'add_files'=>[
+        'title'=>'Please enter title.',
+        'version'=>'Please enter version.',
+        'dependencies'=>'Please enter dependencies.',
+    ]
+
 ];

@@ -1,13 +1,13 @@
 <?php
+
 return [
 
     'previous' => '&laquo; السابق',
     'next' => 'التالي &raquo;',
 
-//passwords
+    //passwords
 
-
-//validation
+    //validation
     'levels' => 'المستويات',
     'caps_download' => 'تنزيل',
     'file_path' => 'مسار الملف :',
@@ -24,7 +24,7 @@ return [
     'error_logs' => 'سجلات الأخطاء',
     'view_logs' => 'عرض السجلات',
 
-//visitstats
+    //visitstats
     'request' => 'الطلب',
     'visitor' => 'الزائر',
     'browser' => 'المتصفح',

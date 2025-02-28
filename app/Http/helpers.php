@@ -817,9 +817,11 @@ function formatDuration($seconds)
     return "{$seconds} second".($seconds > 1 ? 's' : '');
 }
 
-function getUrl() {
+function getUrl()
+{
     $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'];
     $path = dirname($_SERVER['SCRIPT_NAME']);
-    return $protocol . '://' . $host . $path;
+
+    return $protocol.'://'.$host.$path;
 }

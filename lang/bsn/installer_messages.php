@@ -113,4 +113,3 @@ return [
     'user_name_regex' => 'Korisničko ime mora imati između 3 i 20 karaktera i može sadržavati samo slova, brojeve, razmake, donje crte, crtice, tačke i simbol @.',
 
 ];
-

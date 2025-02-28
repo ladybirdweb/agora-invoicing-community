@@ -113,4 +113,3 @@ return [
     'user_name_regex' => 'Tên người dùng phải từ 3-20 ký tự và chỉ có thể chứa chữ cái, số, khoảng trắng, dấu gạch dưới, dấu gạch nối, dấu chấm và ký tự @.',
 
 ];
-

@@ -113,4 +113,3 @@ return [
     'user_name_regex' => 'Nama pengguna harus 3-20 karakter dan hanya boleh mengandung huruf, angka, spasi, garis bawah, tanda hubung, titik dan simbol @.',
 
 ];
-

@@ -98,7 +98,7 @@ class SubscriptionControllerTest extends DBTestCase
         $invoiceItem = InvoiceItem::create(['invoice_id' => $invoice->id, 'product_name' => $product->name]);
         $payment_method = 'stripe';
         $controller = $this->instantiateDependencies();
-        $response = $controller->postRazorpayPayment($invoice, $payment_method);
+        $response = $controller->postRazorpayPayment($invoiceItem, $payment_method);
         $this->assertEquals('success', $response->payment_status);
     }
 

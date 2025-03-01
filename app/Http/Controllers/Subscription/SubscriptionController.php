@@ -187,6 +187,12 @@ class SubscriptionController extends Controller
                 if (empty($price)) {
                     $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $currency)->where('country_id', 0)->value('renew_price');
                 }
+                // add processing fee for stripe payment
+                if($payment_method == 'stripe'){
+                    $processingFee = \DB::table(strtolower('stripe'))->where('currencies',$currency)->value('processing_fee');
+                    $processingFee = (float) $processingFee / 100;
+                    $price += ($price * $processingFee);
+                }
                 $cost = in_array($subscription->product_id, cloudPopupProducts()) ? $this->getPriceforCloud($order, $price) : $price;
 
                 if ($this->shouldCancelSubscription($product_details, $price)) {

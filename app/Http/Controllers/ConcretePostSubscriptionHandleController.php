@@ -150,7 +150,7 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
     public function postRazorpayPayment($invoice, $payment_method)
     {
         try {
-            $invoice = Invoice::where('id', $invoice->id)->first();
+            $invoice = Invoice::where('id', $invoice->invoice_id)->first();
 
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();

@@ -188,8 +188,8 @@ class SubscriptionController extends Controller
                     $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $currency)->where('country_id', 0)->value('renew_price');
                 }
                 // add processing fee for stripe payment
-                if($payment_method == 'stripe'){
-                    $processingFee = \DB::table(strtolower('stripe'))->where('currencies',$currency)->value('processing_fee');
+                if ($payment_method == 'stripe') {
+                    $processingFee = \DB::table(strtolower('stripe'))->where('currencies', $currency)->value('processing_fee');
                     $processingFee = (float) $processingFee / 100;
                     $price += ($price * $processingFee);
                 }

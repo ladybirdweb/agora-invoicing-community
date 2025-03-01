@@ -106,7 +106,10 @@
 $cartSubtotalWithoutCondition = 0;
 $currency = $invoice->currency;
 
-$feeAmount = intval(ceil($invoice->grand_total*0.01));
+$processingFee = \DB::table(strtolower('stripe'))->where('currencies',$currency)->value('processing_fee');
+$processingFee = (float) $processingFee / 100;
+
+$feeAmount = intval(ceil($invoice->grand_total*$processingFee));
 ?>
 <?php
 $taxAmt = 0;

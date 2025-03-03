@@ -18,12 +18,7 @@
                                 @endforeach
                             </ul>
                         </div>
-
-
-
                     @endif
-
-
 
         {!! Form::open(['url'=>'plans','method'=>'post','id'=> 'plan']) !!}
 
@@ -38,7 +33,7 @@
 
                 <div
                   class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                  <!-- first name -->
+                  <!-- name -->
                   {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                   {!! Form::text('name',null,['class' => 'form-control','id'=>'planname']) !!}
                     @error('name')
@@ -50,7 +45,7 @@
                 </div>
                 <div
                   class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
-                  <!-- first name -->
+                  <!-- value -->
                   {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
                   <select name="product" value="Choose" class="form-control" id="planproduct" onchange="myProduct()">
                     <option value="">Choose</option>
@@ -67,14 +62,13 @@
                     @enderror
                     <div class="input-group-append">
                     </div>
-                  <!--  {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'planproduct']) !!} -->
                   <h6 id="productcheck"></h6>
 
 
                 </div>
                 <div
                   class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
-                  <!-- last name -->
+                  <!-- days -->
                   {!! Form::label('days','Periods',['class'=>'required']) !!}
                   <div class="input-group">
                     <select name="days" value="Choose" class="form-control" id="plandays">
@@ -96,7 +90,6 @@
                   </div>
                   <h6 id="dayscheck"></h6>
 
-                  <!-- {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!} -->
                 </div>
                 <div class="col-md-12">
 
@@ -172,7 +165,7 @@
 
 
                 <div class="col-md-12 form-group">
-                  <!-- last name -->
+                  <!-- description -->
                   {!! Form::label('description','Price Description') !!}
                   {!! Form::text("price_description",null,['class' => 'form-control' ,'placeholder'=>'Enter Price Description to be Shown on Pricing Page. eg: Yearly,Monthly,One-Time']) !!}
                   <h6 id="dayscheck"></h6>
@@ -181,7 +174,7 @@
                 </div>
 
                 <div class="col-md-6 form-group">
-                  <!-- last name -->
+                  <!-- product_quantity -->
                   {!! Form::label('product_quantity','Product Quantity',['class'=>'required'])!!}
                   {!! Form::number("product_quantity",null,['class' =>
                   'form-control','disabled'=>'disabled','id'=>'prodquant','placeholder'=>'Pricing for No. of Products'])
@@ -194,7 +187,7 @@
                 </div>
 
                 <div class="col-md-6 form-group">
-                  <!-- last name -->
+                  <!-- agents -->
                   <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents.">
                         </label></i>
                   
@@ -236,13 +229,9 @@
         const userRequiredFields = {
             planname:@json(trans('message.plan_details.planname')),
             planproduct:@json(trans('message.plan_details.planproduct')),
-            {{--plandays:@json(trans('message.plan_details.plandays')),--}}
             productquant:@json(trans('message.plan_details.productquant')),
             agentquant:@json(trans('message.plan_details.agentquant')),
-            {{--regular_price:@json(trans('message.plan_details.regular_price')),--}}
-            {{--renew_price:@json(trans('message.plan_details.renewal_price')),--}}
-            {{--currency:@json(trans('message.plan_details.currency')),--}}
-            {{--country:@json(trans('message.plan_details.country')),--}}
+
 
         };
 
@@ -250,9 +239,6 @@
             const userFields = {
                 planname:$('#planname'),
                 planproduct:$('#planproduct'),
-                // plandays:$('#plandays'),
-                // productquant:$('#prodquant'),
-                // agentquant:$('#agentquant'),
                 regular_price:$('#regular_prices'),
                 renew_price:$('#renew_prices'),
                 currency:$('#currency'),
@@ -285,7 +271,6 @@
 
             // If validation fails, prevent form submission
             if (!isValid) {
-                console.log(3);
                 e.preventDefault();
             }
         });
@@ -326,9 +311,6 @@
 
     });
 
-</script>
-
-<script>
 
 $("#close-plan").click(function() {
    location.reload();
@@ -445,8 +427,7 @@ $("#close-plan").click(function() {
       })
     })
   })
-</script>
-<script>
+
   function myProduct() {
     var product = document.getElementById('planproduct').value;
     $.ajax({

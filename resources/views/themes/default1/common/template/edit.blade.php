@@ -118,7 +118,7 @@ Edit Templates
                     <div class="col-md-12 form-group">
 
                          <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
+
                         <script>
                       tinymce.init({
                           selector: 'textarea',
@@ -178,7 +178,14 @@ Edit Templates
 
     $(document).ready(function() {
 
-
+        tinymce.get('textarea').on('change', function() {
+            let content = tinymce.get('textarea').getContent();
+            if(content !==''){
+                let editorContainer = document.querySelector(".tox-tinymce");
+                editorContainer.style.border = "1px solid silver";
+                removeErrorMessage(document.getElementById('textarea'));
+            }
+        });
 
         const userRequiredFields = {
             name:@json(trans('message.templateEdit_details.subject')),
@@ -189,7 +196,6 @@ Edit Templates
         $('#templateEditForm').on('submit', function (e) {
 
             if ($('#textarea').val() === '') {
-                console.log(24);
                 let editorContainer = document.querySelector(".tox-tinymce");
                 editorContainer.style.border = "1px solid #dc3545";
             }

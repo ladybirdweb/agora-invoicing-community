@@ -474,11 +474,8 @@ System Setting
                     company:$('#company'),
                     company_email:$('#company_email'),
                     website:$('#website'),
-                    // phone_code:$('#phone'),
                     address:$('#address'),
-                    // country:$('#country'),
-                    // default_currency:$('#default_currency'),
-                    // state:$('#state'),
+
                 };
 
 
@@ -512,7 +509,6 @@ System Setting
 
                 // If validation fails, prevent form submission
                 if (!isValid) {
-                    console.log(3);
                     e.preventDefault();
                 }
             });
@@ -545,9 +541,7 @@ System Setting
 
         });
 
-    </script>
 
-    <script type="text/javascript">
 
     $(document).ready(function () {
         $('.custom-file-input').on('change', function() {
@@ -745,8 +739,7 @@ System Setting
             return false;
       });
   
-</script>
-<script>
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';
     }).addClass('active');
@@ -755,8 +748,7 @@ System Setting
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'setting';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
-<script>
+
     $(document).ready(function(){
         var country = $('#country').val();
         if (country == 'IN')

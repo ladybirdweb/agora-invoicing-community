@@ -28,13 +28,9 @@ Create Coupon
             <div class="card-body">
                 {!! Form::open(['url'=>'promotions','id'=>'myform']) !!}
 
-
                 <table class="table table-condensed">
 
-
-
                     <tr>
-
                         <td><b>{!! Form::label('company',Lang::get('message.code'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('code') ? 'has-error' : '' }}">
@@ -53,7 +49,6 @@ Create Coupon
                                         <a href="#" class="btn btn-primary" id="get-code"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
                                     </div>
                                 </div>
-
 
                             </div>
                         </td>
@@ -134,8 +129,6 @@ Create Coupon
                                 <div class="input-group date col-lg-6" id="startDate" data-target-input="nearest">
 
                                      {!! Form::text('start',null,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
-
-                                   
                                     <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -172,8 +165,6 @@ Create Coupon
                                     <div class="input-group-append">
                                     </div>
                                 </div>
-
-
                             </div>
                         </td>
 
@@ -185,19 +176,12 @@ Create Coupon
                     {!! Form::close() !!}
 
                 </table>
-
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-
-
             </div>
 
         </div>
-
         <!-- /.box -->
-
     </div>
-
-
 </div>
 <script>
 
@@ -247,13 +231,11 @@ Create Coupon
                 }
             });
             if(isValid && !isValidDate(userFields.start.val())){
-                console.log(44);
                 showError(userFields.start, @json(trans('message.invoice_details.add_valid_date')));
                 isValid = false;
             }
 
             if(isValid && !isValidDate(userFields.expiry.val())){
-                console.log(44);
                 showError(userFields.expiry, @json(trans('message.invoice_details.add_valid_date')));
                 isValid = false;
             }
@@ -288,9 +270,7 @@ Create Coupon
 
     });
 
-</script>
 
-<script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'coupon';
     }).addClass('active');
@@ -299,8 +279,7 @@ Create Coupon
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'coupon';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
-<script>
+
    $(document).ready(function(){
             $(function () {
                 //Initialize Select2 Elements
@@ -353,8 +332,6 @@ Create Coupon
     $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 });
-
-
 </script>
 
 

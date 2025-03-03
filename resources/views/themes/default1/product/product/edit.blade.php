@@ -299,6 +299,7 @@
                         <div class="col-md-12 form-group {{ $errors->has('product_description') ? 'has-error' : '' }}">
                             {!! Form::label('product_description', Lang::get('message.product_description'), ['class' => 'required']) !!}
                             {!! Form::textarea('product_description', $product->product_description, ['class' => 'form-control', 'id' => 'product-description']) !!}
+                            <div class="input-group-append"></div>
                             <h6 id="descheck"></h6>
                         </div>
                     </div>
@@ -514,6 +515,10 @@
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
     <script>
         $(function(){
             tinymce.init({
@@ -539,7 +544,19 @@
                 content_css: [
                     '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
                     '//www.tinymce.com/css/codepen.min.css'
-                ]
+                ],
+                setup: function (editor) {
+                    $('#submit').on('click', function () {
+                        let editorContainer = editor.getContainer();
+
+                        // Example condition: Change border if content length > 10
+                        if (editor.getContent({ format: 'text' }).length <1) {
+                            editorContainer.style.border = "1px solid #dc3545";
+                        } else {
+                            editorContainer.style.border = '1px solid silver';
+                        }
+                    });
+                }
             });
             tinymce.init({
                 selector: '#textarea1',
@@ -592,8 +609,7 @@
                 ]
             });
         });
-    </script>
-    <script type="text/javascript">
+
         function readmore(){
             var maxLength = 300;
             $("#upload-table tbody tr td").each(function(){
@@ -698,8 +714,6 @@
             });
 
         })
-
-
 
     </script>
     <script>
@@ -832,16 +846,6 @@
     </script>
 
 
-
-
-
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-
     <script>
         $(document).on('click','#upload-table tbody tr td .read-more',function(){
             var text=$(this).siblings(".more-text").text().replace('read more...','');
@@ -854,15 +858,21 @@
     <script>
 
         $(document).ready(function() {
-            console.log(99);
             tinymce.get('textarea1').on('change', function() {
-                console.log('hii');
                 let content = tinymce.get('textarea1').getContent();
                 if(content !==''){
                     let editorContainer = document.querySelector(".tox-tinymce");
                     editorContainer.style.border = "1px solid silver";
-                    console.log(this);
                     removeErrorMessage(document.getElementById('textarea1'));
+                }
+            });
+
+            tinymce.get('product-description').on('change', function() {
+                let content = tinymce.get('product-description').getContent();
+                if(content !==''){
+                    let editorContainer = document.querySelector(".tox-tinymce");
+                    editorContainer.style.border = "1px solid silver";
+                    removeErrorMessage(document.getElementById('product-description'));
                 }
             });
 
@@ -872,12 +882,12 @@
                 group:@json(trans('message.product_details.add_group')),
                 product_sku:@json(trans('message.product_details.add_product_sku')),
                 description:@json(trans('message.product_details.add_description')),
+                productdes:@json(trans('message.product_details.add_product_description')),
+
             };
 
             $('#editproduct').on('submit', function (e) {
-                console.log(34);
                 if ($('#textarea1').val() === '') {
-                    console.log(24);
                     let editorContainer = document.querySelector(".tox-tinymce");
                     editorContainer.style.border = "1px solid #dc3545";
                 }
@@ -894,6 +904,7 @@
                     type:$('#type'),
                     group:$('#groups'),
                     product_sku:$('#product_sku'),
+                    productdes:$('#product-description'),
                     description:$('#textarea1'),
 
                 };
@@ -951,61 +962,6 @@
 
     </script>
 
-
-
-{{--    <script>--}}
-{{--        // Jquery validation for Product Creation--}}
-{{--        $(document).ready(function(){--}}
-{{--            console.log(65);--}}
-{{--            $('#namecheck').hide();--}}
-{{--            $('#descheck').hide();--}}
-
-{{--            var nameErr= true;--}}
-{{--            var desErr = true;--}}
-
-{{--            $('#editproduct').submit(function(){--}}
-{{--                function name_check(){--}}
-{{--                    var name = $('#productname').val();--}}
-{{--                    if (name.length == ''){--}}
-{{--                        $('#namecheck').show();--}}
-{{--                        $('#namecheck').html('This field is required');--}}
-{{--                        $('#namecheck').focus();--}}
-{{--                        $('#productname').css("border-color","red");--}}
-{{--                        $('#namecheck').css({"color":"red","margin-top":"5px"});--}}
-{{--                    }--}}
-{{--                    else{--}}
-{{--                        $('#namecheck').hide();--}}
-{{--                        $('#productname').css("border-color","");--}}
-{{--                        return true;--}}
-{{--                    }--}}
-{{--                }--}}
-
-{{--                function des_check(){--}}
-{{--                    var des = $('#textarea1').val();--}}
-{{--                    if (des.length == ''){--}}
-{{--                        $('#descheck').show();--}}
-{{--                        $('#descheck').html('This field is required');--}}
-{{--                        $('#descheck').focus();--}}
-{{--                        $('#textarea1').css("border-color","red");--}}
-{{--                        $('#descheck').css({"color":"red","margin-top":"5px"});--}}
-{{--                    }--}}
-{{--                    else{--}}
-{{--                        $('#descheck').hide();--}}
-{{--                        $('#textarea1').css("border-color","");--}}
-{{--                        return true;--}}
-{{--                    }--}}
-{{--                }--}}
-{{--                name_check();--}}
-{{--                des_check();--}}
-{{--                if(name_check() && des_check()){--}}
-{{--                    return true;--}}
-{{--                }--}}
-{{--                else{--}}
-{{--                    return false;--}}
-{{--                }--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
 
     <script>
         $(document).ready(function(){
@@ -1176,36 +1132,23 @@
         }
 
 
-        // $("#uploadVersion").on('click',function(){
-        //
-        //
-        // })
     </script>
 
     <script>
 
         $(document).ready(function() {
-            console.log(74);
 
             const userRequiredFields = {
                 title:@json(trans('message.add_files.title')),
                 dependencies:@json(trans('message.add_files.dependencies')),
                 version:@json(trans('message.add_files.version')),
-                {{--product_sku:@json(trans('message.product_details.add_product_sku')),--}}
-                {{--description:@json(trans('message.product_details.add_description')),--}}
-                {{--agent:@json(trans('message.product_details.add_description')),--}}
-                {{--quantity:@json(trans('message.product_details.add_description')),--}}
-                {{--product_description:@json(trans('message.product_details.add_description')),--}}
-
             };
 
             $("#uploadVersion").on('click',function(e){
-                console.log(76);
                 const userFields = {
                     title:$('#producttitle'),
                     dependencies:$('#dependencies'),
                     version:$('#productver'),
-                    // product_sku:$('#file'),
                 };
 
                 // Clear previous errors

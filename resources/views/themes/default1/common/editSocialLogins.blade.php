@@ -158,8 +158,7 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
     $(document).ready(function() {
         var id=document.getElementById('id');
          let text = (id.innerText || id.textContent);
-        console.log(25);
-        console.log(text);
+
         const userRequiredFields = {
             id:@json(trans('message.socialLogin_details.client_id')),
             pwd:@json(trans('message.socialLogin_details.client_secret')),
@@ -170,8 +169,6 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
         if(text==='API Key') {
             $('#socialLoginForm').on('submit', function (e) {
                 const userFields = {
-                    // id: $('#id'),
-                    // pwd: $('#pwd'),
                     redirect_url: $('#redirect'),
                     api_id: $('#api_id'),
                     api_pwd: $('#api_pwd'),
@@ -233,8 +230,7 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
                     id: $('#client_id'),
                     pwd: $('#pwd'),
                     redirect_url: $('#redirect'),
-                    // api_id: $('#api_id'),
-                    // api_pwd: $('#api_pwd'),
+
                 };
 
 

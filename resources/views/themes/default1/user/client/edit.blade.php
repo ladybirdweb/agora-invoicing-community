@@ -95,17 +95,10 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- industry -->
                         {!! Form::label('bussiness','Industry') !!}
-
-                        <!--{!! Form::select('bussiness', [''=>'Choose','Industries'=>$bussinesses],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}-->
-
-
                         <select name="bussiness"  class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
-                         
-                        <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
-
-
+                        <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) )
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
                          </select>
@@ -156,10 +149,6 @@ Edit User
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type') !!}
-                        
-                         <!--{!! Form::select('company_type', [''=>'Choose','Company Type'=>$types],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}-->
-
-
                            <select name="company_type"  class="form-control chosen-select select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false">
                             <option value="">Choose</option>
                          @foreach($types as $key=>$type)
@@ -176,14 +165,6 @@ Edit User
                         {!! Form::label('company_size','Company Size') !!}
 
                         {!! Form::select('company_size', [''=>'Choose','Company Size'=>$sizes],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
-
-                       <!--  <select name="company_size"  class="form-control">
-                            <option value="">Choose</option>
-                        @foreach($sizes as $key=>$size)
-                        <option value="{{$key}}" <?php  if(in_array($size, $selectedCompanySize) ) { echo "selected";} ?>>{{$size}}</option>
-                           
-                             @endforeach
-                              </select> -->
                          @error('company_size')
                          <span class="error-message"> {{$message}}</span>
                          @enderror
@@ -224,10 +205,7 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- state -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
-                        <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-
                         <select name="state" id="state-list" class="form-control">
-
                             @if(count($state)>0)
                             <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
@@ -261,10 +239,8 @@ Edit User
                     
                     <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
-
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-
-                           {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                        {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
                         {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                         @error('mobile')
                         <span class="error-message"> {{$message}}</span>
@@ -315,6 +291,8 @@ Edit User
     </div>
      
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
 <script>
   $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_user';
@@ -324,17 +302,14 @@ Edit User
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'all_user';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-<script type="text/javascript">
+
     $('.selectpicker').selectpicker({
   style: 'btn-default',
   color: 'white',
   size: 4
 });
     $('#country').on('change',function(){
-        console.log('hii');
         document.getElementById('town').value='';
     });
 
@@ -385,12 +360,6 @@ Edit User
                 }
             });
 
-            {{--if (isValid && !validateEmail(userFields.email.val())) {--}}
-            {{--    showError(userFields.email, @json(trans('message.user_edit_details.add_valid_email')));--}}
-            {{--    isValid = false;--}}
-            {{--}--}}
-
-
             if (isValid && !validName(userFields.first_name.val())) {
                 showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
                 isValid = false;
@@ -402,7 +371,7 @@ Edit User
             }
 
             if (isValid && !validName(userFields.company.val())) {
-                showError(userFields.company,'Please enter a valid company name.');
+                showError(userFields.company,@json(trans('message.user_edit_details.add_valid_lastname')));
                 isValid = false;
             }
 
@@ -437,11 +406,8 @@ Edit User
         }
 
         function validateEmail(email) {
-
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
             return emailPattern.test(email);
-
         }
         emailErrorMsg = document.querySelector("#email-error-msg");
         var emailReset = function() {
@@ -485,7 +451,6 @@ Edit User
       validMsg.classList.add("hide");
     };
         $('#submit').on('click',function(e) {
-            console.log(44);
             if(telInput.val()===''){
                 console.log(55);
                 errorMsg.classList.remove("hide");
@@ -550,20 +515,13 @@ Edit User
     });
 });
 
-</script>
-
-<script>
 
     function getCountryAttr(val) {
         getState(val);
         getCode(val);
-//        getCurrency(val);
-
     }
 
     function getState(val) {
-
-
         $.ajax({
             type: "GET",
               url: "{{url('get-state')}}/" + val,
@@ -579,7 +537,6 @@ Edit User
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-                // $("#mobile_code").val(data);
                 $("#mobile_code_hidden").val(data);
             }
         });

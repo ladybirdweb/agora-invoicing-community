@@ -17,12 +17,8 @@
 @section('content')
   <div class="card card-secondary card-outline">
 
-  
-
-    
     {!! Form::model($plan,['url'=>'plans/'.$plan->id,'method'=>'patch','id'=>'editPlan']) !!}
     <div class="card-body">
-
 
       <div class="row">
 
@@ -30,7 +26,7 @@
 
           <div class="row">
             <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-              <!-- first name -->
+              <!-- name -->
               {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
               {!! Form::text('name',null,['class' => 'form-control','id'=>'planname']) !!}
               @error('name')
@@ -40,14 +36,13 @@
               </div>
             </div>
             <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
-              <!-- first name -->
+              <!-- product -->
               {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
               <select name="product" id="planproduct" class="form-control" onchange="myProduct()">
                 <option value="">Choose</option>
 
                 @foreach($products as $key=>$product)
                   <option value="{{$key}}"  <?php  if(in_array($product, $selectedProduct) ) { echo "selected";} ?>>{{$product}}</option>
-
                 @endforeach
               </select>
               @error('product')
@@ -58,7 +53,7 @@
 
             </div>
             <div class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
-              <!-- last name -->
+              <!-- days-->
               {!! Form::label('days','Periods',['class'=>'required']) !!}
               <select name="days" id="plandays" class="form-control">
                 <option value="">Choose</option>
@@ -222,8 +217,6 @@
           </div>
 
         </div>
-
-
       </div>
       <div class="box-footer">
       <button type="submit" class="btn btn-primary pull-left" id="planButtons"><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
@@ -231,8 +224,6 @@
     </div>
 
     </div>
-
-    
 
   </div>
 
@@ -246,8 +237,6 @@
       const userRequiredFields = {
         planname:@json(trans('message.plan_details.planname')),
         planproduct:@json(trans('message.plan_details.planproduct')),
-        {{--plandays:@json(trans('message.plan_details.plandays')),--}}
-        {{--productquant:@json(trans('message.plan_details.productquant')),--}}
         agentquant:@json(trans('message.plan_details.agentquant')),
         regular_price:@json(trans('message.plan_details.regular_price')),
         renew_price:@json(trans('message.plan_details.renewal_price')),
@@ -260,9 +249,6 @@
         const userFields = {
           planname:$('#planname'),
           planproduct:$('#planproduct'),
-          // plandays:$('#plandays'),
-          // productquant:$('#prodquant'),
-          agentquant:$('#agentquant'),
           regular_price:$('#regular_price'),
           renew_price:$('#renew_price'),
           currency:$('#currency'),
@@ -292,18 +278,6 @@
           }
         });
 
-        if($('#agentquant').val() !== ''){
-          console.log($('#agentquant').val());
-          userFields.productquant.removeClass('is-invalid');
-          userFields.productquant.removeClass('error');
-        }else{
-          console.log(5);
-          userFields.productquant.addClass('is-invalid');
-          userFields.productquant.addClass('error');
-          userFields.agentquant.removeClass('is-invalid');
-          userFields.agentquant.removeClass('error');
-        }
-
         // If validation fails, prevent form submission
         if (!isValid) {
           e.preventDefault();
@@ -328,9 +302,6 @@
       });
     });
 
-  </script>
-
-  <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({
             container : 'body'

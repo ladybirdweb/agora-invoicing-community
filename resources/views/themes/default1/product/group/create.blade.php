@@ -340,9 +340,7 @@ Create Group
         });
     });
 
-</script>
 
-<script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'group';
     }).addClass('active');
@@ -370,9 +368,7 @@ Create Group
         }); 
     })
 
-</script>
 
-<script>
 $(document).ready(function () {
     var max_fields = 10; //maximum input boxes allowed
     var wrapper = $(".input_fields_wrap2"); //Fields wrapper

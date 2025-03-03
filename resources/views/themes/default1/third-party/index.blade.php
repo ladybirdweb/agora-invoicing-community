@@ -125,10 +125,7 @@ Third party Apps
             });
         });
 
-    </script>
 
-
-    <script>
 
         $(document).ready(function() {
             const userRequiredFields = {
@@ -194,9 +191,7 @@ Third party Apps
             });
         });
 
-    </script>
 
-<script type="text/javascript">
         $('#third-party-app-table').DataTable({
             processing: true,
             serverSide: true,
@@ -238,8 +233,7 @@ Third party Apps
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
- <script>
+
     function checking(e){
       $('#third-party-app-table').find("td input[type='checkbox']").prop('checked',$(e).prop('checked'));
     }
@@ -310,11 +304,7 @@ Third party Apps
         location.reload();
       })
 
-    
-      
-      
- </script>
-<script>
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';
     }).addClass('active');

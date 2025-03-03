@@ -178,9 +178,9 @@ Edit Coupon
                         </td>
 
                     </tr>
-                    
-                   
-                    
+
+
+
 
                     {!! Form::close() !!}
 
@@ -249,13 +249,11 @@ Edit Coupon
 
 
             if(isValid && !isValidDate(userFields.start.val())){
-                console.log(44);
                 showError(userFields.start, @json(trans('message.invoice_details.add_valid_date')));
                 isValid = false;
             }
 
             if(isValid && !isValidDate(userFields.expiry.val())){
-                console.log(44);
                 showError(userFields.expiry, @json(trans('message.invoice_details.add_valid_date')));
                 isValid = false;
             }
@@ -291,10 +289,7 @@ Edit Coupon
 
     });
 
-</script>
 
-
-<script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'coupon';
     }).addClass('active');
@@ -303,9 +298,7 @@ Edit Coupon
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'coupon';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
-<script>
      $(document).ready(function(){
             $(function () {
                 //Initialize Select2 Elements

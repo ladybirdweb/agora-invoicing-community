@@ -270,7 +270,6 @@ Email
 
                 });
             }
-
             const userRequiredFields = {
                 driver:@json(trans('message.emailSettings_details.driver')),
                 email:@json(trans('message.emailSettings_details.email')),
@@ -357,14 +356,12 @@ Email
                 };
 
                 Object.values(rmFields).forEach(field => {
-                    console.log(field);
                     field.removeClass('is-invalid');
                     field.next().next('.error').remove();
                 });
 
                  if ($('#driver').val() == 'smtp') {
                      $('#emailSetting').on('click', function (e) {
-                         console.log($('#driver').val());
                          const userFields = {
                              email: $('#email'),
                              port: $('#port'),
@@ -400,7 +397,6 @@ Email
 
                          // If validation fails, prevent form submission
                          if (!isValid) {
-                             console.log(3);
                              e.preventDefault();
                          }else{
                              emailOperation();
@@ -428,8 +424,6 @@ Email
 
                 }else if($('#driver').val() == 'mail'){
                     $('#emailSetting').on('click', function (e) {
-                        console.log($('#driver').val());
-                        console.log(2);
                         const userFields = {
                             email: $('#email'),
                             from_name:$('#from_name'),
@@ -485,8 +479,6 @@ Email
                     });
                 }else if($('#driver').val() == 'mailgun'){
                     $('#emailSetting').on('click', function (e) {
-                        console.log($('#driver').val());
-                        console.log(2);
                         const userFields = {
                             email: $('#email'),
                             from_name:$('#from_name'),
@@ -544,8 +536,6 @@ Email
                     });
                 }else if($('#driver').val() == 'mandrill'){
                     $('#emailSetting').on('click', function (e) {
-                        console.log($('#driver').val());
-                        console.log(2);
                         const userFields = {
                             email: $('#email'),
                             from_name:$('#from_name'),
@@ -602,8 +592,6 @@ Email
                     });
                 }else if($('#driver').val() == 'ses'){
                     $('#emailSetting').on('click', function (e) {
-                        console.log($('#driver').val());
-                        console.log(2);
                         const userFields = {
                             email: $('#email'),
                             from_name:$('#from_name'),
@@ -662,8 +650,6 @@ Email
                     });
                 }else if($('#driver').val() == 'sparkpost'){
                     $('#emailSetting').on('click', function (e) {
-                        console.log($('#driver').val());
-                        console.log(2);
                         const userFields = {
                             email: $('#email'),
                             from_name:$('#from_name'),

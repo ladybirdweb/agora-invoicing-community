@@ -873,8 +873,8 @@ return [
     'required_stripe_secret' => 'Please Enter Stripe Secret',
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
 
-    'price_description'=>'Price description',
-    'product_description'=>'Product description',
+    'price_description' => 'Price description',
+    'product_description' => 'Product description',
 
     'user_edit_details' => [
         'add_first_name' => 'Please enter a first name.',
@@ -891,7 +891,7 @@ return [
         'add_country' => 'Please select  a country.',
         'add_timezone' => 'Please select a timezone.',
         'add_mobile' => 'Please enter a mobile number.',
-        'add_valid_company'=>'Please enter a valid company name using only letters and spaces.',
+        'add_valid_company' => 'Please enter a valid company name using only letters and spaces.',
     ],
 
     'invoice_details' => [
@@ -902,7 +902,7 @@ return [
         'payment_date' => 'Please enter the payment date.',
         'total' => 'Please enter the total invoice amount.',
         'add_valid_date' => 'Please enter a valid date.',
-        'status'=> 'Please enter status of invoice.'
+        'status' => 'Please enter status of invoice.',
     ],
 
     'page_details' => [
@@ -1041,10 +1041,10 @@ return [
         'secret' => 'Please enter a valid client secret password.',
     ],
 
-    'add_files'=>[
-        'title'=>'Please enter title.',
-        'version'=>'Please enter a valid version.',
-        'dependencies'=>'Please enter dependencies.',
-    ]
+    'add_files' => [
+        'title' => 'Please enter title.',
+        'version' => 'Please enter a valid version.',
+        'dependencies' => 'Please enter dependencies.',
+    ],
 
 ];

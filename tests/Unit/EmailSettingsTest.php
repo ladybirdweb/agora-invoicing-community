@@ -2,19 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Http\Requests\Email\EmailSettingRequest;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Validator;
+use Tests\TestCase;
 
 class EmailSettingsTest extends TestCase
 {
     /**
      * A basic unit test example.
-     *
      */
-
-
     public function test_example(): void
     {
         $this->assertTrue(true);
@@ -22,7 +18,7 @@ class EmailSettingsTest extends TestCase
 
     public function test_smtp_driver_correct_fields()
     {
-        $data = ['driver' => 'smtp','password' => 'password'];
+        $data = ['driver' => 'smtp', 'password' => 'password'];
         $request = new EmailSettingRequest();
         $rules = $request->rules();
 
@@ -30,6 +26,4 @@ class EmailSettingsTest extends TestCase
 
         $this->assertTrue($validator->fails());
     }
-
-
 }

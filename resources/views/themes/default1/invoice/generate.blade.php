@@ -98,24 +98,13 @@ Create Invoice
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                     <span class="error-message" id="code-msg"></span>
                 </div>
-
                     <div id="agents" class="col-md-4">
                     </div>
-
-
-
                     <div id="fields" class="col-md-4">
                     </div>
-
                  <div id="qty" class="col-md-4">
                 </div>
 
-
-
-                <!-- <div class="col-md-6 form-group">
-                    {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
-                    <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
-                </div> -->
             </div>
             <br>
              <h4> <button name="generate" type="submit" id="generate" class="btn btn-primary pull-right" ><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.generate')!!}</button></h4>
@@ -127,6 +116,7 @@ Create Invoice
 </div>
 
 
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'add_invoice';
@@ -136,9 +126,7 @@ Create Invoice
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'add_invoice';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
-<script>
 
     $(document).ready(function() {
 
@@ -163,8 +151,6 @@ Create Invoice
             plan:@json(trans('message.invoice_details.add_price')),
 
         };
-
-
 
 
         $('#generate').on('click', function (e) {
@@ -199,8 +185,6 @@ Create Invoice
 
             let isValid = true;
 
-
-
             const showError = (field, message) => {
                 field.addClass('is-invalid');
                 field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
@@ -215,14 +199,12 @@ Create Invoice
             });
 
             if(isValid && !isValidDate(userFields.datepicker.val())){
-                console.log(44);
                 showError(userFields.datepicker, @json(trans('message.invoice_details.add_valid_date')));
                 isValid = false;
             }
 
             // If validation fails, prevent form submission
             if (!isValid) {
-                console.log(34);
                 e.preventDefault();
             }
         });
@@ -245,7 +227,6 @@ Create Invoice
         });
 
         function isValidDate(dateString) {
-            console.log(dateString);
             const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
             return regex.test(dateString);
@@ -266,8 +247,7 @@ Create Invoice
         if ($('#product').length > 0) {
             var product = document.getElementsByName('product')[0].value;
         }
-        //var plan = document.getElementsByName('plan')[0].value;
-        //alert(user);
+
 
         $.ajax({
             type: "POST",
@@ -296,8 +276,7 @@ Create Invoice
                 if (element2) {
                     element2.innerHTML = agents
                 }
-                // $("#qty").replaceWith(qty);
-                // $("#agents").replaceWith(agents);
+
             }
         });
     }
@@ -331,18 +310,13 @@ Create Invoice
             }
         });
         })
-       
-</script>
-<script type='text/javascript'>
+
     /* attach a submit handler to the form */
     $("#formoid").submit(function (event) {
       //   }
          /* stop form from submitting normally */
         event.preventDefault();
-          // const inputs = document.querySelectorAll('#users, #invoice_date','#product','#price',);
-          //   inputs.forEach(input => {
-          //   input.value = '';
-          //     });
+
         /* get the action attribute from the <form action=""> element */
         var $form = $(this),
         url = $form.attr('action');
@@ -392,7 +366,6 @@ Create Invoice
                 var data = $("#formoid").serialize() + '&user=' + user;
             }
         }
-        console.log(data);
         data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
         $("#generate").html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");
 
@@ -426,8 +399,6 @@ Create Invoice
                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                 for (var key in response.responseJSON.errors)
                 {
-                    // console.log(response.responseJSON.errors)
-                    // console.log(response.responseJSON.errors[0]);
                     html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
                 }
                  
@@ -443,14 +414,6 @@ Create Invoice
             }
         });
 
-        //console.log(data);
-        /* Send the data using post with element id name and name2*/
-//      var posting = $.post(url,data);
-//
-//      /* Alerts the results */
-//      posting.done(function( data ) {
-//        console.log(data);
-//      });
     });
 </script>
 @stop
@@ -459,9 +422,7 @@ Create Invoice
      $('#invoice_date').datetimepicker({
       format: 'L'
     })   
-</script>
 
-<script>
         $('#users').select2({
         placeholder: "Search",
         minimumInputLength: 1,

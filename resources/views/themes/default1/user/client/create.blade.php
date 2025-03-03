@@ -177,7 +177,6 @@ Create User
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size') !!}
-                <!-- {!! Form::select('company_size',['choose'=>'Choose',''=>$size],null,['class' => 'form-control']) !!} -->
                           <select name="company_size" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($size as $key=>$sizes)
@@ -282,26 +281,7 @@ Create User
                         @enderror
                         <div class="input-group-append">
                         </div>
-
-                       <!--   <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
-                             <option value="">Choose</option>
-                           @foreach($timezones as $key=>$timezone)
-
-                             <option value={{$key}}>{{$timezone}}</option>
-                          @endforeach
-                          </select> -->
-
                     </div>
-                   
-                   <!--  <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Country code</label>
-                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                        {!! Form::text('mobil',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
-
-
-                    </div> -->
-                   
-
 
                     <div class="col-md-3 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
@@ -312,7 +292,6 @@ Create User
                         <div class="input-group-append">
                         </div>
                         {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
-{{--                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}--}}
                         @error('mobile')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
@@ -333,7 +312,6 @@ Create User
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Sales Manager') !!}
-                 <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
                          <select name="manager" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($managers as $key=>$manager)
@@ -348,7 +326,6 @@ Create User
                       <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Account Manager') !!}
-                 <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
                          <select name="account_manager" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($accountManager as $key=>$manager)
@@ -398,7 +375,6 @@ Create User
                 email: $('#email'),
                 company: $('#company'),
                 address: $('#address'),
-                // mobile: $('#mobile_code'),
                 user_name: $('#user_name'),
                 country:$('#country'),
                 timezone:$('#timezone_id'),
@@ -427,14 +403,6 @@ Create User
                 }
             });
 
-
-
-            {{--if (isValid && !validateEmail(userFields.email.val())) {--}}
-            {{--    showError(userFields.email, @json(trans('message.user_edit_details.add_valid_email')));--}}
-            {{--    isValid = false;--}}
-            {{--}--}}
-
-
             if (isValid && !validName(userFields.first_name.val())) {
                 showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));
                 isValid = false;
@@ -446,7 +414,7 @@ Create User
             }
 
             if (isValid && !validName(userFields.company.val())) {
-                showError(userFields.company,'Please enter a valid company name.');
+                showError(userFields.company,@json(trans('message.user_edit_details.add_valid_company')));
                 isValid = false;
             }
 
@@ -520,14 +488,10 @@ Create User
   validMsg.classList.add("hide");
 };
 
-// set it's initial value
-// var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
-// addressDropdown.val(initialCountry);
 
 // listen to the telephone input for changes
 
 $('#submit').on('click',function() {
-    console.log(44);
     if(telInput.val()===''){
         console.log(55);
         errorMsg.classList.remove("hide");
@@ -580,7 +544,6 @@ $('#submit').on('click',function() {
                         $('#email').css("border-color","");
                         $('#submit').attr('disabled',false);
                     } else {
-                        console.log(66);
                         emailErrorMsg.classList.remove("hide");
                         emailErrorMsg.innerHTML = @json(trans('message.user_edit_details.add_valid_email'));
                         $('#email').css("border-color","#dc3545");
@@ -614,8 +577,6 @@ addressDropdown.change(function() {
 
     function getCountryAttr(val) {
         getState(val);
-        // getCode(val);
-//        getCurrency(val);
 
     }
 

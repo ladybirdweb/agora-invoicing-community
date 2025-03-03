@@ -111,7 +111,6 @@
                         <div class="col-md-6 form-group {{ $errors->has('price_description') ? 'has-error' : '' }}">
                             <!-- last name -->
                             <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
                             <script>
                                 tinymce.init({
                                     selector: 'textarea',
@@ -154,7 +153,7 @@
                                     <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                         <!-- last name -->
                                         {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
-                                        {!! Form::text('product_sku',null,['class' => 'form-control','id'=>'product_sku']) !!}
+                                        {!! Form::text('product_sku',null,['class' => 'form-control editor_1','id'=>'product_sku']) !!}
                                         <div class="input-group-append"></div>
                                     </div>
                                 </li>
@@ -232,7 +231,6 @@
                         <div class="col-md-12 form-group {{ $errors->has('product_description') ? 'has-error' : '' }}">
                             <!-- last name -->
                             <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
                             <script>
                                 tinymce.init({
                                     selector: 'textarea',
@@ -257,7 +255,19 @@
                                     content_css: [
                                         '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
                                         '//www.tinymce.com/css/codepen.min.css'
-                                    ]
+                                    ],
+                                        setup: function (editor) {
+                                            $('#submit').on('click', function () {
+                                                let editorContainer = editor.getContainer();
+
+                                                // Example condition: Change border if content length > 10
+                                                if (editor.getContent({ format: 'text' }).length <1) {
+                                                    editorContainer.style.border = "1px solid #dc3545";
+                                                } else {
+                                                    editorContainer.style.border = '1px solid silver';
+                                                }
+                                            });
+                                        }
                                 });
                             </script>
 
@@ -337,13 +347,7 @@
 
                     </tr>
 
-
-
                     {!! Form::close() !!}
-
-
-
-
 
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
@@ -354,25 +358,20 @@
         <script>
 
             $(document).ready(function() {
-                console.log(34);
                 tinymce.get('textarea1').on('change', function() {
-                    console.log('hii');
                     let content = tinymce.get('textarea1').getContent();
                     if(content !==''){
                         let editorContainer = document.querySelector(".tox-tinymce");
                         editorContainer.style.border = "1px solid silver";
-                        console.log(this);
                         removeErrorMessage(document.getElementById('textarea1'));
                     }
                 });
 
                 tinymce.get('textarea2').on('change', function() {
-                    console.log('hii');
                     let content = tinymce.get('textarea2').getContent();
                     if(content !==''){
                         let editorContainer = document.querySelector(".tox-tinymce");
                         editorContainer.style.border = "1px solid silver";
-                        console.log(this);
                         removeErrorMessage(document.getElementById('textarea2'));
                     }
                 });
@@ -386,7 +385,7 @@
                     description:@json(trans('message.product_details.add_description')),
                     agent:@json(trans('message.product_details.add_description')),
                     quantity:@json(trans('message.product_details.add_description')),
-                    product_description:@json(trans('message.product_details.add_description')),
+                    productdes:@json(trans('message.product_details.add_product_description')),
 
                 };
 
@@ -403,25 +402,14 @@
                         editorContainer.style.border = "1px solid silver";
                     }
 
-                    // if ($('#textarea2').val() === '') {
-                    //     let editorContainer = document.querySelector(".tox-tinymce");
-                    //     editorContainer.style.border = "1px solid #dc3545";
-                    // }
-                    // else if($('#textarea2').val() !== ''){
-                    //     let editorContainer = document.querySelector(".tox-tinymce");
-                    //     editorContainer.style.border = "1px solid silver";
-                    // }else{
-                    //     let editorContainer = document.querySelector(".tox-tinymce");
-                    //     editorContainer.style.border = "1px solid silver";
-                    // }
-
                     const userFields = {
                         name:$('#productname'),
                         type:$('#type'),
                         group:$('#groups'),
                         product_sku:$('#product_sku'),
-                        description:$('#textarea1'),
-                        // product_description:('#textarea2'),
+                        description:$('#textarea2'),
+                        productdes:$('#textarea1'),
+
                     };
 
                     // Clear previous errors
@@ -490,16 +478,14 @@
                 });
 
             });
-        </script>
-        <script>
+
             $(document).ready(function() {
                 $("#Tax").select2({
                     placeholder: 'Select Taxes',
                     tags:true
                 });
             });
-        </script>
-        <script>
+
             $('ul.nav-sidebar a').filter(function() {
                 return this.id == 'add_product';
             }).addClass('active');

@@ -22,17 +22,12 @@ Edit Group
     <div class="col-md-12">
         <div class="card card-secondary card-outline">
 
-
             {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch','id'=>'groupForm']) !!}
             <div class="card-body">
 
-
                 <table class="table table-condensed">
 
-
-
                     <tr>
-
                         <td><b>{!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
@@ -48,7 +43,6 @@ Edit Group
                                     </div>
 
                                 </div>
-
 
                             </div>
                         </td>
@@ -109,9 +103,6 @@ Edit Group
                                                 ?>
                                                 <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
 
-                               
-
-
                             </div>
                         </td>
 
@@ -125,7 +116,7 @@ Edit Group
 
                            <div class="form-group">
                             <div class="col-md-4">
-                             <img src='{{ asset("storage/images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <img src='{{ asset("storage/images/$template->image")}}' alt="Porto theme" class="img-thumbnail">
                              <br/>
                              @if($template->id == $selectedTemplate)
                              <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" checked style="text-align: center;">
@@ -139,13 +130,11 @@ Edit Group
                                 <span class="error-message"> {{$message}}</span>
                                 @enderror
                         </div>
-                   
-                          
+
                             </div> 
                         </td>
 
                     </tr>
-
                            <tr>
 
                         <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
@@ -160,10 +149,6 @@ Edit Group
                                                 }
                                                 ?>
                                                 <p>{!! Form::checkbox('status',1,$value) !!}  {{Lang::get('message.check-this-box_to_toggle_status')}}</p>
-
-                               
-
-
                             </div>
                         </td>
 
@@ -250,10 +235,7 @@ Edit Group
         });
     });
 
-</script>
 
-
-<script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'group';
     }).addClass('active');
@@ -289,9 +271,6 @@ $(document).ready(function () {
 });
 
 
-</script>
-
-<script>
     $(document).ready(function () {
         var max_fields = 10; //maximum input boxes allowed
         var wrapper = $(".input_fields_wrap2"); //Fields wrapper

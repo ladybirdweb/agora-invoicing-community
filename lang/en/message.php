@@ -891,6 +891,7 @@ return [
         'add_country' => 'Please select  a country.',
         'add_timezone' => 'Please select a timezone.',
         'add_mobile' => 'Please enter a mobile number.',
+        'add_valid_company'=>'Please enter a valid company name using only letters and spaces.',
     ],
 
     'invoice_details' => [
@@ -901,17 +902,18 @@ return [
         'payment_date' => 'Please enter the payment date.',
         'total' => 'Please enter the total invoice amount.',
         'add_valid_date' => 'Please enter a valid date.',
+        'status'=> 'Please enter status of invoice.'
     ],
 
     'page_details' => [
         'add_name' => 'Please enter a valid page name.',
         'add_slug' => 'Please enter a valid page slug.',
-        'add_url' => 'Please enter a valid URL(http://example.com).',
+        'add_url' => 'Please enter a valid URL(https://example.com).',
         'add_content' => 'Please enter page content.',
         'add_publish' => 'Please enter publish status.',
         'publish_date' => 'Please enter a publishing date.',
         'default_page' => 'Please select a default page.',
-        'valid_url' => 'Please enter a valid URL(http://example.com).',
+        'valid_url' => 'Please enter a valid URL(https://example.com).',
     ],
 
     'product_details' => [
@@ -920,6 +922,7 @@ return [
         'add_license_type' => 'Please select a License type.',
         'add_description' => 'Please enter price description.',
         'add_product_sku' => 'Please enter product SKU.',
+        'add_product_description' => 'Please enter product description.',
     ],
 
     'coupon_details' => [
@@ -942,7 +945,7 @@ return [
         'company_email' => 'Please enter a valid email.',
         'add_address' => 'Please enter company address.',
         'add_phone' => 'Please enter the company phone number.',
-        'add_website' => 'Please enter a valid URL(http://example.com).',
+        'add_website' => 'Please enter a valid URL(https://example.com).',
         'add_country' => 'Please enter the company country.',
         'add_state' => 'Please enter the company state.',
         'default_currency' => 'Please enter the default currency.',
@@ -961,7 +964,7 @@ return [
     'socialLogin_details' => [
         'client_id' => 'Please enter a  valid client ID.',
         'client_secret' => 'Please enter a valid client secret.',
-        'redirect_url' => 'Please enter a valid URL(http://example.com).',
+        'redirect_url' => 'Please enter a valid URL(https://example.com).',
         'api_id' => 'Please enter a valid API ID.',
         'api_secret' => 'Please enter a valid API secret.',
     ],
@@ -985,7 +988,7 @@ return [
 
     'social_details' => [
         'name' => 'Please enter a valid name.',
-        'link' => 'Please enter a valid link(http://example.com)..',
+        'link' => 'Please enter a valid link(https://example.com)..',
     ],
 
     'script_details' => [

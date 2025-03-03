@@ -27,12 +27,10 @@ Edit Page
 
             <div class="col-md-12">
 
-
-
                 <div class="row">
 
                     <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                        <!-- first name -->
+                        <!-- name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                         {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
                         @error('name')
@@ -43,7 +41,7 @@ Edit Page
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('publish') ? 'has-error' : '' }}">
-                        <!-- last name -->
+                        <!-- publish -->
                         {!! Form::label('publish',Lang::get('message.publish'),['class'=>'required']) !!}
                         {!! Form::select('publish',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
                         @error('publish')
@@ -54,7 +52,7 @@ Edit Page
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('slug') ? 'has-error' : '' }}">
-                        <!-- first name -->
+                        <!-- slug -->
                         {!! Form::label('slug',Lang::get('message.slug'),['class'=>'required']) !!}
                         {!! Form::text('slug',null,['class' => 'form-control','id'=>'slug']) !!}
                         @error('slug')
@@ -69,7 +67,7 @@ Edit Page
                 <div class="row">
 
                     <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
-                        <!-- first name -->
+                        <!-- url -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
 
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url','placeholder'=>'https://example.com']) !!}
@@ -81,7 +79,7 @@ Edit Page
                     </div>
 
                     <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
-                        <!-- last name -->
+                        <!-- parent_page_id -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
                         <select name="parent_page_id"  class="form-control">
                             <option value="0">Choose</option>
@@ -97,7 +95,7 @@ Edit Page
                     </div>
 
                      <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
-                        <!-- last name -->
+                        <!-- type -->
                         {!! Form::label('type',Lang::get('message.page_type')) !!}
                           {!! Form::select('type',['none'=>'None','contactus'=>'Contact Us'],null,['class' => 'form-control']) !!} 
 
@@ -106,9 +104,8 @@ Edit Page
                          $defaults = DB::table('frontend_pages')->pluck('name','id')->toArray();
                          ?>
                        <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
-                        <!-- last name -->
+                        <!-- default_page_id -->
                         {!! Form::label('default_page_id',Lang::get('message.default-page'),['class'=>'required']) !!}
-
                                    <select name="default_page_id"  class="form-control">
                                      <option value="">My Invoices</option>
                          @foreach($defaults as $key=>$value)
@@ -121,7 +118,7 @@ Edit Page
                            @enderror
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
-                        <!-- last name -->
+                        <!-- publish_date -->
                         {!! Form::label('publish_date',Lang::get('message.publish-date'),['class'=>'required']) !!}
 
                         <div class="input-group date" id="publishing_date" data-target-input="nearest">
@@ -135,33 +132,7 @@ Edit Page
 
                         </div>
 
-                         <!--  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                     </div>
-                    <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
-                  </div> -->
-                       <!--  <div class="form-group">
-                         <div class="input-group">
-                             <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                         </div>
-                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
-                        </div>
-                      </div> -->
-
-                          <!-- <div class="form-group">
-                                    <div class='input-group date' id='datetimepicker1'>
-                                        <input type='text' name="valid_from" id="valid_from" class="form-control" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div> -->
-
-                    </div>
-
-
 
                 </div>
 
@@ -217,6 +188,8 @@ Edit Page
     </div>
 
 </div>
+{!! Form::close() !!}
+
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_page';
@@ -226,11 +199,7 @@ Edit Page
     $('ul.nav-treeview a').filter(function() {
         return this.id == 'all_page';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
-{!! Form::close() !!}
-
-  <script>
 
       $(document).ready(function() {
           const userRequiredFields = {

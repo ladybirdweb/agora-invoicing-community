@@ -259,8 +259,6 @@
                                         setup: function (editor) {
                                             $('#submit').on('click', function () {
                                                 let editorContainer = editor.getContainer();
-
-                                                // Example condition: Change border if content length > 10
                                                 if (editor.getContent({ format: 'text' }).length <1) {
                                                     editorContainer.style.border = "1px solid #dc3545";
                                                 } else {

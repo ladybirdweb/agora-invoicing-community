@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class SocialLoginTest extends TestCase
 {
@@ -11,13 +11,12 @@ class SocialLoginTest extends TestCase
 
     public function test_updates_social_login_settings_successfully()
     {
-
-        $response = $this->call('POST','update-social-login', [
+        $response = $this->call('POST', 'update-social-login', [
             'type' => 'Google',
             'client_id' => 'new-client-id',
             'client_secret' => 'new-client-secret',
             'redirect_url' => 'https://new-url.com',
-            'optradio'=>1
+            'optradio' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -27,7 +26,7 @@ class SocialLoginTest extends TestCase
             'client_id' => 'new-client-id',
             'client_secret' => 'new-client-secret',
             'redirect_url' => 'https://new-url.com',
-            'status' => 1
+            'status' => 1,
         ]);
     }
 }

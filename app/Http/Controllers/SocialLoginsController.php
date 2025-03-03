@@ -47,5 +47,4 @@ class SocialLoginsController extends Controller
 
         return redirect()->back();
     }
-
 }

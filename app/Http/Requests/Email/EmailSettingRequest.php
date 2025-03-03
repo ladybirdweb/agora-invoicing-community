@@ -35,7 +35,7 @@ class EmailSettingRequest extends FormRequest
                 'region' => 'required_if:driver,ses',
 
             ];
-        }else {
+        } else {
             return [
                 'driver' => 'required',
                 'email' => [

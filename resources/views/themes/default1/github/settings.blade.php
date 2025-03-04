@@ -214,43 +214,6 @@ $(document).ready(function (){
   $("#submit").on('click',function (e){ //When Submit button is clicked
      if ($('#github').prop('checked')) {//if button is on
 
-  //          if ($('#git_username').val() == "") { //if value is not entered
-  //           $('#user').show();
-  //           // $('#user').html("Please Enter github Username");
-  //           // $('#git_username').css("border-color","red");
-  //           // $('#user').css({"color":"red","margin-top":"5px"});
-  //           return false;
-  //         } else if ($('#git_password').val() == "") {
-  //            $('#pass').show();
-  //           // $('#pass').html("Please Enter Github Password");
-  //           // $('#git_password').css("border-color","red");
-  //           // $('#pass').css({"color":"red","margin-top":"5px"});
-  //           return false;
-  //         } else if ($('#git_client').val() == "") {
-  //            $('#c_id').show();
-  //           $('#c_id').html("Please Enter Client Id");
-  //           $('#git_client').css("border-color","red");
-  //           $('#c_id').css({"color":"red","margin-top":"5px"});
-  //            return false;
-  //         } else if ($('#git_secret').val() == "") {
-  //            $('#c_secret').show();
-  //           $('#c_secret').html("Please Enter Client Secret Key");
-  //           $('#git_secret').css("border-color","red");
-  //           $('#c_secret').css({"color":"red","margin-top":"5px"});
-  //            return false;
-  //         }
-  //   } else {
-  //      $('#user').html("");
-  //      $('#git_username').css("border-color","");
-  //      $('#pass').html("");
-  //      $('#git_password').css("border-color","");
-  //       $('#c_id').html("");
-  //      $('#git_client').css("border-color","");
-  //      $('#c_secret').html("");
-  //      $('#git_secret').css("border-color","");
-  //        var githubstatus = 0;
-  // }
-         ///////////////////////////////////////////////
          const userRequiredFields = {
              git_username:@json(trans('message.github_details.name')),
              git_password:@json(trans('message.github_details.password')),

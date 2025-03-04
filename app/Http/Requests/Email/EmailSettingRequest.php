@@ -33,7 +33,7 @@ class EmailSettingRequest extends FormRequest
                 'domain' => 'required_if:driver,mailgun',
                 'key' => 'required_if:driver,ses',
                 'region' => 'required_if:driver,ses',
-
+                'email' => 'required_if:driver,smtp,mailgun,mandrill,ses',
             ];
         } else {
             return [

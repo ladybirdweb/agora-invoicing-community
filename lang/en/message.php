@@ -875,6 +875,12 @@ return [
     'product_description' => 'Product Description',
     'price_description' => 'Price Description',
 
+
     'image_allowed' => 'Only PNG, JPG, and JPEG files are allowed.',
     'image_max' => 'The image may not be greater than 2 MB.',
+    'central_domain'=>'Please enter domain name(https://example.com).',
+    'cloud_name'=>'Please enter cloud cname(example.com)',
+    'cloud_popup'=>'Please provide cloud popup heading.',
+    'cloud_label'=>'Please provide label for domain.',
+    'cloud_radio'=>'Please provide label for radio button.',
 ];

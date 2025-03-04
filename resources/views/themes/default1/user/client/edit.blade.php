@@ -111,15 +111,11 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- email active -->
                         {!! Form::label('active',Lang::get('message.email')) !!}
-<<<<<<< HEAD
                         <p>{!! Form::radio('email_verified',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('email_verified',0) !!}&nbsp;Inactive</p>
 
-=======
-                        <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
-                        @error('active')
+                        @error('email_verified')
                         <span class="error-message"> {{$message}}</span>
                         @enderror
->>>>>>> 4904f88f9 (fixes)
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('mobile_verified') ? 'has-error' : '' }}">
                         <!-- mobile active -->
@@ -242,20 +238,11 @@ Edit User
                         @enderror
                     </div>
                     
-<<<<<<< HEAD
-                       <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
-                     {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                           {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code']) !!}
-                           {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
-                       <span id="valid-msg" class="hide"></span>
-                       <span id="error-msg" class="hide"></span>
-                </div>
-=======
+
                     <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+                        {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile')) !!}
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                        {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
+                        {!! Form::tel('mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code']) !!}
                         {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
                         @error('mobile')
                         <span class="error-message"> {{$message}}</span>
@@ -267,8 +254,7 @@ Edit User
 
 
                    </div>
->>>>>>> 4904f88f9 (fixes)
-                   
+
                   
                     <div class="col-md-3 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
                         <!-- skype -->

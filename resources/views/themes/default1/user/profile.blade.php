@@ -161,17 +161,9 @@ input:checked + .slider:before {
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile')) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                     <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
 
-<<<<<<< HEAD
                     {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code']) !!}
-=======
 
-
-
-                    {!! Form::input('tel', 'mobile', $user->mobile, ['class' => 'form-control selected-dial-code', 'id' => 'mobile_code', 'data-country-iso' => $user->mobile_country_iso]) !!}
-
->>>>>>> 4904f88f9 (fixes)
                     {!! Form::hidden('mobile_country_iso',null,['id' => 'mobile_country_iso']) !!}
 
                     <span id="error-msg" class="hide"></span>

@@ -127,7 +127,7 @@ Create Group
                            <div class="form-group">
                             
                             <div class="col-md-4">
-                             <img src='{{ asset("storage/images/$template->image")}}' alt="Porto Theme" class="img-thumbnail" >
+                             <img src='{{ asset("storage/$template->image")}}' alt="Porto Theme" class="img-thumbnail" >
                              <br/>
                             <input type="radio" name='pricing_templates_id' value='{{$template->id}}' id='template' style="text-align: center;">
                             {{$template->name}}
@@ -145,110 +145,6 @@ Create Group
 
                     </tr>
 
-                   <!--        <tr>
-
-                        <td><b>{!! Form::label('status',Lang::get('message.toggle_status')) !!}</b></td>
-                        <td>
-                             <p>{!! Form::hidden('status',0) !!}</p>
-                            <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
-
-                               
-                                <p>{!! Form::checkbox('status',1) !!}  {{Lang::get('message.check-this-box_to_toggle_status')}}</p>
-
-
-                            </div>
-                        </td>
-
-                    </tr> -->
-
-
-
-                   <!--  <tr>
-
-                        <td>
-
-                            <div class="box-header">
-                                <h3 class="box-title">{{Lang::get('message.configurable-options')}}</h3>
-                            </div>
-
-                        </td>
-
-                        <td>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('hidden',Lang::get('message.title'),['class'=>'required']) !!}</b></td>
-
-                        <td>
-                            <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-
-                                <div class='row'>
-                                    <div class="col-md-6">
-                                        {!! Form::text('title',null,['class' => 'form-control']) !!}
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('hidden',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
-
-                        <td>
-                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
-
-                                <div class='row'>
-                                    <div class="col-md-6">
-                                        {!! Form::select('type',[''=>'select a type','1'=>'dropdown','2'=>'radio'],null,['class' => 'form-control','id'=>'type']) !!}
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('hidden',Lang::get('message.options')) !!}</b></td>
-
-                        <td>
-                            <div class="input_fields_wrap2">
-                            
-                                    
-                                    
-                                        <div class='row form-group'>
-                                            
-                                            <div class="col-md-4 {{ $errors->has('value.0.name') ? 'has-error' : '' }}">
-                                                <b>{!! Form::label('hidden',Lang::get('message.value'),['class'=>'required']) !!}</b>
-                                                <input type="text" name="value[][name]" class="form-control" value="{{ old('value.0.name') }}">
-                                            </div>
-                                            <div class="col-md-4 {{ $errors->has('price.0.name') ? 'has-error' : '' }}">
-                                                <b>{!! Form::label('hidden',Lang::get('message.price'),['class'=>'required']) !!}</b>
-                                                <input type="text" name="price[][name]" class="form-control" value="{{ old('price.0.name') }}">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <br>
-                                                <a href="#" class="add_field_button2 btn btn-primary">Add More Options</a>
-                                            </div>
-                                            
-
-
-                                        </div>
-                            </div>
-
-                        </td>
-
-                    </tr> -->
 
                     {!! Form::close() !!}
                 </table>

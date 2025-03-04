@@ -874,4 +874,9 @@ return [
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
     'product_description' => 'Product Description',
     'price_description' => 'Price Description',
+    'central_domain'=>'Please enter domain name(https://example.com).',
+    'cloud_name'=>'Please enter cloud cname(example.com)',
+    'cloud_popup'=>'Please provide cloud popup heading.',
+    'cloud_label'=>'Please provide label for domain.',
+    'cloud_radio'=>'Please provide label for radio button.',
 ];

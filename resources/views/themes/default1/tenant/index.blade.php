@@ -146,18 +146,20 @@
             <h3 class="card-title">Cloud server</h3>
         </div>
         <div class="card-body table-responsive">
-            {!! Form::model($cloud, ['route'=> 'cloud-details']) !!}
+            {!! Form::model($cloud, ['route'=> 'cloud-details','id'=>'cloud-details']) !!}
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('cloud_central_domain', Lang::get('message.cloud_central_domain'), ['class' => 'required']) !!}
-                        {!! Form::text('cloud_central_domain', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('cloud_central_domain', null, ['class' => 'form-control','id'=>'cloud_central_domain','placeholder'=>'https://example.com']) !!}
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('cloud_cname', Lang::get('message.cloud_cname'),['class' => 'required']) !!}
-                        {!! Form::text('cloud_cname', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('cloud_cname', null, ['class' => 'form-control','cloud_cname','placeholder'=>'example.com']) !!}
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
             </div>
@@ -177,24 +179,27 @@
         </div>
 
         <div class="card-body table-responsive">
-            {!! Form::model($cloudPopUp, ['route'=> 'cloud-pop-up']) !!}
+            {!! Form::model($cloudPopUp, ['route'=> 'cloud-pop-up','id'=>'cloud-pop-up']) !!}
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('cloud_top_message', Lang::get('message.cloud_top_message'), ['class' => 'required']) !!}
-                        {!! Form::text('cloud_top_message', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('cloud_top_message', null, ['class' => 'form-control','id'=>'cloud_top_message']) !!}
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('cloud_label_field', Lang::get('message.cloud_label_field'),['class' => 'required']) !!}
-                        {!! Form::text('cloud_label_field', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('cloud_label_field', null, ['class' => 'form-control','id'=>'cloud_label_field']) !!}
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('cloud_label_radio', Lang::get('message.cloud_label_radio'),['class' => 'required']) !!}
-                        {!! Form::text('cloud_label_radio', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('cloud_label_radio', null, ['class' => 'form-control','id'=>'cloud_label_radio']) !!}
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
             </div>
@@ -914,6 +919,111 @@
         });
 
 
+    </script>
+    <script>
+        $(document).ready(function () {
+            const userRequiredFields = {
+                cloud_central_domain:@json(trans('message.central_domain')),
+                cloud_cname:@json(trans('message.cloud_name')),
+                cloud_top_message:@json(trans('message.cloud_popup')),
+                cloud_label_field:@json(trans('message.cloud_label')),
+                cloud_label_radio:@json(trans('message.cloud_radio')),
+            };
+
+        $('#cloud-details').on('submit', function (e) {
+
+            const userFields = {
+                cloud_central_domain:$('#cloud_central_domain'),
+                cloud_cname:$('#cloud_cname'),
+            };
+
+
+            // Clear previous errors
+            Object.values(userFields).forEach(field => {
+                field.removeClass('is-invalid');
+                field.next().next('.error').remove();
+
+            });
+
+            let isValid = true;
+
+            const showError = (field, message) => {
+                field.addClass('is-invalid');
+                field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+            };
+
+            // Validate required fields
+            Object.keys(userFields).forEach(field => {
+                if (!userFields[field].val()) {
+                    showError(userFields[field], userRequiredFields[field]);
+                    isValid = false;
+                }
+            });
+
+
+            // If validation fails, prevent form submission
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+            $('#cloud-pop-up').on('submit', function (e) {
+
+                const userFields = {
+                    cloud_top_message:$('#cloud_top_message'),
+                    cloud_label_field:$('#cloud_label_field'),
+                    cloud_label_radio:$('#cloud_label_radio'),
+                };
+
+
+                // Clear previous errors
+                Object.values(userFields).forEach(field => {
+                    field.removeClass('is-invalid');
+                    field.next().next('.error').remove();
+
+                });
+
+                let isValid = true;
+
+                const showError = (field, message) => {
+                    field.addClass('is-invalid');
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                };
+
+                // Validate required fields
+                Object.keys(userFields).forEach(field => {
+                    if (!userFields[field].val()) {
+                        showError(userFields[field], userRequiredFields[field]);
+                        isValid = false;
+                    }
+                });
+
+
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            })
+
+
+        // Function to remove error when input'id' => 'changePasswordForm'ng data
+        const removeErrorMessage = (field) => {
+            field.classList.remove('is-invalid');
+            const error = field.nextElementSibling;
+            if (error && error.classList.contains('error')) {
+                error.remove();
+            }
+        };
+
+        // Add input event listeners for all fields
+        ['cloud_central_domain','cloud_cname'].forEach(id => {
+
+            document.getElementById(id).addEventListener('input', function () {
+                removeErrorMessage(this);
+
+            });
+        });
+        });
     </script>
     <script>
         $('ul.nav-sidebar a').filter(function() {

@@ -221,18 +221,19 @@
             <h3 class="card-title">Cloud Product Configuration</h3>
         </div>
         <div class="card-body">
-            {!! Form::model('',['route' => 'cloud-product-store']) !!}
+            {!! Form::model('',['route' => 'cloud-product-store','id'=>'product-configuration']) !!}
             <div class="row original-fields">
                 <div class="col-md-4">
                     {!! Form::label('cloud_product', Lang::get('message.cloud_product'), ['class' => 'required']) !!}
                     <div class="form-group">
                         <!-- Select Field 1 -->
-                        <select name="cloud_product" class="form-control">
+                        <select name="cloud_product" class="form-control" id="saas-product">
                             @foreach($products as $product)
                             <option value="{!! $product->id !!}">{{$product->name}}</option>
                             @endforeach
                             <!-- Add more options as needed -->
                         </select>
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -241,18 +242,19 @@
                     ?>
                     {!! Form::label('cloud_free_plan', Lang::get('message.cloud_free_plan'), ['class' => 'required']) !!}
                     <div class="form-group">
-                        <select name="cloud_free_plan" class="form-control">
+                        <select name="cloud_free_plan" class="form-control" id="saas-free-product">
                             @foreach($plans as $plan)
                             <option value="{!! $plan->id !!}">{!! $plan->name !!}</option>
                             @endforeach
-
                         </select>
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     {!! Form::label('cloud_product_key', Lang::get('message.cloud_product_key'), ['class' => 'required']) !!}
                     <div class="form-group">
-                        <input type="text" name="cloud_product_key" class="form-control">
+                        <input type="text" name="cloud_product_key" class="form-control" id="saas-product-key">
+                        <div class="input-group-append"></div>
                     </div>
                 </div>
 
@@ -307,7 +309,7 @@
             </div>
 
           <div class="card-body">
-            {!! Form::model('',['route' => 'cloud-data-center-store']) !!}
+            {!! Form::model('',['route' => 'cloud-data-center-store','id'=>'cloud-data-center']) !!}
                   <div class="row">
                       <div class="col-md-4">
                           <?php $countries = \App\Model\Common\Country::cursor(); ?>
@@ -321,6 +323,7 @@
                                   @endforeach
                                   <!-- Add more options as needed -->
                               </select>
+                              <div class="input-group-append"></div>
                           </div>
                       </div>
                       <div class="col-md-4">
@@ -332,6 +335,8 @@
 
                               <select id="cloud_state" name="cloud_state" class="form-control">
                               </select>
+                              <div class="input-group-append"></div>
+
                           </div>
                       </div>
 
@@ -922,12 +927,24 @@
     </script>
     <script>
         $(document).ready(function () {
+            function isValidURL(url) {
+                console.log(url);
+                const pattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*$/;
+                console.log(pattern.test(url));
+                return pattern.test(url);
+            }
             const userRequiredFields = {
                 cloud_central_domain:@json(trans('message.central_domain')),
                 cloud_cname:@json(trans('message.cloud_name')),
                 cloud_top_message:@json(trans('message.cloud_popup')),
                 cloud_label_field:@json(trans('message.cloud_label')),
                 cloud_label_radio:@json(trans('message.cloud_radio')),
+                saas_product:@json(trans('message.saas_product')),
+                saas_free_product:@json(trans('message.saas_free_product')),
+                saas_product_key:@json(trans('message.saas_product_key')),
+                cloud_state:@json(trans('message.cloud_hub_state')),
+                cloud_countries:@json(trans('message.cloud_hub_countries')),
+
             };
 
         $('#cloud-details').on('submit', function (e) {
@@ -960,6 +977,10 @@
                 }
             });
 
+            if(isValid && !isValidURL(userFields.cloud_central_domain.val())){
+                showError(userFields.cloud_central_domain,@json(trans('message.cloud_hub_valid_url')));
+                isValid=false;
+            }
 
             // If validation fails, prevent form submission
             if (!isValid) {
@@ -973,6 +994,81 @@
                     cloud_top_message:$('#cloud_top_message'),
                     cloud_label_field:$('#cloud_label_field'),
                     cloud_label_radio:$('#cloud_label_radio'),
+                };
+
+
+                // Clear previous errors
+                Object.values(userFields).forEach(field => {
+                    field.removeClass('is-invalid');
+                    field.next().next('.error').remove();
+
+                });
+
+                let isValid = true;
+
+                const showError = (field, message) => {
+                    field.addClass('is-invalid');
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                };
+
+                // Validate required fields
+                Object.keys(userFields).forEach(field => {
+                    if (!userFields[field].val()) {
+                        showError(userFields[field], userRequiredFields[field]);
+                        isValid = false;
+                    }
+                });
+
+
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            })
+
+            $('#cloud-data-center').on('submit', function (e) {
+
+                const userFields = {
+                    cloud_state:$('#cloud_state'),
+                    cloud_countries:$('#cloud_countries'),
+                };
+
+
+                // Clear previous errors
+                Object.values(userFields).forEach(field => {
+                    field.removeClass('is-invalid');
+                    field.next().next('.error').remove();
+
+                });
+
+                let isValid = true;
+
+                const showError = (field, message) => {
+                    field.addClass('is-invalid');
+                    field.next().after(`<span class='error invalid-feedback'>${message}</span>`);
+                };
+
+                // Validate required fields
+                Object.keys(userFields).forEach(field => {
+                    if (!userFields[field].val()) {
+                        showError(userFields[field], userRequiredFields[field]);
+                        isValid = false;
+                    }
+                });
+
+
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            })
+
+            $('#product-configuration').on('submit', function (e) {
+
+                const userFields = {
+                    saas_product:$('#saas-product'),
+                    saas_free_product:$('#saas-free-product'),
+                    saas_product_key:$('#saas-product-key'),
                 };
 
 

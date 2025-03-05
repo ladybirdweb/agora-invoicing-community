@@ -48,8 +48,6 @@ class TenantController extends Controller
             }else{
                 $app_key = $keys->app_key;
             }
-            }else{
-                $app_key = null;
             }
             $response = $this->client->request(
                 'GET',
@@ -85,6 +83,10 @@ class TenantController extends Controller
 
         return view('themes.default1.tenant.index', compact('de', 'cloudButton', 'cloud', 'regions', 'cloudPopUp'));
     }
+
+
+
+
 
     public function enableCloud(Request $request)
     {

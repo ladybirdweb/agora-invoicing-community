@@ -879,4 +879,10 @@ return [
     'cloud_popup'=>'Please provide cloud popup heading.',
     'cloud_label'=>'Please provide label for domain.',
     'cloud_radio'=>'Please provide label for radio button.',
+    'saas_product'=>'Please select a product.',
+    'saas_free_product'=>'Please select a product for free trial.',
+    'saas_product_key'=>'Please enter product key.',
+    'cloud_hub_state'=>'Please select a state/county.',
+    'cloud_hub_countries'=>'Please select a country.',
+    'cloud_hub_valid_url'=>'Please enter a valid url(https://example.com).'
 ];

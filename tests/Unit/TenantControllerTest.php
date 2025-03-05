@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Unit;
+
 use App\User;
 use Tests\TestCase;
 
@@ -26,5 +27,4 @@ class TenantControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewHas('de', null);
     }
-
 }

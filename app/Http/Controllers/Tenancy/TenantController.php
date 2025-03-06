@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
 
 class TenantController extends Controller
 {
@@ -44,7 +45,7 @@ class TenantController extends Controller
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             if($keys !== null){
             if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
-                throw new Exception('Invalid App key provided. Please contact admin.');
+                throw new Exception(Lang::get('message.cloud_invalid_message'));
             }else{
                 $app_key = $keys->app_key;
             }

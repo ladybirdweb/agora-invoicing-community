@@ -888,5 +888,6 @@ return [
     'saas_product_key'=>'Please enter product key.',
     'cloud_hub_state'=>'Please select a state/county.',
     'cloud_hub_countries'=>'Please select a country.',
-    'cloud_hub_valid_url'=>'Please enter a valid url(https://example.com).'
+    'cloud_hub_valid_url'=>'Please enter a valid url(https://example.com).',
+    'cloud_invalid_message'=>'Invalid App key provided. Please contact admin.',
 ];

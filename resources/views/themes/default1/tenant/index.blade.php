@@ -1025,7 +1025,17 @@
                     e.preventDefault();
                 }
             })
-
+            $('#cloud_countries').on('change', function () {
+                if ($(this).val() !== '') {
+                    document.querySelector('.select2-selection').style.cssText = `
+                        border: 1px solid silver;
+                        background-image:null;
+                        background-repeat: no-repeat;
+                        background-position: right 10px center;
+                        background-size: 16px 16px;`;
+                    removeErrorMessage(this);
+                }
+            });
             $('#cloud-data-center').on('submit', function (e) {
 
                 const userFields = {
@@ -1033,7 +1043,17 @@
                     cloud_countries:$('#cloud_countries'),
                 };
 
+                if($('#cloud_countries').val()==''){
+                    document.querySelector('.select2-selection').style.cssText = `
+                        border: 1px solid #dc3545;
+                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+                        background-repeat: no-repeat;
+                        background-position: right 10px center;
+                        background-size: 16px 16px;`;
+                }else{
+                    document.querySelector('.select2-selection').style.border='1px solid silver';
 
+                }
                 // Clear previous errors
                 Object.values(userFields).forEach(field => {
                     field.removeClass('is-invalid');
@@ -1112,7 +1132,16 @@
         };
 
         // Add input event listeners for all fields
-        ['cloud_central_domain','cloud_cname'].forEach(id => {
+        ['cloud_central_domain',
+            'cloud_cname',
+            'saas-product',
+            'saas-free-product',
+            'saas-product-key',
+            'cloud_countries',
+            'cloud_state',
+            'cloud_top_message',
+            'cloud_label_field',
+            'cloud_label_radio'].forEach(id => {
 
             document.getElementById(id).addEventListener('input', function () {
                 removeErrorMessage(this);

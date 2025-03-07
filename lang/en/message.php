@@ -873,7 +873,7 @@ return [
     'required_stripe_secret' => 'Please Enter Stripe Secret',
     'max_stripe_secret' => 'Stripe Secret cannot exceed 200 characters',
 
-    'email_not_matching'=>'The email domain does not match the URL domain.',
+    'email_not_matching' => 'The email domain does not match the URL domain.',
     'price_description' => 'Price description',
     'product_description' => 'Product description',
 

@@ -935,7 +935,6 @@
 
                 // If validation fails, prevent form submission
                 if (!isValid) {
-                    console.log(3);
                     e.preventDefault();
 
                 }

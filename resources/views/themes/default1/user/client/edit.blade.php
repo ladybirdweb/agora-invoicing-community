@@ -454,7 +454,6 @@ Edit User
     };
         $('#submit').on('click',function(e) {
             if(telInput.val()===''){
-                console.log(55);
                 errorMsg.classList.remove("hide");
                 errorMsg.innerHTML = @json(trans('message.user_edit_details.add_phone_number'));
                 $('#mobile_code').addClass('is-invalid');

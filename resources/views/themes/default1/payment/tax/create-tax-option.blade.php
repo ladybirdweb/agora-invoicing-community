@@ -248,7 +248,6 @@ $("#closeTax").click(function() {
 
             $('#submit').on('click', function (e) {
                 if($('#gst').val() == 'Others') {
-                    console.log(3);
                     const userFields = {
                         taxname: $('#taxname'),
                         rate: $('#rate'),
@@ -280,8 +279,6 @@ $("#closeTax").click(function() {
 
                     // If validation fails, prevent form submission
                     if (!isValid) {
-
-                        console.log($('#gst').val());
                         e.preventDefault();
                     }
                 }

@@ -7,12 +7,6 @@ System Managers
   .select2-container--default .select2-selection--multiple .select2-selection__choice {
       background-color: #1b1818 !important;
   }
-  /*.custom-select2-container {*/
-  /*    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");*/
-  /*    background-repeat: no-repeat;*/
-  /*    background-position: right calc(.375em + .1875rem) center;*/
-  /*    background-size: calc(.75em + .375rem) calc(.75em + .375rem);*/
-  /*}*/
 
 </style>
     <div class="col-sm-6">
@@ -242,8 +236,6 @@ System Managers
 
             $('#replace').click(function (e) {
                 if($('#users').val()==''){
-                    console.log($('#users').val());
-                    // document.querySelector('.select2-selection--multiple').style.border='1px solid #dc3545';
                     document.querySelector('.select2-selection--multiple').style.cssText = `
                         border: 1px solid #dc3545;
                         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");

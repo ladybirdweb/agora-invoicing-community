@@ -57,10 +57,8 @@ Edit
                         <!-- first name -->
                         {!! Form::label('script','Show script',['class'=>'required']) !!}
                         <br>
-{{--                        {!! Form::label('on_registration','On registration') !!}--}}
                         {!! Form::radio('on_registration',1,true) !!}
                         <label for="on_registration" style="font-weight: normal !important;">On registration</label>
-{{--                        {!! Form::label('on_every_page','On every page') !!}--}}
                         {!! Form::radio('on_registration',0,false) !!}
                         <label for="on_every_page" style="font-weight: normal !important;">On every page</label>
                         @error('on_registration')
@@ -73,7 +71,6 @@ Edit
                         {!! Form::label('analytics','Google analytics') !!}
                         {{Form::hidden('google_analytics',0,['id'=>'hidden_analytic'])}}
                         {!! Form::checkbox('google_analytics',$chat->google_analytics,null, array('id'=>'analytics')) !!}
-                        <!-- <input type="checkbox" name="google_analytics" id="analytics"> -->
                     </div>
                         <br>
                     <div class="col-md-3 form-group analytics_tag" hidden>
@@ -148,7 +145,6 @@ Edit
 
                     // If validation fails, prevent form submission
                     if (!isValid) {
-                        console.log(3);
                         e.preventDefault();
                     }
                 });

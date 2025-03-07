@@ -263,7 +263,6 @@ $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
 
                 // If validation fails, prevent form submission
                 if (!isValid) {
-                    console.log(5);
                     e.preventDefault();
                 }
             });

@@ -587,10 +587,8 @@ System Setting
         }
 
         $('#submit').on('click',function(e) {
-            console.log(44);
             if(telInput.val()===''){
                 e.preventDefault();
-                console.log(55);
                 errorMsg.classList.remove("hide");
                 errorMsg.innerHTML = @json(trans('message.user_edit_details.add_phone_number'));
                 $('#phone').addClass('is-invalid');
@@ -651,11 +649,9 @@ System Setting
             emailReset();
             if ($.trim(email.val())) {
                 if (validateEmail(email.val())) {
-                    console.log(66);
                     $('#company_email').css("border-color","");
                     $('#submit').attr('disabled',false);
                 } else {
-                    console.log(66);
                     emailErrorMsg.classList.remove("hide");
                     emailErrorMsg.innerHTML = "Please enter a valid email address";
                     $('#company_email').css("border-color","#dc3545");

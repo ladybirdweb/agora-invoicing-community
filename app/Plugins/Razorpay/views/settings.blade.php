@@ -235,72 +235,7 @@ Razorpay
                 })
 
              })
-             
 
-
-
-               //Validate and pass value through ajax
-  {{--       $("#key_update").on('click',function (){ //When Submit button is checked--}}
-  {{--      $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Please Wait...");--}}
-  {{--      $("#key_update").attr('disabled',true);--}}
-  {{--           var rzpstatus = 1;--}}
-  {{--         if ($('#rzp_key').val() == "") { //if value is not entered--}}
-  {{--          $('#rzp_keycheck').show();--}}
-  {{--          $('#rzp_keycheck').html("Please Enter Razorpay Key");--}}
-  {{--          $('#rzp_key').css("border-color","red");--}}
-  {{--          $('#rzp_keycheck').css({"color":"red","margin-top":"5px"});--}}
-  {{--          return false;--}}
-  {{--        } else if ($('#rzp_secret').val() == "") {--}}
-  {{--          $("#key_update").attr('disabled',false);--}}
-  {{--           $('#rzp_secretcheck').show();--}}
-  {{--          $('#rzp_secretcheck').html("Please Enter Stripe Secret");--}}
-  {{--          $('#rzp_secret').css("border-color","red");--}}
-  {{--          $('#rzp_secretcheck').css({"color":"red","margin-top":"5px"});--}}
-  {{--          return false;--}}
-  {{--        } else if($('#apilayer_key').val() == "") {--}}
-  {{--          $("#key_update").attr('disabled',false);--}}
-  {{--           $('#apilayer_check').show();--}}
-  {{--          $('#apilayer_check').html("Please Enter Api Layer Access key");--}}
-  {{--          $('#apilayer_key').css("border-color","red");--}}
-  {{--          $('#apilayer_check').css({"color":"red","margin-top":"5px"});--}}
-  {{--          return false;--}}
-  {{--        }--}}
-  {{--  --}}
-  {{--   --}}
-  {{--  $.ajax ({--}}
-  {{--    url: '{{url("update-api-key/payment-gateway/razorpay")}}',--}}
-  {{--    type : 'get',--}}
-  {{--    data: {--}}
-  {{--     "status": rzpstatus,--}}
-  {{--     "rzp_key": $('#rzp_key').val(),"rzp_secret" : $('#rzp_secret').val(), "apilayer_key" : $('#apilayer_key').val() },--}}
-  {{--     success: function (data) {--}}
-  {{--      $("#key_update").attr('disabled',false); --}}
-  {{--      $('#rzp_keycheck').hide();--}}
-  {{--       $('#rzp_secret').css("border-color","");--}}
-  {{--         $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Update");--}}
-  {{--           --}}
-  {{--          $('#alertMessage').show();--}}
-  {{--          var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.message.message+'.</div>';--}}
-  {{--          $('#alertMessage').html(result+ ".");--}}
-  {{--          $("#key_update").html("<i class='fa fa-sync-alt'>&nbsp;</i>Update");--}}
-  {{--            setInterval(function(){ --}}
-  {{--              $('#alertMessage').slideUp(3000); --}}
-  {{--          }, 1000);--}}
-  {{--        }, error: function(data) {--}}
-  {{--          $("#key_update").attr('disabled',false);  --}}
-  {{--          $('#key_update').html("<i class='fas fa-circle-notch fa-spin'></i>  Update");--}}
-  {{--              $('#errorMessage').show();--}}
-  {{--              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i> Failed! </strong>'+data.responseJSON.message+'.</div>';--}}
-  {{--              $('#errorMessage').html(data.responseJSON.message);--}}
-  {{--              $('#errorMessage').html(result+ ".");--}}
-  {{--              $("#key_update").html("<i class='fa fa-sync-alt'>&nbsp;</i>Update");--}}
-  {{--              setInterval(function(){ --}}
-  {{--              $('#errorMessage').slideUp(3000); --}}
-  {{--          }, 1000);--}}
-  {{--        }--}}
-  {{--  })--}}
-  {{--});--}}
-             
         
 </script>
 <script>

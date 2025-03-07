@@ -49,7 +49,7 @@ Route::get('refresh-csrf', function () {
 Route::post('otp2/send', [Auth\AuthController::class, 'otp']);
 Route::get('social-logins', [SocialLoginsController::class, 'view'])->middleware('auth');
 Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
-Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-soial-login');
+Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
 Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
 Route::post('store-basic-details', [Auth\LoginController::class, 'storeBasicDetailsss'])->name('store-basic-details');
 

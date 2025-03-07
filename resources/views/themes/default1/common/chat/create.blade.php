@@ -57,10 +57,8 @@ Script
                         {!! Form::label('script','Show script',['class'=>'required']) !!}
                         <br>
                         {!! Form::radio('on_registration',1,true) !!}
-{{--                        {!! Form::label('on_registration','On registration') !!}--}}
                         <label for="on_registration" style="font-weight: normal !important;">On registration</label>
                         &nbsp;{!! Form::radio('on_registration',0,false) !!}
-{{--                        {!! Form::label('on_every_page','On every page') !!}--}}
                         <label for="on_every_page" style="font-weight: normal !important;">On every page</label>
                         @error('on_registration')
                         <span class="error-message"> {{$message}}</span>
@@ -158,7 +156,6 @@ Script
 
             // If validation fails, prevent form submission
             if (!isValid) {
-                console.log(3);
                 e.preventDefault();
             }
         });

@@ -284,18 +284,14 @@
         };
 
         document.querySelector('#agentquant').addEventListener('input', function () {
-            console.log(this);
             let prodquant=document.querySelector('#prodquant');
             removeErrorMessage(this);
-            console.log(prodquant);
             removeErrorMessage(prodquant);
         });
 
         document.querySelector('#prodquant').addEventListener('input', function () {
-            console.log(this);
             let agentquant=document.querySelector('#agentquant');
             removeErrorMessage(this);
-            console.log(prodquant);
             removeErrorMessage(agentquant);
         });
 

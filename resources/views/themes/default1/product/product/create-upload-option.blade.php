@@ -108,14 +108,11 @@
                 <button type="submit" class="btn btn-primary" id="uploadVersion"><i class="fa fa-save"></i>&nbsp;{!!Lang::get('Save')!!}</button>
             </div>
 
-            <!--  <form id="formsubmitform"> -->
 
             <!-- {!! Form::close()  !!} -->
             <!-- </form> -->
             <br>
-            <!--  <div id="files_list"></div>
-               <p id="loading"></p>
-               <input type="hidden" name="file_ids" id="file_ids" value=""> -->
+
 
 
         </div>

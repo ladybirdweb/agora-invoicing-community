@@ -540,7 +540,6 @@ $('#submit').on('click',function() {
                 emailReset();
                 if ($.trim(email.val())) {
                     if (validateEmail(email.val())) {
-                        console.log(66);
                         $('#email').css("border-color","");
                         $('#submit').attr('disabled',false);
                     } else {

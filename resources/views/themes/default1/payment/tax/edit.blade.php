@@ -340,8 +340,6 @@ $(document).find('.changegststate').hide();
 
                     // If validation fails, prevent form submission
                     if (!isValid) {
-
-                        console.log($('#editTax').val());
                         e.preventDefault();
                     }
                 }

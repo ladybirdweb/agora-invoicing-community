@@ -167,7 +167,6 @@ $(document).ready(function (){
        $('#git_secret').attr('enabled', true);
 
      } else if(githubstatus ===0){
-        console.log(0);
       $('#github').prop('checked',false);
         $('.git_username').attr('disabled', true);
        $('.git_password').attr('disabled', true);
@@ -178,7 +177,6 @@ $(document).ready(function (){
 
     $("#github").on('change',function (){
     if($(this).prop('checked')) {
-        console.log(11);
       var username =  $('#hidden_git_username').val();
        var password =  $('#hidden_git_password').val();
         var client =  $('#hidden_git_client').val();
@@ -193,7 +191,6 @@ $(document).ready(function (){
        $('#git_secret').val(secret);
 
      } else {
-        console.log(10);
         $('.git_username').attr('disabled', true);
       $('.git_password').attr('disabled', true);
       $('.git_client').attr('disabled', true);
@@ -255,7 +252,6 @@ $(document).ready(function (){
                  // If validation fails, prevent form submission
                  if (!isValid) {
                      githubstatus = 1;
-                     console.log(3);
                      e.preventDefault();
                  }else{
                      githubstatus=0;

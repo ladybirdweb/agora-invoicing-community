@@ -424,7 +424,6 @@ input:checked + .slider:before {
                 email: $('#email'),
                 company: $('#company'),
                 address: $('#address'),
-                // mobile_code: $('#mobile_code'),
                 user_name: $('#user_name'),
             };
 
@@ -456,12 +455,6 @@ input:checked + .slider:before {
                 isValid = false;
             }
 
-
-            {{--if (isValid && !validatePhoneNumber(userFields.mobile.val())) {--}}
-            {{--    console.log(validatePhoneNumber(userFields.mobile.val()));--}}
-            {{--    showError(userFields.mobile, @json(trans('message.user_edit_details.add_valid_mobile')));--}}
-            {{--    isValid = false;--}}
-            {{--}--}}
 
             if (isValid && !validName(userFields.first_name.val())) {
                 showError(userFields.first_name, @json(trans('message.user_edit_details.add_valid_name')));

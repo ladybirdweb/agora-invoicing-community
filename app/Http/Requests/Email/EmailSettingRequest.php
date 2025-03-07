@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Email;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Lang;
 class EmailSettingRequest extends FormRequest
 {
     /**
@@ -23,7 +23,7 @@ class EmailSettingRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->driver == 'smtp' || $this->driver == 'mailgun' || $this->driver == 'mandrill' || $this->driver == 'ses' || $this->driver == 'sparkpost') {
+        if(in_array($this->driver,['smtp','mailgun','mandrill','ses','sparkpost'])){
             return [
                 'password' => 'required_if:driver,smtp,mandrill,ses,sparkpost',
                 'port' => 'required_if:driver,smtp',
@@ -46,7 +46,7 @@ class EmailSettingRequest extends FormRequest
                         $url = \Request::url();
                         $domain = parse_url($url);
                         if (strcasecmp($domain['host'], $emailDomain) !== 0) {
-                            return $fail('The email domain does not match the URL domain.');
+                            return $fail(Lang::get('message.email_not_matching'));
                         }
                     },
                 ],

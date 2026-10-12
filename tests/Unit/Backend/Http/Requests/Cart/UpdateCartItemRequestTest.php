@@ -53,9 +53,19 @@ class UpdateCartItemRequestTest extends TestCase
         $this->assertArrayHasKey('domain', $v->errors()->toArray());
     }
 
-    public function test_domain_255_chars_passes(): void
+    public function test_domain_accepts_host_or_ip(): void
     {
-        $v = validator(['domain' => str_repeat('d', 255)], $this->req->rules());
-        $this->assertArrayNotHasKey('domain', $v->errors()->toArray());
+        foreach (['support.acme.com', 'acme.com', '10.0.0.5'] as $domain) {
+            $v = validator(['domain' => $domain], $this->req->rules());
+            $this->assertArrayNotHasKey('domain', $v->errors()->toArray(), $domain);
+        }
+    }
+
+    public function test_domain_rejects_scheme_path_or_bare_word(): void
+    {
+        foreach (['http://acme.com', 'acme.com/path', 'acme', '-bad.com'] as $domain) {
+            $v = validator(['domain' => $domain], $this->req->rules());
+            $this->assertArrayHasKey('domain', $v->errors()->toArray(), $domain);
+        }
     }
 }

@@ -249,7 +249,6 @@ class Google2FAController extends Controller
 
         $loginController = new LoginController;
         $loginController->logActivityLogin($user);
-        $loginController->convertCart(); // @phpstan-ignore method.notFound
 
         return successResponse('', ['redirect' => $loginController->redirectPath()]);
     }

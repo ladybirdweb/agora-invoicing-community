@@ -455,10 +455,11 @@ const cloudEnabled = computed(() => el?.dataset?.cloud === 'true')
 const demoEnabled = computed(() => el?.dataset?.demo === 'true')
 const cartCount = ref(parseInt(el?.dataset?.cartCount ?? '0', 10))
 
-// Authenticated users get the live DB-backed cart count; guests fall back to
+// Live store count once the cart is loaded (0 included — `||` would fall back
+// to the stale page-load count after the last item is removed); until then,
 // the server-rendered count attribute.
 const cartItems = computed(() => Array.isArray(cartStore.items) ? cartStore.items : [])
-const badgeCount = computed(() => cartStore.itemCount || cartCount.value)
+const badgeCount = computed(() => cartStore.cart ? cartStore.itemCount : cartCount.value)
 
 const socialMedia = computed(() => {
   try {

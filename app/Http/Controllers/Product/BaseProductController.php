@@ -191,7 +191,7 @@ class BaseProductController extends ExtendedBaseProductController
         ]);
 
         try {
-            $productId = $request->input('product');
+            $productId = $request->integer('product');
             $userId = $request->input('user');
             $planId = $request->input('plan');
 
@@ -215,7 +215,7 @@ class BaseProductController extends ExtendedBaseProductController
             $result = [
                 'price' => $price,
                 'fields' => [
-                    'required_domain' => (bool) $product->required_domain, // @phpstan-ignore property.notFound
+                    'required_domain' => (bool) $product->require_domain,
                     'is_cloud_product' => in_array($productId, cloudPopupProducts())
                         ? ['domain' => cloudSubDomain()]
                         : false,

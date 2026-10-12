@@ -146,32 +146,6 @@ class RenewControllerTest extends DBTestCase
     }
 
     // -------------------------------------------------------------------------
-    // getPriceByProductId
-    // -------------------------------------------------------------------------
-
-    public function test_get_price_by_product_id_throws_when_product_not_found(): void
-    {
-        $this->expectException(\Exception::class);
-        $this->controller->getPriceByProductId(999999, $this->user->id);
-    }
-
-    public function test_get_price_by_product_id_returns_price_when_found(): void
-    {
-        $product = Product::has('price')->first();
-        if (! $product) {
-            $product = \App\Model\Product\Product::create(['name' => 'RenewPP '.uniqid()]);
-        }
-
-        try {
-            $result = $this->controller->getPriceByProductId($product->id, $this->user->id);
-            $this->assertIsNumeric($result);
-        } catch (\Exception $e) {
-            // Price might not match user currency → acceptable
-            $this->assertNotEmpty($e->getMessage());
-        }
-    }
-
-    // -------------------------------------------------------------------------
     // renewByClient — HTTP endpoint
     // -------------------------------------------------------------------------
 

@@ -6,7 +6,6 @@ use App\ApiKey;
 use App\FileSystemSettings;
 use App\Http\Requests\UpdatePdfSettingsRequest;
 use App\Http\Requests\UpdateStoragePathRequest;
-use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\StatusSetting;
 use App\Services\Pdf\PdfManager;
 use Aws\Exception\AwsException;
@@ -207,44 +206,6 @@ trait ApiKeySettings
         StatusSetting::where('id', 1)->update(['mailchimp_ispaid_status' => $request->input('status')]);
 
         return ['message' => 'success', 'update' => __('message.mailchimp_is_paid_status_saved')];
-    }
-
-    public function updateMailchimpDetails(Request $request): JsonResponse
-    {
-        try {
-            $chimp_auth_key = $request->input('mailchimp_auth_key');
-
-            $dc = substr((string) $chimp_auth_key, strpos((string) $chimp_auth_key, '-') + 1);
-            // Mailchimp API URL
-            $url = sprintf('https://%s.api.mailchimp.com/3.0/', $dc);
-            // Make an API request
-            $response = Http::withBasicAuth('anystring', $chimp_auth_key)->get($url);
-            if ($response->successful()) {
-                $status = $request->input('status');
-                StatusSetting::where('id', 1)->update(['mailchimp_status' => $status]);
-                MailchimpSetting::where('id', 1)->update(['api_key' => $chimp_auth_key]);
-                $mailchimpverifiedStatus = 1;
-
-                $mailchimp_set = new MailchimpSetting;
-                $set = $mailchimp_set->firstOrFail();
-                $mail_api_key = $set->api_key;
-                $mailchimp = new \Mailchimp\Mailchimp($mail_api_key); // @phpstan-ignore class.notFound
-                $allists = $mailchimp->get('lists?count=20')['lists']; // @phpstan-ignore class.notFound
-                $selectedList[] = $set->list_id;
-                $subscribe_status = MailchimpSetting::value('subscribe_status');
-                $data = ['mailchimpverifiedStatus' => $mailchimpverifiedStatus,
-                    'status' => $status,
-                    'allLists' => $allists,
-                    'selectedList' => $selectedList,
-                    'subscribe_status' => $subscribe_status, ];
-
-                return successResponse(__('message.mailchimp_setting'), $data);
-            }
-
-            return errorResponse(__('message.mailchimp_apikey_error'));
-        } catch (Exception) {
-            return errorResponse(__('message.mailchimp_apikey_error'));
-        }
     }
 
     public function updateTermsDetails(Request $request): JsonResponse

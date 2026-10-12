@@ -147,11 +147,6 @@ class BaseRenewController extends Controller
     public function generateInvoice(Product $product, User $user, int $orderid, int $planid, float|int $cost, string $code, int|string|null $agents, string $currency): InvoiceItem|JsonResponse|RedirectResponse
     {
         try {
-            $controller = new InvoiceController;
-            if ($code !== '') {
-                $controller->checkCode($code, $product->id, $currency); // @phpstan-ignore method.notFound
-            }
-
             //            if (!empty($agents) && in_array($product->id, cloudPopupProducts())) {
             //                $license_code = Order::where('id', $orderid)->value('serial_key');
             //                $cost = $cost * (int) substr($license_code, -4);

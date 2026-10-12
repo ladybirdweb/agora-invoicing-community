@@ -108,16 +108,20 @@
 
       </div>
     </div>
+
+    <CartDomainModal :show="showDomainModal" :items="domainItems"
+                     @close="showDomainModal = false" @save="saveDomains" />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useCartStore } from '@/core/stores/cart'
 import { useAlertStore } from '@/core/stores/alert'
 import { __ } from '@/plugins/i18n'
 import CartItemRow from '@/themes/porto/components/cart/CartItemRow.vue'
+import CartDomainModal from '@/themes/porto/components/cart/CartDomainModal.vue'
 import { useAuthStore } from '@/core/stores/auth'
 
 const router     = useRouter()
@@ -142,6 +146,10 @@ onMounted(async () => {
     }
 })
 
+// Products whose license is locked to a domain: asked in a modal before checkout.
+const domainItems = computed(() => cartStore.items.filter(item => item.require_domain))
+const showDomainModal = ref(false)
+
 function checkout() {
   if (!authStore.isAuthenticated) {
     router.push('/login').then(() => {
@@ -153,7 +161,20 @@ function checkout() {
     })
     return
   }
+  if (domainItems.value.length) {
+    showDomainModal.value = true
+    return
+  }
   router.push('/checkout')
+}
+
+// { [itemId]: domain } from the modal: save the changed ones, then continue.
+async function saveDomains(domains) {
+  for (const item of domainItems.value) {
+    if (domains[item.id] !== item.domain) await cartStore.updateItem(item.id, { domain: domains[item.id] })
+  }
+  showDomainModal.value = false
+  if (!cartStore.error) router.push('/checkout')
 }
 
 // CartItemRow emits { id, quantity } or { id, agents }.

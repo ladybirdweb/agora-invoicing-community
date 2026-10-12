@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 client-sidebar-col order-2 order-lg-1 mt-4 mt-lg-0">
+    <div class="col-12 client-sidebar-col">
         <aside class="sidebar client-sidebar mt-2" id="sidebar">
 
             <ul class="nav nav-list no-arrows flex-column mb-5">

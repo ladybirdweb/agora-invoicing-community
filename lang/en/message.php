@@ -3603,6 +3603,7 @@ return [
     'order_summary' => 'Order Summary',
     'have_a_coupon' => 'Have a coupon?',
     'cart_empty' => 'Your cart is empty.',
+    'cart_domain_required' => 'Please enter the domain where :product will be installed.',
     'order_complete' => 'Order Complete',
     'no_payment_gateway' => 'No payment gateway is available for this currency.',
     'processing_fee_note' => 'An extra processing fee of :fee% will be charged on your Order Total during the time of payment.',

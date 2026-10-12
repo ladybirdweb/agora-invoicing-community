@@ -127,17 +127,6 @@ class BaseCronController extends Controller
         return $users;
     }
 
-    public function get30DaysUsers(): mixed
-    {
-        $users = $this->get30DaysExpiryUsers(); // @phpstan-ignore method.notFound
-        // dd($users);
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
-
     /**
      * @return Builder<Subscription>
      */

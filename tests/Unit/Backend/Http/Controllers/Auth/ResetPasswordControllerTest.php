@@ -106,7 +106,7 @@ class ResetPasswordControllerTest extends DBTestCase
         $token = \Str::random(40);
         Password::create(['email' => $user->email, 'token' => $token, 'created_at' => now()]);
 
-        $response = $this->getJson('/password/reset/'.$token);
+        $response = $this->getJson('/auth/reset-validate/'.$token);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);

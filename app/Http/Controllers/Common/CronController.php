@@ -191,35 +191,6 @@ class CronController extends BaseCronController
     }
 
     /**
-     * @return list<mixed>
-     */
-    public function getUsers(): array
-    {
-        $users = [];
-        if (count($this->get30DaysUsers()) > 0) {
-            $users[] = $this->get30DaysUsers();
-        }
-
-        if (count($this->get15DaysUsers()) > 0) {
-            $users[] = $this->get15DaysUsers();
-        }
-
-        if (count($this->get1DaysUsers()) > 0) {
-            $users[] = $this->get1DaysUsers();
-        }
-
-        if (count($this->get0DaysUsers()) > 0) {
-            $users[] = $this->get0DaysUsers();
-        }
-
-        if (count($this->getPlus1Users()) > 0) {
-            $users[] = $this->getPlus1Users();
-        }
-
-        return $users;
-    }
-
-    /**
      * @return mixed[]
      */
     #[Override]

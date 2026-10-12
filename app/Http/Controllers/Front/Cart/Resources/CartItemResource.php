@@ -33,6 +33,7 @@ class CartItemResource extends JsonResource
             'quantity' => (int) $this->quantity, // @phpstan-ignore property.notFound
             'agents' => (int) $this->agents, // @phpstan-ignore property.notFound
             'domain' => $this->domain, // @phpstan-ignore property.notFound
+            'require_domain' => $this->needsDomain(), // @phpstan-ignore method.notFound
             'billing_cycle' => $this->billing_cycle, // @phpstan-ignore property.notFound
             // Product-level edit permissions (drive which steppers are editable).
             'can_modify_quantity' => (bool) $this->product?->can_modify_quantity, // @phpstan-ignore property.notFound

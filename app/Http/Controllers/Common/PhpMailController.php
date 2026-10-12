@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Tenancy\TenantController;
-use App\Jobs\NotifyMail;
 use App\Jobs\SendEmail;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
@@ -107,13 +106,6 @@ class PhpMailController extends Controller
         DB::afterCommit(function () use ($job): void {
             dispatch($job);
         });
-    }
-
-    public function NotifyMail(mixed $from, mixed $to, mixed $template_data, mixed $template_name): void
-    {
-        $this->setQueue();
-        $job = new NotifyMail;
-        dispatchNow($job); // @phpstan-ignore function.notFound
     }
 
     /**

@@ -10,7 +10,6 @@ use App\Model\Common\StatusSetting;
 use App\Services\Pdf\PdfManager;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
-use DrewM\MailChimp\MailChimp;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

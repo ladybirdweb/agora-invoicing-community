@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\CloudPopUp;
-use App\Email_log;
 use App\EmailValidationResults;
 use App\Facades\Attach;
 use App\Http\Controllers\BillingInstaller\InstallerController;
@@ -604,22 +603,6 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function getBody(int $id): JsonResponse
-    {
-        try {
-            /** @phpstan-ignore class.notFound */
-            $email = Email_log::findOrFail($id);
-
-            return successResponse('', ['body' => $email->body, 'subject' => $email->subject]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return errorResponse(__('message.record_not_found'));
-        } catch (Exception $exception) {
-            \Logger::exception($exception);
-
-            return errorResponse(__('message.sorry_something_wrong'));
-        }
-    }
-
     public function getActivityApi(Request $request): JsonResponse
     {
         try {
@@ -802,31 +785,6 @@ class SettingsController extends BaseSettingsController
 
             return errorResponse(__('message.sorry_something_wrong'));
         }
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder<Model>
-     */
-    public function mailSearch(string $from = '', string $till = ''): \Illuminate\Database\Eloquent\Builder
-    {
-        /** @phpstan-ignore class.notFound */
-        $join = Email_log::select('id', 'from', 'to', 'date', 'subject', 'status');
-
-        if ($from !== '' && $from !== '0') {
-            $from = $this->DateFormat($from);
-            $tillDate = $this->DateFormat($till ?: $this->DateFormat()); // Use $till if provided, otherwise, use current date
-            $join = $join->whereBetween('date', [$from, $tillDate]);
-        }
-
-        if ($till !== '' && $till !== '0') {
-            $till = $this->DateFormat($till);
-            /** @phpstan-ignore class.notFound */
-            $fromDate = Email_log::first()->date;
-            $fromDate = $this->DateFormat($from ?: $fromDate); // Use $from if provided, otherwise, use the first email log date
-            $join = $join->whereBetween('date', [$fromDate, $till]);
-        }
-
-        return $join;
     }
 
     public function postSettingsError(Setting $settings, Request $request): JsonResponse

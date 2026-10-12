@@ -108,9 +108,12 @@ class DownloadFileController extends Controller
             return $this->notificationResponse('notification_install_archive_not_found', [], $product, $version);
         }
 
+        $notificationText = $this->getNotificationText('notification_operation_ok', $product, $version);
+
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Content-Disposition', 'attachment; filename="'.$filename.'"');
         $response->headers->set('notification_case', 'notification_operation_ok');
+        $response->headers->set('notification_text', $notificationText);
         $response->headers->set('notification_server_signature', $signature);
 
         return $response;

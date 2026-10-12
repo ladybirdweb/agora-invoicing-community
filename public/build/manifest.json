@@ -643,8 +643,8 @@
     "file": "assets/platforms-_0nz6t4h.js",
     "name": "platforms"
   },
-  "_porto-CTi0Jc4u.js": {
-    "file": "assets/porto-CTi0Jc4u.js",
+  "_porto-CEop4I3P.js": {
+    "file": "assets/porto-CEop4I3P.js",
     "name": "porto",
     "imports": [
       "_vue.esm-bundler-BtBz4Xsg.js",
@@ -694,12 +694,12 @@
       "resources/assets/js/themes/porto/components/store/PlanCard.vue"
     ],
     "css": [
-      "assets/porto-DNHm8fzM.css"
+      "assets/porto-D5FlZFQ1.css"
     ]
   },
-  "_porto-DNHm8fzM.css": {
-    "file": "assets/porto-DNHm8fzM.css",
-    "src": "_porto-DNHm8fzM.css"
+  "_porto-D5FlZFQ1.css": {
+    "file": "assets/porto-D5FlZFQ1.css",
+    "src": "_porto-D5FlZFQ1.css"
   },
   "_preload-helper-HclGiUj8.js": {
     "file": "assets/preload-helper-HclGiUj8.js",
@@ -3359,7 +3359,7 @@
     "src": "node_modules/intl-tel-input/dist/img/flags@2x.webp"
   },
   "resources/assets/js/admin.js": {
-    "file": "assets/admin-D2ZgYFNq.js",
+    "file": "assets/admin-D6B5VKx5.js",
     "name": "admin",
     "src": "resources/assets/js/admin.js",
     "isEntry": true,
@@ -3506,7 +3506,7 @@
     ]
   },
   "resources/assets/js/client.js": {
-    "file": "assets/client-CWf5fNIn.js",
+    "file": "assets/client-BgvokiQ7.js",
     "name": "client",
     "src": "resources/assets/js/client.js",
     "isEntry": true,
@@ -3524,7 +3524,7 @@
       "_GlobalLoader-C3gtQlNl.js",
       "_Alert-DGhh-DUG.js",
       "_useSeoMeta-rBYZh87-.js",
-      "_porto-CTi0Jc4u.js"
+      "_porto-CEop4I3P.js"
     ],
     "dynamicImports": [
       "resources/assets/js/pages/client/auth/LoginRegister.vue",
@@ -5983,7 +5983,7 @@
     ]
   },
   "resources/assets/js/pages/client/cart/CartPage.vue": {
-    "file": "assets/CartPage-C4alKFH6.js",
+    "file": "assets/CartPage-LmP7wYNc.js",
     "name": "CartPage",
     "src": "resources/assets/js/pages/client/cart/CartPage.vue",
     "isDynamicEntry": true,
@@ -5994,10 +5994,13 @@
       "_auth-D-jYbqlJ.js",
       "_i18n-Bd1yVWrJ.js",
       "_alert-CFhrHwp_.js",
-      "_cart-BFM8Q0MI.js"
+      "_cart-BFM8Q0MI.js",
+      "_vee-validate-BTuI5oJG.js",
+      "_index.esm-DaGi48hs.js",
+      "_Modal-BYcVRKd8.js"
     ],
     "css": [
-      "assets/CartPage-BMw_O0s9.css"
+      "assets/CartPage-B9LQnFEi.css"
     ]
   },
   "resources/assets/js/pages/client/checkout/CheckoutPage.vue": {
@@ -6057,7 +6060,7 @@
     ]
   },
   "resources/assets/js/pages/client/dashboard/DashboardIndex.vue": {
-    "file": "assets/DashboardIndex-C0Ivrm6n.js",
+    "file": "assets/DashboardIndex-DdtDC9tE.js",
     "name": "DashboardIndex",
     "src": "resources/assets/js/pages/client/dashboard/DashboardIndex.vue",
     "isDynamicEntry": true,
@@ -6100,7 +6103,7 @@
     ]
   },
   "resources/assets/js/pages/client/invoices/InvoiceIndex.vue": {
-    "file": "assets/InvoiceIndex-CMBoQ9Oi.js",
+    "file": "assets/InvoiceIndex-DyAv4jEL.js",
     "name": "InvoiceIndex",
     "src": "resources/assets/js/pages/client/invoices/InvoiceIndex.vue",
     "isDynamicEntry": true,
@@ -7030,12 +7033,12 @@
     ]
   },
   "resources/assets/js/themes/porto/index.js": {
-    "file": "assets/porto-Dw7sgbRa.js",
+    "file": "assets/porto-TWBm5KgM.js",
     "name": "porto",
     "src": "resources/assets/js/themes/porto/index.js",
     "isDynamicEntry": true,
     "imports": [
-      "_porto-CTi0Jc4u.js"
+      "_porto-CEop4I3P.js"
     ]
   }
 }

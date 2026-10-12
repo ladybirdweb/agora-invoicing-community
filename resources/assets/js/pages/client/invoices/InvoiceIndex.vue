@@ -7,7 +7,7 @@
     </div>
 
     <AppCard :title="__('message.my_invoices')">
-      <DataTable :url="apiUrl" :dataColumns="columns" :option="tableOptions">
+      <DataTable :key="apiUrl" :url="apiUrl" :dataColumns="columns" :option="tableOptions">
         <template #number="{ row }">
           <div class="d-flex flex-column align-items-start">
             <RouterLink :to="'/my-invoice/' + row.id" class="fw-semibold">{{ row.number || '—' }}</RouterLink>
@@ -93,8 +93,8 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { reactive, ref, computed, onMounted } from 'vue'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { __ } from '@/plugins/i18n'
 import { useDateTime } from '@/core/composables/useDateTime'
 import http from '@/plugins/axios'
@@ -116,7 +116,11 @@ onMounted(async () => {
 })
 
 const router = useRouter()
-const apiUrl = `/get-my-invoices`
+const route = useRoute()
+const statusFilter = computed(() => route.query.status || '')
+const apiUrl = computed(() => statusFilter.value
+  ? `/get-my-invoices?status=${encodeURIComponent(statusFilter.value)}`
+  : '/get-my-invoices')
 
 const columns = ['number', 'date', 'orders', 'grand_total', 'paid', 'balance', 'status', 'action']
 

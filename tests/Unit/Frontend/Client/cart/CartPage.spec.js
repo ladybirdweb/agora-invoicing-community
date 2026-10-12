@@ -119,4 +119,21 @@ describe('CartPage.vue', () => {
         await wrapper.vm.$nextTick()
         expect(wrapper.text()).toContain('$')
     })
+
+    it('opens the domain modal on checkout when an item requires a domain', async () => {
+        const state = { ...cartWithItem, cart: { ...cartWithItem.cart, items: [{ ...cartWithItem.cart.items[0], require_domain: true, domain: null }] } }
+        wrapper = mount(CartPage, {
+            global: {
+                plugins: [createTestingPinia({ initialState: { cart: state, auth: { user: { id: 1 }, isAuthenticated: true }, alert: {} } })],
+                stubs: ['loader', 'cart-item-row', 'router-link', 'CartDomainModal'],
+            },
+        })
+        const modal = () => wrapper.findComponent({ name: 'CartDomainModal' })
+        expect(modal().props('show')).toBe(false)
+
+        await wrapper.find('button.checkout').trigger('click')
+
+        expect(modal().props('show')).toBe(true)
+        expect(modal().props('items')).toHaveLength(1)
+    })
 })

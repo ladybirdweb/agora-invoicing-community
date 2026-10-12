@@ -184,31 +184,6 @@ class RenewController extends BaseRenewController
         }
     }
 
-    public function getPriceByProductId(int $productid, int $userid): float|int
-    {
-        try {
-            $product = $this->getProductById($productid);
-            if (! $product instanceof Product) {
-                throw new Exception(__('message.product_removed_database'));
-            }
-
-            $currency = $this->getUserCurrencyById($userid); // @phpstan-ignore method.notFound
-            $price = $product->price()->where('currency', $currency)->first();
-            if (! $price) {
-                throw new Exception(__('message.price_removed_database'));
-            }
-
-            $cost = $price->sales_price;
-            if (! $cost) {
-                return $price->regular_price; // @phpstan-ignore property.notFound
-            }
-
-            return (float) $cost;
-        } catch (Exception $exception) {
-            throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
-        }
-    }
-
     public function renewByClient(int $id, Request $request): JsonResponse
     {
         try {

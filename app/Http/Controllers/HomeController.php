@@ -62,7 +62,7 @@ class HomeController extends BaseHomeController
             $request_type = $request->input('request_type');
             $faveo_name = (string) $request->input('name');
             $faveo_version = (string) $request->input('version');
-            $order_number = $this->checkOrder((string) $faveo_encrypted_order_number); // @phpstan-ignore method.notFound
+            $order_number = $this->checkOrder((string) $faveo_encrypted_order_number);
             $domain = (string) $request->input('domain');
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey((string) $faveo_encrypted_key, $order_number);
@@ -100,7 +100,7 @@ class HomeController extends BaseHomeController
             $request_type = $request->input('request_type');
             $faveo_name = (string) $request->input('name');
             $faveo_version = (string) $request->input('version');
-            $order_number = $this->checkOrder((string) $faveo_encrypted_order_number); // @phpstan-ignore method.notFound
+            $order_number = $this->checkOrder((string) $faveo_encrypted_order_number);
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey((string) $faveo_encrypted_key, $order_number);
 

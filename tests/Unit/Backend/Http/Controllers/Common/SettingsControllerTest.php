@@ -739,16 +739,6 @@ class SettingsControllerTest extends DBTestCase
         $this->assertDatabaseHas('settings', ['timezone_id' => 1, 'date_format' => 'd-m-Y']);
     }
 
-    public function test_get_body_returns_400_when_email_log_not_found(): void
-    {
-        $this->getLoggedInUser('admin');
-        $this->withoutMiddleware();
-        $response = $this->getJson('/email-log/body/999999');
-        // Email_log class or table not found → exception → errorResponse
-        $this->assertContains($response->status(), [400, 404, 500]);
-        $this->assertIsArray($response->json());
-    }
-
     public function test_show_file_storage_returns_disk_configuration(): void
     {
         $this->getLoggedInUser('admin');
@@ -1052,21 +1042,6 @@ class SettingsControllerTest extends DBTestCase
         $response->assertStatus(200);
         $data = $response->json('data.data');
         $this->assertIsArray($data);
-    }
-
-    // =========================================================================
-    // getBody – covers catch block (Email_log class not found)
-    // =========================================================================
-
-    public function test_get_body_error_path_covered_by_missing_class(): void
-    {
-        $this->getLoggedInUser('admin');
-        $this->withoutMiddleware();
-        $this->withExceptionHandling();
-        // Email_log class doesn't exist → Error thrown → caught as Exception → errorResponse
-        $response = $this->getJson('/email-log/body/1');
-        // Should return error or 500 depending on exception type
-        $this->assertTrue($response->status() >= 200);
     }
 
     // =========================================================================

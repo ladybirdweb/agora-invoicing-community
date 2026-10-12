@@ -49,9 +49,6 @@ class CronControllerTest extends DBTestCase
         $this->assertIsArray($result);
     }
 
-    // getUsers() depends on BaseCronController::get30DaysUsers() which is implemented
-    // only in subclasses; tested indirectly via autoRenewalExpiryNotify integration.
-
     public function test_get_subscriptions_returns_array(): void
     {
         // getSubscriptions expects an array whose first element is JSON-encoded days

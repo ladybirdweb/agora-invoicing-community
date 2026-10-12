@@ -163,8 +163,8 @@ Route::middleware('installAgora')->group(function (): void {
     Route::post('auth/register', [RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [LoginController::class,    'logout'])->name('logout');
 
-    // Password reset (GET kept for `password.reset` name used by reset emails)
-    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    // Password reset (GET serves the SPA shell; named `password.reset` for reset emails)
+    Route::get('password/reset/{token}', fn (): Factory|\Illuminate\Contracts\View\View => view('client'))->name('password.reset');
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
@@ -614,7 +614,6 @@ Route::middleware('installAgora')->group(function (): void {
         Route::get('edit/{id}', [TemplateController::class, 'showTemplate']);
         Route::put('update/{id}', [TemplateController::class, 'updateTemplate']);
     });
-    Route::get('/email-log/body/{id}', [SettingsController::class, 'getBody'])->name('email-log.body');
 
     // --------------------------------------------------------
     // Settings (System, Email, Cron, PDF, File Storage, etc.)

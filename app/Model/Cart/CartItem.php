@@ -90,6 +90,15 @@ class CartItem extends Model
         return $offer > 0 ? $base * (1 - $offer / 100) : $base;
     }
 
+    /**
+     * The product locks its license to a customer domain, so one must be
+     * entered before checkout. Cloud products carry their own subdomain instead.
+     */
+    public function needsDomain(): bool
+    {
+        return (bool) $this->product?->require_domain && ! in_array($this->product_id, cloudPopupProducts());
+    }
+
     public function lineTotal(): float
     {
         return $this->priceFor($this->cart?->currency ?? 'USD') * $this->quantity * $this->agents; // @phpstan-ignore nullCoalesce.expr

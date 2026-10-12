@@ -94,6 +94,11 @@ class CartApiController extends Controller
             return errorResponse(__('message.cart_empty'), 422);
         }
 
+        $missingDomain = $cart->items->first(fn ($item): bool => $item->needsDomain() && ! $item->domain);
+        if ($missingDomain) {
+            return errorResponse(__('message.cart_domain_required', ['product' => $missingDomain->product?->name]), 422);
+        }
+
         // Build (or reuse) the pending invoice for this cart. Payment is driven
         // entirely by this invoice id from here on (pay page → charge endpoint),
         // so no payment state is stashed in the session. The cart is left intact

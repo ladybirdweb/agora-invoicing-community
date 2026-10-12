@@ -104,6 +104,13 @@ class ClientController extends BaseClientController
         ])
             ->select('id', 'number', 'date', 'grand_total', 'billing_pay', 'status', 'currency', 'is_renewed')
             ->where('user_id', Auth::id());
+
+        // Dashboard "Pending invoices" tile links here with ?status=pending.
+        $status = strtolower((string) $request->input('status', ''));
+        if (in_array($status, ['pending', 'success', 'partially paid'], true)) {
+            $query->where('status', $status);
+        }
+
         $search = trim((string) $request->input('search-query', ''));
 
         if ($search !== '' && $search !== '0') {

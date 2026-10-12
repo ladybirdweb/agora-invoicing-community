@@ -60,6 +60,14 @@ class BaseHomeController extends Controller
         }
     }
 
+    /**
+     * Returns the order number if it exists, '' otherwise (exact match — no LIKE wildcards from the client).
+     */
+    public function checkOrder(string $faveo_decrypted_order): string
+    {
+        return (string) Order::where('number', $faveo_decrypted_order)->value('number');
+    }
+
     public function checkSerialKey(string $faveo_encrypted_key, string $order_number): ?string
     {
         try {

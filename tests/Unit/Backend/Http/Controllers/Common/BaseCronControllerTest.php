@@ -43,11 +43,6 @@ class ConcreteCronStub extends BaseCronController
         return [];
     }
 
-    public function get30DaysExpiryUsers(): array
-    {
-        return [];
-    }
-
     public function get1DaysSubscription(): mixed
     {
         return [];
@@ -93,11 +88,6 @@ class ConcreteCronStubWithUsers extends BaseCronController
     }
 
     public function getExpiredUsers(): array
-    {
-        return $this->fakeUsers;
-    }
-
-    public function get30DaysExpiryUsers(): array
     {
         return $this->fakeUsers;
     }
@@ -254,7 +244,7 @@ class BaseCronControllerTest extends DBTestCase
     }
 
     // -------------------------------------------------------------------------
-    // get15DaysUsers / get1DaysUsers / get0DaysUsers / getPlus1Users / get30DaysUsers
+    // get15DaysUsers / get1DaysUsers / get0DaysUsers / getPlus1Users
     // (all delegate to stub methods returning [])
     // -------------------------------------------------------------------------
 
@@ -279,12 +269,6 @@ class BaseCronControllerTest extends DBTestCase
     public function test_get_plus_1_users_returns_empty_when_no_users(): void
     {
         $result = $this->cron->getPlus1Users();
-        $this->assertIsArray($result);
-    }
-
-    public function test_get_30_days_users_returns_empty_when_no_users(): void
-    {
-        $result = $this->cron->get30DaysUsers();
         $this->assertIsArray($result);
     }
 
@@ -360,13 +344,6 @@ class BaseCronControllerTest extends DBTestCase
     {
         $stub = new ConcreteCronStubWithUsers;
         $result = $stub->getPlus1Users();
-        $this->assertNotEmpty($result);
-    }
-
-    public function test_get_30_days_users_returns_users_when_found(): void
-    {
-        $stub = new ConcreteCronStubWithUsers;
-        $result = $stub->get30DaysUsers();
         $this->assertNotEmpty($result);
     }
 
@@ -579,17 +556,6 @@ class BaseCronControllerTest extends DBTestCase
         $this->cron->mail($this->user, '0000-00-00 00:00:00', $product->id, $order, $sub);
 
         $this->assertTrue(true);
-    }
-
-    // -------------------------------------------------------------------------
-    // get30DaysExpiryUsers / get30DaysUsers (abstract in stub)
-    // -------------------------------------------------------------------------
-
-    public function test_get30_days_expiry_users_in_stub_returns_empty(): void
-    {
-        $result = $this->cron->get30DaysUsers();
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
     }
 
     // -------------------------------------------------------------------------

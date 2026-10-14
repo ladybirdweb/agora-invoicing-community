@@ -38,6 +38,7 @@
                                 :apiEndpoint="`${baseUrl}/dependency/industries`"
                                 dataKey="industries"
                                 :value="form.bussiness"
+                                :error="errors.bussiness"
                                 :onChange="onChange"
                             />
                         </div>
@@ -69,6 +70,7 @@
                                 :label="__('message.role')"
                                 :elements="roleOptions"
                                 :value="form.role"
+                                :error="errors.role"
                                 :onChange="onRoleChange"
                             />
                         </div>
@@ -78,6 +80,7 @@
                                 :label="__('message.position')"
                                 :elements="positionOptions"
                                 :value="form.position"
+                                :error="errors.position"
                                 :onChange="onChange"
                             />
                         </div>
@@ -87,6 +90,7 @@
                                 :label="__('message.company_type')"
                                 :elements="companyTypeOptions"
                                 :value="form.company_type"
+                                :error="errors.company_type"
                                 :onChange="onChange"
                             />
                         </div>
@@ -96,6 +100,7 @@
                                 :label="__('message.company_size')"
                                 :elements="companySizeOptions"
                                 :value="form.company_size"
+                                :error="errors.company_size"
                                 :onChange="onChange"
                             />
                         </div>
@@ -133,6 +138,7 @@
                                 :apiParams="stateParams"
                                 dataKey="states"
                                 :value="form.state"
+                                :error="errors.state"
                                 :onChange="onChange"
                             />
                         </div>
@@ -179,6 +185,7 @@
                                 dataKey="managers"
                                 optionLabel="name"
                                 :value="form.manager"
+                                :error="errors.manager"
                                 :onChange="onChange"
                             >
                                 <template #option="option">
@@ -199,6 +206,7 @@
                                 dataKey="managers"
                                 optionLabel="name"
                                 :value="form.account_manager"
+                                :error="errors.account_manager"
                                 :onChange="onChange"
                             >
                                 <template #option="option">

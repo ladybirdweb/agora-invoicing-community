@@ -93,7 +93,7 @@
                             <td class="text-center">
                                 <input type="checkbox" v-model="inv.checked" @change="onCheck(inv)" />
                             </td>
-                            <td>{{ inv.date }}</td>
+                            <td>{{ formatDate(inv.date) }}</td>
                             <td>{{ inv.number }}</td>
                             <td>{{ symbol }}{{ inv.grand_total }}</td>
                             <td>{{ symbol }}{{ inv.pending }}</td>
@@ -125,6 +125,7 @@ import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
 import { useAlertStore } from '@/core/stores/alert'
 import { __ } from '@/plugins/i18n'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const COMPONENT = 'user-payment-create'
 
@@ -132,6 +133,7 @@ const route   = useRoute()
 const router  = useRouter()
 const userId  = route.params.id
 const alertStore = useAlertStore()
+const { formatDate } = useDateTime()
 const { errors, setErrors, setFieldError } = useForm()
 
 const loading    = ref(true)

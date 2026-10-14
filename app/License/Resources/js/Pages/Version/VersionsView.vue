@@ -22,7 +22,7 @@
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('version_date') }}:</span>
-                                <span>{{ version_date || '—' }}</span>
+                                <span>{{ formatDateTime(version_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">

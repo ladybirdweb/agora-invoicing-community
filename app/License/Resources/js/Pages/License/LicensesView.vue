@@ -87,25 +87,25 @@
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('license_date') }}:</span>
-                                <span>{{ license_date || '—' }}</span>
+                                <span>{{ formatDate(license_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('license_expiry') }}:</span>
-                                <span>{{ license_expire_date || '—' }}</span>
+                                <span>{{ formatDate(license_expire_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('updates_expiry') }}:</span>
-                                <span>{{ license_updates_date || '—' }}</span>
+                                <span>{{ formatDate(license_updates_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('support_expiry') }}:</span>
-                                <span>{{ license_support_date || '—' }}</span>
+                                <span>{{ formatDate(license_support_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">

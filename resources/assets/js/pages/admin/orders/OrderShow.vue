@@ -438,7 +438,7 @@ import { useDateTime } from '@/core/composables/useDateTime'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
 
-const { formatDate, formatDateTime } = useDateTime()
+const { formatDate } = useDateTime()
 
 const { errors, setErrors, resetForm } = useForm()
 
@@ -770,7 +770,7 @@ const installTableOptions = reactive({
         ip:               (f, row) => row.ip || '—',
         version:          (f, row) => row.version || '—',
         status:           (f, row) => h('span', { class: row.status === 'Active' ? 'badge bg-success' : 'badge bg-secondary' }, row.status || '—'),
-        last_active_date: (f, row) => row.last_active_date || '—',
+        last_active_date: (f, row) => formatDate(row.last_active_date),
     },
     sortable:   [],
     filterable: false,
@@ -803,7 +803,7 @@ const invoiceTableOptions = reactive({
     templates: {
         number:   (f, row) => row.number && row.id ? h(RouterLink, { to: '/invoices/' + row.id }, () => row.number) : (row.number || '—'),
         products: (f, row) => (row.products ?? []).join(', ') || '—',
-        date:     (f, row) => row.date ? formatDateTime(row.date) : '—',
+        date:     (f, row) => formatDate(row.date),
         status:   (f, row) => h('span', {
             class: row.status?.toLowerCase() === 'success' ? 'badge bg-success' : 'badge bg-secondary',
         }, row.status),

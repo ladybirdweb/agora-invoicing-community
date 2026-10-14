@@ -306,6 +306,7 @@ import { h, ref, reactive, onMounted, nextTick, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { validateForm } from '@/helpers/formUtils.js'
+import { useDateTime } from '@/core/composables/useDateTime'
 import http from '@/plugins/axios'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import DynamicSelect from '@/components/Reusable/FormField/DynamicSelect.vue'
@@ -319,6 +320,7 @@ import { makeRequestAdapter } from '@/helpers/tableUtils'
 
 const COMPONENT = 'cloud-details'
 const baseUrl = useBaseUrl()
+const { formatDate } = useDateTime()
 
 const { errors, setErrors, setFieldError, resetForm } = useForm()
 
@@ -702,8 +704,8 @@ const tenantTableOptions = reactive({
         email:       (f, row) => row.user?.email                || '—',
         mobile:      (f, row) => row.user?.mobile               || '—',
         country:     (f, row) => row.user?.country              || '—',
-        expiry:      (f, row) => row.dates?.subscription_expiry || '—',
-        deletion:    (f, row) => row.dates?.deletion_date       || '—',
+        expiry:      (f, row) => formatDate(row.dates?.subscription_expiry),
+        deletion:    (f, row) => formatDate(row.dates?.deletion_date),
         plan:        (f, row) => row.order?.subscription        || '—',
         tenant:      (f, row) => row.tenant_id                  || '—',
         domain:      (f, row) => row.links?.tenant_domain

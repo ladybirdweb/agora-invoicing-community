@@ -47,8 +47,10 @@ import BulkActionIcons from '@/components/Reusable/BulkActionIcons.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { useTableSelection } from '@/core/composables/useTableSelection'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const baseUrl = useBaseUrl()
+const { formatDate } = useDateTime()
 const apiUrl = `/promotions`
 
 const dtRef = ref(null)
@@ -101,8 +103,8 @@ const tableOptions = reactive({
             }))
         },
         uses:     (f, row) => row.uses ?? '—',
-        start:    (f, row) => row.start ? row.start.substring(0, 10) : '—',
-        expiry:   (f, row) => row.expiry ? row.expiry.substring(0, 10) : '—',
+        start:    (f, row) => formatDate(row.start),
+        expiry:   (f, row) => formatDate(row.expiry),
         action:   (f, row) => h(RouterLink, { to: `/products/coupons/${row.id}/edit`, class: 'btn btn-light table_btn', title: __('message.edit') }, () => h('i', { class: 'fas fa-edit' })),
     },
     sortable: ['code', 'type', 'products', 'uses', 'start', 'expiry'],

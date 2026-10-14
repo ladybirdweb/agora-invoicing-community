@@ -199,7 +199,7 @@ class MSG91Controller extends Controller
                     'failure_reason' => $log->failure_reason,
                     'mobile_number' => $log->mobile_number,
                     'delivery_date' => $log->date,
-                    'created_at' => $log->created_at?->format('Y-m-d H:i'),
+                    'created_at' => $log->created_at?->toISOString(),
                 ];
             });
 

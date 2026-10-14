@@ -44,7 +44,7 @@
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex">
                                 <span class="fw-bold me-2">{{ lang('installation_date') }}:</span>
-                                <span>{{ installation_date || '—' }}</span>
+                                <span>{{ formatDate(installation_date) }}</span>
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">
@@ -114,7 +114,7 @@ import { useDateTime } from '@/core/composables/useDateTime'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 
 const router = useRouter()
-const { formatDateTime } = useDateTime()
+const { formatDate, formatDateTime } = useDateTime()
 const baseUrl = useBaseUrl()
 
 const loading = ref(true)

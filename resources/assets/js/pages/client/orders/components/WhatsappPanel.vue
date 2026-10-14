@@ -102,6 +102,7 @@ import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import Modal from '@/themes/porto/components/common/Modal.vue'
 import AppAlert from '@/components/Reusable/Alert.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const props = defineProps({
     order:  { type: Object, default: null },
@@ -109,6 +110,7 @@ const props = defineProps({
 })
 
 const baseUrl = useBaseUrl()
+const { formatDateTime } = useDateTime()
 const COMPONENT  = 'whatsapp-panel'
 
 const copiedId = ref(null)
@@ -133,6 +135,9 @@ const options    = reactive({
         business_id:     'dt-code',
         created_at:      'dt-date',
         action:          'dt-action',
+    },
+    templates: {
+        created_at: (f, row) => formatDateTime(row.created_at),
     },
     sortable:   ['phone_number', 'waba_id', 'business_id', 'created_at'],
     filterable: true,

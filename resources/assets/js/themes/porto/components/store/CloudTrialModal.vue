@@ -96,7 +96,9 @@
 import { ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { __ } from '@/plugins/i18n'
+import { useRouter } from 'vue-router'
 import { useAlertStore } from '@/core/stores/alert'
+import { useAuthStore } from '@/core/stores/auth'
 import { buildCloudTrialSchema } from '@/validations/client/cloudTrialValidations'
 import http from '@/plugins/axios'
 import Modal from '../common/Modal.vue'
@@ -112,6 +114,8 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const alertStore = useAlertStore()
+const authStore = useAuthStore()
+const router = useRouter()
 const { errors, setErrors, setFieldError } = useForm()
 
 const loading = ref(false)
@@ -157,6 +161,17 @@ function closeModal() {
 }
 
 async function submit() {
+  if (!authStore.isAuthenticated) {
+    closeModal()
+    router.push('/login').then(() => {
+      alertStore.setAlert({
+        message: __('message.log_free_trial'),
+        type: 'warning',
+        component_name: 'client-page',
+      })
+    })
+    return
+  }
   try {
     buildCloudTrialSchema({ hasProducts: products.value.length > 0, hasDataCenters: dataCenters.value.length > 0 }).validateSync(
       { domain: domain.value, selectedProduct: selectedProduct.value, selectedDataCenter: selectedDataCenter.value },

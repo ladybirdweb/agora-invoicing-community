@@ -137,7 +137,7 @@ class WhatsappController extends Controller
                     'phone_number_id' => $model->phone_number_id,
                     'business_id' => $model->business_id,
                     'callback_url' => $model->user_callback_url,
-                    'created_at' => $model->created_at?->format('Y-m-d H:i'),
+                    'created_at' => $model->created_at?->toISOString(),
                 ];
             });
 
@@ -187,7 +187,7 @@ class WhatsappController extends Controller
                 'phone_number_id' => $model->phone_number_id,
                 'business_id' => $model->business_id,
                 'callback_url' => $model->user_callback_url,
-                'created_at' => $model->created_at?->format('Y-m-d H:i'),
+                'created_at' => $model->created_at?->toISOString(),
             ]);
 
             return successResponse('', $paginated);

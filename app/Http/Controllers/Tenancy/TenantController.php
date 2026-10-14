@@ -782,12 +782,12 @@ class TenantController extends Controller
         $price = PlanPrice::where('plan_id', $plan_id)->latest()->value('add_price');
         $plan = $price ? 'Paid Subscription' : 'Free Trial';
 
-        $expiry = Date::parse($subscription->ends_at)->format('d M Y');
+        $expiry = Date::parse($subscription->ends_at);
         $cloud_days = (int) ExpiryMailDay::whereNotNull('cloud_days')->value('cloud_days');
-        $deletion_date = $cloud_days !== 0 ? Date::parse($expiry)->addDays($cloud_days)->format('d M Y') : null;
+        $deletion_date = $cloud_days !== 0 ? $expiry->copy()->addDays($cloud_days)->toISOString() : null;
 
         return [
-            'subscription_expiry' => $expiry,
+            'subscription_expiry' => $expiry->toISOString(),
             'deletion_date' => $deletion_date,
             'plan' => $plan,
         ];

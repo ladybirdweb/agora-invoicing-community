@@ -89,9 +89,11 @@ import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import ActivityFilter from './ActivityFilter.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const COMPONENT = 'activity-logs'
 const baseUrl = useBaseUrl()
+const { formatDateTime } = useDateTime()
 const apiUrl  = `/get-activity-api`
 
 // ── filter state ──────────────────────────────────────────────────────────────
@@ -135,6 +137,7 @@ const tableOptions = reactive({
     requestAdapter: makeRequestAdapter('created_at', activeFilters, { module: 'module', event: 'event' }),
     orderBy: { column: 'created_at', ascending: false },
     templates: {
+        created_at: (f, row) => formatDateTime(row.created_at),
         performed_by: (f, row) => {
             if (!row.performed_by_id) return row.performed_by || '—'
             return h('a', { href: `${baseUrl}/admin/users/${row.performed_by_id}` }, row.performed_by)

@@ -662,7 +662,7 @@ class SettingsController extends BaseSettingsController
                 'performed_by_id' => $row->causer_id ?? null,
                 'email' => $row->email ?? '',
                 'role' => ucfirst($row->user_role ?? '—'),
-                'created_at' => $row->created_at ? $row->created_at->format('Y-m-d H:i') : '—',
+                'created_at' => $row->created_at?->toISOString(),
             ]);
 
             return successResponse('', $logs);
@@ -767,7 +767,7 @@ class SettingsController extends BaseSettingsController
 
             $logs->getCollection()->transform(fn ($row): array => [ // @phpstan-ignore method.unresolvableReturnType, argument.unresolvableType
                 'id' => $row->id,
-                'date' => $row->date ? Date::parse($row->date)->format('Y-m-d H:i') : '—',
+                'date' => $row->date,
                 'user' => $row->user_name ? trim((string) $row->user_name) : ($row->from ?? '—'), // @phpstan-ignore property.notFound
                 'user_id' => $row->user_id, // @phpstan-ignore property.notFound
                 'order' => $row->order ?? '—',

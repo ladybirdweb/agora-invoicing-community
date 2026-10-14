@@ -84,9 +84,11 @@ import BulkActionIcons from '@/components/Reusable/BulkActionIcons.vue'
 import { useTableSelection } from '@/core/composables/useTableSelection'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const COMPONENT = 'payment-log'
 const baseUrl = useBaseUrl()
+const { formatDateTime } = useDateTime()
 const apiUrl  = `/get-payment-log-api`
 
 // ── filter ────────────────────────────────────────────────────────────────────
@@ -180,6 +182,7 @@ const tableOptions = reactive({
         action: 'dt-action',
     },
     templates: {
+        date: (f, row) => formatDateTime(row.date),
         select: (f, row) => h('input', {
             type: 'checkbox',
             checked: selected.value.includes(row.id),

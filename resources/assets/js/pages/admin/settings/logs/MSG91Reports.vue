@@ -37,10 +37,12 @@ import { h, reactive, ref } from 'vue'
 import MSG91Filter from './MSG91Filter.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { useDateTime } from '@/core/composables/useDateTime'
 import { formatAction } from './msg91ActionLabel'
 
 const COMPONENT = 'msg91-reports'
 const baseUrl = useBaseUrl()
+const { formatDateTime } = useDateTime()
 const apiUrl  = `/getMsgReports`
 
 // ── filter ────────────────────────────────────────────────────────────────────
@@ -119,8 +121,8 @@ const tableOptions = reactive({
         action:         (f, row) => formatAction(row.action),
         status: (f, row) => h('span', { class: statusBadgeClass(row.status_code) }, row.status || '—'),
         failure_reason: (f, row) => row.failure_reason || '—',
-        created_at:     (f, row) => row.created_at     || '—',
-        delivery_date:  (f, row) => row.delivery_date  || '—',
+        created_at:     (f, row) => formatDateTime(row.created_at),
+        delivery_date:  (f, row) => formatDateTime(row.delivery_date),
     },
     sortable: ['mobile_number', 'status', 'created_at', 'delivery_date'],
     filterable: true,

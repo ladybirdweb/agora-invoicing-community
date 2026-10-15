@@ -120,7 +120,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except' => ['pdf']]);
+        $this->middleware('admin', ['except' => ['pdf', 'getInvoice']]);
 
         $invoice = new Invoice;
         $this->invoice = $invoice;
@@ -513,7 +513,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             ])
                 ->format(Format::A4)
                 ->margins(10, 10, 10, 10)
-                ->download($authUser->first_name.'-invoice.pdf')
+                ->download(($invoiceUser->first_name ?? $authUser->first_name).'-invoice.pdf')
                 // Render here, inside the try: the builder alone defers Chrome until Laravel sends the
                 // response, where a missing/wrong Chrome path escapes this catch as a bare 500.
                 ->toResponse($request);
@@ -567,6 +567,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'orders:id,number',
                 'allocations.payment',
             ])->findOrFail($id);
+
+            // Shared with the client panel — a client may only read their own invoice.
+            $authUser = Auth::user();
+            if (! $authUser instanceof User || ($query->user_id != $authUser->id && $authUser->role != 'admin')) {
+                return errorResponse(__('message.invalid_user'), 403);
+            }
 
             if (! $query->user || User::onlyTrashed()->find($query->user->id)) {
                 throw new Exception(__('message.user_suspended'));

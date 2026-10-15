@@ -103,6 +103,11 @@ class InvoicePaymentService
      */
     public function applyCredit(Invoice $invoice): array
     {
+        // Already paid — re-running fulfilment would extend renewals/plans again for free.
+        if (strtolower((string) $invoice->status) === 'success') {
+            return ['paid_in_full' => true];
+        }
+
         $toApply = $this->creditApplied($invoice);
 
         // Nothing owed at all (e.g. a free product) needs no credit — only a

@@ -23,7 +23,7 @@
                             <span class="badge" :class="statusBadgeClass">{{ capitalize(invoice?.status) }}</span>
                             <div class="d-flex gap-2 justify-content-end mt-2">
                                 <RouterLink
-                                    v-if="invoice?.status?.toLowerCase() === 'pending'"
+                                    v-if="['pending', 'partially paid'].includes(invoice?.status?.toLowerCase())"
                                     :to="{ path: '/checkout', query: { invoice: invoiceId } }"
                                     class="btn btn-success btn-sm"
                                 >

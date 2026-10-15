@@ -2,73 +2,75 @@
     <div>
 
         <!-- Step 0: Server Type -->
-        <template v-if="step === 0">
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                    <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
-                         :class="{ 'border border-primary': form.deploy_mode === 'extract_only' }"
-                         @click="form.deploy_mode = 'extract_only'">
-                        <div class="card-body p-relative zindex-1 p-3">
-                            <div class="feature-box feature-box-style-6 text-center d-block">
-                                <div class="feature-box-icon justify-content-center">
-                                    <i class="fas fa-upload text-primary"></i>
-                                </div>
-                                <div class="feature-box-info">
-                                    <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.deploy_on_existing_server') }}</h4>
-                                    <p class="mb-0 text-2">{{ __('message.deploy_existing_server_desc') }}</p>
-                                </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
+                     :class="{ 'border border-primary': form.deploy_mode === 'extract_only' }"
+                     @click="form.deploy_mode = 'extract_only'">
+                    <div class="card-body p-relative zindex-1 p-3">
+                        <div class="feature-box feature-box-style-6 text-center d-block">
+                            <div class="feature-box-icon justify-content-center">
+                                <i class="fas fa-upload text-primary"></i>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
-                         :class="{ 'border border-primary': form.deploy_mode === 'fresh_install' }"
-                         @click="form.deploy_mode = 'fresh_install'">
-                        <div class="card-body p-relative zindex-1 p-3">
-                            <div class="feature-box feature-box-style-6 text-center d-block">
-                                <div class="feature-box-icon justify-content-center">
-                                    <i class="fas fa-server text-primary"></i>
-                                </div>
-                                <div class="feature-box-info">
-                                    <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.deploy_on_fresh_server') }}</h4>
-                                    <p class="mb-0 text-2">{{ __('message.deploy_fresh_server_desc') }}</p>
-                                    <span class="badge bg-warning text-dark mt-2">{{ __('message.deploy_time_estimate') }}</span>
-                                </div>
+                            <div class="feature-box-info">
+                                <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.deploy_on_existing_server') }}</h4>
+                                <p class="mb-0 text-2">{{ __('message.deploy_existing_server_desc') }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-between">
-                <a v-if="manualGuideUrl" :href="manualGuideUrl" target="_blank" rel="noopener noreferrer" class="text-muted small">
-                    <i class="fas fa-book me-1"></i>{{ __('message.manual_install_guide') }}
-                </a>
-                <span v-else></span>
-                <button class="btn btn-primary btn-sm btn-modern" :disabled="!form.deploy_mode" @click="goToConfigure">
-                    {{ __('message.continue') }} <i class="fas fa-arrow-right ms-1"></i>
-                </button>
+            <div class="col-md-6">
+                <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
+                     :class="{ 'border border-primary': form.deploy_mode === 'fresh_install' }"
+                     @click="form.deploy_mode = 'fresh_install'">
+                    <div class="card-body p-relative zindex-1 p-3">
+                        <div class="feature-box feature-box-style-6 text-center d-block">
+                            <div class="feature-box-icon justify-content-center">
+                                <i class="fas fa-server text-primary"></i>
+                            </div>
+                            <div class="feature-box-info">
+                                <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.deploy_on_fresh_server') }}</h4>
+                                <p class="mb-0 text-2">{{ __('message.deploy_fresh_server_desc') }}</p>
+                                <span class="badge bg-warning text-dark mt-2">{{ __('message.deploy_time_estimate') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </template>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <a v-if="manualGuideUrl" :href="manualGuideUrl" target="_blank" rel="noopener noreferrer" class="text-muted small">
+                <i class="fas fa-book me-1"></i>{{ __('message.manual_install_guide') }}
+            </a>
+            <span v-else></span>
+            <button class="btn btn-primary btn-sm btn-modern" :disabled="!form.deploy_mode" @click="goToConfigure">
+                {{ __('message.continue') }} <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        </div>
 
-        <!-- Step 1: Configure — one card, segmented -->
-        <template v-else-if="step === 1">
-            <AppAlert :componentName="COMPONENT" />
+        <Modal :showModal="showModal" :onClose="closeModal" :showCloseBtn="false" :showControls="step === 1"
+               classname="modal-lg modal-dialog-scrollable">
+            <template #title>
+                <h5 class="modal-title fw-bold">
+                    {{ form.deploy_mode === 'fresh_install' ? __('message.deploy_on_fresh_server') : __('message.deploy_on_existing_server') }}
+                </h5>
+            </template>
 
-            <div class="card">
-                <div class="card-body">
+            <template #fields>
+                <!-- Step 1: Configure -->
+                <template v-if="step === 1">
+                    <AppAlert :componentName="COMPONENT" />
 
-                    <!-- Segment: SSH Connectivity -->
-                    <h6 class="text-color-grey text-uppercase fw-semibold mb-3 section-label">
-                        {{ __('message.deploy_ssh_connectivity') }}
-                    </h6>
+                    <h6 class="fw-bold mb-0">{{ __('message.deploy_server_connection') }}</h6>
+                    <p class="text-muted small mb-3">{{ __('message.deploy_server_connection_desc') }}</p>
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <ClientField type="text" name="host" :label="__('message.deploy_host_address')" :required="true"
                                          v-model="form.host" placeholder="192.168.1.100 or example.com"
                                          :error="errors.host" @update:modelValue="setFieldError('host', undefined)" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <ClientField type="text" name="port" :label="__('message.port')" :required="true"
                                          :model-value="String(form.port)" placeholder="22"
                                          :error="errors.port"
@@ -80,19 +82,11 @@
                                          :error="errors.username" @update:modelValue="setFieldError('username', undefined)" />
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label text-dark">{{ __('message.deploy_auth_method') }}</label>
-                                <div class="d-flex align-items-center gap-4">
-                                    <label class="d-flex align-items-center mb-0 clickable">
-                                        <input type="radio" class="me-2" name="auth_method" value="password" v-model="form.auth_method" />
-                                        {{ __('message.password') }}
-                                    </label>
-                                    <label class="d-flex align-items-center mb-0 clickable">
-                                        <input type="radio" class="me-2" name="auth_method" value="private_key" v-model="form.auth_method" />
-                                        {{ __('message.deploy_private_key_option') }}
-                                    </label>
-                                </div>
-                            </div>
+                            <DynamicSelect name="auth_method" :label="__('message.deploy_auth_method')"
+                                           :elements="authOptions"
+                                           :value="authOptions.find(o => o.id === form.auth_method)"
+                                           :onChange="(val) => form.auth_method = val?.id ?? 'password'"
+                                           :clearable="false" :searchable="false" />
                         </div>
                         <div v-if="form.auth_method === 'password'" class="col-md-6">
                             <ClientField type="password" name="password" :label="__('message.deploy_ssh_password')" :required="true"
@@ -106,61 +100,37 @@
                                          :error="errors.private_key" @update:modelValue="setFieldError('private_key', undefined)" />
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label text-dark">
-                                    {{ __('message.deploy_sudo_password') }}
-                                    <ToolTip message="Required only if the SSH user needs elevated privileges (sudo) to write to the deploy path or run commands on the server." size="small" />
-                                </label>
-                                <div class="input-group" :class="{ 'is-invalid': errors.sudo_password }">
-                                    <input class="form-control form-control-lg text-4"
-                                           :class="{ 'is-invalid': errors.sudo_password }"
-                                           :type="showSudo ? 'text' : 'password'"
-                                           v-model="form.sudo_password"
-                                           autocomplete="new-password"
-                                           @input="setFieldError('sudo_password', undefined)" />
-                                    <button type="button" class="input-group-text" tabindex="-1"
-                                            @mousedown.prevent @click="showSudo = !showSudo">
-                                        <i class="fa" :class="showSudo ? 'fa-eye' : 'fa-eye-slash'"></i>
-                                    </button>
-                                </div>
-                                <div v-if="errors.sudo_password" class="invalid-feedback d-block">{{ errors.sudo_password }}</div>
-                            </div>
+                            <ClientField type="password" name="sudo_password"
+                                         :label="`${__('message.deploy_sudo_password')} (${__('message.optional')})`"
+                                         v-model="form.sudo_password" autocomplete="new-password"
+                                         :placeholder="__('message.deploy_sudo_placeholder')"
+                                         :error="errors.sudo_password" @update:modelValue="setFieldError('sudo_password', undefined)" />
                         </div>
                     </div>
 
                     <hr class="my-3" />
 
-                    <!-- Segment: Deployment Path (extract_only) -->
                     <template v-if="form.deploy_mode === 'extract_only'">
-                        <h6 class="text-color-grey text-uppercase fw-semibold mb-3 section-label">
-                            {{ __('message.deploy_deployment_path') }}
-                        </h6>
+                        <h6 class="fw-bold mb-0">{{ __('message.deploy_deployment_path') }}</h6>
+                        <p class="text-muted small mb-3">{{ __('message.deploy_deployment_path_desc') }}</p>
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <ClientField type="text" name="deploy_path" :label="__('message.deploy_path_label')" :required="true"
                                              v-model="form.deploy_path" placeholder="/var/www/faveo"
                                              :error="errors.deploy_path" @update:modelValue="setFieldError('deploy_path', undefined)" />
                             </div>
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label class="form-label text-dark">
-                                        {{ __('message.deploy_domain') }}
-                                        <ToolTip message="Optional. Point your domain to this server's IP before deploying — it will be used to generate the web installer link once files are extracted." size="small" />
-                                    </label>
-                                    <input type="text" class="form-control form-control-lg text-4"
-                                           v-model="form.install_domain" placeholder="helpdesk.example.com"
-                                           @input="setFieldError('install_domain', undefined)" />
-                                </div>
+                            <div class="col-md-6">
+                                <ClientField type="text" name="install_domain"
+                                             :label="`${__('message.deploy_domain')} (${__('message.optional')})`"
+                                             v-model="form.install_domain" placeholder="helpdesk.example.com"
+                                             @update:modelValue="setFieldError('install_domain', undefined)" />
                             </div>
                         </div>
-                        <hr class="my-3" />
                     </template>
 
-                    <!-- Segment: Installation Details (fresh_install) -->
-                    <template v-if="form.deploy_mode === 'fresh_install'">
-                        <h6 class="text-color-grey text-uppercase fw-semibold mb-3 section-label">
-                            {{ __('message.installation_details') }}
-                        </h6>
+                    <template v-else>
+                        <h6 class="fw-bold mb-0">{{ __('message.installation_details') }}</h6>
+                        <p class="text-muted small mb-3">{{ __('message.deploy_installation_details_desc') }}</p>
                         <div class="row">
                             <div class="col-md-6">
                                 <ClientField type="text" name="install_domain" :label="__('message.deploy_domain')" :required="true"
@@ -169,35 +139,22 @@
                             </div>
                             <div class="col-md-6">
                                 <ClientField type="email" name="install_email" :label="__('message.deploy_admin_email')" :required="true"
-                                             v-model="form.install_email"
+                                             v-model="form.install_email" placeholder="admin@example.com"
                                              :error="errors.install_email" @update:modelValue="setFieldError('install_email', undefined)" />
                             </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label text-dark">{{ __('message.deploy_web_server') }} <span class="text-danger">*</span></label>
-                                    <div class="d-flex align-items-center gap-4">
-                                        <label class="d-flex align-items-center mb-0 clickable">
-                                            <input type="radio" class="me-2" name="web_server" :value="1" v-model="form.web_server" />
-                                            Apache
-                                        </label>
-                                        <label class="d-flex align-items-center mb-0 clickable">
-                                            <input type="radio" class="me-2" name="web_server" :value="2" v-model="form.web_server" />
-                                            Nginx
-                                        </label>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <DynamicSelect name="web_server" :label="__('message.deploy_web_server')" :required="true"
+                                               :elements="webServerOptions"
+                                               :value="webServerOptions.find(o => o.id === form.web_server)"
+                                               :onChange="(val) => form.web_server = val?.id ?? 1"
+                                               :clearable="false" :searchable="false" />
                             </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label text-dark">{{ __('message.deploy_ssl_certificate') }} <span class="text-danger">*</span></label>
-                                    <div class="d-flex align-items-center gap-4">
-                                        <label v-for="opt in sslOptions" :key="opt.value"
-                                               class="d-flex align-items-center mb-0 clickable">
-                                            <input type="radio" class="me-2" name="ssl_type" :value="opt.value" v-model="form.ssl_type" />
-                                            {{ opt.label }}
-                                        </label>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <DynamicSelect name="ssl_type" :label="__('message.deploy_ssl_certificate')" :required="true"
+                                               :elements="sslOptions"
+                                               :value="sslOptions.find(o => o.id === form.ssl_type)"
+                                               :onChange="(val) => form.ssl_type = val?.id ?? 'A'"
+                                               :clearable="false" :searchable="false" />
                             </div>
                             <template v-if="form.ssl_type === 'C'">
                                 <div class="col-md-6">
@@ -212,99 +169,93 @@
                                 </div>
                             </template>
                         </div>
-                        <hr class="my-3" />
                     </template>
 
-                    <!-- Segment: Version -->
-                    <h6 class="text-color-grey text-uppercase fw-semibold mb-3 section-label">
-                        {{ __('message.deploy_version_heading') }}
-                    </h6>
+                    <hr class="my-3" />
+
+                    <h6 class="fw-bold mb-0">{{ __('message.version') }}</h6>
+                    <p class="text-muted small mb-3">{{ __('message.deploy_version_desc') }}</p>
                     <div class="row">
                         <div class="col-md-6">
                             <div v-if="loadingVersions" class="mb-3"><loader /></div>
-                            <DynamicSelect
-                                v-else
-                                name="version_id"
-                                :label="__('message.version')"
-                                :elements="versionOptions"
-                                :value="versionOptions.find(v => v.id === form.version_id) ?? versionOptions[0]"
-                                :onChange="(val) => form.version_id = val?.id ?? null"
-                                :clearable="false"
-                            />
+                            <DynamicSelect v-else name="version_id" :label="__('message.version')" :required="true"
+                                           :elements="versionOptions"
+                                           :value="versionOptions.find(v => v.id === form.version_id) ?? versionOptions[0]"
+                                           :onChange="(val) => form.version_id = val?.id ?? null"
+                                           :clearable="false" />
                         </div>
                         <div class="col-md-6">
-                            <ClientField type="text" name="web_user" :label="__('message.deploy_web_user')"
+                            <ClientField type="text" name="web_user"
+                                         :label="`${__('message.deploy_web_user')} (${__('message.optional')})`"
                                          v-model="form.web_user" :placeholder="__('message.deploy_web_user_placeholder')" />
                         </div>
                     </div>
+                </template>
 
-                    <p class="text-muted small mt-2 mb-3"><i class="fas fa-lock me-1"></i> {{ __('message.deploy_credentials_notice') }}</p>
-
-                    <div class="form-group row">
-                        <div class="col-6">
-                            <button type="button" class="btn btn-light btn-modern" @click="step = 0">
-                                <i class="fas fa-arrow-left me-1"></i> {{ __('message.back') }}
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button type="button" class="btn btn-primary btn-modern float-end" :disabled="deploying" @click="startDeploy">
-                                <i v-if="deploying" class="fas fa-circle-notch fa-spin me-1"></i>
-                                {{ __('message.deploy') }}
-                            </button>
-                        </div>
+                <!-- Step 2: Progress -->
+                <template v-else-if="step === 2">
+                    <h6 class="fw-bold mb-3">{{ __('message.deploy_live_deployment') }}</h6>
+                    <div v-for="(log, i) in progressLog" :key="i" class="d-flex align-items-start gap-2 mb-2">
+                        <span v-if="log.status === 'ok'" class="text-success"><i class="fas fa-check-circle"></i></span>
+                        <span v-else-if="log.status === 'error'" class="text-danger"><i class="fas fa-times-circle"></i></span>
+                        <span v-else class="text-muted"><i class="fas fa-circle-notch fa-spin"></i></span>
+                        <span :class="{ 'text-danger': log.status === 'error' }">{{ log.message }}</span>
                     </div>
-
-                </div>
-            </div>
-        </template>
-
-        <!-- Step 2: Progress -->
-        <template v-else-if="step === 2">
-            <AppCard>
-                <h5 class="text-4 mb-3">{{ __('message.deploy_live_deployment') }}</h5>
-                <div v-for="(log, i) in progressLog" :key="i" class="d-flex align-items-start gap-2 mb-2">
-                    <span v-if="log.status === 'ok'" class="text-success"><i class="fas fa-check-circle"></i></span>
-                    <span v-else-if="log.status === 'error'" class="text-danger"><i class="fas fa-times-circle"></i></span>
-                    <span v-else class="text-muted"><i class="fas fa-circle-notch fa-spin"></i></span>
-                    <span :class="{ 'text-danger': log.status === 'error' }">{{ log.message }}</span>
-                </div>
-                <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
-            </AppCard>
-        </template>
-
-        <!-- Step 3: Success -->
-        <template v-else-if="step === 3">
-            <AppCard>
-                <div class="text-center py-2">
-                    <i class="fas fa-check-circle text-success icon-3rem"></i>
-                    <h4 class="text-4 mt-3 mb-1">{{ __('message.deploy_setup_complete') }}</h4>
-                    <p class="text-muted text-2">{{ __('message.deploy_success_desc') }}</p>
-                </div>
-                <template v-if="result.setup_url">
-                    <hr>
-                    <p class="mb-1 fw-semibold">{{ __('message.deploy_web_installer') }}</p>
-                    <p class="text-muted small mb-2">{{ __('message.deploy_web_installer_desc') }}</p>
-                    <a :href="result.setup_url" target="_blank" class="btn btn-primary btn-sm btn-modern">
-                        {{ __('message.deploy_visit_web_installer') }} <i class="fas fa-external-link-alt ms-1"></i>
-                    </a>
+                    <template v-if="errorMessage">
+                        <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+                        <button type="button" class="btn btn-light btn-modern" @click="step = 1">
+                            <i class="fas fa-arrow-left me-1"></i> {{ __('message.back') }}
+                        </button>
+                    </template>
                 </template>
-                <template v-if="result.site_url">
+
+                <!-- Step 3: Success -->
+                <template v-else-if="step === 3">
+                    <div class="text-center py-2">
+                        <i class="fas fa-check-circle text-success fa-3x"></i>
+                        <h4 class="text-4 mt-3 mb-1">{{ __('message.deploy_setup_complete') }}</h4>
+                        <p class="text-muted text-2">{{ __('message.deploy_success_desc') }}</p>
+                    </div>
+                    <template v-if="result.setup_url">
+                        <hr>
+                        <p class="mb-1 fw-semibold">{{ __('message.deploy_web_installer') }}</p>
+                        <p class="text-muted small mb-2">{{ __('message.deploy_web_installer_desc') }}</p>
+                        <a :href="result.setup_url" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm btn-modern">
+                            {{ __('message.deploy_visit_web_installer') }} <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </template>
+                    <template v-if="result.site_url">
+                        <hr>
+                        <p class="mb-1 fw-semibold">{{ __('message.deploy_detected_site_url') }}</p>
+                        <a :href="result.site_url" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm btn-modern">{{ result.site_url }}</a>
+                    </template>
+                    <template v-if="result.credentials">
+                        <hr>
+                        <p class="mb-1 fw-semibold">{{ __('message.deploy_admin_credentials') }}</p>
+                        <p class="text-muted small mb-2">{{ __('message.deploy_save_securely') }}</p>
+                        <pre class="bg-light p-3 rounded small">{{ result.credentials }}</pre>
+                    </template>
                     <hr>
-                    <p class="mb-1 fw-semibold">{{ __('message.deploy_detected_site_url') }}</p>
-                    <a :href="result.site_url" target="_blank" class="btn btn-outline-primary btn-sm btn-modern">{{ result.site_url }}</a>
+                    <button class="btn btn-outline-secondary btn-sm btn-modern" @click="resetWizard">
+                        <i class="fas fa-redo me-1"></i> {{ __('message.deploy_start_over') }}
+                    </button>
                 </template>
-                <template v-if="result.credentials">
-                    <hr>
-                    <p class="mb-1 fw-semibold">{{ __('message.deploy_admin_credentials') }}</p>
-                    <p class="text-muted small mb-2">{{ __('message.deploy_save_securely') }}</p>
-                    <pre class="bg-light p-3 rounded small">{{ result.credentials }}</pre>
-                </template>
-                <hr>
-                <button class="btn btn-outline-secondary btn-sm btn-modern" @click="resetWizard">
-                    <i class="fas fa-redo me-1"></i> {{ __('message.deploy_start_over') }}
-                </button>
-            </AppCard>
-        </template>
+            </template>
+
+            <template #controls>
+                <div class="d-flex align-items-center justify-content-between w-100 gap-2">
+                    <span class="text-muted small"><i class="fas fa-lock me-1"></i> {{ __('message.deploy_credentials_notice') }}</span>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light btn-modern" @click="closeModal">
+                            <i class="fas fa-arrow-left me-1"></i> {{ __('message.back') }}
+                        </button>
+                        <button type="button" class="btn btn-primary btn-modern" :disabled="deploying" @click="startDeploy">
+                            {{ __('message.deploy') }}
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
 
     </div>
 </template>
@@ -315,8 +266,10 @@ import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
 import { errorHandler } from '@/helpers/responseHandler.js'
 import { validateForm } from '@/helpers/formUtils.js'
-import ToolTip from '@/components/Reusable/Tooltip.vue'
+import Modal from '@/themes/porto/components/common/Modal.vue'
+import AppAlert from '@/components/Reusable/Alert.vue'
 import { deploySchema } from '@/validations/client/deployWizard.js'
+import { __ } from '@/plugins/i18n'
 
 const props = defineProps({
     orderId:        { type: Number, required: true },
@@ -330,7 +283,7 @@ const { errors, setErrors, setFieldError } = useForm()
 const COMPONENT       = 'deploy-wizard'
 
 const step            = ref(0)
-const showSudo        = ref(false)
+const showModal       = ref(false)
 const deploying       = ref(false)
 const loadingVersions = ref(false)
 const versions        = ref([])
@@ -339,9 +292,19 @@ const errorMessage    = ref('')
 const result          = ref({})
 
 const sslOptions = [
-    { label: __('message.deploy_ssl_lets_encrypt'), value: 'A' },
-    { label: __('message.deploy_ssl_self_signed'),  value: 'B' },
-    { label: __('message.deploy_ssl_paid_certificate'), value: 'C' },
+    { name: __('message.deploy_ssl_lets_encrypt'),     id: 'A' },
+    { name: __('message.deploy_ssl_self_signed'),      id: 'B' },
+    { name: __('message.deploy_ssl_paid_certificate'), id: 'C' },
+]
+
+const authOptions = [
+    { name: __('message.password'),                  id: 'password' },
+    { name: __('message.deploy_private_key_option'), id: 'private_key' },
+]
+
+const webServerOptions = [
+    { name: 'Apache', id: 1 },
+    { name: 'Nginx',  id: 2 },
 ]
 
 const versionOptions = computed(() => [
@@ -370,7 +333,8 @@ const form = reactive({
 })
 
 async function goToConfigure() {
-    step.value = 1
+    step.value      = 1
+    showModal.value = true
     if (versions.value.length === 0) {
         loadingVersions.value = true
         try {
@@ -462,7 +426,15 @@ async function startDeploy() {
     }
 }
 
+function closeModal() {
+    if (deploying.value) return
+    if (step.value === 3) return resetWizard()
+    showModal.value = false
+    step.value      = 0
+}
+
 function resetWizard() {
+    showModal.value    = false
     step.value         = 0
     progressLog.value  = []
     errorMessage.value = ''
@@ -470,9 +442,3 @@ function resetWizard() {
     form.deploy_mode   = ''
 }
 </script>
-
-<style scoped>
-.section-label { font-size: 0.7rem; letter-spacing: .08em; }
-.clickable { cursor: pointer; }
-.icon-3rem { font-size: 3rem; }
-</style>

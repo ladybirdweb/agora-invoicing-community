@@ -903,7 +903,8 @@ class ClientController extends BaseClientController
         try {
             $invoice = Invoice::with('orders')->where('user_id', Auth::id())->findOrFail($id);
 
-            if (strtolower($invoice->status) === 'success') {
+            // Any payment against it (full or partial) — deleting would orphan the payment records.
+            if (strtolower($invoice->status) === 'success' || $invoice->allocations()->exists()) {
                 return errorResponse(__('message.cannot_delete_paid_invoice'));
             }
 

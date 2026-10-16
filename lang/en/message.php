@@ -674,8 +674,8 @@ return [
     'auto_renew_modal_title' => 'Auto-renew this order?',
     'auto_renew_modal_body' => "Enable auto-renew to keep your order active without interruption. We'll securely charge your payment method when it's time to renew, and you can cancel anytime from your order page.",
     'pending_authorization' => 'Pending Authorization',
-    'decline_and_proceed' => 'Decline & proceed',
-    'enable_and_proceed' => 'Enable & proceed',
+    'decline_and_proceed' => 'Decline & Proceed',
+    'enable_and_proceed' => 'Enable & Proceed',
 
     /*
      * Category
@@ -796,6 +796,7 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
     'create_in_progress' => 'Your Custom cloud has begun it\'s self creation and will be completed in few minutes, and you shall be notified in your registered email with username and password. if you fail to receive it feel free to contact our support team. <a href="https://support.faveohelpdesk.com">Raise a ticket here!</a>',
+    'cloud_server_unavailable' => 'Our cloud server is temporarily unavailable. Please try again in a few minutes.',
     'something_bad' => 'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact our <a href="https://support.faveohelpdesk.com">Support Center</a>',
     'cloud_info' => 'Welcome to Faveo! You can deploy your free trial cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
     'cloud_live_info' => 'Welcome to Faveo! You can deploy your cloud instance with just one click. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
@@ -925,7 +926,7 @@ return [
     'all_set' => 'You are all set',
 
     'enter_code' => 'Enter Code',
-    'otp_placeholder' => 'Enter OTP',
+    'otp_placeholder' => 'Enter OTP…',
     'otp_description' => 'Enter the OTP code for verification which you have received on your registered mobile.',
     'email_otp_description' => 'Enter the OTP code for verification that you have received on your registered email. Please check your inbox and spam folder.',
     'resend_otp' => 'Resend OTP',
@@ -1520,7 +1521,7 @@ return [
     'error_state' => 'Please Select a State ',
     'error_password' => 'Passwords Don\'t Match',
     'error_terms' => 'Terms must be accepted',
-    'please_wait' => 'Please Wait...',
+    'please_wait' => 'Please Wait…',
     'well_done' => 'Well Done! ',
     'error_select_country' => 'Please Select Country',
     'error_valid_number' => 'Please enter a valid phone number',
@@ -1544,7 +1545,7 @@ return [
     'know_password' => 'I know my password',
     'send_mail' => 'Send Mail',
     'password_email' => 'Please Enter an Email',
-    'sending' => 'Sending...',
+    'sending' => 'Sending…',
     'error_occurs' => 'An error occurred.',
     'reset_password' => 'Reset Password',
 
@@ -2285,7 +2286,7 @@ return [
     'add' => 'Add',
     'to_finish' => 'to finish.',
     'caps_scan_barcode' => 'SCAN BARCODE?',
-    'enter_passcode' => 'Enter Passcode...',
+    'enter_passcode' => 'Enter Passcode…',
     'set_auth_billing' => 'You\'re all set. From now on, you\'ll use Authenticator to sign in to your Faveo Billing Account.',
     'recovery_code_once' => 'Recovery code can be used only once. Make sure to generate a new one each time you use the code to log in.',
     'generate_new' => 'Generate New',
@@ -2363,7 +2364,7 @@ return [
 
     // validation message
     'enter_valid_otp' => 'Please Enter A Valid OTP',
-    'verifying' => 'Verifying',
+    'verifying' => 'Verifying…',
     'resending' => 'Resending',
     'sending_voice_call' => 'Sending Voice Call..',
     'enter_a_password' => 'Please Enter a Password',
@@ -3695,6 +3696,7 @@ return [
     'deploy_ssh_auth_failed' => 'SSH authentication failed: :errors',
     'deploy_path_create_failed' => "Could not create deploy path ':path'. Check permissions.",
     'deploy_ssh_verified' => 'SSH connection verified.',
+    'deploy_host_not_allowed' => 'This server address is not allowed. Use the public IP or domain of your server.',
     'deploy_install_script_not_configured' => 'Install script URL is not configured. Please set it in Admin Panel → Third Party Integrations.',
     'deploy_install_script_errors' => 'Installation script encountered errors.',
     'deploy_install_completed' => 'Server installation completed.',
@@ -4046,4 +4048,13 @@ return [
         'email_exists' => 'An account with this email already exists. Please log in with your password.',
         'inactive' => 'Your account is not active. Please contact support.',
     ],
+    'update_profile' => 'Update Profile',
+    'unsaved_changes_confirm' => 'You have unsaved changes. Leave this page?',
+    'recovery_codes_copy_failed' => "Couldn't copy to clipboard. Select the codes and copy them manually.",
+    'skip_to_content' => 'Skip to main content',
+    'toggle_submenu' => ':name submenu',
+    'cart_with_count' => 'Cart, :count items',
+    'add_to_cart' => 'Add to Cart',
+    'deploy_step_of' => 'Step :current of :total: :name',
+    'deploy_manual_guide_link' => 'Prefer to install manually? Read the guide',
 ];

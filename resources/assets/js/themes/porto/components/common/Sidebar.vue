@@ -11,16 +11,17 @@
                         <button type="button" class="nav-link nav-section"
                                 :class="{ 'nav-section-current': isInSection(item) }"
                                 :aria-expanded="openKeys.has(item.key)"
+                                :aria-controls="`sidebar-sub-${item.key}`"
                                 @click="toggleItem(item.key)">
-                            <i :class="item.icon" class="fa-fw nav-icon"></i>{{ getLabel(item) }}
+                            <i :class="item.icon" class="fa-fw nav-icon" aria-hidden="true"></i>{{ getLabel(item) }}
                             <i class="fas fa-angle-down nav-caret"
-                               :class="{ 'nav-caret-open': openKeys.has(item.key) }"></i>
+                               :class="{ 'nav-caret-open': openKeys.has(item.key) }" aria-hidden="true"></i>
                         </button>
-                        <ul v-show="openKeys.has(item.key)" class="nav-sublist">
+                        <ul v-show="openKeys.has(item.key)" :id="`sidebar-sub-${item.key}`" class="nav-sublist">
                             <li v-for="child in item.children" :key="child.key" class="nav-item">
                                 <RouterLink class="nav-link" :to="child.route"
                                             :class="{ active: isActive(child) }">
-                                    <i :class="child.icon" class="fa-fw nav-icon"></i>{{ getLabel(child) }}
+                                    <i :class="child.icon" class="fa-fw nav-icon" aria-hidden="true"></i>{{ getLabel(child) }}
                                 </RouterLink>
                             </li>
                         </ul>
@@ -28,13 +29,13 @@
 
                     <!-- External URL (e.g. logout) — leaves the panel, so it reads apart -->
                     <a v-else-if="item.url" class="nav-link nav-exit" :href="resolveUrl(item.url)">
-                        <i :class="item.icon" class="fa-fw nav-icon"></i>{{ getLabel(item) }}
+                        <i :class="item.icon" class="fa-fw nav-icon" aria-hidden="true"></i>{{ getLabel(item) }}
                     </a>
 
                     <!-- Router link -->
                     <RouterLink v-else class="nav-link" :to="item.route"
                                 :class="{ active: isActive(item) }">
-                        <i :class="item.icon" class="fa-fw nav-icon"></i>{{ getLabel(item) }}
+                        <i :class="item.icon" class="fa-fw nav-icon" aria-hidden="true"></i>{{ getLabel(item) }}
                     </RouterLink>
 
                 </li>

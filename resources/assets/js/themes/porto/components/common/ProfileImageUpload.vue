@@ -1,18 +1,20 @@
 <template>
-    <div class="client-avatar-wrapper" @click="fileInput.click()" :title="__('message.change_profile_picture')">
+    <button type="button" class="client-avatar-wrapper" @click="fileInput.click()"
+            :title="__('message.change_profile_picture')" :aria-label="__('message.change_profile_picture')">
         <div class="client-avatar-circle">
-            <img v-if="currentPreview" :src="currentPreview" :alt="alt" class="client-avatar-img">
+            <img v-if="currentPreview" :src="currentPreview" :alt="alt" class="client-avatar-img" width="98" height="98">
             <span v-else class="client-avatar-initials">{{ initials }}</span>
         </div>
         <div class="client-avatar-overlay">
-            <i class="fas fa-camera text-white"></i>
+            <i class="fas fa-camera text-white" aria-hidden="true"></i>
         </div>
-    </div>
+    </button>
+    <div v-if="fileError" class="text-danger small text-center mt-2" role="alert">{{ fileError }}</div>
     <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/jpg" class="hidden-input" @change="onFileSelected">
 
     <AppModal :showModal="showModal" :onClose="closeModal" :showCloseBtn="false" classname="modal-lg">
         <template #title>
-            <h4 class="modal-title">{{ __('message.crop_profile_picture') }}</h4>
+            <h5 class="modal-title fw-bold">{{ __('message.crop_profile_picture') }}</h5>
         </template>
         <template #fields>
             <vue-cropper
@@ -30,7 +32,7 @@
             />
             <div class="text-center mt-2 d-flex justify-content-center gap-1 flex-wrap">
                 <button type="button" class="btn btn-sm btn-outline-secondary" @click="rotateImage">
-                    <i class="fas fa-sync-alt me-1"></i>{{ __('message.rotate') }}
+                    <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.rotate') }}
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" :class="{ active: aspectRatio === 0 }" @click="changeRatio(0)">
                     {{ __('message.no_ratio') }}
@@ -44,10 +46,8 @@
             </div>
         </template>
         <template #controls>
-            <button type="button" class="btn btn-light me-2" @click="closeModal">{{ __('message.cancel') }}</button>
-            <button type="button" class="btn btn-primary" @click="onSubmit">
-                <i class="fa fa-check me-1"></i>{{ __('message.apply') }}
-            </button>
+            <action-button action="cancel" @click="closeModal" />
+            <action-button action="apply" @click="onSubmit" />
         </template>
     </AppModal>
 </template>
@@ -78,17 +78,19 @@ const imageSrc       = ref('')
 const cropImg        = ref('')
 const currentPreview = ref(props.src)
 const aspectRatio    = ref(1)
+const fileError      = ref('')
 
 async function onFileSelected(event) {
     const file = event.target.files[0]
     if (!file) return
+    fileError.value = ''
 
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-        alert(__('message.only_png_jpeg_allowed'))
+        fileError.value = __('message.only_png_jpeg_allowed')
         return
     }
     if (file.size > 2097152) {
-        alert(__('message.image_max_2mb'))
+        fileError.value = __('message.image_max_2mb')
         return
     }
 
@@ -148,6 +150,10 @@ function onSubmit() {
     width: 110px;
     height: 110px;
     margin: 0 auto;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
     border-radius: 50%;
     overflow: hidden;
@@ -196,7 +202,11 @@ function onSubmit() {
     transition: opacity .2s ease-in-out;
 }
 
-.client-avatar-wrapper:hover .client-avatar-overlay {
+.client-avatar-wrapper:hover .client-avatar-overlay,
+.client-avatar-wrapper:focus-visible .client-avatar-overlay {
     opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+    .client-avatar-overlay { transition: none; }
 }
 </style>

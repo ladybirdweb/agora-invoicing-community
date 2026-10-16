@@ -6,7 +6,7 @@
 
       <!-- Not found -->
       <div v-else-if="!invoice.id" class="text-center py-6">
-        <i class="fas fa-file-invoice fa-3x text-color-grey-lighten mb-3 d-block"></i>
+        <i class="fas fa-file-invoice fa-3x text-color-grey-lighten mb-3 d-block" aria-hidden="true"></i>
         <p class="text-color-grey mb-0">{{ error || __('message.err_msg') }}</p>
       </div>
 
@@ -29,9 +29,9 @@
                 <tr v-for="it in items" :key="it.id" class="cart_table_item">
                   <td class="product-thumbnail">
                     <span class="product-thumbnail-image d-inline-block">
-                      <img v-if="it.image" :src="it.image" alt="" class="img-fluid" />
+                      <img v-if="it.image" :src="it.image" alt="" width="90" height="90" class="img-fluid" />
                       <span v-else class="d-inline-flex align-items-center justify-content-center bg-light product-placeholder">
-                        <i class="fas fa-box text-color-grey fa-2x"></i>
+                        <i class="fas fa-box text-color-grey fa-2x" aria-hidden="true"></i>
                       </span>
                     </span>
                   </td>
@@ -97,7 +97,7 @@
                         :disabled="busy || (amountDueNumber > 0 && !selectedGateway)"
                         @click="continuePay">
                   {{ busy ? __('message.please_wait') : __('message.pay_now') }}
-                  <i v-if="!busy" class="fas fa-arrow-right ms-2"></i>
+                  <i v-if="!busy" class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -112,17 +112,17 @@
   <AppModal
     :showModal="showStripeModal"
     :onClose="onStripeModalClose"
-    :showCloseBtn="true"
+    :showCloseBtn="false"
     :showControls="false"
     classname="modal-md"
   >
     <template #title>
       <div class="d-flex align-items-center justify-content-between w-100 me-3">
-        <span class="fw-bold fs-5">{{ __('message.enter_card_details') }}</span>
+        <h5 class="modal-title fw-bold">{{ __('message.enter_card_details') }}</h5>
         <div class="d-flex gap-1">
-          <img :src="`${baseUrl}/images/logo/cards/visa.svg`" alt="Visa" height="20">
-          <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" alt="Mastercard" height="20">
-          <img :src="`${baseUrl}/images/logo/cards/amex.svg`" alt="American Express" height="20">
+          <img :src="`${baseUrl}/images/logo/cards/visa.svg`" alt="Visa" height="20" width="30">
+          <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" alt="Mastercard" height="20" width="30">
+          <img :src="`${baseUrl}/images/logo/cards/amex.svg`" alt="American Express" height="20" width="30">
         </div>
       </div>
     </template>
@@ -133,22 +133,22 @@
 
         <!-- Card Number -->
         <div class="mb-4">
-          <label class="form-label text-color-grey mb-1">{{ __('message.card_number') }}</label>
+          <label id="card-number-label" class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
           <div id="card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.number }"></div>
-          <div v-if="cardErrors.number" class="invalid-feedback d-block">{{ cardErrors.number }}</div>
+          <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.number }}</div>
         </div>
 
         <!-- Expiry + CVC -->
         <div class="row g-3 mb-4">
           <div class="col-6">
-            <label class="form-label text-color-grey mb-1">{{ __('message.expiry_date') }}</label>
+            <label id="card-expiry-label" class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
             <div id="card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.expiry }"></div>
-            <div v-if="cardErrors.expiry" class="invalid-feedback d-block">{{ cardErrors.expiry }}</div>
+            <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.expiry }}</div>
           </div>
           <div class="col-6">
-            <label class="form-label text-color-grey mb-1">{{ __('message.cvc') }}</label>
+            <label id="card-cvc-label" class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
             <div id="card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.cvc }"></div>
-            <div v-if="cardErrors.cvc" class="invalid-feedback d-block">{{ cardErrors.cvc }}</div>
+            <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.cvc }}</div>
           </div>
         </div>
 
@@ -232,6 +232,7 @@ const cardComplete = reactive({ number: false, expiry: false, cvc: false })
 
 let stripe = null
 let cardNumber = null
+let cardFields = {}
 let clientSecret = null
 let paymentIntentId = null
 
@@ -361,9 +362,15 @@ async function openStripeModal() {
   cardExpiry.mount('#card-expiry')
   cardCvc.mount('#card-cvc')
 
+  cardFields = { number: cardNumber, expiry: cardExpiry, cvc: cardCvc }
   bindStripeField(cardNumber, 'number')
   bindStripeField(cardExpiry, 'expiry')
   bindStripeField(cardCvc, 'cvc')
+}
+
+// Stripe fields are iframes, so a <label for> can't target them — focus the element instead.
+function focusCard(key) {
+  cardFields[key]?.focus()
 }
 
 function onStripeModalClose() {
@@ -379,7 +386,8 @@ async function payStripe() {
   if (!cardComplete.number) cardErrors.number = cardErrors.number || __('message.card_number_required')
   if (!cardComplete.expiry) cardErrors.expiry = cardErrors.expiry || __('message.expiry_required')
   if (!cardComplete.cvc) cardErrors.cvc = cardErrors.cvc || __('message.cvc_required')
-  if (!cardComplete.number || !cardComplete.expiry || !cardComplete.cvc) return
+  const firstInvalid = ['number', 'expiry', 'cvc'].find(k => !cardComplete[k])
+  if (firstInvalid) { focusCard(firstInvalid); return }
 
   busy.value = true
   alertStore.unsetAlert()

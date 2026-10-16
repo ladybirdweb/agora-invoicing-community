@@ -8,8 +8,8 @@
       <!-- Error -->
       <div v-else-if="cartStore.error"
            class="d-flex flex-column align-items-center justify-content-center text-center py-6">
-        <i class="fas fa-exclamation-circle fa-3x text-danger mb-3 d-block"></i>
-        <p class="text-color-grey mb-4">{{ cartStore.error }}</p>
+        <i class="fas fa-exclamation-circle fa-3x text-danger mb-3 d-block" aria-hidden="true"></i>
+        <p class="text-color-grey mb-4" role="alert">{{ cartStore.error }}</p>
         <router-link to="/store" class="btn btn-dark btn-modern text-uppercase border-radius-0 btn-px-4 py-3">
           {{ __('message.browse_products') }}
         </router-link>
@@ -18,7 +18,7 @@
       <!-- Empty -->
       <div v-else-if="cartStore.items.length === 0"
            class="d-flex flex-column align-items-center justify-content-center text-center py-6">
-        <i class="fas fa-shopping-cart fa-3x text-color-grey-lighten mb-3 d-block"></i>
+        <i class="fas fa-shopping-cart fa-3x text-color-grey-lighten mb-3 d-block" aria-hidden="true"></i>
         <p class="text-color-grey mb-4">{{ __('message.cart_empty') }}</p>
         <router-link to="/store" class="btn btn-dark btn-modern text-uppercase border-radius-0 btn-px-4 py-3">
           {{ __('message.browse_products') }}
@@ -90,7 +90,7 @@
                   <button type="button"
                           class="btn btn-light btn-modern w-100 text-2 text-uppercase btn-clear-cart"
                           :disabled="cartStore.loading"
-                          @click="cartStore.clearCart()">
+                          @click="clearCart">
                     {{ __('message.clear_cart') }}
                   </button>
                 </div>
@@ -98,7 +98,7 @@
                   <button type="button"
                           class="btn btn-dark btn-modern w-100 text-2 text-uppercase checkout"
                           @click="checkout">
-                    {{ __('message.checkout') }} <i class="fas fa-arrow-right ms-2"></i>
+                    {{ __('message.checkout') }} <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
@@ -145,6 +145,10 @@ onMounted(async () => {
         await cartStore.fetchCart()
     }
 })
+
+function clearCart() {
+  cartStore.clearCart()
+}
 
 // Products whose license is locked to a domain: asked in a modal before checkout.
 const domainItems = computed(() => cartStore.items.filter(item => item.require_domain))

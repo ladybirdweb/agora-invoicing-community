@@ -7,7 +7,7 @@
         <h2 class="font-weight-bold text-5 mb-3">{{ __('message.login') }}</h2>
         <form @submit.prevent="submitLogin" novalidate>
           <ClientField name="email_username" type="text" :label="__('message.username_register')" required
-                       autocomplete="username"
+                       autocomplete="username" :spellcheck="false"
                        v-model="loginForm.email_username" :error="loginErrors.email_username"
                        @update:modelValue="loginSetFieldError('email_username', undefined)"/>
 
@@ -20,7 +20,7 @@
             <ClientCheckbox v-model="loginForm.remember" :label="__('message.remember_me')"/>
             <RouterLink
                 class="text-decoration-none text-color-primary text-color-hover-primary font-weight-semibold text-2"
-                to="/password/reset">{{ __('message.forgot-password') }} ?
+                to="/password/reset">{{ __('message.forgot-password') }}
             </RouterLink>
           </div>
 
@@ -30,8 +30,8 @@
 
           <button type="submit"
                   class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3"
-                  :disabled="loggingIn || !loginHpReady" data-loading-text="Loading...">
-            <i v-if="loggingIn" class="fas fa-circle-notch fa-spin me-1"></i>{{ __('message.login') }}
+                  :disabled="loggingIn || !loginHpReady">
+            <i v-if="loggingIn" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>{{ __('message.login') }}
           </button>
 
           <SocialButtons :social="social" :base-url="baseUrl"/>
@@ -45,25 +45,30 @@
           <div class="row">
             <div class="col-md-6">
               <ClientField name="first_name" type="text" :label="__('message.first_name')" required
+                           autocomplete="given-name"
                            v-model="regForm.first_name" :error="regErrors.first_name"
                            @update:modelValue="regSetFieldError('first_name', undefined)"/>
             </div>
             <div class="col-md-6">
               <ClientField name="last_name" type="text" :label="__('message.last_name')" required
+                           autocomplete="family-name"
                            v-model="regForm.last_name" :error="regErrors.last_name"
                            @update:modelValue="regSetFieldError('last_name', undefined)"/>
             </div>
           </div>
 
           <ClientField name="email" type="email" :label="__('message.email_address')" required
+                       autocomplete="email" :spellcheck="false"
                        v-model="regForm.email" :error="regErrors.email"
                        @update:modelValue="regSetFieldError('email', undefined)"/>
 
           <ClientField name="company" type="text" :label="__('message.company')" required
+                       autocomplete="organization"
                        v-model="regForm.company" :error="regErrors.company"
                        @update:modelValue="regSetFieldError('company', undefined)"/>
 
           <ClientField name="address" type="textarea" :label="__('message.address')" required
+                       autocomplete="street-address"
                        v-model="regForm.address" :error="regErrors.address"
                        @update:modelValue="regSetFieldError('address', undefined)"/>
 
@@ -97,9 +102,9 @@
 
           <div v-if="passwordFocused" class="mb-3 text-1">
             <strong class="d-block mb-1 text-dark">{{ __('message.password_requirements') }}</strong>
-            <ul class="list-unstyled mb-0">
+            <ul class="list-unstyled mb-0" aria-live="polite">
               <li v-for="c in checklist" :key="c.key" :class="c.ok ? 'text-success' : 'text-danger'">
-                <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'"></i> {{ c.label }}
+                <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'" aria-hidden="true"></i> {{ c.label }}
               </li>
             </ul>
           </div>
@@ -118,8 +123,8 @@
 
           <button type="submit"
                   class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3 mt-3"
-                  :disabled="registering || !regHpReady" data-loading-text="Loading...">
-            <i v-if="registering" class="fas fa-circle-notch fa-spin me-1"></i>{{ __('message.register') }}
+                  :disabled="registering || !regHpReady">
+            <i v-if="registering" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>{{ __('message.register') }}
           </button>
         </form>
       </div>
@@ -270,8 +275,9 @@ async function submitLogin() {
     })
     const redirect = res.data?.data?.redirect
     if (redirect) {
+      // Only same-origin paths: "/x" but not "//host" or "/\\host" (open redirect).
       const redirectPath = route.query.redirect
-      if (redirectPath) {
+      if (typeof redirectPath === 'string' && /^\/(?![/\\])/.test(redirectPath)) {
         globalThis.location.href = `${baseUrl}${redirectPath}`
       } else {
         globalThis.location.href = redirect

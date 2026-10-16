@@ -40,17 +40,17 @@ describe('SocialButtons.vue', () => {
     })
 
     it('renders no buttons when all social providers are disabled', () => {
-        expect(wrapper.find('a').exists()).toBeFalsy()
+        expect(wrapper.find('button').exists()).toBeFalsy()
     })
 
     it('renders a button when google is enabled', async () => {
         await wrapper.setProps({ social: { google: 1, github: 0, twitter: 0, linkedin: 0, facebook: 0 } })
-        expect(wrapper.find('a').exists()).toBeTruthy()
+        expect(wrapper.find('button').exists()).toBeTruthy()
     })
 
     it('renders the correct number of buttons for enabled providers', async () => {
         await wrapper.setProps({ social: { google: 1, github: 1, twitter: 0, linkedin: 0, facebook: 0 } })
-        expect(wrapper.findAll('a').length).toBe(2)
+        expect(wrapper.findAll('button').length).toBe(2)
     })
 
     it('renders the "or" divider when providers are enabled', async () => {
@@ -68,7 +68,7 @@ describe('SocialButtons.vue', () => {
         })
 
         await wrapper.setProps({ social: { google: 1, github: 0, twitter: 0, linkedin: 0, facebook: 0 } })
-        await wrapper.find('a').trigger('click')
+        await wrapper.find('button').trigger('click')
         await flushPromises()
 
         const reqs = axiosMock.history.get.filter(r => r.url === '/auth/redirect/google')
@@ -79,7 +79,7 @@ describe('SocialButtons.vue', () => {
         axiosMock.onGet('/auth/redirect/github').reply(500, { message: 'Server error' })
 
         await wrapper.setProps({ social: { google: 0, github: 1, twitter: 0, linkedin: 0, facebook: 0 } })
-        await wrapper.find('a').trigger('click')
+        await wrapper.find('button').trigger('click')
         await flushPromises()
 
         expect(errorHandler).toHaveBeenCalled()
@@ -89,7 +89,7 @@ describe('SocialButtons.vue', () => {
         axiosMock.onGet('/auth/redirect/google').reply(200, { data: {} })
 
         await wrapper.setProps({ social: { google: 1, github: 0, twitter: 0, linkedin: 0, facebook: 0 } })
-        await wrapper.find('a').trigger('click')
+        await wrapper.find('button').trigger('click')
         await flushPromises()
 
         expect(errorHandler).toHaveBeenCalled()
@@ -103,7 +103,7 @@ describe('SocialButtons.vue', () => {
         })
 
         await wrapper.setProps({ social: { google: 1, github: 0, twitter: 0, linkedin: 0, facebook: 0 } })
-        const btn = wrapper.find('a')
+        const btn = wrapper.find('button')
         await btn.trigger('click')
         await btn.trigger('click')
         await flushPromises()

@@ -342,7 +342,7 @@ Route::middleware('installAgora')->group(function (): void {
     Route::get('get-my-installations/{orderid}', [ClientController::class, 'getOrderInstallations']);
     Route::get('get-versions/{orderid}', [ClientController::class, 'getVersionList'])->name('get-versions');
     Route::get('get-deploy-versions/{orderId}', [Front\DeployController::class, 'getVersions'])->name('get-deploy-versions');
-    Route::post('deploy-product-step', [Front\DeployController::class, 'deployStep'])->name('deploy-product-step');
+    Route::post('deploy-product-step', [Front\DeployController::class, 'deployStep'])->middleware('throttle:30,1')->name('deploy-product-step');
 
     // --- Renew (client) ---
     Route::get('get-renew-cost', [RenewController::class, 'getCost']);

@@ -619,8 +619,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ],
                 'from' => $setting,
                 'to' => $query->user,
-                'items' => $query->invoiceItem->each(function ($item) use ($linkedOrder): void {
+                'items' => $query->invoiceItem->each(function ($item) use ($linkedOrder, $query): void {
                     $item->setRelation('order', $item->order ?? $linkedOrder);
+                    $item->setAttribute('regular_price_formatted', currencyFormat($item->regular_price, $query->currency));
+                    $item->setAttribute('subtotal_formatted', currencyFormat($item->subtotal, $query->currency));
                     // varchar column; JS sees "0" as truthy, so hand the view an int.
                     $item->setAttribute('agents', agentCount($item->agents));
                 }),
@@ -631,6 +633,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'payments' => $query->allocations->map(fn ($allocation): array => [
                     'id' => $allocation->payment_id,
                     'amount' => (float) $allocation->amount,
+                    'amount_formatted' => currencyFormat($allocation->amount, $query->currency),
                     'payment_method' => $allocation->payment?->payment_method,
                     'payment_status' => $allocation->payment?->payment_status,
                     'created_at' => $allocation->payment?->created_at,

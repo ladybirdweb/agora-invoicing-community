@@ -74,52 +74,52 @@
                                  above already covers it, and this tab held nothing
                                  but the (no longer reachable) license itself. -->
                             <li v-if="order.status !== 'Terminated'" class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'license' }"
-                                   href="javascript:;" @click="activeTab = 'license'">
-                                    <i class="fas fa-file-contract fa-fw nav-icon"></i>{{ __('message.license_details') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'license' }"
+                                   :aria-current="activeTab === 'license' ? 'true' : undefined" @click="activeTab = 'license'">
+                                    <i class="fas fa-file-contract fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.license_details') }}
+                                </button>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'users' }"
-                                   href="javascript:;" @click="activeTab = 'users'">
-                                    <i class="fas fa-users fa-fw nav-icon"></i>{{ __('message.user_details') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'users' }"
+                                   :aria-current="activeTab === 'users' ? 'true' : undefined" @click="activeTab = 'users'">
+                                    <i class="fas fa-users fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.user_details') }}
+                                </button>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'invoice' }"
-                                   href="javascript:;" @click="activeTab = 'invoice'">
-                                    <i class="fas fa-file-invoice fa-fw nav-icon"></i>{{ __('message.invoice_list') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'invoice' }"
+                                   :aria-current="activeTab === 'invoice' ? 'true' : undefined" @click="activeTab = 'invoice'">
+                                    <i class="fas fa-file-invoice fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.invoice_list') }}
+                                </button>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'receipt' }"
-                                   href="javascript:;" @click="activeTab = 'receipt'">
-                                    <i class="fas fa-receipt fa-fw nav-icon"></i>{{ __('message.payment_receipts') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'receipt' }"
+                                   :aria-current="activeTab === 'receipt' ? 'true' : undefined" @click="activeTab = 'receipt'">
+                                    <i class="fas fa-receipt fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.payment_receipts') }}
+                                </button>
                             </li>
                             <li v-if="showCloudTab" class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'cloud' }"
-                                   href="javascript:;" @click="openCloudTab">
-                                    <i class="fas fa-cloud fa-fw nav-icon"></i>{{ __('message.cloud_settings') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'cloud' }"
+                                   :aria-current="activeTab === 'cloud' ? 'true' : undefined" @click="openCloudTab">
+                                    <i class="fas fa-cloud fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.cloud_settings') }}
+                                </button>
                             </li>
                             <li v-if="showAutoRenewTab" class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'auto-renew' }"
-                                   href="javascript:;" @click="activeTab = 'auto-renew'">
-                                    <i class="fas fa-rotate fa-fw nav-icon"></i>{{ __('message.auto_renewal') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'auto-renew' }"
+                                   :aria-current="activeTab === 'auto-renew' ? 'true' : undefined" @click="activeTab = 'auto-renew'">
+                                    <i class="fas fa-rotate fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.auto_renewal') }}
+                                </button>
                             </li>
                             <li v-if="order.whatsapp_enabled" class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'whatsapp' }"
-                                   href="javascript:;" @click="activeTab = 'whatsapp'">
-                                    <i class="fab fa-whatsapp fa-fw nav-icon"></i>{{ __('message.whatsapp_signup') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'whatsapp' }"
+                                   :aria-current="activeTab === 'whatsapp' ? 'true' : undefined" @click="activeTab = 'whatsapp'">
+                                    <i class="fab fa-whatsapp fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.whatsapp_signup') }}
+                                </button>
                             </li>
                             <li v-if="order.deploy_enabled && order.has_deployable_uploads && order.status !== 'Terminated'" class="nav-item">
-                                <a class="nav-link" :class="{ active: activeTab === 'deploy' }"
-                                   href="javascript:;" @click="activeTab = 'deploy'">
-                                    <i class="fas fa-rocket fa-fw nav-icon"></i>{{ __('message.deploy') }}
-                                </a>
+                                <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'deploy' }"
+                                   :aria-current="activeTab === 'deploy' ? 'true' : undefined" @click="activeTab = 'deploy'">
+                                    <i class="fas fa-rocket fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.deploy') }}
+                                </button>
                             </li>
                         </ul>
                     </aside>
@@ -142,19 +142,22 @@
                             </div>
                             <div class="col-sm-7 d-flex align-items-center gap-2">
                                 <span>{{ order.serial_key || '—' }}</span>
-                                <button v-if="order.serial_key"
+                                <button v-if="order.serial_key" type="button"
                                         class="btn btn-light btn-sm ms-2 table_btn"
+                                        :aria-label="copied ? __('message.copied') : __('message.copy')"
                                         v-tooltip="{ content: copied ? __('message.copied') : __('message.copy'), hideTriggers: t => t }"
                                         @click="copyLicense">
-                                    <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+                                    <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'" aria-hidden="true"></i>
                                 </button>
-                                <button v-if="order.serial_key && !order.is_cloud"
+                                <span class="visually-hidden" aria-live="polite">{{ copied ? __('message.copied') : '' }}</span>
+                                <button v-if="order.serial_key && !order.is_cloud" type="button"
                                         class="btn btn-light btn-sm table_btn"
+                                        :aria-label="__('message.reissue_license')"
                                         :disabled="reissuing"
                                         v-tooltip="__('message.reissue_license')"
                                         @click="reissueLicense">
-                                    <i v-if="reissuing" class="fas fa-circle-notch fa-spin"></i>
-                                    <i v-else class="fas fa-id-card-alt"></i>
+                                    <i v-if="reissuing" class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                                    <i v-else class="fas fa-id-card-alt" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -171,10 +174,11 @@
                                 <span>{{ formatDate(order.license_ends_at) }}</span>
                                 <!-- A deleted cloud instance can't be renewed — there's nothing left to pay for. -->
                                 <button v-if="order.license_ends_at && !order.is_cloud_deleted"
-                                        class="btn btn-light btn-sm ms-2 table_btn"
+                                        type="button" class="btn btn-light btn-sm ms-2 table_btn"
+                                        :aria-label="__('message.renew')"
                                         v-tooltip="__('message.renew')"
                                         @click="showRenewModal = true">
-                                    <i class="fas fa-sync-alt"></i>
+                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -194,10 +198,11 @@
                                      But if updates never expire either (product has no expiring permissions at all),
                                      there's nothing to renew. -->
                                 <button v-if="!order.license_ends_at && order.update_ends_at && !order.is_cloud_deleted"
-                                        class="btn btn-light btn-sm ms-2 table_btn"
+                                        type="button" class="btn btn-light btn-sm ms-2 table_btn"
+                                        :aria-label="__('message.renew')"
                                         v-tooltip="__('message.renew')"
                                         @click="showRenewModal = true">
-                                    <i class="fas fa-sync-alt"></i>
+                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -212,8 +217,8 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-7">
-                                    <button class="btn btn-light btn-sm table_btn" @click="handleDownloadClick">
-                                        <i class="fas fa-download me-1"></i>{{ __('message.download_license_file') }}
+                                    <button type="button" class="btn btn-light btn-sm table_btn" @click="handleDownloadClick">
+                                        <i class="fas fa-download me-1" aria-hidden="true"></i>{{ __('message.download_license_file') }}
                                     </button>
                                 </div>
                             </div>
@@ -329,8 +334,9 @@
                             </template>
                             <template #action="{ row }">
                                 <RouterLink :to="'/my-invoice/' + row.id" class="btn btn-sm btn-light"
+                                            :aria-label="__('message.view')"
                                             v-tooltip="__('message.view')">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
                                 </RouterLink>
                             </template>
                         </DataTable>
@@ -360,11 +366,12 @@
                                 <!-- Change cloud domain -->
                                 <div class="col-lg-6 mb-4">
                                     <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
-                                         @click="openDomainModal">
+                                         role="button" tabindex="0"
+                                         @click="openDomainModal" @keydown.enter.space.prevent="openDomainModal">
                                         <div class="card-body p-relative zindex-1 p-3">
                                             <div class="feature-box feature-box-style-6 text-center d-block">
                                                 <div class="feature-box-icon justify-content-center">
-                                                    <i class="fas fa-globe text-primary"></i>
+                                                    <i class="fas fa-globe text-primary" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="feature-box-info">
                                                     <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.change_cloud_domain') }}</h4>
@@ -379,11 +386,12 @@
                                 <!-- Increase / decrease agents -->
                                 <div class="col-lg-6 mb-4">
                                     <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
-                                         @click="openAgentsModal">
+                                         role="button" tabindex="0"
+                                         @click="openAgentsModal" @keydown.enter.space.prevent="openAgentsModal">
                                         <div class="card-body p-relative zindex-1 p-3">
                                             <div class="feature-box feature-box-style-6 text-center d-block">
                                                 <div class="feature-box-icon justify-content-center">
-                                                    <i class="fas fa-users text-primary"></i>
+                                                    <i class="fas fa-users text-primary" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="feature-box-info">
                                                     <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.increase_decrease_agents') }}</h4>
@@ -398,11 +406,12 @@
                                 <!-- Upgrade / downgrade plan -->
                                 <div v-if="!cloud.is_free_plan" class="col-lg-6 mb-4">
                                     <div class="card border-radius-1 bg-color-light box-shadow-6 box-shadow-hover cur-pointer h-100"
-                                         @click="openPlanModal">
+                                         role="button" tabindex="0"
+                                         @click="openPlanModal" @keydown.enter.space.prevent="openPlanModal">
                                         <div class="card-body p-relative zindex-1 p-3">
                                             <div class="feature-box feature-box-style-6 text-center d-block">
                                                 <div class="feature-box-icon justify-content-center">
-                                                    <i class="fas fa-cloud-upload-alt text-primary"></i>
+                                                    <i class="fas fa-cloud-upload-alt text-primary" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="feature-box-info">
                                                     <h4 class="text-4 mt-3 mb-2 text-color-grey">{{ __('message.upgrade_downgrade_cloud') }}</h4>
@@ -425,7 +434,7 @@
                         <AppCard>
                             <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="auto-renewal-icon"><i class="fas fa-sync-alt"></i></div>
+                                    <div class="auto-renewal-icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div>
                                     <div>
                                         <span class="fw-bold">
                                             {{ __('message.auto_renewal') }}
@@ -448,6 +457,7 @@
                                 </div>
                                 <div class="form-check form-switch mb-0">
                                     <input class="form-check-input" type="checkbox" role="switch"
+                                           :aria-label="__('message.auto_renewal')"
                                            :checked="order.is_subscribed" :disabled="renewalBusy"
                                            @click.prevent="onAutoRenewToggleClick"
                                            v-tooltip="order.is_subscribed ? __('message.disable') : __('message.enable')">
@@ -466,8 +476,6 @@
                         <DeployWizard
                             v-if="order.deploy_enabled && order.has_deployable_uploads"
                             :orderId="order.id"
-                            :serialKey="order.serial_key ?? ''"
-                            :orderNumber="order.number ?? ''"
                             :manualGuideUrl="order.manual_install_guide_url"
                         />
                     </div>
@@ -489,9 +497,10 @@
                     <ClientField type="text" name="newDomain" required
                                  :label="__('message.enter_domain_new_name')"
                                  v-model="domainForm.newDomain"
-                                 placeholder="https://billing.custom.com" autocomplete="off" />
+                                 placeholder="https://billing.custom.com…" autocomplete="off" :spellcheck="false" />
                 </template>
                 <template #controls>
+                    <action-button action="cancel" @click="closeDomainModal" />
                     <action-button action="confirm"
                                    :label="__('message.chg_domain')"
                                    :loading="domainBusy"
@@ -521,12 +530,12 @@
                     <div class="text-center mb-4">
                         <div class="download-section-label mb-2">{{ __('message.choose_no_desired_agents') }}</div>
                         <div class="d-flex align-items-center justify-content-center gap-3">
-                            <button type="button" class="btn btn-light agent-stepper-btn" :disabled="agentAtMinimum" @click="stepAgents(-1)">
-                                <i class="fas fa-minus"></i>
+                            <button type="button" class="btn btn-light agent-stepper-btn" :aria-label="__('message.remove_one_agent')" :disabled="agentAtMinimum" @click="stepAgents(-1)">
+                                <i class="fas fa-minus" aria-hidden="true"></i>
                             </button>
                             <span class="agent-count-display">{{ agentForm.number || 0 }}</span>
-                            <button type="button" class="btn btn-light agent-stepper-btn" @click="stepAgents(1)">
-                                <i class="fas fa-plus"></i>
+                            <button type="button" class="btn btn-light agent-stepper-btn" :aria-label="__('message.add_one_agent')" @click="stepAgents(1)">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
                             </button>
                         </div>
                         <!-- Plain sentence, not a bare "+1" symbol — says what's
@@ -560,6 +569,7 @@
                     </p>
                 </template>
                 <template #controls>
+                    <action-button action="cancel" @click="closeAgentsModal" />
                     <action-button action="confirm"
                                    :label="agentSubmitLabel"
                                    :loading="agentBusy"
@@ -604,7 +614,7 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
                                 <span class="text-color-grey">{{ __('message.credit_deducted_label') }}</span>
-                                <span class="fw-bold text-success">−{{ planCost.currency_symbol }}{{ planCreditApplied.toFixed(2) }}</span>
+                                <span class="fw-bold text-success">−{{ planCost.currency_symbol }}{{ planCost.credit_applied }}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-dark">{{ __('message.price_due_today') }}</span>
@@ -617,11 +627,12 @@
                              clearly apart from the payment math above. -->
                         <div v-if="planFutureCredit > 0" class="future-credit-callout rounded p-3 mb-1 d-flex justify-content-between align-items-center">
                             <span class="text-dark">{{ __('message.future_plan_credit_label') }}</span>
-                            <span class="fw-bold text-success fs-6">+{{ planCost.currency_symbol }}{{ planFutureCredit.toFixed(2) }}</span>
+                            <span class="fw-bold text-success fs-6">+{{ planCost.currency_symbol }}{{ planCost.discount }}</span>
                         </div>
                     </template>
                 </template>
                 <template #controls>
+                    <action-button action="cancel" @click="closePlanModal" />
                     <action-button action="confirm"
                                    :label="__('message.change_plan')"
                                    :loading="planBusy"
@@ -633,7 +644,7 @@
         <!-- ── Enable Auto Renewal: gateway selection modal ──── -->
         <Modal :showModal="showRenewalModal" :onClose="closeRenewalModal" :showCloseBtn="false">
             <template #title>
-                <h5 class="modal-title">{{ __('message.auto_renewal') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.auto_renewal') }}</h5>
             </template>
             <template #fields>
                 <AppAlert componentName="auto-renew-modal" />
@@ -648,23 +659,24 @@
                 />
             </template>
             <template #controls>
-                <button type="button" class="btn btn-primary" :disabled="renewalBusy || !selectedGateway" @click="enableAutoRenewal">
-                    <i v-if="renewalBusy" class="fas fa-circle-notch fa-spin me-1"></i>
-                    <i v-else class="fas fa-toggle-on me-1"></i>
-                    {{ __('message.enable') }}
-                </button>
+                <action-button action="cancel" @click="closeRenewalModal" />
+                <action-button action="confirm" icon="fas fa-toggle-on"
+                               :label="__('message.enable')"
+                               :loading="renewalBusy"
+                               :disabled="!selectedGateway"
+                               @click="enableAutoRenewal" />
             </template>
         </Modal>
 
         <!-- ── Stripe card modal for renewal ──────────────────── -->
-        <Modal :showModal="showStripeRenewalModal" :onClose="closeStripeRenewalModal" :showCloseBtn="true" :showControls="false" classname="modal-md">
+        <Modal :showModal="showStripeRenewalModal" :onClose="closeStripeRenewalModal" :showCloseBtn="false" :showControls="false" classname="modal-md">
             <template #title>
                 <div class="d-flex align-items-center justify-content-between w-100 me-3">
                     <h5 class="modal-title fw-bold mb-0">{{ __('message.enter_card_details') }}</h5>
                     <div class="d-flex gap-1">
-                        <img :src="`${baseUrl}/images/logo/cards/visa.svg`" alt="Visa" height="20">
-                        <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" alt="Mastercard" height="20">
-                        <img :src="`${baseUrl}/images/logo/cards/amex.svg`" alt="American Express" height="20">
+                        <img :src="`${baseUrl}/images/logo/cards/visa.svg`" width="30" alt="Visa" height="20">
+                        <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" width="30" alt="Mastercard" height="20">
+                        <img :src="`${baseUrl}/images/logo/cards/amex.svg`" width="30" alt="American Express" height="20">
                     </div>
                 </div>
             </template>
@@ -673,19 +685,19 @@
                     <AppAlert componentName="stripe-renewal-modal" />
 
                     <div class="mb-4">
-                        <label class="form-label text-color-grey mb-1">{{ __('message.card_number') }}</label>
+                        <label class="form-label mb-1" @click="renewalCardNumber?.focus()">{{ __('message.card_number') }}</label>
                         <div id="renewal-card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.number }"></div>
                         <div v-if="renewalCardErrors.number" class="invalid-feedback d-block">{{ renewalCardErrors.number }}</div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-6">
-                            <label class="form-label text-color-grey mb-1">{{ __('message.expiry_date') }}</label>
+                            <label class="form-label mb-1" @click="renewalCardExpiry?.focus()">{{ __('message.expiry_date') }}</label>
                             <div id="renewal-card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.expiry }"></div>
                             <div v-if="renewalCardErrors.expiry" class="invalid-feedback d-block">{{ renewalCardErrors.expiry }}</div>
                         </div>
                         <div class="col-6">
-                            <label class="form-label text-color-grey mb-1">{{ __('message.cvc') }}</label>
+                            <label class="form-label mb-1" @click="renewalCardCvc?.focus()">{{ __('message.cvc') }}</label>
                             <div id="renewal-card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.cvc }"></div>
                             <div v-if="renewalCardErrors.cvc" class="invalid-feedback d-block">{{ renewalCardErrors.cvc }}</div>
                         </div>
@@ -696,9 +708,9 @@
                         <span class="fw-bold text-color-dark">{{ renewalSymbol }}{{ renewalAmount }}</span>
                     </div>
 
-                    <button class="btn btn-primary w-100 py-2 fw-bold text-uppercase"
+                    <button type="button" class="btn btn-primary w-100 py-2 fw-bold text-uppercase"
                             :disabled="stripeRenewalBusy" @click="payRenewalStripe">
-                        <span v-if="stripeRenewalBusy" class="spinner-border spinner-border-sm me-1"></span>
+                        <span v-if="stripeRenewalBusy" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
                         {{ stripeRenewalBusy ? __('message.please_wait') : __('message.pay_now') }}
                     </button>
                 </div>
@@ -708,20 +720,17 @@
         <!-- ── Disable Auto-Renewal confirmation ─────────────────── -->
         <Modal :showModal="showDisableRenewalModal" :onClose="closeDisableRenewalModal" :showCloseBtn="false">
             <template #title>
-                <h5 class="modal-title">{{ __('message.disable_auto_renewal') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.disable_auto_renewal') }}</h5>
             </template>
             <template #fields>
                 <p class="mb-0">{{ __('message.disable_auto_renewal_confirm') }}</p>
             </template>
             <template #controls>
-                <button type="button" class="btn btn-light me-2" @click="closeDisableRenewalModal">
-                    {{ __('message.cancel') }}
-                </button>
-                <button type="button" class="btn btn-danger" :disabled="renewalBusy" @click="confirmDisableRenewal">
-                    <i v-if="renewalBusy" class="fas fa-circle-notch fa-spin me-1"></i>
-                    <i v-else class="fas fa-toggle-off me-1"></i>
-                    {{ __('message.disable') }}
-                </button>
+                <action-button action="cancel" @click="closeDisableRenewalModal" />
+                <action-button action="delete" icon="fas fa-toggle-off"
+                               :label="__('message.disable')"
+                               :loading="renewalBusy"
+                               @click="confirmDisableRenewal" />
             </template>
         </Modal>
 
@@ -739,6 +748,7 @@
                              :placeholder="__('message.enter_activation_code')" autocomplete="off" />
             </template>
             <template #controls>
+                <action-button action="cancel" @click="closeBindingModal" />
                 <action-button action="confirm"
                                :label="__('message.save_and_download')"
                                :loading="bindingBusy"
@@ -748,7 +758,7 @@
         </Modal>
 
         <!-- ── Pick which license file to download (main product + entitled add-ons) ── -->
-        <Modal :showModal="showDownloadModal" :onClose="closeDownloadModal" classname="modal-dialog-scrollable download-license-modal">
+        <Modal :showModal="showDownloadModal" :onClose="closeDownloadModal" :showCloseBtn="false" classname="modal-dialog-scrollable download-license-modal">
             <template #title>
                 <h5 class="modal-title fw-bold">{{ __('message.localized_license') }}</h5>
             </template>
@@ -757,8 +767,8 @@
                 <ul class="list-group mb-3">
                     <li class="list-group-item d-flex align-items-center justify-content-between">
                         <span>{{ order?.product_name || __('message.product') }}</span>
-                        <button class="btn btn-light btn-sm table_btn" @click="selectDownload(null)">
-                            <i class="fas fa-download"></i>
+                        <button type="button" class="btn btn-light btn-sm table_btn" :aria-label="__('message.download')" @click="selectDownload(null)">
+                            <i class="fas fa-download" aria-hidden="true"></i>
                         </button>
                     </li>
                 </ul>
@@ -772,12 +782,15 @@
                             class="list-group-item d-flex align-items-center justify-content-between"
                         >
                             <span>{{ plugin.name }}</span>
-                            <button class="btn btn-light btn-sm table_btn" @click="selectDownload(plugin.id)">
-                                <i class="fas fa-download"></i>
+                            <button type="button" class="btn btn-light btn-sm table_btn" :aria-label="__('message.download')" @click="selectDownload(plugin.id)">
+                                <i class="fas fa-download" aria-hidden="true"></i>
                             </button>
                         </li>
                     </ul>
                 </template>
+            </template>
+            <template #controls>
+                <action-button action="close" @click="closeDownloadModal" />
             </template>
         </Modal>
 
@@ -819,8 +832,15 @@ const orderId = computed(() => route.params.id)
 
 const loading   = ref(true)
 const copied    = ref(false)
-const activeTab = ref('license')
+const activeTab = ref(route.query.tab || 'license')
 const order     = ref(null)
+
+// Mirror the open tab in ?tab= so reload/back/share land on it ('license' = no param).
+watch(activeTab, (tab) => {
+    if ((route.query.tab || 'license') === tab) return
+    const { tab: _omit, ...query } = route.query
+    router.replace({ query: tab === 'license' ? query : { ...query, tab } })
+})
 
 const installationsUrl = computed(() => `/get-my-installations/${orderId.value}`)
 const invoicesUrl      = computed(() => `/get-my-invoices/${orderId.value}/${userId}`)
@@ -945,13 +965,9 @@ function toNumber(v) {
     return parseFloat(String(v ?? '').replace(/,/g, '')) || 0
 }
 
-// How much of the old plan's remaining value is actually going toward this
-// purchase — never more than the new plan costs. planCost.discount (if any)
-// is the leftover beyond that, banked as credit for later (see below), not
-// spent here, so it's subtracted out rather than shown as part of this credit.
-const planCreditApplied = computed(() => planCost.value
-    ? toNumber(planCost.value.priceoldplan) - toNumber(planCost.value.discount)
-    : 0)
+// planCost.credit_applied (backend-formatted) is the old plan's remaining
+// value actually going toward this purchase; planCost.discount is the
+// leftover beyond that, banked as credit for later (see below).
 // Set only when the old plan was worth more than the new one costs — the
 // difference doesn't just vanish, it's added to the account as credit.
 const planFutureCredit = computed(() => planCost.value ? toNumber(planCost.value.discount) : 0)
@@ -999,6 +1015,8 @@ const renewalCardErrors      = reactive({ number: '', expiry: '', cvc: '' })
 const renewalCardComplete    = reactive({ number: false, expiry: false, cvc: false })
 let stripeRenewal    = null
 let renewalCardNumber = null
+let renewalCardExpiry = null
+let renewalCardCvc    = null
 
 function loadScript(src) {
     return new Promise((resolve, reject) => {
@@ -1134,8 +1152,8 @@ async function openRenewalStripeModal() {
         invalid: { color: '#dc3545' },
     }
     renewalCardNumber = elements.create('cardNumber', { showIcon: true, style })
-    const cardExpiry  = elements.create('cardExpiry', { style })
-    const cardCvc     = elements.create('cardCvc', { style })
+    const cardExpiry  = renewalCardExpiry = elements.create('cardExpiry', { style })
+    const cardCvc     = renewalCardCvc    = elements.create('cardCvc', { style })
 
     renewalCardNumber.mount('#renewal-card-number')
     cardExpiry.mount('#renewal-card-expiry')
@@ -1516,7 +1534,7 @@ async function submitPlan() {
 // remounting it for a same-route param change.
 watch(orderId, async () => {
     loading.value = true
-    activeTab.value = 'license'
+    activeTab.value = route.query.tab || 'license'
     // Cloud tab data belongs to whichever order was open before — drop it so
     // openCloudTab() re-fetches for the new order instead of reusing it.
     cloud.value = null
@@ -1528,6 +1546,11 @@ watch(orderId, async () => {
         // for it), so land somewhere that is instead of defaulting to a tab
         // that's invisible with nothing selected.
         if (order.value?.status === 'Terminated') activeTab.value = 'invoice'
+        // Deep-linked ?tab=cloud needs its lazy fetch; fall back if the tab isn't offered.
+        else if (activeTab.value === 'cloud') {
+            if (showCloudTab.value) openCloudTab()
+            else activeTab.value = 'license'
+        }
         await loadPluginLicenses()
     } catch (e) {
         errorHandler(e, 'client-page')

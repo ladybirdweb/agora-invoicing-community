@@ -8,6 +8,8 @@
             <h5 class="modal-title fw-bold">{{ __('message.renew_your_order') }}</h5>
         </template>
         <template #fields>
+            <!-- In-modal so errors aren't hidden behind the backdrop. -->
+            <Alert componentName="renew-modal" />
             <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
             <template v-else>
                 <!-- Current order info -->
@@ -35,6 +37,7 @@
             </template>
         </template>
         <template #controls>
+            <action-button action="cancel" @click="close" />
             <action-button
                 action="confirm"
                 :label="__('message.renew')"
@@ -52,6 +55,7 @@ import { useRouter } from 'vue-router'
 import { __ } from '@/plugins/i18n'
 import http from '@/plugins/axios'
 import { errorHandler } from '@/helpers/responseHandler.js'
+import Alert from '@/components/Reusable/Alert.vue'
 
 const props = defineProps({
     show:  { type: Boolean, default: false },
@@ -81,7 +85,7 @@ watch(() => props.show, async (open) => {
         const res = await http.get(`/renew-popup-details/${props.order.product_id}`)
         plans.value = res.data?.data?.plans ?? []
         if (plans.value.length) await onPlanChange(plans.value[0])
-    } catch { /* silent */ }
+    } catch (e) { errorHandler(e, 'renew-modal') }
     finally { loading.value = false }
 })
 
@@ -101,7 +105,7 @@ async function fetchCost() {
             params: { plan: selectedPlan.value.id, order: props.order?.id },
         })
         price.value = res.data?.data?.formatted_price ?? ''
-    } catch { /* silent */ }
+    } catch (e) { errorHandler(e, 'renew-modal') }
 }
 
 async function submit() {
@@ -116,7 +120,7 @@ async function submit() {
         if (invoiceId) router.push({ path: '/checkout', query: { invoice: invoiceId } })
         else close()
     } catch (e) {
-        errorHandler(e, 'client-page')
+        errorHandler(e, 'renew-modal')
     } finally {
         submitting.value = false
     }

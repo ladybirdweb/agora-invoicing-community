@@ -8,7 +8,7 @@
         </div>
 
         <div v-else class="text-center py-5">
-            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+            <i class="fas fa-file-alt fa-3x text-muted mb-3" aria-hidden="true"></i>
             <h2 class="text-muted">{{ __('message.page_not_found') }}</h2>
         </div>
     </div>

@@ -20,7 +20,7 @@
 
           <div class="row">
             <div class="col-md-6">
-              <ClientField type="text" name="first_name"
+              <ClientField type="text" name="first_name" autocomplete="given-name"
                            :label="__('message.first_name')"
                            v-model="form.first_name"
                            :error="errors.first_name"
@@ -28,7 +28,7 @@
                            :required="true"/>
             </div>
             <div class="col-md-6">
-              <ClientField type="text" name="last_name"
+              <ClientField type="text" name="last_name" autocomplete="family-name"
                            :label="__('message.last_name')"
                            v-model="form.last_name"
                            :error="errors.last_name"
@@ -37,7 +37,7 @@
             </div>
           </div>
 
-          <ClientField type="text" name="user_name"
+          <ClientField type="text" name="user_name" autocomplete="username" :spellcheck="false"
                        :label="__('message.user_name')"
                        v-model="form.user_name"
                        :error="errors.user_name"
@@ -50,10 +50,11 @@
                        :model-value="form.email"
                        :disabled="true">
             <template #append>
-              <button type="button" class="input-group-text" tabindex="-1"
+              <button type="button" class="input-group-text"
                       @click="showEmailModal = true"
+                      :aria-label="__('message.click_to_change_email')"
                       v-tooltip="__('message.click_to_change_email')">
-                <i class="fa fa-pencil-alt"></i>
+                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
               </button>
             </template>
           </ClientField>
@@ -64,29 +65,30 @@
                        :model-value="mobileDisplay"
                        :disabled="true">
             <template #append>
-              <button type="button" class="input-group-text" tabindex="-1"
+              <button type="button" class="input-group-text"
                       @click="showMobileModal = true"
+                      :aria-label="__('message.click_to_change_mobile_no')"
                       v-tooltip="__('message.click_to_change_mobile_no')">
-                <i class="fa fa-pencil-alt"></i>
+                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
               </button>
             </template>
           </ClientField>
 
-          <ClientField type="text" name="company"
+          <ClientField type="text" name="company" autocomplete="organization"
                        :label="__('message.company')"
                        v-model="form.company"
                        :error="errors.company"
                        @update:modelValue="setFieldError('company', undefined)"
                        :required="true"/>
 
-          <ClientField type="text" name="address"
+          <ClientField type="text" name="address" autocomplete="street-address"
                        :label="__('message.address')"
                        v-model="form.address"
                        :error="errors.address"
                        @update:modelValue="setFieldError('address', undefined)"
                        :required="true"/>
 
-          <ClientField type="text" name="town"
+          <ClientField type="text" name="town" autocomplete="address-level2"
                        :label="__('message.town')"
                        v-model="form.town"/>
 
@@ -120,8 +122,8 @@
             <div class="form-group col-lg-9"></div>
             <div class="form-group col-lg-3">
               <button type="submit" class="btn btn-primary btn-modern float-end" :disabled="savingProfile">
-                <i v-if="savingProfile" class="fas fa-circle-notch fa-spin me-1"></i>
-                {{ __('message.save') }}
+                <i v-if="savingProfile" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
+                {{ __('message.update_profile') }}
               </button>
             </div>
           </div>
@@ -145,6 +147,7 @@
 
 <script setup>
 import {reactive, ref, computed, onMounted} from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { validateForm } from '@/helpers/formUtils.js'
 import http from '@/plugins/axios'
@@ -183,6 +186,11 @@ const initials = computed(() => {
 
 const countries = ref([])
 const states = ref([])
+// Snapshot of the last loaded/saved form, to warn before leaving with unsaved edits.
+const savedSnapshot = ref('')
+const isDirty = () => !!selectedImage.value || (savedSnapshot.value !== '' && JSON.stringify(form) !== savedSnapshot.value)
+onBeforeRouteLeave(() => !isDirty() || confirm(__('message.unsaved_changes_confirm')))
+
 // Current timezone object for the DynamicSelect's initial display; its options
 // are loaded on demand from /dependency/time-zones (the DependencyController).
 const selectedTimezone = ref(null)
@@ -209,6 +217,7 @@ onMounted(async () => {
       selectedTimezone.value = { id: user.timezone.id, name: user.timezone.timezone_name ?? user.timezone.name }
     }
     if (form.country) await loadStates(form.country)
+    savedSnapshot.value = JSON.stringify(form)
   } catch (e) {
     errorHandler(e, COMPONENT, { setErrors })
   } finally {
@@ -275,6 +284,8 @@ async function submitProfile() {
     data.append('_method', 'PATCH')
     const res = await http.post(`/my-profile`, data, {headers: {'Content-Type': 'multipart/form-data'}})
     successHandler(res, COMPONENT)
+    savedSnapshot.value = JSON.stringify(form)
+    selectedImage.value = null
   } catch (e) {
     errorHandler(e, COMPONENT, { setErrors, excludeFields: ['profile_pic'] })
   } finally {

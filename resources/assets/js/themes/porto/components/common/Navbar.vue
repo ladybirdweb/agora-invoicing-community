@@ -9,7 +9,7 @@
             <div id="main-logo"
                  class="header-logo p-relative m-0 d-flex align-items-center justify-content-center navbar-logo-wrapper">
               <RouterLink :to="isAuthenticated ? '/client-dashboard' : '/'" class="d-flex align-items-center justify-content-center w-100 h-100 text-decoration-none">
-                <img v-if="logoUrl" :src="logoUrl" :alt="__('message.logo')"
+                <img v-if="logoUrl" :src="logoUrl" :alt="appCompany || __('message.logo')"
                      class="img-fluid navbar-logo-img">
                 <span v-else class="brand-text fw-bold text-dark">{{ appCompany }}</span>
               </RouterLink>
@@ -26,14 +26,14 @@
               <div v-if="phone" class="d-none d-lg-inline-block ps-1">
                 <a class="text-color-default text-color-hover-primary text-2 text-decoration-none"
                    :href="`tel:+${phoneCode} ${phone}`">
-                  <i class="fas fa-phone text-3 text-xl-4 p-relative top-2"></i>&nbsp;+{{ phoneCode }} {{ phone }}
+                  <i class="fas fa-phone text-3 text-xl-4 p-relative top-2" aria-hidden="true"></i>&nbsp;+{{ phoneCode }} {{ phone }}
                 </a>
               </div>
               <div class="vr d-lg-inline-block opacity-2 d-none d-xl-inline-block"></div>
               <div v-if="companyEmail" class="d-none d-xl-inline-block">
                 <a class="text-color-default text-color-hover-primary text-2 text-decoration-none"
                    :href="`mailto:${companyEmail}`">
-                  <i class="fas fa-envelope text-3 text-xl-4 p-relative top-2"></i>&nbsp;{{ companyEmail }}
+                  <i class="fas fa-envelope text-3 text-xl-4 p-relative top-2" aria-hidden="true"></i>&nbsp;{{ companyEmail }}
                 </a>
               </div>
               <div class="ms-auto d-none d-lg-inline-block"></div>
@@ -42,9 +42,9 @@
                 <ul class="header-social-icons social-icons me-1">
                   <li v-for="media in socialMedia" :key="media.name"
                       :class="media.class || `social-icons-${(media.name || '').toLowerCase()}`">
-                    <a :href="media.link" target="_blank"
-                       :title="media.name">
-                      <i :class="`${resolveSocialFaClass(media)} text-2`"></i>
+                    <a :href="media.link" target="_blank" rel="noopener"
+                       :title="media.name" :aria-label="media.name">
+                      <i :class="`${resolveSocialFaClass(media)} text-2`" aria-hidden="true"></i>
                     </a>
                   </li>
                 </ul>
@@ -66,9 +66,9 @@
                         <!-- Store -->
                         <li class="dropdown" :class="{ open: openDropdownKey === 'store' }">
                           <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-between justify-content-lg-start" href="javascript:;"
-                             :aria-expanded="openDropdownKey === 'store'" @click="toggleDropdown('store', $event)">
+                             role="button" :aria-expanded="openDropdownKey === 'store'" @click="toggleDropdown('store', $event)" @keydown.space.prevent="toggleDropdown('store', $event)">
                             <span>&nbsp;{{ __('message.store') }}&nbsp;</span>
-                            <i class="fas fa-chevron-down d-lg-none nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === 'store' }"></i>
+                            <i class="fas fa-chevron-down d-lg-none nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === 'store' }" aria-hidden="true"></i>
                           </a>
                           <ul class="dropdown-menu border-light mt-n1">
                             <li v-for="group in productGroups" :key="group.id">
@@ -92,8 +92,9 @@
                                  display:block, so on mobile (no Porto override there) this and the label
                                  above stack as two full-width rows instead of sitting on one line. -->
                             <a class="nav-link dropdown-toggle page-dropdown-caret ps-0" href="javascript:;"
-                               :aria-expanded="openDropdownKey === page.id" @click="toggleDropdown(page.id, $event)">
-                              <i class="fas fa-chevron-down nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === page.id }"></i>
+                               role="button" :aria-label="__('message.toggle_submenu', { name: ucfirst(page.name) })"
+                               :aria-expanded="openDropdownKey === page.id" @click="toggleDropdown(page.id, $event)" @keydown.space.prevent="toggleDropdown(page.id, $event)">
+                              <i class="fas fa-chevron-down nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === page.id }" aria-hidden="true"></i>
                             </a>
                             <ul class="dropdown-menu border-light mt-n1">
                               <li v-for="child in childPages(page.id)" :key="child.id">
@@ -110,39 +111,39 @@
                         <!-- My Account (authenticated) -->
                         <li v-if="isAuthenticated" class="dropdown" :class="{ open: openDropdownKey === 'account' }">
                           <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-between justify-content-lg-start" href="javascript:;"
-                             :aria-expanded="openDropdownKey === 'account'" @click="toggleDropdown('account', $event)">
+                             role="button" :aria-expanded="openDropdownKey === 'account'" @click="toggleDropdown('account', $event)" @keydown.space.prevent="toggleDropdown('account', $event)">
                             <span>&nbsp;{{ __('message.my_account') }}&nbsp;</span>
-                            <i class="fas fa-chevron-down d-lg-none nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === 'account' }"></i>
+                            <i class="fas fa-chevron-down d-lg-none nav-dropdown-arrow" :class="{ 'rotate-180': openDropdownKey === 'account' }" aria-hidden="true"></i>
                           </a>
                           <ul class="dropdown-menu border-light mt-n1">
                             <li v-if="isAdmin">
                               <a :href="adminDashboardUrl" class="dropdown-item">
-                                <i class="fas fa-user-shield dropdown-item-icon"></i>{{ __('message.admin_dashboard') }}
+                                <i class="fas fa-user-shield dropdown-item-icon" aria-hidden="true"></i>{{ __('message.admin_dashboard') }}
                               </a>
                             </li>
                             <li>
                               <RouterLink to="/client-dashboard" class="dropdown-item">
-                                <i class="fas fa-gauge-high dropdown-item-icon"></i>{{ __('message.dashboard') }}
+                                <i class="fas fa-gauge-high dropdown-item-icon" aria-hidden="true"></i>{{ __('message.dashboard') }}
                               </RouterLink>
                             </li>
                             <li>
                               <RouterLink to="/my-orders" class="dropdown-item">
-                                <i class="fas fa-box dropdown-item-icon"></i>{{ __('message.my_orders') }}
+                                <i class="fas fa-box dropdown-item-icon" aria-hidden="true"></i>{{ __('message.my_orders') }}
                               </RouterLink>
                             </li>
                             <li>
                               <RouterLink to="/my-invoices" class="dropdown-item">
-                                <i class="fas fa-file-invoice dropdown-item-icon"></i>{{ __('message.my_invoices') }}
+                                <i class="fas fa-file-invoice dropdown-item-icon" aria-hidden="true"></i>{{ __('message.my_invoices') }}
                               </RouterLink>
                             </li>
                             <li>
                               <RouterLink to="/my-profile" class="dropdown-item">
-                                <i class="fas fa-user dropdown-item-icon"></i>{{ __('message.my_profile') }}
+                                <i class="fas fa-user dropdown-item-icon" aria-hidden="true"></i>{{ __('message.my_profile') }}
                               </RouterLink>
                             </li>
                             <li>
                               <a :href="logoutUrl" class="dropdown-item dropdown-item-danger">
-                                <i class="fas fa-right-from-bracket dropdown-item-icon"></i>{{ __('message.logout') }}
+                                <i class="fas fa-right-from-bracket dropdown-item-icon" aria-hidden="true"></i>{{ __('message.logout') }}
                               </a>
                             </li>
                           </ul>
@@ -156,18 +157,16 @@
                         <!-- Free Trial / Demo (mobile only, shown in collapsed nav) -->
                         <li v-if="cloudEnabled || demoEnabled" class="mobile-nav-cta-wrapper d-lg-none mt-2">
                           <div class="d-flex flex-column flex-sm-row gap-2">
-                            <a v-if="cloudEnabled"
+                            <button v-if="cloudEnabled" type="button"
                                class="btn btn-dark text-white w-100 py-2 px-3 text-2 fw-semibold d-flex align-items-center justify-content-center text-center text-decoration-none"
-                               href="javascript:;"
                                @click="showCloudTrialModal = true">
                               {{ __('message.start_free_trial') }}
-                            </a>
-                            <a v-if="demoEnabled"
+                            </button>
+                            <button v-if="demoEnabled" type="button"
                                class="btn btn-primary text-white w-100 py-2 px-3 text-2 fw-semibold d-flex align-items-center justify-content-center text-center text-decoration-none"
-                               href="javascript:;"
                                @click="showDemoModal = true">
                               {{ __('message.request_for_demo') }}
-                            </a>
+                            </button>
                           </div>
                         </li>
 
@@ -177,14 +176,14 @@
                             <div v-if="phone" class="mb-2">
                               <a class="text-color-default text-2 text-decoration-none d-flex align-items-center gap-2"
                                  :href="`tel:+${phoneCode} ${phone}`">
-                                <i class="fas fa-phone text-3 text-primary"></i>
+                                <i class="fas fa-phone text-3 text-primary" aria-hidden="true"></i>
                                 <span>+{{ phoneCode }} {{ phone }}</span>
                               </a>
                             </div>
                             <div v-if="companyEmail" class="mb-2">
                               <a class="text-color-default text-2 text-decoration-none d-flex align-items-center gap-2"
                                  :href="`mailto:${companyEmail}`">
-                                <i class="fas fa-envelope text-3 text-primary"></i>
+                                <i class="fas fa-envelope text-3 text-primary" aria-hidden="true"></i>
                                 <span class="text-break">{{ companyEmail }}</span>
                               </a>
                             </div>
@@ -192,9 +191,9 @@
                               <ul class="header-social-icons social-icons p-0 m-0 d-flex flex-row align-items-center">
                                 <li v-for="media in socialMedia" :key="media.name"
                                     :class="media.class || `social-icons-${(media.name || '').toLowerCase()}`">
-                                  <a :href="media.link" target="_blank"
-                                     :title="media.name">
-                                    <i :class="`${resolveSocialFaClass(media)} text-2`"></i>
+                                  <a :href="media.link" target="_blank" rel="noopener"
+                                     :title="media.name" :aria-label="media.name">
+                                    <i :class="`${resolveSocialFaClass(media)} text-2`" aria-hidden="true"></i>
                                   </a>
                                 </li>
                               </ul>
@@ -216,11 +215,11 @@
                            class="header-nav-features-toggle text-decoration-none d-flex align-items-center navbar-feature-toggle"
                            data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static"
                            aria-expanded="false"
-                           :aria-label="__('message.cart')">
+                           :aria-label="__('message.cart_with_count', { count: badgeCount })">
                           <span class="cart-toggle-content text-dark opacity-8 font-weight-bold text-color-hover-primary d-inline-flex align-items-center">
                             <span class="cart-label d-none d-xl-inline me-1">{{ __('message.cart') }}</span>
                             <span class="cart-icon-wrapper position-relative d-inline-flex align-items-center justify-content-center">
-                              <i class="fas fa-shopping-cart cart-icon-main"></i>
+                              <i class="fas fa-shopping-cart cart-icon-main" aria-hidden="true"></i>
                               <span class="cart-qty-badge">{{ badgeCount }}</span>
                             </span>
                           </span>
@@ -232,7 +231,7 @@
                              id="headerTopCartDropdown">
                           <!-- Empty cart -->
                           <div v-if="!cartItems.length" class="cart-dropdown-empty text-center">
-                            <i class="fas fa-shopping-cart cart-dropdown-empty-icon"></i>
+                            <i class="fas fa-shopping-cart cart-dropdown-empty-icon" aria-hidden="true"></i>
                             <span class="d-block">{{ __('message.no_item_cart') }}</span>
                           </div>
 
@@ -240,18 +239,19 @@
                           <div v-else>
                             <ol class="mini-products-list">
                               <li v-for="item in cartItems" :key="item.id" class="item">
-                                <a href="#" class="product-image" :title="item.name">
-                                  <img v-if="item.image" :src="item.image" :alt="item.name" width="70">
-                                </a>
+                                <span class="product-image">
+                                  <img v-if="item.image" :src="item.image" alt="" width="70" height="70">
+                                </span>
                                 <div class="product-details">
                                   <p class="product-name">
-                                    <a href="#">{{ item.name }}</a><br>
+                                    <RouterLink to="/cart" @click="closeCartDropdown">{{ item.name }}</RouterLink><br>
                                     <span class="amount"><strong>{{ item.currency_symbol }}{{ item.unit_price }}</strong></span>
                                   </p>
-                                  <a href="#" class="btn-remove" :title="__('message.remove')"
-                                     @click.prevent="cartStore.removeItem(item.id)">
-                                    <i class="fas fa-times"></i>
-                                  </a>
+                                  <button type="button" class="btn-remove border-0 p-0" :title="__('message.remove')"
+                                     :aria-label="`${__('message.remove')} ${item.name}`"
+                                     @click="removeCartItem(item.id)">
+                                    <i class="fas fa-times" aria-hidden="true"></i>
+                                  </button>
                                 </div>
                               </li>
                             </ol>
@@ -265,7 +265,7 @@
                               <RouterLink class="btn btn-outline-dark" to="/cart" @click="closeCartDropdown">
                                 {{ __('message.view_cart') }}
                               </RouterLink>
-                              <button class="btn btn-primary" @click="handleCheckout">
+                              <button type="button" class="btn btn-primary" @click="handleCheckout">
                                 {{ __('message.checkout') }}
                               </button>
                             </div>
@@ -281,19 +281,20 @@
                         <a href="javascript:;" class="header-nav-features-toggle text-decoration-none d-flex align-items-center gap-1 navbar-feature-toggle"
                            data-bs-toggle="dropdown" data-bs-display="static"
                            aria-expanded="false" :aria-label="__('message.change_language_current', { locale: currentLocale })">
-                          <span :class="`fi fi-${flagCodeFor(currentLocale)}`"></span>
+                          <span :class="`fi fi-${flagCodeFor(currentLocale)}`" aria-hidden="true"></span>
                           <span class="text-dark opacity-8 font-weight-bold text-2 d-none d-xl-inline">{{ currentLocale.toUpperCase() }}</span>
                         </a>
                         <div class="header-nav-features-dropdown dropdown-menu header-nav-features-dropdown-mobile-fixed lang-dropdown" id="language-dropdown">
                           <ul class="list-unstyled m-0">
                             <li v-for="lang in languages" :key="lang.locale">
-                              <a href="javascript:;" class="lang-item d-flex align-items-center gap-2"
+                              <button type="button" class="lang-item d-flex align-items-center gap-2"
                                   :class="{ active: lang.locale.toLowerCase() === currentLocale }"
-                                  @click.prevent="selectLang(lang)">
-                                <span :class="`fi fi-${flagCodeFor(lang.locale)}`"></span>
+                                  :aria-current="lang.locale.toLowerCase() === currentLocale ? 'true' : undefined"
+                                  @click="selectLang(lang)">
+                                <span :class="`fi fi-${flagCodeFor(lang.locale)}`" aria-hidden="true"></span>
                                 <span class="flex-grow-1">{{ lang.name }}{{ nativeName(lang.locale) ? ` (${nativeName(lang.locale)})` : '' }}</span>
-                                <i v-if="lang.locale.toLowerCase() === currentLocale" class="fas fa-check lang-active-check"></i>
-                              </a>
+                                <i v-if="lang.locale.toLowerCase() === currentLocale" class="fas fa-check lang-active-check" aria-hidden="true"></i>
+                              </button>
                             </li>
                           </ul>
                         </div>
@@ -301,11 +302,11 @@
                     </div>
 
                     <!-- Hamburger -->
-                    <button class="btn header-btn-collapse-nav m-0 d-lg-none"
+                    <button type="button" class="btn header-btn-collapse-nav m-0 d-lg-none"
                             data-bs-toggle="collapse"
                             data-bs-target=".header-nav-main nav"
                             :aria-label="__('message.toggle_navigation')">
-                      <i class="fas fa-bars"></i>
+                      <i class="fas fa-bars" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
@@ -315,18 +316,16 @@
 
               <!-- Desktop CTA buttons -->
               <div class="px-2 px-xl-3 px-xxl-4 d-none d-lg-inline-block ws-nowrap navbar-cta-group">
-                <a v-if="cloudEnabled"
-                   href="javascript:;"
+                <button v-if="cloudEnabled" type="button"
                    class="btn border-0 px-2 px-xl-4 py-1 py-xl-2 line-height-9 btn-dark me-2 text-white text-1 text-xl-2 fw-semibold"
                    @click="showCloudTrialModal = true">
                   {{ __('message.start_free_trial') }}
-                </a>
-                <a v-if="demoEnabled"
-                   href="javascript:;"
+                </button>
+                <button v-if="demoEnabled" type="button"
                    class="btn border-0 px-2 px-xl-4 py-1 py-xl-2 line-height-9 btn-primary text-white text-1 text-xl-2 fw-semibold"
                    @click="showDemoModal = true">
                   {{ __('message.request_for_demo') }}
-                </a>
+                </button>
               </div>
 
             </div>
@@ -415,6 +414,10 @@ function handleCheckout() {
     return
   }
   router.push('/checkout')
+}
+
+function removeCartItem(id) {
+  cartStore.removeItem(id)
 }
 
 function onClickOutside(e) {
@@ -511,6 +514,7 @@ async function selectLang(lang) {
     globalThis.location.reload()
   } catch (e) {
     console.error('Language switch failed', e)
+    alertStore.setAlert({ message: __('message.error_occurred'), type: 'danger', component_name: 'client-page' })
   }
 }
 
@@ -803,6 +807,7 @@ onUnmounted(() => {
   .header-nav-main nav {
     max-height: 75vh !important;
     overflow-y: auto !important;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 20px !important;
   }
@@ -974,6 +979,7 @@ onUnmounted(() => {
     margin-right: 0 !important;
     max-height: 80vh !important;
     overflow-y: auto !important;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     width: calc(100vw - 24px) !important;
     max-width: 350px !important;
@@ -999,6 +1005,7 @@ onUnmounted(() => {
     width: 340px !important;
     max-height: 80vh !important;
     overflow-y: auto !important;
+    overscroll-behavior: contain;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
     background: #ffffff !important;
     opacity: 1 !important;
@@ -1127,6 +1134,10 @@ onUnmounted(() => {
 }
 
 .lang-dropdown .lang-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: start;
   padding: 8px 12px;
   margin: 1px 0;
   border-radius: 6px;
@@ -1282,6 +1293,7 @@ onUnmounted(() => {
      under flex land a few px *above* the row instead of below it,
      overlapping the label. Pin it explicitly instead. */
   .page-dropdown-item.dropdown:hover > .dropdown-menu,
+  .page-dropdown-item.dropdown:has(:focus-visible) > .dropdown-menu,
   .page-dropdown-item.dropdown.open > .dropdown-menu {
     top: 100% !important;
   }
@@ -1335,6 +1347,19 @@ onUnmounted(() => {
 
 #header .header-nav-main nav > ul > li.mobile-nav-contact :deep(.social-icons li a) {
   border-radius: 50% !important;
+}
+
+.mini-products-list .product-image img {
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-logo-wrapper,
+  .navbar-logo-img,
+  .navbar-info-bar,
+  .nav-dropdown-arrow {
+    transition: none !important;
+  }
 }
 
 .mini-products-list .product-details .btn-remove {

@@ -19,15 +19,20 @@
                             <div class="input-group input-group-rounded has-validation">
                                 <input class="form-control form-control-sm bg-light px-4 text-3"
                                        :class="{ 'is-invalid': newsletterEmailError }"
-                                       type="email" v-model="newsletterEmail"
+                                       type="email" name="newsletterEmail" v-model="newsletterEmail"
+                                       autocomplete="email" spellcheck="false"
+                                       :aria-label="__('message.email_address_placeholder')"
+                                       :aria-invalid="newsletterEmailError ? 'true' : undefined"
+                                       :aria-describedby="newsletterEmailError ? 'newsletter-email-error' : undefined"
                                        :placeholder="__('message.email_address_placeholder')"
                                        @input="newsletterEmailError = ''">
                                 <button class="btn btn-primary text-color-light text-2 py-3 px-4"
                                         type="submit" :disabled="subscribing">
-                                    <strong>{{ __('message.subscribe') }}</strong>
+                                    <span v-if="subscribing" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                                    <strong>{{ subscribing ? __('message.sending') : __('message.subscribe') }}</strong>
                                 </button>
                             </div>
-                            <span v-if="newsletterEmailError" class="text-danger text-1 mt-1 d-block">
+                            <span v-if="newsletterEmailError" id="newsletter-email-error" class="text-danger text-1 mt-1 d-block" role="alert">
                                 {{ newsletterEmailError }}
                             </span>
                             <RecaptchaField :ref="setNewsletterCaptchaRef" action="newsletter" class="mt-2" />
@@ -38,7 +43,7 @@
                     <template v-if="widget.allow_social_media">
                         <ul class="list list-icons list-icons-lg">
                             <li v-if="phone" class="mb-1">
-                                <i class="fab fa-whatsapp text-color-primary"></i>
+                                <i class="fab fa-whatsapp text-color-primary" aria-hidden="true"></i>
                                 <p class="m-0">
                                     <a class="text-color-default" :href="`tel:${phone}`">
                                         {{ phoneCode ? `+${phoneCode} ` : '' }}{{ phone }}
@@ -46,7 +51,7 @@
                                 </p>
                             </li>
                             <li v-if="companyEmail" class="mb-1">
-                                <i class="far fa-envelope text-color-primary"></i>
+                                <i class="far fa-envelope text-color-primary" aria-hidden="true"></i>
                                 <p class="m-0">
                                     <a class="text-color-default" :href="`mailto:${companyEmail}`">{{ companyEmail }}</a>
                                 </p>
@@ -54,8 +59,8 @@
                         </ul>
                         <ul v-if="social.length" class="header-social-icons social-icons mt-3">
                           <li v-for="s in social" :key="s.name" :class="s.class || `social-icons-${(s.name || '').toLowerCase()}`">
-                          <a :href="s.link" target="_blank" :title="s.name">
-                                    <i :class="`${resolveSocialFaClass(s)} text-2`"></i>
+                          <a :href="s.link" target="_blank" rel="noopener" :title="s.name" :aria-label="s.name">
+                                    <i :class="`${resolveSocialFaClass(s)} text-2`" aria-hidden="true"></i>
                                 </a>
                             </li>
                         </ul>
@@ -74,7 +79,7 @@
                             {{ __('message.copyright') }} © {{ currentYear }}
                             <a v-if="website" :href="website"
                                class="text-color-primary text-decoration-none"
-                               target="_blank">{{ company }}</a>
+                               target="_blank" rel="noopener">{{ company }}</a>
                             <span v-else>{{ company }}</span>.
                             {{ __('message.all_rights') }}
                         </p>

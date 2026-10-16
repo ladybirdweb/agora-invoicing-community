@@ -3,13 +3,14 @@
     <!-- Standalone pages (e.g. open-payment) bypass the full shell -->
     <RouterView v-if="isStandalone" />
     <div v-else class="body">
+        <a href="#main-content" class="visually-hidden-focusable skip-link" @click.prevent="focusMain">{{ __('message.skip_to_content') }}</a>
 
         <header id="header" class="header-effect-reveal"
                 data-plugin-options="{'stickyEnabled': true, 'stickyEffect': 'reveal', 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': false, 'stickyStartAt': 200, 'stickySetTop': '-44px'}">
             <Navbar />
         </header>
 
-        <div role="main" class="main">
+        <main id="main-content" ref="mainEl" class="main" tabindex="-1">
 
             <!-- Page header with title + breadcrumb -->
             <section v-if="pageTitle" class="page-header page-header-modern bg-color-grey page-header-lg">
@@ -19,17 +20,20 @@
                             <h1 class="font-weight-bold text-dark">{{ pageTitle }}</h1>
                         </div>
                         <div class="col-md-12 align-self-center order-1">
+                            <nav :aria-label="__('message.breadcrumb')">
                             <ul class="breadcrumb d-block text-center">
                                 <li><a :href="homeUrl">{{ __('message.home') }}</a></li>
                                 <li v-for="(crumb, i) in breadcrumbs"
                                     :key="i"
-                                    :class="{ active: crumb.isActive }">
+                                    :class="{ active: crumb.isActive }"
+                                    :aria-current="crumb.isActive ? 'page' : undefined">
                                     <RouterLink v-if="!crumb.isActive" :to="crumb.to">
                                         {{ crumb.title }}
                                     </RouterLink>
                                     <span v-else>{{ crumb.title }}</span>
                                 </li>
                             </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -67,7 +71,7 @@
                 </div>
             </div>
 
-        </div>
+        </main>
 
         <AppFooter />
 
@@ -76,7 +80,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRoute }       from 'vue-router'
 import { useNotification }           from '@/core/composables/useNotification.js'
 import { useAlertStore }             from '@/core/stores/alert.js'
@@ -99,4 +103,23 @@ const isStandalone = computed(() => route.meta?.standalone === true)
 const homeUrl      = useBaseUrl() || '/'
 
 watch(() => route.path, () => alertStore.unsetAlert())
+
+const mainEl = ref(null)
+// Router owns the URL hash, so move focus manually instead of following #main-content.
+const focusMain = () => mainEl.value?.focus()
 </script>
+
+<style scoped>
+.skip-link {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 10000;
+    padding: 0.5rem 1rem;
+    background: #fff;
+    color: #212529;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+#main-content:focus { outline: none; }
+</style>

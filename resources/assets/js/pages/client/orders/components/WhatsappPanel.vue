@@ -6,7 +6,7 @@
         <div v-if="order.whatsapp_signup_enabled && order.whatsapp_app_id && order.whatsapp_config_id"
              class="d-flex justify-content-end mb-3">
             <button type="button" class="btn btn-primary btn-sm btn-modern" @click="openAddNumber">
-                <i class="fab fa-whatsapp me-1"></i>{{ __('message.add_new_number') }}
+                <i class="fab fa-whatsapp me-1" aria-hidden="true"></i>{{ __('message.add_new_number') }}
             </button>
         </div>
 
@@ -14,24 +14,28 @@
             <template #phone_number_id="{ row }">
                 <div class="d-flex align-items-center gap-2">
                     <span>••••</span>
-                    <button class="btn btn-light btn-sm"
+                    <button type="button" class="btn btn-light btn-sm"
+                            :aria-label="copiedId === row.id ? __('message.copied') : __('message.copy')"
                             v-tooltip="{ content: copiedId === row.id ? __('message.copied') : __('message.copy'), hideTriggers: t => t }"
                             @click="copyValue(row.id, row.phone_number_id)">
-                        <i :class="copiedId === row.id ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+                        <i :class="copiedId === row.id ? 'fas fa-check text-success' : 'fas fa-copy'" aria-hidden="true"></i>
                     </button>
+                    <span class="visually-hidden" aria-live="polite">{{ copiedId === row.id ? __('message.copied') : '' }}</span>
                 </div>
             </template>
             <template #action="{ row }">
                 <div class="d-flex gap-1">
-                    <button class="btn btn-light btn-sm"
+                    <button type="button" class="btn btn-light btn-sm"
+                            :aria-label="__('message.edit_webhook_url')"
                             v-tooltip="__('message.edit_webhook_url')"
                             @click="openEdit(row)">
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-light btn-sm"
+                    <button type="button" class="btn btn-light btn-sm"
+                            :aria-label="__('message.Delete')"
                             v-tooltip="__('message.Delete')"
                             @click="confirmDelete(row)">
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-trash" aria-hidden="true"></i>
                     </button>
                 </div>
             </template>
@@ -43,13 +47,14 @@
                 <h5 class="modal-title fw-bold">{{ __('message.whatsapp_product_heading') }}</h5>
             </template>
             <template #fields>
-                <ClientField type="text" name="webhookUrl" required
+                <ClientField type="url" name="webhookUrl" required autocomplete="off" :spellcheck="false"
                              :label="__('message.callback_url')"
                              v-model="webhookUrl"
-                             placeholder="https://example.com"
+                             placeholder="https://example.com…"
                              :error="webhookError" />
             </template>
             <template #controls>
+                <action-button action="cancel" @click="closeWebhookModal" />
                 <action-button action="confirm"
                                :label="__('message.save')"
                                :loading="webhookBusy"
@@ -64,13 +69,14 @@
                 <h5 class="modal-title fw-bold">{{ __('message.edit_webhook_url') }}</h5>
             </template>
             <template #fields>
-                <ClientField type="text" name="editWebhookUrl" required
+                <ClientField type="url" name="editWebhookUrl" required autocomplete="off" :spellcheck="false"
                              :label="__('message.callback_url')"
                              v-model="editUrl"
-                             placeholder="https://example.com"
+                             placeholder="https://example.com…"
                              :error="editError" />
             </template>
             <template #controls>
+                <action-button action="cancel" @click="closeEditModal" />
                 <action-button action="save"
                                :loading="editBusy"
                                :disabled="!editUrl"
@@ -81,13 +87,13 @@
         <!-- Delete confirmation -->
         <Modal :showModal="showDeleteModal" :onClose="closeDeleteModal" :showCloseBtn="false">
             <template #title>
-                <h5 class="modal-title">{{ __('message.are_you_sure') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.are_you_sure') }}</h5>
             </template>
             <template #fields>
                 <p class="mb-0">{{ __('message.delete_whatsapp_user_confirm') }} {{ deleteRow?.phone_number || '' }}?</p>
             </template>
             <template #controls>
-                <button type="button" class="btn btn-light me-2" @click="closeDeleteModal">{{ __('message.cancel') }}</button>
+                <action-button action="cancel" @click="closeDeleteModal" />
                 <action-button action="delete" :loading="deleteBusy" @click="submitDelete" />
             </template>
         </Modal>

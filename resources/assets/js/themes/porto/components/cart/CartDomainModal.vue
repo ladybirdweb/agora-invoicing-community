@@ -1,5 +1,5 @@
 <template>
-  <Modal :showModal="show" :onClose="() => emit('close')" :closeLabel="__('message.close')" classname="modal-md">
+  <Modal :showModal="show" :onClose="() => emit('close')" :showCloseBtn="false" classname="modal-md">
     <template #title>
       <h5 class="modal-title fw-bold">{{ __('message.enter_domain_new') }}</h5>
     </template>
@@ -11,7 +11,9 @@
         :key="item.id"
         :name="`domain_${item.id}`"
         :label="item.name"
-        placeholder="support.example.com"
+        placeholder="support.example.com…"
+        autocomplete="off"
+        :spellcheck="false"
         :modelValue="domains[`domain_${item.id}`]"
         :error="errors[`domain_${item.id}`]"
         :required="true"
@@ -21,10 +23,8 @@
     </template>
 
     <template #controls>
-      <button type="button" class="btn btn-primary" :disabled="submitting" @click="submit">
-        <span v-if="submitting" class="spinner-border spinner-border-sm me-1" />
-        {{ submitting ? __('message.please_wait') : __('message.proceed_checkout') }}
-      </button>
+      <action-button action="cancel" @click="emit('close')" />
+      <action-button action="confirm" :label="submitting ? __('message.please_wait') : __('message.proceed_checkout')" :loading="submitting" @click="submit" />
     </template>
   </Modal>
 </template>
@@ -33,6 +33,7 @@
 import { ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { __ } from '@/plugins/i18n'
+import { scrollToFirstError } from '@/helpers/formUtils.js'
 import { buildCartDomainSchema } from '@/validations/client/cartDomainValidations'
 import Modal from '../common/Modal.vue'
 
@@ -64,6 +65,7 @@ function submit() {
     const errMap = {}
     err.inner?.forEach(e => { if (e.path && !errMap[e.path]) errMap[e.path] = e.message })
     setErrors(errMap)
+    scrollToFirstError()
     return
   }
   submitting.value = true

@@ -2,7 +2,7 @@
   <Modal
     :showModal="show"
     :onClose="closeModal"
-    :closeLabel="__('message.close')"
+    :showCloseBtn="false"
     :closeOnBackdrop="true"
     classname="modal-md"
   >
@@ -14,14 +14,14 @@
       <Alert componentName="CloudTrialModal" />
 
       <!-- Done state, same look as the profile's email-verified screen; replaces the form. -->
-      <div v-if="created" class="text-center py-4">
-        <i :class="created.warning ? 'fas fa-exclamation-triangle text-warning fa-3x' : 'fas fa-check-circle text-success fa-3x'"></i>
+      <div v-if="created" class="text-center py-4" role="status">
+        <i :class="created.warning ? 'fas fa-exclamation-triangle text-warning fa-3x' : 'fas fa-check-circle text-success fa-3x'" aria-hidden="true"></i>
         <p class="mt-3 mb-1 fw-bold text-2">
           {{ created.warning ? __('message.cloud_instance_license_failed') : __('message.cloud_instance_ready') }}
         </p>
         <p v-if="created.reason" class="text-muted mb-0">{{ created.reason }}</p>
         <a v-if="created.siteUrl" :href="created.siteUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-3">
-          <i class="fas fa-external-link-alt me-1"></i>{{ __('message.visit_your_website') }}
+          <i class="fas fa-external-link-alt me-1" aria-hidden="true"></i>{{ __('message.visit_your_website') }}
         </a>
         <p v-if="created.siteUrl" class="small text-muted mt-2 mb-0 text-break">{{ created.siteUrl }}</p>
         <p class="text-muted mt-3 mb-0">{{ __('message.cloud_password_on_email') }}</p>
@@ -37,6 +37,8 @@
           :placeholder="__('message.cloud_domain')"
           :modelValue="domain"
           :error="errors.domain"
+          autocomplete="off"
+          :spellcheck="false"
           @update:modelValue="domain = $event; setFieldError('domain', undefined)"
           @keyup.enter="submit"
         >
@@ -77,17 +79,10 @@
 
     <template #controls>
       <action-button v-if="created" action="confirm" :label="__('message.done')" @click="closeModal" />
-      <button
-        v-else
-        type="button"
-        class="btn btn-primary"
-        :disabled="submitting || loading"
-        @click="submit"
-      >
-        <span v-if="submitting" class="spinner-border spinner-border-sm me-1" />
-        <i v-else class="fas fa-check me-1" />
-        {{ submitting ? __('message.please_wait') : __('message.submit') }}
-      </button>
+      <template v-else>
+        <action-button action="cancel" @click="closeModal" />
+        <action-button action="confirm" :label="submitting ? __('message.please_wait') : __('message.start_free_trial')" :loading="submitting" :disabled="loading" @click="submit" />
+      </template>
     </template>
   </Modal>
 </template>
@@ -101,6 +96,7 @@ import { useAlertStore } from '@/core/stores/alert'
 import { useAuthStore } from '@/core/stores/auth'
 import { buildCloudTrialSchema } from '@/validations/client/cloudTrialValidations'
 import http from '@/plugins/axios'
+import { scrollToFirstError } from '@/helpers/formUtils.js'
 import Modal from '../common/Modal.vue'
 import Alert from '@/components/Reusable/Alert.vue'
 // ClientField/DynamicSelect resolve via global registration (themes/porto/index.js).
@@ -137,8 +133,12 @@ async function fetchCloudData() {
     cloudSubdomain.value = d.cloud_subdomain ?? ''
     products.value = d.products ?? []
     dataCenters.value = d.data_centers ?? []
-  } catch {
-    // best-effort
+  } catch (e) {
+    alertStore.setAlert({
+      message: e?.response?.data?.message ?? __('message.something_went_wrong'),
+      type: 'danger',
+      component_name: 'CloudTrialModal',
+    })
   } finally {
     loading.value = false
   }
@@ -181,6 +181,7 @@ async function submit() {
     const errMap = {}
     err.inner?.forEach(e => { if (e.path && !errMap[e.path]) errMap[e.path] = e.message })
     setErrors(errMap)
+    scrollToFirstError()
     return
   }
 

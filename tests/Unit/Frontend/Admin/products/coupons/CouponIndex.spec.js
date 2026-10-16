@@ -148,10 +148,10 @@ describe('CouponIndex.vue', () => {
         it('uses returns count when present', () => { expect(tpl().uses(null, { uses: 5 })).toBe(5) })
 
         it('start returns — when falsy', () => { expect(tpl().start(null, {})).toBe('—') })
-        it('start returns date substring when present', () => { expect(tpl().start(null, { start: '2025-01-15T00:00:00' })).toBe('2025-01-15') })
+        it('start returns the formatted date when present', () => { expect(tpl().start(null, { start: '2025-01-15T00:00:00' })).toBe('15/01/2025') })
 
         it('expiry returns — when falsy', () => { expect(tpl().expiry(null, {})).toBe('—') })
-        it('expiry returns date substring when present', () => { expect(tpl().expiry(null, { expiry: '2025-12-31T00:00:00' })).toBe('2025-12-31') })
+        it('expiry returns the formatted date when present', () => { expect(tpl().expiry(null, { expiry: '2025-12-31T00:00:00' })).toBe('31/12/2025') })
     })
 
     // ── requestAdapter ───────────────────────────────────────────────

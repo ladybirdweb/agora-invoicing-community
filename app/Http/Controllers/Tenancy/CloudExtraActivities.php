@@ -26,7 +26,9 @@ use App\User;
 use Crypt;
 use DB;
 use Exception;
+use RuntimeException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -126,6 +128,9 @@ class CloudExtraActivities extends Controller
                 'pricenewplan' => currencyFormat($calc['pricenewplan'], $calc['currency'], includeSymbol: false),
                 'price_to_be_paid' => currencyFormat(abs($calc['price']), $calc['currency'], includeSymbol: false),
                 'discount' => currencyFormat($calc['discount'] ?? 0, $calc['currency'], includeSymbol: false),
+                // Old plan's remaining value actually spent on the new plan;
+                // the rest (discount) is banked as credit.
+                'credit_applied' => currencyFormat((float) $calc['priceoldplan'] - (float) ($calc['discount'] ?? 0), $calc['currency'], includeSymbol: false),
                 'priceperagent' => currencyFormat($planDetails['plan']->add_price ?? 0, $calc['currency'], includeSymbol: false),
                 'currency_symbol' => \App\Model\Payment\Currency::where('code', $calc['currency'])->value('symbol') ?? $calc['currency'],
             ];
@@ -815,9 +820,16 @@ class CloudExtraActivities extends Controller
             throw new Exception(__('message.something_bad'));
         }
 
-        $body = (string) $this->client->request('POST', $this->cloud->cloud_central_domain.'/checkDomain', [
-            'form_params' => ['domain' => $domain, 'key' => $keys->app_key],
-        ])->getBody();
+        try {
+            $body = (string) $this->client->request('POST', $this->cloud->cloud_central_domain.'/checkDomain', [
+                'form_params' => ['domain' => $domain, 'key' => $keys->app_key],
+            ])->getBody();
+        } catch (GuzzleException $e) {
+            // Guzzle errors are RuntimeExceptions carrying the raw response HTML — never surface that.
+            Logger::exception($e);
+
+            throw new RuntimeException(__('message.cloud_server_unavailable'));
+        }
 
         $flag = strstr($body, '{', true);
 

@@ -2,13 +2,13 @@
   <tr class="cart_table_item">
     <td class="product-thumbnail">
       <div class="product-thumbnail-wrapper">
-        <a href="#" class="product-thumbnail-remove" :title="__('message.remove')" @click.prevent="$emit('remove', item.id)">
-          <i class="fas fa-times"></i>
-        </a>
+        <button type="button" class="product-thumbnail-remove p-0" :title="__('message.remove')" :aria-label="__('message.remove')" @click="remove">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
         <span class="product-thumbnail-image d-inline-block">
           <img v-if="item.image" :src="item.image" width="90" height="90" alt="" class="img-fluid" />
           <span v-else class="d-inline-flex align-items-center justify-content-center bg-light product-placeholder">
-            <i class="fas fa-box text-color-grey fa-2x"></i>
+            <i class="fas fa-box text-color-grey fa-2x" aria-hidden="true"></i>
           </span>
         </span>
       </div>
@@ -24,10 +24,10 @@
     <td class="product-quantity">
       <div v-if="item.can_modify_quantity" class="quantity float-none m-0">
         <input type="button" class="minus text-color-hover-light bg-color-hover-primary border-color-hover-primary"
-               value="-" :disabled="item.quantity <= 1" @click="step('quantity', -1)">
-        <input type="text" class="input-text qty text" :value="item.quantity" readonly>
+               value="−" :aria-label="__('message.decrease')" :disabled="item.quantity <= 1" @click="step('quantity', -1)">
+        <input type="text" class="input-text qty text" :value="item.quantity" :aria-label="__('message.quantity')" readonly>
         <input type="button" class="plus text-color-hover-light bg-color-hover-primary border-color-hover-primary"
-               value="+" @click="step('quantity', 1)">
+               value="+" :aria-label="__('message.increase')" @click="step('quantity', 1)">
       </div>
       <span v-else class="text-color-dark">{{ item.quantity }}</span>
     </td>
@@ -42,10 +42,10 @@
       </template>
       <div v-else-if="item.can_modify_agent" class="quantity float-none m-0">
         <input type="button" class="minus text-color-hover-light bg-color-hover-primary border-color-hover-primary"
-               value="-" :disabled="item.agents <= 1" @click="step('agents', -1)">
-        <input type="text" class="input-text qty text" :value="item.agents" readonly>
+               value="−" :aria-label="__('message.decrease')" :disabled="item.agents <= 1" @click="step('agents', -1)">
+        <input type="text" class="input-text qty text" :value="item.agents" :aria-label="__('message.agents')" readonly>
         <input type="button" class="plus text-color-hover-light bg-color-hover-primary border-color-hover-primary"
-               value="+" @click="step('agents', 1)">
+               value="+" :aria-label="__('message.increase')" @click="step('agents', 1)">
       </div>
       <span v-else class="text-color-dark">{{ item.agents }}</span>
     </td>
@@ -61,6 +61,10 @@ import { __ } from '@/plugins/i18n'
 
 const props = defineProps({ item: { type: Object, required: true } })
 const emit = defineEmits(['update', 'remove'])
+
+function remove() {
+  emit('remove', props.item.id)
+}
 
 // Increment/decrement either `quantity` or `agents`; never below 1.
 function step(field, delta) {

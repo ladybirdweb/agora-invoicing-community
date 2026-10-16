@@ -24,4 +24,8 @@ return [
     'cloud_oauth_token' => env('CLOUD_OAUTH_TOKEN'),
     'cloud_delete_job_url_normal' => env('CLOUD__DELETE_JOB_URL_NORMAL'),
     'cloud_delete_job_url_custom' => env('CLOUD__DELETE_JOB_URL_CUSTOM'),
+
+    // Private IPs/ranges the deploy wizard may connect to, e.g. "192.168.1.50,10.0.0.0/24".
+    // Empty (default) = public servers only. For dev/QA VMs; leave empty in production.
+    'whitelist_deploy_ip' => array_filter(array_map(trim(...), explode(',', (string) env('WHITELIST_DEPLOY_IP', '')))),
 ];

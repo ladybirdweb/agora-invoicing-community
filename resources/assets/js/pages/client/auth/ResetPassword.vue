@@ -3,7 +3,7 @@
         <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
         <div v-else-if="invalid" class="text-center py-4">
-            <i class="fas fa-times-circle text-danger fa-3x mb-3"></i>
+            <i class="fas fa-times-circle text-danger fa-3x mb-3" aria-hidden="true"></i>
             <p class="text-color-default">{{ invalidMessage || __('message.reset_link_expired') }}</p>
             <RouterLink to="/login" class="btn btn-dark btn-modern mt-2">
                 {{ __('message.back_to_login') }}
@@ -19,9 +19,9 @@
 
             <div v-if="passwordFocused" class="mb-3 text-1">
                 <strong class="d-block mb-1 text-dark">{{ __('message.password_requirements') }}</strong>
-                <ul class="list-unstyled mb-0">
+                <ul class="list-unstyled mb-0" aria-live="polite">
                     <li v-for="c in checklist" :key="c.key" :class="c.ok ? 'text-success' : 'text-danger'">
-                        <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'"></i> {{ c.label }}
+                        <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'" aria-hidden="true"></i> {{ c.label }}
                     </li>
                 </ul>
             </div>
@@ -38,7 +38,7 @@
             <button type="submit"
                     class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3"
                     :disabled="saving || !hpReady">
-                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
+                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                 {{ __('message.reset_password') }}
             </button>
         </form>

@@ -6,6 +6,7 @@
             <!-- TOTP code -->
             <form v-if="!useRecovery" @submit.prevent="submitTotp" novalidate>
                 <ClientField name="totp" type="text" :label="__('message.authentication_code')"
+                             autocomplete="one-time-code" inputmode="numeric" :spellcheck="false"
                              :model-value="form.totp" :error="errors.totp"
                              @update:modelValue="onTotpInput" />
 
@@ -14,17 +15,17 @@
                 <p class="text-color-default text-2 mb-2">{{ __('message.open_two_factor') }}</p>
                 <p class="text-2 mb-3">
                     {{ __('message.having_problem') }}
-                    <a href="javascript:;" class="text-color-primary fw-semibold text-decoration-none"
+                    <button type="button" class="border-0 bg-transparent p-0 text-color-primary fw-semibold text-decoration-none"
                        @click="toggleMode(true)">
                         {{ __('message.login_recovery_code') }}
-                    </a>
+                    </button>
                 </p>
 
                 <RecaptchaField ref="totpCaptchaRef" action="login_2fa" class="mb-3" />
 
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-dark btn-modern text-uppercase fw-bold py-3" :disabled="saving || !totpHpReady">
-                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
+                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                         {{ __('message.verify') }}
                     </button>
                 </div>
@@ -33,6 +34,7 @@
             <!-- Recovery code -->
             <form v-else @submit.prevent="submitRecovery" novalidate>
                 <ClientField name="rec_code" type="text" :label="__('message.recovery_code')"
+                             autocomplete="off" :spellcheck="false"
                              v-model="form.rec_code" :error="errors.rec_code"
                              @update:modelValue="setFieldError('rec_code', undefined)" />
 
@@ -41,17 +43,17 @@
                 <p class="text-color-default text-2 mb-2">{{ __('message.enter_recovery_code_hint') }}</p>
                 <p class="text-2 mb-3">
                     {{ __('message.having_problem') }}
-                    <a href="javascript:;" class="text-color-primary fw-semibold text-decoration-none"
+                    <button type="button" class="border-0 bg-transparent p-0 text-color-primary fw-semibold text-decoration-none"
                        @click="toggleMode(false)">
                         {{ __('message.use_authentication_code') }}
-                    </a>
+                    </button>
                 </p>
 
                 <RecaptchaField ref="recCaptchaRef" action="login_recovery" class="mb-3" />
 
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-dark btn-modern text-uppercase fw-bold py-3" :disabled="saving || !recHpReady">
-                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
+                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                         {{ __('message.verify') }}
                     </button>
                 </div>
@@ -150,7 +152,3 @@ async function postVerify(url, payload, captchaRef) {
     }
 }
 </script>
-
-<style scoped>
-.letter-spacing-2 { letter-spacing: 0.4rem; }
-</style>

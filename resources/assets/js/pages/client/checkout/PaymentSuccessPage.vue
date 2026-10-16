@@ -5,7 +5,7 @@
       <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
       <div v-else-if="error" class="text-center py-6">
-        <i class="fas fa-triangle-exclamation fa-3x text-color-grey-lighten mb-3 d-block"></i>
+        <i class="fas fa-triangle-exclamation fa-3x text-color-grey-lighten mb-3 d-block" aria-hidden="true"></i>
         <p class="text-color-grey mb-0">{{ error }}</p>
       </div>
 
@@ -16,7 +16,7 @@
           <div class="card border-width-3 border-radius-0 border-color-success">
             <div class="card-body text-center">
               <p class="text-color-dark font-weight-bold text-4-5 mb-0">
-                <i class="fas fa-check text-color-success me-1"></i> {{ __('message.thanks_order_received') }}
+                <i class="fas fa-check text-color-success me-1" aria-hidden="true"></i> {{ __('message.thanks_order_received') }}
               </p>
             </div>
           </div>
@@ -57,7 +57,7 @@
                   <tr v-for="o in orders" :key="o.number">
                     <td>
                       <strong class="d-block text-color-dark line-height-1 font-weight-semibold">
-                        {{ o.product_name }} <span class="product-qty">x {{ o.qty }}</span>
+                        {{ o.product_name }} <span class="product-qty">× {{ o.qty }}</span>
                       </strong>
                       <ul class="wc-item-meta order-meta-list">
                         <li class="order-meta-item">
@@ -71,7 +71,7 @@
                       <a v-if="o.downloadable" :href="o.download_url"
                          class="btn btn-light-scale-2 btn-sm text-dark"
                          :aria-label="__('message.click_to_download')" :title="__('message.click_to_download')">
-                        <i class="fa fa-download"></i>
+                        <i class="fa fa-download" aria-hidden="true"></i>
                       </a>
                     </td>
                   </tr>

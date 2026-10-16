@@ -75,7 +75,11 @@ $routeSeo = $seoService->resolveClientRoutes();
         <link rel="shortcut icon" href="{{ $set->fav_icon }}" type="image/x-icon">
     @endif
 
+    <meta name="theme-color" content="#ffffff">
+
     {{-- Google Fonts --}} {{-- NOSONAR --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link id="googleFonts"
           href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap"
           rel="stylesheet">

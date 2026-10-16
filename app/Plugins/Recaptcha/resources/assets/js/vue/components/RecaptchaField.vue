@@ -28,7 +28,7 @@ const props = defineProps({
     action: { type: String, default: 'submit' },
     // Show the built-in inline validation message on a missing token.
     showError: { type: Boolean, default: true },
-    errorMessage: { type: String, default: 'Please complete the reCAPTCHA.' },
+    errorMessage: { type: String, default: null },
     badge: { type: String, default: null },
 })
 
@@ -64,9 +64,16 @@ function clearError() {
     error.value = ''
 }
 
+// The host app's global __() when present; the plugin stays usable without it.
+function translatedDefault() {
+    const key = 'message.recaptcha_required'
+    const text = globalThis.__?.(key)
+    return text && text !== key ? text : 'Please complete the reCAPTCHA.'
+}
+
 function fail() {
     if (props.showError) {
-        error.value = props.errorMessage
+        error.value = props.errorMessage || translatedDefault()
     }
 }
 

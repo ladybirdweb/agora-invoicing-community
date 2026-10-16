@@ -12,17 +12,23 @@
                    :class="{ 'is-invalid': error }"
                    :type="revealed ? 'text' : 'password'"
                    :value="modelValue"
-                   :autocomplete="autocomplete"
+                   :name="name"
+                   :aria-invalid="error ? 'true' : undefined"
+                   :aria-describedby="error ? errorId : undefined"
+                   :aria-required="required ? 'true' : undefined"
+                   :autocomplete="autocomplete || undefined"
+                   :spellcheck="spellcheckAttr"
                    :placeholder="placeholder"
                    :disabled="disabled"
                    @input="onInput"
                    @focus="$emit('focus', $event)"
                    @blur="$emit('blur', $event)">
-            <button type="button" class="input-group-text" tabindex="-1"
+            <button type="button" class="input-group-text"
                     :aria-label="revealed ? __('message.hide_password') : __('message.show_password')"
+                    :aria-pressed="revealed ? 'true' : 'false'"
                     @mousedown.prevent
                     @click="revealed = !revealed">
-                <i class="fa" :class="revealed ? 'fa-eye' : 'fa-eye-slash'"></i>
+                <i class="fa" :class="revealed ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
             </button>
         </div>
 
@@ -31,6 +37,11 @@
                 class="form-control form-control-lg text-4"
                 :class="{ 'is-invalid': error }"
                 :value="modelValue"
+                :name="name"
+                :aria-invalid="error ? 'true' : undefined"
+                :aria-describedby="error ? errorId : undefined"
+                :aria-required="required ? 'true' : undefined"
+                :autocomplete="autocomplete || undefined"
                 :disabled="disabled"
                 @change="onChange">
             <slot />
@@ -42,6 +53,12 @@
                   :class="{ 'is-invalid': error }"
                   :rows="rows"
                   :value="modelValue"
+                  :name="name"
+                  :aria-invalid="error ? 'true' : undefined"
+                  :aria-describedby="error ? errorId : undefined"
+                  :aria-required="required ? 'true' : undefined"
+                  :autocomplete="autocomplete || undefined"
+                  :spellcheck="spellcheck"
                   :placeholder="placeholder"
                   :disabled="disabled"
                   @input="onInput"></textarea>
@@ -53,7 +70,13 @@
                    :class="{ 'is-invalid': error }"
                    :type="type"
                    :value="modelValue"
-                   :autocomplete="autocomplete"
+                   :name="name"
+                   :aria-invalid="error ? 'true' : undefined"
+                   :aria-describedby="error ? errorId : undefined"
+                   :aria-required="required ? 'true' : undefined"
+                   :autocomplete="autocomplete || undefined"
+                   :spellcheck="spellcheckAttr"
+                   :inputmode="inputmode"
                    :placeholder="placeholder"
                    :disabled="disabled"
                    @input="onInput"
@@ -62,7 +85,7 @@
             <slot name="append" />
         </div>
 
-        <div v-if="error" class="invalid-feedback d-block">{{ error }}</div>
+        <div v-if="error" :id="errorId" class="invalid-feedback d-block" role="alert">{{ error }}</div>
     </div>
 </template>
 
@@ -80,6 +103,9 @@ const props = defineProps({
     autocomplete: { type: String,  default: '' },
     placeholder:  { type: String,  default: '' },
     rows:         { type: [String, Number], default: 3 },
+    // undefined = browser default (auto-off for email/password/username fields)
+    spellcheck:   { type: Boolean, default: undefined },
+    inputmode:    { type: String,  default: undefined },
 })
 
 const emit = defineEmits(['update:modelValue', 'change', 'focus', 'blur'])
@@ -87,6 +113,9 @@ const emit = defineEmits(['update:modelValue', 'change', 'focus', 'blur'])
 const revealed = ref(false)
 const uid = useId()
 const fieldId = computed(() => `field-${props.name}-${uid}`)
+const errorId = computed(() => `${fieldId.value}-error`)
+const spellcheckAttr = computed(() => props.spellcheck
+    ?? ((['email', 'password'].includes(props.type) || /username|email/.test(props.autocomplete)) ? false : undefined))
 
 const onInput  = (e) => emit('update:modelValue', e.target.value)
 const onChange = (e) => { emit('update:modelValue', e.target.value); emit('change', e.target.value) }

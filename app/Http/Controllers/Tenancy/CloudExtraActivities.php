@@ -26,7 +26,6 @@ use App\User;
 use Crypt;
 use DB;
 use Exception;
-use RuntimeException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Database\Query\Builder;
@@ -38,6 +37,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Lang;
 use Logger;
+use RuntimeException;
 
 class CloudExtraActivities extends Controller
 {

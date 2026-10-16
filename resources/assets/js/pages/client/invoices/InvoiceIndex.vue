@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex justify-content-end mb-2">
       <button type="button" class="btn btn-outline-primary btn-sm" @click="showCreditModal = true">
-        <i class="fas fa-credit-card me-1"></i>{{ __('message.credits') }} {{ creditBalance }}
+        <i class="fas fa-credit-card me-1" aria-hidden="true"></i>{{ __('message.credits') }} {{ creditBalance }}
       </button>
     </div>
 
@@ -34,16 +34,19 @@
         <template #action="{ row }">
           <div class="d-flex align-items-center gap-1 flex-nowrap">
             <action-button action="view" :to="'/my-invoice/' + row.id"
-                           v-tooltip="__('message.view')"/>
+                           v-tooltip="__('message.view')"
+                           :label="__('message.view')" :icon-only="true"/>
 
             <action-button v-if="row.show_pay"
                            icon="fas fa-credit-card" class="table_btn"
                            v-tooltip="__('message.pay')"
+                           :label="__('message.pay')" :icon-only="true"
                            @click="goToPay(row.id)"/>
 
             <action-button v-if="row.show_delete"
                            icon="fas fa-trash" class="table_btn"
                            v-tooltip="__('message.delete')"
+                           :label="__('message.delete')" :icon-only="true"
                            @click="confirmDelete(row)"/>
           </div>
         </template>
@@ -56,13 +59,14 @@
         :showCloseBtn="false"
     >
         <template #title>
-            <h5>{{ __('message.delete_invoice') }}</h5>
+            <h5 class="modal-title fw-bold">{{ __('message.delete_invoice') }}</h5>
         </template>
         <template #fields>
             <AppAlert componentName="my-invoices" />
             <p class="mb-0">{{ __('message.delete_invoice_confirm', { number: deleteTarget?.number }) }}</p>
         </template>
         <template #controls>
+            <action-button action="cancel" @click="deleteTarget = null" />
             <action-button action="delete" :loading="deleteLoading" @click="doDelete" />
         </template>
     </AppModal>
@@ -70,10 +74,10 @@
     <AppModal
         :showModal="showCreditModal"
         :onClose="() => showCreditModal = false"
-        :showControls="false"
+        :showCloseBtn="false"
     >
         <template #title>
-            <h5 class="mb-0">{{ __('message.credit_balance') }} {{ creditBalance }}</h5>
+            <h5 class="modal-title fw-bold">{{ __('message.credit_balance') }} {{ creditBalance }}</h5>
         </template>
         <template #fields>
             <h6>{{ __('message.credit_balance_history') }}</h6>
@@ -86,6 +90,9 @@
                     <div>{{ item.text }}</div>
                 </li>
             </ul>
+        </template>
+        <template #controls>
+            <action-button action="close" @click="showCreditModal = false" />
         </template>
     </AppModal>
 

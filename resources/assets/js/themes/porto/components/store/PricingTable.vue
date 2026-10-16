@@ -5,7 +5,8 @@
             <div class="text-3 p-relative top-1">{{ __('message.monthly') }}</div>
             <div class="px-2">
                 <div class="form-check form-switch form-switch-md mb-0">
-                    <input type="checkbox" class="form-check-input" v-model="isYearly" />
+                    <input type="checkbox" class="form-check-input" role="switch" v-model="isYearly"
+                           :aria-label="`${__('message.monthly')} / ${__('message.yearly')}`" />
                 </div>
             </div>
             <div class="text-3 p-relative top-1">{{ __('message.yearly') }}</div>

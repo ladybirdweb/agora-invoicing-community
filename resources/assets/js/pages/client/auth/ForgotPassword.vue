@@ -2,13 +2,13 @@
     <AuthLayout>
         <form @submit.prevent="submit" novalidate>
             <ClientField name="email" type="email" :label="__('message.email_address')" required
-                         autocomplete="email"
+                         autocomplete="email" :spellcheck="false"
                          v-model="form.email" :error="errors.email"
                          @update:modelValue="setFieldError('email', undefined)" />
 
             <div class="mb-3">
                 <RouterLink to="/login" class="text-color-primary fw-semibold text-2 text-decoration-none">
-                    <i class="fas fa-arrow-left me-1"></i>{{ __('message.know_password') }}
+                    <i class="fas fa-arrow-left me-1" aria-hidden="true"></i>{{ __('message.know_password') }}
                 </RouterLink>
             </div>
 
@@ -19,7 +19,7 @@
             <button type="submit"
                     class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3"
                     :disabled="saving || !hpReady">
-                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
+                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                 {{ saving ? __('message.sending') : __('message.send_mail') }}
             </button>
         </form>

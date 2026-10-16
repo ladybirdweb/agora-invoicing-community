@@ -8,7 +8,7 @@
                     <div class="card h-100 bg-color-grey">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
-                                <i class="fas fa-user fa-3x text-muted"></i>
+                                <i class="fas fa-user fa-3x text-muted" aria-hidden="true"></i>
                                 <span class="display-6 fw-bold text-dark">{{ data.pending_invoices_count ?? 0 }}</span>
                             </div>
                             <div class="mt-3">
@@ -24,7 +24,7 @@
                     <div class="card h-100 bg-color-grey">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
-                                <i class="fas fa-check-circle fa-3x text-muted"></i>
+                                <i class="fas fa-check-circle fa-3x text-muted" aria-hidden="true"></i>
                                 <span class="display-6 fw-bold text-dark">{{ data.total_orders_count ?? 0 }}</span>
                             </div>
                             <div class="mt-3">
@@ -40,7 +40,7 @@
                     <div class="card h-100 bg-color-grey">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
-                                <i class="fas fa-sync-alt fa-3x text-muted"></i>
+                                <i class="fas fa-sync-alt fa-3x text-muted" aria-hidden="true"></i>
                                 <span class="display-6 fw-bold text-dark">{{ data.order_renewals_count ?? 0 }}</span>
                             </div>
                             <div class="mt-3">

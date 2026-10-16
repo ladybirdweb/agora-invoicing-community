@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import CartDomainModal from '@/themes/porto/components/cart/CartDomainModal.vue'
+import ActionButton from '@/components/Reusable/ActionButton.vue'
 
 // Minimal ClientField: an input plus its error text.
 const ClientField = {
@@ -13,7 +14,7 @@ const items = [{ id: 1, name: 'A', domain: null }, { id: 2, name: 'B', domain: '
 async function open() {
     const wrapper = mount(CartDomainModal, {
         props: { show: false, items },
-        global: { stubs: { teleport: true }, components: { ClientField } },
+        global: { stubs: { teleport: true }, components: { ClientField, ActionButton } },
     })
     await wrapper.setProps({ show: true })
     return wrapper

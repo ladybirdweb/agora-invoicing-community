@@ -27,7 +27,7 @@
               <span :class="['price', product.highlighted ? 'text-color-primary' : '']">
                 <span v-if="currentPlan && currentPlan.price_raw !== 0" class="price-unit">{{ currencySymbol }}</span>{{ priceAmount }}
               </span>
-              <label class="price-label">{{ currentLabel }}</label>
+              <span class="price-label d-inline-block">{{ currentLabel }}</span>
             </div>
 
             <!-- Strike-through original price -->
@@ -37,7 +37,8 @@
 
             <!-- Plan selector dropdown (shown only when no global billingCycle toggle) -->
             <div v-if="product.plans.length && !billingCycle" class="mb-4 px-3">
-              <select v-model="selectedPlanId" class="form-select form-select-sm text-center">
+              <select v-model="selectedPlanId" class="form-select form-select-sm text-center bg-white text-dark"
+                      :aria-label="`${__('message.select_plan')}: ${product.name}`">
                 <option v-for="plan in product.plans" :key="plan.id" :value="plan.id">
                   {{ plan.option_label }}
                 </option>
@@ -76,7 +77,7 @@
   <Modal
     :showModal="showDomainModal"
     :onClose="() => { showDomainModal = false; domainError = '' }"
-    :closeLabel="__('message.close')"
+    :showCloseBtn="false"
     :closeOnBackdrop="true"
     classname="modal-md"
   >
@@ -92,6 +93,8 @@
         :placeholder="__('message.cloud_domain')"
         :modelValue="domain"
         :error="domainError"
+        autocomplete="off"
+        :spellcheck="false"
         @update:modelValue="domain = $event; domainError = ''"
         @keyup.enter="onDomainConfirmed"
       >
@@ -116,16 +119,8 @@
     </template>
 
     <template #controls>
-      <button
-        type="button"
-        class="btn btn-primary"
-        :disabled="modalLoading"
-        @click="onDomainConfirmed"
-      >
-        <span v-if="modalLoading" class="spinner-border spinner-border-sm me-1" />
-        <i v-else class="fas fa-check me-1" />
-        {{ __('message.submit') }}
-      </button>
+      <action-button action="cancel" @click="showDomainModal = false; domainError = ''" />
+      <action-button action="confirm" :label="__('message.add_to_cart')" :loading="modalLoading" @click="onDomainConfirmed" />
     </template>
   </Modal>
 </template>
@@ -161,6 +156,8 @@ function initTooltips() {
   if (!descriptionEl.value || !globalThis.bootstrap?.Tooltip) return
   descriptionEl.value.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(node => {
     globalThis.bootstrap.Tooltip.getInstance(node)?.dispose()
+    // Admin-authored spans: make them reachable so the tooltip also opens on keyboard focus.
+    if (node.tabIndex < 0) node.tabIndex = 0
     const _tooltip = new globalThis.bootstrap.Tooltip(node, { customClass: 'porto-tooltip', offset: [0, 10] })
   })
 }
@@ -246,7 +243,7 @@ async function handleOrder() {
   const btn = props.product.button
 
   if (btn.type === 'contact') {
-    window.open(btn.url, '_blank')
+    window.open(btn.url, '_blank', 'noopener')
     return
   }
 

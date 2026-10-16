@@ -5,11 +5,11 @@
 
             <div v-else class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="two-factor-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="two-factor-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
                     <div>
                         <span class="fw-bold">
                             {{ __('message.two_factor_authentication') }}
-                            <span class="badge rounded-pill badge-soft-success ms-1">
+                            <span class="badge rounded-pill ms-1" :class="is2faEnabled ? 'badge-soft-success' : 'badge-soft-secondary'">
                                 {{ is2faEnabled ? __('message.active') : __('message.inactive') }}
                             </span>
                         </span>
@@ -22,6 +22,7 @@
                 <div class="form-check form-switch mb-0">
                     <input class="form-check-input" type="checkbox" role="switch"
                            :checked="is2faEnabled"
+                           :aria-label="__('message.two_factor_authentication')"
                            @click.prevent="onTwoFactorToggleClick"
                            v-tooltip="is2faEnabled ? __('message.disable') : __('message.enable')">
                 </div>
@@ -31,7 +32,7 @@
         <!-- Enable 2FA Modal -->
         <AppModal :showModal="showEnableModal" :onClose="closeEnableModal" :showCloseBtn="false">
             <template #title>
-                <h5 class="modal-title">{{ __('message.setup_authenticator') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.setup_authenticator') }}</h5>
             </template>
             <template #fields>
                 <div v-if="twoFaLoading" class="row justify-content-center py-3"><loader /></div>
@@ -40,15 +41,16 @@
                     <div v-if="modalError" class="alert alert-danger py-2 mb-3">{{ modalError }}</div>
 
                     <!-- Step: Password -->
-                    <template v-if="twoFaStep === 'password'">
+                    <form v-if="twoFaStep === 'password'" @submit.prevent="validatePassword">
                         <p class="text-muted mb-3">{{ __('message.to_continue_first_verify') }}</p>
                         <ClientField
                             type="password"
                             name="user_password"
                             :label="__('message.password')"
+                            autocomplete="current-password"
                             v-model="userPassword"
                         />
-                    </template>
+                    </form>
 
                     <!-- Step: Recovery Codes -->
                     <template v-if="twoFaStep === 'recovery'">
@@ -56,11 +58,13 @@
                         <div class="card border mb-2">
                             <div class="card-header d-flex align-items-center justify-content-between py-2">
                                 <span class="fw-bold text-2">{{ __('message.recovery_codes') }}</span>
-                                <button type="button" class="btn btn-sm btn-light" @click="copyRecovery">
-                                    <i :class="recoveryCopied ? 'fas fa-check' : 'fas fa-clipboard'"></i>
+                                <button type="button" class="btn btn-sm btn-light" @click="copyRecovery"
+                                        :aria-label="__('message.copy_to_clipboard')">
+                                    <i :class="recoveryCopied ? 'fas fa-check' : 'fas fa-clipboard'" aria-hidden="true"></i>
                                 </button>
+                                <span class="visually-hidden" aria-live="polite">{{ recoveryCopied ? __('message.copied') : '' }}</span>
                             </div>
-                            <div class="card-body py-2">
+                            <div ref="codesEl" class="card-body py-2">
                                 <div class="row">
                                     <div v-for="code in recoveryCodes" :key="code" class="col-6 text-center">
                                         <span class="font-monospace">{{ code }}</span>
@@ -78,25 +82,25 @@
                                 <li>{{ __('message.get_authenticator_app') }}</li>
                                 <li>{{ __('message.choose') }} <b>{{ __('message.scan_a_barcode') }}</b></li>
                             </ul>
-                            <div class="text-center mb-3" v-html="qrImage"></div> <!-- nosemgrep: javascript.vue.security.audit.xss.templates.avoid-v-html.avoid-v-html -->
+                            <div class="text-center mb-3" role="img" :aria-label="__('message.scan_a_barcode')" v-html="qrImage"></div> <!-- nosemgrep: javascript.vue.security.audit.xss.templates.avoid-v-html.avoid-v-html -->
                             <div class="text-center">
-                                <a href="#" class="text-decoration-underline text-3"
-                                   @click.prevent="showSecretKey = true">{{ __('message.cant_scan') }}</a>
+                                <button type="button" class="border-0 bg-transparent p-0 text-color-primary text-decoration-underline text-3"
+                                   @click="showSecretKey = true">{{ __('message.cant_scan') }}</button>
                             </div>
                         </template>
                         <template v-else>
                             <div class="form-group row mb-3">
-                                <label class="col-lg-4 col-form-label form-control-label line-height-9 pt-2 text-2">
+                                <label for="twofa-secret-key" class="col-lg-4 col-form-label form-control-label line-height-9 pt-2 text-2">
                                     {{ __('message.secret_key_label') }}
                                 </label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control text-3 h-auto py-2 bg-light-grey"
-                                           :value="qrSecret" readonly>
+                                    <input id="twofa-secret-key" type="text" class="form-control text-3 h-auto py-2 bg-light-grey"
+                                           :value="qrSecret" readonly spellcheck="false" translate="no">
                                 </div>
                             </div>
                             <div class="text-center">
-                                <a href="#" class="text-decoration-underline text-3"
-                                   @click.prevent="showSecretKey = false">{{ __('message.scan_barcode') }}</a>
+                                <button type="button" class="border-0 bg-transparent p-0 text-color-primary text-decoration-underline text-3"
+                                   @click="showSecretKey = false">{{ __('message.scan_barcode') }}</button>
                             </div>
                         </template>
                     </template>
@@ -108,6 +112,8 @@
                             <input type="text"
                                    class="form-control text-3 h-auto py-2"
                                    v-model="totp"
+                                   :aria-label="__('message.authentication_code')"
+                                   autocomplete="one-time-code" inputmode="numeric" spellcheck="false"
                                    :placeholder="__('message.enter_passcode')"
                                    maxlength="6"
                                    @keydown.enter="verify2fa" />
@@ -118,7 +124,7 @@
                     <!-- Step: Done -->
                     <template v-if="twoFaStep === 'done'">
                         <div class="text-center py-4">
-                            <i class="fas fa-check-circle text-success icon-3rem"></i>
+                            <i class="fas fa-check-circle text-success icon-3rem" aria-hidden="true"></i>
                             <p class="mt-3 mb-0 fw-bold text-2">{{ __('message.you_are_all_set') }}</p>
                         </div>
                     </template>
@@ -127,54 +133,32 @@
             </template>
             <template #controls>
                 <template v-if="twoFaStep === 'password'">
-                    <button type="button" class="btn btn-primary btn-modern"
-                            :disabled="verifyingPassword || !userPassword"
-                            @click="validatePassword">
-                        <i v-if="verifyingPassword" class="fas fa-circle-notch fa-spin me-1"></i>
-                        <i v-else class="fas fa-check me-1"></i>
-                        {{ __('message.validate') }}
-                    </button>
+                    <action-button action="cancel" @click="closeEnableModal" />
+                    <action-button action="confirm" :label="__('message.validate')"
+                                   :loading="verifyingPassword" :disabled="!userPassword"
+                                   @click="validatePassword" />
                 </template>
                 <template v-if="twoFaStep === 'recovery'">
-                    <button type="button" class="btn btn-primary btn-modern"
-                            :disabled="!recoveryCopied || enabling2fa"
-                            @click="goToQr">
-                        <i v-if="enabling2fa" class="fas fa-circle-notch fa-spin me-1"></i>
-                        <i v-else class="fas fa-arrow-right me-1"></i>
-                        {{ __('message.next') }}
-                    </button>
+                    <action-button action="cancel" @click="closeEnableModal" />
+                    <action-button action="confirm" icon="fas fa-arrow-right" :label="__('message.next')"
+                                   :loading="enabling2fa" :disabled="!codesSaved"
+                                   @click="goToQr" />
                 </template>
                 <template v-if="twoFaStep === 'qr'">
-                    <div class="d-flex w-100 justify-content-between">
-                        <button type="button" class="btn btn-light"
-                                @click="twoFaStep = 'recovery'; modalError = ''">
-                            <i class="fas fa-arrow-left me-1"></i>{{ __('message.previous') }}
-                        </button>
-                        <button type="button" class="btn btn-primary btn-modern"
-                                @click="twoFaStep = 'totp'; modalError = ''; totp = ''">
-                            {{ __('message.next') }}<i class="fas fa-arrow-right ms-1"></i>
-                        </button>
-                    </div>
+                    <action-button action="back" :label="__('message.previous')"
+                                   @click="twoFaStep = 'recovery'; modalError = ''" />
+                    <action-button action="confirm" icon="fas fa-arrow-right" :label="__('message.next')"
+                                   @click="twoFaStep = 'totp'; modalError = ''; totp = ''" />
                 </template>
                 <template v-if="twoFaStep === 'totp'">
-                    <div class="d-flex w-100 justify-content-between">
-                        <button type="button" class="btn btn-light"
-                                @click="twoFaStep = 'qr'; modalError = ''; showSecretKey = false">
-                            <i class="fas fa-arrow-left me-1"></i>{{ __('message.previous') }}
-                        </button>
-                        <button type="button" class="btn btn-primary btn-modern"
-                                :disabled="verifying2fa || !totp || !totpHpReady"
-                                @click="verify2fa">
-                            <i v-if="verifying2fa" class="fas fa-circle-notch fa-spin me-1"></i>
-                            <i v-else class="fas fa-check me-1"></i>
-                            {{ __('message.verify') }}
-                        </button>
-                    </div>
+                    <action-button action="back" :label="__('message.previous')"
+                                   @click="twoFaStep = 'qr'; modalError = ''; showSecretKey = false" />
+                    <action-button action="confirm" :label="__('message.verify')"
+                                   :loading="verifying2fa" :disabled="!totp || !totpHpReady"
+                                   @click="verify2fa" />
                 </template>
                 <template v-if="twoFaStep === 'done'">
-                    <button type="button" class="btn btn-primary btn-modern" @click="onEnableDone">
-                        {{ __('message.done') }}
-                    </button>
+                    <action-button action="confirm" :label="__('message.done')" @click="onEnableDone" />
                 </template>
             </template>
         </AppModal>
@@ -182,19 +166,15 @@
         <!-- Disable 2FA Modal -->
         <AppModal :showModal="showDisableModal" :onClose="closeDisableModal" :showCloseBtn="false">
             <template #title>
-                <h5 class="modal-title">{{ __('message.turn_off_authenticator') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.turn_off_authenticator') }}</h5>
             </template>
             <template #fields>
                 <p class="mb-0">{{ __('message.turn_off_authenticator_setup') }}</p>
             </template>
             <template #controls>
-                <button type="button" class="btn btn-outline-secondary btn-modern"
-                        :disabled="disabling2fa"
-                        @click="disable2fa">
-                    <i v-if="disabling2fa" class="fas fa-circle-notch fa-spin me-1"></i>
-                    <i v-else class="fas fa-power-off me-1"></i>
-                    {{ __('message.disable') }}
-                </button>
+                <action-button action="cancel" @click="closeDisableModal" />
+                <action-button action="delete" icon="fas fa-power-off" :label="__('message.disable')"
+                               :loading="disabling2fa" @click="disable2fa" />
             </template>
         </AppModal>
     </div>
@@ -223,7 +203,9 @@ const modalError        = ref('')
 const userPassword      = ref('')
 const verifyingPassword = ref(false)
 const recoveryCodes     = ref([])
-const recoveryCopied    = ref(false)
+const recoveryCopied    = ref(false) // transient "copied" icon state
+const codesSaved        = ref(false) // gates "Next" once the codes were copied (or shown for manual copy)
+const codesEl           = ref(null)
 const enabling2fa       = ref(false)
 const qrImage           = ref('')
 const qrSecret          = ref('')
@@ -268,6 +250,7 @@ async function openEnableModal() {
     twoFaStep.value        = 'password'
     userPassword.value     = ''
     recoveryCopied.value   = false
+    codesSaved.value       = false
     recoveryCodes.value    = []
     totp.value             = ''
     qrImage.value          = ''
@@ -295,6 +278,7 @@ function closeEnableModal() {
     twoFaStep.value       = 'password'
     userPassword.value    = ''
     recoveryCopied.value  = false
+    codesSaved.value      = false
     recoveryCodes.value   = []
     totp.value            = ''
     qrImage.value         = ''
@@ -320,10 +304,18 @@ async function validatePassword() {
     }
 }
 
-function copyRecovery() {
-    navigator.clipboard?.writeText(recoveryCodes.value.join('\n'))
-    recoveryCopied.value = true
-    setTimeout(() => { recoveryCopied.value = false }, 5000)
+async function copyRecovery() {
+    try {
+        await navigator.clipboard.writeText(recoveryCodes.value.join('\n'))
+        modalError.value     = ''
+        recoveryCopied.value = true
+        setTimeout(() => { recoveryCopied.value = false }, 5000)
+    } catch {
+        // No clipboard access (e.g. non-HTTPS) — select the codes for a manual copy.
+        if (codesEl.value) globalThis.getSelection()?.selectAllChildren(codesEl.value)
+        modalError.value = __('message.recovery_codes_copy_failed')
+    }
+    codesSaved.value = true
 }
 
 async function goToQr() {
@@ -333,8 +325,9 @@ async function goToQr() {
         qrImage.value  = res.data?.data?.image  ?? ''
         qrSecret.value = res.data?.data?.secret ?? ''
         twoFaStep.value = 'qr'
+        modalError.value = ''
     } catch (e) {
-        errorHandler(e, COMPONENT)
+        setModalError(e)
     } finally {
         enabling2fa.value = false
     }
@@ -402,4 +395,5 @@ async function disable2fa() {
     cursor: pointer;
 }
 .badge-soft-success { background-color: #e6f9ef; color: #1a9d5c; }
+.badge-soft-secondary { background-color: #eef0f2; color: #5c636a; }
 </style>

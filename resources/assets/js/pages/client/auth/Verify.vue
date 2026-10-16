@@ -15,10 +15,10 @@
                                     <div v-if="i > 0" class="flex-grow-1 border-top border-2 mt-4 step-connector"
                                          :class="(s.done || s.active) ? 'border-primary' : ''"></div>
 
-                                    <div class="text-center px-2 step-item">
+                                    <div class="text-center px-2 step-item" :aria-current="s.active ? 'step' : undefined">
                                         <span class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 step-circle"
                                               :class="(s.done || s.active) ? 'bg-primary text-white' : 'bg-light text-muted border'">
-                                            <i class="fas fa-lg" :class="s.icon"></i>
+                                            <i class="fas fa-lg" :class="s.icon" aria-hidden="true"></i>
                                         </span>
                                         <div class="fw-semibold"
                                              :class="(s.done || s.active) ? 'text-primary' : 'text-muted'">
@@ -31,6 +31,7 @@
                             <!-- OTP entry -->
                             <form v-if="current && !done" @submit.prevent="verify" novalidate>
                                 <ClientField name="otp" type="text" :label="__('message.enter_code')" required
+                                             autocomplete="one-time-code" inputmode="numeric" :spellcheck="false"
                                              :placeholder="__('message.otp_placeholder')"
                                              :model-value="form.otp" :error="errors.otp"
                                              @update:modelValue="onOtpInput" />
@@ -45,7 +46,7 @@
                                             <button type="button"
                                                     class="btn btn-link text-primary text-decoration-none fw-semibold p-0"
                                                     :disabled="cooldown > 0" @click="resend('text')">
-                                                <i class="fas fa-sync-alt me-1"></i>{{ current.type === 'mobile' ? __('message.resend_otp') : __('message.resend_email') }}
+                                                <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ current.type === 'mobile' ? __('message.resend_otp') : __('message.resend_email') }}
                                             </button>
                                             <span v-if="cooldown > 0" class="text-muted fw-semibold">
                                                 {{ String(cooldown).padStart(2, '0') }}s
@@ -54,7 +55,7 @@
                                         <button v-if="current.type === 'mobile'" type="button"
                                                 class="btn btn-link text-primary text-decoration-none fw-semibold p-0 mt-1"
                                                 :disabled="cooldown > 0" @click="resend('voice')">
-                                            <i class="fas fa-phone-alt me-1"></i>{{ __('message.otp_call') }}
+                                            <i class="fas fa-phone-alt me-1" aria-hidden="true"></i>{{ __('message.otp_call') }}
                                         </button>
                                     </div>
                                     <div class="col-12 mb-2">
@@ -62,7 +63,7 @@
                                     </div>
                                     <div class="col-6 text-end">
                                         <button type="submit" class="btn btn-primary btn-lg" :disabled="saving">
-                                            <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
+                                            <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                                             {{ saving ? __('message.verifying') : __('message.verify') }}
                                         </button>
                                     </div>

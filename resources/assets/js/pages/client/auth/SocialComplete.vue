@@ -7,26 +7,30 @@
             <div class="row">
                 <div class="col-md-6">
                     <ClientField name="first_name" type="text" :label="__('message.first_name')" required
+                                 autocomplete="given-name"
                                  v-model="form.first_name" :error="errors.first_name"
                                  @update:modelValue="setFieldError('first_name', undefined)"/>
                 </div>
                 <div class="col-md-6">
                     <ClientField name="last_name" type="text" :label="__('message.last_name')" required
+                                 autocomplete="family-name"
                                  v-model="form.last_name" :error="errors.last_name"
                                  @update:modelValue="setFieldError('last_name', undefined)"/>
                 </div>
             </div>
 
             <ClientField name="email" type="email" :label="__('message.email_address')" required
-                         :disabled="emailLocked"
+                         :disabled="emailLocked" autocomplete="email" :spellcheck="false"
                          v-model="form.email" :error="errors.email"
                          @update:modelValue="setFieldError('email', undefined)"/>
 
             <ClientField name="company" type="text" :label="__('message.company')" required
+                         autocomplete="organization"
                          v-model="form.company" :error="errors.company"
                          @update:modelValue="setFieldError('company', undefined)"/>
 
             <ClientField name="address" type="textarea" :label="__('message.address')" required
+                         autocomplete="street-address"
                          v-model="form.address" :error="errors.address"
                          @update:modelValue="setFieldError('address', undefined)"/>
 
@@ -51,7 +55,7 @@
             <button type="submit"
                     class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3 mt-3"
                     :disabled="saving">
-                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>{{ __('message.register') }}
+                <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>{{ __('message.register') }}
             </button>
         </form>
     </AuthLayout>

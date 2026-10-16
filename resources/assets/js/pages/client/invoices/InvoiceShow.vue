@@ -4,13 +4,15 @@
         <div class="card">
             <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
+            <div v-else-if="!invoice" class="card-body text-center text-muted py-5">{{ __('message.invoice_not_found') }}</div>
+
             <template v-else>
                 <div class="card-body">
 
                     <!-- Invoice header: logo (left) | number + date + status (right) -->
                     <div class="row align-items-start mb-4">
                         <div class="col-sm-6">
-                            <img v-if="from?.logo" :src="from.logo" alt="Logo" class="mb-3 d-block invoice-logo">
+                            <img v-if="from?.logo" :src="from.logo" :alt="from.company || __('message.invoice')" width="180" height="70" class="mb-3 d-block invoice-logo">
                             <h3 class="mb-0">
                                 {{ __('message.invoice') }}
                                 <span class="text-muted">#{{ invoice?.number }}</span>
@@ -27,7 +29,7 @@
                                     :to="{ path: '/checkout', query: { invoice: invoiceId } }"
                                     class="btn btn-success btn-sm"
                                 >
-                                    <i class="fas fa-credit-card me-1"></i>{{ __('message.pay_now') }}
+                                    <i class="fas fa-credit-card me-1" aria-hidden="true"></i>{{ __('message.pay_now') }}
                                 </RouterLink>
                                 <!-- Fetched (not a plain link) so a failed PDF shows as an alert instead of raw JSON -->
                                 <button
@@ -37,7 +39,7 @@
                                     :disabled="!!downloadingUrl"
                                     @click="downloadFile(pdfUrl)"
                                 >
-                                    <i :class="['me-1', downloadingUrl ? 'fas fa-spinner fa-spin' : 'fas fa-download']"></i>{{ __('message.download_pdf') }}
+                                    <i :class="['me-1', downloadingUrl ? 'fas fa-spinner fa-spin' : 'fas fa-download']" aria-hidden="true"></i>{{ __('message.download_pdf') }}
                                 </button>
                             </div>
                         </div>
@@ -54,10 +56,10 @@
                                 <span v-if="from.state || from.zip">{{ from.state }} {{ from.zip }}<br></span>
                                 <span v-if="from.country">{{ from.country }}<br></span>
                                 <span v-if="from.phone">
-                                    <i class="fas fa-phone fa-xs me-1 text-muted"></i>+{{ from.phone_code }} {{ from.phone }}<br>
+                                    <i class="fas fa-phone fa-xs me-1 text-muted" aria-hidden="true"></i>+{{ from.phone_code }} {{ from.phone }}<br>
                                 </span>
                                 <span v-if="from.company_email">
-                                    <i class="fas fa-envelope fa-xs me-1 text-muted"></i>{{ from.company_email }}<br>
+                                    <i class="fas fa-envelope fa-xs me-1 text-muted" aria-hidden="true"></i>{{ from.company_email }}<br>
                                 </span>
                                 <span v-if="from.gstin">{{ __('message.gstin') }}: {{ from.gstin }}<br></span>
                                 <span v-if="from.cin_no">{{ __('message.cin') }}: {{ from.cin_no }}<br></span>
@@ -72,10 +74,10 @@
                                 <span v-if="to.state || to.zip">{{ to.state }} {{ to.zip }}<br></span>
                                 <span v-if="to.country">{{ to.country }}<br></span>
                                 <span v-if="to.mobile">
-                                    <i class="fas fa-phone fa-xs me-1 text-muted"></i>+{{ to.mobile_code }} {{ to.mobile }}<br>
+                                    <i class="fas fa-phone fa-xs me-1 text-muted" aria-hidden="true"></i>+{{ to.mobile_code }} {{ to.mobile }}<br>
                                 </span>
                                 <span v-if="to.email">
-                                    <i class="fas fa-envelope fa-xs me-1 text-muted"></i>{{ to.email }}<br>
+                                    <i class="fas fa-envelope fa-xs me-1 text-muted" aria-hidden="true"></i>{{ to.email }}<br>
                                 </span>
                                 <span v-if="to.gstin">{{ __('message.gstin') }}: {{ to.gstin }}<br></span>
                             </address>
@@ -104,10 +106,10 @@
                                         <span v-else>—</span>
                                     </td>
                                     <td>{{ item.product_name }}</td>
-                                    <td class="text-end">{{ formatCurrency(item.regular_price) }}</td>
+                                    <td class="text-end tabular-nums">{{ item.regular_price_formatted }}</td>
                                     <td class="text-center">{{ item.agents || __('message.unlimited') }}</td>
                                     <td class="text-center">{{ item.quantity }}</td>
-                                    <td class="text-end">{{ formatCurrency(item.subtotal) }}</td>
+                                    <td class="text-end tabular-nums">{{ item.subtotal_formatted }}</td>
                                 </tr>
                                 <tr v-if="!items?.length">
                                     <td colspan="6" class="text-center text-muted">{{ __('message.no_items_found') }}</td>
@@ -128,29 +130,29 @@
                                 <tbody>
                                     <tr>
                                         <td class="text-muted">{{ __('message.sub_total') }}</td>
-                                        <td class="text-end">{{ totals?.subtotal }}</td>
+                                        <td class="text-end tabular-nums">{{ totals?.subtotal }}</td>
                                     </tr>
                                     <tr v-if="totals?.credits">
                                         <td class="text-muted">{{ __('message.discount') }} ({{ __('message.credits') }})</td>
-                                        <td class="text-end">{{ totals.credits }}</td>
+                                        <td class="text-end tabular-nums">{{ totals.credits }}</td>
                                     </tr>
                                     <tr v-if="totals?.discount">
                                         <td class="text-muted">{{ __('message.discount') }} ({{ invoice?.coupon_code }})</td>
-                                        <td class="text-end">{{ totals.discount }}</td>
+                                        <td class="text-end tabular-nums">{{ totals.discount }}</td>
                                     </tr>
                                     <tr v-for="(value, name) in totals?.tax" :key="name">
                                         <td class="text-muted">{{ name }}</td>
-                                        <td class="text-end">{{ value }}</td>
+                                        <td class="text-end tabular-nums">{{ value }}</td>
                                     </tr>
                                     <tr v-if="totals?.processing_fee && invoice?.processing_fee_label">
                                         <td class="text-muted">
                                             {{ __('message.processing_fee') }} ({{ invoice.processing_fee_label }})
                                         </td>
-                                        <td class="text-end">{{ totals.processing_fee }}</td>
+                                        <td class="text-end tabular-nums">{{ totals.processing_fee }}</td>
                                     </tr>
                                     <tr class="border-top">
                                         <td class="fw-bold">{{ __('message.total') }}</td>
-                                        <td class="text-end fw-bold fs-5">{{ totals?.total }}</td>
+                                        <td class="text-end fw-bold fs-5 tabular-nums">{{ totals?.total }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -174,7 +176,7 @@
                                     <tr v-for="pay in payments" :key="pay.id">
                                         <td>{{ formatDate(pay.created_at) }}</td>
                                         <td>{{ capitalize(pay.payment_method) }}</td>
-                                        <td class="text-end">{{ formatCurrency(pay.amount) }}</td>
+                                        <td class="text-end tabular-nums">{{ pay.amount_formatted }}</td>
                                         <td class="text-center">
                                             <span class="badge" :class="pay.payment_status === 'success' ? 'bg-success' : 'bg-secondary'">
                                                 {{ capitalize(pay.payment_status) }}
@@ -235,12 +237,6 @@ function capitalize(str) {
 }
 
 
-function formatCurrency(val) {
-    if (val === null || val === undefined) return '—'
-    const cur = invoice.value?.currency || 'USD'
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur }).format(val)
-}
-
 async function fetchInvoice() {
     try {
         const res = await http.get(`/invoice/${invoiceId}`)
@@ -263,6 +259,7 @@ onMounted(fetchInvoice)
 </script>
 
 <style scoped>
-.invoice-logo { max-height: 70px; max-width: 180px; }
+.invoice-logo { max-height: 70px; max-width: 180px; width: auto; height: auto; }
+.tabular-nums { font-variant-numeric: tabular-nums; }
 .col-label-width { width: 140px; }
 </style>

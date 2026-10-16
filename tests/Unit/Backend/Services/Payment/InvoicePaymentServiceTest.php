@@ -84,7 +84,7 @@ class InvoicePaymentServiceTest extends DBTestCase
 
     public function test_apply_credit_fulfils_free_invoice_with_no_credit_needed(): void
     {
-        $invoice = Invoice::factory()->create(['grand_total' => 0.0]);
+        $invoice = Invoice::factory()->create(['grand_total' => 0.0, 'status' => 'pending']);
 
         $this->postPayment->shouldReceive('handle')->once()->with(Mockery::on(
             fn ($arg) => $arg->id === $invoice->id
@@ -97,7 +97,7 @@ class InvoicePaymentServiceTest extends DBTestCase
 
     public function test_apply_credit_throws_when_outstanding_and_no_credit(): void
     {
-        $invoice = Invoice::factory()->create(['grand_total' => 100.0]);
+        $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'status' => 'pending']);
 
         $this->postPayment->shouldNotReceive('handle');
         $this->expectException(\Exception::class);

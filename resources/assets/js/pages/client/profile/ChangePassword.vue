@@ -22,9 +22,9 @@
 
             <div v-if="passwordFocused" class="mb-3 text-1">
                 <strong class="d-block mb-1 text-dark">{{ __('message.password_requirements') }}</strong>
-                <ul class="list-unstyled mb-0">
+                <ul class="list-unstyled mb-0" aria-live="polite">
                     <li v-for="c in checklist" :key="c.key" :class="c.ok ? 'text-success' : 'text-danger'">
-                        <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'"></i> {{ c.label }}
+                        <i class="fas" :class="c.ok ? 'fa-check' : 'fa-times'" aria-hidden="true"></i> {{ c.label }}
                     </li>
                 </ul>
             </div>
@@ -41,8 +41,8 @@
                 <div class="form-group col-lg-9"></div>
                 <div class="form-group col-lg-3">
                     <button type="submit" class="btn btn-primary btn-modern float-end" :disabled="saving">
-                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1"></i>
-                        {{ __('message.save') }}
+                        <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
+                        {{ __('message.change_password') }}
                     </button>
                 </div>
             </div>

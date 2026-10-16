@@ -3,13 +3,16 @@
         <input :id="fieldId" type="checkbox"
                class="form-check-input"
                :class="{ 'is-invalid': error }"
+               :name="name || undefined"
                :checked="modelValue"
+               :aria-invalid="error ? 'true' : undefined"
+               :aria-describedby="error ? errorId : undefined"
                :disabled="disabled"
                @change="$emit('update:modelValue', $event.target.checked)">
         <label class="form-check-label" :for="fieldId">
             <slot>{{ label }}</slot>
         </label>
-        <div v-if="error" class="invalid-feedback d-block">{{ error }}</div>
+        <div v-if="error" :id="errorId" class="invalid-feedback d-block" role="alert">{{ error }}</div>
     </div>
 </template>
 
@@ -21,12 +24,14 @@ defineProps({
     label:      { type: String,  default: '' },
     error:      { type: String,  default: undefined },
     disabled:   { type: Boolean, default: false },
+    name:       { type: String,  default: '' },
 })
 
 defineEmits(['update:modelValue'])
 
 const uid = useId()
 const fieldId = computed(() => `check-${uid}`)
+const errorId = computed(() => `${fieldId.value}-error`)
 </script>
 
 <style scoped>
@@ -59,7 +64,7 @@ const fieldId = computed(() => `check-${uid}`)
     background-color: var(--primary, #0088CC);
     border-color: var(--primary, #0088CC);
 }
-.form-check-input:focus {
+.form-check-input:focus-visible {
     border-color: var(--primary, #0088CC);
     box-shadow: 0 0 0 0.2rem rgba(0, 136, 204, 0.25);
 }

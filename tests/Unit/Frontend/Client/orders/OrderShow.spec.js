@@ -2,7 +2,7 @@ jest.mock('@/helpers/extraLogics', () => ({ lang: (key) => key, getIdFromUrl: je
 jest.mock('@/helpers/responseHandler', () => ({ successHandler: jest.fn(), errorHandler: jest.fn() }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
 jest.mock('vue-router', () => ({
-    useRouter: () => ({ push: jest.fn() }),
+    useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
     useRoute: () => ({ params: { id: '1' }, query: {} }),
     RouterLink: { template: '<a><slot /></a>' },
 }))

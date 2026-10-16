@@ -8,8 +8,8 @@
     <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
     <div v-else-if="!paymentsEnabled" class="op-wrapper text-center py-5">
-      <i class="fas fa-lock fa-2x text-muted mb-3 d-block mx-auto"></i>
-      <h5 class="fw-bold mb-2">{{ __('message.op_payments_disabled_title') }}</h5>
+      <i class="fas fa-lock fa-2x text-muted mb-3 d-block mx-auto" aria-hidden="true"></i>
+      <h5 class="fw-bold mb-2" aria-level="2">{{ __('message.op_payments_disabled_title') }}</h5>
       <p class="text-muted mb-0">{{ __('message.op_payments_disabled_body') }}</p>
     </div>
 
@@ -20,10 +20,10 @@
         <template v-for="(s, i) in progressSteps" :key="s.key">
           <div v-if="i > 0" class="flex-grow-1 border-top border-2 mt-4 step-connector"
                :class="(s.done || s.active) ? 'border-primary' : ''"></div>
-          <div class="text-center px-2 step-item">
+          <div class="text-center px-2 step-item" :aria-current="s.active ? 'step' : undefined">
             <span class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 step-circle"
                   :class="(s.done || s.active) ? 'bg-primary text-white' : 'bg-light text-muted border'">
-              <i class="fas fa-lg" :class="s.icon"></i>
+              <i class="fas fa-lg" :class="s.icon" aria-hidden="true"></i>
             </span>
             <div class="fw-semibold" :class="(s.done || s.active) ? 'text-primary' : 'text-muted'">
               {{ s.label }}
@@ -32,12 +32,13 @@
         </template>
       </div>
 
-      <!-- ── STEP 1: Details + Payment (two columns) ── -->
+      <!-- Steps: form (details + payment) → summary (review) → result. One <transition>
+           around all of them so mode="out-in" actually sequences them. -->
       <transition name="op-slide" mode="out-in">
         <div v-if="step === 'form'" key="form" class="card shadow border-0 rounded-3">
 
           <div class="card-header bg-white border-bottom px-4 py-3">
-            <h5 class="op-card-title mb-0">{{ __('message.op_payment_details') }}</h5>
+            <h5 class="op-card-title mb-0" aria-level="2">{{ __('message.op_payment_details') }}</h5>
             <p class="text-muted mb-0 mt-1">{{ __('message.op_pay_for', { app: appTitle }) }}</p>
           </div>
 
@@ -50,13 +51,13 @@
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.op_personal_info') }}</p>
 
-                  <ClientField name="name" :label="__('message.full_name')" placeholder="John Doe"
+                  <ClientField name="name" :label="__('message.full_name')" placeholder="John Doe…" autocomplete="name"
                                v-model="form.name" :error="errors.name" :required="true"
                                @update:modelValue="setFieldError('name', undefined)" />
 
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <ClientField name="email" type="email" :label="__('message.email')" placeholder="john@example.com"
+                      <ClientField name="email" type="email" :label="__('message.email')" placeholder="john@example.com…" autocomplete="email" :spellcheck="false"
                                    v-model="form.email" :error="errors.email" :required="true"
                                    @update:modelValue="setFieldError('email', undefined)" />
                     </div>
@@ -68,19 +69,19 @@
                     </div>
                   </div>
 
-                  <ClientField name="company" :label="__('message.company')" placeholder="Acme Inc."
+                  <ClientField name="company" :label="__('message.company')" placeholder="Acme Inc…" autocomplete="organization"
                                v-model="form.company" :error="errors.company" :required="true"
                                @update:modelValue="setFieldError('company', undefined)" />
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.billing_address') }}</p>
 
-                  <ClientField name="address" :label="__('message.op_street_address')" placeholder="123 Main Street"
+                  <ClientField name="address" :label="__('message.op_street_address')" placeholder="123 Main Street…" autocomplete="street-address"
                                v-model="form.address" :error="errors.address" :required="true"
                                @update:modelValue="setFieldError('address', undefined)" />
 
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <ClientField name="city" :label="__('message.city')" placeholder="New York"
+                      <ClientField name="city" :label="__('message.city')" placeholder="New York…" autocomplete="address-level2"
                                    v-model="form.city" :error="errors.city" :required="true"
                                    @update:modelValue="setFieldError('city', undefined)" />
                     </div>
@@ -103,7 +104,7 @@
                                     :disabled="!selectedCountryObj" />
                     </div>
                     <div class="col-md-6">
-                      <ClientField name="zip" :label="__('message.op_zip_code')" placeholder="10001"
+                      <ClientField name="zip" :label="__('message.op_zip_code')" placeholder="10001…" autocomplete="postal-code"
                                    v-model="form.zip" :error="errors.zip" :required="true"
                                    @update:modelValue="setFieldError('zip', undefined)" />
                     </div>
@@ -116,7 +117,7 @@
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.op_payment_info') }}</p>
 
-                  <ClientField name="amount" type="number" :label="__('message.amount')" placeholder="0.00"
+                  <ClientField name="amount" type="number" :label="__('message.amount')" placeholder="0.00…"
                                v-model="form.amount" :error="errors.amount" :required="true"
                                @update:modelValue="setFieldError('amount', undefined)" />
 
@@ -129,8 +130,8 @@
                                :placeholder="__('message.op_what_payment_for')"
                                v-model="form.description" :rows="2" />
 
-                  <div class="mb-3">
-                    <label class="form-label text-dark">{{ __('message.op_payment_gateway') }}</label>
+                  <div class="mb-3" role="radiogroup" aria-labelledby="op-gateway-label">
+                    <div id="op-gateway-label" class="form-label text-dark">{{ __('message.op_payment_gateway') }}</div>
                     <div v-for="gw in enabledGateways" :key="gw.name" class="mb-3">
                       <label class="d-flex align-items-center mb-0 clickable" :for="`gw_${gw.name}`">
                         <input :id="`gw_${gw.name}`" v-model="form.gateway" type="radio"
@@ -149,7 +150,7 @@
                   <div class="mt-auto">
                     <AppAlert componentName="open-payment-form" />
                     <button type="submit" class="btn btn-dark w-100 py-3 fw-semibold">
-                      {{ __('message.op_continue_to_review') }} <i class="fas fa-arrow-right ms-2"></i>
+                      {{ __('message.op_continue_to_review') }} <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
                     </button>
                   </div>
 
@@ -158,14 +159,11 @@
             </form>
           </div>
         </div>
-      </transition>
 
-      <!-- ── STEP 2: Review ── -->
-      <transition name="op-slide" mode="out-in">
-        <div v-if="step === 'summary'" key="summary" class="card shadow border-0 rounded-3">
+        <div v-else-if="step === 'summary'" key="summary" class="card shadow border-0 rounded-3">
 
           <div class="card-header bg-white border-bottom px-4 py-3">
-            <h5 class="op-card-title mb-0">{{ __('message.op_review_order') }}</h5>
+            <h5 class="op-card-title mb-0" aria-level="2">{{ __('message.op_review_order') }}</h5>
             <p class="text-muted mb-0 mt-1">{{ __('message.op_confirm_details') }}</p>
           </div>
 
@@ -231,7 +229,7 @@
               <!-- RIGHT: Payment summary -->
               <div class="col-md-5 p-5 d-flex flex-column op-right-bg">
 
-                <div class="op-card-title mb-3">{{ __('message.op_payment_summary') }}</div>
+                <div class="op-card-title mb-3" role="heading" aria-level="3">{{ __('message.op_payment_summary') }}</div>
 
                 <!-- Gateway / Currency / Note -->
                 <div class="d-flex justify-content-between align-items-center gap-3 py-2 border-bottom">
@@ -248,9 +246,9 @@
                 </div>
 
                 <!-- Cart summary — server-calculated -->
-                <div class="rounded-3 border bg-white p-3 mt-3">
+                <div class="rounded-3 border bg-white p-3 mt-3" aria-live="polite">
                   <div v-if="calcLoading" class="text-center py-2 text-muted small">
-                    <i class="fas fa-circle-notch fa-spin me-1"></i> {{ __('message.op_calculating') }}
+                    <i class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i> {{ __('message.op_calculating') }}
                   </div>
                   <template v-else>
                     <div class="d-flex justify-content-between py-2">
@@ -272,12 +270,12 @@
                   <AppAlert componentName="open-payment-review" />
                   <RecaptchaField ref="captchaRef" action="open_payment" class="mb-3" />
                   <div v-if="showPayBtn || showBackBtn" class="d-flex gap-2">
-                    <button v-if="showBackBtn" class="btn btn-light fw-semibold px-3 py-3" @click="backToForm" :disabled="paying">
-                      <i class="fas fa-arrow-left"></i>
+                    <button v-if="showBackBtn" type="button" class="btn btn-light fw-semibold px-3 py-3" :aria-label="__('message.back')" @click="backToForm" :disabled="paying">
+                      <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    <button v-if="showPayBtn" class="btn btn-dark fw-semibold w-100 py-3" @click="payNow" :disabled="paying">
-                      <span v-if="paying"><i class="fas fa-circle-notch fa-spin me-2"></i>{{ __('message.op_processing') }}</span>
-                      <span v-else><i class="fas fa-lock me-2"></i>{{ __('message.op_pay') }} {{ selectedCurrencySymbol }}{{ calculation.total }}</span>
+                    <button v-if="showPayBtn" type="button" class="btn btn-dark fw-semibold w-100 py-3" @click="payNow" :disabled="paying">
+                      <span v-if="paying"><i class="fas fa-circle-notch fa-spin me-2" aria-hidden="true"></i>{{ __('message.op_processing') }}</span>
+                      <span v-else><i class="fas fa-lock me-2" aria-hidden="true"></i>{{ __('message.op_pay') }} {{ selectedCurrencySymbol }}{{ calculation.total }}</span>
                     </button>
                   </div>
                 </div>
@@ -286,11 +284,8 @@
             </div>
           </div>
         </div>
-      </transition>
 
-      <!-- ── STEP 3: Result ── -->
-      <transition name="op-slide" mode="out-in">
-        <div v-if="step === 'result'" key="result" class="row justify-content-center">
+        <div v-else-if="step === 'result'" key="result" class="row justify-content-center">
           <div class="col-lg-8">
 
           <!-- Success -->
@@ -300,7 +295,7 @@
             <div class="card border-width-3 border-radius-0 border-color-success mb-0">
               <div class="card-body text-center">
                 <p class="text-color-dark font-weight-bold text-4-5 mb-0">
-                  <i class="fas fa-check text-color-success me-1"></i> {{ __('message.op_payment_successful') }}
+                  <i class="fas fa-check text-color-success me-1" aria-hidden="true"></i> {{ __('message.op_payment_successful') }}
                 </p>
               </div>
             </div>
@@ -327,7 +322,7 @@
                  above, so this receipt only needs Description + Amount Paid. -->
             <div class="card border-width-3 border-radius-0 mb-4">
               <div class="card-body">
-                <h4 class="font-weight-bold text-uppercase text-4 mb-3">{{ __('message.op_payment_details') }}</h4>
+                <h4 class="font-weight-bold text-uppercase text-4 mb-3" aria-level="2">{{ __('message.op_payment_details') }}</h4>
                 <table class="shop_table cart-totals mb-0">
                   <thead class="visually-hidden"><tr><th>{{ __("message.description") }}</th><th>{{ __("message.value") }}</th></tr></thead>
                   <tbody>
@@ -348,7 +343,7 @@
 
             <!-- Action -->
             <div class="d-flex justify-content-center">
-              <button class="btn btn-dark btn-modern text-uppercase border-radius-0 px-5 py-2 fw-semibold" @click="reset">
+              <button type="button" class="btn btn-dark btn-modern text-uppercase border-radius-0 px-5 py-2 fw-semibold" @click="reset">
                 {{ __('message.op_make_another') }}
               </button>
             </div>
@@ -359,10 +354,10 @@
           <template v-else>
             <div class="card border-width-3 border-radius-0 border-color-danger">
               <div class="card-body text-center py-5">
-                <i class="fas fa-times-circle fa-3x text-danger mb-3 d-block"></i>
-                <h4 class="fw-bold mb-2">{{ __('message.op_payment_failed') }}</h4>
+                <i class="fas fa-times-circle fa-3x text-danger mb-3 d-block" aria-hidden="true"></i>
+                <h4 class="fw-bold mb-2" aria-level="2">{{ __('message.op_payment_failed') }}</h4>
                 <p class="text-muted mb-4">{{ result.message || __('message.op_something_went_wrong') }}</p>
-                <button class="btn btn-dark btn-modern text-uppercase border-radius-0 px-5 py-2 fw-semibold" @click="reset">
+                <button type="button" class="btn btn-dark btn-modern text-uppercase border-radius-0 px-5 py-2 fw-semibold" @click="reset">
                   {{ __('message.op_try_again') }}
                 </button>
               </div>
@@ -380,16 +375,17 @@
   <AppModal
     :showModal="showStripeModal"
     :onClose="onStripeModalClose"
+    :showCloseBtn="false"
     :showControls="false"
     classname="modal-md"
   >
     <template #title>
       <div class="d-flex align-items-center justify-content-between w-100 me-3">
-        <span class="fw-bold fs-5">{{ __('message.enter_card_details') }}</span>
+        <h5 class="modal-title fw-bold">{{ __('message.enter_card_details') }}</h5>
         <div class="d-flex gap-1">
-          <img :src="`${baseUrl}/images/logo/cards/visa.svg`" alt="Visa" height="20">
-          <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" alt="Mastercard" height="20">
-          <img :src="`${baseUrl}/images/logo/cards/amex.svg`" alt="American Express" height="20">
+          <img :src="`${baseUrl}/images/logo/cards/visa.svg`" alt="Visa" height="20" width="30">
+          <img :src="`${baseUrl}/images/logo/cards/mastercard.svg`" alt="Mastercard" height="20" width="30">
+          <img :src="`${baseUrl}/images/logo/cards/amex.svg`" alt="American Express" height="20" width="30">
         </div>
       </div>
     </template>
@@ -399,29 +395,29 @@
         <AppAlert componentName="open-payment-stripe" />
 
         <div v-if="stripeLoading" class="d-flex align-items-center justify-content-center py-4 gap-2 text-muted">
-          <i class="fas fa-circle-notch fa-spin"></i>
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
           <span class="small">{{ __('message.op_loading_secure_form') }}</span>
         </div>
 
         <template v-else>
           <!-- Card Number -->
           <div class="mb-4">
-            <label class="form-label text-color-grey mb-1">{{ __('message.card_number') }}</label>
+            <label class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
             <div id="card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.number }"></div>
-            <div v-if="cardErrors.number" class="invalid-feedback d-block">{{ cardErrors.number }}</div>
+            <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.number }}</div>
           </div>
 
           <!-- Expiry + CVC -->
           <div class="row g-3 mb-4">
             <div class="col-6">
-              <label class="form-label text-color-grey mb-1">{{ __('message.expiry_date') }}</label>
+              <label class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
               <div id="card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.expiry }"></div>
-              <div v-if="cardErrors.expiry" class="invalid-feedback d-block">{{ cardErrors.expiry }}</div>
+              <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.expiry }}</div>
             </div>
             <div class="col-6">
-              <label class="form-label text-color-grey mb-1">{{ __('message.cvc') }}</label>
+              <label class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
               <div id="card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.cvc }"></div>
-              <div v-if="cardErrors.cvc" class="invalid-feedback d-block">{{ cardErrors.cvc }}</div>
+              <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.cvc }}</div>
             </div>
           </div>
 
@@ -432,7 +428,7 @@
           </div>
 
           <!-- Pay button -->
-          <button class="btn btn-primary w-100 py-2 fw-bold text-uppercase" :disabled="stripeSubmitting" @click="payStripe">
+          <button type="button" class="btn btn-primary w-100 py-2 fw-bold text-uppercase" :disabled="stripeSubmitting" @click="payStripe">
             {{ stripeSubmitting ? __('message.please_wait') : __('message.pay_now') }}
           </button>
 
@@ -498,6 +494,7 @@ const cardErrors       = reactive({ number: '', expiry: '', cvc: '' })
 const cardComplete     = reactive({ number: false, expiry: false, cvc: false })
 let   stripeInstance   = null
 let   cardNumberEl     = null
+let   cardFields       = {}
 let   clientSecret     = null
 
 const blankForm = () => ({
@@ -759,6 +756,7 @@ const initStripe = async () => {
       cardErrors[key]   = e.error?.message ?? ''
       cardComplete[key] = e.complete
     })
+    cardFields = { number: cardNumberEl, expiry: cardExpiry, cvc: cardCvc }
     bind(cardNumberEl, 'number')
     bind(cardExpiry,   'expiry')
     bind(cardCvc,      'cvc')
@@ -785,7 +783,8 @@ const payStripe = async () => {
   if (!cardComplete.number) cardErrors.number = cardErrors.number || __('message.card_number_required')
   if (!cardComplete.expiry) cardErrors.expiry = cardErrors.expiry || __('message.expiry_required')
   if (!cardComplete.cvc)    cardErrors.cvc    = cardErrors.cvc    || __('message.cvc_required')
-  if (!cardComplete.number || !cardComplete.expiry || !cardComplete.cvc) return
+  const firstInvalid = ['number', 'expiry', 'cvc'].find(k => !cardComplete[k])
+  if (firstInvalid) { focusCard(firstInvalid); return }
 
   stripeSubmitting.value = true
   alertStore.unsetAlert()
@@ -815,6 +814,9 @@ const payStripe = async () => {
     stripeSubmitting.value = false
   }
 }
+
+// Stripe fields are iframes, so a <label for> can't target them — focus the element instead.
+const focusCard = (key) => cardFields[key]?.focus()
 
 const onStripeModalClose = () => {
   showStripeModal.value  = false
@@ -914,10 +916,10 @@ onMounted(async () => {
     } catch { showResult(true, { id: orderId }) }
     globalThis.history.replaceState({}, document.title, globalThis.location.pathname)
   } else if (status === 'failed' || status === 'error') {
-    showResult(false, null, message ? decodeURIComponent(message) : __('message.op_payment_failed_generic'))
+    showResult(false, null, message || __('message.op_payment_failed_generic'))
     globalThis.history.replaceState({}, document.title, globalThis.location.pathname)
   } else if (status === 'pending') {
-    showResult(false, null, message ? decodeURIComponent(message) : __('message.op_payment_still_processing'))
+    showResult(false, null, message || __('message.op_payment_still_processing'))
     globalThis.history.replaceState({}, document.title, globalThis.location.pathname)
   }
 })
@@ -942,11 +944,7 @@ onMounted(async () => {
 .op-right-bg     { background: #f8f9ff; }
 .op-section-label { font-size: 0.7rem; letter-spacing: 0.08em; }
 .op-detail-label  { font-size: 0.65rem; letter-spacing: 0.08em; }
-.op-address       { font-style: normal; line-height: 1.8; color: #374151; }
-.op-total-label   { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
-.op-amount-display { font-size: 2rem; color: #111827; letter-spacing: -0.02em; line-height: 1.15; }
 .op-note-text     { color: #374151; line-height: 1.5; }
-.op-result-msg    { max-width: 400px; margin-inline: auto; }
 
 /* ── Page ───────────────────────────────────────────────────────── */
 .op-page {
@@ -982,38 +980,16 @@ onMounted(async () => {
   box-shadow: 0 4px 12px var(--primary-rgba-30);
 }
 
-/* ── Review: info list ──────────────────────────────────────────── */
-.op-info-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.op-info-item { display: flex; align-items: center; gap: 0.85rem; }
-.op-info-icon {
-  width: 32px; height: 32px;
-  background: var(--primary-rgba-10);
-  color: var(--primary);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-}
-.op-info-label { font-size: 0.72rem; color: #9ca3af; font-weight: 500; line-height: 1; margin-bottom: 0.15rem; }
-.op-info-value { font-size: 0.875rem; color: #111827; font-weight: 500; }
-
-/* ── Amount banner ──────────────────────────────────────────────── */
-.op-amount-banner {
-  background: var(--primary);
-  color: white;
-}
-
-
-
 /* ── Transition ─────────────────────────────────────────────────── */
-.op-slide-enter-active, .op-slide-leave-active { transition: all 0.25s ease; }
+.op-slide-enter-active, .op-slide-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
 .op-slide-enter-from { opacity: 0; transform: translateX(20px); }
 .op-slide-leave-to   { opacity: 0; transform: translateX(-20px); }
+@media (prefers-reduced-motion: reduce) {
+  .op-slide-enter-active, .op-slide-leave-active { transition: none; }
+}
 
 /* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
-  .op-step-line { width: 28px; }
-  .op-step-label { display: none; }
   .border-end { border-right: none !important; border-bottom: 1px solid #dee2e6 !important; }
 }
 

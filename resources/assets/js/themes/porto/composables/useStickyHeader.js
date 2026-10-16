@@ -38,8 +38,10 @@ export function useStickyHeader(headerSelector = '#header') {
             html.classList.add(effectClass)
         }
 
+        let headerHeight = 0
         const setSpacerHeight = () => {
-            header.style.height = `${headerBody.offsetHeight}px`
+            headerHeight = headerBody.offsetHeight
+            header.style.height = `${headerHeight}px`
         }
 
         const updateSticky = () => {
@@ -47,6 +49,8 @@ export function useStickyHeader(headerSelector = '#header') {
                 ? globalThis.scrollY >= startAt
                 : false
             html.classList.toggle('sticky-header-active', active)
+            // Keep anchor/focus scrolling from landing under the fixed header.
+            html.style.scrollPaddingTop = active ? `${headerHeight}px` : ''
             isStickyActive.value = active
         }
 
@@ -68,6 +72,7 @@ export function useStickyHeader(headerSelector = '#header') {
         if (resizeHandler) globalThis.removeEventListener('resize', resizeHandler)
         const html = document.documentElement
         html.classList.remove('sticky-header-enabled', 'sticky-header-active')
+        html.style.scrollPaddingTop = ''
         if (effectClass) html.classList.remove(effectClass)
         isStickyActive.value = false
     })

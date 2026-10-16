@@ -330,11 +330,11 @@ describe('TwoFactor.vue', () => {
     })
 
     // ── copyRecovery ─────────────────────────────────────────────────
-    it('copyRecovery sets recoveryCopied to true', () => {
+    it('copyRecovery sets recoveryCopied to true', async () => {
         jest.useFakeTimers()
-        Object.assign(navigator, { clipboard: { writeText: jest.fn() } })
+        Object.assign(navigator, { clipboard: { writeText: jest.fn().mockResolvedValue() } })
         wrapper.vm.recoveryCodes = ['code1', 'code2']
-        wrapper.vm.copyRecovery()
+        await wrapper.vm.copyRecovery()
         expect(wrapper.vm.recoveryCopied).toBe(true)
         jest.advanceTimersByTime(5001)
         expect(wrapper.vm.recoveryCopied).toBe(false)
@@ -350,11 +350,12 @@ describe('TwoFactor.vue', () => {
         expect(wrapper.vm.qrImage).toBe('<img>')
     })
 
-    it('goToQr calls errorHandler on failure', async () => {
-        axiosMock.onPost('/2fa/enable').reply(500)
+    it('goToQr shows the error inside the modal on failure', async () => {
+        axiosMock.onPost('/2fa/enable').reply(500, { message: 'Enable failed' })
         await wrapper.vm.goToQr()
         await flushPromises()
-        expect(errorHandler).toHaveBeenCalled()
+        expect(wrapper.vm.modalError).toBe('Enable failed')
+        expect(wrapper.vm.twoFaStep).not.toBe('qr')
     })
 
     // ── verify2fa ────────────────────────────────────────────────────

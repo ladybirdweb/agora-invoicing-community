@@ -1,7 +1,7 @@
 jest.mock('@/helpers/extraLogics', () => ({ lang: (key) => key, getIdFromUrl: jest.fn(() => 0) }))
 jest.mock('@/helpers/responseHandler', () => ({ successHandler: jest.fn(), errorHandler: jest.fn() }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
-jest.mock('vue-router', () => ({ useRouter: () => ({ push: jest.fn() }), useRoute: () => ({ params: {}, query: {} }), RouterLink: { template: '<a><slot/></a>' } }))
+jest.mock('vue-router', () => ({ useRouter: () => ({ push: jest.fn() }), onBeforeRouteLeave: jest.fn(), useRoute: () => ({ params: {}, query: {} }), RouterLink: { template: '<a><slot/></a>' } }))
 jest.mock('@/validations/client/profile.js', () => ({ passwordChangeSchema: {}, profileSchema: {} }))
 
 import { mount } from '@vue/test-utils'

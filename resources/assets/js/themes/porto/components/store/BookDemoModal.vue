@@ -2,7 +2,7 @@
   <Modal
     :showModal="show"
     :onClose="closeModal"
-    :closeLabel="__('message.close')"
+    :showCloseBtn="false"
     :closeOnBackdrop="true"
   >
     <template #title>
@@ -20,6 +20,8 @@
             :modelValue="form.name"
             :error="errors.name"
             :required="true"
+            autocomplete="name"
+            :spellcheck="false"
             @update:modelValue="form.name = $event; setFieldError('name', undefined)"
           />
         </div>
@@ -31,6 +33,8 @@
             :modelValue="form.email"
             :error="errors.email"
             :required="true"
+            autocomplete="email"
+            :spellcheck="false"
             @update:modelValue="form.email = $event; setFieldError('email', undefined)"
           />
         </div>
@@ -63,16 +67,8 @@
     </template>
 
     <template #controls>
-      <button
-        type="button"
-        class="btn btn-primary"
-        :disabled="submitting"
-        @click="submit"
-      >
-        <span v-if="submitting" class="spinner-border spinner-border-sm me-1" />
-        <i v-else class="fa fa-book me-1"></i>
-        {{ __('message.book_a_demo') }}
-      </button>
+      <action-button action="cancel" @click="closeModal" />
+      <action-button action="submit" icon="fa fa-book" :label="__('message.book_a_demo')" :loading="submitting" @click="submit" />
     </template>
   </Modal>
 </template>
@@ -84,6 +80,7 @@ import { __ } from '@/plugins/i18n'
 import { useAlertStore } from '@/core/stores/alert'
 import { demoSchema } from '@/validations/client/demoValidations'
 import http from '@/plugins/axios'
+import { scrollToFirstError } from '@/helpers/formUtils.js'
 import Modal from '../common/Modal.vue'
 import Alert from '@/components/Reusable/Alert.vue'
 // ClientField/PhoneField/Honeypot resolve via global registration (themes/porto/index.js).
@@ -150,6 +147,7 @@ async function submit() {
     const map = {}
     err.inner?.forEach(e => { if (e.path && !map[e.path]) map[e.path] = e.message })
     setErrors(map)
+    scrollToFirstError()
     return
   }
 

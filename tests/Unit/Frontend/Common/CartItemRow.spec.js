@@ -65,13 +65,13 @@ describe('CartItemRow.vue', () => {
 
     it('minus button is disabled when quantity is 1', () => {
         const w = makeWrapper({ quantity: 1 })
-        const minus = w.find('input[value="-"]')
+        const minus = w.find('input.minus')
         expect(minus.element.disabled).toBe(true)
     })
 
     it('minus button is enabled when quantity > 1', () => {
         const w = makeWrapper({ quantity: 3 })
-        const minus = w.find('input[value="-"]')
+        const minus = w.find('input.minus')
         expect(minus.element.disabled).toBe(false)
     })
 
@@ -109,7 +109,7 @@ describe('CartItemRow.vue', () => {
 
     it('step() emits update with decremented quantity', async () => {
         const w = makeWrapper({ quantity: 3 })
-        await w.find('input[value="-"]').trigger('click')
+        await w.find('input.minus').trigger('click')
         const emitted = w.emitted('update')
         expect(emitted).toBeTruthy()
         expect(emitted[0][0]).toEqual({ id: 1, quantity: 2 })
@@ -124,7 +124,7 @@ describe('CartItemRow.vue', () => {
 
     it('remove button emits "remove" with item.id', async () => {
         const w = makeWrapper()
-        await w.find('a.product-thumbnail-remove').trigger('click')
+        await w.find('button.product-thumbnail-remove').trigger('click')
         expect(w.emitted('remove')).toBeTruthy()
         expect(w.emitted('remove')[0][0]).toBe(1)
     })

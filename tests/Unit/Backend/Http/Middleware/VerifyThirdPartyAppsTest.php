@@ -49,6 +49,46 @@ class VerifyThirdPartyAppsTest extends TestCase
         $this->assertSame('fails', $data['result']['status']);
     }
 
+    public function test_blocks_future_timestamp(): void
+    {
+        $request = Request::create('/api/test', 'POST');
+        $request->merge(['timestamp' => time() + 100000]);
+
+        $response = (new VerifyThirdPartyApps())->handle($request, $this->next());
+
+        $this->assertSame(401, $response->getStatusCode());
+    }
+
+    public function test_blocks_unknown_key_signed_with_empty_secret(): void
+    {
+        $request = Request::create('/api/test', 'POST');
+        $request->merge(['timestamp' => time()]);
+        $request->headers->set('app-key', 'no-such-key-'.uniqid());
+        $request->headers->set('signature', hash_hmac('sha256', '', ''));
+
+        $response = (new VerifyThirdPartyApps())->handle($request, $this->next());
+
+        $this->assertSame(401, $response->getStatusCode());
+    }
+
+    public function test_blocks_app_with_blank_secret(): void
+    {
+        $app = ThirdPartyApp::create([
+            'app_name' => 'test_app_'.uniqid(),
+            'app_key' => 'test-key-'.uniqid(),
+            'app_secret' => '',
+        ]);
+
+        $request = Request::create('/api/test', 'POST');
+        $request->merge(['timestamp' => time()]);
+        $request->headers->set('app-key', $app->app_key);
+        $request->headers->set('signature', hash_hmac('sha256', '', ''));
+
+        $response = (new VerifyThirdPartyApps())->handle($request, $this->next());
+
+        $this->assertSame(401, $response->getStatusCode());
+    }
+
     public function test_passes_request_with_valid_signature(): void
     {
         $secret = 'my-secret-'.uniqid();

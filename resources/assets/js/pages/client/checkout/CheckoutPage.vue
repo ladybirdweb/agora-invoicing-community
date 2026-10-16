@@ -7,11 +7,11 @@
       <!-- Empty / not found -->
       <div v-else-if="isEmpty" class="d-flex flex-column align-items-center justify-content-center text-center py-6">
         <template v-if="mode === 'invoice'">
-          <i class="fas fa-file-invoice fa-3x text-color-grey-lighten mb-3 d-block"></i>
+          <i class="fas fa-file-invoice fa-3x text-color-grey-lighten mb-3 d-block" aria-hidden="true"></i>
           <p class="text-color-grey mb-0">{{ invError || __('message.err_msg') }}</p>
         </template>
         <template v-else>
-          <i class="fas fa-shopping-cart fa-3x text-color-grey-lighten mb-3 d-block"></i>
+          <i class="fas fa-shopping-cart fa-3x text-color-grey-lighten mb-3 d-block" aria-hidden="true"></i>
           <p class="text-color-grey mb-4">{{ __('message.cart_empty') }}</p>
           <a :href="`${baseUrl}/store`" class="btn btn-dark btn-modern text-uppercase border-radius-0 btn-px-4 py-3">
             {{ __('message.browse_products') }}
@@ -39,13 +39,13 @@
                 <tr v-for="item in displayItems" :key="item.id" class="cart_table_item">
                   <td class="product-thumbnail">
                     <div class="product-thumbnail-wrapper">
-                      <a v-if="mode === 'cart'" href="#" class="product-thumbnail-remove" :title="__('message.remove')" @click.prevent="remove(item.id)">
-                        <i class="fas fa-times"></i>
-                      </a>
+                      <button v-if="mode === 'cart'" type="button" class="product-thumbnail-remove p-0" :title="__('message.remove')" :aria-label="__('message.remove')" @click="remove(item.id)">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                      </button>
                       <span class="product-thumbnail-image d-inline-block">
-                        <img v-if="item.image" :src="item.image" alt="" class="img-fluid" />
+                        <img v-if="item.image" :src="item.image" alt="" width="90" height="90" class="img-fluid" />
                         <span v-else class="d-inline-flex align-items-center justify-content-center bg-light product-placeholder">
-                          <i class="fas fa-box text-color-grey fa-2x"></i>
+                          <i class="fas fa-box text-color-grey fa-2x" aria-hidden="true"></i>
                         </span>
                       </span>
                     </div>
@@ -70,9 +70,10 @@
           <!-- Coupon input (cart mode only; once applied it shows in the Discount
                summary row, where it can also be removed — an invoice's totals are final) -->
           <div v-if="mode === 'cart' && !cartStore.couponCode" class="d-flex align-items-center mt-3">
-            <input v-model="couponInput" type="text"
+            <input v-model="couponInput" type="text" name="coupon_code" autocomplete="off" :spellcheck="false"
                    class="form-control h-auto border-radius-0 line-height-1 py-3 coupon-input"
-                   :placeholder="__('message.coupon_code')" @keyup.enter="applyCode" />
+                   :aria-label="__('message.coupon_code')"
+                   :placeholder="`${__('message.coupon_code')}…`" @keyup.enter="applyCode" />
             <button type="button"
                     class="btn btn-light btn-modern text-2 text-uppercase ms-2 btn-apply-coupon"
                     :disabled="!couponInput || cartStore.loading"
@@ -118,8 +119,9 @@
                     <button type="button"
                             v-tooltip="__('message.remove')"
                             class="btn ms-2 p-0 lh-1 border-0"
+                            :aria-label="__('message.remove')"
                             @click="removeCoupon">
-                      <i class="fas fa-times-circle text-color-dark fa-lg"></i>
+                      <i class="fas fa-times-circle text-color-dark fa-lg" aria-hidden="true"></i>
                     </button>
                   </span>
                 </div>
@@ -195,9 +197,9 @@
 
               <button type="button"
                       class="btn btn-dark btn-modern w-100 text-uppercase border-radius-0 text-3 py-3"
-                      :disabled="!gateways.length || placing || (requiresGateway && !selectedGateway)"
+                      :disabled="placing || (requiresGateway && !selectedGateway)"
                       @click="proceed">
-                {{ placing ? __('message.please_wait') : __('message.proceed') }} <i v-if="!placing" class="fas fa-arrow-right ms-2"></i>
+                {{ placing ? __('message.please_wait') : __('message.proceed') }} <i v-if="!placing" class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -211,18 +213,14 @@
          for orders placed without opting in here. -->
     <Modal :showModal="showAutoRenewModal" :onClose="closeAutoRenewModal" :showCloseBtn="false">
       <template #title>
-        <h5 class="modal-title">{{ __('message.auto_renew_modal_title') }}</h5>
+        <h5 class="modal-title fw-bold">{{ __('message.auto_renew_modal_title') }}</h5>
       </template>
       <template #fields>
         <p class="mb-0">{{ __('message.auto_renew_modal_body') }}</p>
       </template>
       <template #controls>
-        <button type="button" class="btn btn-light me-2" @click="submitOrder(false)">
-          {{ __('message.decline_and_proceed') }}
-        </button>
-        <button type="button" class="btn btn-primary" @click="submitOrder(true)">
-          {{ __('message.enable_and_proceed') }}
-        </button>
+        <action-button action="confirm" variant="light" icon="fas fa-arrow-right" :label="__('message.decline_and_proceed')" @click="submitOrder(false)" />
+        <action-button action="confirm" :label="__('message.enable_and_proceed')" @click="submitOrder(true)" />
       </template>
     </Modal>
   </div>
@@ -450,10 +448,9 @@ async function submitOrder(autoRenewOptIn) {
       return
     }
     const { data } = await http.post(`/my-cart/place-order`, {
-      // Backend still requires a gateway string even for a free cart (it's
-      // unused beyond an auto-renew check there) — fall back to the first
-      // available one when nothing was shown/selected for the user to pick.
-      gateway: selectedGateway.value || gateways.value[0]?.name || '',
+      // Gateway is only used for an auto-renew check there — a free /
+      // credit-covered cart may have none selected (or none configured at all).
+      gateway: selectedGateway.value || null,
       auto_renew_opt_in: autoRenewOptIn,
     })
     router.push({ path: '/place-order', query: { invoice: data.data.invoice_id, gateway: selectedGateway.value, use_credit: credit } })

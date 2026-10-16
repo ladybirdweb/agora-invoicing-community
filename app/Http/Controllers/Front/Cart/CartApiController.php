@@ -85,7 +85,7 @@ class CartApiController extends Controller
 
     public function placeOrder(Request $request): JsonResponse
     {
-        $request->validate(['gateway' => ['required', 'string']]);
+        $request->validate(['gateway' => ['nullable', 'string']]);
 
         $user = $request->user();
         $cart = $this->cartService->resolveCart($request)->load('items.product');

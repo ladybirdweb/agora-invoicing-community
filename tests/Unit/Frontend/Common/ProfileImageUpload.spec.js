@@ -137,21 +137,17 @@ describe('ProfileImageUpload.vue', () => {
         expect(wrapper.vm.showModal).toBe(false)
     })
 
-    it('onFileSelected shows alert and returns for non-image file types', async () => {
-        const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+    it('onFileSelected shows an inline error for non-image file types', async () => {
         const file = new File(['content'], 'doc.pdf', { type: 'application/pdf' })
         await wrapper.vm.onFileSelected({ target: { files: [file], value: '' } })
-        expect(alertSpy).toHaveBeenCalledWith('message.only_png_jpeg_allowed')
-        alertSpy.mockRestore()
+        expect(wrapper.find('[role="alert"]').text()).toBe('message.only_png_jpeg_allowed')
     })
 
-    it('onFileSelected shows alert for files larger than 2 MB', async () => {
-        const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+    it('onFileSelected shows an inline error for files larger than 2 MB', async () => {
         const bigContent = new Uint8Array(2097153)
         const file = new File([bigContent], 'big.png', { type: 'image/png' })
         await wrapper.vm.onFileSelected({ target: { files: [file], value: '' } })
-        expect(alertSpy).toHaveBeenCalledWith('message.image_max_2mb')
-        alertSpy.mockRestore()
+        expect(wrapper.find('[role="alert"]').text()).toBe('message.image_max_2mb')
     })
 
     it('onFileSelected reads valid PNG file and opens the modal', async () => {

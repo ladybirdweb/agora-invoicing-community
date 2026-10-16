@@ -3,7 +3,10 @@
         <!-- Outside the delete modal, so the result survives the modal closing. -->
         <Alert componentName="client-orders" />
         <AppCard :title="__('message.my_orders')">
-            <DataTable :url="apiUrl" :dataColumns="columns" :option="tableOptions">
+            <div v-if="renewalOnly" class="mb-2">
+                <RouterLink to="/my-orders">{{ __('message.view_all') }}</RouterLink>
+            </div>
+            <DataTable :key="apiUrl" :url="apiUrl" :dataColumns="columns" :option="tableOptions">
                 <template #number="{ row }">
                     <div class="d-flex flex-column align-items-start">
                         <RouterLink :to="'/my-order/' + row.id" class="fw-semibold">{{ row.number || '—' }}</RouterLink>
@@ -22,21 +25,25 @@
                 <template #action="{ row }">
                     <div class="d-flex align-items-center gap-1 flex-nowrap">
                         <action-button action="view" :to="'/my-order/' + row.id"
+                                       :label="__('message.view')" :icon-only="true"
                                        v-tooltip="__('message.view')" />
 
                         <action-button v-if="!row.is_terminated && !row.is_cloud_deleted"
                                        icon="fas fa-sync-alt" class="table_btn"
                                        v-tooltip="__('message.click_renew')"
+                                       :label="__('message.click_renew')" :icon-only="true"
                                        @click="openRenewModal(row)" />
 
                         <action-button v-if="row.show_download && !row.is_terminated"
                                        icon="fas fa-download" class="table_btn"
                                        v-tooltip="__('message.click_to_download')"
+                                       :label="__('message.click_to_download')" :icon-only="true"
                                        @click="openDownloadModal(row)" />
 
                         <action-button v-if="row.show_cloud_delete && !row.is_terminated"
                                        icon="fas fa-trash" class="table_btn"
                                        v-tooltip="__('message.click_cloud')"
+                                       :label="__('message.click_cloud')" :icon-only="true"
                                        @click="openDeleteModal(row)" />
                     </div>
                 </template>
@@ -52,7 +59,7 @@
             :showControls="false"
         >
             <template #title>
-                <h5>{{ __('message.product_version') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.product_version') }}</h5>
             </template>
             <template #fields>
                 <Alert componentName="order-download" />
@@ -66,12 +73,13 @@
                     <template #description="{ row }"><span v-html="row.description" /></template> <!-- nosemgrep: javascript.vue.security.audit.xss.templates.avoid-v-html.avoid-v-html -->
                     <template #action="{ row }">
                         <button v-if="row.can_download && row.download_url"
+                                type="button"
                                 class="btn btn-sm btn-primary"
                                 :disabled="downloadingUrl === row.download_url"
                                 @click="downloadFile(row.download_url)">
-                            <i :class="downloadingUrl === row.download_url ? 'fas fa-circle-notch fa-spin' : 'fas fa-download'" class="me-1"></i>{{ __('message.download') }}
+                            <i :class="downloadingUrl === row.download_url ? 'fas fa-circle-notch fa-spin' : 'fas fa-download'" class="me-1" aria-hidden="true"></i>{{ __('message.download') }}
                         </button>
-                        <button v-else class="btn btn-sm btn-danger disabled">
+                        <button v-else type="button" class="btn btn-sm btn-danger" disabled>
                             {{ __('message.please_renew') }}
                         </button>
                     </template>
@@ -89,13 +97,14 @@
             :showCloseBtn="false"
         >
             <template #title>
-                <h5>{{ __('message.delete_confirm') }}</h5>
+                <h5 class="modal-title fw-bold">{{ __('message.delete_confirm') }}</h5>
             </template>
             <template #fields>
                 <Alert componentName="order-delete" />
                 <p class="mb-0">{{ __('message.delete_cloud') }}</p>
             </template>
             <template #controls>
+                <action-button action="cancel" @click="closeDeleteModal" />
                 <action-button action="delete" :loading="deleteLoading" @click="confirmDelete" />
             </template>
         </AppModal>
@@ -120,7 +129,8 @@ const { downloadFile, downloadingUrl } = useDownload('order-download')
 const baseUrl = useBaseUrl()
 const route   = useRoute()
 // Dashboard's "Order Renewals" widget links here with ?renewal=1
-const apiUrl  = route.query.renewal ? `/get-my-orders?renewal=1` : `/get-my-orders`
+const renewalOnly = computed(() => !!route.query.renewal)
+const apiUrl      = computed(() => renewalOnly.value ? `/get-my-orders?renewal=1` : `/get-my-orders`)
 
 const columns = ['product_name', 'order_date', 'number', 'agents', 'update_ends_at', 'action']
 

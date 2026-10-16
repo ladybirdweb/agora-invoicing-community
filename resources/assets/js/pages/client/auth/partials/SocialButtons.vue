@@ -4,13 +4,13 @@
             <span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">{{ __('message.or') }}</span>
         </div>
 
-        <a v-for="p in enabledProviders" :key="p.key" href="javascript:;"
+        <button v-for="p in enabledProviders" :key="p.key" type="button"
            class="btn btn-dark btn-modern w-100 text-transform-none rounded-0 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3 mb-2"
-           :class="{ disabled: busy === p.key }"
+           :disabled="busy === p.key"
            @click="go(p.key)">
-            <i class="fab text-5 me-2" :class="[p.icon, { 'fa-circle-notch fa-spin fas': busy === p.key }]"></i>
-            {{ __('message.login_with') }} {{ p.label }}
-        </a>
+            <i class="fab text-5 me-2" :class="[p.icon, { 'fa-circle-notch fa-spin fas': busy === p.key }]" aria-hidden="true"></i>
+            {{ __('message.login_with') }}&nbsp;<span translate="no">{{ p.label }}</span>
+        </button>
     </template>
 </template>
 

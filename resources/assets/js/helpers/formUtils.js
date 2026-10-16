@@ -7,8 +7,14 @@ export function extractId(val) {
 
 export async function scrollToFirstError() {
     await nextTick()
-    document.querySelector('.is-invalid')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const el = document.querySelector('.is-invalid')
+    if (!el) return
+    const reduce = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' })
+    const target = el.matches('input, select, textarea, button, [tabindex]')
+        ? el
+        : el.querySelector('input, select, textarea, button, [tabindex]')
+    target?.focus({ preventScroll: true })
 }
 
 /**

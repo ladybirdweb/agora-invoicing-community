@@ -7,12 +7,14 @@
         <template #fields>
             <AppAlert componentName="email-change" />
 
+            <form @submit.prevent="onSubmit">
             <!-- Step 1: enter the new email -->
             <template v-if="step === 'enter'">
                 <ClientField type="email" name="newEmail" required
                              :label="__('message.enter_new_email')"
                              v-model="newEmail"
-                             placeholder="name@example.com"
+                             autocomplete="email" :spellcheck="false"
+                             placeholder="name@example.com…"
                              :error="emailError" />
             </template>
 
@@ -24,12 +26,13 @@
                 <ClientField type="text" name="otp" required
                              :label="__('message.enter_code')"
                              v-model="otp"
+                             autocomplete="one-time-code" inputmode="numeric" :spellcheck="false"
                              :placeholder="__('message.otp_placeholder')"
                              :error="otpError" />
                 <div class="d-flex align-items-center gap-2 mt-2">
                     <button type="button" class="btn btn-link text-primary p-0 fw-semibold text-decoration-none"
                             :disabled="cooldown > 0" @click="resend">
-                        <i class="fas fa-sync-alt me-1"></i>{{ __('message.resend_email') }}
+                        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_email') }}
                     </button>
                     <span v-if="cooldown > 0" class="text-muted fw-semibold">{{ String(cooldown).padStart(2, '0') }}s</span>
                 </div>
@@ -38,13 +41,15 @@
             <!-- Step 4: done -->
             <template v-else-if="step === 'done'">
                 <div class="text-center py-4">
-                    <i class="fas fa-check-circle text-success fa-3x"></i>
+                    <i class="fas fa-check-circle text-success fa-3x" aria-hidden="true"></i>
                     <p class="mt-3 mb-0 fw-bold text-2">{{ doneMessage }}</p>
                 </div>
             </template>
+            </form>
         </template>
 
         <template #controls>
+            <action-button v-if="step !== 'done'" action="cancel" @click="close" />
             <action-button v-if="step === 'enter'"
                            action="confirm" :label="__('message.save')"
                            :loading="busy" :disabled="!newEmail" @click="submitEmail" />
@@ -144,6 +149,13 @@ async function submitEmail() {
     }
 }
 
+// Enter key submits the current step (same guards as the footer buttons).
+function onSubmit() {
+    if (busy.value) return
+    if (step.value === 'enter') { if (newEmail.value) submitEmail() }
+    else if (step.value !== 'done' && otp.value.length === 6) submitOtp()
+}
+
 async function submitOtp() {
     busy.value = true
     try {
@@ -167,7 +179,10 @@ async function submitOtp() {
             finish(res, res.data?.data?.email ?? newEmail.value)
         }
     } catch (e) {
-        errorHandler(e, COMPONENT)
+        // A rejected code belongs under the OTP field, not in the page alert.
+        const msg = e?.response?.data?.message
+        if (msg && e.response.status < 500 && e.config?.url?.includes('verify-otp')) otpError.value = msg
+        else errorHandler(e, COMPONENT)
     } finally {
         busy.value = false
     }

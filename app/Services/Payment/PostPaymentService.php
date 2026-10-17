@@ -4,9 +4,9 @@ namespace App\Services\Payment;
 
 use App\Events\OrderPlacedEvent;
 use App\Http\Controllers\Order\InvoiceController;
-use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\RenewController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Cart\Cart;

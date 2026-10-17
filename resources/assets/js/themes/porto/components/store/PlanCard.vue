@@ -267,7 +267,7 @@ async function addToCart(domain = null, dataCenterId = null) {
       product_id:     productId,
       plan_id:        plan?.id ?? null,
       quantity:       1,
-      agents:         1,
+      // No agents: the server uses the plan's own count (what its price covers).
       billing_cycle:  resolveCycle(plan),
       ...(domain       ? { domain }                         : {}),
       ...(dataCenterId ? { data_center_id: dataCenterId }   : {}),

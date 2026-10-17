@@ -1,7 +1,8 @@
 jest.mock('@/helpers/extraLogics', () => ({ lang: (key) => key, getIdFromUrl: jest.fn(() => 0) }))
 jest.mock('@/helpers/responseHandler', () => ({ successHandler: jest.fn(), errorHandler: jest.fn() }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
-jest.mock('vue-router', () => ({ useRouter: () => ({ push: jest.fn() }), useRoute: () => ({ params: {}, query: {} }), RouterLink: { template: '<a><slot/></a>' } }))
+const mockPush = jest.fn()
+jest.mock('vue-router', () => ({ useRouter: () => ({ push: mockPush }), useRoute: () => ({ params: {}, query: {} }), RouterLink: { template: '<a><slot/></a>' } }))
 jest.mock('@/validations/client/authSchemas.js', () => ({
     forgotSchema: {},
     loginSchema: {},
@@ -22,6 +23,7 @@ import MockAdapter from 'axios-mock-adapter'
 import http from '@/plugins/axios.js'
 import { validateForm } from '@/helpers/formUtils.js'
 import { successHandler, errorHandler } from '@/helpers/responseHandler'
+import { useAlertStore } from '@/core/stores/alert.js'
 import ForgotPassword from '@/pages/client/auth/ForgotPassword.vue'
 
 describe('ForgotPassword.vue', () => {
@@ -111,6 +113,22 @@ describe('ForgotPassword.vue', () => {
         await flushPromises()
 
         expect(successHandler).toHaveBeenCalled()
+    })
+
+    it('redirects to login only after the success message clears', async () => {
+        const alertStore = useAlertStore()
+        successHandler.mockImplementationOnce(() => { alertStore.message = 'sent' })
+        axiosMock.onPost('/password/email').reply(200, { message: 'sent' })
+        wrapper.vm.hpReady = true
+        await wrapper.vm.$nextTick()
+
+        await wrapper.find('form').trigger('submit')
+        await flushPromises()
+        expect(mockPush).not.toHaveBeenCalled()
+
+        alertStore.message = ''
+        await flushPromises()
+        expect(mockPush).toHaveBeenCalledWith('/login')
     })
 
     it('calls errorHandler when API returns 500', async () => {

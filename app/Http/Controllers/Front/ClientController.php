@@ -318,7 +318,7 @@ class ClientController extends BaseClientController
         // Dashboard's "Order Renewals" widget links here with this flag — same
         // criteria as its own count in clientDetails().
         if ($request->boolean('renewal')) {
-            $query->whereHas('subscription', fn (Builder $q) => $q->where('update_ends_at', '<', now()));
+            $query->needsRenewal();
         }
 
         $sortField = $request->input('sort-field', 'order_date');
@@ -934,9 +934,7 @@ class ClientController extends BaseClientController
         return successResponse('', [
             'pending_invoices_count' => $user->invoice()->where('status', 'pending')->count(),
             'total_orders_count' => $user->order()->count(),
-            'order_renewals_count' => $user->order()
-                ->whereHas('subscription', fn ($q) => $q->where('update_ends_at', '<', now()))
-                ->count(),
+            'order_renewals_count' => $user->order()->needsRenewal()->count(),
         ]);
     }
 }

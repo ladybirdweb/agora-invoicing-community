@@ -201,7 +201,11 @@ class OrderController extends BaseOrderController
                     'update_ends_at' => strtotime((string) $order->subscription?->ends_at) > 1 ? $order->subscription?->ends_at : null,
                     'subscription_updated_at' => $order->subscription?->updated_at,
                     'subscription_id' => $order->subscription?->id,
+                    // Shown unless terminated (renewed on its replacement order instead); shown but
+                    // disabled, with this reason, while the instance is deleted or an invoice is unpaid.
+                    // ponytail: one invoice query per row — fine at page sizes; batch it if lists grow.
                     'can_renew' => strcasecmp((string) $order->order_status, 'terminated') !== 0 && $order->subscription !== null,
+                    'renew_blocked_reason' => $order->subscription !== null ? $order->renewBlockedReason() : null,
                     'user' => $user,
                 ];
             });
@@ -306,8 +310,9 @@ class OrderController extends BaseOrderController
 
             $orders = $this->order->whereIn('id', $ids)->get();
 
-            // Only cloud orders have a tenant to tear down.
+            // Only cloud orders have a tenant to tear down — and not ones already torn down.
             $tenants = $orders->whereIn('product', cloudPopupProducts())
+                ->reject(fn (Order $order) => (bool) $order->subscription?->is_deleted)
                 ->flatMap(fn (Order $order) => $order->installedDomains()->map(fn ($domain) => [$domain, $order->id]))
                 ->all();
 

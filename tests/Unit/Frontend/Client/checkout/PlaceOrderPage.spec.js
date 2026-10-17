@@ -8,6 +8,7 @@ jest.mock('vue-router', () => ({
 
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
+import { useCartStore } from '@/core/stores/cart'
 import MockAdapter from 'axios-mock-adapter'
 import http from '@/plugins/axios.js'
 import PlaceOrderPage from '@/pages/client/checkout/PlaceOrderPage.vue'
@@ -157,6 +158,12 @@ describe('PlaceOrderPage.vue — computed and helpers', () => {
         wrapper.vm.onStripeModalClose()
         expect(wrapper.vm.showStripeModal).toBe(false)
         expect(wrapper.vm.busy).toBe(false)
+    })
+
+    it('onPaid reloads the cart so the navbar stops showing what was just bought', () => {
+        const cartStore = useCartStore()
+        wrapper.vm.onPaid()
+        expect(cartStore.fetchCart).toHaveBeenCalled()
     })
 
     it('onPaid does not throw and navigates away', () => {

@@ -75,7 +75,9 @@ class CartControllerTest extends DBTestCase
         $user = User::factory()->create();
         $this->actingAs($user);
         $product = Product::factory()->create();
-        Plan::factory()->create(['product' => $product->id, 'status' => 1]);
+        $plan = Plan::factory()->create(['product' => $product->id, 'status' => 1]);
+        // A priced plan: a plan with no price in the cart's currency is now refused (it priced at 0).
+        \App\Model\Payment\PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => getCurrencyForClient((string) $user->country)]);
 
         $response = $this->postJson('my-cart/items', [
             'product_id' => $product->id,

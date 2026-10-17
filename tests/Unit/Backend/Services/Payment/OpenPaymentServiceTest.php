@@ -197,4 +197,72 @@ class OpenPaymentServiceTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    // ── C8: a payment settles only the open-payment record it was made for, in full ──
+
+    private function openOrder(int $id = 12, float $amount = 5000, string $currency = 'INR'): OpenPaymentOrder
+    {
+        $order = Mockery::mock(OpenPaymentOrder::class)->makePartial();
+        $order->forceFill(['id' => $id, 'amount' => $amount, 'currency' => $currency, 'gateway' => 'Stripe', 'payment_status' => 'pending']);
+        $order->shouldNotReceive('update'); // neither marked paid nor marked failed
+
+        return $order;
+    }
+
+    private function confirmWith(OpenPaymentOrder $order, array $raw, bool $paid = true): bool
+    {
+        // Each refusal is logged for reconciliation — spied, since this class doesn't roll
+        // back the database and a real Logger call leaves rows in exception_logs.
+        \Logger::spy();
+        $this->paymentsMock->shouldReceive('capture')->once()
+            ->andReturn(new \App\Plugins\Payment\Dto\PaymentResult(paid: $paid, gateway: 'Stripe', reference: 'pi_x', raw: $raw));
+
+        $settled = $this->service->confirm($order, ['payment_intent' => 'pi_x']);
+        \Logger::shouldHaveReceived('exception');
+
+        return $settled;
+    }
+
+    public function test_a_payment_for_another_open_payment_does_not_settle_this_one(): void
+    {
+        // Paid 1 USD on open payment #11, replayed against #12 for 5,000 INR.
+        $raw = ['metadata' => ['order_id' => '11'], 'currency' => 'usd', 'amount_received' => 100];
+
+        $this->assertFalse($this->confirmWith($this->openOrder(), $raw));
+    }
+
+    public function test_an_unpaid_payment_for_another_record_does_not_mark_this_one_failed(): void
+    {
+        $this->assertFalse($this->confirmWith($this->openOrder(), ['metadata' => ['order_id' => '11']], paid: false));
+    }
+
+    public function test_an_underpayment_or_wrong_currency_does_not_settle(): void
+    {
+        foreach ([
+            ['metadata' => ['order_id' => '12'], 'currency' => 'inr', 'amount_received' => 100],     // ₹1 of ₹5,000
+            ['notes' => ['order_id' => '12'], 'currency' => 'USD', 'amount_paid' => 500000],          // right number, wrong currency
+            ['notes' => ['order_id' => '12']],                                                        // amount not reported
+        ] as $raw) {
+            // Fresh gateway mock + service per case (confirmWith expects one capture each).
+            $this->paymentsMock = Mockery::mock(PaymentService::class);
+            $this->service = new OpenPaymentService($this->paymentsMock);
+            $this->assertFalse($this->confirmWith($this->openOrder(), $raw));
+        }
+    }
+
+    public function test_a_full_payment_for_this_record_passes_both_checks(): void
+    {
+        $order = $this->openOrder();
+        $belongs = new \ReflectionMethod($this->service, 'paymentIsForOrder');
+        $covers = new \ReflectionMethod($this->service, 'capturedCovers');
+
+        foreach ([
+            ['metadata' => ['order_id' => '12'], 'currency' => 'inr', 'amount_received' => 500000], // Stripe
+            ['notes' => ['order_id' => '12'], 'currency' => 'INR', 'amount_paid' => 500000],         // Razorpay
+        ] as $raw) {
+            $result = new \App\Plugins\Payment\Dto\PaymentResult(paid: true, gateway: 'Stripe', raw: $raw);
+            $this->assertTrue($belongs->invoke($this->service, $result, $order));
+            $this->assertTrue($covers->invoke($this->service, $result, $order));
+        }
+    }
 }

@@ -9,6 +9,7 @@ use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Services\Payment\PostPaymentService;
 use App\Services\SubscriptionRenewalService;
 use App\Traits\TaxCalculation;
 use App\User;
@@ -20,6 +21,7 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Session;
 
 class RenewController extends BaseRenewController
@@ -75,6 +77,12 @@ class RenewController extends BaseRenewController
         try {
             $sub = Subscription::where('order_id', $id)->firstOrFail();
 
+            // Same rules as the admin Renew button: deleted instance, or an unpaid invoice to settle first.
+            $order = Order::find($id);
+            if ($reason = $order?->renewBlockedReason()) {
+                return errorResponse($reason);
+            }
+
             $this->renewBySubId(
                 $sub->id,
                 (int) $request->input('plan'),
@@ -99,17 +107,31 @@ class RenewController extends BaseRenewController
             /** @var Subscription $sub */
             $sub = $this->sub->find($id);
             $currency = userCurrencyAndPrice($sub->user_id, $plan)['currency'];
-            if ($isAgentIncrease) {
-                resolve(SubscriptionRenewalService::class)->extendDates($sub, $days); // @phpstan-ignore argument.type
-            }
 
-            $invoice = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);
+            // All or nothing: dates extended with no invoice behind them (invoice creation
+            // failed) would be extended again by a retry.
+            return DB::transaction(function () use ($sub, $days, $id, $planid, $cost, $currency, $agents, $isAgentIncrease, $payment_method): Subscription|InvoiceItem {
+                if ($isAgentIncrease) {
+                    resolve(SubscriptionRenewalService::class)->extendDates($sub, $days); // @phpstan-ignore argument.type
+                }
 
-            if ($isAgentIncrease) {
-                return $sub;
-            }
+                $invoice = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency, $agents);
 
-            return $invoice; // @phpstan-ignore return.type
+                if ($isAgentIncrease) {
+                    if (! $invoice instanceof InvoiceItem || ! $invoice->invoice) {
+                        throw new Exception(__('message.something_went_wrong'));
+                    }
+
+                    // Admin renew has already extended the dates above, so its invoice is settled
+                    // here with the method the admin chose. Left pending, paying it later would run
+                    // successRenew() and extend the dates a second time.
+                    resolve(PostPaymentService::class)->recordPayment($invoice->invoice, $payment_method);
+
+                    return $sub;
+                }
+
+                return $invoice; // @phpstan-ignore return.type
+            });
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -194,6 +216,12 @@ class RenewController extends BaseRenewController
 
             $planId = (int) $request->input('plan');
             $sub = Subscription::findOrFail($id);
+
+            // A client may only renew their own subscription — otherwise looping over ids
+            // creates renewal invoices on other people's accounts.
+            if (! authorizeOwnership((int) $sub->user_id)) {
+                return errorResponse(__('message.unauthorized_action'), 403);
+            }
 
             // The cloud instance behind this subscription was deleted — renewing would charge for nothing.
             if ($sub->is_deleted) {

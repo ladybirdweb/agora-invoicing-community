@@ -40,7 +40,11 @@
                                     {{ current.type === 'mobile' ? __('message.otp_description') : __('message.email_otp_description') }}
                                 </p>
 
+                                <!-- Captcha full-width above, so Resend (left) and Verify (right) share one row. -->
                                 <div class="row align-items-center g-2">
+                                    <div class="col-12 mb-2">
+                                        <RecaptchaField ref="captchaRef" :action="captchaAction" />
+                                    </div>
                                     <div class="col-6">
                                         <div class="d-flex align-items-center gap-2">
                                             <button type="button"
@@ -57,9 +61,6 @@
                                                 :disabled="cooldown > 0" @click="resend('voice')">
                                             <i class="fas fa-phone-alt me-1" aria-hidden="true"></i>{{ __('message.otp_call') }}
                                         </button>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <RecaptchaField ref="captchaRef" :action="captchaAction" />
                                     </div>
                                     <div class="col-6 text-end">
                                         <button type="submit" class="btn btn-primary btn-lg" :disabled="saving">

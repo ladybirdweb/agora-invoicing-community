@@ -770,4 +770,41 @@ class SubscriptionWebhookServiceTest extends DBTestCase
 
         $this->assertTrue(true);
     }
+
+    // ── H10: a failed renewal releases its claim, so the gateway's retry can do it ──
+
+    private function stripeRenewalEvent(string $eventId, string $subscriptionId): array
+    {
+        return ['id' => $eventId, 'type' => 'invoice.payment_succeeded', 'data' => ['object' => [
+            'billing_reason' => 'subscription_cycle', 'subscription' => $subscriptionId, 'amount_paid' => 5000, 'currency' => 'usd',
+        ]]];
+    }
+
+    public function test_a_renewal_that_fails_mid_way_can_be_retried(): void
+    {
+        $sub = \App\Model\Product\Subscription::factory()->create();
+        \DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => 'sub_retry', 'order_id' => 99999999]); // order missing → throws
+        $eventId = 'evt_'.uniqid();
+        $service = resolve(\App\Services\Payment\SubscriptionWebhookService::class);
+
+        try {
+            $service->handleStripeEvent($this->stripeRenewalEvent($eventId, 'sub_retry'));
+            $this->fail('Expected the renewal to fail.');
+        } catch (\Throwable) {
+            // the webhook endpoint answers 500, so Stripe retries
+        }
+
+        $this->assertSame(0, \App\Model\Payment\GatewayEvent::where(['gateway' => 'stripe', 'event_id' => $eventId])->count());
+    }
+
+    public function test_a_handled_event_keeps_its_claim_so_redeliveries_are_ignored(): void
+    {
+        $eventId = 'evt_'.uniqid();
+        $service = resolve(\App\Services\Payment\SubscriptionWebhookService::class);
+
+        // No matching subscription: logged and returned — handled, not failed.
+        $service->handleStripeEvent($this->stripeRenewalEvent($eventId, 'sub_nobody_'.uniqid()));
+
+        $this->assertSame(1, \App\Model\Payment\GatewayEvent::where(['gateway' => 'stripe', 'event_id' => $eventId])->count());
+    }
 }

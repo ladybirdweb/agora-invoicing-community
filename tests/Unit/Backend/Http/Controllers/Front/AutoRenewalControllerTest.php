@@ -414,4 +414,66 @@ class AutoRenewalControllerTest extends DBTestCase
             'rzp_subscription' => '3',
         ]);
     }
+
+    // ── C5: only this order's own card-check charge may be refunded ──
+
+    /** Mocks capture() → $raw, and asserts whether the full refund is attempted. */
+    private function stripeConfirmWith(Order $order, array $raw, bool $expectRefund): \Illuminate\Testing\TestResponse
+    {
+        $gateway = Mockery::mock(\App\Plugins\Payment\Contracts\PaymentGateway::class);
+        $expectRefund
+            ? $gateway->shouldReceive('refundPayment')->once()->with('pi_test')
+            : $gateway->shouldNotReceive('refundPayment');
+        // The manager is final — use a real one with the mocked Stripe gateway registered.
+        $manager = (new \App\Plugins\Payment\PaymentGatewayManager)->register('Stripe', fn () => $gateway);
+
+        $payments = Mockery::mock(PaymentService::class);
+        $payments->shouldReceive('capture')->andReturn(new \App\Plugins\Payment\Dto\PaymentResult(paid: true, gateway: 'Stripe', reference: 'pi_test', raw: $raw));
+        $payments->shouldReceive('manager')->andReturn($manager);
+        $this->app->instance(PaymentService::class, $payments);
+
+        return $this->postJson("/auto-renewal/{$order->id}/stripe/confirm", ['payment_intent' => 'pi_test']);
+    }
+
+    private function verificationCharge(Order $order, array $overrides = []): array
+    {
+        $currency = getCurrencyForClient((string) $this->user->country);
+
+        return array_replace([
+            'metadata' => ['order_id' => (string) $order->id, 'user_id' => (string) $this->user->id],
+            'currency' => strtolower($currency),
+            'amount_received' => \App\Plugins\Payment\Support\Money::toMinor(getMinimumAmountForPayments($currency, 'stripe'), $currency),
+        ], $overrides);
+    }
+
+    public function test_stripe_confirm_will_not_refund_a_real_invoice_payment(): void
+    {
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+
+        // An ordinary $500 invoice PaymentIntent the SPA already knows the id of.
+        $invoicePayment = ['metadata' => ['invoice_id' => '123', 'user_id' => (string) $this->user->id], 'currency' => 'usd', 'amount_received' => 50000];
+
+        $this->stripeConfirmWith($order, $invoicePayment, expectRefund: false)->assertStatus(403);
+    }
+
+    public function test_stripe_confirm_will_not_refund_another_orders_or_users_charge_or_a_different_amount(): void
+    {
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+
+        foreach ([
+            ['metadata' => ['order_id' => (string) ($order->id + 1), 'user_id' => (string) $this->user->id]],
+            ['metadata' => ['order_id' => (string) $order->id, 'user_id' => (string) ($this->user->id + 1)]],
+            ['amount_received' => 999999],
+        ] as $tamper) {
+            $this->stripeConfirmWith($order, $this->verificationCharge($order, $tamper), expectRefund: false)->assertStatus(403);
+        }
+    }
+
+    public function test_stripe_confirm_refunds_this_orders_own_verification_charge(): void
+    {
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+
+        // Not refused, and the refund is attempted (the rest of activation is covered elsewhere).
+        $this->assertNotSame(403, $this->stripeConfirmWith($order, $this->verificationCharge($order), expectRefund: true)->status());
+    }
 }

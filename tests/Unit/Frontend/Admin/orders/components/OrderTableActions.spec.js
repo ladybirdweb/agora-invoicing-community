@@ -31,6 +31,20 @@ describe('OrderTableActions.vue', () => {
         expect(wrapper.find('a.btn-light').exists()).toBe(true)
     })
 
+    it('shows renew disabled with the reason when renewal is blocked', async () => {
+        await wrapper.setProps({ canRenew: true, renewBlockedReason: 'Renewal unavailable: invoice #9 is unpaid.' })
+        const btn = wrapper.find('button[disabled]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Renewal unavailable: invoice #9 is unpaid.')
+        expect(wrapper.find('a[to="/orders/7/renew"]').exists()).toBe(false)
+    })
+
+    it('shows the normal renew link when not blocked', async () => {
+        await wrapper.setProps({ canRenew: true, renewBlockedReason: '' })
+        expect(wrapper.find('button[disabled]').exists()).toBe(false)
+        expect(wrapper.find('a[to="/orders/7/renew"]').exists()).toBe(true)
+    })
+
     it('does not render delete button when showDelete is false', () => {
         expect(wrapper.find('button').exists()).toBe(false)
     })

@@ -56,7 +56,7 @@ class ResetPasswordController extends Controller
             if ($reset && Date::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Date::now()) {
                 $user = User::where('email', $reset->email)->first();
 
-                if ($user && $user->is_2fa_enabled && ! Session::get('2fa_verified')) {
+                if ($user && $user->is_2fa_enabled && Session::get('2fa_verified') !== $token) {
                     Session::put('2fa:user:id', $user->id);
                     Session::put('verification_user_id', $user->id);
                     Session::put('justStarted', true);
@@ -106,13 +106,23 @@ class ResetPasswordController extends Controller
 
             $passwordToken = Password::where('email', $email)->first();
 
-            if (! $passwordToken || $passwordToken->token !== $token) {
+            if (! $passwordToken || ! hash_equals((string) $passwordToken->token, (string) $token)) {
                 return errorResponse(__('message.cannot_reset_password_invalid'));
+            }
+
+            // showResetForm() checks expiry too, but this endpoint can be posted to directly.
+            if (Date::parse($passwordToken->created_at)->addMinutes((int) config('auth.passwords.users.expire')) <= Date::now()) {
+                return errorResponse(__('message.reset_link_expired'));
             }
 
             $user = User::where('email', $email)->first();
             if (! $user) {
                 return errorResponse(__('message.user_cannot_identifer'));
+            }
+
+            // Same reason: 2FA must be passed for *this* link, not just on page load.
+            if ($user->is_2fa_enabled && Session::get('2fa_verified') !== $token) {
+                return errorResponse(__('message.reset_link_expired'));
             }
 
             // Begin atomic transaction

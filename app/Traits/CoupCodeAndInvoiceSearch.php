@@ -61,7 +61,10 @@ trait CoupCodeAndInvoiceSearch
                 return errorResponse(__('message.select-a-row'));
             }
 
-            $this->invoice->whereIn('id', $ids)->delete(); // @phpstan-ignore property.notFound
+            // One by one through Invoice::delete(): a query-builder delete skipped its cleanup and
+            // left payments allocated to invoices that no longer exist (the money vanished from
+            // the client's balance) plus orphaned items and order links.
+            $this->invoice->whereIn('id', $ids)->get()->each->delete(); // @phpstan-ignore property.notFound
 
             return successResponse(__('message.deleted-successfully'));
         } catch (Exception $exception) {

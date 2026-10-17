@@ -3,7 +3,6 @@
 namespace App\Model\Order;
 
 use App\BaseModel;
-use App\License\Models\Installation;
 use App\Model\Product\Subscription;
 use App\Traits\SystemActivityLogsTrait;
 use App\User;
@@ -195,14 +194,6 @@ class Invoice extends BaseModel
         );
     }
 
-    public function installationDetail(): mixed
-    {
-        $orderIds = $this->orders()->pluck('orders.id');
-        $licenseCodes = Order::whereIn('id', $orderIds)->get()->map->serial_key;
-
-        return Installation::whereIn('license_code', $licenseCodes);
-    }
-
     /**
      * The payments that settle this invoice, each carrying how much of itself
      * it put here. Renamed from the old hasMany `payment()` deliberately: that
@@ -288,7 +279,8 @@ class Invoice extends BaseModel
     public function delete()
     {
         $this->orders()->detach();
-        $this->installationDetail()->delete();
+        // Installations are not touched: they belong to the licence, not to an invoice —
+        // deleting an old invoice must not wipe a live order's installed domains.
         $this->invoiceItem()->delete();
         // Detach, never delete: a payment may be settling other invoices too,
         // and the money arrived regardless of what happens to this invoice.

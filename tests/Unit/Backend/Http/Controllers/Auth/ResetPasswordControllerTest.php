@@ -157,4 +157,58 @@ class ResetPasswordControllerTest extends DBTestCase
         $response->assertJson(['success' => true]);
         $response->assertJsonPath('data.redirect', url('login'));
     }
+
+    // ── Direct POSTs must not skip the checks showResetForm() does ──────────
+
+    private function resetToken(User $user, string $token, $createdAt = null): void
+    {
+        DB::table('password_resets')->where('email', $user->email)->delete();
+        DB::table('password_resets')->insert(['email' => $user->email, 'token' => $token, 'created_at' => $createdAt ?? now()]);
+    }
+
+    private function postReset(User $user, string $token)
+    {
+        return $this->postJson('/password/reset', [
+            'token' => $token, 'email' => $user->email,
+            'password' => 'N3w!Passw0rd#x', 'password_confirmation' => 'N3w!Passw0rd#x',
+            'reset' => $this->honeypot(),
+        ]);
+    }
+
+    public function test_reset_rejects_an_expired_token(): void
+    {
+        $user = User::factory()->create(['is_2fa_enabled' => 0]);
+        $this->resetToken($user, 'tok-old', now()->subDays(30));
+
+        $this->postReset($user, 'tok-old')->assertStatus(400);
+        $this->assertFalse(\Hash::check('N3w!Passw0rd#x', $user->fresh()->password));
+    }
+
+    public function test_reset_requires_2fa_for_2fa_users(): void
+    {
+        $user = User::factory()->create(['is_2fa_enabled' => 1]);
+        $this->resetToken($user, 'tok-2fa');
+
+        $this->postReset($user, 'tok-2fa')->assertStatus(400);
+        $this->assertFalse(\Hash::check('N3w!Passw0rd#x', $user->fresh()->password));
+    }
+
+    public function test_2fa_passed_for_another_link_does_not_count(): void
+    {
+        $user = User::factory()->create(['is_2fa_enabled' => 1]);
+        $this->resetToken($user, 'tok-victim');
+
+        $this->withSession(['2fa_verified' => 'tok-someone-else'])->postReset($user, 'tok-victim')->assertStatus(400);
+        $this->withSession(['2fa_verified' => true])->postReset($user, 'tok-victim')->assertStatus(400);
+        $this->assertFalse(\Hash::check('N3w!Passw0rd#x', $user->fresh()->password));
+    }
+
+    public function test_reset_succeeds_once_2fa_passed_for_this_link(): void
+    {
+        $user = User::factory()->create(['is_2fa_enabled' => 1]);
+        $this->resetToken($user, 'tok-mine');
+
+        $this->withSession(['2fa_verified' => 'tok-mine'])->postReset($user, 'tok-mine')->assertStatus(200);
+        $this->assertTrue(\Hash::check('N3w!Passw0rd#x', $user->fresh()->password));
+    }
 }

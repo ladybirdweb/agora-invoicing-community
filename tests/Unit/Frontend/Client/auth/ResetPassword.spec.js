@@ -4,8 +4,9 @@ jest.mock('@/helpers/responseHandler', () => ({
     errorHandler: jest.fn(),
 }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
+const mockReplace = jest.fn()
 jest.mock('vue-router', () => ({
-    useRouter: () => ({ push: jest.fn() }),
+    useRouter: () => ({ push: jest.fn(), replace: mockReplace }),
     useRoute: () => ({ params: { token: 'test-token-123' }, query: {} }),
 }))
 jest.mock('@/validations/client/authSchemas.js', () => ({
@@ -83,7 +84,7 @@ describe('ResetPassword.vue', () => {
         expect(wrapper.find('button[type="submit"]').exists()).toBeTruthy()
     })
 
-    it('shows the invalid state when validate endpoint returns 500', async () => {
+    it('redirects to login with reset_expired when the link is invalid', async () => {
         axiosMock.onGet('/auth/reset-validate/test-token-123').reply(500, {
             message: 'Token expired',
         })
@@ -104,8 +105,8 @@ describe('ResetPassword.vue', () => {
 
         await flushPromises()
 
-        // invalid ref is true so the form should not be rendered
-        expect(errorWrapper.vm.invalid).toBe(true)
+        expect(mockReplace).toHaveBeenCalledWith({ path: '/login', query: { reset_expired: 1 } })
+        expect(errorWrapper.find('form').exists()).toBe(false)
     })
 
     it('calls POST /password/reset on form submit when validation passes', async () => {

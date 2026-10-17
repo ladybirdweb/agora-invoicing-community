@@ -8,7 +8,8 @@
            class="btn btn-dark btn-modern w-100 text-transform-none rounded-0 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-3 mb-2"
            :disabled="busy === p.key"
            @click="go(p.key)">
-            <i class="fab text-5 me-2" :class="[p.icon, { 'fa-circle-notch fa-spin fas': busy === p.key }]" aria-hidden="true"></i>
+            <!-- Swap, don't stack: fab+fas and two glyphs on one <i> renders a broken icon. -->
+            <i class="text-5 me-2" :class="busy === p.key ? 'fas fa-circle-notch fa-spin' : ['fab', p.icon]" aria-hidden="true"></i>
             {{ __('message.login_with') }}&nbsp;<span translate="no">{{ p.label }}</span>
         </button>
     </template>

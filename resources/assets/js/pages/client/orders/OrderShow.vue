@@ -37,6 +37,15 @@
                 </div>
             </div>
 
+            <!-- Instance deleted (expiry cron, or by the client/admin): the order still reads
+                 "Executed", so say why Renew is gone and the helpdesk no longer loads. -->
+            <div v-if="order.is_cloud_deleted && order.status !== 'Terminated'" class="row justify-content-center mb-4">
+                <div class="col-lg-12 alert alert-secondary mb-0">
+                    <strong>{{ __('message.instance_deleted') }}</strong>
+                    <p class="mb-0 mt-1">{{ __('message.cloud_instance_deleted_no_renew') }}</p>
+                </div>
+            </div>
+
             <!-- Terminated because of a plan/agent change: explain why this
                  order stopped working and point at what replaced it. Someone
                  can land here directly (bookmark, old link) without ever

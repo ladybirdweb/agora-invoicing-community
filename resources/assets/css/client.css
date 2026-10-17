@@ -22,6 +22,9 @@
 .grecaptcha-badge {
     bottom: 14px !important;
 }
+/* Porto's #999 muted text is 2.8:1 on white and fails WCAG AA; Bootstrap's #6c757d passes (4.7:1). */
+html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
+
 /* ── Tooltip (floating-vue) — match admin panel appearance ─────────────── */
 .v-popper__inner { text-align: center !important; }
 .v-popper__inner div { max-width: 300px !important; word-break: break-word !important; }
@@ -150,22 +153,27 @@
     margin-right: 0 !important;
 }
 
+/* Fixed widths (min = max), like the admin .dt-* classes: a min–max range lets the
+   browser re-fit columns to whatever rows a sort brings in, so a column shrinks and
+   its sort icon drops under the heading. Product is the one column left to flex. */
+
 /* ── Client Orders / Tables ─────────────────────────────────────────────────── */
-#app-client .dt-product-col { min-width: 140px; }
-#app-client .dt-date-col    { min-width: 105px; max-width: 125px; white-space: nowrap; }
-#app-client .dt-number-col  { min-width: 100px; max-width: 130px; }
+#app-client .dt-product-col { min-width: 180px; }
+#app-client .dt-date-col    { min-width: 145px; max-width: 145px; white-space: nowrap; } /* fits "Purchase Date" + sort icon */
+#app-client .dt-expiry-col  { min-width: 125px; max-width: 125px; white-space: nowrap; } /* "Expiry Date" is shorter */
+#app-client .dt-number-col  { min-width: 130px; max-width: 130px; }
 #app-client .dt-number-col a { white-space: nowrap; }
-#app-client .dt-agents-col  { min-width: 65px;  max-width: 80px; text-align: center; }
-#app-client .dt-action-col  { min-width: 140px; max-width: 155px; }
+#app-client .dt-agents-col  { min-width: 80px;  max-width: 80px; text-align: center; }
+#app-client .dt-action-col  { min-width: 155px; max-width: 155px; }
 
 /* ── Client Invoices Table ──────────────────────────────────────────────────── */
-#app-client .dt-inv-num     { min-width: 90px; max-width: 115px; white-space: nowrap; }
-#app-client .dt-inv-date    { min-width: 85px; max-width: 105px; white-space: nowrap; }
-#app-client .dt-inv-order   { min-width: 80px; max-width: 105px; }
+#app-client .dt-inv-num     { min-width: 115px; max-width: 115px; white-space: nowrap; }
+#app-client .dt-inv-date    { min-width: 105px; max-width: 105px; white-space: nowrap; }
+#app-client .dt-inv-order   { min-width: 105px; max-width: 105px; }
 #app-client .dt-inv-order a { white-space: nowrap; }
-#app-client .dt-inv-amount  { min-width: 70px; max-width: 90px; white-space: nowrap; }
-#app-client .dt-inv-status  { min-width: 65px; max-width: 80px; text-align: center; white-space: nowrap; }
-#app-client .dt-inv-action  { min-width: 120px; max-width: 135px; white-space: nowrap; }
+#app-client .dt-inv-amount  { min-width: 90px;  max-width: 90px;  white-space: nowrap; }
+#app-client .dt-inv-status  { min-width: 80px;  max-width: 80px;  text-align: center; white-space: nowrap; }
+#app-client .dt-inv-action  { min-width: 135px; max-width: 135px; white-space: nowrap; }
 
 #app-client .VueTables__table {
     font-size: 13px !important;

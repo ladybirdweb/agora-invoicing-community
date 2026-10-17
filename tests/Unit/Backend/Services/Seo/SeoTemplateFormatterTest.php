@@ -211,6 +211,8 @@ class SeoTemplateFormatterTest extends DBTestCase
 
     public function test_general_og_image_url_falls_back_to_the_configured_site_logo(): void
     {
+        // Setting::getImage() only links a logo whose file is really in storage.
+        Attach::shouldReceive('exists')->with('images/logo.png')->andReturn(true);
         Attach::shouldReceive('getUrlPath')->with('images/logo.png')->andReturn('https://cdn.test/logo.png');
         Setting::find(1)->update(['logo' => 'logo.png']);
 

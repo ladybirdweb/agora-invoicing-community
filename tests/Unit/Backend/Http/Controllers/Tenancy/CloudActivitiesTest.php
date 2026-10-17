@@ -1581,4 +1581,126 @@ class CloudActivitiesTest extends DBTestCase
             $this->assertTrue(true); // Expected — no app key → exception from cloudApiPost
         }
     }
+
+    // ── C6/C7: one plan change per order; the new subscription runs the term it was priced for ──
+
+    /** A logged-in client's cloud order on a plan of $oldDays with $daysLeft to go. */
+    private function planChangeSetup(int $oldDays, int $daysLeft, float $oldPrice, int $newDays, float $newPrice): array
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $product = Product::create(['name' => 'Helpdesk Cloud '.uniqid(), 'description' => 'x']);
+        // Licence serial ends 0001: one agent, so prices below are the plan prices (cloud is per agent).
+        $oldOrder = Order::create(['client' => $user->id, 'order_status' => 'executed', 'product' => $product->id,
+            'number' => mt_rand(100000, 999999), 'serial_key' => 'eyJpdiI6IkpI0001']);
+        $oldPlan = Plan::create(['name' => 'old', 'product' => $product->id, 'days' => $oldDays]);
+        $newPlan = Plan::create(['name' => 'new', 'product' => $product->id, 'days' => $newDays]);
+        foreach (['INR', 'USD'] as $currency) {
+            PlanPrice::factory()->create(['plan_id' => $oldPlan->id, 'currency' => $currency, 'add_price' => $oldPrice, 'offer_price' => 0]);
+            PlanPrice::factory()->create(['plan_id' => $newPlan->id, 'currency' => $currency, 'add_price' => $newPrice, 'offer_price' => 0]);
+        }
+        Subscription::create(['plan_id' => $oldPlan->id, 'order_id' => $oldOrder->id, 'product_id' => $product->id, 'user_id' => $user->id,
+            'version' => 'v6.0.0', 'update_ends_at' => '', 'ends_at' => Date::now()->addDays($daysLeft)->addHour()]);
+
+        return [$oldOrder, $newPlan];
+    }
+
+    private function planChangeMetadata(Order $oldOrder, Plan $newPlan): array
+    {
+        $response = $this->postJson('/upgradeDowngradeCloud', ['id' => $newPlan->id, 'orderId' => $oldOrder->id])->assertOk();
+
+        return Invoice::findOrFail($response->json('data.invoice_id'))->metadata;
+    }
+
+    public function test_an_upgrade_runs_for_the_remaining_term_not_a_full_new_period(): void
+    {
+        // Monthly with 10 days left → yearly: priced for 365 − (30 − 10) = 345 days, so it must run 345.
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 1000, newDays: 365, newPrice: 5000);
+
+        $meta = $this->planChangeMetadata($oldOrder, $newPlan);
+
+        $this->assertSame(345, $meta['increase-decrease-days']);
+        $this->assertArrayNotHasKey('increase-decrease-days-dont-cloud', $meta);
+    }
+
+    public function test_a_same_length_plan_change_keeps_the_old_expiry(): void
+    {
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 1000, newDays: 30, newPrice: 2000);
+
+        $meta = $this->planChangeMetadata($oldOrder, $newPlan);
+
+        $this->assertSame($oldOrder->id, $meta['increase-decrease-days-dont-cloud']);
+        $this->assertArrayNotHasKey('increase-decrease-days', $meta);
+    }
+
+    public function test_an_expired_plan_changes_to_a_full_new_period(): void
+    {
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: -5, oldPrice: 1000, newDays: 365, newPrice: 5000);
+
+        $this->assertSame(365, $this->planChangeMetadata($oldOrder, $newPlan)['increase-decrease-days']);
+    }
+
+    public function test_a_terminated_order_cannot_be_plan_changed_again(): void
+    {
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 2000, newDays: 30, newPrice: 1000);
+        $oldOrder->update(['order_status' => 'Terminated']);
+        $before = Invoice::count();
+
+        $this->postJson('/upgradeDowngradeCloud', ['id' => $newPlan->id, 'orderId' => $oldOrder->id])->assertStatus(400);
+        $this->assertSame($before, Invoice::count());
+    }
+
+    public function test_a_second_plan_change_is_refused_while_one_is_unpaid(): void
+    {
+        // Each downgrade invoice banks the old plan's leftover value — N of them would bank it N times.
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 20, oldPrice: 2000, newDays: 30, newPrice: 1000);
+        $this->planChangeMetadata($oldOrder, $newPlan);
+        $before = Invoice::count();
+
+        $this->postJson('/upgradeDowngradeCloud', ['id' => $newPlan->id, 'orderId' => $oldOrder->id])->assertStatus(400);
+        $this->assertSame($before, Invoice::count());
+    }
+
+    public function test_a_paid_plan_change_for_an_already_terminated_order_is_not_fulfilled_again(): void
+    {
+        [$oldOrder] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 2000, newDays: 30, newPrice: 1000);
+        $oldOrder->update(['order_status' => 'Terminated']);
+        $invoice = Invoice::factory()->create(['user_id' => $oldOrder->client, 'grand_total' => 0, 'status' => 'success', 'metadata' => [
+            'type' => 'upgrade_downgrade', 'old_order_id' => $oldOrder->id, 'old_license' => 'x', 'installation_path' => 'x.test', 'discount' => 500,
+        ]]);
+
+        app(\App\Services\Payment\PostPaymentService::class)->handle($invoice, 'Credit Balance');
+
+        $this->assertSame(0, \App\Model\Order\OrderInvoiceRelation::where('invoice_id', $invoice->id)->count()); // no new order
+    }
+
+    // ── H1: moving to a shorter plan never yields a negative term or phantom credit ──
+
+    public function test_yearly_to_monthly_with_many_days_left_runs_one_month_and_credits_the_true_remainder(): void
+    {
+        // 100/yr with 200 days left is worth 100/365×200 = 54.79; a month of the 9/mo plan
+        // costs 9, so 45.79 is banked. The old formula gave 30 − 165 = −135 days and 95.29.
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 365, daysLeft: 200, oldPrice: 100, newDays: 30, newPrice: 9);
+
+        $meta = $this->planChangeMetadata($oldOrder, $newPlan);
+
+        $this->assertSame(30, $meta['increase-decrease-days']);
+        $this->assertEquals(46, $meta['discount']); // 45.79, rounded where it's banked
+    }
+
+    public function test_shorter_plan_with_fewer_days_left_than_its_length_keeps_the_old_expiry(): void
+    {
+        // Unchanged rule: 20 days left fits inside the new 30-day plan.
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 365, daysLeft: 20, oldPrice: 100, newDays: 30, newPrice: 9);
+
+        $this->assertSame($oldOrder->id, $this->planChangeMetadata($oldOrder, $newPlan)['increase-decrease-days-dont-cloud']);
+    }
+
+    public function test_a_longer_plan_still_gets_its_length_less_the_days_used(): void
+    {
+        [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 1000, newDays: 365, newPrice: 5000);
+
+        $this->assertSame(345, $this->planChangeMetadata($oldOrder, $newPlan)['increase-decrease-days']);
+    }
 }

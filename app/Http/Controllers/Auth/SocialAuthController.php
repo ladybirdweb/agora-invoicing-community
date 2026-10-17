@@ -17,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -163,8 +164,12 @@ class SocialAuthController extends BaseAuthController
         $providerId = (string) $socialUser->getId();
 
         $account = SocialAccount::where(['provider' => $provider, 'provider_id' => $providerId])->first();
-        if ($account && ($user = User::find($account->user_id))) {
-            return $this->finish($user);
+        if ($account) {
+            // A link with no live user means the user was soft-deleted (hard deletes cascade the link
+            // away). Signing up again would dead-end on "email taken", so stop here.
+            $user = User::find($account->user_id);
+
+            return $user ? $this->finish($user) : $this->errorUrl('inactive');
         }
 
         $email = $socialUser->getEmail();
@@ -175,6 +180,15 @@ class SocialAuthController extends BaseAuthController
             // to someone who only controls an email address at a third party.
             if (! $this->emailVerifiedByProvider($provider, $socialUser) || $existing->role === 'admin') {
                 return $this->errorUrl('email_exists');
+            }
+
+            // An unverified account may have been registered by someone else with this email. The
+            // provider has just proven who owns it, so that person's password must not survive.
+            if ((int) $existing->email_verified !== 1) {
+                $existing->password = Hash::make(Str::random(40));
+                $existing->setRememberToken(Str::random(60));
+                $existing->email_verified = 1;
+                $existing->save();
             }
 
             SocialAccount::create(['user_id' => $existing->id, 'provider' => $provider, 'provider_id' => $providerId]);
@@ -243,9 +257,11 @@ class SocialAuthController extends BaseAuthController
         $user->role = 'user';
         $user->account_manager = $managerSettings->get('account') ? (string) $user->assignManagerByPosition('account_manager') : null;
         $user->setAttribute('manager', $managerSettings->get('sales') ? $user->assignManagerByPosition('manager') : null);
-        $user->save();
-
-        SocialAccount::create(['user_id' => $user->id, 'provider' => $signup['provider'], 'provider_id' => $signup['provider_id']]);
+        // Both or neither: a user saved without its link can never finish signing up (email now taken).
+        DB::transaction(function () use ($user, $signup): void {
+            $user->save();
+            SocialAccount::create(['user_id' => $user->id, 'provider' => $signup['provider'], 'provider_id' => $signup['provider_id']]);
+        });
         Session::forget('social_signup');
 
         event(new UserRegisteredEvent($user, 'register'));
@@ -270,7 +286,9 @@ class SocialAuthController extends BaseAuthController
         }
 
         if ($user->is_2fa_enabled) {
-            Session::put(['2fa:user:id' => $user->id, 'remember:user:id' => false]);
+            // Same keys as LoginController: the 2FA routes' rate limiter finds the user by
+            // verification_user_id and bounces to login without it.
+            Session::put(['justStarted' => true, 'verification_user_id' => $user->id, '2fa:user:id' => $user->id, 'remember:user:id' => false]);
 
             return url('verify-2fa');
         }

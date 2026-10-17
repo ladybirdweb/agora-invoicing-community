@@ -521,4 +521,82 @@ class PostPaymentServiceTest extends DBTestCase
         $invoice->refresh();
         $this->assertSame('success', strtolower((string) $invoice->status));
     }
+
+    // ── H7: auto-renew repricing uses the cron's price, not plan price × agents ──
+
+    /** Repricing for a Stripe-active subscription; returns the amount (minor units) sent to the gateway. */
+    private function repricedTo(string $planAgents, string $serialLastFour, float $renewPrice): int
+    {
+        $this->getLoggedInUser('user');
+        $this->user->update(['country' => 'US']);
+        $product = \App\Model\Product\Product::factory()->create(['can_modify_agent' => 1]);
+        $plan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        \App\Model\Payment\PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => 'USD', 'renew_price' => $renewPrice, 'no_of_agents' => $planAgents]);
+        $order = \App\Model\Order\Order::create(['client' => $this->user->id, 'product' => $product->id, 'order_status' => 'executed',
+            'number' => mt_rand(100000, 999999), 'serial_key' => 'ABCDEFGHIJKL'.$serialLastFour]);
+        $sub = \App\Model\Product\Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $this->user->id,
+            'is_subscribed' => 1, 'autoRenew_status' => '3']);
+        \Illuminate\Support\Facades\DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => 'sub_test']); // not mass-assignable
+        $invoice = Invoice::factory()->create(['user_id' => $this->user->id, 'grand_total' => 50.0, 'currency' => 'USD']);
+
+        $sent = null;
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('updateSubscriptionPrice')->once()->andReturnUsing(function ($gateway, $id, $request) use (&$sent) {
+            $sent = $request->amountMinor;
+
+            return new \App\Plugins\Payment\Dto\SubscriptionResult('Stripe', 'sub_test', 'active', []);
+        });
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        $this->getPrivateMethod($this->service, 'updateSubscriptionPriceIfNeeded', [$order->id, $invoice]);
+
+        return (int) $sent;
+    }
+
+    public function test_a_5_agent_plan_is_repriced_to_its_price_not_five_times_it(): void
+    {
+        // renew_price 50 covers 5 agents; the licence has 5. Old code sent 5 × 50 = 250.
+        $minor = $this->repricedTo(planAgents: '5', serialLastFour: '0005', renewPrice: 50);
+
+        $this->assertGreaterThanOrEqual(5000, $minor);
+        $this->assertLessThan(7000, $minor); // 50 plus processing fee / tax — nowhere near 250
+    }
+
+    public function test_an_unlimited_licence_is_not_repriced_to_zero(): void
+    {
+        // Serial …0000 (unlimited) read as 0 agents, so the old code repriced it to 0.
+        $minor = $this->repricedTo(planAgents: '0', serialLastFour: '0000', renewPrice: 50);
+
+        $this->assertGreaterThanOrEqual(5000, $minor);
+    }
+
+    // ── H8: after an upgrade, the gateway subscription belongs to the new order only ──
+
+    public function test_auto_renewal_moves_to_the_new_order_and_leaves_the_terminated_one(): void
+    {
+        $this->getLoggedInUser('user');
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        $make = function (string $status) use ($product, $plan) {
+            $order = \App\Model\Order\Order::create(['client' => $this->user->id, 'product' => $product->id, 'order_status' => $status, 'number' => mt_rand(100000, 999999)]);
+            $sub = \App\Model\Product\Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $this->user->id]);
+
+            return [$order, $sub];
+        };
+        [$old, $oldSub] = $make('Terminated');
+        [$new] = $make('executed');
+        \Illuminate\Support\Facades\DB::table('subscriptions')->where('id', $oldSub->id)->update(['subscribe_id' => 'sub_live', 'is_subscribed' => 1, 'autoRenew_status' => '3']);
+        \Illuminate\Support\Facades\DB::table('terminated_order_upgrade')->insert(['terminated_order_id' => $old->id, 'upgraded_order_id' => $new->id]);
+
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('updateSubscriptionPrice')->andReturn(new \App\Plugins\Payment\Dto\SubscriptionResult('Stripe', 'sub_live', 'active', []));
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        $this->getPrivateMethod($this->service, 'moveAutoRenewalToNewOrder', [$new->id, Invoice::factory()->create(['user_id' => $this->user->id, 'currency' => 'USD'])]);
+
+        // The renewal webhook looks subscriptions up by subscribe_id and takes the first match.
+        $holders = \App\Model\Product\Subscription::where('subscribe_id', 'sub_live')->pluck('order_id')->all();
+        $this->assertSame([$new->id], $holders);
+        $this->assertSame(0, (int) $oldSub->fresh()->is_subscribed);
+    }
 }

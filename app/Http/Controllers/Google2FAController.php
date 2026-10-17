@@ -30,7 +30,7 @@ class Google2FAController extends Controller
     public function __construct()
     {
         $this->middleware('web');
-        $this->middleware('auth', ['only' => ['enableTwoFactor', 'disableTwoFactor', 'generateRecoveryCode']]);
+        $this->middleware('auth', ['only' => ['enableTwoFactor', 'disableTwoFactor', 'generateRecoveryCode', 'verifyPassword']]);
         $this->middleware('recaptcha:login_2fa')->only('postLoginValidateToken');
         $this->middleware('recaptcha:login_recovery')->only('verifyRecoveryCode');
     }
@@ -122,12 +122,6 @@ class Google2FAController extends Controller
 
     public function verifyPassword(Request $request): JsonResponse
     {
-        if (! $request->user_password && $request->login_type == 'social') {
-            Session::put('auth.password_confirmed_at', time());
-
-            return successResponse(__('message.password_verified'));
-        }
-
         /** @var User $user */
         $user = Auth::user();
         if (Hash::check($request->input('user_password'), $user->getAuthPassword())) {
@@ -150,6 +144,12 @@ class Google2FAController extends Controller
         $authUser = Auth::user();
         if ($authUser->role != 'admin' && $user->id != $authUser->id) {
             return errorResponse(__('message.cannot_disable_2fa'));
+        }
+
+        // Turning off your own 2FA needs your password, same as turning it on.
+        // An admin switching it off for someone else (locked-out user) does not.
+        if ($user->id === $authUser->id && ! Hash::check((string) $request->input('user_password'), $authUser->getAuthPassword())) {
+            return errorResponse(__('message.password_incorrect'));
         }
 
         $user->google2fa_secret = null;
@@ -238,7 +238,8 @@ class Google2FAController extends Controller
 
         // If it's part of password reset flow
         if ($token = $session->get('reset_token')) {
-            $session->put('2fa_verified', value: true);
+            // The token itself, not `true`: 2FA passed for this link must not unlock any other link.
+            $session->put('2fa_verified', value: $token);
 
             return successResponse('', ['redirect' => route('password.reset', ['token' => $token])]);
         }

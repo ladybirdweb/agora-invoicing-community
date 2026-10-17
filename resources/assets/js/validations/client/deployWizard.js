@@ -57,4 +57,10 @@ export const deploySchema = yup.object({
         then:      (s) => s.trim().required(() => __('message.deploy_key_path_required')),
         otherwise: (s) => s.nullable(),
     }),
+
+    ssl_ca_path: yup.string().when(['deploy_mode', 'ssl_type'], {
+        is:        (mode, ssl) => mode === 'fresh_install' && ssl === 'C',
+        then:      (s) => s.trim().required(() => __('message.deploy_ca_path_required')),
+        otherwise: (s) => s.nullable(),
+    }),
 })

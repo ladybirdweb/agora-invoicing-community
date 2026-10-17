@@ -192,6 +192,15 @@ describe('errorHandler with setErrors', () => {
         })
     })
 
+    it('alerts an excluded field (hidden honeypot) instead of losing it in setErrors', () => {
+        const store = useAlertStore()
+        const msg = 'Your submission was flagged as automated. If this is a mistake, please try again.'
+        const err = makeErr(412, { message: { registerForm: msg } })
+        errorHandler(err, 'Form', { setErrors, excludeFields: ['registerForm'] })
+        expect(store.message).toBe(msg)
+        expect(setErrors).not.toHaveBeenCalled()
+    })
+
     it('takes the first error message when a field value is an array', () => {
         const err = makeErr(412, {
             message: { title: ['Required', 'Too short'] },

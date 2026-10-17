@@ -26,7 +26,7 @@ class CartItemResource extends JsonResource
             'plan_id' => $this->plan_id, // @phpstan-ignore property.notFound
             'name' => $this->product?->name, // @phpstan-ignore property.notFound
             'image' => $this->product?->image, // @phpstan-ignore property.notFound
-            'unit_price' => currencyFormat($this->priceFor($currency), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
+            'unit_price' => currencyFormat($this->unitPrice($currency), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
             'line_total' => currencyFormat($this->lineTotal(), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
             'currency' => $currency,
             'currency_symbol' => $currencySymbol,

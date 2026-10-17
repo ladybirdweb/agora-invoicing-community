@@ -201,6 +201,16 @@ onMounted(async () => {
     globalThis.history.replaceState({}, '', globalThis.location.pathname)
   }
 
+  // ResetPassword sends an expired/invalid link here as ?reset_expired=1.
+  if (new URLSearchParams(globalThis.location.search).has('reset_expired')) {
+    useAlertStore().setAlert({
+      type: 'warning',
+      message: __('message.reset_link_expired'),
+      component_name: COMPONENT,
+    })
+    globalThis.history.replaceState({}, '', globalThis.location.pathname)
+  }
+
   // The OAuth callback sends failures back here as ?social_error=<reason>.
   const socialError = new URLSearchParams(globalThis.location.search).get('social_error')
   if (socialError) {
@@ -291,7 +301,7 @@ async function submitLogin() {
       return
     }
     loginCaptchaRef.value?.reset()
-    errorHandler(e, COMPONENT, { setErrors: loginSetErrors })
+    errorHandler(e, COMPONENT, { setErrors: loginSetErrors, excludeFields: ['login'] })
   } finally {
     loggingIn.value = false
   }
@@ -337,18 +347,20 @@ async function submitRegister() {
       registerForm: regForm.registerForm,
       ...captchaPayload,
     })
+    // "You're all set!" contradicts a verify step that follows — the verify page is the next step itself.
+    if (Number(res.data?.data?.need_verify) === 1) {
+      globalThis.location.href = `${baseUrl}/verify`
+      return
+    }
     successHandler(res, COMPONENT)
-    const needVerify = Number(res.data?.data?.need_verify) === 1
-    setTimeout(() => {
-      globalThis.location.href = `${baseUrl}/${needVerify ? 'verify' : 'login'}`
-    }, 1200)
+    setTimeout(() => { globalThis.location.href = `${baseUrl}/login` }, 1200)
   } catch (e) {
     if (e?.response?.data?.data?.show_v2_recaptcha) {
       regCaptchaRef.value?.triggerFallback()
       return
     }
     regCaptchaRef.value?.reset()
-    errorHandler(e, COMPONENT, { setErrors: regSetErrors })
+    errorHandler(e, COMPONENT, { setErrors: regSetErrors, excludeFields: ['registerForm'] })
   } finally {
     registering.value = false
   }

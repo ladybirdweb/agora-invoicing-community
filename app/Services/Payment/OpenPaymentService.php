@@ -9,8 +9,12 @@ use App\Model\Common\TemplateType;
 use App\Model\Payment\OpenPaymentOrder;
 use App\Plugins\Payment\Dto\Customer;
 use App\Plugins\Payment\Dto\PaymentRequest;
+use App\Plugins\Payment\Dto\PaymentResult;
 use App\Plugins\Payment\Dto\PaymentSession;
 use App\Plugins\Payment\Exceptions\PaymentException;
+use App\Plugins\Payment\Support\Money;
+use Logger;
+use Exception;
 
 /**
  * Open-payment domain logic.
@@ -83,6 +87,20 @@ class OpenPaymentService
         }
 
         $result = $this->payments->capture($order->gateway, $payload);
+
+        // A genuine gateway payment is not necessarily one for THIS order: without this,
+        // paying a cheap open order and posting its payment id against a big one marks the
+        // big one paid (and an unpaid id would mark any order failed). orderRequest() stamps
+        // order_id as Stripe `metadata` / Razorpay `notes`, and the order's own amount.
+        if (! $this->paymentIsForOrder($result, $order)) {
+            Logger::exception(new Exception(sprintf(
+                'Open payment %s (%s) does not carry order_id=%d — refusing to settle it.',
+                $result->reference, $order->gateway, $order->id
+            )));
+
+            return false;
+        }
+
         if (! $result->paid) {
             $order->update(['payment_status' => 'failed']);
             $this->sendFailureEmail($order);
@@ -90,9 +108,36 @@ class OpenPaymentService
             return false;
         }
 
+        if (! $this->capturedCovers($result, $order)) {
+            Logger::exception(new Exception(sprintf(
+                'Open payment %s for order %d captured less than %s %s — refusing to settle; reconcile manually.',
+                $result->reference, $order->id, $order->amount, $order->currency
+            )));
+
+            return false;
+        }
+
         $this->markPaid($order, $result->reference);
 
         return true;
+    }
+
+    private function paymentIsForOrder(PaymentResult $result, OpenPaymentOrder $order): bool
+    {
+        $stamped = $result->raw['metadata'] ?? $result->raw['notes'] ?? null;
+
+        return is_array($stamped) && (int) ($stamped['order_id'] ?? 0) === (int) $order->id;
+    }
+
+    /** Captured ≥ the order's amount, same currency. Gateways report minor units (see InvoicePaymentService). */
+    private function capturedCovers(PaymentResult $result, OpenPaymentOrder $order): bool
+    {
+        $raw = $result->raw;
+        $captured = $raw['amount_received'] ?? $raw['amount_paid'] ?? $raw['amount_total'] ?? null;
+
+        return $captured !== null
+            && strtoupper((string) ($raw['currency'] ?? '')) === strtoupper((string) $order->currency)
+            && (int) $captured >= Money::toMinor((float) $order->amount, (string) $order->currency);
     }
 
     /**

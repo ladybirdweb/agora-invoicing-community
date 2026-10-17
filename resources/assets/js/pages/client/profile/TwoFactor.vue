@@ -169,12 +169,22 @@
                 <h5 class="modal-title fw-bold">{{ __('message.turn_off_authenticator') }}</h5>
             </template>
             <template #fields>
-                <p class="mb-0">{{ __('message.turn_off_authenticator_setup') }}</p>
+                <div v-if="disableError" class="alert alert-danger py-2 mb-3">{{ disableError }}</div>
+                <p class="mb-3">{{ __('message.turn_off_authenticator_setup') }}</p>
+                <form @submit.prevent="disable2fa">
+                    <ClientField
+                        type="password"
+                        name="disable_password"
+                        :label="__('message.password')"
+                        autocomplete="current-password"
+                        v-model="disablePassword"
+                    />
+                </form>
             </template>
             <template #controls>
                 <action-button action="cancel" @click="closeDisableModal" />
                 <action-button action="delete" icon="fas fa-power-off" :label="__('message.disable')"
-                               :loading="disabling2fa" @click="disable2fa" />
+                               :loading="disabling2fa" :disabled="!disablePassword" @click="disable2fa" />
             </template>
         </AppModal>
     </div>
@@ -218,6 +228,8 @@ const verifying2fa      = ref(false)
 // Disable modal state
 const showDisableModal = ref(false)
 const disabling2fa     = ref(false)
+const disablePassword  = ref('')
+const disableError     = ref('')
 
 // The click is prevented so the native checkbox never flips on its own —
 // enabling needs the setup wizard, disabling needs confirmation, so the
@@ -355,19 +367,26 @@ function onEnableDone() {
 
 // ── Disable modal ─────────────────────────────────────────────────────────────
 
-function openDisableModal()  { showDisableModal.value = true }
+function openDisableModal() {
+    disablePassword.value  = ''
+    disableError.value     = ''
+    showDisableModal.value = true
+}
 function closeDisableModal() { showDisableModal.value = false }
 
 async function disable2fa() {
+    if (!disablePassword.value) return
+    disableError.value = ''
     disabling2fa.value = true
     try {
-        const res = await http.post(`/2fa/disable/${userId}`)
+        const res = await http.post(`/2fa/disable/${userId}`, { user_password: disablePassword.value })
         successHandler(res, COMPONENT)
         is2faEnabled.value     = false
         dateSinceEnabled.value = null
         closeDisableModal()
     } catch (e) {
-        errorHandler(e, COMPONENT)
+        // Shown inside the modal — a wrong password should not close it.
+        disableError.value = e?.response?.data?.message ?? e?.message ?? __('message.something_went_wrong')
     } finally {
         disabling2fa.value = false
     }

@@ -212,7 +212,7 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-4 fw-semibold">{{ __('message.name') }}</div>
                                                     <div class="col-8">
-                                                        <router-link v-if="order?.user?.id" :to="`/users/${order.user.id}/edit`">{{ userName }}</router-link>
+                                                        <router-link v-if="order?.user?.id" :to="`/users/${order.user.id}`">{{ userName }}</router-link>
                                                         <span v-else>{{ userName }}</span>
                                                     </div>
                                                 </div>

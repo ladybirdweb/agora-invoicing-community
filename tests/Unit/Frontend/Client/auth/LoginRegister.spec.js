@@ -150,6 +150,18 @@ describe('LoginRegister.vue', () => {
         expect(successHandler).toHaveBeenCalled()
     })
 
+    it('goes straight to verify without the "all set" message when verification is needed', async () => {
+        axiosMock.onPost('/auth/register').reply(200, {
+            message: 'You’re all set! Registration complete.',
+            data: { need_verify: 1 },
+        })
+
+        await wrapper.findAll('form')[1].trigger('submit')
+        await flushPromises()
+
+        expect(successHandler).not.toHaveBeenCalled()
+    })
+
     it('calls errorHandler with setErrors on register API error', async () => {
         axiosMock.onPost('/auth/register').reply(422, {
             errors: { email: ['Email already taken.'] },

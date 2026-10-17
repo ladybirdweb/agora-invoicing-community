@@ -65,7 +65,8 @@ class DeployController extends Controller
         $installing = fn (): bool => $request->step === 'install';
 
         $request->validate([
-            'step' => 'required|in:verify,install,upload,extract',
+            'step' => 'required|in:verify,install,status,upload,extract',
+            'offset' => 'nullable|integer|min:0',
             'order_id' => 'required|integer',
             'host' => 'required|string|max:255',
             'port' => 'required|integer|min:1|max:65535',
@@ -82,6 +83,7 @@ class DeployController extends Controller
             'ssl_type' => ['nullable', 'in:A,B,C', Rule::requiredIf($installing)],
             'ssl_cert_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
             'ssl_key_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
+            'ssl_ca_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
             'web_user' => ['nullable', 'string', 'max:64', 'regex:/^[a-z_][a-z0-9_.-]*$/i'],
             'sudo_password' => 'nullable|string',
             'version_id' => 'nullable|integer',
@@ -100,6 +102,7 @@ class DeployController extends Controller
             'install_email.email' => __('message.deploy_email_invalid'),
             'ssl_cert_path.required' => __('message.deploy_cert_path_required'),
             'ssl_key_path.required' => __('message.deploy_key_path_required'),
+            'ssl_ca_path.required' => __('message.deploy_ca_path_required'),
         ]);
 
         try {
@@ -134,6 +137,7 @@ class DeployController extends Controller
             return match ($request->step) { // @phpstan-ignore match.unhandled
                 'verify' => $this->stepVerify($request, $deployPath),
                 'install' => $this->stepInstall($request, $order),
+                'status' => $this->stepStatus($request, $order),
                 'upload' => $this->stepUpload($request, $order),
                 'extract' => $this->stepExtract($request, $order, $deployPath),
             };
@@ -154,9 +158,9 @@ class DeployController extends Controller
 
         // No path yet = connection-only check; the full verify on Deploy also creates the path.
         if ($request->deploy_mode === 'extract_only' && $deployPath !== '') {
-            $ssh->exec('mkdir -p '.escapeshellarg($deployPath));
+            [, $exitCode] = $this->run($ssh, 'mkdir -p '.escapeshellarg($deployPath));
 
-            if ($ssh->getExitStatus() !== 0) {
+            if ($exitCode !== 0) {
                 return errorResponse(__('message.deploy_path_create_failed', ['path' => $deployPath]));
             }
         }
@@ -166,51 +170,127 @@ class DeployController extends Controller
 
     private function stepInstall(Request $request, Order $order): JsonResponse
     {
-        $installScript = Setting::value('help_support_url');
-        if (empty($installScript)) {
+        // A GitHub page link (…/blob/…) serves HTML; rewrite it to the raw file.
+        $installScript = (string) preg_replace('#^https://github\.com/([^/]+/[^/]+)/blob/#', 'https://raw.githubusercontent.com/$1/', (string) Setting::value('help_support_url'));
+        if ($installScript === '') {
             return errorResponse(__('message.deploy_install_script_not_configured'), 422);
         }
 
         $ssh = new SSH2($this->ip, (int) $request->port);
-        $ssh->setTimeout(1800);
+        $ssh->setTimeout(120);
 
         if ($error = $this->login($ssh, $request)) {
             return $error;
         }
 
-        // One answer per line, in the order the install script prompts for them.
-        // The license line comes from the order itself, never from the request.
-        // ponytail: the trailing "y" on the license line is kept from the original — confirm against the script.
-        $answers = [
-            $request->install_domain,
-            $request->install_email,
-            $order->serial_key.$order->number.'y',
-            (string) $request->web_server,
-            $request->ssl_type,
+        // Every option the script would otherwise prompt for — there is no keyboard, so a missed one would hang it.
+        // License and order number come from the order itself, never from the request.
+        $args = [
+            '--domain' => $request->install_domain,
+            '--email' => $request->install_email,
+            '--license' => (string) $order->serial_key,
+            '--order' => (string) $order->number,
+            '--webserver' => (string) $request->web_server === '2' ? 'nginx' : 'apache',
+            '--ssl' => ['A' => 'certbot', 'B' => 'self-signed', 'C' => 'paid-ssl'][$request->ssl_type],
+            '--sql' => 'mysql',
+            '--sqlreser' => 'no',
+            '--php' => '8.4',
+            '--release' => 'official',
+            '--faveoenv' => 'production',
+            '--meili' => 'yes',
+            '--nats' => 'no',
+            '--node' => 'no',
         ];
         if ($request->ssl_type === 'C') {
-            array_push($answers, $request->ssl_cert_path, $request->ssl_key_path);
+            $args += ['--certfile' => $request->ssl_cert_path, '--keyfile' => $request->ssl_key_path, '--cacertfile' => $request->ssl_ca_path];
         }
+        $argv = implode(' ', array_map(fn ($flag, $value) => $flag.' '.escapeshellarg((string) $value), array_keys($args), $args));
 
-        $output = (string) $ssh->exec(
-            'wget -q -O /tmp/faveo_install.sh '.escapeshellarg($installScript).' && '.
-            "printf '%s\\n' ".implode(' ', array_map(escapeshellarg(...), $answers)).' | bash /tmp/faveo_install.sh 2>&1; '.
-            'rc=$?; rm -f /tmp/faveo_install.sh; exit $rc'
+        [$dir, $log, $rc] = $this->installFiles($order);
+        $main = basename((string) parse_url($installScript, PHP_URL_PATH));
+
+        // faveo.sh only checks the OS, then runs debian_block.sh / rhel_block.sh from its own folder — fetch them too.
+        // ponytail: sibling names follow Faveo's installer layout; make them a setting if another product's script differs.
+        $base = dirname($installScript);
+        $downloads = [$main => $installScript, 'debian_block.sh' => $base.'/debian_block.sh', 'rhel_block.sh' => $base.'/rhel_block.sh'];
+
+        // Download synchronously (quick) so a bad URL fails here with the downloader's own message.
+        // Minimal images ship wget or curl, not always both.
+        $fetch = fn (string $file, string $url): string => 'if command -v wget >/dev/null; then wget -nv -O '.escapeshellarg($file).' '.escapeshellarg($url).' 2>&1; '.
+            'else curl -fsSL -o '.escapeshellarg($file).' '.escapeshellarg($url).' 2>&1; fi';
+        [$output, $exitCode] = $this->run($ssh,
+            'rm -rf '.escapeshellarg($dir).' && mkdir -m 700 '.escapeshellarg($dir).' && cd '.escapeshellarg($dir).' && '.
+            implode(' && ', array_map(fn ($file, $url) => '{ '.$fetch($file, $url).'; }', array_keys($downloads), $downloads))
         );
 
-        if ($ssh->getExitStatus() !== 0) {
-            return errorResponse(__('message.deploy_install_script_errors'));
+        if ($exitCode !== 0) {
+            return errorResponse(__('message.deploy_install_script_errors'), 422, ['exit_code' => $exitCode, 'output' => $output]);
         }
 
-        $credentials = trim((string) $ssh->exec(
-            'cat ~/credentials.txt 2>/dev/null || cat /root/credentials.txt 2>/dev/null || echo ""'
-        ));
+        // The script needs root. -n: a sudo user without a password fails fast with sudo's own message in the log.
+        $run = 'bash '.escapeshellarg($main).' '.$argv;
+        if ($request->username !== 'root') {
+            $run = $request->filled('sudo_password')
+                ? "printf '%s\\n' ".escapeshellarg($request->sudo_password)." | sudo -S -p '' ".$run
+                : 'sudo -n '.$run;
+        }
 
-        return successResponse(__('message.deploy_install_completed'), [
-            'credentials' => $credentials,
-            'setup_url' => 'http://'.$request->install_domain.'/',
-            'output' => $output,
-        ]);
+        // The install takes many minutes — far past any web timeout — so it runs detached on the server,
+        // writing to a log the wizard polls via the "status" step. The rc file appears when it ends.
+        // It runs inside $dir because the script writes credentials.txt to its working directory.
+        $job = 'cd '.escapeshellarg($dir).' && { '.$run.'; } > '.escapeshellarg($log).' 2>&1 < /dev/null; '.
+            'echo $? > '.escapeshellarg($rc).'; rm -f '.escapeshellarg($dir).'/*.sh';
+        $ssh->exec('nohup setsid sh -c '.escapeshellarg($job).' < /dev/null > /dev/null 2>&1 &');
+
+        return successResponse(__('message.deploy_install_started'));
+    }
+
+    /** One poll of the background install: log bytes after `offset`, and the result once it has ended. */
+    private function stepStatus(Request $request, Order $order): JsonResponse
+    {
+        $ssh = new SSH2($this->ip, (int) $request->port);
+
+        if ($error = $this->login($ssh, $request)) {
+            return $error;
+        }
+
+        [$dir, $log, $rc] = $this->installFiles($order);
+        $offset = (int) $request->offset;
+        $chunkSize = 65536;
+
+        // rc before log: once rc exists the log is complete, so nothing written in between is missed.
+        $exitCode = trim((string) $ssh->exec('cat '.escapeshellarg($rc).' 2>/dev/null'));
+        $chunk = (string) $ssh->exec('tail -c +'.($offset + 1).' '.escapeshellarg($log).' 2>/dev/null | head -c '.$chunkSize);
+        $done = $exitCode !== '' && strlen($chunk) < $chunkSize;
+
+        $data = [
+            'offset' => $offset + strlen($chunk),
+            // Colour codes are kept: the wizard colours the log and reads the script's red lines as the failure reason.
+            // mb_scrub: a chunk can split a UTF-8 char, and invalid UTF-8 would break the JSON response.
+            'output' => mb_scrub($chunk, 'UTF-8'),
+            'done' => $done,
+            'exit_code' => $done ? (int) $exitCode : null,
+        ];
+
+        if ($done && $data['exit_code'] === 0) {
+            $data['credentials'] = trim((string) $ssh->exec('cat '.escapeshellarg($dir.'/credentials.txt').' 2>/dev/null'));
+            // Every SSL option the script offers ends in HTTPS.
+            $data['setup_url'] = 'https://'.$request->install_domain.'/';
+        }
+
+        return successResponse('', $data);
+    }
+
+    /**
+     * Working dir, log and exit-code paths on the remote server — derived here, never sent by the client.
+     *
+     * @return array{string, string, string}
+     */
+    private function installFiles(Order $order): array
+    {
+        $dir = '/tmp/faveo_install_'.$order->id;
+
+        return [$dir, $dir.'/install.log', $dir.'/install.rc'];
     }
 
     private function stepUpload(Request $request, Order $order): JsonResponse
@@ -280,13 +360,13 @@ class DeployController extends Controller
         $path = escapeshellarg($deployPath);
 
         // "user:" = that user plus its login group.
-        $output = (string) $ssh->exec(
+        [$output, $exitCode] = $this->run($ssh,
             $withSudo("unzip -o {$zip} -d {$path}").' 2>&1 && '.
             $withSudo('chown -R '.escapeshellarg($webUser.':')." {$path}").' 2>&1; '.
             "rc=\$?; rm -f {$zip}; exit \$rc"
         );
 
-        if ($ssh->getExitStatus() !== 0) {
+        if ($exitCode !== 0) {
             return str_contains($output, 'Permission denied')
                 ? errorResponse(__('message.deploy_permission_denied', ['path' => $deployPath]))
                 : errorResponse(__('message.deploy_failed_generic'));
@@ -367,6 +447,25 @@ class DeployController extends Controller
         }
 
         return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ?: null;
+    }
+
+    /**
+     * Runs a command and returns [output, exit code].
+     * The command prints its own code: some SSH servers never send phpseclib an exit status,
+     * so getExitStatus() can be false even when everything worked.
+     *
+     * @return array{string, int}
+     */
+    private function run(SSH2 $ssh, string $command): array
+    {
+        $output = (string) $ssh->exec("( {$command}\n); echo \"__RC__\$?\"");
+
+        if (preg_match('/__RC__(\d+)\s*$/', $output, $m, PREG_OFFSET_CAPTURE)) {
+            return [substr($output, 0, $m[0][1]), (int) $m[1][0]];
+        }
+
+        // No marker = cut off (timeout or dropped connection) before the command finished.
+        return [$output, -1];
     }
 
     private function login(SSH2 $ssh, Request $request): ?JsonResponse

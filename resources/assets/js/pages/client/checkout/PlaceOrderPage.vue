@@ -174,6 +174,7 @@ import { ref, reactive, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAlertStore } from '@/core/stores/alert'
 import { useLoaderStore } from '@/core/stores/loader'
+import { useCartStore } from '@/core/stores/cart'
 import http, { parseErrorMessage } from '@/plugins/axios'
 import { __ } from '@/plugins/i18n'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
@@ -188,6 +189,7 @@ const invoiceId = computed(() => route.query.invoice)
 
 const alertStore = useAlertStore()
 const loaderStore = useLoaderStore()
+const cartStore = useCartStore()
 
 const loading = ref(true)
 const busy = ref(false)
@@ -470,6 +472,9 @@ async function payRazorpay(config) {
 }
 
 function onPaid() {
+  // The server emptied the cart on payment, but this is an in-page navigation — reload it
+  // so the navbar count doesn't keep showing what was just bought until a refresh.
+  cartStore.fetchCart()
   router.push({ path: '/payment-success', query: { invoice: invoiceId.value } })
 }
 </script>

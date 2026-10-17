@@ -88,7 +88,14 @@ const to           = ref(null)
 const perPage      = ref(props.option?.perPage ?? 10)
 
 const perPageValues = computed(() => props.option?.perPageValues ?? [10, 25, 50, 100])
-const showPerPage   = computed(() => (perPageValues.value.length > 1 || (props.option?.alwaysShowPerPageSelect ?? false)) && !props.option?.pagination?.virtual)
+// Only worth showing when a bigger page would show more rows: with total ≤ the smallest
+// option every choice renders the same. Hidden until the first load reports a total —
+// appearing late on big tables beats flashing then vanishing on every small one.
+const showPerPage   = computed(() =>
+  (perPageValues.value.length > 1 || (props.option?.alwaysShowPerPageSelect ?? false))
+  && !props.option?.pagination?.virtual
+  && total.value !== null && total.value > Math.min(...perPageValues.value)
+)
 
 const isFilterable = computed(() => props.option.filterable ?? false)
 

@@ -52,18 +52,15 @@ class BaseRenewController extends Controller
         try {
             /** @var Order $order */
             $order = Order::find($orderid);
-            $invoice_item_id = $order->invoice_item_id;
-            $invoice_id = $order->invoice_id; // @phpstan-ignore property.notFound
-            /** @var Invoice $invoice */
-            $invoice = Invoice::find($invoice_id);
-            if ($invoice_item_id == 0) {
-                /** @var InvoiceItem $firstInvoiceItem */
-                $firstInvoiceItem = $invoice->invoiceItem()->first();
-                $invoice_item_id = $firstInvoiceItem->id;
+            $item = InvoiceItem::find($order->invoice_item_id);
+            if (! $item) {
+                // Older orders carry no invoice_item_id. orders.invoice_id was dropped, so take
+                // the first item of the order's original (oldest linked) invoice instead.
+                $item = $order->invoices()->oldest('invoices.id')->first()?->invoiceItem()->first();
             }
-
-            /** @var InvoiceItem $item */
-            $item = InvoiceItem::find($invoice_item_id);
+            if (! $item instanceof InvoiceItem) {
+                throw new Exception(__('message.record_not_found'));
+            }
             $product = $this->getProductByProductId($item->product_id, $order);
             $user = $this->getUserById($order->client); // @phpstan-ignore method.notFound
             if (! $user) {
@@ -106,8 +103,18 @@ class BaseRenewController extends Controller
 
             /** @var User $authUser */
             $authUser = Auth::user();
+
+            // Price for the order's owner: on the admin renew page the logged-in user is the
+            // admin, and an INR admin pricing a USD client's renewal saved the INR amount as USD.
+            // A client may only price their own orders.
+            $order = $orderId ? Order::find((int) $orderId) : null;
+            if ($order && ! authorizeOwnership((int) $order->client, allowAdmin: true)) {
+                return errorResponse(__('message.unauthorized_action'), 403);
+            }
+            $customer = $order ? (User::find($order->client) ?? $authUser) : $authUser;
+
             if (! $planId) {
-                $currency = getCurrencyForClient($authUser->country);
+                $currency = getCurrencyForClient($customer->country);
 
                 return successResponse('', [
                     'formatted_price' => currencyFormat(0, $currency),
@@ -116,7 +123,7 @@ class BaseRenewController extends Controller
             }
 
             $plan = Plan::find($planId);
-            $planDetails = userCurrencyAndPrice($authUser->id, $plan);
+            $planDetails = userCurrencyAndPrice($customer->id, $plan);
             $price = $planDetails['plan']->renew_price;
             $currency = $planDetails['currency'];
 

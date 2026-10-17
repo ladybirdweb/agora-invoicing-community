@@ -92,7 +92,8 @@ class DashboardTest extends DBTestCase
         $this->withoutMiddleware();
         $date = '2025-03-02 18:15:02';
         $product = Product::create(['name' => 'Helpdesk Advance', 'description' => 'goodProduct']);
-        $order = Order::factory()->create(['client' => $user->id]);
+        // Not the factory's random status: a Terminated order (replaced by an upgrade) isn't a renewal.
+        $order = Order::factory()->create(['client' => $user->id, 'order_status' => 'executed']);
         Invoice::factory()->create(['user_id' => $user->id, 'status' => 'pending']);
         $plan = Plan::create(['id' => 'mt_rand(1,99)', 'name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id,

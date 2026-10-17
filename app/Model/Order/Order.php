@@ -145,6 +145,19 @@ class Order extends BaseModel
     }
 
     /**
+     * Orders the client still can (and should) renew: expired, not replaced by an
+     * upgrade (Terminated), and with a cloud instance still behind them. The dashboard's
+     * "Order Renewals" count and the list it links to must use this same rule.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<Order>  $query
+     */
+    public function scopeNeedsRenewal(\Illuminate\Database\Eloquent\Builder $query): void
+    {
+        $query->where('order_status', '!=', 'Terminated')
+            ->whereHas('subscription', fn ($q) => $q->where('update_ends_at', '<', now())->where('is_deleted', '!=', 1));
+    }
+
+    /**
      * @return BelongsTo<Product, $this>
      */
     public function productRelation(): BelongsTo
@@ -169,6 +182,32 @@ class Order extends BaseModel
     public function invoice(): BelongsToMany // @phpstan-ignore missingType.generics
     {
         return $this->invoices();
+    }
+
+    /**
+     * The order's latest invoice when it isn't fully paid — renewing on top of it would bill
+     * the customer twice. Shared by the admin renew button and the renew endpoint.
+     */
+    public function latestUnpaidInvoice(): ?Invoice
+    {
+        $invoice = $this->invoices()->latest('invoices.id')->first();
+
+        return $invoice && strcasecmp((string) $invoice->status, 'Success') !== 0 ? $invoice : null;
+    }
+
+    /**
+     * Why an admin can't renew right now (null = renewable). A terminated order has no reason —
+     * it's replaced by its upgrade order, so the button is hidden rather than explained.
+     */
+    public function renewBlockedReason(): ?string
+    {
+        if ($this->subscription?->is_deleted) {
+            return (string) __('message.renew_blocked_instance_deleted');
+        }
+
+        $unpaid = $this->latestUnpaidInvoice();
+
+        return $unpaid ? (string) __('message.renew_blocked_unpaid_invoice', ['number' => $unpaid->number]) : null;
     }
 
     /**

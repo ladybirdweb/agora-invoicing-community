@@ -570,4 +570,49 @@ class OrderControllerTest extends DBTestCase
         $data = $response->json('data');
         $this->assertArrayHasKey('data', $data);
     }
+
+    // ── Deleted cloud instances: renew explained, teardown not repeated ─────
+
+    private function cloudOrderWithDomain(bool $instanceDeleted): Order
+    {
+        $product = \App\Model\Product\Product::factory()->create();
+        $freePlan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id]);
+        \App\Model\Product\CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $freePlan->id, 'cloud_product_key' => 'k'.uniqid()]);
+        // 9 digits: longer than the factory's 8-digit numbers, so the list's substring search
+        // (it also matches mobiles, emails…) finds only this order in a full-suite database.
+        $order = Order::factory()->withRelations()->create(['product' => $product->id, 'order_status' => 'executed', 'number' => random_int(900000000, 999999999)]);
+        \App\Model\Product\Subscription::where('order_id', $order->id)->update(['is_deleted' => (int) $instanceDeleted]);
+        $code = 'LIC'.uniqid();
+        License::create(['product_id' => $order->product, 'user_id' => $order->client, 'license_code' => $code, 'license_order_number' => $order->number, 'license_status' => 1]);
+        \App\License\Models\InstallationLog::create(['license_code' => $code, 'installation_domain' => 'tenant-'.uniqid().'.example.test', 'installation_last_active_date' => now()]);
+
+        return $order;
+    }
+
+    public function test_list_explains_why_a_deleted_instance_cannot_be_renewed(): void
+    {
+        $this->getLoggedInUser('admin');
+        $order = $this->cloudOrderWithDomain(instanceDeleted: true);
+
+        $response = $this->getJson('/orders?limit=100&search-query='.$order->number);
+        $row = collect($response->json('data.data'))->firstWhere('id', $order->id);
+        $this->assertNotNull($row, 'Order missing from the list: '.$response->getContent());
+
+        $this->assertTrue($row['can_renew']); // still shown…
+        $this->assertSame(__('message.renew_blocked_instance_deleted'), $row['renew_blocked_reason']); // …but disabled, with why
+    }
+
+    public function test_bulk_delete_skips_teardown_for_an_already_deleted_instance(): void
+    {
+        $this->getLoggedInUser('admin');
+        \Illuminate\Support\Facades\Event::fake([\App\Events\UserOrderDelete::class]);
+        $gone = $this->cloudOrderWithDomain(instanceDeleted: true);
+        $live = $this->cloudOrderWithDomain(instanceDeleted: false);
+
+        $this->deleteJson('/orders', ['order_ids' => [$gone->id, $live->id]])->assertOk();
+
+        \Illuminate\Support\Facades\Event::assertDispatchedTimes(\App\Events\UserOrderDelete::class, 1);
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\UserOrderDelete::class, fn ($e) => $e->order_id === $live->id);
+        $this->assertSame(0, Order::whereIn('id', [$gone->id, $live->id])->count());
+    }
 }

@@ -403,7 +403,18 @@
             <h4>{{ __('message.turn_off_authenticator') }}</h4>
         </template>
         <template #fields>
-            <span>{{ __('message.turn_off_authenticator_setup') }}</span>
+            <AppAlert :componentName="DISABLE_COMPONENT" />
+            <p>{{ __('message.turn_off_authenticator_setup') }}</p>
+            <TextField
+                name="disable_password"
+                :label="__('message.password')"
+                type="password"
+                :required="true"
+                :value="disablePassword"
+                :onChange="(val) => disablePassword = val"
+                :placehold="__('message.enter_password')"
+                :keyupListener="(e) => { if (e.key === 'Enter' && disablePassword) disable2fa() }"
+            />
         </template>
         <template #controls>
             <action-button
@@ -411,6 +422,7 @@
                 icon="fas fa-power-off"
                 :label="__('message.disable')"
                 :loading="disabling2fa"
+                :disabled="!disablePassword"
                 @click="disable2fa"
             />
         </template>
@@ -441,6 +453,8 @@ const savingProfile    = ref(false)
 const savingPassword   = ref(false)
 const enabling2fa      = ref(false)
 const disabling2fa     = ref(false)
+const disablePassword  = ref('')
+const DISABLE_COMPONENT = 'admin-disable-2fa'
 const verifying2fa     = ref(false)
 const is2faEnabled     = ref(false)
 const dateSinceEnabled = ref(null)
@@ -765,19 +779,24 @@ function onEnableDone() {
 
 // ── Disable 2FA modal ─────────────────────────────────────────────────────────
 
-function openDisableModal()  { showDisableModal.value = true }
+function openDisableModal() {
+    disablePassword.value  = ''
+    showDisableModal.value = true
+}
 function closeDisableModal() { showDisableModal.value = false }
 
 async function disable2fa() {
+    if (!disablePassword.value) return
     disabling2fa.value = true
     try {
-        const res = await http.post(`/2fa/disable/${userId.value}`)
+        const res = await http.post(`/2fa/disable/${userId.value}`, { user_password: disablePassword.value })
         successHandler(res, COMPONENT)
         is2faEnabled.value     = false
         dateSinceEnabled.value = null
         closeDisableModal()
     } catch (e) {
-        errorHandler(e, COMPONENT, { setErrors })
+        // Inside the modal — a wrong password should not close it.
+        errorHandler(e, DISABLE_COMPONENT)
     } finally {
         disabling2fa.value = false
     }

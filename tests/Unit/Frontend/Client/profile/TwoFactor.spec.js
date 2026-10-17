@@ -122,6 +122,7 @@ describe('TwoFactor.vue', () => {
 
         axiosMock.onPost(/\/2fa\/disable/).reply(200, { data: {} })
 
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
 
@@ -135,6 +136,7 @@ describe('TwoFactor.vue', () => {
         axiosMock.onPost(/\/2fa\/disable/).reply(200, { data: {} })
         wrapper.vm.is2faEnabled = true
 
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
 
@@ -146,6 +148,7 @@ describe('TwoFactor.vue', () => {
 
         axiosMock.onPost(/\/2fa\/disable/).reply(200, { data: {} })
 
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
 
@@ -157,10 +160,27 @@ describe('TwoFactor.vue', () => {
 
         axiosMock.onPost(/\/2fa\/disable/).reply(500, { message: 'Error' })
 
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
 
-        expect(errorHandler).toHaveBeenCalled()
+        // Shown inside the modal so a wrong password doesn't close it.
+        expect(wrapper.vm.disableError).toBe('Error')
+    })
+
+    it('sends the password and sends nothing without one', async () => {
+        await flushPromises()
+        axiosMock.onPost(/\/2fa\/disable/).reply(200, { data: {} })
+
+        wrapper.vm.disablePassword = ''
+        await wrapper.vm.disable2fa()
+        expect(axiosMock.history.post.filter(r => /\/2fa\/disable/.test(r.url))).toHaveLength(0)
+
+        wrapper.vm.disablePassword = 'pw'
+        await wrapper.vm.disable2fa()
+        await flushPromises()
+        const req = axiosMock.history.post.find(r => /\/2fa\/disable/.test(r.url))
+        expect(JSON.parse(req.data)).toEqual({ user_password: 'pw' })
     })
 
     it('openEnableModal sets showEnableModal to true and calls GET /show/verify-password', async () => {
@@ -385,17 +405,21 @@ describe('TwoFactor.vue', () => {
     // ── disable2fa ───────────────────────────────────────────────────
     it('disable2fa posts to /2fa/disable and disables 2FA on success', async () => {
         axiosMock.onPost(/\/2fa\/disable/).reply(200, { message: 'Disabled' })
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
         expect(wrapper.vm.is2faEnabled).toBe(false)
         expect(wrapper.vm.showDisableModal).toBe(false)
     })
 
-    it('disable2fa calls errorHandler on failure', async () => {
-        axiosMock.onPost(/\/2fa\/disable/).reply(500)
+    it('disable2fa keeps the modal open with an error on failure', async () => {
+        axiosMock.onPost(/\/2fa\/disable/).reply(400, { message: 'Password incorrect' })
+        wrapper.vm.showDisableModal = true
+        wrapper.vm.disablePassword = 'pw'
         await wrapper.vm.disable2fa()
         await flushPromises()
-        expect(errorHandler).toHaveBeenCalled()
+        expect(wrapper.vm.disableError).toBe('Password incorrect')
+        expect(wrapper.vm.showDisableModal).toBe(true)
     })
 
     // ── Template branch coverage: render different states ────────────

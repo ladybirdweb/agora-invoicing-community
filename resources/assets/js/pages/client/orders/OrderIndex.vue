@@ -11,6 +11,8 @@
                     <div class="d-flex flex-column align-items-start">
                         <RouterLink :to="'/my-order/' + row.id" class="fw-semibold">{{ row.number || '—' }}</RouterLink>
                         <span v-if="row.is_terminated" class="badge bg-danger mt-1 w-auto">{{ __('message.terminated') }}</span>
+                        <!-- Otherwise Renew just vanishes with no explanation. -->
+                        <span v-else-if="row.is_cloud_deleted" class="badge bg-secondary mt-1 w-auto">{{ __('message.instance_deleted') }}</span>
                     </div>
                 </template>
                 <template #order_date="{ row }">{{ formatDate(row.order_date) }}</template>
@@ -148,7 +150,7 @@ const tableOptions = reactive({
         order_date:     'dt-date-col',
         number:         'dt-number-col',
         agents:         'dt-agents-col',
-        update_ends_at: 'dt-date-col',
+        update_ends_at: 'dt-expiry-col',
         action:         'dt-action-col',
     },
     sortable:   ['product_name', 'number', 'order_date', 'update_ends_at'],

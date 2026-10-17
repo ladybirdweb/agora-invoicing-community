@@ -342,17 +342,16 @@ Route::middleware('installAgora')->group(function (): void {
     Route::get('get-my-installations/{orderid}', [ClientController::class, 'getOrderInstallations']);
     Route::get('get-versions/{orderid}', [ClientController::class, 'getVersionList'])->name('get-versions');
     Route::get('get-deploy-versions/{orderId}', [Front\DeployController::class, 'getVersions'])->name('get-deploy-versions');
-    Route::post('deploy-product-step', [Front\DeployController::class, 'deployStep'])->middleware('throttle:30,1')->name('deploy-product-step');
+    Route::post('deploy-product-step', [Front\DeployController::class, 'deployStep'])->middleware('throttle:60,1')->name('deploy-product-step');
 
-    // --- Renew (client) ---
-    Route::get('get-renew-cost', [RenewController::class, 'getCost']);
-    Route::post('client/renew/{id}', [RenewController::class, 'renewByClient']);
+    // --- Renew (admin) --- extends dates straight away, so admin only.
+    Route::post('admin/renew/{id}', [RenewController::class, 'renew'])->middleware(['auth', 'admin']);
 
-    // --- Renew (admin) ---
-    Route::post('admin/renew/{id}', [RenewController::class, 'renew']);
-
-    // --- Payments (client) ---
+    // --- Renew + payments (client) ---
     Route::middleware('auth')->group(function (): void {
+        Route::get('get-renew-cost', [RenewController::class, 'getCost']);
+        Route::post('client/renew/{id}', [RenewController::class, 'renewByClient']);
+
         Route::get('invoice/{invoice}/pay-init', [PaymentController::class, 'payInit'])->name('invoice.pay.init');
         Route::get('invoice/{invoice}/pay-success', [PaymentController::class, 'paySuccess'])->name('invoice.pay.success');
         Route::post('invoice/{invoice}/stripe/session', [PaymentController::class, 'stripeSession'])->name('invoice.pay.stripe.session');

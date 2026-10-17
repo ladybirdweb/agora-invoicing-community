@@ -827,7 +827,7 @@ const orderOptions = {
         // ('active', 'pending', ...) that don't exist here, so every real
         // order fell through to the plain gray default.
         order_status: (_, row) => statusBadge(row.order_status, { executed: 'bg-success', terminated: 'bg-danger' }),
-        action:       (_, row) => h(OrderTableActions, { orderId: row.id, canRenew: !!row.can_renew, baseUrl: baseUrl, showDelete: true, componentName: COMPONENT }),
+        action:       (_, row) => h(OrderTableActions, { orderId: row.id, canRenew: !!row.can_renew, renewBlockedReason: row.renew_blocked_reason || '', baseUrl: baseUrl, showDelete: true, componentName: COMPONENT }),
     },
     sortable:   ['order_date', 'number', 'order_status'],
     filterable: true,

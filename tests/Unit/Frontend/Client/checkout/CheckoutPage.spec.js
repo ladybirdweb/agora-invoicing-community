@@ -121,6 +121,13 @@ describe('CheckoutPage.vue', () => {
         expect(wrapper.find('input[type="text"]').exists()).toBeTruthy()
     })
 
+    it('hides coupon input for an all-free cart (nothing to discount)', async () => {
+        const free = { ...cartStateWithItems, cart: { ...cartStateWithItems.cart, subtotal: '0.00', total: 0, grand_total: 0 } }
+        wrapper = createWrapper(free)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.find('input[name="coupon_code"]').exists()).toBeFalsy()
+    })
+
     it('hides coupon input when coupon is already applied', async () => {
         wrapper = createWrapper(cartStateWithCoupon)
         await wrapper.vm.$nextTick()

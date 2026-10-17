@@ -3674,4 +3674,5 @@ return [
     'deploy_target_environment' => 'Target Environment',
     'deploy_step_of' => 'Step :current of :total: :name',
     'deploy_manual_guide_link' => 'Prefer to install manually? Read the guide',
+    'instance_deleted' => 'Instance deleted',
 ];

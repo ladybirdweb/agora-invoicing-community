@@ -15,6 +15,7 @@ use DB;
 use Exception;
 use Illuminate\Database\QueryException;
 use Logger;
+use Throwable;
 
 /**
  * Handles subscription renewal fulfillment triggered by gateway webhooks.
@@ -52,12 +53,12 @@ class SubscriptionWebhookService
         $type = $event['type'] ?? null;
         $object = $event['data']['object'] ?? [];
 
-        match ($type) {
+        $this->releasingClaimOnFailure('stripe', $eventId, fn () => match ($type) {
             'invoice.payment_succeeded' => $this->onStripeInvoicePaid($object),
             'invoice.payment_failed' => $this->onStripeInvoiceFailed($object),
             'customer.subscription.deleted' => $this->onStripeSubscriptionDeleted($object),
             default => null,
-        };
+        });
     }
 
     /**
@@ -158,7 +159,7 @@ class SubscriptionWebhookService
             return;
         }
 
-        $this->fulfillRenewal('razorpay', $gatewaySubscriptionId, $amountPaid);
+        $this->releasingClaimOnFailure('razorpay', $paymentId, fn () => $this->fulfillRenewal('razorpay', $gatewaySubscriptionId, $amountPaid));
     }
 
     /**
@@ -331,6 +332,24 @@ class SubscriptionWebhookService
      * false on a repeat (a losing/duplicate insert throws on the unique
      * constraint, caught here rather than a check-then-act race).
      */
+    /**
+     * Run the work for a claimed event; if it fails, drop the claim and rethrow so the
+     * gateway's retry (it sees the error) can do it — otherwise the retry hit the claim, got a
+     * 200 and nothing was ever done: charged, not renewed.
+     */
+    private function releasingClaimOnFailure(string $gateway, string $eventId, callable $work): void
+    {
+        try {
+            $work();
+        } catch (Throwable $throwable) {
+            if ($eventId !== '') {
+                GatewayEvent::where(['gateway' => $gateway, 'event_id' => $eventId])->delete();
+            }
+
+            throw $throwable;
+        }
+    }
+
     private function claimEvent(string $gateway, string $eventId): bool
     {
         try {

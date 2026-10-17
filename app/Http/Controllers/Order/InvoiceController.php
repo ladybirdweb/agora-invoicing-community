@@ -500,7 +500,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     : $invoiceUser->state;
             }
 
-            $invoiceItems = $invoice->invoiceItem()->with('order:id,invoice_item_id')->get();
+            // Same renewal fallback as the invoice page: renewal items own no order.
+            $linkedOrder = $invoice->orders()->count() === 1 ? $invoice->orders()->first() : null;
+            $invoiceItems = $invoice->invoiceItem()->with('order:id,number,invoice_item_id')->get()
+                ->each(fn ($item) => $item->setRelation('order', $item->order ?? $linkedOrder));
 
             return Pdf::view('themes.default1.invoice.newpdf', [
                 'invoice' => $invoice,
@@ -510,6 +513,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'date' => getDateHtml($invoice->date),
                 'symbol' => $invoice->currency,
                 'totals' => $totals,
+                'allocations' => $invoice->allocations()->with('payment')->get(),
             ])
                 ->format(Format::A4)
                 ->margins(10, 10, 10, 10)
@@ -599,6 +603,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ? getStateByCode($userCountry, $userState)['name']
                 : $query->user->state;
 
+            // Show "India", not "IN" — after the state lookups, which need the code.
+            $setting->setAttribute('country', getCountryByCode($settingCountry) ?? $settingCountry);
+            // Raw write: User's country mutator upper-cases it ("INDIA").
+            $query->user->setRawAttributes(['country' => getCountryByCode($userCountry) ?? $userCountry] + $query->user->getAttributes());
+
             $result = static::calculateInvoice($id, formatCurrency: true);
 
             // Renewal items own no order — `orders.invoice_item_id` stays on the original
@@ -679,7 +688,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         // Subtotal shown ex-tax: for tax-inclusive pricing the item subtotal is
         // gross, so strip the tax out so subtotal + tax + fee reconciles to total.
-        $pricesIncludeTax = (int) TaxOption::find(1)?->inclusive === 1;
+        // Read it off the invoice's own numbers, not today's TaxOption — flipping that
+        // setting would otherwise mis-state every older invoice. Inclusive: the pre-fee
+        // total already equals items − discount with no tax added on top.
+        // ponytail: credits ignored (no taxed invoice uses them yet); add them to the
+        // adjustment if credits turn out to reduce grand_total.
+        $netOfDiscount = $itemSubtotal - (float) ($invoice->discount ?? 0);
+        $preFeeTotal = (float) $invoice->grand_total - $feeAmount;
+        $pricesIncludeTax = $taxTotal > 0
+            && abs($netOfDiscount - $preFeeTotal) < abs($netOfDiscount + $taxTotal - $preFeeTotal);
         $netSubtotal = $pricesIncludeTax ? ($itemSubtotal - $taxTotal) : $itemSubtotal;
         $subtotal = $formatCurrency ? currencyFormat($netSubtotal, $invoice->currency) : round($netSubtotal, 2);
 
@@ -699,6 +716,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return [
             'subtotal' => $subtotal,
+            // Line items show gross prices when tax is inclusive, so say why this differs.
+            'subtotal_label' => __($pricesIncludeTax ? 'message.sub_total_excl_tax' : 'message.sub_total'),
             'tax' => $taxes,
             'processing_fee' => $processingFee,
             'credits' => $credits,

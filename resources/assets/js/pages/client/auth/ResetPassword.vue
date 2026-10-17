@@ -2,14 +2,6 @@
     <AuthLayout>
         <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
-        <div v-else-if="invalid" class="text-center py-4">
-            <i class="fas fa-times-circle text-danger fa-3x mb-3" aria-hidden="true"></i>
-            <p class="text-color-default">{{ invalidMessage || __('message.reset_link_expired') }}</p>
-            <RouterLink to="/login" class="btn btn-dark btn-modern mt-2">
-                {{ __('message.back_to_login') }}
-            </RouterLink>
-        </div>
-
         <form v-else @submit.prevent="submit" novalidate>
             <ClientField name="password" type="password" :label="__('message.new_password')" required
                          autocomplete="new-password"
@@ -47,7 +39,7 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { validateForm } from '@/helpers/formUtils.js'
 import http from '@/plugins/axios'
@@ -62,6 +54,7 @@ import { useBaseUrl } from '@/core/composables/useBaseUrl'
 const COMPONENT = 'client-page'
 const baseUrl = useBaseUrl()
 const route   = useRoute()
+const router  = useRouter()
 
 const { errors, setErrors, setFieldError } = useForm()
 const captchaRef = ref(null)
@@ -70,8 +63,6 @@ const form = reactive({ token: route.params.token, email: '', password: '', pass
 const loading        = ref(true)
 const saving         = ref(false)
 const hpReady        = ref(false)
-const invalid        = ref(false)
-const invalidMessage = ref('')
 
 const checklist = computed(() => {
     const c = passwordChecks(form.password)
@@ -102,11 +93,10 @@ onMounted(async () => {
         const payload = Array.isArray(data) ? data[0] : data
         form.email = payload?.email ?? ''
         form.token = payload?.reset_token ?? route.params.token
-    } catch (e) {
-        invalid.value = true
-        invalidMessage.value = e?.response?.data?.message ?? ''
-    } finally {
         loading.value = false
+    } catch {
+        // Expired/invalid link: the login page shows why (layout clears alerts on navigation).
+        router.replace({ path: '/login', query: { reset_expired: 1 } })
     }
 })
 
@@ -136,7 +126,7 @@ async function submit() {
             return
         }
         captchaRef.value?.reset()
-        errorHandler(e, COMPONENT, { setErrors })
+        errorHandler(e, COMPONENT, { setErrors, excludeFields: ['reset'] })
     } finally {
         saving.value = false
     }

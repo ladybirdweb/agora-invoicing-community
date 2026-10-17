@@ -435,6 +435,25 @@ class ClientControllerTest extends DBTestCase
         $this->assertGreaterThanOrEqual(0, $data['total_orders_count']);
     }
 
+    public function test_renewals_count_and_list_skip_deleted_instances_and_terminated_orders(): void
+    {
+        $make = function (string $status, int $deleted): Order {
+            $order = Order::factory()->withRelations()->create(['client' => $this->user->id, 'order_status' => $status]);
+            \App\Model\Product\Subscription::where('order_id', $order->id)
+                ->update(['update_ends_at' => now()->subDay(), 'is_deleted' => $deleted]);
+
+            return $order;
+        };
+        $renewable = $make('executed', 0);
+        $make('executed', 1);   // instance deleted — nothing left to renew
+        $make('Terminated', 0); // replaced by its upgrade order
+
+        $this->assertSame(1, $this->getJson('/client-dashboard-details')->json('data.order_renewals_count'));
+
+        $ids = collect($this->getJson('/get-my-orders?renewal=1')->json('data.data'))->pluck('id')->all();
+        $this->assertSame([$renewable->id], $ids);
+    }
+
     // -------------------------------------------------------------------------
     // postProfile — PATCH /my-profile
     // -------------------------------------------------------------------------

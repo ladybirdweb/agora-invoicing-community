@@ -34,7 +34,7 @@ class OrderModelsDeletionTest extends DBTestCase
         ]);
         $id = $invoice->id;
 
-        // delete() calls orders()->detach(), installationDetail()->delete(), etc.
+        // delete() detaches orders and payments and deletes invoice items.
         try {
             $invoice->delete();
             $this->assertDatabaseMissing('invoices', ['id' => $id]);

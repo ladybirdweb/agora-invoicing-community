@@ -9,6 +9,8 @@ use App\Model\Payment\Currency;
 use App\Model\Product\Subscription;
 use App\Plugins\Payment\Dto\Customer as PaymentCustomer;
 use App\Plugins\Payment\Dto\PaymentRequest as GatewayPaymentRequest;
+use App\Plugins\Payment\Dto\PaymentResult;
+use App\Plugins\Payment\Support\Money;
 use App\Services\Payment\AutoRenewalActivationService;
 use App\Services\Payment\PaymentService;
 use App\User;
@@ -72,6 +74,15 @@ class AutoRenewalController extends Controller
             $result = $this->payments->capture('Stripe', ['payment_intent' => $paymentIntentId]);
             if (! $result->paid) {
                 return errorResponse(__('message.payment_declined_try_other_gateway'));
+            }
+
+            // It is refunded in full below, so it must be THIS order's card-check charge —
+            // otherwise any succeeded PaymentIntent id (e.g. a real invoice payment the SPA
+            // already knows) could be posted here and refunded while the invoice stays paid.
+            if (! $this->isVerificationCharge($result, $order)) {
+                $this->logPayment($order, 'stripe', 'failed', 'Rejected refund of '.$paymentIntentId.': not this order\'s card-verification charge.');
+
+                return errorResponse(__('message.unauthorized_action'), 403);
             }
 
             try {
@@ -182,6 +193,25 @@ class AutoRenewalController extends Controller
         abort_if(! authorizeOwnership($order->client, $allowAdmin), 403, __('message.unauthorized_action'));
 
         return $order;
+    }
+
+    /**
+     * Whether a captured PaymentIntent is the card-verification charge buildRequest() made for
+     * this order and this user: our stamped order_id and user_id, and exactly the verification
+     * amount in the user's currency.
+     */
+    private function isVerificationCharge(PaymentResult $result, Order $order): bool
+    {
+        $meta = $result->raw['metadata'] ?? [];
+        /** @var User $user */
+        $user = Auth::user();
+        $currency = getCurrencyForClient($user->country);
+        $expected = Money::toMinor(getMinimumAmountForPayments($currency, 'stripe'), $currency);
+
+        return (int) ($meta['order_id'] ?? 0) === (int) $order->id
+            && (int) ($meta['user_id'] ?? 0) === (int) $user->id
+            && strtoupper((string) ($result->raw['currency'] ?? '')) === strtoupper((string) $currency)
+            && (int) ($result->raw['amount_received'] ?? -1) === $expected;
     }
 
     private function buildRequest(Order $order, string $gateway, string $nonce = ''): GatewayPaymentRequest

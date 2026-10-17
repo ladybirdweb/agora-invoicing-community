@@ -10,8 +10,11 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\InvoiceTaxLine;
 use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
+use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\TaxOption;
+use App\Model\Product\Product;
 use App\Services\Payment\InvoicePaymentService;
 use App\Services\Payment\ProcessingFee;
 use App\Services\Tax\TaxService;
@@ -57,7 +60,11 @@ class CartService
             return;
         }
 
-        $this->guest->add($data, $this->resolveGuestCurrency($request));
+        $currency = $this->resolveGuestCurrency($request);
+        $data['plan_id'] = $this->resolvePlanId($data, $currency);
+        $data['agents'] = $this->agentsForNewLine($data, $data['plan_id'], $currency);
+
+        $this->guest->add($data, $currency);
     }
 
     private function resolveGuestCurrency(Request $request): string
@@ -73,6 +80,12 @@ class CartService
      */
     public function updateItem(Request $request, int|string $itemId, array $data): void
     {
+        // Only products that let the customer pick an agent count may change it — otherwise
+        // the line carries the plan's own count (what its price covers), like development did.
+        if (isset($data['agents']) && ! $this->canModifyAgents($request, $itemId)) {
+            unset($data['agents']);
+        }
+
         if ($request->user()) {
             $item = CartItem::findOrFail($itemId);
             $item->update(array_filter([
@@ -135,7 +148,7 @@ class CartService
 
         $cart->update([
             'coupon_code' => $code,
-            'coupon_discount' => $this->discountFor($cart->subtotal(), $promo),
+            'coupon_discount' => $this->discountFor($this->couponableSubtotal($cart, $promo), $promo),
         ]);
     }
 
@@ -317,13 +330,71 @@ class CartService
         $cart = $this->dbCart($user);
 
         foreach ($this->guest->all() as $data) {
-            $this->addToDbCart($cart, $data);
+            try {
+                $this->addToDbCart($cart, $data);
+            } catch (\Symfony\Component\HttpKernel\Exception\HttpException) {
+                // A line the cart now refuses (plan gone, wrong product, no price in this
+                // currency) is dropped — it must never fail the login it runs inside.
+            }
         }
 
         $this->guest->clear();
     }
 
     // --- Private helpers ---
+
+    /**
+     * @param  array<mixed>  $data
+     */
+    private function resolvePlanId(array $data, string $currency): int
+    {
+        if (! empty($data['plan_id'])) {
+            // The plan must be one of this product's own — as development's
+            // `$product->planRelation->find($planid)` enforced. Otherwise any product could be
+            // bought on another product's (e.g. free) plan.
+            $planId = Plan::whereKey($data['plan_id'])->where('product', $data['product_id'])->value('id');
+            if (! $planId) {
+                abort(422, __('message.product_add_cart_no_plan'));
+            }
+        } else {
+            $planId = Plan::where('product', $data['product_id'])->where('status', 1)->value('id');
+            if (! $planId) {
+                abort(422, __('message.cart_product_no_active_plan'));
+            }
+        }
+
+        // No price row for this currency would price the line at 0 (CartItem::priceFor).
+        if (! PlanPrice::where('plan_id', $planId)->where('currency', $currency)->exists()) {
+            abort(422, __('message.cart_plan_no_price_in_currency'));
+        }
+
+        return (int) $planId;
+    }
+
+    /**
+     * Agents for a new cart line: the plan's own count — what its price covers, 0 meaning
+     * unlimited — unless the product lets the customer choose and they sent a count.
+     *
+     * @param  array<mixed>  $data
+     */
+    private function agentsForNewLine(array $data, int $planId, string $currency): int
+    {
+        $planAgents = CartItem::planAgents(Plan::with('planPrice')->find($planId), $currency);
+        $canModify = (bool) Product::whereKey($data['product_id'])->value('can_modify_agent');
+
+        return $canModify && $planAgents > 0 && isset($data['agents'])
+            ? max(1, (int) $data['agents'])
+            : $planAgents;
+    }
+
+    private function canModifyAgents(Request $request, int|string $itemId): bool
+    {
+        $productId = $request->user()
+            ? CartItem::whereKey($itemId)->value('product_id')
+            : (collect($this->guest->all())->firstWhere('id', (int) $itemId)['product_id'] ?? null);
+
+        return (bool) Product::whereKey($productId)->value('can_modify_agent');
+    }
 
     private function dbCart(Authenticatable $user): Cart
     {
@@ -344,17 +415,7 @@ class CartService
      */
     private function addToDbCart(Cart $cart, array $data): void
     {
-        $planId = $data['plan_id'] ?? null;
-
-        if (! $planId) {
-            $planId = Plan::where('product', $data['product_id'])
-                ->where('status', 1)
-                ->value('id');
-
-            if (! $planId) {
-                abort(422, __('message.cart_product_no_active_plan'));
-            }
-        }
+        $planId = $this->resolvePlanId($data, $cart->currency ?? 'USD');
 
         $existing = $cart->items()
             ->where('product_id', $data['product_id'])
@@ -369,7 +430,9 @@ class CartService
                 'product_id' => $data['product_id'],
                 'plan_id' => $planId,
                 'quantity' => $data['quantity'] ?? 1,
-                'agents' => $data['agents'] ?? 1,
+                // Resolved here (not just in addItem) so a guest line merged on login is
+                // re-checked too — rows from before this rule carried a hard-coded 1.
+                'agents' => $this->agentsForNewLine($data, $planId, $cart->currency ?? 'USD'),
                 'domain' => $data['domain'] ?? null,
                 'data_center_id' => $data['data_center_id'] ?? null,
                 'billing_cycle' => $data['billing_cycle'] ?? 'monthly',
@@ -395,12 +458,12 @@ class CartService
 
         foreach ($this->lineTaxes($cart, $user) as $tax) {
             $line = $tax['line'];
-            $lineTotal = $line->priceFor($currency) * $line->quantity * $line->agents;
+            $lineTotal = $line->unitPrice($currency) * $line->quantity;
 
             $items[] = [
                 'product_name' => $line->product?->name,
                 'product_id' => $line->product_id,
-                'regular_price' => $line->priceFor($currency),
+                'regular_price' => $line->unitPrice($currency),
                 'quantity' => $line->quantity,
                 'tax_name' => $tax['name'],
                 'tax_percentage' => $tax['percent_label'],
@@ -465,7 +528,7 @@ class CartService
         $tax = resolve(TaxService::class);
 
         return $cart->items->map(function (CartItem $line) use ($user, $currency, $tax): array {
-            $lineTotal = $line->priceFor($currency) * $line->quantity * $line->agents;
+            $lineTotal = $line->unitPrice($currency) * $line->quantity;
             $result = $tax->calculate($lineTotal, (int) $line->product_id, $user);
 
             // A single applied rate can be referenced directly on the item;
@@ -532,7 +595,34 @@ class CartService
             return;
         }
 
-        $cart->update(['coupon_discount' => $this->discountFor($cart->subtotal(), $promo)]);
+        try {
+            $eligible = $this->couponableSubtotal($cart, $promo);
+        } catch (Exception) {
+            // The coupon's product left the cart — the coupon goes with it.
+            $cart->update(['coupon_code' => null, 'coupon_discount' => 0]);
+
+            return;
+        }
+
+        $cart->update(['coupon_discount' => $this->discountFor($eligible, $promo)]);
+    }
+
+    /**
+     * Subtotal of the cart lines a coupon applies to: only the products it is linked to
+     * (promo_product_relations), as development's PromotionController::checkCode did. A cart
+     * without one of them can't use the coupon.
+     */
+    private function couponableSubtotal(Cart $cart, Promotion $promo): float
+    {
+        $productIds = PromoProductRelation::where('promotion_id', $promo->id)->pluck('product_id')->map(fn ($id): int => (int) $id)->all();
+        $currency = $cart->currency ?? 'USD';
+        $lines = $cart->items()->with('plan.planPrice')->get()->filter(fn (CartItem $item): bool => in_array((int) $item->product_id, $productIds, true));
+
+        if ($lines->isEmpty()) {
+            throw new Exception(__('message.invalid_coupon_code'));
+        }
+
+        return (float) $lines->sum(fn (CartItem $item): float => $item->unitPrice($currency) * $item->quantity);
     }
 
     private function validatedPromotion(string $code): Promotion

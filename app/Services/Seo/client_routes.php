@@ -29,7 +29,7 @@ return [
     'my-invoice/*' => ['title' => 'Invoice Details', 'description' => 'Invoice details and payment options.'],
     'my-profile' => ['title' => 'message.my_profile', 'description' => 'Manage your account profile and settings.'],
     'my-profile/change-password' => ['title' => 'message.change_password', 'description' => 'Change your account password.'],
-    'my-profile/2fa' => ['title' => 'message.two_factor_auth', 'description' => 'Manage two-factor authentication for your account.'],
+    'my-profile/2fa' => ['title' => 'message.two_factor_authentication', 'description' => 'Manage two-factor authentication for your account.'],
     'checkout' => ['title' => 'message.checkout', 'description' => 'Complete your purchase securely.'],
     'place-order' => ['title' => 'message.place_order', 'description' => 'Confirm and place your order.'],
     'payment-success' => ['title' => 'Payment Successful', 'description' => 'Your payment was successful.'],

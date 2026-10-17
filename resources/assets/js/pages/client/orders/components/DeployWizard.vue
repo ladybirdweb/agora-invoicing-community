@@ -167,11 +167,17 @@
                                                  v-model="form.ssl_key_path" placeholder="/etc/ssl/private/cert.key…" autocomplete="off" :spellcheck="false"
                                                  :error="errors.ssl_key_path" @update:modelValue="setFieldError('ssl_key_path', undefined)" />
                                 </div>
+                                <div class="col-md-6">
+                                    <ClientField type="text" name="ssl_ca_path" :label="__('message.deploy_ca_path')" :required="true"
+                                                 v-model="form.ssl_ca_path" placeholder="/etc/ssl/certs/ca-bundle.crt…" autocomplete="off" :spellcheck="false"
+                                                 :error="errors.ssl_ca_path" @update:modelValue="setFieldError('ssl_ca_path', undefined)" />
+                                </div>
                             </template>
                         </div>
                     </template>
 
-                    <div class="row">
+                    <!-- Fresh install fetches its own release, so version and web user only apply to existing servers -->
+                    <div v-if="form.deploy_mode === 'extract_only'" class="row">
                         <div class="col-md-6">
                             <DynamicSelect name="version_id" :label="__('message.version')" :required="true"
                                            :elements="versionOptions"
@@ -189,18 +195,48 @@
 
                 <!-- Step 3: Deploy (live progress) -->
                 <template v-else-if="step === 3">
-                    <ul class="list-unstyled mb-0" aria-live="polite">
-                        <li v-for="s in plannedSteps" :key="s.key" class="d-flex align-items-start gap-2 mb-2"
-                            :class="{ 'text-muted': !status[s.key], 'text-danger': status[s.key] === 'error' }">
-                            <span v-if="status[s.key] === 'ok'" class="text-success"><i class="fas fa-check-circle" aria-hidden="true"></i><span class="visually-hidden">{{ __('message.done') }}</span></span>
-                            <span v-else-if="status[s.key] === 'error'"><i class="fas fa-times-circle" aria-hidden="true"></i><span class="visually-hidden">{{ __('message.failed') }}</span></span>
-                            <span v-else-if="status[s.key] === 'running'" class="text-primary"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i><span class="visually-hidden">{{ __('message.pending') }}</span></span>
-                            <span v-else><i class="far fa-circle" aria-hidden="true"></i><span class="visually-hidden">{{ __('message.pending') }}</span></span>
-                            <span>{{ s.label }}</span>
-                        </li>
-                    </ul>
-                    <p v-if="deploying" class="small text-muted mt-3 mb-0">{{ __('message.deploy_running_notice') }}</p>
-                    <div v-if="errorMessage" class="alert alert-danger mt-3 mb-0" role="alert">{{ errorMessage }}</div>
+                    <div class="dw-head">
+                        <div class="min-w-0">
+                            <p class="dw-head-title mb-1" :class="{ 'text-danger': errorMessage }">{{ headTitle }}</p>
+                            <p class="dw-head-sub mb-0 text-break">{{ form.install_domain || form.host }}</p>
+                        </div>
+                        <span class="dw-clock">{{ totalTime }}</span>
+                    </div>
+                    <!-- Same timeline as the installer's database setup (databaseMigration.blade.php, AdminLTE .timeline):
+                         one item per step; once the install script runs, its own stages become items -->
+                    <div class="dw-timeline" aria-live="polite">
+                        <div v-for="row in rows" :key="row.key" :class="`is-${row.state}`">
+                            <i class="dw-tl-icon" :class="ROW_ICONS[row.state]" aria-hidden="true"></i>
+                            <div class="dw-tl-item">
+                                <span v-if="row.time" class="dw-tl-time"><i class="far fa-clock me-1" aria-hidden="true"></i>{{ row.time }}</span>
+                                <h3 class="dw-tl-header">{{ row.label }}<span class="visually-hidden"> — {{ ROW_STATE_TEXT[row.state] }}</span></h3>
+                                <div v-if="row.state === 'error'" class="dw-tl-body" role="alert">
+                                    <strong class="d-block">{{ failure.reason || errorMessage }}</strong>
+                                    <span v-if="failure.rolledBack" class="d-block mt-1">{{ __('message.deploy_rolled_back') }}</span>
+                                    <span v-if="errorDetails.exit_code != null" class="d-block dw-muted mt-1">{{ __('message.deploy_exit_code', { code: errorDetails.exit_code }) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p v-if="deploying" class="dw-muted small mt-2 mb-0">{{ __('message.deploy_running_notice') }}</p>
+
+                    <!-- Live script output: always there for a fresh install, open by default -->
+                    <div v-if="form.deploy_mode === 'fresh_install' || logLines.length" class="dw-log">
+                        <div class="d-flex align-items-center gap-3">
+                            <button type="button" class="btn btn-link p-0 dw-link" :aria-expanded="showLog" @click="showLog = !showLog">
+                                <i :class="showLog ? 'fas fa-chevron-down' : 'fas fa-chevron-right'" class="me-1" aria-hidden="true"></i>{{ showLog ? __('message.deploy_hide_log') : __('message.deploy_show_log') }}
+                            </button>
+                            <button type="button" class="btn btn-link p-0 dw-link ms-auto" :disabled="!logLines.length" @click="copyLog">
+                                <i :class="copied ? 'fas fa-check' : 'far fa-copy'" class="me-1" aria-hidden="true"></i>{{ copied ? __('message.deploy_log_copied') : __('message.deploy_copy_log') }}
+                            </button>
+                        </div>
+                        <div v-if="showLog" ref="terminal" class="dw-terminal p-3 rounded small mt-2" @scroll="onTerminalScroll">
+                            <p v-if="!logLines.length" class="dw-ansi-dim mb-0">{{ __('message.deploy_log_waiting') }}</p>
+                            <p v-if="logLines.length > MAX_LINES" class="dw-ansi-dim mb-2">{{ __('message.deploy_log_truncated', { count: MAX_LINES }) }}</p>
+                            <div v-for="(line, i) in logLines.slice(-MAX_LINES)" :key="i" class="dw-line"><span
+                                v-for="(seg, j) in line.segments" :key="j" :class="seg.color && `dw-ansi-${seg.color}`">{{ seg.text }}</span></div>
+                        </div>
+                    </div>
                 </template>
 
                 <!-- Step 4: Done -->
@@ -227,7 +263,7 @@
                         <hr>
                         <p class="mb-1 fw-semibold">{{ __('message.deploy_admin_credentials') }}</p>
                         <p class="text-muted small mb-2">{{ __('message.deploy_save_securely') }}</p>
-                        <pre class="bg-light p-3 rounded small">{{ result.credentials }}</pre>
+                        <pre class="dw-creds bg-light p-3 rounded small">{{ result.credentials }}</pre>
                     </template>
                 </template>
             </template>
@@ -243,6 +279,7 @@
                 </template>
                 <template v-else-if="step === 3">
                     <action-button action="back" @click="step = 2" />
+                    <action-button v-if="errorMessage" action="confirm" icon="fas fa-redo" :label="__('message.retry')" @click="startDeploy" />
                 </template>
                 <template v-else-if="step === 4">
                     <action-button action="confirm" :label="__('message.done')" @click="resetWizard" />
@@ -254,7 +291,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
 import { errorHandler } from '@/helpers/responseHandler.js'
@@ -262,6 +299,7 @@ import { validateForm } from '@/helpers/formUtils.js'
 import Modal from '@/themes/porto/components/common/Modal.vue'
 import AppAlert from '@/components/Reusable/Alert.vue'
 import { deploySchema } from '@/validations/client/deployWizard.js'
+import { parseLog, failureReason, stages } from '@/helpers/ansiLog.js'
 import { __ } from '@/plugins/i18n'
 
 const props = defineProps({
@@ -282,7 +320,60 @@ const loadingVersions = ref(false)
 const versions        = ref([])
 const status          = ref({})   // server step key → 'running' | 'ok' | 'error'
 const errorMessage    = ref('')
+const errorDetails    = ref({})
+const liveLog         = ref('')     // install script output (raw, with colour codes), streamed in by followInstall()
+const terminal        = ref(null)
+const showLog         = ref(false)
+const copied          = ref(false)
+const startedAt       = ref(0)
+const endedAt         = ref(0)      // 0 while running
+const now             = ref(Date.now())
 const result          = ref({})
+
+const MAX_LINES      = 2000         // rendered; Copy log still has everything
+// Same icons and colours as the installer's timeline: check / spinner / cross
+const ROW_ICONS      = { ok: 'fas fa-check', running: 'fas fa-spinner fa-spin', error: 'fas fa-times', pending: 'far fa-circle' }
+const ROW_STATE_TEXT = { ok: __('message.done'), running: __('message.pending'), error: __('message.failed'), pending: __('message.pending') }
+
+const logLines  = computed(() => parseLog(liveLog.value))
+const stageList = computed(() => stages(logLines.value))
+const stageSeenAt = ref([])  // when each script stage first showed up — client clock, so ±1 poll
+
+watch(stageList, list => {
+    while (stageSeenAt.value.length < list.length) stageSeenAt.value.push(Date.now())
+})
+const failure   = computed(() => status.value.install === 'error' ? failureReason(logLines.value) : { reason: '', rolledBack: false })
+
+const clock = (from, to) => {
+    const s = Math.max(0, Math.round(((to || now.value) - from) / 1000))
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+}
+const totalTime = computed(() => clock(startedAt.value, endedAt.value))
+const headTitle = computed(() => {
+    if (errorMessage.value) return form.deploy_mode === 'fresh_install' ? __('message.deploy_install_failed') : __('message.deploy_failed_generic')
+    return form.deploy_mode === 'fresh_install' ? __('message.deploy_installing_title') : __('message.deploy_deploying_title')
+})
+
+const rows = computed(() => {
+    const base = plannedSteps.value.map(s => {
+        const state = status.value[s.key] ?? 'pending'
+        return { key: s.key, state, label: state === 'ok' && s.doneLabel ? s.doneLabel : s.label }
+    })
+    if (form.deploy_mode !== 'fresh_install' || !stageList.value.length) return base
+
+    // Once the script talks, its own stages carry the progress; the last one is where it is now.
+    const last    = stageList.value.length - 1
+    const install = status.value.install
+    return [
+        ...base.map(r => r.key === 'install' ? { ...r, state: 'ok', label: __('message.deploy_installer_started') } : r),
+        ...stageList.value.map((label, i) => ({
+            key:   `stage-${i}`,
+            label,
+            state: i < last ? 'ok' : install,
+            time:  clock(stageSeenAt.value[i], i < last ? stageSeenAt.value[i + 1] : endedAt.value),
+        })),
+    ]
+})
 
 const sslOptions = [
     { name: __('message.deploy_ssl_lets_encrypt'),     id: 'A' },
@@ -321,6 +412,7 @@ const form = reactive({
     ssl_type:        'A',
     ssl_cert_path:   '',
     ssl_key_path:    '',
+    ssl_ca_path:     '',
     web_user:        '',
     version_id:      null,
 })
@@ -328,11 +420,11 @@ const form = reactive({
 // The server-side steps each mode runs, in order.
 const plannedSteps = computed(() => form.deploy_mode === 'fresh_install'
     ? [
-        { key: 'verify',  label: __('message.deploy_log_verifying_ssh') },
-        { key: 'install', label: __('message.deploy_log_running_install') },
+        { key: 'verify',  label: __('message.deploy_log_verifying_ssh'), doneLabel: __('message.deploy_connected') },
+        { key: 'install', label: __('message.deploy_starting_installer') },
     ]
     : [
-        { key: 'verify',  label: __('message.deploy_log_verifying_ssh') },
+        { key: 'verify',  label: __('message.deploy_log_verifying_ssh'), doneLabel: __('message.deploy_connected') },
         { key: 'upload',  label: __('message.deploy_log_uploading_files') },
         { key: 'extract', label: __('message.deploy_log_extracting_files') },
     ])
@@ -381,8 +473,8 @@ async function nextStep() {
     }
 }
 
-async function runStep(stepName) {
-    const payload = {
+function stepPayload(stepName) {
+    return {
         step:            stepName,
         order_id:        props.orderId,
         host:            form.host,
@@ -402,26 +494,107 @@ async function runStep(stepName) {
         ssl_type:        form.ssl_type        || undefined,
         ssl_cert_path:   form.ssl_cert_path   || undefined,
         ssl_key_path:    form.ssl_key_path    || undefined,
+        ssl_ca_path:     form.ssl_ca_path     || undefined,
     }
+}
+
+async function runStep(stepName) {
     status.value[stepName] = 'running'
-    const res = await http.post(`/deploy-product-step`, payload)
+    const res = await http.post(`/deploy-product-step`, stepPayload(stepName))
     status.value[stepName] = 'ok'
     return res.data?.data ?? {}
 }
+
+const POLL_MS     = 3000
+const MAX_WAIT_MS = 60 * 60 * 1000
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+const fail  = (message, details = {}) => Object.assign(new Error(message), { details })
+
+// The install runs detached on the server; poll its log into the terminal until it ends.
+async function followInstall() {
+    status.value.install = 'running'
+    const startedAt = Date.now()
+    let offset   = 0
+    let failures = 0
+
+    while (Date.now() - startedAt < MAX_WAIT_MS) {
+        await sleep(POLL_MS)
+        if (unmounted) throw fail(__('message.deploy_failed_generic'))
+
+        let data
+        try {
+            data = (await http.post(`/deploy-product-step`, { ...stepPayload('status'), offset })).data?.data ?? {}
+            failures = 0
+        } catch (e) {
+            // A network blip or busy server shouldn't kill a 10-minute install view; real errors (auth, 403) should.
+            const transient = !e.response || e.response.status >= 500 || e.response.status === 429
+            if (!transient || ++failures >= 5) throw e
+            continue
+        }
+
+        offset = data.offset
+        if (data.output) liveLog.value += data.output
+
+        if (data.done) {
+            if (data.exit_code !== 0) throw fail(__('message.deploy_install_script_errors'), { exit_code: data.exit_code })
+            status.value.install = 'ok'
+            return data
+        }
+    }
+
+    throw fail(__('message.deploy_install_timed_out'))
+}
+
+// Follow new output — unless the user scrolled up to read, then leave them there.
+let stickToBottom = true
+function onTerminalScroll() {
+    const el = terminal.value
+    stickToBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 24
+}
+function scrollToBottom() {
+    nextTick(() => { if (terminal.value) terminal.value.scrollTop = terminal.value.scrollHeight })
+}
+watch(liveLog, () => { if (stickToBottom) scrollToBottom() })
+watch(showLog, open => { if (open) { stickToBottom = true; scrollToBottom() } })
+
+async function copyLog() {
+    try {
+        await navigator.clipboard.writeText(logLines.value.map(l => l.text).join('\n'))
+        copied.value = true
+        setTimeout(() => { copied.value = false }, 2000)
+    } catch {
+        // Clipboard needs HTTPS and permission; the log stays visible to select by hand.
+        showLog.value = true
+    }
+}
+
+let ticker = null
+let unmounted = false
+onBeforeUnmount(() => { unmounted = true; clearInterval(ticker) })
 
 async function startDeploy() {
     if (! await validateForm(deploySchema, form, setErrors)) return
 
     deploying.value    = true
     errorMessage.value = ''
+    errorDetails.value = {}
+    liveLog.value      = ''
+    showLog.value      = true
+    stageSeenAt.value  = []
     status.value       = {}
     step.value         = 3
+
+    startedAt.value = now.value = Date.now()
+    endedAt.value   = 0
+    clearInterval(ticker)
+    ticker = setInterval(() => { now.value = Date.now() }, 1000)
 
     try {
         await runStep('verify')
 
         if (form.deploy_mode === 'fresh_install') {
-            result.value = { ...await runStep('install') }
+            await runStep('install')
+            result.value = { ...await followInstall() }
         } else {
             await runStep('upload')
             result.value = { ...await runStep('extract') }
@@ -429,11 +602,17 @@ async function startDeploy() {
 
         step.value = 4
     } catch (err) {
-        errorMessage.value = err?.response?.data?.message ?? err?.message ?? __('message.deploy_failed_generic')
         const running = Object.keys(status.value).find(k => status.value[k] === 'running')
         if (running) status.value[running] = 'error'
+        errorMessage.value = err?.response?.data?.message ?? err?.message ?? __('message.deploy_failed_generic')
+        errorDetails.value = err?.details ?? err?.response?.data?.data ?? {}
+        // e.g. wget's error when the install script itself could not be downloaded
+        if (errorDetails.value.output) liveLog.value += errorDetails.value.output
+        if (liveLog.value) showLog.value = true
     } finally {
         deploying.value = false
+        endedAt.value   = Date.now()
+        clearInterval(ticker)
     }
 }
 
@@ -449,12 +628,108 @@ function resetWizard() {
     step.value         = 0
     status.value       = {}
     errorMessage.value = ''
+    errorDetails.value = {}
+    liveLog.value      = ''
+    showLog.value      = false
+    stageSeenAt.value  = []
     result.value       = {}
     form.deploy_mode   = ''
 }
 </script>
 
 <style scoped>
+.dw-terminal {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    max-height: 360px;
+    overflow: auto;
+    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1.45;
+}
+.dw-line { white-space: pre-wrap; word-break: break-all; min-height: 1.45em; }
+.dw-ansi-red    { color: #f48771; }
+.dw-ansi-green  { color: #89d185; }
+.dw-ansi-yellow { color: #e5c07b; }
+.dw-ansi-blue   { color: #6cb6ff; }
+.dw-ansi-cyan   { color: #56d4dd; }
+.dw-ansi-dim    { color: #8b8b8b; }
+
+/* Progress: what is happening now, with the overall timer */
+.dw-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.dw-head-title { font-size: 1.05rem; font-weight: 600; color: #212529; }
+.dw-head-sub   { font-size: .85rem; color: #6c757d; }
+.dw-clock      { font-size: 1.05rem; font-weight: 600; color: #495057; font-variant-numeric: tabular-nums; }
+.dw-muted      { color: #6c757d; }
+
+/* AdminLTE's .timeline, as on the installer's database setup page — the client theme doesn't load AdminLTE */
+.dw-timeline { position: relative; margin: 0; }
+.dw-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 15px;
+    left: 31px;
+    width: 4px;
+    border-radius: .375rem;
+    background-color: #dee2e6;
+}
+.dw-timeline > div { position: relative; margin-right: 10px; margin-bottom: 15px; }
+.dw-timeline > div:last-child { margin-bottom: 0; }
+.dw-tl-icon {
+    position: absolute;
+    top: 0;
+    left: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #adb5bd;
+}
+.is-ok .dw-tl-icon      { background-color: #198754; }
+.is-running .dw-tl-icon { background-color: #0dcaf0; color: #000; }
+.is-error .dw-tl-icon   { background-color: #dc3545; }
+.is-pending .dw-tl-icon { background-color: #e9ecef; color: #adb5bd; }
+.dw-tl-item {
+    position: relative;
+    margin-left: 60px;
+    margin-right: 15px;
+    border-radius: .375rem;
+    background-color: #fff;
+    box-shadow: 0 0 1px rgba(33, 37, 41, .125), 0 1px 3px rgba(33, 37, 41, .2);
+}
+.dw-tl-time   { float: right; padding: 10px; font-size: 12px; color: #6c757d; font-variant-numeric: tabular-nums; }
+.dw-tl-header {
+    margin: 0;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 400;
+    color: #6c757d;
+    overflow-wrap: anywhere;
+    /* the client theme capitalises headings; the installer timeline does not */
+    text-transform: none;
+    letter-spacing: normal;
+}
+.is-running .dw-tl-header { color: #212529; font-weight: 600; }
+.is-error .dw-tl-header   { color: #b02a37; font-weight: 600; }
+.is-pending .dw-tl-header { color: #adb5bd; }
+.dw-tl-body { padding: 10px; font-size: .875rem; color: #842029; border-top: 1px solid #dee2e6; }
+
+.dw-log { margin-top: 1.25rem; padding-top: .9rem; border-top: 1px solid #e9ecef; }
+.dw-creds { line-height: 1.5; white-space: pre-wrap; }
+.dw-link { font-size: .875rem; text-decoration: none; }
+
 /* Tab view: footer row under the cards */
 .dw-actions {
     display: flex;

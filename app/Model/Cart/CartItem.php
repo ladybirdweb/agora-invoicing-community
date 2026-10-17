@@ -99,8 +99,36 @@ class CartItem extends Model
         return (bool) $this->product?->require_domain && ! in_array($this->product_id, cloudPopupProducts());
     }
 
+    /**
+     * How many agents the plan's price covers (plan_prices.no_of_agents). 0 means unlimited,
+     * or simply not priced per agent — either way the plan price applies as-is.
+     */
+    public static function planAgents(?Plan $plan, string $currency): int
+    {
+        $prices = $plan?->planPrice;
+        $row = $prices?->firstWhere('currency', $currency) ?? $prices?->first();
+
+        return max(0, (int) ($row->no_of_agents ?? 0));
+    }
+
+    /**
+     * Price of one unit of this line. The plan price is for the plan's own agent count;
+     * a different count is charged pro rata — the same rule renewals use
+     * (BaseRenewController::getCost) and the development branch's cart used. Fixed-agent
+     * and unlimited lines always carry the plan's count, so they get the plan price.
+     */
+    public function unitPrice(string $currency): float
+    {
+        $price = $this->priceFor($currency);
+        $planAgents = self::planAgents($this->plan, $currency);
+
+        return $this->agents > 0 && $planAgents > 0
+            ? $price / $planAgents * $this->agents
+            : $price;
+    }
+
     public function lineTotal(): float
     {
-        return $this->priceFor($this->cart?->currency ?? 'USD') * $this->quantity * $this->agents; // @phpstan-ignore nullCoalesce.expr
+        return $this->unitPrice($this->cart?->currency ?? 'USD') * $this->quantity; // @phpstan-ignore nullCoalesce.expr
     }
 }

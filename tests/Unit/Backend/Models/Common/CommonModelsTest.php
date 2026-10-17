@@ -553,4 +553,29 @@ class CommonModelsTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, (new Country())->states());
     }
+
+    // ── Setting images: a filename whose file is gone falls back to the default ──
+
+    public function test_setting_logo_uses_the_uploaded_file_when_it_exists(): void
+    {
+        \App\Facades\Attach::shouldReceive('exists')->with('images/logo.png')->andReturn(true);
+        \App\Facades\Attach::shouldReceive('getUrlPath')->with('images/logo.png')->andReturn('https://cdn.test/images/logo.png');
+
+        $this->assertSame('https://cdn.test/images/logo.png', (new Setting)->setRawAttributes(['logo' => 'logo.png'])->logo);
+    }
+
+    public function test_setting_logo_falls_back_when_the_file_is_missing(): void
+    {
+        \App\Facades\Attach::shouldReceive('exists')->with('images/gone.png')->andReturn(false);
+        \App\Facades\Attach::shouldReceive('getUrlPath')->never();
+
+        $this->assertSame(asset('images/faveo_invoicing.png'), (new Setting)->setRawAttributes(['logo' => 'gone.png'])->logo);
+    }
+
+    public function test_setting_logo_falls_back_when_nothing_is_uploaded(): void
+    {
+        \App\Facades\Attach::shouldReceive('exists')->never();
+
+        $this->assertSame(asset('images/faveo_invoicing.png'), (new Setting)->setRawAttributes(['logo' => ''])->logo);
+    }
 }

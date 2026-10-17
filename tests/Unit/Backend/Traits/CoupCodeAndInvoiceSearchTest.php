@@ -362,4 +362,28 @@ class CoupCodeAndInvoiceSearchTest extends DBTestCase
 
         $this->assertTrue($body['success']);
     }
+
+    // ── H11: bulk delete cleans up like a single delete — money kept, installations untouched ──
+
+    public function test_bulk_delete_frees_the_payment_and_leaves_the_orders_installations(): void
+    {
+        $user = User::factory()->create();
+        $invoice = Invoice::factory()->create(['user_id' => $user->id, 'grand_total' => 1000, 'currency' => 'INR', 'status' => 'success']);
+        \App\Model\Order\InvoiceItem::factory()->create(['invoice_id' => $invoice->id]);
+        $order = \App\Model\Order\Order::create(['client' => $user->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999), 'serial_key' => 'ABCDEFGHIJKL0001']);
+        \App\Model\Order\OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $invoice->id]);
+        $payment = Payment::create(['invoice_id' => 0, 'parent_id' => 0, 'user_id' => $user->id, 'amount' => 1000, 'payment_method' => 'cash', 'payment_status' => 'success', 'currency' => 'INR']);
+        $payment->invoices()->attach($invoice->id, ['amount' => 1000]);
+        $installation = \App\License\Models\Installation::create(['license_code' => $order->serial_key, 'installation_domain' => 'live-'.uniqid().'.test',
+            'product_id' => \App\Model\Product\Product::factory()->create()->id]);
+
+        $this->deleteJson('/invoices', ['invoice_ids' => [$invoice->id]])->assertOk();
+
+        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertSame(0, \DB::table('payment_invoice')->where('invoice_id', $invoice->id)->count()); // no longer "used" on a deleted invoice
+        $this->assertNotNull(Payment::find($payment->id));                                                // the money itself is kept
+        $this->assertSame(0, \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->count());
+        $this->assertSame(0, \App\Model\Order\OrderInvoiceRelation::where('invoice_id', $invoice->id)->count());
+        $this->assertNotNull(\App\License\Models\Installation::find($installation->id));               // live domains untouched
+    }
 }

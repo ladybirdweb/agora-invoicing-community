@@ -82,9 +82,9 @@ function isInstall(): bool
  * @param  string|array<mixed>  $message  Error message
  * @return JsonResponse json response
  */
-function errorResponse(string|array $message, int $statusCode = 400): JsonResponse
+function errorResponse(string|array $message, int $statusCode = 400, mixed $data = null): JsonResponse
 {
-    return response()->json(['success' => false, 'message' => $message], $statusCode);
+    return response()->json(array_filter(['success' => false, 'message' => $message, 'data' => $data], fn ($v) => $v !== null), $statusCode);
 }
 
 /**

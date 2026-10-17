@@ -19,7 +19,7 @@
                             </h3>
                         </div>
                         <div class="col-sm-6 text-end">
-                            <p class="mb-1 text-muted">
+                            <p class="mb-1">
                                 {{ __('message.date') }}: <strong class="text-dark">{{ formatDate(invoice?.date) }}</strong>
                             </p>
                             <span class="badge" :class="statusBadgeClass">{{ capitalize(invoice?.status) }}</span>
@@ -86,15 +86,15 @@
 
                     <!-- Line items -->
                     <div class="table-responsive mb-4">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped invoice-grid">
                             <thead class="table-light">
                                 <tr>
                                     <th>{{ __('message.order_no') }}</th>
                                     <th>{{ __('message.product') }}</th>
-                                    <th class="text-end">{{ __('message.price') }}</th>
-                                    <th class="text-center">{{ __('message.agents') }}</th>
-                                    <th class="text-center">{{ __('message.qty') }}</th>
-                                    <th class="text-end">{{ __('message.sub_total') }}</th>
+                                    <th>{{ __('message.price') }}</th>
+                                    <th>{{ __('message.agents') }}</th>
+                                    <th>{{ __('message.qty') }}</th>
+                                    <th>{{ __('message.sub_total') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,10 +106,10 @@
                                         <span v-else>—</span>
                                     </td>
                                     <td>{{ item.product_name }}</td>
-                                    <td class="text-end tabular-nums">{{ item.regular_price_formatted }}</td>
-                                    <td class="text-center">{{ item.agents || __('message.unlimited') }}</td>
-                                    <td class="text-center">{{ item.quantity }}</td>
-                                    <td class="text-end tabular-nums">{{ item.subtotal_formatted }}</td>
+                                    <td class="tabular-nums">{{ item.regular_price_formatted }}</td>
+                                    <td class="tabular-nums">{{ item.agents || __('message.unlimited') }}</td>
+                                    <td class="tabular-nums">{{ item.quantity }}</td>
+                                    <td class="tabular-nums">{{ item.subtotal_formatted }}</td>
                                 </tr>
                                 <tr v-if="!items?.length">
                                     <td colspan="6" class="text-center text-muted">{{ __('message.no_items_found') }}</td>
@@ -121,7 +121,7 @@
                     <!-- Totals -->
                     <div class="row">
                         <div class="col-lg-5 ms-auto">
-                            <table class="table table-sm table-borderless w-100">
+                            <table class="table table-sm table-borderless w-100 invoice-totals">
                                 <thead class="visually-hidden"><tr><th>{{ __('message.description') }}</th><th>{{ __('message.amount') }}</th></tr></thead>
                                 <colgroup>
                                     <col>
@@ -129,23 +129,23 @@
                                 </colgroup>
                                 <tbody>
                                     <tr>
-                                        <td class="text-muted">{{ __('message.sub_total') }}</td>
+                                        <td>{{ totals?.subtotal_label }}</td>
                                         <td class="text-end tabular-nums">{{ totals?.subtotal }}</td>
                                     </tr>
                                     <tr v-if="totals?.credits">
-                                        <td class="text-muted">{{ __('message.discount') }} ({{ __('message.credits') }})</td>
+                                        <td>{{ __('message.discount') }} ({{ __('message.credits') }})</td>
                                         <td class="text-end tabular-nums">{{ totals.credits }}</td>
                                     </tr>
                                     <tr v-if="totals?.discount">
-                                        <td class="text-muted">{{ __('message.discount') }} ({{ invoice?.coupon_code }})</td>
+                                        <td>{{ __('message.discount') }} ({{ invoice?.coupon_code }})</td>
                                         <td class="text-end tabular-nums">{{ totals.discount }}</td>
                                     </tr>
                                     <tr v-for="(value, name) in totals?.tax" :key="name">
-                                        <td class="text-muted">{{ name }}</td>
+                                        <td>{{ name }}</td>
                                         <td class="text-end tabular-nums">{{ value }}</td>
                                     </tr>
                                     <tr v-if="totals?.processing_fee && invoice?.processing_fee_label">
-                                        <td class="text-muted">
+                                        <td>
                                             {{ __('message.processing_fee') }} ({{ invoice.processing_fee_label }})
                                         </td>
                                         <td class="text-end tabular-nums">{{ totals.processing_fee }}</td>
@@ -161,23 +161,23 @@
 
                     <!-- Payment history -->
                     <template v-if="payments?.length">
-                        <p class="text-muted text-uppercase fw-bold small mb-3 mt-2">{{ __('message.payments_section') }}</p>
+                        <h5 class="fw-bold text-dark mb-3 mt-4">{{ __('message.payments_section') }}</h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm">
+                            <table class="table table-bordered invoice-grid">
                                 <thead class="table-light">
                                     <tr>
                                         <th>{{ __('message.transaction_date') }}</th>
                                         <th>{{ __('message.method') }}</th>
-                                        <th class="text-end">{{ __('message.total') }}</th>
-                                        <th class="text-center">{{ __('message.status') }}</th>
+                                        <th>{{ __('message.amount') }}</th>
+                                        <th>{{ __('message.status') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="pay in payments" :key="pay.id">
                                         <td>{{ formatDate(pay.created_at) }}</td>
                                         <td>{{ capitalize(pay.payment_method) }}</td>
-                                        <td class="text-end tabular-nums">{{ pay.amount_formatted }}</td>
-                                        <td class="text-center">
+                                        <td class="tabular-nums">{{ pay.amount_formatted }}</td>
+                                        <td>
                                             <span class="badge" :class="pay.payment_status === 'success' ? 'bg-success' : 'bg-secondary'">
                                                 {{ capitalize(pay.payment_status) }}
                                             </span>
@@ -262,4 +262,8 @@ onMounted(fetchInvoice)
 .invoice-logo { max-height: 70px; max-width: 180px; width: auto; height: auto; }
 .tabular-nums { font-variant-numeric: tabular-nums; }
 .col-label-width { width: 140px; }
+/* Default #dee2e6 borders and light headers wash out against the card. */
+.invoice-grid { --bs-table-border-color: #adb5bd; }
+.invoice-grid thead th { font-weight: 600; color: #212529; }
+.invoice-totals td:first-child { font-weight: 600; }
 </style>

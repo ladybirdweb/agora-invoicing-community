@@ -12,9 +12,11 @@ use App\Plugins\Payment\Dto\PaymentRequest;
 use App\Plugins\Payment\Dto\PaymentResult;
 use App\Plugins\Payment\Dto\PaymentSession;
 use App\Plugins\Payment\Exceptions\PaymentException;
+use App\Plugins\Payment\Support\Money;
 use App\User;
 use Exception;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Logger;
 use Throwable;
 
@@ -103,26 +105,39 @@ class InvoicePaymentService
      */
     public function applyCredit(Invoice $invoice): array
     {
-        // Already paid — re-running fulfilment would extend renewals/plans again for free.
-        if (strtolower((string) $invoice->status) === 'success') {
-            return ['paid_in_full' => true];
-        }
+        // Claim under a row lock: two concurrent "pay with credit" calls on one invoice would
+        // otherwise both pass the paid check, both spend and both fulfil (a downgrade's credit
+        // granted twice, two orders). The loser waits, then sees it claimed. Fulfilment runs
+        // after the lock, as in confirm().
+        [$claimed, $paidInFull, $invoice] = DB::transaction(function () use ($invoice): array {
+            $invoice = Invoice::whereKey($invoice->id)->lockForUpdate()->firstOrFail();
 
-        $toApply = $this->creditApplied($invoice);
+            // Already paid — re-running fulfilment would extend renewals/plans again for free.
+            if (strtolower((string) $invoice->status) === 'success') {
+                return [false, true, $invoice];
+            }
 
-        // Nothing owed at all (e.g. a free product) needs no credit — only a
-        // genuine shortfall (something owed, credit not enough) is an error.
-        if ($toApply <= 0 && $this->outstanding($invoice) > 0) {
-            throw new Exception(__('message.insufficient_credit_balance'));
-        }
+            $toApply = $this->creditApplied($invoice);
 
-        if ($toApply > 0) {
-            $this->spendBalance($invoice, $toApply);
-        }
+            // Nothing owed at all (e.g. a free product) needs no credit — only a
+            // genuine shortfall (something owed, credit not enough) is an error.
+            if ($toApply <= 0 && $this->outstanding($invoice) > 0) {
+                throw new Exception(__('message.insufficient_credit_balance'));
+            }
 
-        $paidInFull = $this->outstanding($invoice) <= 0;
+            if ($toApply > 0) {
+                $this->spendBalance($invoice, $toApply);
+            }
 
-        if ($paidInFull) {
+            $paidInFull = $this->outstanding($invoice) <= 0;
+            if ($paidInFull) {
+                $invoice->update(['status' => 'success']); // the claim
+            }
+
+            return [$paidInFull, $paidInFull, $invoice];
+        });
+
+        if ($claimed) {
             $this->postPayment->handle($invoice, 'Credit Balance');
         }
 
@@ -222,6 +237,30 @@ class InvoicePaymentService
             return false;
         }
 
+        // The credit this payment was opened with comes from what WE stamped on the gateway
+        // payment at start() — Stripe keeps it in `metadata`, Razorpay in `notes` (it was only
+        // read from `metadata`, so Razorpay credit was never spent). Never from the browser's
+        // payload. Re-clamped to the current balance in case it was spent elsewhere meanwhile.
+        $stamped = $result->raw['metadata'] ?? $result->raw['notes'] ?? [];
+        $creditApplied = min(
+            (float) ($stamped['credit_applied'] ?? 0),
+            $this->availableCredit((int) $invoice->user_id, $invoice->currency)
+        );
+
+        // A genuine payment for this invoice can still be for the wrong amount: the invoice
+        // could have been rebuilt bigger after the payment was opened, or the previewed credit
+        // spent on another invoice. Fulfil only if what was captured covers what is due now.
+        if (! $this->capturedCovers($result, $invoice, $gateway, $creditApplied)) {
+            Logger::exception(new Exception(sprintf(
+                'Payment %s (%s) for invoice %d captured %s, less than the %s %s now due — refusing to fulfil; reconcile manually.',
+                $result->reference, $gateway, $invoice->id,
+                json_encode([$result->raw['amount_received'] ?? $result->raw['amount_paid'] ?? $result->raw['amount_total'] ?? null, $result->raw['currency'] ?? null]),
+                $this->amountDue($invoice, $gateway, $creditApplied), $invoice->currency
+            )));
+
+            return false;
+        }
+
         // Atomically claim this invoice for fulfilment. The client-side confirm
         // call and the gateway's server-to-server webhook both call confirm()
         // independently for the very same payment, and can arrive close enough
@@ -243,9 +282,6 @@ class InvoicePaymentService
             return true;
         }
         $invoice->refresh();
-
-        $creditApplied = (float) ($payload['credit_applied'] ?? $result->raw['metadata']['credit_applied'] ?? 0);
-        $creditApplied = min($creditApplied, $this->availableCredit((int) $invoice->user_id, $invoice->currency));
 
         if ($creditApplied > 0) {
             $this->spendBalance($invoice, $creditApplied);
@@ -315,6 +351,25 @@ class InvoicePaymentService
      * Fails closed (false) if it's missing entirely, not just on a mismatch —
      * an unverifiable reference is not a safe one to fulfil an invoice from.
      */
+    /**
+     * Whether the gateway captured at least what's due on this invoice right now, in the
+     * invoice's currency. Gateways report minor units: Stripe PaymentIntent `amount_received`,
+     * Checkout Session `amount_total`, Razorpay order `amount_paid`. Fails closed when the
+     * gateway doesn't say — an unverifiable amount is not one to fulfil from.
+     */
+    private function capturedCovers(PaymentResult $result, Invoice $invoice, string $gateway, float $creditApplied): bool
+    {
+        $raw = $result->raw;
+        $captured = $raw['amount_received'] ?? $raw['amount_paid'] ?? $raw['amount_total'] ?? null;
+        $currency = $raw['currency'] ?? null;
+
+        if ($captured === null || $currency === null || strtoupper((string) $currency) !== strtoupper((string) $invoice->currency)) {
+            return false;
+        }
+
+        return (int) $captured >= Money::toMinor($this->amountDue($invoice, $gateway, $creditApplied), (string) $invoice->currency);
+    }
+
     private function referenceBelongsToInvoice(PaymentResult $result, Invoice $invoice): bool
     {
         $metadata = $result->raw['metadata'] ?? $result->raw['notes'] ?? null;

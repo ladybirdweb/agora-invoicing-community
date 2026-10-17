@@ -40,7 +40,9 @@ describe('DataTable.vue', () => {
     })
 
     // ── perpage selector ─────────────────────────────────────────────
-    it('renders perpage select by default at the start of the table', () => {
+    it('renders perpage select by default at the start of the table', async () => {
+        wrapper.vm.total = 25
+        await wrapper.vm.$nextTick()
         const header = wrapper.find('.datatable-header')
         expect(header.exists()).toBe(true)
         const perPageSelect = header.find('.VueTables__limit-field select')
@@ -48,13 +50,27 @@ describe('DataTable.vue', () => {
         expect(perPageSelect.element.value).toBe('10')
     })
 
+    it('hides perpage select while loading, with no records, or with ≤ the smallest page size', async () => {
+        expect(wrapper.find('.VueTables__limit-field').exists()).toBe(false) // total unknown yet
+        for (const n of [0, 3, 10]) {
+            wrapper.vm.total = n
+            await wrapper.vm.$nextTick()
+            expect(wrapper.find('.VueTables__limit-field').exists()).toBe(false)
+        }
+        wrapper.vm.total = 11
+        await wrapper.vm.$nextTick()
+        expect(wrapper.find('.VueTables__limit-field').exists()).toBe(true)
+    })
+
     it('does not render perpage select when perPageValues has 1 or fewer items', () => {
         wrapper = mountDataTable({ option: { perPageValues: [10] } })
         expect(wrapper.find('.VueTables__limit-field').exists()).toBe(false)
     })
 
-    it('renders perpage select and search on the same line inside .datatable-header', () => {
+    it('renders perpage select and search on the same line inside .datatable-header', async () => {
         wrapper = mountDataTable({ option: { filterable: true } })
+        wrapper.vm.total = 25
+        await wrapper.vm.$nextTick()
         const header = wrapper.find('.datatable-header')
         expect(header.exists()).toBe(true)
         expect(header.find('.VueTables__limit-field').exists()).toBe(true)

@@ -107,11 +107,6 @@ class OrderModelsTest extends TestCase
         $this->assertInstanceOf(HasManyThrough::class, (new Invoice())->subscriptions());
     }
 
-    public function test_invoice_installation_detail_exists(): void
-    {
-        $this->assertTrue(method_exists(Invoice::class, 'installationDetail'));
-    }
-
     public function test_invoice_payments_is_many_to_many(): void
     {
         // ...and an invoice can be settled by several payments.
@@ -316,7 +311,7 @@ class OrderModelsTest extends TestCase
     }
 
     // =========================================================================
-    // Invoice – getMappings + status attribute + installationDetail
+    // Invoice – getMappings + status attribute
     // =========================================================================
 
     public function test_invoice_get_mappings_returns_expected_keys(): void

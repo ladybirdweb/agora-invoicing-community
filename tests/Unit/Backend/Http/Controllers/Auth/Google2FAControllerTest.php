@@ -57,7 +57,7 @@ class Google2FAControllerTest extends DBTestCase
     // verifyPassword — POST /verify-password
     // -------------------------------------------------------------------------
 
-    public function test_verify_password_social_login_path_sets_session(): void
+    public function test_verify_password_social_flag_no_longer_skips_the_password(): void
     {
         $this->actingAs($this->user);
 
@@ -65,8 +65,9 @@ class Google2FAControllerTest extends DBTestCase
             'login_type' => 'social',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJson(['success' => true]);
+        $response->assertStatus(400)
+            ->assertJson(['success' => false]);
+        $this->assertNull(session('auth.password_confirmed_at'));
     }
 
     public function test_verify_password_returns_success_when_correct(): void
@@ -119,17 +120,30 @@ class Google2FAControllerTest extends DBTestCase
     {
         $this->user->is_2fa_enabled = 1;
         $this->user->google2fa_secret = 'test_secret';
+        $this->user->password = Hash::make('secret123');
         $this->user->save();
 
         $this->actingAs($this->user);
 
-        $response = $this->postJson('/2fa/disable');
+        $response = $this->postJson('/2fa/disable', ['user_password' => 'secret123']);
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
         $this->user->refresh();
         $this->assertEquals(0, $this->user->is_2fa_enabled);
+    }
+
+    public function test_disable_own_two_factor_needs_the_password(): void
+    {
+        $this->user->is_2fa_enabled = 1;
+        $this->user->password = Hash::make('secret123');
+        $this->user->save();
+        $this->actingAs($this->user);
+
+        $this->postJson('/2fa/disable', ['user_password' => 'wrong'])->assertStatus(400);
+        $this->postJson('/2fa/disable')->assertStatus(400);
+        $this->assertEquals(1, $this->user->refresh()->is_2fa_enabled);
     }
 
     public function test_disable_two_factor_admin_can_disable_for_another_user(): void

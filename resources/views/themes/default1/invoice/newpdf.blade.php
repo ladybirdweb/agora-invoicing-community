@@ -68,13 +68,14 @@
         .table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 24px; }
         .table th {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            border: 1px solid #adb5bd;
             padding: 8px 10px;
             font-weight: 600;
-            color: #495057;
+            color: #212529;
+            text-align: left;
         }
         .table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid #adb5bd;
             padding: 8px 10px;
         }
         .table tbody tr:nth-child(even) td { background: #f8f9fa; }
@@ -82,10 +83,10 @@
         /* ── Totals ── */
         .totals-table { width: 45%; margin-left: auto; border-collapse: collapse; font-size: 12px; }
         .totals-table td { padding: 10px 16px; }
-        .totals-table .label { color: #6c757d; }
+        .totals-table .label { color: #212529; font-weight: 600; }
         .totals-table .value { text-align: right; width: 140px; }
         .totals-table .total-row td {
-            border-top: 2px solid #dee2e6;
+            border-top: 2px solid #495057;
             font-weight: 700;
             font-size: 15px;
             padding-top: 10px;
@@ -109,10 +110,10 @@
 {{--            </div>--}}
         </div>
         <div class="col-6 text-end">
-            <p class="mb-1 text-muted small">
+            <p class="mb-1 small">
                 {{ __('message.date') }}: <strong style="color:#212529;">{!! $date !!}</strong>
             </p>
-            <p class="mb-1 text-muted small">
+            <p class="mb-1 small">
                 {{ __('message.invoice') }}: <strong style="color:#212529;">#{{ $invoice->number }}</strong>
             </p>
             @php
@@ -166,23 +167,23 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center">{{ __('message.order_no') }}</th>
-                <th class="text-center">{{ __('message.product') }}</th>
-                <th class="text-center">{{ __('message.price') }}</th>
-                <th class="text-center">{{ __('message.agents') }}</th>
-                <th class="text-center">{{ __('message.quantity') }}</th>
-                <th class="text-center">{{ __('message.sub_total') }}</th>
+                <th>{{ __('message.order_no') }}</th>
+                <th>{{ __('message.product') }}</th>
+                <th>{{ __('message.price') }}</th>
+                <th>{{ __('message.agents') }}</th>
+                <th>{{ __('message.quantity') }}</th>
+                <th>{{ __('message.sub_total') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach($invoiceItems as $item)
                 <tr>
-                    <td class="text-center">{!! $item->order_link ?? '—' !!}</td>
-                    <td class="text-center">{{ $item->product_name }}</td>
-                    <td class="text-center">{{ currencyFormat($item->regular_price, $symbol) }}</td>
-                    <td class="text-center">{{ $item->agents ?: __('message.unlimited') }}</td>
-                    <td class="text-center">{{ $item->quantity }}</td>
-                    <td class="text-center">{{ currencyFormat($item->subtotal, $symbol) }}</td>
+                    <td>{{ $item->order?->number ?? '—' }}</td>
+                    <td>{{ $item->product_name }}</td>
+                    <td>{{ currencyFormat($item->regular_price, $symbol) }}</td>
+                    <td>{{ $item->agents ?: __('message.unlimited') }}</td>
+                    <td>{{ $item->quantity }}</td>
+                    <td>{{ currencyFormat($item->subtotal, $symbol) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -190,10 +191,9 @@
 
     {{-- ── TOTALS ── --}}
     <table class="totals-table">
-        <thead class="visually-hidden"><tr><th>Description</th><th>Amount</th></tr></thead>
         <tbody>
             <tr>
-                <td class="label">{{ __('message.sub_total') }}</td>
+                <td class="label">{{ $totals['subtotal_label'] }}</td>
                 <td class="value">{{ $totals['subtotal'] }}</td>
             </tr>
             @if($invoice->credits)
@@ -216,7 +216,7 @@
             @endforeach
             @if($invoice->processing_fee)
                 <tr>
-                    <td class="label">{{ __('message.processing_fee') }}</td>
+                    <td class="label">{{ __('message.processing_fee') }} ({{ $invoice->processing_fee }})</td>
                     <td class="value">{{ $totals['processing_fee'] }}</td>
                 </tr>
             @endif
@@ -226,6 +226,31 @@
             </tr>
         </tbody>
     </table>
+
+    {{-- ── PAYMENTS ── --}}
+    @if($allocations->isNotEmpty())
+        <div class="address-label" style="margin-top:32px;">{{ __('message.payments_section') }}</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{{ __('message.transaction_date') }}</th>
+                    <th>{{ __('message.method') }}</th>
+                    <th>{{ __('message.amount') }}</th>
+                    <th>{{ __('message.status') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($allocations as $allocation)
+                    <tr>
+                        <td>{!! getDateHtml($allocation->payment?->created_at) !!}</td>
+                        <td>{{ ucfirst($allocation->payment?->payment_method ?? '') }}</td>
+                        <td>{{ currencyFormat($allocation->amount, $symbol) }}</td>
+                        <td>{{ ucfirst($allocation->payment?->payment_status ?? '') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
 </div>
 </body>

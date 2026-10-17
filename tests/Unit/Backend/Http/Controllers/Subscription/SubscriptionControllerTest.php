@@ -782,4 +782,54 @@ class SubscriptionControllerTest extends DBTestCase
         $result = $subController->calculateReverseUnitCost('INR', 5000);
         $this->assertEqualsWithDelta(50.0, $result, 0.01);
     }
+
+    // ── H9: Razorpay "authenticated" pays only the invoice its upfront charge was for ──
+
+    /** A status-2 Razorpay subscription with a pending invoice; getStatus() mocked to $status. */
+    private function awaitingRazorpay(string $status, bool $upfrontForThisInvoice): array
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $plan = Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        $order = Order::create(['client' => $user->id, 'product' => $product->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+        $sub = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $user->id, 'is_subscribed' => 1]);
+        \DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => 'sub_rzp', 'rzp_subscription' => '2']);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id, 'status' => 'pending', 'grand_total' => 100, 'currency' => 'INR',
+            'metadata' => $upfrontForThisInvoice ? ['rzp_upfront_subscription' => 'sub_rzp'] : null]);
+        InvoiceItem::factory()->create(['invoice_id' => $invoice->id, 'product_id' => $product->id]);
+        \App\Model\Order\OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $invoice->id]);
+
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('getStatus')->with('Razorpay', 'sub_rzp')->andReturn($status);
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        (new SubscriptionController($this->instantiateDependencies()))->checkSubscriptionStatus(\DB::table('subscriptions')->find($sub->id));
+
+        return [$sub->fresh(), $invoice->fresh()];
+    }
+
+    public function test_an_opt_in_authorization_activates_without_paying_a_pending_invoice(): void
+    {
+        [$sub, $invoice] = $this->awaitingRazorpay('authenticated', upfrontForThisInvoice: false);
+
+        $this->assertSame('3', (string) \DB::table('subscriptions')->where('id', $sub->id)->value('rzp_subscription'));
+        $this->assertSame('pending', strtolower((string) $invoice->status)); // no free renewal
+        $this->assertSame(0, $invoice->payments()->count());
+    }
+
+    public function test_a_cron_authorization_pays_the_invoice_its_upfront_charge_was_for(): void
+    {
+        [, $invoice] = $this->awaitingRazorpay('authenticated', upfrontForThisInvoice: true);
+
+        $this->assertSame('success', strtolower((string) $invoice->status));
+    }
+
+    public function test_an_expired_razorpay_link_is_reset_for_retry(): void
+    {
+        [$sub] = $this->awaitingRazorpay('expired', upfrontForThisInvoice: true);
+
+        $row = \DB::table('subscriptions')->where('id', $sub->id)->first(['rzp_subscription', 'subscribe_id']);
+        $this->assertSame('1', (string) $row->rzp_subscription); // update() used to drop these silently
+        $this->assertSame('', (string) $row->subscribe_id);
+    }
 }

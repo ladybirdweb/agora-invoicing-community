@@ -276,7 +276,10 @@ class Setting extends Model
     public function getImage(?string $value, string $path, mixed $default = null): mixed
     {
         try {
-            return $value
+            // The DB can name a file that's no longer in storage (deleted, server/disk moved) —
+            // linking it shows a broken image, so fall back to the default unless it's really there.
+            // ponytail: one storage lookup per access (a HEAD request on S3); cache it if that ever shows up.
+            return $value && Attach::exists($path.'/'.$value)
                 ? Attach::getUrlPath($path.'/'.$value)
                 : $default;
         } catch (Exception) {

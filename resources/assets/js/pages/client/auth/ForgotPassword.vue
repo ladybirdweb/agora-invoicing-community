@@ -27,18 +27,22 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { validateForm } from '@/helpers/formUtils.js'
 import http from '@/plugins/axios'
 import { __ } from '@/plugins/i18n'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
+import { useAlertStore } from '@/core/stores/alert.js'
 import { forgotSchema } from '@/validations/client/authSchemas.js'
 import AuthLayout from './partials/AuthLayout.vue'
 import Honeypot from '@/components/Reusable/Honeypot.vue'
 import { RecaptchaField } from '@recaptcha'
 
 const COMPONENT = 'client-page'
+const router = useRouter()
+const alertStore = useAlertStore()
 
 const { errors, setErrors, setFieldError } = useForm()
 const captchaRef = ref(null)
@@ -63,6 +67,9 @@ async function submit() {
         successHandler(res, COMPONENT)
         form.email = ''
         captchaRef.value?.reset()
+        // Sign-in once the success message is gone (auto-dismissed or closed).
+        if (!alertStore.message) return router.push('/login')
+        watch(() => alertStore.message, () => router.push('/login'), { once: true })
     } catch (e) {
         if (e?.response?.data?.data?.show_v2_recaptcha) {
             captchaRef.value?.triggerFallback()
@@ -73,7 +80,7 @@ async function submit() {
         if (serverErrors?.email) {
             setErrors({ email: Array.isArray(serverErrors.email) ? serverErrors.email[0] : serverErrors.email })
         } else {
-            errorHandler(e, COMPONENT, { setErrors })
+            errorHandler(e, COMPONENT, { setErrors, excludeFields: ['forgot'] })
         }
     } finally {
         saving.value = false

@@ -29,6 +29,22 @@ class InvoicePaymentServiceTest extends DBTestCase
     /** @var PostPaymentService&MockInterface */
     private PostPaymentService $postPayment;
 
+    /**
+     * What a real gateway returns for a payment on $invoice: the invoice_id we stamped (Stripe
+     * `metadata`, Razorpay `notes`) plus the amount captured in minor units and its currency.
+     * Defaults to a generous amount (covers any processing fee).
+     *
+     * @param  array<string, mixed>  $stamp
+     */
+    private function captured(Invoice $invoice, string $where = 'metadata', ?int $minor = null, ?string $currency = null, array $stamp = []): array
+    {
+        return [
+            $where => ['invoice_id' => (string) $invoice->id] + $stamp,
+            'amount_received' => $minor ?? \App\Plugins\Payment\Support\Money::toMinor((float) $invoice->grand_total * 1.1, (string) $invoice->currency),
+            'currency' => strtolower($currency ?? (string) $invoice->currency),
+        ];
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -216,7 +232,7 @@ class InvoicePaymentServiceTest extends DBTestCase
         $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'processing_fee' => null, 'status' => 'pending']);
 
         // 'NoFeeGateway' has no DB table → ProcessingFee::percent returns 0 → covers line 155
-        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: ['metadata' => ['invoice_id' => (string) $invoice->id]]);
+        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $this->captured($invoice));
         $this->payments->shouldReceive('capture')->once()->andReturn($result);
         $this->postPayment->shouldReceive('handle')->once();
 
@@ -239,7 +255,7 @@ class InvoicePaymentServiceTest extends DBTestCase
     {
         $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'processing_fee' => null, 'status' => 'pending']);
 
-        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: ['metadata' => ['invoice_id' => (string) $invoice->id]]);
+        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $this->captured($invoice));
         $this->payments->shouldReceive('capture')->once()->andReturn($result);
         $this->postPayment->shouldNotReceive('handle');
 
@@ -302,7 +318,7 @@ class InvoicePaymentServiceTest extends DBTestCase
         // a real freshly-created invoice always starts 'pending' (CartService).
         $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'processing_fee' => null, 'status' => 'pending']);
 
-        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: ['notes' => ['invoice_id' => (string) $invoice->id]]);
+        $result = new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $this->captured($invoice, 'notes'));
         $this->payments->shouldReceive('capture')->once()->andReturn($result);
         $this->postPayment->shouldReceive('handle')->once();
 
@@ -332,7 +348,7 @@ class InvoicePaymentServiceTest extends DBTestCase
         // a real freshly-created invoice always starts 'pending' (CartService).
         $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'processing_fee' => null, 'status' => 'pending']);
 
-        $result = new PaymentResult(paid: true, gateway: 'Stripe', raw: ['metadata' => ['invoice_id' => (string) $invoice->id]]);
+        $result = new PaymentResult(paid: true, gateway: 'Stripe', raw: $this->captured($invoice));
         $this->payments->shouldReceive('capture')->once()->andReturn($result);
         $this->postPayment->shouldReceive('handle')->once();
 
@@ -348,7 +364,7 @@ class InvoicePaymentServiceTest extends DBTestCase
         // invoice has processing_fee already set → applyProcessingFee returns early (line 150)
         $invoice = Invoice::factory()->create(['grand_total' => 100.0, 'processing_fee' => '2%', 'status' => 'pending']);
 
-        $result = new PaymentResult(paid: true, gateway: 'Stripe', raw: ['metadata' => ['invoice_id' => (string) $invoice->id]]);
+        $result = new PaymentResult(paid: true, gateway: 'Stripe', raw: $this->captured($invoice));
         $this->payments->shouldReceive('capture')->once()->andReturn($result);
         $this->postPayment->shouldReceive('handle')->once();
 
@@ -421,5 +437,86 @@ class InvoicePaymentServiceTest extends DBTestCase
         $result = $this->service->start($invoice, 'Razorpay');
 
         $this->assertSame($session, $result);
+    }
+
+    // ── C3/C4: fulfil only what was actually paid; Razorpay credit really spent ──
+
+    private function pendingInvoice(float $total, ?int $userId = null): Invoice
+    {
+        return Invoice::factory()->create(array_filter([
+            'grand_total' => $total, 'currency' => 'USD', 'processing_fee' => null, 'status' => 'pending', 'user_id' => $userId,
+        ], fn ($v) => $v !== null));
+    }
+
+    private function refusesWith(Invoice $invoice, array $raw, array $payload = []): void
+    {
+        $this->payments->shouldReceive('capture')->once()->andReturn(new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $raw));
+        $this->postPayment->shouldNotReceive('handle');
+
+        $this->assertFalse($this->service->confirm($invoice, 'NoFeeGateway', $payload));
+        $this->assertNotSame('success', $invoice->fresh()->status);
+    }
+
+    public function test_confirm_refuses_an_underpayment(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->refusesWith($invoice, $this->captured($invoice, minor: 9999)); // $99.99 of $100
+    }
+
+    public function test_confirm_refuses_a_payment_in_another_currency(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->refusesWith($invoice, $this->captured($invoice, minor: 1_000_000, currency: 'INR'));
+    }
+
+    public function test_confirm_refuses_when_the_gateway_reports_no_amount(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->refusesWith($invoice, ['metadata' => ['invoice_id' => (string) $invoice->id]]);
+    }
+
+    public function test_confirm_refuses_a_payment_opened_before_the_invoice_grew(): void
+    {
+        // A $10 payment opened, then the same pending invoice rebuilt at $1000 in another tab.
+        $invoice = $this->pendingInvoice(10.0);
+        $raw = $this->captured($invoice, minor: 1000);
+        $invoice->update(['grand_total' => 1000.0]);
+
+        $this->refusesWith($invoice->fresh(), $raw);
+    }
+
+    public function test_confirm_accepts_an_exact_payment(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->payments->shouldReceive('capture')->once()->andReturn(new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $this->captured($invoice, minor: 10000)));
+        $this->postPayment->shouldReceive('handle')->once();
+
+        $this->assertTrue($this->service->confirm($invoice, 'NoFeeGateway', []));
+    }
+
+    public function test_confirm_spends_razorpay_credit_stamped_in_notes(): void
+    {
+        $user = \App\User::factory()->create(['email' => 'rzp-credit-'.uniqid().'@test.local']);
+        app(\App\Services\Payment\CreditBalanceService::class)->grant($user->id, 'USD', 50.0, \App\Model\Order\CreditTransaction::TYPE_OVERPAYMENT);
+        $invoice = $this->pendingInvoice(100.0, $user->id);
+
+        // Razorpay returns our metadata as `notes`, values stringified; it charged the other $50.
+        $raw = $this->captured($invoice, 'notes', minor: 5000, stamp: ['credit_applied' => '50']);
+        $this->payments->shouldReceive('capture')->once()->andReturn(new PaymentResult(paid: true, gateway: 'NoFeeGateway', raw: $raw));
+        $this->postPayment->shouldReceive('handle')->once();
+
+        $this->assertTrue($this->service->confirm($invoice, 'NoFeeGateway', []));
+        $this->assertSame(0.0, $this->service->availableCredit($user->id, 'USD')); // the 50 was really spent
+    }
+
+    public function test_confirm_ignores_a_credit_amount_sent_by_the_browser(): void
+    {
+        $user = \App\User::factory()->create(['email' => 'rzp-credit-'.uniqid().'@test.local']);
+        app(\App\Services\Payment\CreditBalanceService::class)->grant($user->id, 'USD', 50.0, \App\Model\Order\CreditTransaction::TYPE_OVERPAYMENT);
+        $invoice = $this->pendingInvoice(100.0, $user->id);
+
+        // Payment opened WITHOUT credit, only $50 paid, browser claims credit_applied=50.
+        $this->refusesWith($invoice, $this->captured($invoice, minor: 5000), ['credit_applied' => 50]);
+        $this->assertSame(50.0, $this->service->availableCredit($user->id, 'USD'));
     }
 }

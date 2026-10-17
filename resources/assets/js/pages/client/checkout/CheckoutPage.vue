@@ -68,8 +68,9 @@
           </div>
 
           <!-- Coupon input (cart mode only; once applied it shows in the Discount
-               summary row, where it can also be removed — an invoice's totals are final) -->
-          <div v-if="mode === 'cart' && !cartStore.couponCode" class="d-flex align-items-center mt-3">
+               summary row, where it can also be removed — an invoice's totals are final).
+               Hidden for an all-free cart: there's nothing for a coupon to take off. -->
+          <div v-if="mode === 'cart' && !cartStore.couponCode && toNumber(cartStore.subtotal) > 0" class="d-flex align-items-center mt-3">
             <input v-model="couponInput" type="text" name="coupon_code" autocomplete="off" :spellcheck="false"
                    class="form-control h-auto border-radius-0 line-height-1 py-3 coupon-input"
                    :aria-label="__('message.coupon_code')"

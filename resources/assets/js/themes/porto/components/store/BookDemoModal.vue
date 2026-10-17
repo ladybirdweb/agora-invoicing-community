@@ -81,6 +81,7 @@ import { useAlertStore } from '@/core/stores/alert'
 import { demoSchema } from '@/validations/client/demoValidations'
 import http from '@/plugins/axios'
 import { scrollToFirstError } from '@/helpers/formUtils.js'
+import { errorHandler } from '@/helpers/responseHandler.js'
 import Modal from '../common/Modal.vue'
 import Alert from '@/components/Reusable/Alert.vue'
 // ClientField/PhoneField/Honeypot resolve via global registration (themes/porto/index.js).
@@ -187,11 +188,8 @@ async function submit() {
       return
     }
     captchaRef.value?.reset()
-    alertStore.setAlert({
-      message: e?.response?.data?.message ?? __('message.something_went_wrong'),
-      type: 'danger',
-      component_name: 'BookDemoModal',
-    })
+    // 412s arrive as { field: msg } (incl. the hidden `demo` honeypot) — errorHandler flattens them.
+    errorHandler(e, 'BookDemoModal')
   } finally {
     submitting.value = false
   }

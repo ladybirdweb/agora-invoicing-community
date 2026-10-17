@@ -74,6 +74,21 @@ class CloudExtraActivities extends Controller
         return json_decode('{'.explode('{', (string) $response->getBody())[1]);
     }
 
+    /**
+     * How long the new plan runs when the plan length changes mid-term. Moving to a LONGER
+     * plan: its length less the days already used on the old one (development's formula).
+     * Moving to a SHORTER plan: the days left, at most one new period — the old formula,
+     * new − (old − left), goes negative once more of the old plan was used than the new
+     * plan lasts (yearly → monthly with 200 days left: 30 − 165 = −135, an expiry in the
+     * past and 135 phantom days credited).
+     */
+    private function newTermDays(int $planDaysNew, int $planDaysOld, int $daysRemain): int
+    {
+        return $planDaysOld > $planDaysNew
+            ? min($daysRemain, $planDaysNew)
+            : $planDaysNew - ($planDaysOld - $daysRemain);
+    }
+
     private function daysRemaining(string $ends_at): int
     {
         return (int) Date::now()->diffInDays(Date::parse($ends_at), absolute: false);
@@ -292,6 +307,20 @@ class CloudExtraActivities extends Controller
             // the price is multiplied by.
             $order = $this->authorizedOrder((int) $request->input('orderId'));
 
+            // One plan change per order: a terminated order was already replaced, and a second
+            // invoice while one is unpaid would let the same old plan be credited again per
+            // invoice (each downgrade banks its leftover value).
+            if ($order->order_status === 'Terminated') {
+                return errorResponse(trans('message.plan_change_order_terminated'));
+            }
+            $pending = Invoice::where('status', '!=', 'success')
+                ->where('metadata->type', 'upgrade_downgrade')
+                ->where('metadata->old_order_id', $order->id)
+                ->value('number');
+            if ($pending) {
+                return errorResponse(trans('message.plan_change_invoice_pending', ['number' => $pending]));
+            }
+
             $installationPath = $order->installedDomains()->first();
 
             $calc = $this->calculatePlanChange($order, $planId);
@@ -335,7 +364,11 @@ class CloudExtraActivities extends Controller
                     'old_license' => $order->serial_key,
                     'installation_path' => $installationPath,
                     'discount' => $discount,
-                ],
+                ] + ($calc['keepOldExpiry']
+                    // Same-length swap: the new subscription keeps the old order's expiry.
+                    ? ['increase-decrease-days-dont-cloud' => $order->id]
+                    // Otherwise the remaining/new-term days it was priced for — not a fresh full period.
+                    : ($calc['days'] !== null ? ['increase-decrease-days' => (int) $calc['days']] : [])),
             ]);
 
             // No OrderInvoiceRelation to the OLD order here on purpose: this
@@ -488,11 +521,11 @@ class CloudExtraActivities extends Controller
      * plan swap doesn't change agents — that's the separate agentAlteration
      * flow), never taken from the request.
      *
-     * @return array{price: float, discount: float|null, product: ?Product, currency: string, priceoldplan: float, pricenewplan: float}
+     * @return array{price: float, discount: float|null, product: ?Product, currency: string, priceoldplan: float, pricenewplan: float, days: int|null, keepOldExpiry: bool}
      */
     private function calculatePlanChange(Order $order, int $planIdNew): array
     {
-        $empty = ['price' => 0.0, 'discount' => null, 'product' => null, 'currency' => '', 'priceoldplan' => 0.0, 'pricenewplan' => 0.0];
+        $empty = ['price' => 0.0, 'discount' => null, 'product' => null, 'currency' => '', 'priceoldplan' => 0.0, 'pricenewplan' => 0.0, 'days' => null, 'keepOldExpiry' => false];
 
         try {
             $sub = Subscription::where('order_id', $order->id)->first();
@@ -524,7 +557,7 @@ class CloudExtraActivities extends Controller
             if ($base_price_new > $base_priceOld) {
                 $result = $this->newPriceGreaterThanOld($ends_at, $base_price_new, $planDaysNew, $base_priceOld, $planDaysOld);
             } elseif ($base_price_new == $base_priceOld) {
-                $result = $this->newPriceEqualToOld($ends_at, $base_price_new);
+                $result = $this->newPriceEqualToOld($ends_at, $base_price_new, $planDaysNew, $planDaysOld);
             } else {
                 $result = $this->newPriceLessThanOld($ends_at, $base_price_new, $base_priceOld, $planDaysNew, $planDaysOld);
             }
@@ -536,6 +569,9 @@ class CloudExtraActivities extends Controller
                 'currency' => $currencyNew['currency'],
                 'priceoldplan' => $result['priceRemaining'],
                 'pricenewplan' => $result['priceToBePaid'],
+                // How long the new subscription runs (development kept these in the session).
+                'days' => $result['days'] ?? null,
+                'keepOldExpiry' => $result['keepOldExpiry'] ?? false,
             ];
         } catch (Exception $exception) {
             Logger::exception($exception);
@@ -550,7 +586,7 @@ class CloudExtraActivities extends Controller
     private function newPriceLessThanOld(string $ends_at, int|float $base_price_new, int|float $base_priceOld, int $planDaysNew, int $planDaysOld): array
     {
         if ($this->isExpired($ends_at)) {
-            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null];
+            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null, 'days' => $planDaysNew];
         }
 
         $daysRemain = $this->daysRemaining($ends_at);
@@ -584,7 +620,7 @@ class CloudExtraActivities extends Controller
             $price = 0;
         }
 
-        return ['price' => $price, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => $discount];
+        return ['price' => $price, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => $discount, 'keepOldExpiry' => true];
     }
 
     /**
@@ -594,14 +630,16 @@ class CloudExtraActivities extends Controller
     {
         $discount = null;
 
+        $term = [];
         if ($daysRemain <= $planDaysNew && $planDaysOld > $planDaysNew) {
             $priceToBePaid = $pricePerDayForNewPlan * $daysRemain;
             $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+            $term = ['keepOldExpiry' => true];
         } else {
-            $daysRemainNew = $planDaysOld - $daysRemain;
-            $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-            $priceToBePaid = $pricePerDayForNewPlan * $daysRemainNewFinal;
+            $days = $this->newTermDays($planDaysNew, $planDaysOld, $daysRemain);
+            $priceToBePaid = $pricePerDayForNewPlan * $days;
             $priceRemaining = $pricePerDayForOldPlan * $daysRemain;
+            $term = ['days' => $days];
         }
 
         if ($priceToBePaid > $priceRemaining) {
@@ -613,7 +651,7 @@ class CloudExtraActivities extends Controller
             $price = 0;
         }
 
-        return ['price' => $price, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => $discount];
+        return ['price' => $price, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => $discount] + $term;
     }
 
     /**
@@ -622,7 +660,7 @@ class CloudExtraActivities extends Controller
     private function newPriceGreaterThanOld(string $ends_at, int|float $base_price_new, int $planDaysNew, int|float $base_priceOld, int $planDaysOld): array
     {
         if ($this->isExpired($ends_at)) {
-            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null];
+            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null, 'days' => $planDaysNew];
         }
 
         $pricePerDayNew = $base_price_new / $planDaysNew;
@@ -641,12 +679,11 @@ class CloudExtraActivities extends Controller
      */
     private function newPlanDaysNotEqualToOld(int $planDaysNew, int $planDaysOld, int $daysRemain, int|float $pricePerDayNew, int|float $pricePerDayOld): array
     {
-        $daysRemainNew = $planDaysOld - $daysRemain;
-        $daysRemainNewFinal = $planDaysNew - $daysRemainNew;
-        $priceToBePaid = $pricePerDayNew * $daysRemainNewFinal;
+        $days = $this->newTermDays($planDaysNew, $planDaysOld, $daysRemain);
+        $priceToBePaid = $pricePerDayNew * $days;
         $priceRemaining = $pricePerDayOld * $daysRemain;
 
-        return ['price' => $priceToBePaid - $priceRemaining, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => null];
+        return ['price' => $priceToBePaid - $priceRemaining, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => null, 'days' => $days];
     }
 
     /**
@@ -657,19 +694,26 @@ class CloudExtraActivities extends Controller
         $priceToBePaid = $pricePerDayNew * $daysRemain;
         $priceRemaining = $pricePerDayOld * $daysRemain;
 
-        return ['price' => $priceToBePaid - $priceRemaining, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => null];
+        return ['price' => $priceToBePaid - $priceRemaining, 'priceRemaining' => $priceRemaining, 'priceToBePaid' => $priceToBePaid, 'discount' => null, 'keepOldExpiry' => true];
     }
 
     /**
      * @return array<mixed>
      */
-    private function newPriceEqualToOld(string $ends_at, int|float $base_price_new): array
+    private function newPriceEqualToOld(string $ends_at, int|float $base_price_new, int $planDaysNew, int $planDaysOld): array
     {
         if ($this->isExpired($ends_at)) {
-            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null];
+            return ['price' => $base_price_new, 'priceRemaining' => 0, 'priceToBePaid' => $base_price_new, 'discount' => null, 'days' => $planDaysNew];
         }
 
-        return ['price' => 0, 'priceRemaining' => 0, 'priceToBePaid' => 0, 'discount' => null];
+        // Free swap; only the term changes — development's currentDateLessThanEndDate().
+        $daysRemain = $this->daysRemaining($ends_at);
+        $term = match (true) {
+            $planDaysNew === $planDaysOld => ['keepOldExpiry' => true],
+            default => ['days' => $this->newTermDays($planDaysNew, $planDaysOld, $daysRemain)],
+        };
+
+        return ['price' => 0, 'priceRemaining' => 0, 'priceToBePaid' => 0, 'discount' => null] + $term;
     }
 
     public function doTheAgentAltering(string $newAgents, string $oldLicense, int $orderId, ?string $installation_path, int $product_id): JsonResponse

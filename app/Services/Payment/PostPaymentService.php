@@ -4,12 +4,12 @@ namespace App\Services\Payment;
 
 use App\Events\OrderPlacedEvent;
 use App\Http\Controllers\Order\InvoiceController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\RenewController;
 use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Cart\Cart;
-use App\Model\Common\Country;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
@@ -17,7 +17,6 @@ use App\Model\Order\Order;
 use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Plugins\Payment\Dto\SubscriptionRequest;
@@ -181,6 +180,19 @@ class PostPaymentService
     private function handleUpgradeDowngrade(Invoice $invoice, array $metadata): array
     {
         $terminatedOrderId = (int) $metadata['old_order_id'];
+
+        // Safety net behind upgradeDowngradeCloud's one-change-per-order check: if the old
+        // order was already replaced, a second paid plan-change invoice must not create another
+        // order or bank the old plan's credit again. Payment is recorded; reconcile by hand.
+        if (Order::whereKey($terminatedOrderId)->value('order_status') === 'Terminated') {
+            Logger::exception(new RuntimeException(sprintf(
+                'Plan-change invoice #%s paid for order %d, which is already Terminated — not fulfilled again; refund or apply manually.',
+                $invoice->number, $terminatedOrderId
+            )));
+
+            return [];
+        }
+
         $oldLicense = (string) $metadata['old_license'];
         $installationPath = (string) $metadata['installation_path'];
         $discount = isset($metadata['discount']) ? (float) $metadata['discount'] : null;
@@ -212,29 +224,7 @@ class PostPaymentService
             $invoice->currency,
         );
 
-        // Transfer subscription from terminated order to new order
-        $termOrderId = DB::table('terminated_order_upgrade')
-            ->where('upgraded_order_id', $newActiveOrderId)->value('terminated_order_id');
-        /** @var Order|null $terminatedOrder */
-        $terminatedOrder = Order::find($termOrderId);
-        if ($terminatedOrder) {
-            $oldSub = Subscription::where('order_id', $terminatedOrder->id)->first();
-            if ($terminatedOrder->order_status === 'Terminated' && $oldSub?->subscribe_id) {
-                Subscription::where('order_id', $newActiveOrderId)->update([
-                    'subscribe_id' => $oldSub->subscribe_id,
-                    'is_subscribed' => $oldSub->is_subscribed,
-                    'autoRenew_status' => $oldSub->autoRenew_status,
-                    'rzp_subscription' => $oldSub->rzp_subscription,
-                ]);
-                $this->updateSubscriptionPriceIfNeeded($newActiveOrderId, $invoice); // @phpstan-ignore argument.type
-            } elseif ($oldSub?->is_subscribed === '1') { // @phpstan-ignore identical.alwaysFalse
-                Subscription::where('order_id', $newActiveOrderId)->update([
-                    'is_subscribed' => $oldSub->is_subscribed,
-                    'autoRenew_status' => $oldSub->autoRenew_status,
-                    'rzp_subscription' => $oldSub->rzp_subscription,
-                ]);
-            }
-        }
+        $this->moveAutoRenewalToNewOrder($newActiveOrderId, $invoice);
 
         return ['status' => 'success'];
     }
@@ -251,7 +241,8 @@ class PostPaymentService
         }
     }
 
-    private function recordPayment(Invoice $invoice, string $gateway): void
+    /** Record the invoice's outstanding amount as paid via $gateway and mark it paid. Also used by admin renew. */
+    public function recordPayment(Invoice $invoice, string $gateway): void
     {
         $outstanding = $invoice->outstanding();
 
@@ -275,6 +266,47 @@ class PostPaymentService
         // rounds to whole units when the tax rule says so), which would
         // otherwise leave a paid invoice reading as partially paid.
         $invoice->update(['status' => 'success']);
+    }
+
+    /**
+     * After an upgrade/downgrade, carry the old order's auto-renewal over to the new order
+     * and take it off the terminated one.
+     */
+    private function moveAutoRenewalToNewOrder(int $newActiveOrderId, Invoice $invoice): void
+    {
+        // Transfer subscription from terminated order to new order
+        $termOrderId = DB::table('terminated_order_upgrade')
+            ->where('upgraded_order_id', $newActiveOrderId)->value('terminated_order_id');
+        /** @var Order|null $terminatedOrder */
+        $terminatedOrder = Order::find($termOrderId);
+        if ($terminatedOrder) {
+            $oldSub = Subscription::where('order_id', $terminatedOrder->id)->first();
+            if ($terminatedOrder->order_status === 'Terminated' && $oldSub?->subscribe_id) {
+                Subscription::where('order_id', $newActiveOrderId)->update([
+                    'subscribe_id' => $oldSub->subscribe_id,
+                    'is_subscribed' => $oldSub->is_subscribed,
+                    'autoRenew_status' => $oldSub->autoRenew_status,
+                    'rzp_subscription' => $oldSub->rzp_subscription,
+                ]);
+                $this->updateSubscriptionPriceIfNeeded($newActiveOrderId, $invoice); // @phpstan-ignore argument.type
+            } elseif ($oldSub?->is_subscribed === '1') { // @phpstan-ignore identical.alwaysFalse
+                Subscription::where('order_id', $newActiveOrderId)->update([
+                    'is_subscribed' => $oldSub->is_subscribed,
+                    'autoRenew_status' => $oldSub->autoRenew_status,
+                    'rzp_subscription' => $oldSub->rzp_subscription,
+                ]);
+            }
+
+            // Auto-renewal now lives on the new order only. Left on the terminated one too, both
+            // rows share the gateway subscription id and the renewal webhook (which takes the
+            // first match) could extend the dead order while the new one expires. Query builder,
+            // as in AutoRenewalActivationService::deactivate(): these columns aren't fillable.
+            if ($terminatedOrder->order_status === 'Terminated' && $oldSub) {
+                DB::table('subscriptions')->where('id', $oldSub->id)->update([
+                    'subscribe_id' => '', 'is_subscribed' => 0, 'autoRenew_status' => 0, 'rzp_subscription' => 0,
+                ]);
+            }
+        }
     }
 
     /**
@@ -308,21 +340,26 @@ class PostPaymentService
         $plan = Plan::find($subscription->plan_id);
         /** @var User $invoiceUser */
         $invoiceUser = User::find($invoice->user_id);
-        /** @var Country $countryids */
-        $countryids = Country::where('country_code_char2', $invoiceUser->country)->first();
-        $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $invoice->currency)->where('country_id', $countryids->country_id)->value('renew_price');
-        if (empty($price)) {
-            $price = PlanPrice::where('plan_id', $subscription->plan_id)->where('currency', $invoice->currency)->where('country_id', 0)->value('renew_price');
-        }
-
-        $amount = $this->getPriceForCloud($order, $price, $subscription->product_id, $invoiceUser);
-        $renewPrice = intval(calculateUnitCost($invoice->currency, (float) $amount));
 
         if (! $subscription->subscribe_id) {
             return;
         }
 
         $gateway = $subscription->rzp_subscription == '3' ? 'Razorpay' : 'Stripe';
+
+        // The same recurring amount the renewal cron and activation charge (SubscriptionController
+        // ::calculateRenewalCost → processing fee → tax). The old inline version multiplied the
+        // plan's whole renew_price by the licence's agents (5× for a 5-agent plan) and, for an
+        // unlimited licence (serial …0000 → 0 agents), repriced the subscription to 0.
+        $planDetails = userCurrencyAndPrice($invoiceUser->id, $plan);
+        if (empty($planDetails['plan'])) {
+            return;
+        }
+        $cost = resolve(SubscriptionController::class)->calculateRenewalCost($subscription, $planDetails, $order);
+        $cost = ProcessingFee::addTo($cost, strtolower($gateway));
+        $tax = $this->calculateTax($subscription->product_id, (string) $invoiceUser->state, (string) $invoiceUser->country);
+        $amount = rounding((new InvoiceController)->calculateTotal($tax['value'], $cost));
+        $renewPrice = intval(calculateUnitCost($invoice->currency, (float) $amount));
 
         // The gateway driver fetches the live subscription, skips the update when
         // the price/interval already matches or the subscription is inactive, and
@@ -345,16 +382,5 @@ class PostPaymentService
                 'subscribe_id' => null,
             ]);
         }
-    }
-
-    private function getPriceForCloud(mixed $order, mixed $price, int $product, User $invoiceUser): float
-    {
-        $numberofAgents = (int) ltrim(substr((string) $order->serial_key, -4), '0');
-        $finalPrice = $numberofAgents * $price;
-        $controller = new InvoiceController;
-        $tax = $this->calculateTax($product, (string) $invoiceUser->state, (string) $invoiceUser->country);
-        $tax_rate = $tax['value'];
-
-        return rounding($controller->calculateTotal($tax_rate, $finalPrice));
     }
 }

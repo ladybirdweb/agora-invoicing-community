@@ -337,15 +337,22 @@ class SubscriptionController extends Controller
             if ($sub->subscribe_id && $sub->rzp_subscription == '2') {
                 $status = resolve(SubscriptionService::class)->getStatus('Razorpay', $sub->subscribe_id);
                 match ($status) {
-                    'authenticated' => $this->handleAuthenticatedSubscription($sub, $invoice, $cost, $user, $order, $productName, 'razorpay'),
-                    'expired' => $sub->update(['rzp_subscription' => '1', 'subscribe_id' => '']),
+                    // Authorization charged the upfront addon only for the invoice the cron created
+                    // it for. Otherwise (an opt-in whose confirm call was lost) nothing was charged:
+                    // just activate — paying a pending invoice here gave a free renewal, then a
+                    // second extension at the real charge.
+                    'authenticated' => ($invoice->metadata['rzp_upfront_subscription'] ?? null) === $sub->subscribe_id
+                        ? $this->handleAuthenticatedSubscription($sub, $invoice, $cost, $user, $order, $productName, 'razorpay')
+                        : DB::table('subscriptions')->where('id', $sub->id)->where('rzp_subscription', '2')->update(['rzp_subscription' => '3']),
+                    // Query builder: rzp_subscription/subscribe_id aren't fillable, so update() did nothing.
+                    'expired' => DB::table('subscriptions')->where('id', $sub->id)->update(['rzp_subscription' => '1', 'subscribe_id' => '']),
                     default => null,
                 };
             } elseif ($sub->subscribe_id && $sub->autoRenew_status == '2') {
                 $status = resolve(SubscriptionService::class)->getStatus('Stripe', $sub->subscribe_id);
                 match ($status) {
                     'active' => $this->handleAuthenticatedSubscription($sub, $invoice, $cost, $user, $order, $productName, 'stripe'),
-                    'incomplete_expired' => $sub->update(['autoRenew_status' => '1', 'subscribe_id' => '']),
+                    'incomplete_expired' => DB::table('subscriptions')->where('id', $sub->id)->update(['autoRenew_status' => '1', 'subscribe_id' => '']),
                     default => null,
                 };
             }
@@ -442,9 +449,16 @@ class SubscriptionController extends Controller
             // land while it's in flight. No charge has happened yet at this
             // step (that only occurs once the customer completes
             // authorization), so it's safe to just drop this stale response.
-            Subscription::where('id', $subscription->id)
+            $updated = Subscription::where('id', $subscription->id)
                 ->where('rzp_subscription', '1')
                 ->update(['subscribe_id' => $response->id, 'rzp_subscription' => '2']);
+
+            // The cron flow collects THIS invoice as the subscription's upfront addon, charged
+            // when the customer authorizes. Recorded so checkSubscriptionStatus() pays only this
+            // invoice on "authenticated" — an opt-in (immediate) subscription charges nothing then.
+            if ($updated && ! $immediate) {
+                $invoice->update(['metadata' => array_merge($invoice->metadata ?? [], ['rzp_upfront_subscription' => $response->id])]);
+            }
         }
     }
 

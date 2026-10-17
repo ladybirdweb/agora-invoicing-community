@@ -13,8 +13,8 @@ use App\Plugins\Payment\Dto\PaymentResult;
 use App\Plugins\Payment\Dto\PaymentSession;
 use App\Plugins\Payment\Exceptions\PaymentException;
 use App\Plugins\Payment\Support\Money;
-use Logger;
 use Exception;
+use Logger;
 
 /**
  * Open-payment domain logic.

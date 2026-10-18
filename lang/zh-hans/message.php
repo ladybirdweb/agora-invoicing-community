@@ -3502,7 +3502,6 @@ return [
     'op_loading_secure_form' => '正在加载安全表单...',
     'op_total_updated_fee_change' => '由于费率变化，总数已更新为 :amount。',
     'op_recaptcha_required' => '请完成 reCAPTCHA 并重试。',
-    'op_fix_highlighted_fields' => '请修复突出显示的字段，然后重试。',
     'op_too_many_attempts' => '尝试次数过多。请稍等片刻，然后重试。',
     'op_create_order_failed' => '创建订单失败',
     'op_init_payment_failed' => '初始化支付失败',

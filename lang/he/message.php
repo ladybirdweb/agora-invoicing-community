@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'טוען טופס מאובטח...',
     'op_total_updated_fee_change' => 'הסכום הכולל עודכן ל-:amount עקב שינוי בתעריף העמלות.',
     'op_recaptcha_required' => 'אנא השלם את ה-reCAPTCHA ונסה שוב.',
-    'op_fix_highlighted_fields' => 'אנא תקן את השדות המודגשים ונסה שוב.',
     'op_too_many_attempts' => 'יותר מדי ניסיונות. אנא המתן רגע ונסה שוב.',
     'op_create_order_failed' => 'יצירת הסדר נכשלה',
     'op_init_payment_failed' => 'אתחול התשלום נכשל',

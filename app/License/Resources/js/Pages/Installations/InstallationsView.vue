@@ -63,8 +63,8 @@
                         <div class="col-sm-6 mb-3">
                             <div class="d-flex align-items-center">
                                 <span class="fw-bold me-2">{{ lang('ip_address_verification') }}:</span>
-                                <span :class="installation_disable_ip_verification ? 'badge bg-success' : 'badge bg-danger'">
-                                    {{ installation_disable_ip_verification ? lang('enabled') : lang('disabled') }}
+                                <span :class="installation_disable_ip_verification ? 'badge bg-danger' : 'badge bg-success'">
+                                    {{ installation_disable_ip_verification ? lang('disabled') : lang('enabled') }}
                                 </span>
                             </div>
                         </div>

@@ -55,7 +55,7 @@ class OpenPaymentRequest extends FormRequest
             // currency the dropdown lets you pick gets rejected here.
             'currency' => ['required', Rule::in(Currency::where('status', 1)->pluck('code'))],
             'gateway' => ['required', 'in:Razorpay,Stripe'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 

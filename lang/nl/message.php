@@ -3487,7 +3487,6 @@ return [
     'op_loading_secure_form' => 'Beveiligd formulier laden…',
     'op_total_updated_fee_change' => 'Het totaal is bijgewerkt naar :amount vanwege een wijziging in het tarief.',
     'op_recaptcha_required' => 'Vul de reCAPTCHA in en probeer het opnieuw.',
-    'op_fix_highlighted_fields' => 'Corrigeer de gemarkeerde velden en probeer het opnieuw.',
     'op_too_many_attempts' => 'Te veel pogingen. Wacht even en probeer het opnieuw.',
     'op_create_order_failed' => 'Kan bestelling niet plaatsen',
     'op_init_payment_failed' => 'Kan de betaling niet initialiseren',

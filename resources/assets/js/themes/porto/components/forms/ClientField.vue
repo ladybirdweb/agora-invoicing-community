@@ -61,6 +61,7 @@
                   :spellcheck="spellcheck"
                   :placeholder="placeholder"
                   :disabled="disabled"
+                  :maxlength="maxlength"
                   @input="onInput"></textarea>
 
         <!-- text / email / number / tel / … (with optional append slot) -->
@@ -103,6 +104,7 @@ const props = defineProps({
     autocomplete: { type: String,  default: '' },
     placeholder:  { type: String,  default: '' },
     rows:         { type: [String, Number], default: 3 },
+    maxlength:    { type: [String, Number], default: undefined },
     // undefined = browser default (auto-off for email/password/username fields)
     spellcheck:   { type: Boolean, default: undefined },
     inputmode:    { type: String,  default: undefined },

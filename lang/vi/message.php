@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Đang tải biểu mẫu bảo mật…',
     'op_total_updated_fee_change' => 'Tổng số đã được cập nhật thành :amount do thay đổi mức phí.',
     'op_recaptcha_required' => 'Vui lòng hoàn thành reCAPTCHA và thử lại.',
-    'op_fix_highlighted_fields' => 'Vui lòng sửa các trường được đánh dấu và thử lại.',
     'op_too_many_attempts' => 'Cố gắng quá nhiều. Vui lòng đợi một lát và thử lại.',
     'op_create_order_failed' => 'Tạo đơn hàng không thành công',
     'op_init_payment_failed' => 'Không thể khởi tạo thanh toán',

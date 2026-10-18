@@ -38,6 +38,7 @@
                                 :label="__('message.invoice_date')"
                                 :required="true"
                                 :value="form.date"
+                                :disabledDate="(d) => d > new Date()"
                                 :onChange="onChange"
                                 :error="errors.date"
                             />

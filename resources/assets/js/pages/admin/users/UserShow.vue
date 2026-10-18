@@ -360,7 +360,7 @@
                                         <div v-else-if="comments.length === 0" class="text-center text-muted py-3">
                                             {{ __('message.no-record') }}
                                         </div>
-                                        <div v-else>
+                                        <div v-else class="comment-list">
                                             <div v-for="comment in comments" :key="comment.id" class="d-flex gap-2 mb-3">
                                                 <div class="flex-shrink-0">
                                                     <span
@@ -883,4 +883,6 @@ const orderOptions = {
 .truncate-with-copy { max-width: calc(100% - 22px); }
 .comment-avatar { width: 32px; height: 32px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
 .comment-text { white-space: pre-wrap; }
+/* Fixed-size panel: long threads scroll instead of growing the page. */
+.comment-list { max-height: 400px; overflow-y: auto; padding-right: 4px; }
 </style>

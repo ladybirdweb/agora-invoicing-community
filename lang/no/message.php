@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Laster inn sikkert skjema …',
     'op_total_updated_fee_change' => 'Summen har blitt oppdatert til :amount på grunn av endring i gebyrsatsen.',
     'op_recaptcha_required' => 'Fullfør reCAPTCHA og prøv igjen.',
-    'op_fix_highlighted_fields' => 'Rett opp de uthevede feltene og prøv på nytt.',
     'op_too_many_attempts' => 'For mange forsøk. Vent et øyeblikk og prøv igjen.',
     'op_create_order_failed' => 'Kunne ikke opprette ordre',
     'op_init_payment_failed' => 'Kunne ikke initialisere betalingen',

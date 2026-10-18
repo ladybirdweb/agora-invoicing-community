@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Cargando formulario seguro…',
     'op_total_updated_fee_change' => 'El total se actualizó a :amount debido a un cambio en la tarifa.',
     'op_recaptcha_required' => 'Complete el reCAPTCHA e inténtelo nuevamente.',
-    'op_fix_highlighted_fields' => 'Corrija los campos resaltados y vuelva a intentarlo.',
     'op_too_many_attempts' => 'Demasiados intentos. Espere un momento e inténtelo de nuevo.',
     'op_create_order_failed' => 'No se pudo crear el pedido',
     'op_init_payment_failed' => 'No se pudo inicializar el pago',

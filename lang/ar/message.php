@@ -3487,7 +3487,6 @@ return [
     'op_loading_secure_form' => 'جارٍ تحميل النموذج الآمن...',
     'op_total_updated_fee_change' => 'تم تحديث الإجمالي إلى :amount بسبب تغيير معدل الرسوم.',
     'op_recaptcha_required' => 'يرجى إكمال اختبار reCAPTCHA والمحاولة مرة أخرى.',
-    'op_fix_highlighted_fields' => 'يرجى إصلاح الحقول المميزة والمحاولة مرة أخرى.',
     'op_too_many_attempts' => 'محاولات كثيرة جدًا. يرجى الانتظار لحظة وحاول مرة أخرى.',
     'op_create_order_failed' => 'فشل في إنشاء النظام',
     'op_init_payment_failed' => 'فشل في تهيئة الدفع',

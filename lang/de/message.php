@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Sicheres Formular laden…',
     'op_total_updated_fee_change' => 'Der Gesamtbetrag wurde aufgrund einer Gebührensatzänderung auf :amount aktualisiert.',
     'op_recaptcha_required' => 'Bitte füllen Sie das reCAPTCHA aus und versuchen Sie es erneut.',
-    'op_fix_highlighted_fields' => 'Bitte korrigieren Sie die hervorgehobenen Felder und versuchen Sie es erneut.',
     'op_too_many_attempts' => 'Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.',
     'op_create_order_failed' => 'Bestellung konnte nicht erstellt werden',
     'op_init_payment_failed' => 'Die Zahlung konnte nicht initialisiert werden',

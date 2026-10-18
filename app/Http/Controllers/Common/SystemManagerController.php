@@ -32,7 +32,7 @@ class SystemManagerController extends Controller
                 ->map(fn ($user): array => [
 
                     'id' => $user->id,
-                    'name' => $user->first_name.' '.$user->last_name,
+                    'name' => trim($user->first_name.' '.$user->last_name).' <'.$user->email.'>',
                     'email' => $user->email,
                 ])
                 ->values();
@@ -41,7 +41,7 @@ class SystemManagerController extends Controller
                 ->filter(fn ($user): bool => $user->position === 'manager')
                 ->map(fn ($user): array => [
                     'id' => $user->id,
-                    'name' => $user->first_name.' '.$user->last_name,
+                    'name' => trim($user->first_name.' '.$user->last_name).' <'.$user->email.'>',
                     'email' => $user->email,
                 ])
                 ->values();
@@ -85,7 +85,7 @@ class SystemManagerController extends Controller
 
             $users->getCollection()->transform(fn ($user): array => [
                 'id' => $user->id,
-                'name' => $user->first_name.' '.$user->last_name,
+                'name' => trim($user->first_name.' '.$user->last_name).' <'.$user->email.'>',
                 'email' => $user->email,
             ]);
 
@@ -115,9 +115,7 @@ class SystemManagerController extends Controller
             ];
 
             foreach ($roles as $role => $autoAssign) {
-                if ($setting = ManagerSetting::whereManagerRole($role)->first()) {
-                    $setting->update(['auto_assign' => $autoAssign]);
-                }
+                ManagerSetting::updateOrCreate(['manager_role' => $role], ['auto_assign' => $autoAssign]);
             }
 
             return successResponse(__('message.manager_settings_updated_successfully'));

@@ -18,8 +18,12 @@ const http = axios.create({
 })
 
 http.interceptors.request.use(config => {
-    // Attach CSRF token for Laravel web routes
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.content
+    // Prefer the XSRF-TOKEN cookie: Laravel refreshes it on every response, while the
+    // <meta> token goes stale once the session rotates (re-login in another tab,
+    // remember-me after expiry). EncryptCookies is off (Kernel.php), so the cookie
+    // holds the raw token — if that middleware is ever enabled, revisit this.
+    const cookie = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/)?.[1]
+    const csrf = cookie ? decodeURIComponent(cookie) : document.querySelector('meta[name="csrf-token"]')?.content
     if (csrf) {
         config.headers['X-CSRF-TOKEN'] = csrf
     }
@@ -43,14 +47,10 @@ http.interceptors.response.use(
             return new Promise(() => {})
         }
 
-        // 419 — CSRF token expired; refresh the token and retry the request once
+        // 419 — CSRF mismatch; the 419 response set a fresh XSRF-TOKEN cookie, so retry once
         if (status === 419 && !error.config?._csrfRetry) {
-            const freshToken = document.querySelector('meta[name="csrf-token"]')?.content
-            if (freshToken) {
-                error.config.headers['X-CSRF-TOKEN'] = freshToken
-                error.config._csrfRetry = true
-                return http(error.config)
-            }
+            error.config._csrfRetry = true
+            return http(error.config)
         }
 
         return Promise.reject(error)

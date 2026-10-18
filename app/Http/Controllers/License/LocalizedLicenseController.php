@@ -217,7 +217,7 @@ class LocalizedLicenseController extends Controller
             ->paginate($perPage, ['*'], 'page', $page);
 
         $licenses = License::whereIn('license_order_number', $orders->getCollection()->pluck('number'))
-            ->get(['license_order_number', 'license_domain', 'license_machine_id', 'license_expire_date'])
+            ->get(['license_order_number', 'license_domain', 'license_ip', 'license_machine_id', 'license_expire_date'])
             ->keyBy('license_order_number');
 
         $orders->getCollection()->transform(function (Order $order) use ($licenses) {
@@ -230,10 +230,10 @@ class LocalizedLicenseController extends Controller
                 'client_email' => $order->user?->email,
                 'product_id' => $order->productRelation?->id,
                 'product_name' => $order->productRelation?->name,
-                'license_domain' => $license?->license_domain,
+                'license_domain' => $license?->license_domain ?: $license?->license_ip,
                 'license_machine_id' => $license?->license_machine_id,
                 'license_expire_date' => $license?->license_expire_date,
-                'is_bound' => (bool) ($license && $license->license_domain && $license->license_machine_id),
+                'is_bound' => (bool) ($license && $license->license_machine_id && ($license->license_domain || $license->license_ip)),
             ];
         });
 

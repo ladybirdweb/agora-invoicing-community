@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Caricamento modulo protetto…',
     'op_total_updated_fee_change' => 'Il totale è stato aggiornato a :amount a causa di una modifica della tariffa.',
     'op_recaptcha_required' => 'Completa il reCAPTCHA e riprova.',
-    'op_fix_highlighted_fields' => 'Correggi i campi evidenziati e riprova.',
     'op_too_many_attempts' => 'Troppi tentativi. Attendi un attimo e riprova.',
     'op_create_order_failed' => 'Impossibile creare l\'ordine',
     'op_init_payment_failed' => 'Impossibile inizializzare il pagamento',

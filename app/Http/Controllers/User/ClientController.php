@@ -383,7 +383,10 @@ class ClientController extends AdvanceSearchController
                 'ip' => $location['ip'] ?? null,
             ]);
 
-            $user = User::create($userData);
+            // role, position, manager, account_manager and active aren't $fillable, so
+            // create() would silently drop them; $userData is already a fixed whitelist.
+            $user = (new User)->forceFill($userData);
+            $user->save();
 
             if (emailSendingStatus()) {
                 $this->sendWelcomeMail($user);

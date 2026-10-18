@@ -65,7 +65,8 @@
                       <PhoneField name="mobile" :label="__('message.mobile')"
                                   :value="form.mobile" :error="errors.mobile" :required="true"
                                   :onChange="(val) => { form.mobile = val; setFieldError('mobile', undefined) }"
-                                  @countryChange="({ dialCode }) => form.mobile_code = dialCode" />
+                                  :initialCountry="form.mobile_iso || 'auto'"
+                                  @countryChange="({ iso, dialCode }) => { form.mobile_iso = iso; form.mobile_code = dialCode }" />
                     </div>
                   </div>
 
@@ -128,7 +129,7 @@
 
                   <ClientField name="description" type="textarea" :label="__('message.op_description_optional')"
                                :placeholder="__('message.op_what_payment_for')"
-                               v-model="form.description" :rows="2" />
+                               v-model="form.description" :rows="2" maxlength="255" />
 
                   <div class="mb-3" role="radiogroup" aria-labelledby="op-gateway-label">
                     <div id="op-gateway-label" class="form-label text-dark">{{ __('message.op_payment_gateway') }}</div>
@@ -498,12 +499,14 @@ let   cardFields       = {}
 let   clientSecret     = null
 
 const blankForm = () => ({
-  name: '', email: '', mobile: '', mobile_code: '', company: '',
+  name: '', email: '', mobile: '', mobile_code: '', mobile_iso: '', company: '',
   address: '', city: '', state: '', zip: '', country: '',
   amount: '', currency: '', gateway: '', description: '',
 })
 
 const form = reactive(blankForm())
+// Keep in sync with the :error bindings in the form template.
+const INLINE_ERROR_FIELDS = ['name', 'email', 'mobile', 'company', 'address', 'city', 'country', 'state', 'zip', 'amount']
 
 // ── Currency ────────────────────────────────────────────────────────
 const appTitle        = ref('')
@@ -678,11 +681,16 @@ const payNow = async () => {
           return
         }
         captchaRef.value?.reset()
-        if ((err.response?.status === 422 || err.response?.status === 412) && res?.errors) {
-          const map = Object.fromEntries(Object.entries(res.errors).map(([k, v]) => [k, v[0]]))
+        const fieldErrors = res?.errors ?? (res?.message && typeof res.message === 'object' ? res.message : null)
+        if ((err.response?.status === 422 || err.response?.status === 412) && fieldErrors) {
+          const map = Object.fromEntries(Object.entries(fieldErrors).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v]))
           setErrors(map)
           step.value = 'form'
-          alertStore.setAlert({ message: __('message.op_fix_highlighted_fields'), type: 'warning', component_name: 'open-payment-form' })
+          // Fields without their own error slot (currency, gateway, description…) surface here.
+          const unshown = Object.entries(map).filter(([k]) => !INLINE_ERROR_FIELDS.includes(k)).map(([, v]) => v)
+          if (unshown.length) {
+            alertStore.setAlert({ message: unshown.join(' '), type: 'warning', component_name: 'open-payment-form' })
+          }
         } else if (err.response?.status === 429) {
           alertStore.setAlert({ message: __('message.op_too_many_attempts'), type: 'danger', component_name: 'open-payment-review' })
         } else {
@@ -944,7 +952,7 @@ onMounted(async () => {
 .op-right-bg     { background: #f8f9ff; }
 .op-section-label { font-size: 0.7rem; letter-spacing: 0.08em; }
 .op-detail-label  { font-size: 0.65rem; letter-spacing: 0.08em; }
-.op-note-text     { color: #374151; line-height: 1.5; }
+.op-note-text     { color: #374151; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
 
 /* ── Page ───────────────────────────────────────────────────────── */
 .op-page {

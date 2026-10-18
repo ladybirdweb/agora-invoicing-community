@@ -3487,7 +3487,6 @@ return [
     'op_loading_secure_form' => '正在載入安全性表單...',
     'op_total_updated_fee_change' => '由於費率變化，總數已更新為 :amount。',
     'op_recaptcha_required' => '請完成 reCAPTCHA 並重試。',
-    'op_fix_highlighted_fields' => '請修復突出顯示的字段，然後重試。',
     'op_too_many_attempts' => '嘗試次數過多。請稍等片刻，然後重試。',
     'op_create_order_failed' => '創建訂單失敗',
     'op_init_payment_failed' => '初始化支付失敗',

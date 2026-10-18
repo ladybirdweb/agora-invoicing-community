@@ -27,6 +27,7 @@ class InstallationViewController extends Controller
                 'installation_domain' => $installation->installation_domain,
                 'installation_date' => $installation->installation_date,
                 'installation_status' => $installation->installation_status,
+                'installation_disable_ip_verification' => $installation->installation_disable_ip_verification,
                 'product_title' => $installation->product->name,
                 'client_email' => $installation->user?->email,
                 'license_id' => $installation->license?->id,

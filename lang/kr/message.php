@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => '보안 양식 로드 중…',
     'op_total_updated_fee_change' => '수수료율 변경으로 인해 총액이 :amount(으)로 업데이트되었습니다.',
     'op_recaptcha_required' => 'reCAPTCHA를 완료한 후 다시 시도하세요.',
-    'op_fix_highlighted_fields' => '강조 표시된 필드를 수정하고 다시 시도하십시오.',
     'op_too_many_attempts' => '시도 횟수가 너무 많습니다. 잠시 후에 다시 시도해 주세요.',
     'op_create_order_failed' => '주문 생성에 실패했습니다.',
     'op_init_payment_failed' => '결제 초기화 실패',

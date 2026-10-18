@@ -73,7 +73,7 @@ function resolveFaClass(faClass, className = '') {
         let fa = faClass
         if (fa.startsWith('fa fa-')) fa = fa.replace(/^fa fa-/, 'fab fa-')
         else if (fa.startsWith('fa-')) fa = `fab ${fa}`
-        if (fa === 'fab fa-twitter' && className === 'social-icons-x') return 'fab fa-x-twitter'
+        if (fa === 'fab fa-twitter') return 'fab fa-x-twitter'
         return fa
     }
     const p = findPlatformByClass(className)

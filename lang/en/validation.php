@@ -997,7 +997,7 @@ return [
         'product_quant_req' => 'The product quantity field is required when no of agents is not present.',
         'no_agent_req' => 'The no of agents field is required when product quantity is not present.',
         'pro_req' => 'The product field is required',
-        'offer_price' => 'Offer prices  must not be greater than 100',
+        'offer_price' => 'Offer price must be between 0 and 100.',
         'currency_duplicate' => 'Each currency can only be used once.',
         'non_negative' => 'This value cannot be negative.',
     ],

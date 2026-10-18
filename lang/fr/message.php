@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Chargement du formulaire sécurisé…',
     'op_total_updated_fee_change' => 'Le total a été mis à jour à :amount en raison d\'un changement de taux de frais.',
     'op_recaptcha_required' => 'Veuillez compléter le reCAPTCHA et réessayer.',
-    'op_fix_highlighted_fields' => 'Veuillez corriger les champs en surbrillance et réessayer.',
     'op_too_many_attempts' => 'Trop de tentatives. Veuillez patienter un moment et réessayer.',
     'op_create_order_failed' => 'Échec de la création de la commande',
     'op_init_payment_failed' => 'Échec de l\'initialisation du paiement',

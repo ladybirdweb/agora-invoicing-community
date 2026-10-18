@@ -108,6 +108,7 @@ class Installation extends Model
         return [
             'product_id' => 'integer',
             'user_id' => 'integer',
+            'installation_disable_ip_verification' => 'integer',
         ];
     }
 }

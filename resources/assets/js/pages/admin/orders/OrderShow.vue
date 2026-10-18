@@ -352,8 +352,8 @@
                     format="MM/DD/YYYY"
                     :onChange="(val) => licenseEditModal.support_end = val"
                 />
-                <p v-if="someExpiryFieldsHidden" class="text-muted small mb-0">
-                    {{ __('message.some_dates_not_editable') || 'Some dates aren\'t editable for this license type.' }}
+                <p v-if="lockedExpiryLabels" class="text-muted small mb-0">
+                    {{ __('message.dates_not_editable', { dates: lockedExpiryLabels }) }}
                 </p>
             </template>
             <template #controls>
@@ -521,7 +521,11 @@ const canEditExpiry = computed(() => ({
     support_end:      !!permissions.value.generateSupportExpiryDate,
 }))
 
-const someExpiryFieldsHidden = computed(() => Object.values(canEditExpiry.value).some(v => !v))
+const EXPIRY_LABELS = { update_end: 'message.updates_expiry', subscription_end: 'message.license_expiry', support_end: 'message.support_expiry' }
+const lockedExpiryLabels = computed(() => Object.keys(EXPIRY_LABELS)
+    .filter(k => !canEditExpiry.value[k])
+    .map(k => __(EXPIRY_LABELS[k]))
+    .join(', '))
 
 // 0 in the license's last four digits means unlimited seats, not zero seats.
 const agentsLabel = computed(() => {

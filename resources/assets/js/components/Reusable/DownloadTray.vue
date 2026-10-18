@@ -1,8 +1,10 @@
 <template>
-    <!-- Bootstrap utilities only. Bottom-left: bottom-right is taken by third-party widgets. -->
+    <!-- Bottom-left: bottom-right is taken by third-party widgets. z-index 1039: above the admin
+         sidebar (1038), below offcanvas/modals (1045+). Inline margin: admin common.scss forces
+         .card { margin-bottom: 1.5rem !important }, which lifts the tray off the bottom edge. -->
     <div v-if="downloadTray.open && downloadTray.items.length"
-         class="position-fixed bottom-0 start-0 ms-3 z-3 col-11 col-sm-6 col-lg-4 col-xxl-3 card shadow rounded-0 rounded-top"
-         role="region" :aria-label="headerTitle">
+         class="position-fixed bottom-0 start-0 ms-3 col-11 col-sm-6 col-lg-4 col-xxl-3 card shadow rounded-0 rounded-top"
+         role="region" :aria-label="headerTitle" style="z-index: 1039; margin-bottom: 0 !important">
         <div class="card-header d-flex align-items-center gap-2 py-2">
             <span class="flex-grow-1 text-truncate fw-semibold" aria-live="polite">{{ headerTitle }}</span>
             <!-- Plain icon button sized to sit beside Bootstrap's btn-close. -->
@@ -12,7 +14,7 @@
                     @click="downloadTray.collapsed = !downloadTray.collapsed">
                 <i :class="downloadTray.collapsed ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn-close ms-2" :aria-label="__('message.close')" v-tooltip="__('message.close')"
+            <button type="button" class="btn-close ms-2 mb-0" :aria-label="__('message.close')" v-tooltip="__('message.close')"
                     @click="closeDownloadTray"></button>
         </div>
 
@@ -40,7 +42,7 @@
                         <div class="small text-truncate" :class="metaClass(item)">{{ meta(item) }}</div>
                     </div>
 
-                    <button v-if="isActiveDownload(item)" type="button" class="btn-close"
+                    <button v-if="isActiveDownload(item)" type="button" class="btn-close mb-0"
                             :aria-label="__('message.cancel')" v-tooltip="__('message.cancel')" @click="cancelDownload(item)"></button>
                     <i v-else-if="item.status === 'started'" class="fa-solid fa-circle-check fs-5 text-success" aria-hidden="true"></i>
                     <!-- Same small row-action button the app uses elsewhere (Copy/Reissue, product Download). -->

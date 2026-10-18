@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'सुरक्षित फॉर्म लोड हो रहा है...',
     'op_total_updated_fee_change' => 'शुल्क दर में बदलाव के कारण कुल को :amount में अद्यतन कर दिया गया है।',
     'op_recaptcha_required' => 'कृपया रीकैप्चा पूरा करें और पुनः प्रयास करें।',
-    'op_fix_highlighted_fields' => 'कृपया हाइलाइट किए गए फ़ील्ड को ठीक करें और पुनः प्रयास करें।',
     'op_too_many_attempts' => 'बहुत अधिक प्रयास. कृपया एक क्षण प्रतीक्षा करें और पुनः प्रयास करें।',
     'op_create_order_failed' => 'ऑर्डर बनाने में विफल',
     'op_init_payment_failed' => 'भुगतान आरंभ करने में विफल',

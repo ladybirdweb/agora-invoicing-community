@@ -1,0 +1,1 @@
+import{t as e}from"./DeleteModal-wxqO4MM5.js";export{e as default};

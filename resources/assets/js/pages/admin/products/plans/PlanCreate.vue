@@ -103,7 +103,7 @@
                                     <input type="number" class="form-control" v-model="row.add_price" min="0" @keydown="blockInvalidKey" @input="pricingError = ''" />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" v-model="row.offer_price" min="0" max="100" step="0.01" @keydown="(e) => blockInvalidKey(e, true)" />
+                                    <input type="number" class="form-control" v-model="row.offer_price" min="0" max="100" step="0.01" @keydown="(e) => blockInvalidKey(e, true)" @input="pricingError = ''" />
                                 </td>
                                 <td>
                                     <input type="number" class="form-control" v-model="row.renew_price" min="0" @keydown="blockInvalidKey" @input="pricingError = ''" />
@@ -241,6 +241,7 @@ async function submit() {
     const hasDuplicateCurrency = new Set(currencyValues).size !== currencyValues.length
     const hasNegative = form.prices.some(p =>
         Number(p.add_price) < 0 || Number(p.renew_price) < 0 || (p.offer_price !== '' && Number(p.offer_price) < 0))
+    const offerOver100 = form.prices.some(p => p.offer_price !== '' && p.offer_price !== null && Number(p.offer_price) > 100)
 
     if (invalidRow) {
         pricingError.value = __('message.pricing_row_required') || 'Each pricing row requires a currency, price, and renewal price.'
@@ -248,11 +249,13 @@ async function submit() {
         pricingError.value = __('validation.plan_request.currency_duplicate')
     } else if (hasNegative) {
         pricingError.value = __('validation.plan_request.non_negative')
+    } else if (offerOver100) {
+        pricingError.value = __('validation.plan_request.offer_price')
     } else {
         pricingError.value = ''
     }
 
-    if (!schemaValid || invalidRow || hasDuplicateCurrency || hasNegative) return
+    if (!schemaValid || invalidRow || hasDuplicateCurrency || hasNegative || offerOver100) return
 
     saving.value = true
     try {

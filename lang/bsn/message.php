@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Učitavanje sigurnog obrasca…',
     'op_total_updated_fee_change' => 'Ukupan iznos je ažuriran na :amount zbog promjene stope naknade.',
     'op_recaptcha_required' => 'Molimo popunite reCAPTCHA i pokušajte ponovo.',
-    'op_fix_highlighted_fields' => 'Molimo popravite označena polja i pokušajte ponovo.',
     'op_too_many_attempts' => 'Previše pokušaja. Molimo pričekajte trenutak i pokušajte ponovo.',
     'op_create_order_failed' => 'Kreiranje naloga nije uspjelo',
     'op_init_payment_failed' => 'Inicijalizacija plaćanja nije uspjela',

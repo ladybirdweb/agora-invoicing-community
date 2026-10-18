@@ -14,6 +14,7 @@
                             :label="__('message.date-of-payment')"
                             :required="true"
                             :value="form.payment_date"
+                            :disabledDate="(d) => d > new Date()"
                             :onChange="(val) => { form.payment_date = val; setFieldError('payment_date', undefined) }"
                             :error="errors.payment_date"
                         />

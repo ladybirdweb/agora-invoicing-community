@@ -45,11 +45,8 @@ trait CoupCodeAndInvoiceSearch
                     $q->where('product_id', $product);
                 });
             })
-            ->when($request->from_date && $request->to_date, function ($query) use ($request): void {
-                $from = Date::parse($request->from_date)->startOfDay();
-                $to = Date::parse($request->to_date)->endOfDay();
-                $query->whereBetween('date', [$from, $to]);
-            });
+            ->when($request->from_date, fn ($query, $from) => $query->where('date', '>=', Date::parse($from)->startOfDay()))
+            ->when($request->to_date, fn ($query, $to) => $query->where('date', '<=', Date::parse($to)->endOfDay()));
     }
 
     public function deleteBulkInvoices(Request $request): JsonResponse

@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Memuat formulir aman…',
     'op_total_updated_fee_change' => 'Total telah diperbarui menjadi :amount karena perubahan tarif biaya.',
     'op_recaptcha_required' => 'Silakan lengkapi reCAPTCHA dan coba lagi.',
-    'op_fix_highlighted_fields' => 'Harap perbaiki bidang yang disorot dan coba lagi.',
     'op_too_many_attempts' => 'Terlalu banyak upaya. Harap tunggu sebentar dan coba lagi.',
     'op_create_order_failed' => 'Gagal membuat pesanan',
     'op_init_payment_failed' => 'Gagal menginisialisasi pembayaran',

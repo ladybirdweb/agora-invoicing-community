@@ -43,6 +43,11 @@ class VerifyCsrfToken extends BaseVerifier
         } catch (TokenMismatchException) {
             $request->session()->regenerateToken();
 
+            // A redirect here is followed by XHR with the original verb (PATCH /login → 405).
+            if ($request->expectsJson()) {
+                return $this->addCookieToResponse($request, errorResponse(__('message.session_expired'), 419));
+            }
+
             return redirect('login')->withInput($request->input())->with('fails', 'Your session has expired. Please refresh this page and login again to continue');
         }
     }

@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => 'Güvenli form yükleniyor…',
     'op_total_updated_fee_change' => 'Ücret oranındaki değişiklik nedeniyle toplam tutar :amount olarak güncellendi.',
     'op_recaptcha_required' => 'Lütfen reCAPTCHA\'yı tamamlayıp tekrar deneyin.',
-    'op_fix_highlighted_fields' => 'Lütfen vurgulanan alanları düzeltip tekrar deneyin.',
     'op_too_many_attempts' => 'Çok fazla deneme. Lütfen biraz bekleyip tekrar deneyin.',
     'op_create_order_failed' => 'Sipariş oluşturulamadı',
     'op_init_payment_failed' => 'Ödeme başlatılamadı',

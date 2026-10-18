@@ -50,7 +50,7 @@
 
                 <RouterView v-slot="{ Component }">
                     <Suspense>
-                        <component :is="Component" />
+                        <component :is="Component" :key="$route.path" />
                         <template #fallback>
                             <div class="row justify-content-center py-3"><loader /></div>
                         </template>

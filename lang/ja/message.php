@@ -3491,7 +3491,6 @@ return [
     'op_loading_secure_form' => '安全なフォームを読み込んでいます…',
     'op_total_updated_fee_change' => '手数料率の変更により、合計が :amount に更新されました。',
     'op_recaptcha_required' => 'reCAPTCHA を完了して、再試行してください。',
-    'op_fix_highlighted_fields' => '強調表示されたフィールドを修正して、再試行してください。',
     'op_too_many_attempts' => '試行回数が多すぎます。しばらく待ってから、もう一度試してください。',
     'op_create_order_failed' => '注文の作成に失敗しました',
     'op_init_payment_failed' => '支払いの初期化に失敗しました',

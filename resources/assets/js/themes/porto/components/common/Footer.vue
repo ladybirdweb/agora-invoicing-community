@@ -122,7 +122,7 @@ function resolveSocialFaClass(s) {
         let fa = s.fa_class
         if (fa.startsWith('fa fa-')) fa = fa.replace(/^fa fa-/, 'fab fa-')
         else if (fa.startsWith('fa-')) fa = `fab ${fa}`
-        if (fa === 'fab fa-twitter' && (s.class === 'social-icons-x' || (s.name || '').toLowerCase() === 'x')) {
+        if (fa === 'fab fa-twitter') {
             return 'fab fa-x-twitter'
         }
         return fa

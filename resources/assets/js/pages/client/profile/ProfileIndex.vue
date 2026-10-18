@@ -211,7 +211,8 @@ onMounted(async () => {
       mobile_code: user.mobile_code ?? '', mobile_country_iso: user.mobile_country_iso ?? '',
       address: user.address ?? '', town: user.town ?? '',
       country: user.country ?? '', state: user.state ?? '',
-      timezone_id: user.timezone_id ?? '', zipcode: user.zipcode ?? user.zip ?? '',
+      // Only a timezone that exists counts — a stale/0 id left the box empty yet passed "required".
+      timezone_id: user.timezone ? user.timezone_id : '', zipcode: user.zipcode ?? user.zip ?? '',
     })
     if (user.timezone) {
       selectedTimezone.value = { id: user.timezone.id, name: user.timezone.timezone_name ?? user.timezone.name }

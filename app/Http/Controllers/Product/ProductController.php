@@ -284,7 +284,7 @@ class ProductController extends BaseProductController
             // what the frontend sends by default.
             'dependencies' => ['present', 'array'],
             'description' => ['required'],
-            'release_type' => ['required'],
+            'release_type' => ['required', Rule::in(ProductUpload::RELEASE_TYPES)],
         ], [
             'producttitle.required' => __('validation.product_validate.producttitle_required'),
             'version.required' => __('validation.product_validate.version_required'),
@@ -316,14 +316,13 @@ class ProductController extends BaseProductController
         try {
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
-            $sortField = $request->input('sort-field', 'created_at');
-            $sortOrder = $request->input('sort-order', 'desc');
+            $sortOrder = $request->input('sort-order', 'desc') === 'asc' ? 'asc' : 'desc';
             $search = $request->input('search-query', '');
 
-            $allowed = ['created_at', 'version', 'title', 'release_type', 'status'];
-            if (! in_array($sortField, $allowed, strict: true)) {
-                $sortField = 'created_at';
-            }
+            // Newest = last added (highest id), same as the client's version popup. Sorting the
+            // version text would put v9 above v10, so the Version column uses added order too.
+            $columns = ['id' => 'id', 'version' => 'id', 'title' => 'title', 'release_type' => 'release_type', 'status' => 'status'];
+            $sortField = $columns[$request->input('sort-field', '')] ?? 'id';
 
             $uploads = ProductUpload::where('product_id', $productId)
                 ->when($search, function ($q, $search): void {
@@ -334,6 +333,7 @@ class ProductController extends BaseProductController
                     });
                 })
                 ->orderBy($sortField, $sortOrder)
+                ->orderBy('id', $sortOrder) // tie-break: equal timestamps/titles must not shuffle between pages
                 ->paginate($limit, ['*'], 'page', $page);
 
             $uploads->getCollection()->transform(fn ($u): array => [
@@ -398,7 +398,7 @@ class ProductController extends BaseProductController
             // (Laravel treats count() < 1 as "missing"), which is exactly
             // what the frontend sends by default.
             'dependencies' => ['present', 'array'],
-            'release_type' => ['required'],
+            'release_type' => ['required', Rule::in(ProductUpload::RELEASE_TYPES)],
         ], [
             'title.required' => __('validation.extend_product.title_required'),
             'version.required' => __('validation.extend_product.version_required'),

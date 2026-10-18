@@ -268,4 +268,19 @@ class CartServiceTest extends DBTestCase
 
         $this->assertSame([], $result);
     }
+
+    public function test_checkout_extras_credit_preview_never_exceeds_the_total(): void
+    {
+        $invoices = Mockery::mock(InvoicePaymentService::class);
+        $invoices->shouldReceive('availableCredit')->andReturn(500.0);
+        $service = new CartService($this->guestMock, $invoices);
+        $cart = Cart::create(['user_id' => $this->user->id, 'currency' => 'INR']);
+
+        $extras = $service->checkoutExtras($cart, $this->user);
+
+        // Nothing to pay → none of the 500 balance is used and nothing is left to charge.
+        $this->assertSame(currencyFormat(0, 'INR', includeSymbol: false), $extras['credit_preview']);
+        $this->assertSame(currencyFormat(0, 'INR', includeSymbol: false), $extras['grand_total_after_credit']);
+        $this->assertSame(currencyFormat(500, 'INR', includeSymbol: false), $extras['available_credit']);
+    }
 }

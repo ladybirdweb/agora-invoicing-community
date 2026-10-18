@@ -45,6 +45,9 @@ class Cart extends Model
 
     protected $fillable = ['user_id', 'coupon_code', 'coupon_discount', 'currency', 'invoice_id'];
 
+    /** Set (not stored) when unavailable lines were just dropped, so the page can say so. */
+    public bool $itemsRemoved = false;
+
     /**
      * @return BelongsTo<User, $this>
      */

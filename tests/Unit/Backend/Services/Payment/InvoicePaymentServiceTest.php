@@ -71,6 +71,41 @@ class InvoicePaymentServiceTest extends DBTestCase
         $this->assertSame('pk_test_123', $this->service->publishableKey());
     }
 
+    private function couponInvoices(): array
+    {
+        $promo = \App\Model\Payment\Promotion::create([
+            'code' => 'T'.strtoupper(uniqid()), 'type' => 2, 'uses' => 1, 'value' => '10',
+            'start' => now()->subDay()->toDateTimeString(), 'expiry' => now()->addDay()->toDateTimeString(),
+        ]);
+
+        return [
+            $promo,
+            Invoice::factory()->create(['grand_total' => 90.0, 'status' => 'pending', 'coupon_code' => $promo->code]),
+            Invoice::factory()->create(['grand_total' => 90.0, 'status' => 'pending', 'coupon_code' => $promo->code]),
+        ];
+    }
+
+    public function test_an_unpaid_invoice_does_not_use_up_a_coupon(): void
+    {
+        // QA case: coupon applied, checkout started, never paid — the code must still be usable.
+        [$promo] = $this->couponInvoices();
+
+        $this->assertFalse($promo->isUsedUp());
+    }
+
+    public function test_paying_stops_once_another_invoice_has_used_the_coupon(): void
+    {
+        // Two unpaid invoices hold a 1-use code; the first is paid, so the second can't start.
+        [$promo, $first, $second] = $this->couponInvoices();
+        $first->update(['status' => 'success']);
+        $this->payments->shouldNotReceive('start', 'startCardPayment');
+
+        $this->assertTrue($promo->isUsedUp());
+        $this->expectExceptionMessage(__('message.usage-of-code-completed'));
+
+        $this->service->start($second, 'Razorpay');
+    }
+
     public function test_outstanding_returns_grand_total_when_no_payments(): void
     {
         $invoice = Invoice::factory()->create(['grand_total' => 150.0]);

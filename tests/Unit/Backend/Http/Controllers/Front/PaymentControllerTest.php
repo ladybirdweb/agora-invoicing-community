@@ -111,6 +111,36 @@ class PaymentControllerTest extends DBTestCase
             ->assertJsonStructure(['data' => ['invoice', 'orders']]);
     }
 
+    /**
+     * A renewal showed the order's original purchase price instead of its own line, and a
+     * credit + gateway payment showed only the last method.
+     */
+    public function test_pay_success_shows_this_invoices_line_price_and_every_payment_method(): void
+    {
+        $this->app->instance(InvoicePaymentService::class, Mockery::mock(InvoicePaymentService::class)->makePartial());
+        $this->app->instance(OpenPaymentService::class, Mockery::mock(OpenPaymentService::class));
+
+        $product = \App\Model\Product\Product::create(['name' => 'PaySuccess '.uniqid()]);
+        $invoice = \App\Model\Order\Invoice::factory()->create([
+            'user_id' => $this->user->id, 'currency' => 'INR', 'grand_total' => 9321.62, 'status' => 'success',
+        ]);
+        \App\Model\Order\InvoiceItem::create(['invoice_id' => $invoice->id, 'product_id' => $product->id,
+            'product_name' => $product->name, 'regular_price' => 7707, 'quantity' => 1, 'subtotal' => 7707]);
+        $order = \App\Model\Order\Order::create(['client' => $this->user->id, 'product' => $product->id,
+            'order_status' => 'executed', 'number' => (string) random_int(10000000, 99999999), 'price_override' => 15413.6, 'qty' => 1]);
+        \App\Model\Order\OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $invoice->id]);
+        foreach (['Credit Balance' => '2026-10-18 10:00:00', 'Razorpay' => '2026-10-18 10:00:05'] as $method => $at) {
+            $payment = \App\Model\Order\Payment::create(['user_id' => $this->user->id, 'amount' => 1,
+                'payment_method' => $method, 'payment_status' => 'success', 'created_at' => $at]);
+            $payment->invoices()->attach($invoice->id, ['amount' => 1]);
+        }
+
+        $data = $this->getJson('/invoice/'.$invoice->id.'/pay-success')->assertOk()->json('data');
+
+        $this->assertSame('Credit Balance + Razorpay', $data['payment_method']);
+        $this->assertSame(currencyFormat(7707, 'INR', includeSymbol: false), $data['orders'][0]['price']);
+    }
+
     // =========================================================================
     // paySuccess — forbidden when different user
     // =========================================================================

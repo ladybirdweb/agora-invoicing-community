@@ -41,8 +41,21 @@ trait SystemActivityLogsTrait
         return LogOptions::defaults()
             ->logOnly($this->logAttributes)
             ->logOnlyDirty()
+            // Stored value, not the accessor's — e.g. User's profile_pic accessor builds a Gravatar
+            // URL from the email, so every email change logged a fake picture change.
+            ->useAttributeRawValues($this->logRawAttributes())
             ->dontLogEmptyChanges()
             ->useLogName(__('message.'.$this->getLogName(), [], 'en'));
+    }
+
+    /**
+     * Attributes to log as stored rather than through their accessor.
+     *
+     * @return list<string>
+     */
+    protected function logRawAttributes(): array
+    {
+        return [];
     }
 
     /**

@@ -447,7 +447,7 @@ import PaymentTableActions          from './components/PaymentTableActions.vue'
 import InvoiceTableActions          from '../invoices/components/InvoiceTableActions.vue'
 import OrderTableActions            from '../orders/components/OrderTableActions.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
-import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { makeRequestAdapter, invoiceTypeBadge } from '@/helpers/tableUtils'
 import { useTableSelection } from '@/core/composables/useTableSelection'
 
 const COMPONENT  = 'user-show'
@@ -659,7 +659,7 @@ function statusBadge(status, map) {
 
 // ── DataTable column definitions ──────────────────────────────────────────────
 
-const invoiceColumns = ['select', 'date', 'number', 'grand_total', 'paid', 'balance', 'status', 'action']
+const invoiceColumns = ['select', 'date', 'number', 'grand_total', 'paid', 'balance', 'status', 'type', 'action']
 const invoiceOptions = {
     headings: {
         select:      () => h('input', { type: 'checkbox', checked: allInvSelected.value, onChange: toggleAllInvoices }),
@@ -669,6 +669,7 @@ const invoiceOptions = {
         paid:        __('message.paid')       || 'Paid',
         balance:     __('message.balance')    || 'Balance',
         status:      __('message.status')     || 'Status',
+        type:        __('message.type')       || 'Type',
         action:      __('message.actions')    || 'Actions',
     },
     columnsClasses: {
@@ -679,6 +680,7 @@ const invoiceOptions = {
         paid: 'dt-amount',
         balance: 'dt-amount',
         status: 'dt-status',
+        type: 'dt-status',
         action: 'dt-action',
     },
     templates: {
@@ -689,6 +691,7 @@ const invoiceOptions = {
         paid:        (_, row) => formatMoney(row.paid, row.currency),
         balance:     (_, row) => h('span', { class: row.balance > 0 ? 'text-danger' : '' }, formatMoney(row.balance, row.currency)),
         status:      (_, row) => statusBadge(row.status, { success: 'bg-success', pending: 'bg-warning text-dark', 'partially paid': 'bg-info text-dark' }),
+        type:        (_, row) => invoiceTypeBadge(row.type),
         action:      (_, row) => h(InvoiceTableActions, { invoiceId: row.id, isExecuted: !!row.is_executed, isPaid: ['Paid', 'Success'].includes(row.status), showDelete: true, componentName: COMPONENT }),
     },
     sortable:   ['date', 'number', 'grand_total', 'status'],

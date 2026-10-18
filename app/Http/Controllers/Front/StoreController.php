@@ -83,10 +83,10 @@ class StoreController extends Controller
             'currency' => $currency,
             'currency_symbol' => $symbol,
             'cloud_subdomain' => cloudSubDomain() ?? '',
-            'data_centers' => CloudDataCenters::select('id', 'cloud_countries', 'cloud_state')->get()
+            'data_centers' => CloudDataCenters::select('id', 'cloud_countries', 'cloud_state', 'cloud_city')->get()
                 ->map(fn ($dc): array => [
                     'id' => $dc->id,
-                    'name' => trim($dc->cloud_countries.($dc->cloud_state ? ', '.$dc->cloud_state : '')),
+                    'name' => implode(', ', array_filter([$dc->cloud_city, $dc->cloud_state, $dc->cloud_countries])),
                 ])->values(),
             'products' => $products->map(fn (Product $p): array => $this->transformProduct($p, $currency))->values(),
         ]);

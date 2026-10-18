@@ -36,20 +36,11 @@ describe('licenseSchema', () => {
         await expect(licenseSchema.validate({ ...valid, license_code: '' })).rejects.toThrow()
     })
 
-    it('fails when license_expire_date is null', async () => {
-        await expect(licenseSchema.validate({ ...valid, license_expire_date: null })).rejects.toThrow()
-    })
-
-    it('fails when license_expire_date is empty string', async () => {
-        await expect(licenseSchema.validate({ ...valid, license_expire_date: '' })).rejects.toThrow()
-    })
-
-    it('fails when license_updates_date is null', async () => {
-        await expect(licenseSchema.validate({ ...valid, license_updates_date: null })).rejects.toThrow()
-    })
-
-    it('fails when license_support_date is null', async () => {
-        await expect(licenseSchema.validate({ ...valid, license_support_date: null })).rejects.toThrow()
+    // Empty expiry dates mean "never expires" (lifetime licenses), so all three are optional.
+    it('passes with no expiry dates at all', async () => {
+        await expect(licenseSchema.validate({
+            ...valid, license_expire_date: null, license_updates_date: '', license_support_date: null,
+        })).resolves.toBeTruthy()
     })
 })
 

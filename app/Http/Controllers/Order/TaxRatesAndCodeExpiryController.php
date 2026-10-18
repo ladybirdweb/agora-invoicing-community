@@ -32,7 +32,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         if ($code) {
             $cont = new PromotionController;
-            $promo = $cont->getPromotionDetails($code);
+            $promo = $cont->getPromotionDetails($code, $productid);
             $total = $cont->findCostAfterDiscount($promo->id, $productid, $user_id);
 
             return ['total' => $total, 'code' => $promo->code, 'value' => $promo->value, 'mode' => 'coupon'];

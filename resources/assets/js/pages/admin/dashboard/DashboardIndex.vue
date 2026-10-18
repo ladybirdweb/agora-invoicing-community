@@ -136,11 +136,12 @@
                   <th>{{ __('message.paid') }}</th>
                   <th>{{ __('message.balance') }}</th>
                   <th>{{ __('message.status') }}</th>
+                  <th>{{ __('message.type') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="invoice in data.recentInvoices" :key="invoice.id">
-                  <td><router-link :to="`/invoices/show?invoiceid=${invoice.id}`" class="text-decoration-none">{{ invoice.number }}</router-link></td>
+                  <td><router-link :to="`/invoices/${invoice.id}`" class="text-decoration-none">{{ invoice.number }}</router-link></td>
                   <td>{{ invoice.grand_total }}</td>
                   <td>
                     <router-link v-if="invoice.user" :to="`/users/${invoice.user.id}`" class="text-decoration-none">
@@ -151,6 +152,7 @@
                   <td>{{ invoice.paid_amount }}</td>
                   <td><div class="sparkbar" data-color="#00a65a" data-height="20">{{ invoice.balance }}</div></td>
                   <td><span v-html="invoice.status"></span></td> <!-- nosemgrep: javascript.vue.security.audit.xss.templates.avoid-v-html.avoid-v-html -->
+                  <td><component :is="invoiceTypeBadge(invoice.type)" /></td>
                 </tr>
                 </tbody>
               </table>
@@ -458,6 +460,7 @@ import { ref, onMounted } from 'vue'
 import http from '@/plugins/axios'
 import { __ } from '@/plugins/i18n'
 import { useDateTime } from '@/core/composables/useDateTime'
+import { invoiceTypeBadge } from '@/helpers/tableUtils'
 
 const { formatDate: dtFormatDate, formatCustom, now } = useDateTime()
 

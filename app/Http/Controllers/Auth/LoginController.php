@@ -165,7 +165,11 @@ class LoginController extends BaseAuthController
     private function buildCredentials(Request $request): array
     {
         $loginInput = $request->input('email_username');
-        $loginType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+        // A username can itself be an email (it starts as a copy of the email and doesn't follow
+        // later email changes), so an email-shaped input matching no email is tried as a username.
+        $loginType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) && User::where('email', $loginInput)->exists()
+            ? 'email'
+            : 'user_name';
 
         return [
             $loginType => $loginInput,

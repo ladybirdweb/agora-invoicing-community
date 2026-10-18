@@ -86,7 +86,7 @@
           <!-- Credit balance toggle. A single yes/no choice, like ticking a box —
                not an amount to type. Re-fetches the totals below when changed
                (invoice mode) or is simply carried forward to checkout (cart mode). -->
-          <div v-if="availableCreditNumber > 0" class="form-check mt-3">
+          <div v-if="availableCreditNumber > 0 && toNumber(grandTotal) > 0" class="form-check mt-3">
             <input id="use-credit" v-model="useCredit" type="checkbox" class="form-check-input" @change="onToggleCredit" />
             <label for="use-credit" class="form-check-label">
               {{ __('message.use_credit_balance', { amount: symbol + availableCredit }) }}
@@ -106,12 +106,12 @@
                 <div class="d-flex justify-content-between py-3 border-bottom">
                   <strong class="text-color-dark">
                     {{ __('message.cart_subtotal') }}
-                    <small v-if="cartStore.taxTotal > 0 && cartStore.taxLabel" class="text-color-grey fw-normal">(ex. {{ cartStore.taxLabel }})</small>
+                    <small v-if="toNumber(cartStore.taxTotal) > 0 && cartStore.taxLabel" class="text-color-grey fw-normal">(ex. {{ cartStore.taxLabel }})</small>
                   </strong>
                   <span class="amount font-weight-medium">{{ symbol }}{{ cartStore.subtotalExTax }}</span>
                 </div>
 
-                <div v-if="cartStore.couponDiscount > 0" class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                <div v-if="toNumber(cartStore.couponDiscount) > 0" class="d-flex justify-content-between align-items-center py-3 border-bottom">
                   <strong class="text-color-dark">{{ __('message.coupon') }} :
                     <span class="text-color-grey fw-normal"> {{ cartStore.couponCode }} </span>
                   </strong>
@@ -132,9 +132,9 @@
                   <span class="amount font-weight-medium">{{ symbol }}{{ tax.amount }}</span>
                 </div>
 
-                <div v-if="cartCreditPreview > 0" class="d-flex justify-content-between py-3 border-bottom">
+                <div v-if="toNumber(cartCreditPreview) > 0" class="d-flex justify-content-between py-3 border-bottom">
                   <strong class="text-color-dark">{{ __('message.credit_to_apply') }}</strong>
-                  <span class="amount text-success">−{{ symbol }}{{ cartCreditPreview.toFixed(2) }}</span>
+                  <span class="amount text-success">−{{ symbol }}{{ cartCreditPreview }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between py-3 border-bottom">
@@ -148,7 +148,7 @@
                 <div v-if="invSummary.subtotal_ex_tax !== undefined" class="d-flex justify-content-between py-3 border-bottom">
                   <strong class="text-color-dark">
                     {{ __('message.sub_total') }}
-                    <small v-if="invSummary.tax_total > 0 && invSummary.tax_label" class="text-color-grey fw-normal">(ex. {{ invSummary.tax_label }})</small>
+                    <small v-if="toNumber(invSummary.tax_total) > 0 && invSummary.tax_label" class="text-color-grey fw-normal">(ex. {{ invSummary.tax_label }})</small>
                   </strong>
                   <span class="amount font-weight-medium">{{ symbol }}{{ invSummary.subtotal_ex_tax }}</span>
                 </div>
@@ -156,7 +156,7 @@
                   <strong class="text-color-dark">{{ tax.label }}<span v-if="tax.rate" class="text-color-grey fw-normal"> ({{ tax.rate }}%)</span></strong>
                   <span class="amount font-weight-medium">{{ symbol }}{{ tax.amount }}</span>
                 </div>
-                <div v-if="invSummary.discount > 0" class="d-flex justify-content-between py-3 border-bottom">
+                <div v-if="toNumber(invSummary.discount) > 0" class="d-flex justify-content-between py-3 border-bottom">
                   <strong class="text-color-dark">{{ invSummary.coupon_code ? __('message.coupon') : __('message.discount') }}<span v-if="invSummary.coupon_code" class="text-color-grey fw-normal"> : {{ invSummary.coupon_code }}</span></strong>
                   <span class="amount text-success">−{{ symbol }}{{ invSummary.discount }}</span>
                 </div>
@@ -296,18 +296,13 @@ const gateways = computed(() => (mode.value === 'invoice' ? invGateways.value : 
 const grandTotal = computed(() => (mode.value === 'invoice' ? invAmount.value : cartStore.grandTotal))
 const availableCredit = computed(() => (mode.value === 'invoice' ? invAvailableCredit.value : cartStore.availableCredit))
 const availableCreditNumber = computed(() => toNumber(availableCredit.value))
-// Cart mode has no invoice yet to ask the server for a real total, so this is
-// a display-only preview (both numbers already came from the server as-is;
-// this just takes their min) — the real amount is always recomputed once an
+// Cart mode has no invoice yet, so this is a display-only preview — both numbers
+// come pre-formatted from the server; the real amount is recomputed once an
 // invoice exists, on the next (place-order) step.
-const cartCreditPreview = computed(() =>
-  useCredit.value ? Math.min(toNumber(cartStore.grandTotal), availableCreditNumber.value) : 0
-)
-// Keep the server's own comma-formatted string when there's nothing to
-// subtract, so the common case (no credit) doesn't lose thousands separators.
-const cartTotalPreview = computed(() => cartCreditPreview.value > 0
-  ? (toNumber(cartStore.grandTotal) - cartCreditPreview.value).toFixed(2)
-  : cartStore.grandTotal)
+const cartCreditPreview = computed(() => (useCredit.value ? cartStore.cart?.credit_preview ?? 0 : 0))
+const cartTotalPreview = computed(() => (useCredit.value
+  ? cartStore.cart?.grand_total_after_credit ?? cartStore.grandTotal
+  : cartStore.grandTotal))
 // A gateway is only required when there's actually something left to charge —
 // credit alone can cover an invoice entirely (or a cart item can be free/trial),
 // with nothing to pay via gateway.

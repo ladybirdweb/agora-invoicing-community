@@ -32,7 +32,10 @@ export const useCartStore = defineStore('cart', {
             this.error = null
             try {
                 const { data } = await http.get(`/my-cart`)
-                this.cart = data.data
+                // Merged, not replaced: the navbar's fetchCart and the checkout page's
+                // fetchCheckout race on a direct load of /checkout, and a basic cart landing
+                // last wiped the checkout-only fields (total → 0, no payment methods).
+                this.cart = { ...(this.cart ?? {}), ...data.data }
             } catch (e) {
                 this.error = parseErrorMessage(e)
             } finally {

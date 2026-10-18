@@ -476,4 +476,22 @@ class AutoRenewalControllerTest extends DBTestCase
         // Not refused, and the refund is attempted (the rest of activation is covered elsewhere).
         $this->assertNotSame(403, $this->stripeConfirmWith($order, $this->verificationCharge($order), expectRefund: true)->status());
     }
+
+    /** D2: re-enabling an already-live subscription showed "Pending Authorization" until a reload. */
+    public function test_stripe_confirm_returns_the_real_auto_renew_state(): void
+    {
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+        $product = \App\Model\Product\Product::first() ?? \App\Model\Product\Product::create(['name' => 'AutoR '.uniqid()]);
+        $plan = \App\Model\Payment\Plan::where('product', $product->id)->first() ?? \App\Model\Payment\Plan::create(['name' => 'ARPlan '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        $subscription = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'is_subscribed' => 0]);
+        $activation = Mockery::mock(\App\Services\Payment\AutoRenewalActivationService::class);
+        $activation->shouldReceive('activate')->once()->andReturnUsing(function () use ($subscription): void {
+            Subscription::where('id', $subscription->id)->update(['is_subscribed' => 1, 'autoRenew_status' => 3]);
+        });
+        $this->app->instance(\App\Services\Payment\AutoRenewalActivationService::class, $activation);
+
+        $this->stripeConfirmWith($order, $this->verificationCharge($order), expectRefund: true)
+            ->assertOk()
+            ->assertJsonPath('data.auto_renew_state', 'active');
+    }
 }

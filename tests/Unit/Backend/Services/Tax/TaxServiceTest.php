@@ -201,6 +201,23 @@ class TaxServiceTest extends DBTestCase
         $this->assertCount(1, $result['lines']);
     }
 
+    public function test_calculate_total_is_the_sum_of_the_rounded_lines(): void
+    {
+        TaxOption::where('id', 1)->update(['tax_enable' => 1, 'inclusive' => 0]);
+        $taxClass = TaxClass::create(['name' => 'Test GST', 'slug' => 'test-gst-'.uniqid()]);
+        TaxProductRelation::create(['product_id' => 9998, 'tax_class_id' => $taxClass->id]);
+        $this->resolver->shouldReceive('ratesForCustomer')->andReturn([
+            ['id' => 1, 'rate' => 9.0, 'label' => 'UGST', 'compound' => false, 'priority' => 1],
+            ['id' => 2, 'rate' => 9.0, 'label' => 'SGST', 'compound' => false, 'priority' => 1],
+        ]);
+
+        // 15,413.60 × 9% = 1,387.224 each: lines show 1,387.22, so the total must be 2,774.44, not 2,774.45.
+        $result = $this->service->calculate(15413.6, 9998, (object) ['is_tax_exempt' => false]);
+
+        $this->assertSame([1387.22, 1387.22], array_column($result['lines'], 'amount'));
+        $this->assertSame(2774.44, $result['total']);
+    }
+
     public function test_legacy_condition_returns_applicable_result(): void
     {
         TaxOption::where('id', 1)->update(['tax_enable' => 1, 'inclusive' => 0]);

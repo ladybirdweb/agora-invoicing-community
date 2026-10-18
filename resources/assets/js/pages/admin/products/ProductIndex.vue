@@ -91,7 +91,7 @@ const tableOptions = reactive({
         image:        (f, row) => row.image ? h('img', { src: row.image, alt: row.name, style: 'width:50px;height:50px;object-fit:cover;border-radius:4px;' }) : '—',
         license_type: (f, row) => row.license_type || '—',
         group:        (f, row) => row.group || '—',
-        action:       (f, row) => h(ProductTableActions, { productId: row.id, downloadUrl: row.action?.download_url }),
+        action:       (f, row) => h(ProductTableActions, { productId: row.id, downloadUrl: row.action?.download_url, productName: row.name }),
     },
 
     sortable: ['name', 'license_type', 'group'],

@@ -225,6 +225,23 @@ class TaxRatesAndCodeExpiryControllerDBTest extends DBTestCase
         $this->assertSame('', $result['code']);
     }
 
+    public function test_get_grand_total_rejects_a_coupon_made_for_another_product(): void
+    {
+        // QA case: coupon for HD Enterprise, already used up, tried on an HD Enterprise Pro
+        // invoice — "invalid" (wrong product) wins over "used up".
+        $couponProduct = \App\Model\Product\Product::factory()->create();
+        $invoiceProduct = \App\Model\Product\Product::factory()->create();
+        $promo = \App\Model\Payment\Promotion::create([
+            'code' => 'T'.strtoupper(uniqid()), 'type' => 2, 'uses' => 0, 'value' => '10',
+            'start' => now()->subDay()->toDateTimeString(), 'expiry' => now()->addDay()->toDateTimeString(),
+        ]);
+        \App\Model\Payment\PromoProductRelation::create(['promotion_id' => $promo->id, 'product_id' => $couponProduct->id]);
+
+        $this->expectExceptionMessage(__('message.invalid_coupon_code'));
+
+        $this->controller->getGrandTotal($promo->code, 100.0, 100.0, $invoiceProduct->id, 'USD', (string) $this->user->id);
+    }
+
     public function test_get_grand_total_returns_zeros_when_total_is_zero(): void
     {
         $result = $this->controller->getGrandTotal(null, 0, 0, 1, 'USD');

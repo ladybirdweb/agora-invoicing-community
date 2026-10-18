@@ -29,7 +29,7 @@ export const registerSchema = yup.object({
     mobile:  yup.string().trim().required(() => __('message.login_validation.mobile_required')),
     password: yup.string()
         .required(() => __('message.login_validation.password_required'))
-        .matches(STRONG_PASS, () => __('message.strong_password')),
+        .matches(STRONG_PASS, () => __('message.password_requirements_not_met')),
     password_confirmation: yup.string()
         .required(() => __('message.login_validation.confirm_password_required'))
         .oneOf([yup.ref('password')], () => __('message.login_validation.confirm_password_equalto')),
@@ -47,7 +47,7 @@ export const forgotSchema = yup.object({
 export const resetSchema = yup.object({
     password: yup.string()
         .required(() => __('message.login_validation.password_required'))
-        .matches(STRONG_PASS, () => __('message.strong_password')),
+        .matches(STRONG_PASS, () => __('message.password_requirements_not_met')),
     password_confirmation: yup.string()
         .required(() => __('message.login_validation.confirm_password_required'))
         .oneOf([yup.ref('password')], () => __('message.login_validation.confirm_password_equalto')),

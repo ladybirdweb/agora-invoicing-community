@@ -181,6 +181,15 @@ class Subscription extends Model
         };
     }
 
+    /**
+     * Nothing to renew when license, updates and support never expire —
+     * e.g. a one-time (lifetime) plan whose product has no expiring permissions.
+     */
+    public function canRenew(): bool
+    {
+        return filled($this->ends_at) || filled($this->update_ends_at) || filled($this->support_ends_at);
+    }
+
     // public function getEndsAtAttribute($value)
     // {
     //      $date1 = new DateTime($value);

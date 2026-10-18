@@ -11,6 +11,7 @@
 
       <div v-else class="row justify-content-center">
         <div class="col-lg-8">
+          <Alert componentName="payment-success-download" />
 
           <!-- Thanks banner -->
           <div class="card border-width-3 border-radius-0 border-color-success">
@@ -68,11 +69,13 @@
                     </td>
                     <td class="text-end align-top">
                       <span class="amount font-weight-medium text-color-grey">{{ symbol }}{{ o.price }}</span><br>
-                      <a v-if="o.downloadable" :href="o.download_url"
-                         class="btn btn-light-scale-2 btn-sm text-dark"
-                         :aria-label="__('message.click_to_download')" :title="__('message.click_to_download')">
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                      </a>
+                      <button v-if="o.downloadable" type="button"
+                              class="btn btn-light-scale-2 btn-sm text-dark"
+                              :disabled="downloadingUrl === o.download_url"
+                              :aria-label="__('message.click_to_download')" :title="__('message.click_to_download')"
+                              @click="downloadFile(o.download_url, o.product_name)">
+                        <i :class="downloadingUrl === o.download_url ? 'fas fa-circle-notch fa-spin' : 'fa fa-download'" aria-hidden="true"></i>
+                      </button>
                     </td>
                   </tr>
 
@@ -109,8 +112,11 @@ import { useRoute } from 'vue-router'
 import http, { parseErrorMessage } from '@/plugins/axios'
 import { __ } from '@/plugins/i18n'
 import { useDateTime } from '@/core/composables/useDateTime'
+import { useDownload } from '@/core/composables/useDownload'
+import Alert from '@/components/Reusable/Alert.vue'
 
 const { formatDate } = useDateTime()
+const { downloadFile, downloadingUrl } = useDownload('payment-success-download')
 
 const route = useRoute()
 const invoiceId = route.query.invoice

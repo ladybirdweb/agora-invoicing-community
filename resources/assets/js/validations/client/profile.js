@@ -18,7 +18,7 @@ export const passwordChangeSchema = yup.object({
     old_password: yup.string().required(() => __('message.old_pass_required')),
     new_password: yup.string()
         .required(() => __('message.new_pass_required'))
-        .matches(STRONG_PASS, () => __('message.strong_password')),
+        .matches(STRONG_PASS, () => __('message.password_requirements_not_met')),
     confirm_password: yup.string()
         .required(() => __('message.confirm_pass_required'))
         .oneOf([yup.ref('new_password')], () => __('message.password_mismatch')),

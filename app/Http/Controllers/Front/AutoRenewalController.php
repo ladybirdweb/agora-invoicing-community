@@ -94,7 +94,11 @@ class AutoRenewalController extends Controller
 
             $this->saveRenewal($order, 'stripe', $paymentIntentId);
 
-            return successResponse(__('message.card_details_updated_successfully'));
+            // The real state (re-enabling a sub that's already live is 'active', not
+            // 'pending'), so the page doesn't have to guess until a reload.
+            return successResponse(__('message.card_details_updated_successfully'), [
+                'auto_renew_state' => Subscription::where('order_id', $order->id)->first()?->autoRenewState() ?? 'inactive',
+            ]);
         } catch (Exception $exception) {
             $this->logPayment($order, 'stripe', 'failed', $exception->getMessage());
 

@@ -34,6 +34,7 @@ class ExtendedBaseProductController extends Controller
             'title' => 'required',
             'version' => 'required',
             'dependencies' => 'required',
+            'release_type' => ['required', \Illuminate\Validation\Rule::in(ProductUpload::RELEASE_TYPES)],
         ],
             [
                 'title.required' => __('validation.extend_product.title_required'),

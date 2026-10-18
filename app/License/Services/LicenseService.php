@@ -39,7 +39,7 @@ class LicenseService
             'license_support_email_date' => null,
             'license_limit' => $data['license_limit'] ?? 1,
             'license_status' => $data['license_status'] ?? 1,
-            'license_date' => $data['license_date'] ?? now()->format('Y-m-d'),
+            'license_date' => $data['license_date'] ?? now(),
             'license_cancel_date' => null,
             'license_comments' => $data['license_comments'] ?? null,
         ]));
@@ -70,7 +70,7 @@ class LicenseService
 
         // Set cancel date when status changes to inactive
         if (isset($data['license_status']) && (int) $data['license_status'] === 0 && $license->license_status !== 0) {
-            $data['license_cancel_date'] = now()->format('Y-m-d');
+            $data['license_cancel_date'] = now();
         }
 
         return $license->update($data);

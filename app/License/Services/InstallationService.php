@@ -27,7 +27,7 @@ class InstallationService
             ],
             [
                 'user_id' => $data['user_id'],
-                'installation_date' => $data['installation_date'] ?? now()->format('Y-m-d'),
+                'installation_date' => $data['installation_date'] ?? now(),
                 'installation_status' => $data['installation_status'] ?? 1,
                 'installation_hash' => $data['installation_hash'] ?? null,
             ]

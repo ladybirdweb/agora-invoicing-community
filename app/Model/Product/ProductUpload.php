@@ -79,6 +79,12 @@ class ProductUpload extends Model
 
     protected $table = 'product_uploads';
 
+    /**
+     * The only release types the update check (HomeController) offers to customers —
+     * anything else (e.g. a stray 'rc' from the release API) would never be offered.
+     */
+    public const array RELEASE_TYPES = ['official', 'pre_release', 'beta'];
+
     protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted', 'release_type', 'dependencies', 'version_expire_date', 'version_install_count', 'status'];
 
     protected string $logName = 'product';

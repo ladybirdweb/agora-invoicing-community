@@ -76,6 +76,7 @@
         <AppFooter />
 
     </div>
+    <DownloadTray />
     </RecaptchaProvider>
 </template>
 
@@ -84,6 +85,9 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useRoute }       from 'vue-router'
 import { useNotification }           from '@/core/composables/useNotification.js'
 import { useAlertStore }             from '@/core/stores/alert.js'
+import { useCartStore }              from '@/core/stores/cart.js'
+import DownloadTray                  from '@/components/Reusable/DownloadTray.vue'
+import { __ }                        from '@/plugins/i18n'
 import { useBreadcrumb }             from '@/core/composables/useBreadcrumb.js'
 import { useStickyHeader }           from '../composables/useStickyHeader.js'
 import { useAnalyticsScripts }       from '@/core/composables/useAnalyticsScripts.js'
@@ -103,6 +107,15 @@ const isStandalone = computed(() => route.meta?.standalone === true)
 const homeUrl      = useBaseUrl() || '/'
 
 watch(() => route.path, () => alertStore.unsetAlert())
+
+// The server drops cart lines whose product/plan/price is gone; whichever cart request
+// (navbar, cart page, checkout) sees that first tells the customer here.
+const cartStore = useCartStore()
+watch(() => cartStore.cart?.items_removed, (removed) => {
+    if (removed) {
+        alertStore.setAlert({ message: __('message.cart_items_unavailable_removed'), type: 'warning', component_name: 'client-page' })
+    }
+})
 
 const mainEl = ref(null)
 // Router owns the URL hash, so move focus manually instead of following #main-content.

@@ -68,13 +68,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <date-picker :label="lang('license_expire_date')" :value="license_expire_date" type="date"
-                                         name="license_expire_date" :onChange="onChange" :required="true" format="DD-MM-YYYY"
+                                         name="license_expire_date" :onChange="onChange" format="DD-MM-YYYY"
                                          :clearable="true" :disabled="false" :confirm="false" :error="errors.license_expire_date">
                             </date-picker>
                         </div>
                         <div class="col-sm-6">
                             <date-picker :label="lang('license_updates_date')" :value="license_updates_date" type="date"
-                                         name="license_updates_date" :onChange="onChange" :required="true" format="DD-MM-YYYY"
+                                         name="license_updates_date" :onChange="onChange" format="DD-MM-YYYY"
                                          :clearable="true" :disabled="false" :confirm="false" :error="errors.license_updates_date">
                             </date-picker>
                         </div>
@@ -83,7 +83,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <date-picker :label="lang('license_support_date')" :value="license_support_date" type="date"
-                                         name="license_support_date" :onChange="onChange" :required="true" format="DD-MM-YYYY"
+                                         name="license_support_date" :onChange="onChange" format="DD-MM-YYYY"
                                          :clearable="true" :disabled="false" :confirm="false" :error="errors.license_support_date">
                             </date-picker>
                         </div>
@@ -203,9 +203,6 @@ async function isValid() {
         product:              product_id.value,
         client:               client_name.value,
         license_code:         license_code.value,
-        license_expire_date:  license_expire_date.value,
-        license_updates_date: license_updates_date.value,
-        license_support_date: license_support_date.value,
     }, setErrors)
 }
 
@@ -230,7 +227,9 @@ function getInitialValues(id) {
         license_limit.value = licenseData.license_limit
         license_ip.value = licenseData.license_ip
         license_comments.value = licenseData.license_comments
-        license_require_domain.value = licenseData.license_require_domain
+        // The model casts this to true/false; the radio options are 1/0, so true matched
+        // neither and the saved "Yes" looked unselected (and unsaved) on every reload.
+        license_require_domain.value = licenseData.license_require_domain ? 1 : 0
         license_status.value = licenseData.license_status
         license_domain.value = licenseData.license_domain
         license_machine_id.value = licenseData.license_machine_id

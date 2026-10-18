@@ -158,6 +158,21 @@ describe('useCartStore', () => {
     })
 
     describe('fetchCart', () => {
+        it('keeps checkout totals and gateways when the basic cart lands after checkout data', async () => {
+            // Direct load of /checkout: the navbar's fetchCart can finish after fetchCheckout.
+            const store = useCartStore()
+            store.cart = { ...checkoutCartFixture, grand_total: '18188.05', gateways: [{ name: 'Stripe' }] }
+            // What GET /my-cart really returns (CartResource): no tax / gateways / grand_total.
+            globalThis.mockHttp.reset()
+            globalThis.mockHttp.onGet('/my-cart').replyOnce(200, { data: {
+                id: 1, currency: 'INR', currency_symbol: '₹', items: [], item_count: 1, subtotal: '15413.60', coupon_code: null, coupon_discount: '0.00', total: '15413.60',
+            } })
+            await store.fetchCart()
+            await flushPromises()
+            expect(store.grandTotal).toBe('18188.05')
+            expect(store.gateways).toEqual([{ name: 'Stripe' }])
+        })
+
         it('sets cart to emptyCartFixture on success', async () => {
             const store = useCartStore()
             await store.fetchCart()

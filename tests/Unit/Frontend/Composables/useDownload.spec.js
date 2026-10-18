@@ -2,165 +2,143 @@ jest.mock('@/plugins/i18n', () => ({
     __: (key) => key,
 }))
 
-import { useDownload } from '@/core/composables/useDownload.js'
-import { useAlertStore } from '@/core/stores/alert'
+import {
+    useDownload, downloadTray, cancelDownload, retryDownload, cancelAllDownloads, closeDownloadTray,
+} from '@/core/composables/useDownload.js'
+
+const ok = (headers = {}, extra = {}) => ({
+    ok: true,
+    blob: () => Promise.resolve(new Blob(['file content'])),
+    headers: { get: (h) => headers[h] ?? null },
+    ...extra,
+})
 
 describe('useDownload', () => {
-    let alertStore
-    let setAlertSpy
+    let anchor
 
     beforeEach(() => {
-        alertStore = useAlertStore()
-        // Spy on the real action since jest.setup.js uses createPinia() (not createTestingPinia)
-        setAlertSpy = jest.spyOn(alertStore, 'setAlert')
-
+        Object.assign(downloadTray, { items: [], open: false, collapsed: false })
         globalThis.fetch = jest.fn()
         globalThis.URL.createObjectURL = jest.fn(() => 'blob:url')
         globalThis.URL.revokeObjectURL = jest.fn()
+        anchor = { href: '', download: '', click: jest.fn() }
+        jest.spyOn(document, 'createElement').mockImplementation(() => anchor)
+    })
 
-        // Mock document.createElement('a') click behavior
-        const mockAnchor = {
-            href: '',
-            download: '',
-            click: jest.fn(),
+    afterEach(() => jest.restoreAllMocks())
+
+    it('saves the file under the server filename and marks it started', async () => {
+        globalThis.fetch.mockResolvedValue(ok({ 'content-disposition': 'attachment; filename="report.zip"' }))
+
+        await useDownload().downloadFile('/api/download/file', 'Helpdesk v1')
+
+        expect(fetch).toHaveBeenCalledWith('/api/download/file', expect.objectContaining({ signal: expect.anything() }))
+        expect(anchor.download).toBe('report.zip')
+        expect(anchor.click).toHaveBeenCalled()
+        expect(downloadTray.open).toBe(true)
+        expect(downloadTray.items[0]).toMatchObject({ name: 'report.zip', status: 'started' })
+    })
+
+    it('keeps the caller name in the tray but saves as download.zip when the server sends no filename', async () => {
+        globalThis.fetch.mockResolvedValue(ok())
+
+        await useDownload().downloadFile('/api/download/file', 'Helpdesk v1')
+
+        expect(anchor.download).toBe('download.zip')
+        expect(downloadTray.items[0].name).toBe('Helpdesk v1')
+    })
+
+    it('goes preparing → downloading with real byte progress → started', async () => {
+        const chunks = [new Uint8Array(50), new Uint8Array(50)]
+        const seen = []
+        const reader = {
+            read: jest.fn(() => {
+                const item = downloadTray.items[0]
+                seen.push({ status: item.status, loaded: item.loaded })
+                const value = chunks.shift()
+                return Promise.resolve(value ? { done: false, value } : { done: true })
+            }),
         }
-        jest.spyOn(document, 'createElement').mockImplementation((tag) => {
-            if (tag === 'a') return mockAnchor
-            return document.createElement.wrappedMethod
-                ? document.createElement.wrappedMethod(tag)
-                : Object.getPrototypeOf(document).createElement.call(document, tag)
-        })
+        let resolveFetch
+        globalThis.fetch.mockReturnValue(new Promise(r => { resolveFetch = r }))
+
+        const done = useDownload().downloadFile('/api/download/file')
+        expect(downloadTray.items[0].status).toBe('preparing') // server still building the file
+
+        resolveFetch(ok({ 'content-length': '100' }, { body: { getReader: () => reader } }))
+        await done
+
+        expect(seen).toEqual([
+            { status: 'downloading', loaded: 0 },
+            { status: 'downloading', loaded: 50 },
+            { status: 'downloading', loaded: 100 },
+        ])
+        expect(downloadTray.items[0]).toMatchObject({ total: 100, status: 'started' })
     })
 
-    afterEach(() => {
-        jest.restoreAllMocks()
+    it('shows the server message on a failed row (stays on the same page)', async () => {
+        globalThis.fetch.mockResolvedValue({ ok: false, json: () => Promise.resolve({ message: 'Renew to download' }) })
+
+        await useDownload().downloadFile('/api/download/file')
+
+        expect(downloadTray.items[0]).toMatchObject({ status: 'failed', error: 'Renew to download' })
+        expect(anchor.click).not.toHaveBeenCalled()
     })
 
-    it('returns downloadFile function', () => {
-        const result = useDownload('TestComponent')
-        expect(result).toHaveProperty('downloadFile')
-        expect(typeof result.downloadFile).toBe('function')
-    })
-
-    it('downloads file successfully and extracts filename from header', async () => {
-        const mockBlob = new Blob(['file content'])
-        globalThis.fetch.mockResolvedValue({
-            ok: true,
-            blob: () => Promise.resolve(mockBlob),
-            headers: { get: () => 'attachment; filename="report.zip"' },
-        })
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/file')
-
-        expect(fetch).toHaveBeenCalledWith('/api/download/file')
-        expect(URL.createObjectURL).toHaveBeenCalledWith(mockBlob)
-        expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:url')
-    })
-
-    it('uses fallback filename when content-disposition header is missing', async () => {
-        const mockBlob = new Blob(['data'])
-        globalThis.fetch.mockResolvedValue({
-            ok: true,
-            blob: () => Promise.resolve(mockBlob),
-            headers: { get: () => null },
-        })
-
-        const mockAnchor = { href: '', download: '', click: jest.fn() }
-        document.createElement.mockReturnValue(mockAnchor)
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/file')
-
-        expect(mockAnchor.download).toBe('download.zip')
-    })
-
-    it('uses fallback filename when content-disposition has no filename', async () => {
-        const mockBlob = new Blob(['data'])
-        globalThis.fetch.mockResolvedValue({
-            ok: true,
-            blob: () => Promise.resolve(mockBlob),
-            headers: { get: () => 'attachment' },
-        })
-
-        const mockAnchor = { href: '', download: '', click: jest.fn() }
-        document.createElement.mockReturnValue(mockAnchor)
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/file')
-
-        expect(mockAnchor.download).toBe('download.zip')
-    })
-
-    it('calls alertStore.setAlert with danger when response is not ok and has JSON message', async () => {
-        globalThis.fetch.mockResolvedValue({
-            ok: false,
-            json: () => Promise.resolve({ message: 'File not found' }),
-        })
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/missing')
-
-        expect(setAlertSpy).toHaveBeenCalledWith({
-            message:        'File not found',
-            type:           'danger',
-            component_name: 'TestComponent',
-        })
-    })
-
-    it('calls alertStore.setAlert with i18n key when response not ok and JSON has no message', async () => {
-        globalThis.fetch.mockResolvedValue({
-            ok:   false,
-            json: () => Promise.resolve({}),
-        })
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/missing')
-
-        expect(setAlertSpy).toHaveBeenCalledWith({
-            message:        'message.file_not_exist',
-            type:           'danger',
-            component_name: 'TestComponent',
-        })
-    })
-
-    it('calls alertStore.setAlert when response.json() throws', async () => {
-        globalThis.fetch.mockResolvedValue({
-            ok:   false,
-            json: () => Promise.reject(new Error('not json')),
-        })
-
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/missing')
-
-        expect(setAlertSpy).toHaveBeenCalledWith({
-            message:        'message.file_not_exist',
-            type:           'danger',
-            component_name: 'TestComponent',
-        })
-    })
-
-    it('calls alertStore.setAlert when fetch throws a network error', async () => {
+    it('falls back to the generic message on a network error', async () => {
         globalThis.fetch.mockRejectedValue(new Error('Network error'))
 
-        const { downloadFile } = useDownload('TestComponent')
-        await downloadFile('/api/download/file')
+        await useDownload().downloadFile('/api/download/file')
 
-        expect(setAlertSpy).toHaveBeenCalledWith({
-            message:        'message.file_not_exist',
-            type:           'danger',
-            component_name: 'TestComponent',
-        })
+        expect(downloadTray.items[0]).toMatchObject({ status: 'failed', error: 'message.download_meta_failed' })
     })
 
-    it('uses the componentName passed to useDownload in the alert', async () => {
-        globalThis.fetch.mockRejectedValue(new Error('fail'))
+    it('cancel aborts the request and the row stays cancelled', async () => {
+        globalThis.fetch.mockImplementation((url, { signal }) => new Promise((resolve, reject) => {
+            signal.addEventListener('abort', () => reject(new Error('aborted')))
+        }))
 
-        const { downloadFile } = useDownload('InvoiceList')
-        await downloadFile('/api/invoice/export')
+        const done = useDownload().downloadFile('/api/download/file')
+        cancelDownload(downloadTray.items[0])
+        await done
 
-        expect(setAlertSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ component_name: 'InvoiceList' }),
-        )
+        expect(downloadTray.items[0].status).toBe('cancelled')
+    })
+
+    it('retry runs a failed row again', async () => {
+        globalThis.fetch.mockResolvedValueOnce({ ok: false, json: () => Promise.resolve({}) })
+        await useDownload().downloadFile('/api/download/file')
+
+        globalThis.fetch.mockResolvedValueOnce(ok({ 'content-disposition': 'attachment; filename="a.zip"' }))
+        await retryDownload(downloadTray.items[0])
+
+        expect(downloadTray.items[0].status).toBe('started')
+    })
+
+    it('cancel all stops only running rows; close drops finished rows', async () => {
+        downloadTray.items = [
+            { id: 1, status: 'preparing', controller: { abort: jest.fn() } },
+            { id: 2, status: 'started' },
+        ]
+        cancelAllDownloads()
+        expect(downloadTray.items.map(i => i.status)).toEqual(['cancelled', 'started'])
+
+        downloadTray.items.push({ id: 3, status: 'downloading' })
+        closeDownloadTray()
+        expect(downloadTray.open).toBe(false)
+        expect(downloadTray.items.map(i => i.id)).toEqual([3])
+    })
+
+    it('tracks which URL is downloading for the button spinner', async () => {
+        let resolveFetch
+        globalThis.fetch.mockReturnValue(new Promise(r => { resolveFetch = r }))
+        const { downloadFile, downloadingUrl } = useDownload()
+
+        const done = downloadFile('/api/download/file')
+        expect(downloadingUrl.value).toBe('/api/download/file')
+        resolveFetch(ok())
+        await done
+
+        expect(downloadingUrl.value).toBeNull()
     })
 })

@@ -643,6 +643,42 @@ class ProductControllerTest extends DBTestCase
         $this->assertSame('2.0.0', $productB->fresh()->version);
     }
 
+    public function test_product_versions_list_newest_added_first_and_version_column_does_not_text_sort(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = Product::factory()->create();
+        foreach (['v9.4.3', 'v10.0.0', 'v10.1.0'] as $version) {
+            \App\Model\Product\ProductUpload::create([
+                'product_id' => $product->id, 'title' => $version, 'version' => $version,
+                'file' => 'x.zip', 'is_private' => 0, 'release_type' => 'official',
+            ]);
+        }
+        $versions = fn (string $query) => collect($this->getJson("/product/uploads/{$product->id}{$query}")->json('data.data'))->pluck('version')->all();
+
+        $this->assertSame(['v10.1.0', 'v10.0.0', 'v9.4.3'], $versions(''));
+        // As text, "v9.4.3" would sort above "v10.x".
+        $this->assertSame(['v10.1.0', 'v10.0.0', 'v9.4.3'], $versions('?sort-field=version&sort-order=desc'));
+    }
+
+    public function test_apply_build_to_products_rejects_an_unknown_release_type_and_keeps_beta(): void
+    {
+        // 'rc' was saved through the release API once — the update check never offers such a version.
+        $this->getLoggedInUser('admin');
+        Attach::shouldReceive('exists')->with('products/core-build.zip')->andReturn(true);
+        $product = Product::factory()->create();
+        $payload = fn (string $type) => [
+            'filename' => 'core-build.zip', 'dependencies' => ['core'], 'description' => 'Bulk apply',
+            'release_type' => $type, 'products' => [['id' => $product->id, 'version' => '1.0.0']],
+        ];
+
+        $this->postJson('/product/upload-build/apply', $payload('rc'))
+            ->assertStatus(412)->assertJsonValidationErrors('release_type', 'message');
+        $this->assertDatabaseMissing('product_uploads', ['product_id' => $product->id]);
+
+        $this->postJson('/product/upload-build/apply', $payload('beta'))->assertStatus(200);
+        $this->assertDatabaseHas('product_uploads', ['product_id' => $product->id, 'release_type' => 'beta']);
+    }
+
     public function test_apply_build_to_products_requires_a_filename(): void
     {
         $this->getLoggedInUser('admin');

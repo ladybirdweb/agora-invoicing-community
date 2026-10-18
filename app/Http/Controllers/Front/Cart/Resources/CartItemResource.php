@@ -27,6 +27,9 @@ class CartItemResource extends JsonResource
             'name' => $this->product?->name, // @phpstan-ignore property.notFound
             'image' => $this->product?->image, // @phpstan-ignore property.notFound
             'unit_price' => currencyFormat($this->unitPrice($currency), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
+            // The plan's own price (for its included agents) — the cart's Price column, so it
+            // doesn't jump to the line total when agents are added; unit_price is agent-scaled.
+            'plan_price' => currencyFormat($this->priceFor($currency), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
             'line_total' => currencyFormat($this->lineTotal(), $currency, includeSymbol: false), // @phpstan-ignore method.notFound
             'currency' => $currency,
             'currency_symbol' => $currencySymbol,

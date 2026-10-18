@@ -38,6 +38,28 @@ class ProfileTest extends DBTestCase
         ]);
     }
 
+    public function test_profile_loads_with_its_timezone_so_the_box_is_not_empty(): void
+    {
+        $timezone = \App\Model\Common\Timezone::firstOrFail();
+        $this->user->update(['timezone_id' => $timezone->id]);
+
+        $this->getJson('/get-my-profile')
+            ->assertStatus(200)
+            ->assertJsonPath('data.user.timezone.id', $timezone->id)
+            ->assertJsonPath('data.user.timezone.timezone_name', $timezone->timezone_name);
+    }
+
+    public function test_post_profile_rejects_a_timezone_that_does_not_exist(): void
+    {
+        $response = $this->patchJson('/my-profile', [
+            'first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john.doe@example.com',
+            'company' => 'Test Company', 'mobile' => '1234567890', 'address' => '123 Street',
+            'country' => 'In', 'timezone_id' => 0,
+        ]);
+
+        $response->assertJsonValidationErrors('timezone_id', 'message');
+    }
+
     public function test_post_profile_validation_failure(): void
     {
         $response = $this->patchJson('/my-profile', [

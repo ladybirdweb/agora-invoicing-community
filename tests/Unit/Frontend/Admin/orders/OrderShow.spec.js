@@ -42,7 +42,6 @@ const orderFixture = {
         allowDownloadTillExpiry: 0,
         noPermissions: 0,
     },
-    autorenewal: 0,
     is_subscribed: 0,
     payment_log: null,
 }

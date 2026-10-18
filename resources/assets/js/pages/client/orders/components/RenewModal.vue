@@ -82,7 +82,9 @@ watch(() => props.show, async (open) => {
 
     loading.value = true
     try {
-        const res = await http.get(`/renew-popup-details/${props.order.product_id}`)
+        const res = await http.get(`/renew-popup-details/${props.order.product_id}`, {
+            params: { order: props.order.id },
+        })
         plans.value = res.data?.data?.plans ?? []
         if (plans.value.length) await onPlanChange(plans.value[0])
     } catch (e) { errorHandler(e, 'renew-modal') }

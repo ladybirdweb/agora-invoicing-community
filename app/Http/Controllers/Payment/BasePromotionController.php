@@ -48,7 +48,7 @@ class BasePromotionController extends Controller
         return null;
     }
 
-    public function getPromotionDetails(mixed $code): mixed
+    public function getPromotionDetails(mixed $code, ?int $productid = null): mixed
     {
         if (empty($code)) {
             throw new Exception(__('message.no_coupon_code_applied'));
@@ -64,6 +64,12 @@ class BasePromotionController extends Controller
         // check the relation between code and product
         if (count($relation) === 0) {
             throw new Exception(__('message.no-product-related-to-this-code'));
+        }
+
+        // Same rule and order as the cart: a coupon for another product is "invalid",
+        // and that is checked before "used up".
+        if ($productid !== null && ! $relation->contains('product_id', $productid)) {
+            throw new Exception(__('message.invalid_coupon_code'));
         }
 
         // check the usess

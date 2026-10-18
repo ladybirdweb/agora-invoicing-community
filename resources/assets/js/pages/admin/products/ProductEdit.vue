@@ -511,12 +511,12 @@ const versionTableOptions = reactive({
     },
     sortable: ['title', 'version', 'release_type'],
     filterable: true,
-    requestAdapter: makeRequestAdapter('created_at'),
+    requestAdapter: makeRequestAdapter('id'),
     responseAdapter({ data }) {
         const res = data?.data
         return { data: res?.data ?? [], count: res?.total ?? 0 }
     },
-    orderBy: { column: 'created_at', ascending: false },
+    orderBy: { column: 'id', ascending: false },
 })
 
 const taxStatusOptions = [

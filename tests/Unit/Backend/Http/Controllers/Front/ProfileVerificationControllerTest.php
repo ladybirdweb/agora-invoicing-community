@@ -41,6 +41,7 @@ class ProfileVerificationControllerTest extends DBTestCase
 
         $user = User::factory()->create([
             'email' => 'old@example.com',
+            'user_name' => 'old-username',
             'email_verified' => 0,
         ]);
 
@@ -70,10 +71,11 @@ class ProfileVerificationControllerTest extends DBTestCase
             ->assertJsonPath('data.email_updated', expect: true)
             ->assertJsonPath('data.email', $newEmail);
 
-        // Assert DB updated
+        // Assert DB updated — email only; the username is copied from email at sign-up, never after
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'email' => $newEmail,
+            'user_name' => 'old-username',
         ]);
     }
 
@@ -315,6 +317,25 @@ class ProfileVerificationControllerTest extends DBTestCase
         $this->postJson('/profile/email/send-otp', [
             'email_to_verify' => $user->email,
             'new_email' => $user->email,
+        ])->assertStatus(400)
+            ->assertJson([
+                'message' => __('message.email_already_used'),
+            ]);
+    }
+
+    /**
+     * A new email that is another user's username is rejected — login would then match the wrong account.
+     */
+    public function test_email_used_as_another_users_username_rejected_on_send_otp(): void
+    {
+        $this->createUser(['user_name' => 'taken@example.com']);
+        $user = $this->createUser(['email' => 'old@example.com']);
+
+        $this->actingAs($user);
+
+        $this->postJson('/profile/email/send-otp', [
+            'email_to_verify' => $user->email,
+            'new_email' => 'taken@example.com',
         ])->assertStatus(400)
             ->assertJson([
                 'message' => __('message.email_already_used'),

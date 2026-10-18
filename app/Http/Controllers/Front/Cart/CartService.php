@@ -149,7 +149,7 @@ class CartService
     public function applyCoupon(Request $request, string $code): void
     {
         $cart = $this->dbCart($request->user()); // @phpstan-ignore argument.type
-        $promo = $this->validatedPromotion($code, $cart->invoice_id);
+        $promo = $this->validatedPromotion($code, $cart);
 
         $cart->update([
             'coupon_code' => $code,
@@ -192,7 +192,10 @@ class CartService
             'tax_label' => collect($summary['taxes'])->pluck('label')->unique()->implode(' + '),
             'gateways' => $gateways = $this->activeGateways($currency),
             'grand_total' => currencyFormat($summary['grand_total'], $currency, includeSymbol: false),
-            'available_credit' => currencyFormat($this->invoices->availableCredit((int) $user->getAuthIdentifier(), $currency), $currency, includeSymbol: false),
+            'available_credit' => currencyFormat($credit = $this->invoices->availableCredit((int) $user->getAuthIdentifier(), $currency), $currency, includeSymbol: false),
+            // "Use my balance" preview, formatted here so the page doesn't do money maths.
+            'credit_preview' => currencyFormat($creditUsed = min((float) $summary['grand_total'], $credit), $currency, includeSymbol: false),
+            'grand_total_after_credit' => currencyFormat((float) $summary['grand_total'] - $creditUsed, $currency, includeSymbol: false),
             'auto_renew_gateways' => $this->autoRenewalGateways($gateways, (float) $summary['grand_total']),
         ];
     }
@@ -413,14 +416,28 @@ class CartService
 
     private function dbCart(Authenticatable $user): Cart
     {
-        $cart = Cart::firstOrCreate(
-            ['user_id' => $user->getAuthIdentifier()],
-            ['currency' => getCurrencyForClient($user->country)]
-        );
+        $currency = getCurrencyForClient($user->country);
+        $cart = Cart::firstOrCreate(['user_id' => $user->getAuthIdentifier()], ['currency' => $currency]);
 
-        if (empty($cart->currency)) {
-            $cart->update(['currency' => getCurrencyForClient($user->country)]);
+        // The cart row outlives orders, so its currency goes stale when the user's
+        // country (or that country's currency) changes — follow the storefront's.
+        $currencyChanged = $cart->currency !== $currency;
+        if ($currencyChanged) {
+            $cart->update(['currency' => $currency]);
         }
+
+        // A deleted product, or a plan/price that is gone (or missing in the new currency),
+        // would be charged 0 — drop those lines.
+        $unavailable = $cart->items()->with('product', 'plan.planPrice')->get()
+            ->reject(fn (CartItem $item): bool => $item->isAvailable($currency));
+        CartItem::whereIn('id', $unavailable->modelKeys())->delete();
+
+        if ($currencyChanged || $unavailable->isNotEmpty()) {
+            // The coupon discount was worked out on the old lines / currency.
+            $this->recalculateCoupon($cart);
+            $cart->refresh();
+        }
+        $cart->itemsRemoved = $unavailable->isNotEmpty();
 
         return $cart;
     }
@@ -611,7 +628,7 @@ class CartService
         }
 
         try {
-            $promo = $this->validatedPromotion($cart->coupon_code, $cart->invoice_id);
+            $promo = $this->validatedPromotion($cart->coupon_code, $cart);
         } catch (Exception) {
             $cart->update(['coupon_code' => null, 'coupon_discount' => 0]);
 
@@ -692,19 +709,18 @@ class CartService
     }
 
     /**
-     * @param  int|null  $ownInvoiceId  the cart's own pending invoice: it carries the coupon too,
-     *                                  and counting it as a use dropped the coupon on the
-     *                                  customer's own re-checkout once one use was left
+     * The product check runs before the usage check: a coupon for another product is
+     * "invalid", not "used up".
      */
-    private function validatedPromotion(string $code, ?int $ownInvoiceId = null): Promotion
+    private function validatedPromotion(string $code, Cart $cart): Promotion
     {
         $promo = Promotion::where('code', $code)->first();
 
-        if (! $promo || ! $this->withinValidityWindow($promo)) {
+        if (! $promo || ! $this->withinValidityWindow($promo) || $this->couponLines($cart->items, $promo)->isEmpty()) {
             throw new Exception(__('message.invalid_coupon_code'));
         }
 
-        if (Invoice::where('coupon_code', $code)->when($ownInvoiceId, fn ($q) => $q->whereKeyNot($ownInvoiceId))->count() >= $promo->uses) {
+        if ($promo->isUsedUp($cart->invoice_id)) {
             throw new Exception(__('message.usage-of-code-completed'));
         }
 

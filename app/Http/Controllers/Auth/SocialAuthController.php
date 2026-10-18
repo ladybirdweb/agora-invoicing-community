@@ -112,7 +112,7 @@ class SocialAuthController extends BaseAuthController
         $request->merge(['email' => $email])->validate([
             'first_name' => ['required', 'min:2', 'max:30'],
             'last_name' => ['required', 'max:30'],
-            'email' => ['required', 'email', 'unique:users', 'unique:settings,email', 'unique:settings,company_email'],
+            'email' => ['required', 'email', 'unique:users', 'unique:users,user_name', 'unique:settings,email', 'unique:settings,company_email'],
             'company' => ['required', 'max:50'],
             'mobile' => ['required', 'unique:users', new PhoneNumber($request->input('mobile_country_iso'))],
             'mobile_code' => ['required'],

@@ -17,7 +17,7 @@
       <span class="font-weight-semi-bold text-color-dark">{{ item.name }}</span>
     </td>
     <td class="product-price">
-      <span class="amount font-weight-medium text-color-grey">{{ item.currency_symbol }}{{ item.unit_price }}</span>
+      <span class="amount font-weight-medium text-color-grey">{{ item.currency_symbol }}{{ item.plan_price ?? item.unit_price }}</span>
     </td>
 
     <!-- Quantity: editable only when the product allows it -->

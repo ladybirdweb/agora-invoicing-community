@@ -38,6 +38,11 @@ describe('CartItemRow.vue', () => {
         expect(makeWrapper().text()).toContain('$99.00')
     })
 
+    it('shows the plan price in the Price column, not the agent-scaled line', () => {
+        const w = makeWrapper({ plan_price: '7,707.00', unit_price: '15,413.60', line_total: '15,413.60' })
+        expect(w.find('.product-price').text()).toBe('$7,707.00')
+    })
+
     // ── Thumbnail branches ───────────────────────────────────────────
     it('renders an img when item.image is set', () => {
         const w = makeWrapper({ image: 'http://example.com/img.png' })

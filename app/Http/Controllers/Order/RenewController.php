@@ -230,9 +230,22 @@ class RenewController extends BaseRenewController
 
             $plan = Plan::findOrFail($planId);
 
+            // Already asked to renew on this plan and not paid yet — send them to that invoice.
             $existingUnpaidInvoice = $this->checkExistingUnpaidInvoice($sub, $planId);
             if ($existingUnpaidInvoice instanceof InvoiceItem) {
                 return successResponse(trans('message.existings_invoice'), ['invoice_id' => $existingUnpaidInvoice->invoice_id]);
+            }
+
+            // Any other unpaid invoice on the order (a renewal on another plan, an agent change)
+            // must be settled or cancelled first — the same rule as admin renew. Otherwise plan A
+            // then plan B left two renewal invoices, and paying both extended the dates twice.
+            $order = Order::find($sub->order_id);
+            if ($order?->order_status === 'Terminated') {
+                return errorResponse(__('message.plan_change_order_terminated'));
+            }
+            $unpaid = $order?->latestUnpaidInvoice();
+            if ($unpaid) {
+                return errorResponse(__('message.renew_blocked_unpaid_invoice', ['number' => $unpaid->number]));
             }
 
             /** @var User $authUser */
@@ -242,10 +255,7 @@ class RenewController extends BaseRenewController
             $currency = $planDetails['currency'];
             $noOfAgentsPerPlan = (int) $planDetails['plan']->no_of_agents;
 
-            $agents = InvoiceItem::whereHas('invoice', fn (Builder $q) => $q->whereHas('orders', fn (Builder $q) => $q->where('orders.id', $sub->order_id)) // @phpstan-ignore argument.templateType
-            )
-                ->orderByDesc('id')
-                ->value('agents');
+            $agents = $this->orderAgents((int) $sub->order_id);
 
             $cost = ($agents > 0 && $noOfAgentsPerPlan > 0)
                 ? ($price / $noOfAgentsPerPlan) * (int) $agents
@@ -260,17 +270,22 @@ class RenewController extends BaseRenewController
         }
     }
 
+    /**
+     * The order's latest invoice when it is a still-pending RENEWAL on this plan. Agent-change
+     * invoices also carry is_renewed=1 (metadata.type = agent_alteration) — handing one back here
+     * made paying "the renewal" change agents instead.
+     */
     private function checkExistingUnpaidInvoice(Subscription $subscription, int $planId): ?InvoiceItem
     {
-        $invoice_id = OrderInvoiceRelation::where('order_id', $subscription->order_id)->latest()->value('invoice_id');
+        $invoiceId = OrderInvoiceRelation::where('order_id', $subscription->order_id)->latest()->value('invoice_id');
 
-        return InvoiceItem::whereHas('invoice', function (Builder $query) use ($invoice_id, $planId): void {
-            $query->where('invoice_id', $invoice_id)
+        return InvoiceItem::where('invoice_id', $invoiceId)
+            ->where('plan_id', $planId)
+            ->whereHas('invoice', fn (Builder $query) => $query
                 ->where('is_renewed', 1)
                 ->where('status', 'pending')
-                ->where('plan_id', $planId);
-        })
-            ->latest('created_at')
+                ->whereNull('metadata->type'))
+            ->latest('id')
             ->first();
     }
 

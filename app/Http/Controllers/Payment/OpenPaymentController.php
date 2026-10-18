@@ -14,6 +14,7 @@ use App\Model\Plugin;
 use App\Plugins\Payment\Exceptions\SignatureVerificationException;
 use App\Services\Payment\OpenPaymentService;
 use App\Services\Payment\PaymentService;
+use App\Services\Payment\ProcessingFee;
 use DB;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -272,10 +273,10 @@ class OpenPaymentController extends Controller
     {
         $request->validate([
             'amount' => ['required', 'numeric', 'min:0'],
-            'gateway' => ['required', 'string'],
+            'gateway' => ['required', 'string', 'in:Razorpay,Stripe,razorpay,stripe'],
         ]);
 
-        $feeRate = (float) (DB::table(strtolower($request->gateway))->value('processing_fee') ?? 0);
+        $feeRate = ProcessingFee::percent($request->gateway);
         $baseAmount = round((float) $request->amount, 2);
         $fee = round($baseAmount * $feeRate / 100, 2);
         $total = round($baseAmount + $fee, 2);

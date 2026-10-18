@@ -210,8 +210,13 @@ class InvoicePaymentService
      *
      * @param  array<string, mixed>  $payload  Raw gateway callback fields.
      */
-    public function confirm(Invoice $invoice, string $gateway, array $payload): bool
+    public function confirm(Invoice $invoice, string $gateway, array $payload, bool $verifiedWebhook = false): bool
     {
+        // Gateways skip their own signature check for a webhook-sourced capture (the webhook's
+        // signature was already verified; the payment is fetched from the gateway instead). Only
+        // the dispatcher may say so — never a value that arrived in request data.
+        $payload['is_webhook'] = $verifiedWebhook;
+
         if ($this->outstanding($invoice) <= 0) {
             return true;
         }
@@ -273,40 +278,41 @@ class InvoicePaymentService
         // guard that can't race: only one caller's update can affect a row, so
         // the loser (affected count 0) safely reports success without
         // repeating any of the work below.
-        $claimed = $invoice->newQuery()
-            ->whereKey($invoice->id)
-            ->where('status', '!=', 'success')
-            ->update(['status' => 'success']);
+        return DB::transaction(function () use ($invoice, $gateway, $result, $creditApplied) {
+            $claimed = $invoice->newQuery()
+                ->whereKey($invoice->id)
+                ->where('status', '!=', 'success')
+                ->update(['status' => 'success']);
 
-        if (! $claimed) {
-            return true;
-        }
-        $invoice->refresh();
-
-        if ($creditApplied > 0) {
-            $this->spendBalance($invoice, $creditApplied);
-
-            // Applying credit re-derives the invoice's status from what has
-            // been paid so far, which — with the gateway's own payment not
-            // recorded until fulfilment below — knocks it back to "partially
-            // paid" and reopens the claim above. A second caller could then
-            // win a claim of its own and fulfil the same purchase twice, so
-            // the claim is re-asserted before that window can be used.
-            $invoice->update(['status' => 'success']);
+            if (! $claimed) {
+                return true;
+            }
             $invoice->refresh();
-        }
 
-        // Persist the processing fee that was actually charged, so the invoice
-        // + payment records match the card charge (parity with the legacy flow).
-        $this->applyProcessingFee($invoice, $gateway);
+            if ($creditApplied > 0) {
+                $this->spendBalance($invoice, $creditApplied);
 
-        $this->postPayment->handle($invoice, $gateway);
+                // Applying credit re-derives the invoice's status from what has
+                // been paid so far, which — with the gateway's own payment not
+                // recorded until fulfilment below — knocks it back to "partially
+                // paid". The transaction-level row lock prevents any concurrent claim
+                // from taking over, and we restore 'success' here before completing.
+                $invoice->newQuery()->whereKey($invoice->id)->update(['status' => 'success']);
+                $invoice->refresh();
+            }
 
-        if ($invoice->metadata['auto_renew_opt_in'] ?? false) {
-            $this->activateAutoRenewalOptIn($invoice, $gateway, $result);
-        }
+            // Persist the processing fee that was actually charged, so the invoice
+            // + payment records match the card charge (parity with the legacy flow).
+            $this->applyProcessingFee($invoice, $gateway);
 
-        return true;
+            $this->postPayment->handle($invoice, $gateway);
+
+            if ($invoice->metadata['auto_renew_opt_in'] ?? false) {
+                $this->activateAutoRenewalOptIn($invoice, $gateway, $result);
+            }
+
+            return true;
+        });
     }
 
     /**

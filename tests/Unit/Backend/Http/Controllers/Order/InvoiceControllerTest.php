@@ -770,4 +770,20 @@ class InvoiceControllerTest extends DBTestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
     }
+
+    // ── "Execute order" is for first purchases only ──
+
+    public function test_execute_refuses_a_paid_renewal_invoice_instead_of_extending_it_again(): void
+    {
+        // A card-paid renewal is already fulfilled and nothing marks that — each "execute"
+        // used to extend its dates once more, for free.
+        $this->getLoggedInUser('admin');
+        $invoice = \App\Model\Order\Invoice::factory()->create(['status' => 'success', 'is_renewed' => 1, 'grand_total' => 0]);
+        $post = \Mockery::mock(\App\Services\Payment\PostPaymentService::class);
+        $post->shouldNotReceive('handle');
+        $this->app->instance(\App\Services\Payment\PostPaymentService::class, $post);
+
+        $this->postJson("/invoices/{$invoice->id}/execute")
+            ->assertJson(['success' => false, 'message' => __('message.invoice_execute_purchase_only')]);
+    }
 }

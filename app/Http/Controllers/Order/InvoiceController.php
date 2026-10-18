@@ -361,6 +361,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 return errorResponse(__('message.invoice_order_already_executed'));
             }
 
+            // Renewals/upgrades/agent changes are fulfilled when their payment is recorded, and
+            // nothing marks them done — "executing" one again would e.g. extend a renewal again.
             if ($invoice->type !== 'purchase') {
                 return errorResponse(__('message.invoice_execute_purchase_only'));
             }

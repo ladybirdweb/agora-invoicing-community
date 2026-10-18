@@ -43,4 +43,16 @@ final class Money
 
         return (int) round($amount * (10 ** $decimals));
     }
+
+    /** Convert gateway minor units (e.g. cents) to decimal major units. */
+    public static function fromMinor(int $minor, string $currency): float
+    {
+        $decimals = self::decimals($currency);
+        if ($decimals === 0) {
+            return (float) $minor;
+        }
+
+        return round($minor / (10 ** $decimals), $decimals);
+    }
 }
+

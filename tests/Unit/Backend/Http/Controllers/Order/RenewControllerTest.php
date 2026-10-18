@@ -357,4 +357,79 @@ class RenewControllerTest extends DBTestCase
 
         $this->assertSame(1, \App\Model\Order\Invoice::whereHas('orders', fn ($q) => $q->whereKey($sub->order_id))->where('is_renewed', 1)->count());
     }
+
+    // ── Batch 3 #2/#3: one open renewal per order; agent-change invoices are not renewals ──
+
+    private function pendingOn(Subscription $sub, int $planId, ?array $metadata = null): \App\Model\Order\Invoice
+    {
+        $invoice = \App\Model\Order\Invoice::factory()->create(['user_id' => $sub->user_id, 'status' => 'pending', 'is_renewed' => 1, 'metadata' => $metadata]);
+        \App\Model\Order\InvoiceItem::factory()->create(['invoice_id' => $invoice->id, 'plan_id' => $planId, 'product_id' => $sub->product_id]);
+        \App\Model\Order\OrderInvoiceRelation::create(['order_id' => $sub->order_id, 'invoice_id' => $invoice->id]);
+
+        return $invoice;
+    }
+
+    private function ownSubscription(): Subscription
+    {
+        $sub = Subscription::factory()->create(['user_id' => $this->user->id]);
+        Order::whereKey($sub->order_id)->update(['client' => $this->user->id, 'order_status' => 'executed']);
+
+        return $sub;
+    }
+
+    public function test_renewing_again_on_the_same_plan_returns_the_open_invoice(): void
+    {
+        $sub = $this->ownSubscription();
+        $open = $this->pendingOn($sub, $sub->plan_id);
+
+        $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id])
+            ->assertOk()->assertJsonPath('data.invoice_id', $open->id);
+    }
+
+    public function test_renewing_on_another_plan_while_one_is_unpaid_is_refused(): void
+    {
+        $sub = $this->ownSubscription();
+        $open = $this->pendingOn($sub, $sub->plan_id);
+        $otherPlan = \App\Model\Payment\Plan::factory()->create(['product' => $sub->product_id]);
+        $before = \App\Model\Order\Invoice::count();
+
+        $this->postJson("/client/renew/{$sub->id}", ['plan' => $otherPlan->id])
+            ->assertStatus(400)->assertJson(['message' => __('message.renew_blocked_unpaid_invoice', ['number' => $open->number])]);
+        $this->assertSame($before, \App\Model\Order\Invoice::count()); // no second renewal invoice
+    }
+
+    public function test_an_unpaid_agent_change_invoice_is_not_handed_back_as_the_renewal(): void
+    {
+        $sub = $this->ownSubscription();
+        $agentChange = $this->pendingOn($sub, $sub->plan_id, ['type' => 'agent_alteration']);
+
+        $response = $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id]);
+
+        $this->assertNotSame($agentChange->id, $response->json('data.invoice_id'));
+        $response->assertStatus(400)->assertJson(['message' => __('message.renew_blocked_unpaid_invoice', ['number' => $agentChange->number])]);
+    }
+
+    public function test_a_terminated_order_cannot_be_renewed(): void
+    {
+        $sub = $this->ownSubscription();
+        Order::whereKey($sub->order_id)->update(['order_status' => 'Terminated']);
+
+        $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id])->assertStatus(400);
+    }
+
+    // ── Batch 3 #1: the renew popup prices the order's real agent count, like the invoice ──
+
+    public function test_the_popup_price_uses_the_orders_agents_after_a_plan_switch(): void
+    {
+        $sub = $this->ownSubscription();
+        $this->user->update(['country' => 'US']);
+        $original = $this->linkInvoice($sub, 'Success');
+        \App\Model\Order\InvoiceItem::factory()->create(['invoice_id' => $original->id, 'plan_id' => $sub->plan_id, 'agents' => 10]); // 10 agents, on plan P1
+        $p2 = \App\Model\Payment\Plan::factory()->create(['product' => $sub->product_id]);
+        \App\Model\Payment\PlanPrice::factory()->create(['plan_id' => $p2->id, 'currency' => 'USD', 'renew_price' => 50, 'no_of_agents' => 5]);
+
+        $data = $this->getJson("/get-renew-cost?plan={$p2->id}&order={$sub->order_id}")->assertOk()->json('data');
+
+        $this->assertSame(currencyFormat(100, 'USD'), $data['formatted_price']); // 50 / 5 × 10 — was 50
+    }
 }

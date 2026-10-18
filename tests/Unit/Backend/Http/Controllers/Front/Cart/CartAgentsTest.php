@@ -139,6 +139,7 @@ class CartAgentsTest extends DBTestCase
     public function test_agents_cannot_be_changed_on_a_fixed_agent_plan(): void
     {
         [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '2');
+        \DB::table('products')->where('id', $product->id)->update(['can_modify_quantity' => 1]); // quantity may change, agents may not
         $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id]);
         $line = $this->line();
 
@@ -302,5 +303,144 @@ class CartAgentsTest extends DBTestCase
 
         $this->assertNull(Cart::where('user_id', $this->user->id)->value('coupon_code'));
         $this->assertSame(0.0, $this->cartDiscount());
+    }
+
+    // ── Batch 3 #4: tax is charged on the price after the coupon ──
+
+    private function flatTax(float $percent): void
+    {
+        $tax = \Mockery::mock(\App\Services\Tax\TaxService::class);
+        $tax->shouldReceive('calculate')->andReturnUsing(fn (float $amount) => [
+            'applicable' => true, 'prices_include_tax' => false, 'rates' => [], 'percent' => $percent, 'name' => 'GST',
+            'total' => round($amount * $percent / 100, 2),
+            'lines' => [['tax_rate_id' => 1, 'label' => 'GST', 'rate' => $percent, 'compound' => false, 'amount' => round($amount * $percent / 100, 2)]],
+        ]);
+        $this->app->instance(\App\Services\Tax\TaxService::class, $tax);
+        \App\Model\Payment\TaxOption::whereKey(1)->update(['inclusive' => 0]);
+    }
+
+    private function cartSummary(): array
+    {
+        Cart::where('user_id', $this->user->id)->update(['currency' => 'USD']);
+        $cart = $this->service->resolveCart($this->request());
+
+        return (new \ReflectionMethod($this->service, 'summary'))->invoke($this->service, $cart, $this->user);
+    }
+
+    public function test_tax_is_charged_on_the_discounted_price(): void
+    {
+        // 100 with 50% off at 18%: 50 + 9 = 59 — taxing before the discount gave 100 − 50 + 18 = 68.
+        [$a, $aPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $a->id, 'plan_id' => $aPlan->id]);
+        Cart::where('user_id', $this->user->id)->update(['currency' => 'USD']);
+        $this->service->applyCoupon($this->request(), $this->coupon(for: $a, value: '50%'));
+        $this->flatTax(18);
+
+        $summary = $this->cartSummary();
+
+        $this->assertEqualsWithDelta(9.0, $summary['tax_total'], 0.001);
+        $this->assertEqualsWithDelta(59.0, $summary['grand_total'], 0.001);
+        $this->assertEqualsWithDelta(100.0, $summary['items'][0]['subtotal'], 0.001); // line price itself unchanged
+    }
+
+    public function test_only_the_coupons_product_gets_the_lower_tax(): void
+    {
+        // A: 100 with 50% off → taxed on 50; B: 200, no coupon → taxed on 200. Tax = 9 + 36.
+        [$a, $aPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        [$b, $bPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 200);
+        $this->service->addItem($this->request(), ['product_id' => $a->id, 'plan_id' => $aPlan->id]);
+        $this->service->addItem($this->request(), ['product_id' => $b->id, 'plan_id' => $bPlan->id]);
+        Cart::where('user_id', $this->user->id)->update(['currency' => 'USD']);
+        $this->service->applyCoupon($this->request(), $this->coupon(for: $a, value: '50%'));
+        $this->flatTax(18);
+
+        $summary = $this->cartSummary();
+
+        $this->assertEqualsWithDelta(45.0, $summary['tax_total'], 0.001);
+        $this->assertEqualsWithDelta(300 - 50 + 45, $summary['grand_total'], 0.001);
+    }
+
+    public function test_without_a_coupon_tax_is_unchanged(): void
+    {
+        [$a, $aPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $a->id, 'plan_id' => $aPlan->id]);
+        $this->flatTax(18);
+
+        $summary = $this->cartSummary();
+
+        $this->assertEqualsWithDelta(18.0, $summary['tax_total'], 0.001);
+        $this->assertEqualsWithDelta(118.0, $summary['grand_total'], 0.001);
+    }
+
+    // ── Batch 3 #14: quantity is locked at 1 unless the product allows changing it ──
+
+    public function test_quantity_cannot_be_changed_on_a_product_that_forbids_it(): void
+    {
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id, 'quantity' => 5]);
+        $this->assertSame(1, $this->line()->quantity); // sent quantity ignored
+
+        $this->service->updateItem($this->request(), $this->line()->id, ['quantity' => 4]);
+        $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id]); // added again
+
+        $line = $this->line();
+        $this->assertSame(1, $line->quantity);
+        $this->assertEqualsWithDelta(100.0, $line->lineTotal(), 0.001); // one licence, charged once
+    }
+
+    public function test_quantity_still_changes_on_a_product_that_allows_it(): void
+    {
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        \DB::table('products')->where('id', $product->id)->update(['can_modify_quantity' => 1]);
+        $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id]);
+        $this->service->updateItem($this->request(), $this->line()->id, ['quantity' => 3]);
+        $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id]);
+
+        $this->assertSame(4, $this->line()->quantity);
+    }
+
+    public function test_the_guest_cart_locks_quantity_too(): void
+    {
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $guest = new GuestCart;
+        $guest->clear();
+
+        $this->service->addItem($this->request(guest: true), ['product_id' => $product->id, 'plan_id' => $plan->id, 'quantity' => 5]);
+        $this->service->addItem($this->request(guest: true), ['product_id' => $product->id, 'plan_id' => $plan->id]);
+
+        $this->assertSame(1, $guest->all()[0]['quantity']);
+    }
+
+    // ── Batch 3 #5: the cart's own pending invoice doesn't use up its coupon ──
+
+    private function singleUseCouponInCart(): array
+    {
+        [$a, $aPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $a->id, 'plan_id' => $aPlan->id]);
+        $code = $this->coupon(for: $a, value: '10%');
+        \App\Model\Payment\Promotion::where('code', $code)->update(['uses' => 1]);
+
+        return [$code, Cart::where('user_id', $this->user->id)->firstOrFail()];
+    }
+
+    public function test_a_single_use_coupon_survives_the_customers_own_re_checkout(): void
+    {
+        [$code, $cart] = $this->singleUseCouponInCart();
+        // Placed the order once: their own pending invoice now carries the code.
+        $own = \App\Model\Order\Invoice::factory()->create(['user_id' => $this->user->id, 'status' => 'pending', 'coupon_code' => $code]);
+        $cart->update(['invoice_id' => $own->id]);
+
+        $this->service->applyCoupon($this->request(), $code);
+
+        $this->assertSame($code, $cart->fresh()->coupon_code);
+    }
+
+    public function test_someone_elses_use_still_counts(): void
+    {
+        [$code] = $this->singleUseCouponInCart();
+        \App\Model\Order\Invoice::factory()->create(['status' => 'success', 'coupon_code' => $code]);
+
+        $this->expectExceptionMessage(__('message.usage-of-code-completed'));
+        $this->service->applyCoupon($this->request(), $code);
     }
 }

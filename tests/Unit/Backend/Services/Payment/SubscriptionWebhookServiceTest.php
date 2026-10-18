@@ -807,4 +807,34 @@ class SubscriptionWebhookServiceTest extends DBTestCase
 
         $this->assertSame(1, \App\Model\Payment\GatewayEvent::where(['gateway' => 'stripe', 'event_id' => $eventId])->count());
     }
+
+    // ── Batch 3 #7: the renewal invoice uses the currency the gateway charged in ──
+
+    public function test_the_renewal_invoice_takes_the_charged_currency_not_the_users_country(): void
+    {
+        $this->getLoggedInUser('user');
+        $this->user->update(['country' => 'US']); // would resolve to USD
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        $order = \App\Model\Order\Order::create(['client' => $this->user->id, 'product' => $product->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+        $sub = \App\Model\Product\Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $this->user->id, 'is_subscribed' => 1, 'autoRenew_status' => 3]);
+        $subId = 'sub_cur_'.uniqid();
+        \Illuminate\Support\Facades\DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => $subId]);
+
+        $renewed = null;
+        $handler = Mockery::mock(ConcretePostSubscriptionHandleController::class);
+        $handler->shouldReceive('successRenew')->once()->andReturnUsing(function ($invoice) use (&$renewed) {
+            $renewed = $invoice;
+
+            return 1;
+        });
+        $handler->shouldReceive('recordPayment')->once();
+        $handler->shouldReceive('sendPaymentSuccessMail', 'PaymentSuccessMailtoAdmin')->zeroOrMoreTimes();
+
+        (new SubscriptionWebhookService($handler))->handleStripeEvent(['id' => 'evt_'.uniqid(), 'type' => 'invoice.payment_succeeded', 'data' => ['object' => [
+            'billing_reason' => 'subscription_cycle', 'subscription' => $subId, 'amount_paid' => 99900, 'currency' => 'inr',
+        ]]]);
+
+        $this->assertSame('INR', $renewed->currency); // ₹999.00 — not $999 read as dollars
+    }
 }

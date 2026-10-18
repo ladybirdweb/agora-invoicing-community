@@ -832,4 +832,107 @@ class SubscriptionControllerTest extends DBTestCase
         $this->assertSame('1', (string) $row->rzp_subscription); // update() used to drop these silently
         $this->assertSame('', (string) $row->subscribe_id);
     }
+
+    // ── Auto-renew creation: charged when due, never twice ──
+
+    private function captureCreatedSubscription(): \stdClass
+    {
+        $seen = new \stdClass;
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('createSubscription')->andReturnUsing(function ($gateway, $request) use ($seen) {
+            $seen->request = $request;
+
+            return new \App\Plugins\Payment\Dto\SubscriptionResult($gateway, 'sub_x', 'created', []);
+        });
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        return $seen;
+    }
+
+    public function test_the_stripe_renewal_job_charges_now_not_at_expiry(): void
+    {
+        // A future start charged nothing now, yet the job marks the invoice paid and extends —
+        // then the real charge at expiry extended again.
+        $seen = $this->captureCreatedSubscription();
+        $plan = Plan::factory()->create(['days' => 30]);
+
+        (new \App\Plugins\Stripe\Controllers\SettingsController)->handleStripeAutoPay(
+            (object) ['payment_intent_id' => 'pi_x'], (object) ['name' => 'P'], 1000, 'USD', $plan
+        );
+
+        $this->assertNull($seen->request->startAt);
+    }
+
+    public function test_razorpay_has_no_upfront_addon_when_billing_starts_immediately(): void
+    {
+        // Long expired: no start_at, so Razorpay bills the first cycle on authorization — that is
+        // the renewal; an upfront addon on top charged twice.
+        $seen = $this->captureCreatedSubscription();
+        $sub = (object) ['update_ends_at' => now()->subDays(90)->toDateTimeString()];
+
+        (new \App\Http\Controllers\RazorpayController)->handleRzpAutoPay(1000, 30, 'P', null, 'INR', $sub, null, null, null, null);
+
+        $this->assertNull($seen->request->startAt);
+        $this->assertFalse($seen->request->includeUpfrontCharge);
+    }
+
+    public function test_razorpay_keeps_the_upfront_addon_for_a_normal_renewal(): void
+    {
+        $seen = $this->captureCreatedSubscription();
+        $sub = (object) ['update_ends_at' => now()->addDays(2)->toDateTimeString()];
+
+        (new \App\Http\Controllers\RazorpayController)->handleRzpAutoPay(1000, 30, 'P', null, 'INR', $sub, null, null, null, null);
+
+        $this->assertNotNull($seen->request->startAt);
+        $this->assertTrue($seen->request->includeUpfrontCharge);
+    }
+
+    // ── Batch 3 #9: a Stripe subscription nobody tracks is cancelled, not left charging ──
+
+    public function test_a_stripe_subscription_created_after_auto_renew_was_disabled_is_cancelled(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $plan = Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        $order = Order::create(['client' => $user->id, 'product' => $product->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+        $sub = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $user->id, 'is_subscribed' => 0]);
+        \DB::table('subscriptions')->where('id', $sub->id)->update(['autoRenew_status' => '0']); // switched off mid-flight
+        $invoice = Invoice::factory()->create(['user_id' => $user->id, 'status' => 'pending', 'grand_total' => 0, 'currency' => 'USD']);
+
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('createSubscription')->andReturn(new \App\Plugins\Payment\Dto\SubscriptionResult('Stripe', 'sub_untracked', 'active', []));
+        $gateways->shouldReceive('cancelSubscription')->once()->with('Stripe', 'sub_untracked');
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        $controller = new SubscriptionController($this->instantiateDependencies());
+        (new \ReflectionMethod($controller, 'handleStripeSubscription'))->invoke(
+            $controller, (object) ['payment_intent_id' => 'pi_x'], $product, 1000, 'USD', $plan, $sub->fresh(), $invoice, $order, $user, 0
+        );
+
+        $this->assertSame('', (string) \DB::table('subscriptions')->where('id', $sub->id)->value('subscribe_id')); // never stored
+    }
+
+    // ── Batch 3 #10: a free renewal switches auto-renew off properly ──
+
+    public function test_a_zero_cost_renewal_deactivates_auto_renew_fully(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $plan = Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        \App\Model\Payment\PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => getCurrencyForClient((string) $user->country), 'renew_price' => 0, 'no_of_agents' => 0]);
+        $order = Order::create(['client' => $user->id, 'product' => $product->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999)]);
+        $sub = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $user->id, 'is_subscribed' => 1]);
+        \DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => 'sub_old', 'autoRenew_status' => '3']);
+        \App\Auto_renewal::create(['user_id' => $user->id, 'order_id' => $order->id, 'payment_method' => 'stripe']);
+
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('cancelSubscription')->once()->with('Stripe', 'sub_old'); // still billing the old price
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        $controller = new SubscriptionController($this->instantiateDependencies());
+        (new \ReflectionMethod($controller, 'processSubscriptionRenewal'))->invoke($controller, \DB::table('subscriptions')->find($sub->id));
+
+        $this->assertSame(0, \App\Auto_renewal::where('order_id', $order->id)->count()); // re-enable won't be ignored
+        $this->assertSame(0, (int) \DB::table('subscriptions')->where('id', $sub->id)->value('is_subscribed'));
+    }
 }

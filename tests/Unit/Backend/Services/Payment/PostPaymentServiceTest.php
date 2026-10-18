@@ -141,6 +141,7 @@ class PostPaymentServiceTest extends DBTestCase
             'coupon_code' => 'PROMO10',
             'coupon_discount' => 10.0,
             'currency' => 'USD',
+            'invoice_id' => $invoice->id, // the cart this invoice was placed from
         ]);
 
         // Add items to the cart.
@@ -598,5 +599,64 @@ class PostPaymentServiceTest extends DBTestCase
         $holders = \App\Model\Product\Subscription::where('subscribe_id', 'sub_live')->pluck('order_id')->all();
         $this->assertSame([$new->id], $holders);
         $this->assertSame(0, (int) $oldSub->fresh()->is_subscribed);
+    }
+
+    // ── Batch 3 #10: Stripe cancelling on repricing resets auto-renew the standard way ──
+
+    public function test_a_stripe_cancellation_during_repricing_clears_the_auto_renewal_row(): void
+    {
+        $this->getLoggedInUser('user');
+        $this->user->update(['country' => 'US']);
+        $product = \App\Model\Product\Product::factory()->create(['can_modify_agent' => 1]);
+        $plan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id, 'days' => 30]);
+        \App\Model\Payment\PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => 'USD', 'renew_price' => 50, 'no_of_agents' => 1]);
+        $order = \App\Model\Order\Order::create(['client' => $this->user->id, 'product' => $product->id, 'order_status' => 'executed', 'number' => mt_rand(100000, 999999), 'serial_key' => 'ABCDEFGHIJKL0001']);
+        $sub = \App\Model\Product\Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'plan_id' => $plan->id, 'user_id' => $this->user->id, 'is_subscribed' => 1, 'autoRenew_status' => '3']);
+        \Illuminate\Support\Facades\DB::table('subscriptions')->where('id', $sub->id)->update(['subscribe_id' => 'sub_test']);
+        \App\Auto_renewal::create(['user_id' => $this->user->id, 'order_id' => $order->id, 'payment_method' => 'stripe']);
+
+        $gateways = \Mockery::mock(\App\Services\Payment\SubscriptionService::class);
+        $gateways->shouldReceive('updateSubscriptionPrice')->andReturn(new \App\Plugins\Payment\Dto\SubscriptionResult('Stripe', 'sub_test', 'canceled', ['cancelled' => true]));
+        $gateways->shouldNotReceive('cancelSubscription'); // already cancelled at Stripe
+        $this->app->instance(\App\Services\Payment\SubscriptionService::class, $gateways);
+
+        $service = app(\App\Services\Payment\PostPaymentService::class); // fresh: resolves the mocked gateway service
+        $this->getPrivateMethod($service, 'updateSubscriptionPriceIfNeeded', [$order->id, Invoice::factory()->create(['user_id' => $this->user->id, 'currency' => 'USD'])]);
+
+        $this->assertSame(0, \App\Auto_renewal::where('order_id', $order->id)->count());
+        $this->assertSame(0, (int) $sub->fresh()->is_subscribed);
+    }
+
+    // ── Batch 3 #13: only the cart that became this invoice is emptied ──
+
+    private function cartWithOneItem(?int $invoiceId): \App\Model\Cart\Cart
+    {
+        $cart = \App\Model\Cart\Cart::firstOrCreate(['user_id' => $this->user->id], ['currency' => 'USD']);
+        $cart->update(['invoice_id' => $invoiceId]);
+        $cart->items()->create(['product_id' => \App\Model\Product\Product::factory()->create()->id, 'plan_id' => null, 'quantity' => 1, 'agents' => 1]);
+
+        return $cart;
+    }
+
+    public function test_paying_an_unrelated_invoice_leaves_the_cart_alone(): void
+    {
+        $this->getLoggedInUser('user');
+        $renewal = Invoice::factory()->create(['user_id' => $this->user->id]);
+        $cart = $this->cartWithOneItem(invoiceId: null); // still being built
+
+        $this->getPrivateMethod($this->service, 'clearCart', [$renewal]);
+
+        $this->assertSame(1, $cart->items()->count());
+    }
+
+    public function test_paying_the_carts_own_invoice_empties_it(): void
+    {
+        $this->getLoggedInUser('user');
+        $invoice = Invoice::factory()->create(['user_id' => $this->user->id]);
+        $cart = $this->cartWithOneItem(invoiceId: $invoice->id);
+
+        $this->getPrivateMethod($this->service, 'clearCart', [$invoice]);
+
+        $this->assertSame(0, $cart->items()->count());
     }
 }

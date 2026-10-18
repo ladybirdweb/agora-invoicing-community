@@ -158,6 +158,8 @@ class CartServiceTest extends DBTestCase
 
     public function test_update_item_delegates_to_guest_when_unauthenticated(): void
     {
+        // The quantity rule looks up the line's product (product 0: none → quantity locked).
+        $this->guestMock->shouldReceive('all')->andReturn([['id' => 3, 'product_id' => 0]]);
         $this->guestMock->shouldReceive('update')->with(3, Mockery::type('array'))->once();
 
         $this->service->updateItem($this->guestRequest(), 3, ['quantity' => 2]);

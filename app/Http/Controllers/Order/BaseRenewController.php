@@ -127,10 +127,7 @@ class BaseRenewController extends Controller
             $price = $planDetails['plan']->renew_price;
             $currency = $planDetails['currency'];
 
-            $agents = InvoiceItem::whereHas('invoice', fn (Builder $q) => $q->whereHas('orders', fn (Builder $q) => $q->where('orders.id', $orderId))) // @phpstan-ignore argument.templateType
-                ->where('plan_id', $planId)
-                ->orderByDesc('id')
-                ->value('agents');
+            $agents = $this->orderAgents((int) $orderId);
 
             if ($agents > 0 && $planDetails['plan']->no_of_agents > 0) {
                 $renewalPrice = ($price / $planDetails['plan']->no_of_agents) * (int) $agents;
@@ -198,5 +195,18 @@ class BaseRenewController extends Controller
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
+    }
+
+    /**
+     * The order's current agent count — from its latest invoice line, whatever plan that was on.
+     * Shared by the renew popup (getCost) and the renewal invoice (renewByClient): the popup used
+     * to look only at lines on the plan just picked, so after a plan switch it showed the full
+     * plan price while the invoice charged for the real agent count.
+     */
+    protected function orderAgents(int $orderId): mixed
+    {
+        return InvoiceItem::whereHas('invoice', fn (Builder $q) => $q->whereHas('orders', fn (Builder $q) => $q->where('orders.id', $orderId))) // @phpstan-ignore argument.templateType
+            ->orderByDesc('id')
+            ->value('agents');
     }
 }

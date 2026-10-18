@@ -10,6 +10,7 @@ use App\Model\Payment\GatewayEvent;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Plugins\Payment\Support\Money;
 use App\User;
 use DB;
 use Exception;
@@ -78,7 +79,7 @@ class SubscriptionWebhookService
 
         $amountPaid = $invoice['amount_paid'] ?? 0;
 
-        $this->fulfillRenewal('stripe', $gatewaySubscriptionId, $amountPaid);
+        $this->fulfillRenewal('stripe', $gatewaySubscriptionId, $amountPaid, $invoice['currency'] ?? null);
     }
 
     /**
@@ -159,7 +160,7 @@ class SubscriptionWebhookService
             return;
         }
 
-        $this->releasingClaimOnFailure('razorpay', $paymentId, fn () => $this->fulfillRenewal('razorpay', $gatewaySubscriptionId, $amountPaid));
+        $this->releasingClaimOnFailure('razorpay', $paymentId, fn () => $this->fulfillRenewal('razorpay', $gatewaySubscriptionId, $amountPaid, $payload['payment']['entity']['currency'] ?? null));
     }
 
     /**
@@ -241,7 +242,7 @@ class SubscriptionWebhookService
 
     // ── Fulfillment ───────────────────────────────────────────────────────
 
-    private function fulfillRenewal(string $gateway, string $gatewaySubscriptionId, int $gatewayAmount): void
+    private function fulfillRenewal(string $gateway, string $gatewaySubscriptionId, int $gatewayAmount, ?string $gatewayCurrency = null): void
     {
         $subscription = Subscription::where('subscribe_id', $gatewaySubscriptionId)->first();
         if (! $subscription) {
@@ -255,8 +256,9 @@ class SubscriptionWebhookService
         $plan = Plan::findOrFail($subscription->plan_id);
         $product = Product::findOrFail($subscription->product_id);
 
-        $planDetails = userCurrencyAndPrice($user->id, $plan);
-        $currency = $planDetails['currency'];
+        // The currency the gateway actually charged in — the user's country can have changed
+        // since they subscribed, and minor units read in the wrong currency are a wrong amount.
+        $currency = $gatewayCurrency ? strtoupper($gatewayCurrency) : userCurrencyAndPrice($user->id, $plan)['currency'];
 
         // Convert gateway amount (smallest unit) to local currency amount
         $cost = $this->fromGatewayAmount($gatewayAmount, $currency);
@@ -296,35 +298,56 @@ class SubscriptionWebhookService
             }
         }
 
-        $originalInvoiceId = DB::table('order_invoice_relations')
+        $taxRate = 0.0;
+        try {
+            $taxInfo = new BaseRenewController()->calculateTax($product->id, $user->state ?? '', $user->country ?? '');
+            $taxRate = (float) $taxInfo['value'];
+        } catch (\Throwable $e) {
+            \Logger::exception($e);
+        }
+
+        // $cost from gateway is gross (tax-inclusive). generateInvoice() calculates tax on top of
+        // the cost passed in, so we pass the net base amount to keep the invoice grand_total
+        // matching the actual charged gateway amount.
+        $netCost = $taxRate > 0 ? (float) rounding($cost / (1 + ($taxRate / 100))) : $cost;
+
+        $latestInvoiceId = DB::table('order_invoice_relations')
             ->where('order_id', $order->id)
-            ->oldest()
+            ->latest('id')
             ->value('invoice_id');
 
-        $agents = DB::table('invoice_items')->where('invoice_id', $originalInvoiceId)->value('agents');
-        $invoiceItem = new BaseRenewController()->generateInvoice($product, $user, $order->id, $plan->id, $cost, '', $agents, $currency);
+        $agents = $latestInvoiceId
+            ? DB::table('invoice_items')->where('invoice_id', $latestInvoiceId)->whereNotNull('agents')->value('agents')
+            : null;
+
+        if (! $agents && ! empty($order->serial_key)) {
+            $license = (string) $order->serial_key;
+            $agentStr = ltrim(substr($license, -4), '0');
+            if ($agentStr !== '') {
+                $agents = (int) $agentStr;
+            }
+        }
+
+        if (! $agents) {
+            $originalInvoiceId = DB::table('order_invoice_relations')
+                ->where('order_id', $order->id)
+                ->oldest('id')
+                ->value('invoice_id');
+            $agents = $originalInvoiceId ? DB::table('invoice_items')->where('invoice_id', $originalInvoiceId)->value('agents') : null;
+        }
+
+        $invoiceItem = new BaseRenewController()->generateInvoice($product, $user, $order->id, $plan->id, $netCost, '', $agents, $currency);
 
         return Invoice::findOrFail($invoiceItem->invoice_id); // @phpstan-ignore property.notFound
     }
 
     /**
      * Convert gateway's smallest-unit amount to the local decimal amount.
-     * Stripe/Razorpay send 1000 for $10.00 USD, 1000 for ¥1000 JPY, 1000 for 1.000 KWD.
+     * Uses Money::fromMinor to properly respect ISO-4217 exponents (including ISK, KWD, JPY, etc.).
      */
     private function fromGatewayAmount(int $amount, string $currency): float
     {
-        $zeroDecimal = ['BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'];
-        $threeDecimal = ['BHD', 'JOD', 'KWD', 'OMR', 'TND'];
-
-        if (in_array($currency, $zeroDecimal, strict: true)) {
-            return (float) $amount;
-        }
-
-        if (in_array($currency, $threeDecimal, strict: true)) {
-            return round($amount / 1000, 3);
-        }
-
-        return round($amount / 100, 2);
+        return Money::fromMinor($amount, $currency);
     }
 
     /**

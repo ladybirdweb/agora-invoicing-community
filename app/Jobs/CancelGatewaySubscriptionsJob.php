@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Auto_renewal;
 use App\Model\Product\Subscription;
 use App\Services\Payment\SubscriptionService;
 use Exception;
@@ -36,6 +37,9 @@ class CancelGatewaySubscriptionsJob implements ShouldQueue
                     } catch (Exception $e) {
                         Logger::exception(new Exception(sprintf('Failed to cancel %s subscription %s: ', $this->gateway, $subscription->subscribe_id).$e->getMessage(), previous: $e));
                     }
+
+                    // Delete the Auto_renewal record so future re-activations aren't blocked.
+                    Auto_renewal::where('order_id', $subscription->order_id)->delete();
 
                     // Query-builder update, not $subscription->update() —
                     // subscribe_id and rzp_subscription aren't in

@@ -27,7 +27,7 @@ class GuestCart
     /**
      * @param  array<mixed>  $data
      */
-    public function add(array $data, string $currency): void
+    public function add(array $data, string $currency, bool $quantityLocked = false): void
     {
         $cart = $this->read();
 
@@ -52,7 +52,9 @@ class GuestCart
             if ((int) $item['product_id'] === (int) $data['product_id']
                 && ($item['plan_id'] ?? null) == $planId
                 && ($item['billing_cycle'] ?? 'monthly') === ($data['billing_cycle'] ?? 'monthly')) {
-                $cart['items'][$id]['quantity'] += (int) ($data['quantity'] ?? 1);
+                if (! $quantityLocked) {
+                    $cart['items'][$id]['quantity'] += (int) ($data['quantity'] ?? 1);
+                }
                 $this->write($cart);
 
                 return;
@@ -64,7 +66,7 @@ class GuestCart
             'id' => $id,
             'product_id' => (int) $data['product_id'],
             'plan_id' => $planId,
-            'quantity' => (int) ($data['quantity'] ?? 1),
+            'quantity' => $quantityLocked ? 1 : (int) ($data['quantity'] ?? 1),
             'agents' => (int) ($data['agents'] ?? 1),
             'domain' => $data['domain'] ?? null,
             'billing_cycle' => $data['billing_cycle'] ?? 'monthly',

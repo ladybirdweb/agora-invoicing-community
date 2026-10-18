@@ -64,7 +64,7 @@ class CartService
         $data['plan_id'] = $this->resolvePlanId($data, $currency);
         $data['agents'] = $this->agentsForNewLine($data, $data['plan_id'], $currency);
 
-        $this->guest->add($data, $currency);
+        $this->guest->add($data, $currency, quantityLocked: ! $this->canModifyQuantity((int) $data['product_id']));
     }
 
     private function resolveGuestCurrency(Request $request): string
@@ -84,6 +84,11 @@ class CartService
         // the line carries the plan's own count (what its price covers), like development did.
         if (isset($data['agents']) && ! $this->canModifyAgents($request, $itemId)) {
             unset($data['agents']);
+        }
+        // Same for quantity: fulfilment issues one order/licence for the line however many are
+        // "bought", so a product that doesn't allow it must stay at 1.
+        if (isset($data['quantity']) && ! $this->canModifyQuantity($this->itemProductId($request, $itemId))) {
+            unset($data['quantity']);
         }
 
         if ($request->user()) {
@@ -144,7 +149,7 @@ class CartService
     public function applyCoupon(Request $request, string $code): void
     {
         $cart = $this->dbCart($request->user()); // @phpstan-ignore argument.type
-        $promo = $this->validatedPromotion($code);
+        $promo = $this->validatedPromotion($code, $cart->invoice_id);
 
         $cart->update([
             'coupon_code' => $code,
@@ -389,11 +394,21 @@ class CartService
 
     private function canModifyAgents(Request $request, int|string $itemId): bool
     {
+        return (bool) Product::whereKey($this->itemProductId($request, $itemId))->value('can_modify_agent');
+    }
+
+    private function canModifyQuantity(?int $productId): bool
+    {
+        return (bool) Product::whereKey($productId)->value('can_modify_quantity');
+    }
+
+    private function itemProductId(Request $request, int|string $itemId): ?int
+    {
         $productId = $request->user()
             ? CartItem::whereKey($itemId)->value('product_id')
             : (collect($this->guest->all())->firstWhere('id', (int) $itemId)['product_id'] ?? null);
 
-        return (bool) Product::whereKey($productId)->value('can_modify_agent');
+        return $productId === null ? null : (int) $productId;
     }
 
     private function dbCart(Authenticatable $user): Cart
@@ -423,13 +438,18 @@ class CartService
             ->where('billing_cycle', $data['billing_cycle'] ?? 'monthly')
             ->first();
 
+        $quantityLocked = ! $this->canModifyQuantity((int) $data['product_id']);
+
         if ($existing) {
-            $existing->increment('quantity', $data['quantity'] ?? 1);
+            // Adding a quantity-locked product again leaves it at 1 rather than charging twice.
+            if (! $quantityLocked) {
+                $existing->increment('quantity', $data['quantity'] ?? 1);
+            }
         } else {
             $cart->items()->create([
                 'product_id' => $data['product_id'],
                 'plan_id' => $planId,
-                'quantity' => $data['quantity'] ?? 1,
+                'quantity' => $quantityLocked ? 1 : ($data['quantity'] ?? 1),
                 // Resolved here (not just in addItem) so a guest line merged on login is
                 // re-checked too — rows from before this rule carried a hard-coded 1.
                 'agents' => $this->agentsForNewLine($data, $planId, $cart->currency ?? 'USD'),
@@ -526,10 +546,13 @@ class CartService
     {
         $currency = $cart->currency ?? 'USD';
         $tax = resolve(TaxService::class);
+        $couponShares = $this->couponShares($cart, $currency);
 
-        return $cart->items->map(function (CartItem $line) use ($user, $currency, $tax): array {
+        return $cart->items->map(function (CartItem $line) use ($user, $currency, $tax, $couponShares): array {
             $lineTotal = $line->unitPrice($currency) * $line->quantity;
-            $result = $tax->calculate($lineTotal, (int) $line->product_id, $user);
+            // Taxed on what is actually charged — the price after this line's share of the
+            // coupon, as development (which discounted the item price itself) did.
+            $result = $tax->calculate(max(0, $lineTotal - ($couponShares[$line->id] ?? 0.0)), (int) $line->product_id, $user);
 
             // A single applied rate can be referenced directly on the item;
             // multi-rate/compound lines rely on the persisted breakdown.
@@ -588,7 +611,7 @@ class CartService
         }
 
         try {
-            $promo = $this->validatedPromotion($cart->coupon_code);
+            $promo = $this->validatedPromotion($cart->coupon_code, $cart->invoice_id);
         } catch (Exception) {
             $cart->update(['coupon_code' => null, 'coupon_discount' => 0]);
 
@@ -614,9 +637,8 @@ class CartService
      */
     private function couponableSubtotal(Cart $cart, Promotion $promo): float
     {
-        $productIds = PromoProductRelation::where('promotion_id', $promo->id)->pluck('product_id')->map(fn ($id): int => (int) $id)->all();
         $currency = $cart->currency ?? 'USD';
-        $lines = $cart->items()->with('plan.planPrice')->get()->filter(fn (CartItem $item): bool => in_array((int) $item->product_id, $productIds, true));
+        $lines = $this->couponLines($cart->items()->with('plan.planPrice')->get(), $promo);
 
         if ($lines->isEmpty()) {
             throw new Exception(__('message.invalid_coupon_code'));
@@ -625,7 +647,56 @@ class CartService
         return (float) $lines->sum(fn (CartItem $item): float => $item->unitPrice($currency) * $item->quantity);
     }
 
-    private function validatedPromotion(string $code): Promotion
+    /**
+     * @param  \Illuminate\Support\Collection<int, CartItem>  $items
+     * @return \Illuminate\Support\Collection<int, CartItem>
+     */
+    private function couponLines(\Illuminate\Support\Collection $items, Promotion $promo): \Illuminate\Support\Collection
+    {
+        $productIds = PromoProductRelation::where('promotion_id', $promo->id)->pluck('product_id')->map(fn ($id): int => (int) $id)->all();
+
+        return $items->filter(fn (CartItem $item): bool => in_array((int) $item->product_id, $productIds, true))->values();
+    }
+
+    /**
+     * The cart's coupon discount split across the lines it applies to, in proportion to their
+     * totals (keyed by line id); rounding leftovers go to the last line so the shares add up to
+     * the discount exactly.
+     *
+     * @return array<int|string, float>
+     */
+    private function couponShares(Cart $cart, string $currency): array
+    {
+        $discount = (float) $cart->coupon_discount;
+        $promo = $cart->coupon_code ? Promotion::where('code', $cart->coupon_code)->first() : null;
+        if ($discount <= 0 || ! $promo) {
+            return [];
+        }
+
+        $lines = $this->couponLines($cart->items, $promo);
+        $totals = $lines->mapWithKeys(fn (CartItem $item): array => [$item->id => $item->unitPrice($currency) * $item->quantity]);
+        $base = (float) $totals->sum();
+        if ($base <= 0) {
+            return [];
+        }
+
+        $shares = [];
+        $given = 0.0;
+        $lastId = $totals->keys()->last();
+        foreach ($totals as $id => $total) {
+            $shares[$id] = $id === $lastId ? round($discount - $given, 2) : round($discount * $total / $base, 2);
+            $given += $shares[$id];
+        }
+
+        return $shares;
+    }
+
+    /**
+     * @param  int|null  $ownInvoiceId  the cart's own pending invoice: it carries the coupon too,
+     *                                  and counting it as a use dropped the coupon on the
+     *                                  customer's own re-checkout once one use was left
+     */
+    private function validatedPromotion(string $code, ?int $ownInvoiceId = null): Promotion
     {
         $promo = Promotion::where('code', $code)->first();
 
@@ -633,7 +704,7 @@ class CartService
             throw new Exception(__('message.invalid_coupon_code'));
         }
 
-        if (Invoice::where('coupon_code', $code)->count() >= $promo->uses) {
+        if (Invoice::where('coupon_code', $code)->when($ownInvoiceId, fn ($q) => $q->whereKeyNot($ownInvoiceId))->count() >= $promo->uses) {
             throw new Exception(__('message.usage-of-code-completed'));
         }
 

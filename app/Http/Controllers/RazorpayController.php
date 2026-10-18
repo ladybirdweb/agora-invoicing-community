@@ -69,17 +69,41 @@ class RazorpayController extends Controller
      */
     public function handleRzpAutoPay(mixed $cost, mixed $days, mixed $product_name, mixed $invoice, mixed $currency, mixed $subscription, mixed $user, mixed $order, mixed $endDate, mixed $productDetails, bool $immediate = false): SubscriptionResult
     {
+        $now = Date::now();
         $periodEnd = Date::parse($subscription->update_ends_at);
-        $startAt = $immediate ? $periodEnd->copy() : $periodEnd->copy()->addDays(round((int) $days));
+        $targetStart = $immediate ? $periodEnd->copy() : $periodEnd->copy()->addDays(round((int) $days));
+
+        // start_at must be at least 15 minutes in the future for Razorpay; if the subscription
+        // has already expired or ends within 15 minutes, omit start_at so it starts right away.
+        $startAt = $targetStart->gt($now->copy()->addMinutes(15)) ? (int) $targetStart->timestamp : null;
+
+        // expire_by is when customer authorization must be completed.
+        // Razorpay API enforces:
+        // 1. Must be >= now + 15 minutes.
+        // 2. If start_at is set, expire_by MUST be <= start_at.
+        // Allow up to 7 days to authorize, capped at start_at - 15 minutes if start_at is set.
+        $expireBy = null;
+        if ($startAt !== null) {
+            $maxExpire = $targetStart->copy()->subMinutes(15);
+            $defaultExpire = $now->copy()->addDays(7);
+            $chosenExpire = $defaultExpire->lt($maxExpire) ? $defaultExpire : $maxExpire;
+            if ($chosenExpire->gt($now->copy()->addMinutes(15))) {
+                $expireBy = (int) $chosenExpire->timestamp;
+            }
+        } else {
+            $expireBy = (int) $now->copy()->addDays(7)->timestamp;
+        }
 
         return resolve(SubscriptionService::class)->createSubscription('Razorpay', new SubscriptionRequest(
             amountMinor: (int) $cost,
             currency: $currency,
             intervalDays: (int) $days,
             planName: $product_name,
-            startAt: (int) $startAt->timestamp,
-            expireBy: (int) $periodEnd->copy()->addDays(1)->timestamp,
-            includeUpfrontCharge: ! $immediate,
+            startAt: $startAt,
+            expireBy: $expireBy,
+            // Without start_at Razorpay bills the first cycle on authorization, and that charge
+            // IS this renewal — an upfront addon on top would charge the customer twice.
+            includeUpfrontCharge: ! $immediate && $startAt !== null,
         ));
     }
 }

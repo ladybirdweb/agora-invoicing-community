@@ -1423,8 +1423,10 @@ class CloudActivitiesTest extends DBTestCase
         ]);
 
         $controller = new CloudExtraActivities(new Client, $cloud);
+        // Credit goes to the terminated order's customer — here, this user's own order.
+        $order = Order::create(['client' => $user->id, 'order_status' => 'Terminated', 'number' => mt_rand(100000, 999999)]);
 
-        $controller->doTheActivity(1, 2, 50.0);
+        $controller->doTheActivity($order->id, $order->id + 1, 50.0);
 
         $this->assertSame(50.0, (new \App\Services\Payment\CreditBalanceService)->balance($user->id, getCurrencyForClient('IN')));
     }
@@ -1702,5 +1704,52 @@ class CloudActivitiesTest extends DBTestCase
         [$oldOrder, $newPlan] = $this->planChangeSetup(oldDays: 30, daysLeft: 10, oldPrice: 1000, newDays: 365, newPrice: 5000);
 
         $this->assertSame(345, $this->planChangeMetadata($oldOrder, $newPlan)['increase-decrease-days']);
+    }
+
+    // ── Downgrade credit goes to the order's customer, whoever is logged in ──
+
+    public function test_downgrade_credit_goes_to_the_customer_not_the_logged_in_admin(): void
+    {
+        $client = User::factory()->create(['country' => 'US']);
+        $order = Order::create(['client' => $client->id, 'order_status' => 'Terminated', 'number' => mt_rand(100000, 999999)]);
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin); // e.g. the admin recorded the payment
+
+        (new CloudExtraActivities(new Client, new FaveoCloud))->doTheActivity($order->id, $order->id + 1, 40.0, 'USD');
+
+        $credit = app(\App\Services\Payment\CreditBalanceService::class);
+        $this->assertSame(40.0, $credit->balance($client->id, 'USD'));
+        $this->assertSame(0.0, $credit->balance($admin->id, 'USD'));
+    }
+
+    // ── Batch 3 #11: agent change uses the order's own subscription, not one from the request ──
+
+    public function test_agent_change_ignores_a_subscription_id_sent_by_the_browser(): void
+    {
+        $product = Product::factory()->create();
+        $plan = Plan::create(['name' => 'agent plan', 'product' => $product->id, 'days' => 30]);
+        foreach (['INR', 'USD'] as $currency) {
+            PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => $currency, 'add_price' => 100, 'renew_price' => 100, 'no_of_agents' => 1, 'offer_price' => 0]);
+        }
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id,
+            'number' => mt_rand(100000, 999999), 'serial_key' => '1234567890120005']);
+        $own = Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id, 'user_id' => $this->user->id,
+            'version' => 'v6.0.0', 'update_ends_at' => Date::now()->addDays(20), 'ends_at' => Date::now()->addDays(20)]);
+        License::create(['product_id' => $product->id, 'user_id' => $this->user->id, 'license_code' => $order->serial_key, 'license_order_number' => $order->number, 'license_status' => 1]);
+        \App\License\Models\Installation::create(['license_code' => $order->serial_key, 'installation_domain' => 'mine.test.faveo.com', 'installation_path' => 'mine.test.faveo.com',
+            'installation_ip' => '127.0.0.1', 'version_number' => '1.0.0', 'product_id' => $product->id]);
+        $original = Invoice::factory()->create(['user_id' => $this->user->id, 'status' => 'success']); // every real order has one
+        $item = InvoiceItem::create(['invoice_id' => $original->id, 'product_name' => $product->name, 'product_id' => $product->id, 'plan_id' => $plan->id, 'agents' => 5]);
+        \App\Model\Order\OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $original->id]);
+        $order->update(['invoice_item_id' => $item->id]);
+        $someoneElses = \App\Model\Product\Subscription::factory()->create(); // another user's
+        $this->bindMockClientWithResponses([new \GuzzleHttp\Psr7\Response(200, [], '')]); // cloud: agents may change
+
+        $response = $this->postJson('/changeAgents', ['desiredAgents' => 7, 'orderId' => $order->id, 'subId' => $someoneElses->id]);
+
+        $invoice = Invoice::find($response->json('data.invoice_id'));
+        $this->assertNotNull($invoice, $response->getContent());
+        $this->assertSame($own->id, $invoice->metadata['sub_id']);
+        $this->assertSame($this->user->id, (int) $invoice->user_id);
     }
 }

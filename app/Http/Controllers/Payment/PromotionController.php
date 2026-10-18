@@ -70,10 +70,7 @@ class PromotionController extends BasePromotionController
         try {
             /** @var Promotion $promotion */
             $promotion = $this->promotion->where('code', $code)->first();
-            $uses = $promotion->uses;
-            if ($uses == 1) {
-                return 'success';
-            }
+            $uses = (int) $promotion->uses;
 
             $used_number = $this->invoice->where('coupon_code', $code)->count();
             if ($uses > $used_number) {
@@ -93,7 +90,7 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('code', $code)->first();
             $start = $promotion->start;
             $end = $promotion->expiry;
-            $now = Date::now()->format('Y-m-d H:m:i');
+            $now = Date::now()->format('Y-m-d H:i:s');
             $inv_cont = new InvoiceController;
 
             return $inv_cont->getExpiryStatus($start, $end, $now);

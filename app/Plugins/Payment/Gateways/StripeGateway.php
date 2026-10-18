@@ -93,6 +93,7 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
                 'payment_intent_data' => array_filter([
                     'description' => $request->description,
                     'setup_future_usage' => $request->saveForFutureUse ? 'off_session' : null,
+                    'metadata' => $this->stringMetadata($request->metadata),
                 ]),
                 'customer_creation' => $request->saveForFutureUse ? 'always' : null,
                 'metadata' => $this->stringMetadata($request->metadata),
@@ -306,16 +307,26 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
             $price = $client->prices->create([
                 'unit_amount' => $request->amountMinor,
                 'currency' => strtolower($request->currency),
-                'recurring' => ['interval' => 'day', 'interval_count' => $request->intervalDays],
+                'recurring' => $this->recurringInterval($request->intervalDays),
                 'product' => $product->id,
             ]);
 
-            $subscription = $client->subscriptions->create([ // @phpstan-ignore argument.type
+            $subscriptionParams = [
                 'customer' => $intent->customer,
                 'items' => [['price' => $price->id]],
                 'default_payment_method' => $intent->payment_method,
                 'metadata' => $this->stringMetadata($request->metadata),
-            ]);
+                // Full first invoice in raw['latest_invoice'] (e.g. hosted_invoice_url for an
+                // 'incomplete' subscription) — callers needn't open their own Stripe client.
+                'expand' => ['latest_invoice'],
+            ];
+
+            if ($request->startAt !== null && $request->startAt > time() + 60) {
+                $subscriptionParams['billing_cycle_anchor'] = $request->startAt;
+                $subscriptionParams['proration_behavior'] = 'none';
+            }
+
+            $subscription = $client->subscriptions->create($subscriptionParams); // @phpstan-ignore argument.type
 
             return new SubscriptionResult(
                 gateway: $this->name(),
@@ -368,7 +379,7 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
             $price = $client->prices->create([
                 'unit_amount' => $request->amountMinor,
                 'currency' => strtolower($request->currency),
-                'recurring' => ['interval' => 'day', 'interval_count' => $request->intervalDays],
+                'recurring' => $this->recurringInterval($request->intervalDays),
                 'product' => $product->id,
             ]);
 
@@ -445,5 +456,27 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
                 'country' => $customer->country,
             ], static fn (?string $v): bool => $v !== null && $v !== ''),
         ];
+    }
+
+    /**
+     * @return array{interval: string, interval_count: int}
+     */
+    private function recurringInterval(int $intervalDays): array
+    {
+        if ($intervalDays >= 365) {
+            $years = (int) round($intervalDays / 365);
+            if ($years >= 1 && $years <= 3) {
+                return ['interval' => 'year', 'interval_count' => $years];
+            }
+            $months = min(36, max(1, (int) round($intervalDays / 30)));
+
+            return ['interval' => 'month', 'interval_count' => $months];
+        }
+
+        if ($intervalDays >= 30 && $intervalDays % 30 === 0) {
+            return ['interval' => 'month', 'interval_count' => (int) ($intervalDays / 30)];
+        }
+
+        return ['interval' => 'day', 'interval_count' => min(365, max(1, $intervalDays))];
     }
 }

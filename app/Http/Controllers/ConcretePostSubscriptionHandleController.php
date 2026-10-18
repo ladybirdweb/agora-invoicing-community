@@ -136,7 +136,8 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
 
             $mail = new PhpMailController;
             $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentSuccessdata, 'payment-success', $template->type()->value('name'));
-            $mail->payment_log($user->email, $payment, 'success', $order->number, amount: $amount, payment_type: 'Product renew');
+            $paymentMethod = $payment instanceof Payment ? ($payment->payment_method ?? 'Unknown') : (string) $payment;
+            $mail->payment_log($user->email, $paymentMethod, 'success', $order->number, amount: $amount, payment_type: 'Product renew');
         } catch (Throwable $throwable) {
             Logger::exception($throwable);
         }
@@ -168,7 +169,8 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
                 return;
             }
             $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentFailData, 'payment-failed', $dbTemplate->type()->value('name'));
-            $mail->payment_log($user->email, $payment, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
+            $paymentMethod = $payment->payment_method ?? 'Unknown';
+            $mail->payment_log($user->email, $paymentMethod, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
         } catch (Throwable $throwable) {
             Logger::exception($throwable);
         }

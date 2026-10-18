@@ -572,4 +572,74 @@ class ExtendedBaseInvoiceControllerTest extends DBTestCase
         $response->assertStatus(412);
         $this->assertArrayHasKey('invoiceChecked', $response->json('message'));
     }
+
+    // ── Admin payments fulfil an invoice once — only when the payment turns it paid ──
+
+    private function pendingClientInvoice(float $total): array
+    {
+        $client = User::factory()->create(['role' => 'user', 'email' => 'fulfil-once-'.uniqid().'@test.local']);
+        $invoice = \App\Model\Order\Invoice::factory()->create(['user_id' => $client->id, 'grand_total' => $total, 'currency' => 'USD', 'status' => 'pending']);
+
+        return [$client, $invoice];
+    }
+
+    private function expectFulfilment(int $times): void
+    {
+        $post = \Mockery::mock(\App\Services\Payment\PostPaymentService::class);
+        $post->shouldReceive('handle')->times($times);
+        $this->app->instance(\App\Services\Payment\PostPaymentService::class, $post);
+    }
+
+    public function test_a_payment_that_completes_an_invoice_fulfils_it_once(): void
+    {
+        $this->getLoggedInUser('admin');
+        [$client, $invoice] = $this->pendingClientInvoice(100);
+        $this->expectFulfilment(1);
+
+        $this->postJson("/newMultiplePayment/receive/{$client->id}", [
+            'payment_date' => '2025-06-01', 'payment_method' => 'cash', 'totalAmt' => 100,
+            'invoiceChecked' => [0 => $invoice->id], 'invoiceAmount' => [0 => 100], 'amtToCredit' => 0,
+        ])->assertOk();
+    }
+
+    public function test_the_same_invoice_listed_twice_is_fulfilled_once_not_twice(): void
+    {
+        // A renewal fulfilled twice would extend its dates twice.
+        $this->getLoggedInUser('admin');
+        [$client, $invoice] = $this->pendingClientInvoice(100);
+        $this->expectFulfilment(1);
+
+        // 60 + 40: the second line completes it — fulfilled then, once.
+        $this->postJson("/newMultiplePayment/receive/{$client->id}", [
+            'payment_date' => '2025-06-01', 'payment_method' => 'cash', 'totalAmt' => 100,
+            'invoiceChecked' => [0 => $invoice->id, 1 => $invoice->id], 'invoiceAmount' => [0 => 60, 1 => 40], 'amtToCredit' => 0,
+        ])->assertOk();
+    }
+
+    public function test_the_same_invoice_listed_twice_cannot_be_overpaid(): void
+    {
+        // 100 + 50 against 100 due: each line alone fits, together they overpay.
+        $this->getLoggedInUser('admin');
+        [$client, $invoice] = $this->pendingClientInvoice(100);
+        $this->expectFulfilment(0);
+
+        $this->postJson("/newMultiplePayment/receive/{$client->id}", [
+            'payment_date' => '2025-06-01', 'payment_method' => 'cash', 'totalAmt' => 150,
+            'invoiceChecked' => [0 => $invoice->id, 1 => $invoice->id], 'invoiceAmount' => [0 => 100, 1 => 50], 'amtToCredit' => 0,
+        ]);
+
+        $this->assertSame(0, \DB::table('payment_invoice')->where('invoice_id', $invoice->id)->count()); // nothing allocated
+    }
+
+    public function test_a_partial_payment_does_not_fulfil(): void
+    {
+        $this->getLoggedInUser('admin');
+        [$client, $invoice] = $this->pendingClientInvoice(100);
+        $this->expectFulfilment(0);
+
+        $this->postJson("/newMultiplePayment/receive/{$client->id}", [
+            'payment_date' => '2025-06-01', 'payment_method' => 'cash', 'totalAmt' => 40,
+            'invoiceChecked' => [0 => $invoice->id], 'invoiceAmount' => [0 => 40], 'amtToCredit' => 0,
+        ])->assertOk();
+    }
 }

@@ -67,8 +67,9 @@ class OpenPaymentServiceTest extends TestCase
         $captureResult->paid = false;
         $captureResult->reference = null;
 
+        // A browser callback always runs the gateway in signature-checking mode.
         $this->paymentsMock->shouldReceive('capture')
-            ->with('stripe', [])
+            ->with('stripe', ['is_webhook' => false])
             ->once()
             ->andReturn($captureResult);
 

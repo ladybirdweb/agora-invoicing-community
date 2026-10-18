@@ -108,10 +108,53 @@ final readonly class RazorpayGateway implements PaymentGateway, SubscriptionGate
      * SDK's verifyPaymentSignature() already branches on which one is present
      * and hashes the correct payload for each, so one method covers both.
      *
-     * @param  array{razorpay_order_id?: string, razorpay_subscription_id?: string, razorpay_payment_id?: string, razorpay_signature?: string}  $payload
+     * @param  array{razorpay_order_id?: string, razorpay_subscription_id?: string, razorpay_payment_id?: string, razorpay_signature?: string, is_webhook?: bool}  $payload
      */
     public function capturePayment(array $payload): PaymentResult
     {
+        if (! empty($payload['is_webhook'])) {
+            if (empty($payload['razorpay_payment_id'])) {
+                throw new PaymentException('Missing Razorpay field: razorpay_payment_id.');
+            }
+
+            try {
+                $payment = $this->api()->payment->fetch($payload['razorpay_payment_id'])->toArray();
+            } catch (Error $error) {
+                throw new PaymentException($error->getMessage(), (int) $error->getCode(), $error);
+            }
+
+            $orderData = [];
+            if (! empty($payment['order_id'])) {
+                try {
+                    $orderData = $this->api()->order->fetch($payment['order_id'])->toArray();
+                } catch (Error $error) {
+                    // Not optional: the order's notes carry the invoice_id the caller checks the
+                    // payment against. Throw (like every other gateway call) so the webhook errors
+                    // and Razorpay retries, rather than the payment being silently refused.
+                    throw new PaymentException($error->getMessage(), (int) $error->getCode(), $error);
+                }
+            }
+
+            $rawData = $orderData ?: $payment;
+            if (! empty($payment['notes']) && empty($rawData['notes'])) {
+                $rawData['notes'] = $payment['notes'];
+            }
+            if (! empty($payment['amount']) && empty($rawData['amount_paid'])) {
+                $rawData['amount_paid'] = $payment['amount'];
+            }
+            if (! empty($payment['currency']) && empty($rawData['currency'])) {
+                $rawData['currency'] = $payment['currency'];
+            }
+
+            return new PaymentResult(
+                paid: ($payment['status'] ?? '') === 'captured',
+                gateway: $this->name(),
+                reference: $payload['razorpay_payment_id'],
+                status: (string) ($payment['status'] ?? 'captured'),
+                raw: $rawData,
+            );
+        }
+
         if (empty($payload['razorpay_payment_id']) || empty($payload['razorpay_signature'])) {
             throw new PaymentException('Missing Razorpay field: razorpay_payment_id or razorpay_signature.');
         }
@@ -314,11 +357,17 @@ final readonly class RazorpayGateway implements PaymentGateway, SubscriptionGate
             $api = $this->api();
             $current = $api->subscription->fetch($subscriptionId);
             $currentPlan = $api->plan->fetch($current['plan_id']);
-            $interval = (int) round($request->intervalDays / 30);
+            $period = (string) ($currentPlan->period ?? ($request->intervalDays >= 300 ? 'yearly' : 'monthly'));
+            if ($period === 'yearly') {
+                $interval = max(1, (int) round($request->intervalDays / 365));
+            } else {
+                $interval = max(1, (int) round($request->intervalDays / 30));
+            }
 
             // Already billing the requested price/interval — nothing to do.
             if ((int) $currentPlan->item->amount === $request->amountMinor
                 && $currentPlan->item->currency === $request->currency
+                && (string) $currentPlan->period === $period
                 && (int) $currentPlan->interval === $interval) {
                 return new SubscriptionResult($this->name(), $current['id'], (string) $current['status'], $current->toArray());
             }
@@ -329,7 +378,7 @@ final readonly class RazorpayGateway implements PaymentGateway, SubscriptionGate
             }
 
             $plan = $api->plan->create([
-                'period' => 'monthly',
+                'period' => $period,
                 'interval' => $interval,
                 'item' => [
                     'name' => $request->planName,

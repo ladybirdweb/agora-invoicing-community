@@ -20,6 +20,7 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Services\Payment\ProcessingFee;
+use App\Services\Payment\AutoRenewalActivationService;
 use App\Services\Payment\SubscriptionService;
 use App\User;
 use DB;
@@ -27,6 +28,7 @@ use Exception;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\Date;
 use Logger;
+use Throwable;
 
 class SubscriptionController extends Controller
 {
@@ -194,7 +196,10 @@ class SubscriptionController extends Controller
             $cost = ProcessingFee::addTo($cost, $paymentMethod);
 
             if ($cost == 0) {
-                $subscription->update(['is_subscribed' => 0]);
+                // Nothing to charge: switch auto-renewal off properly — cancel any live gateway
+                // subscription (still billing the old price) and drop the Auto_renewal row, or a
+                // later re-enable reports success while doing nothing.
+                resolve(AutoRenewalActivationService::class)->deactivate($subscription, cancelAtGateway: true);
 
                 return;
             }
@@ -389,6 +394,10 @@ class SubscriptionController extends Controller
 
     private function handleStripeSubscription(mixed $stripeDetails, Product $product, float|int $unitCost, string $currency, Plan $plan, Subscription $subscription, Invoice $invoice, Order $order, User $user, float|int $cost): void
     {
+        // Charged now, on purpose: the renewal is due and the 'active' branch below marks this
+        // invoice paid and extends the dates straight away. A future start (billing_cycle_anchor)
+        // charged nothing now — a free renewal — then the first real charge at that date reached
+        // the webhook as a normal cycle and extended the dates a second time.
         $response = new SettingsController()->handleStripeAutoPay($stripeDetails, $product, $unitCost, $currency, $plan);
 
         // The subscribe_id/autoRenew_status write is guarded on autoRenew_status
@@ -401,9 +410,20 @@ class SubscriptionController extends Controller
         // recorded unconditionally — the customer's money must never go
         // unaccounted for just because auto-renewal itself got disabled mid-flight.
         if ($response->status === 'active') {
-            Subscription::where('id', $subscription->id)
+            $tracked = Subscription::where('id', $subscription->id)
                 ->where('autoRenew_status', '1')
                 ->update(['subscribe_id' => $response->id, 'autoRenew_status' => '3']);
+
+            // Auto-renewal was switched off (or moved to Razorpay) while Stripe was creating
+            // this — nothing stores its id, so nothing could ever cancel it and it would keep
+            // charging every cycle. Cancel it now; this cycle's charge is still recorded below.
+            if (! $tracked && $response->id) {
+                try {
+                    resolve(SubscriptionService::class)->cancelSubscription('Stripe', $response->id);
+                } catch (Throwable $throwable) {
+                    Logger::exception($throwable);
+                }
+            }
 
             // Fulfill the first charge here — Stripe fires invoice.payment_succeeded
             // with billing_reason=subscription_create which the webhook ignores.
@@ -416,8 +436,8 @@ class SubscriptionController extends Controller
                 $this->PostSubscriptionHandle->PaymentSuccessMailtoAdmin($invoice, $cost, $user, $product->name, order: $order, payment: 'stripe');
             }
         } elseif ($response->status === 'incomplete') {
-            $stripeInvoice = \Stripe\Invoice::retrieve($response->raw['latest_invoice'] ?? null);
-            $url = $stripeInvoice->hosted_invoice_url;
+            // The gateway expands latest_invoice, so its pay link is already in the result.
+            $url = $response->raw['latest_invoice']['hosted_invoice_url'] ?? null;
 
             if ($url && emailSendingStatus()) {
                 $this->sendPendingAuthMail($subscription, $product, $cost, $currency, $url, $user);

@@ -258,22 +258,28 @@ class CloudExtraActivities extends Controller
             $agentAction = $desiredAgents > $oldAgents ? 'increase' : 'decrease';
             $delta = abs($desiredAgents - $oldAgents);
 
+            // The order's own subscription — never an id from the request: subId was trusted
+            // as-is, so another subscription's id linked this invoice to its owner.
+            $sub = Subscription::where('order_id', $order->id)->first();
+            if (! $sub) {
+                return errorResponse(trans('message.something_went_wrong'));
+            }
+
             $items = $this->getThePaymentCalculation($delta, $order->serial_key, $order->id, agentAction: $agentAction);
-            $invoice = new RenewController()->renewBySubId($request->subId, $items['planId'], '', $items['price'], '', isAgentIncrease: false, agents: $desiredAgents);
+            $invoice = new RenewController()->renewBySubId($sub->id, $items['planId'], '', $items['price'], '', isAgentIncrease: false, agents: $desiredAgents);
             if (! $invoice instanceof InvoiceItem) {
                 return errorResponse(trans('message.something_went_wrong'));
             }
 
             // Determine if subscription is expired — if so, renewal date extension is needed
-            $sub = Subscription::where('order_id', $order->id)->first();
-            $isExpired = $sub && Date::now() >= Date::parse($sub->ends_at);
+            $isExpired = Date::now() >= Date::parse($sub->ends_at);
 
             $dbInvoice = Invoice::find($invoice->invoice_id);
             if ($dbInvoice) {
                 $dbInvoice->update([
                     'metadata' => [
                         'type' => 'agent_alteration',
-                        'sub_id' => $request->subId,
+                        'sub_id' => $sub->id,
                         'new_agents' => $desiredAgents,
                         'order_id' => $order->id,
                         'installation_path' => $installationPath,
@@ -793,9 +799,13 @@ class CloudExtraActivities extends Controller
             return;
         }
 
+        // The order's customer — never the logged-in user: this also runs when an admin records
+        // the payment (the credit landed on the admin's account) and from webhooks (no user at all).
+        $client = User::findOrFail((int) Order::whereKey($terminatedOrderId)->value('client'));
+
         app(\App\Services\Payment\CreditBalanceService::class)->grant(
-            $this->authUser()->id,
-            $currency ?? getCurrencyForClient($this->authUser()->country),
+            $client->id,
+            $currency ?? getCurrencyForClient((string) $client->country),
             $discount,
             CreditTransaction::TYPE_DOWNGRADE_PRORATION,
             note: sprintf('Plan downgrade: terminated order #%d, new order #%d', $terminatedOrderId, $newActiveOrderId),

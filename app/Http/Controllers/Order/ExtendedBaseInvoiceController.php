@@ -7,6 +7,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Services\Payment\CreditBalanceService;
+use App\Services\Payment\PostPaymentService;
 use App\Services\Payment\UnappliedPaymentService;
 use App\User;
 use DB;
@@ -188,9 +189,11 @@ class ExtendedBaseInvoiceController extends Controller
                         throw new Exception(__('message.payment_currency_mismatch'));
                     }
 
-                    // Checked against what is owed right now, inside the loop,
-                    // so the same invoice listed twice can't be overpaid.
-                    if (round($amount, 2) > round($invoice->outstanding(), 2)) {
+                    // Checked against what is still owed AFTER what this payment already
+                    // allocated to the same invoice above — allocations are only saved after the
+                    // loop, so outstanding() alone let one invoice listed twice be overpaid.
+                    $alreadyAllocated = (float) collect($allocations)->where('invoice.id', $invoice->id)->sum('amount');
+                    if (round($amount, 2) > round($invoice->outstanding() - $alreadyAllocated, 2)) {
                         throw new Exception(__('message.amount_exceeds_invoice_due'));
                     }
 
@@ -220,8 +223,10 @@ class ExtendedBaseInvoiceController extends Controller
                 ]);
 
                 foreach ($allocations as $allocation) {
+                    $wasPaid = $this->isPaid($allocation['invoice']);
                     $payment->invoices()->attach($allocation['invoice']->id, ['amount' => $allocation['amount']]);
                     $allocation['invoice']->refreshStatus();
+                    $this->fulfilIfJustPaid($allocation['invoice'], $wasPaid, $payment_method);
                 }
             });
         } catch (Exception $exception) {
@@ -282,6 +287,7 @@ class ExtendedBaseInvoiceController extends Controller
                         throw new Exception(__('message.amount_exceeds_invoice_due'));
                     }
 
+                    $wasPaid = $this->isPaid($invoice);
                     app(UnappliedPaymentService::class)->apply(
                         $clientid,
                         (string) $payment->currency,
@@ -294,6 +300,7 @@ class ExtendedBaseInvoiceController extends Controller
 
                     $invoice->refreshStatus();
                     $applied += $amount;
+                    $this->fulfilIfJustPaid($invoice, $wasPaid, (string) $payment->payment_method);
                 }
 
                 if ($applied <= 0) {
@@ -423,6 +430,23 @@ class ExtendedBaseInvoiceController extends Controller
 
             // Re-throw so the calling action returns a proper JSON error response.
             throw $exception;
+        }
+    }
+
+    /** Read from the database, not the model: the same invoice can be listed twice in one payment. */
+    private function isPaid(Invoice $invoice): bool
+    {
+        return strtolower((string) Invoice::whereKey($invoice->id)->value('status')) === 'success';
+    }
+
+    /**
+     * Fulfil (execute the order, extend a renewal, …) only when THIS allocation turned the invoice
+     * paid. Already paid before — or listed twice — would fulfil it again: a second extension.
+     */
+    private function fulfilIfJustPaid(Invoice $invoice, bool $wasPaid, string $paymentMethod): void
+    {
+        if (! $wasPaid && strtolower((string) $invoice->status) === 'success') {
+            app(PostPaymentService::class)->handle($invoice, $paymentMethod);
         }
     }
 }

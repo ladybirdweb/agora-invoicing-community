@@ -75,10 +75,22 @@ class WebhookDispatcher
             /** @var Invoice|null $invoice */
             $invoice = Invoice::find($invoiceId);
             if ($invoice) {
-                resolve(InvoicePaymentService::class)->confirm($invoice, 'Stripe', [
-                    'payment_intent' => $object['payment_intent'] ?? $object['id'] ?? null,
+                $rawId = (string) ($object['id'] ?? '');
+                $paymentIntentId = $object['payment_intent'] ?? null;
+                $sessionId = null;
+                if (! $paymentIntentId) {
+                    if (str_starts_with($rawId, 'cs_')) {
+                        $sessionId = $rawId;
+                    } elseif (str_starts_with($rawId, 'pi_')) {
+                        $paymentIntentId = $rawId;
+                    }
+                }
+
+                resolve(InvoicePaymentService::class)->confirm($invoice, 'Stripe', array_filter([
+                    'payment_intent' => $paymentIntentId,
+                    'session_id' => $sessionId,
                     'credit_applied' => $object['metadata']['credit_applied'] ?? 0,
-                ]);
+                ], static fn ($v) => $v !== null));
             }
 
             return;
@@ -88,11 +100,8 @@ class WebhookDispatcher
         /** @var OpenPaymentOrder|null $stripeOrder */
         $stripeOrder = $orderId ? OpenPaymentOrder::find($orderId) : null;
         if ($stripeOrder && ! $stripeOrder->isPaid()) {
-            $stripeOrder->update([
-                'payment_status' => 'completed',
-                'gateway_transaction_id' => $object['payment_intent'] ?? $object['id'] ?? null,
-                'paid_at' => now(),
-            ]);
+            $transactionId = (string) ($object['payment_intent'] ?? $object['id'] ?? '');
+            resolve(OpenPaymentService::class)->markPaid($stripeOrder, $transactionId);
         }
     }
 
@@ -106,6 +115,7 @@ class WebhookDispatcher
         $failStripeOrder = $orderId ? OpenPaymentOrder::find($orderId) : null;
         if ($failStripeOrder && ! $failStripeOrder->isPaid()) {
             $failStripeOrder->update(['payment_status' => 'failed']);
+            resolve(OpenPaymentService::class)->notifyFailure($failStripeOrder);
         }
     }
 
@@ -125,8 +135,8 @@ class WebhookDispatcher
             if ($invoice2 && $type === 'payment.captured') {
                 resolve(InvoicePaymentService::class)->confirm($invoice2, 'Razorpay', [
                     'razorpay_payment_id' => $payment['id'] ?? null,
-                    'credit_applied' => $payment['notes']['credit_applied'] ?? 0,
-                ]);
+                    'razorpay_order_id' => $payment['order_id'] ?? null,
+                ], verifiedWebhook: true);
             }
 
             return;
@@ -137,13 +147,10 @@ class WebhookDispatcher
         $rzpOrder = $orderId ? OpenPaymentOrder::find($orderId) : null;
         if ($rzpOrder) {
             if ($type === 'payment.captured' && ! $rzpOrder->isPaid()) {
-                $rzpOrder->update([
-                    'payment_status' => 'completed',
-                    'gateway_transaction_id' => $payment['id'] ?? null,
-                    'paid_at' => now(),
-                ]);
+                resolve(OpenPaymentService::class)->markPaid($rzpOrder, (string) ($payment['id'] ?? ''));
             } elseif ($type === 'payment.failed' && ! $rzpOrder->isPaid()) {
                 $rzpOrder->update(['payment_status' => 'failed']);
+                resolve(OpenPaymentService::class)->notifyFailure($rzpOrder);
             }
         }
     }

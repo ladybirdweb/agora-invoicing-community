@@ -239,4 +239,66 @@ class PromotionControllerTest extends DBTestCase
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
     }
+
+    public function test_check_number_of_uses_enforces_single_use_and_multi_use_limits(): void
+    {
+        $controller = resolve(\App\Http\Controllers\Payment\PromotionController::class);
+        $type = PromotionType::first() ?? PromotionType::create(['name' => 'Percent']);
+
+        // Single-use coupon
+        $codeSingle = 'SINGLE'.uniqid();
+        Promotion::create([
+            'code' => $codeSingle,
+            'type' => $type->id,
+            'value' => '10%',
+            'uses' => 1,
+            'start' => '2025-01-01',
+            'expiry' => '2030-12-31',
+        ]);
+
+        // When unused, returns 'success'
+        $this->assertSame('success', $controller->checkNumberOfUses($codeSingle));
+
+        // Create an invoice with this coupon code
+        $client = \App\User::factory()->create(['role' => 'user']);
+        \App\Model\Order\Invoice::factory()->create([
+            'user_id' => $client->id,
+            'coupon_code' => $codeSingle,
+            'grand_total' => 50.0,
+            'status' => 'pending',
+        ]);
+
+        // Now that it has been used once, single-use coupon must return 'fails'
+        $this->assertSame('fails', $controller->checkNumberOfUses($codeSingle));
+    }
+
+    public function test_check_expiry_validates_dates_accurately(): void
+    {
+        $controller = resolve(\App\Http\Controllers\Payment\PromotionController::class);
+        $type = PromotionType::first() ?? PromotionType::create(['name' => 'Percent']);
+
+        $codeActive = 'ACTIVE'.uniqid();
+        Promotion::create([
+            'code' => $codeActive,
+            'type' => $type->id,
+            'value' => '10%',
+            'uses' => 10,
+            'start' => '2020-01-01 00:00:00',
+            'expiry' => '2035-12-31 23:59:59',
+        ]);
+
+        $this->assertSame('success', $controller->checkExpiry($codeActive));
+
+        $codeExpired = 'EXPIRED'.uniqid();
+        Promotion::create([
+            'code' => $codeExpired,
+            'type' => $type->id,
+            'value' => '10%',
+            'uses' => 10,
+            'start' => '2020-01-01 00:00:00',
+            'expiry' => '2021-01-01 00:00:00',
+        ]);
+
+        $this->assertNotSame('success', $controller->checkExpiry($codeExpired));
+    }
 }

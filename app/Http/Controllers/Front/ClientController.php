@@ -842,7 +842,7 @@ class ClientController extends BaseClientController
                 'id' => $payment->id,
                 'invoice_id' => $payment->invoices->first()?->id,
                 'invoice_number' => $payment->invoices->pluck('number')->implode(', ') ?: '—',
-                'amount' => currencyFormat($payment->amount, $payment->currency ?: ($payment->invoices->first()->currency ?? '')),
+                'amount' => currencyFormat($payment->amount, $payment->currency ?: ($payment->invoices->first() ? $payment->invoices->first()->currency : '')),
                 'payment_method' => $payment->payment_method,
                 'payment_status' => $payment->payment_status,
                 'created_at' => $payment->created_at,

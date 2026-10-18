@@ -73,7 +73,10 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
-        $schedule->command('renewal:cron')->everyFiveMinutes();
+        // One run at a time: a run outlasting 5 minutes overlapped the next, and both created a
+        // Stripe subscription for the same renewal (two live subscriptions, both charging). The
+        // lock (database cache_locks) expires after 60 minutes if a run dies mid-way.
+        $schedule->command('renewal:cron')->everyFiveMinutes()->withoutOverlapping(60)->onOneServer();
         $schedule->command('app:failed-message-delivery')->hourly();
         $schedule->command('seo:generate-files')->hourly();
         $this->execute($schedule, 'subsExpirymail');

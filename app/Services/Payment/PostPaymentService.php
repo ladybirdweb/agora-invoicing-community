@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Auto_renewal;
 use App\Events\OrderPlacedEvent;
 use App\Http\Controllers\Order\InvoiceController;
 use App\Http\Controllers\Order\OrderController;
@@ -70,7 +71,10 @@ class PostPaymentService
 
     private function clearCart(Invoice $invoice): void
     {
-        $cart = Cart::where('user_id', $invoice->user_id)->first();
+        // Only the cart that became THIS invoice. Paying anything else (a renewal, an agent
+        // change, a webhook renewal in the background) emptied a cart the customer was still
+        // building.
+        $cart = Cart::where('user_id', $invoice->user_id)->where('invoice_id', $invoice->id)->first();
         if ($cart) {
             $cart->items()->delete();
             $cart->update(['coupon_code' => null, 'coupon_discount' => 0, 'invoice_id' => null]);
@@ -288,13 +292,15 @@ class PostPaymentService
                     'autoRenew_status' => $oldSub->autoRenew_status,
                     'rzp_subscription' => $oldSub->rzp_subscription,
                 ]);
+                Auto_renewal::where('order_id', $terminatedOrder->id)->update(['order_id' => $newActiveOrderId]);
                 $this->updateSubscriptionPriceIfNeeded($newActiveOrderId, $invoice); // @phpstan-ignore argument.type
-            } elseif ($oldSub?->is_subscribed === '1') { // @phpstan-ignore identical.alwaysFalse
+            } elseif ($oldSub && (int) $oldSub->is_subscribed === 1) {
                 Subscription::where('order_id', $newActiveOrderId)->update([
                     'is_subscribed' => $oldSub->is_subscribed,
                     'autoRenew_status' => $oldSub->autoRenew_status,
                     'rzp_subscription' => $oldSub->rzp_subscription,
                 ]);
+                Auto_renewal::where('order_id', $terminatedOrder->id)->update(['order_id' => $newActiveOrderId]);
             }
 
             // Auto-renewal now lives on the new order only. Left on the terminated one too, both
@@ -364,23 +370,25 @@ class PostPaymentService
         // The gateway driver fetches the live subscription, skips the update when
         // the price/interval already matches or the subscription is inactive, and
         // (Stripe) cancels + flags raw['cancelled'] if the change deactivates it.
-        $result = resolve(SubscriptionService::class)->updateSubscriptionPrice(
-            $gateway,
-            $subscription->subscribe_id,
-            new SubscriptionRequest(
-                amountMinor: $renewPrice,
-                currency: $invoice->currency,
-                intervalDays: (int) $plan->days,
-                planName: $product->name,
-            )
-        );
+        try {
+            $result = resolve(SubscriptionService::class)->updateSubscriptionPrice(
+                $gateway,
+                $subscription->subscribe_id,
+                new SubscriptionRequest(
+                    amountMinor: $renewPrice,
+                    currency: $invoice->currency,
+                    intervalDays: (int) $plan->days,
+                    planName: $product->name,
+                )
+            );
 
-        if (($result->raw['cancelled'] ?? false) === true) {
-            Subscription::where('id', $subscription->id)->update([
-                'is_subscribed' => '0',
-                'autoRenew_status' => '0',
-                'subscribe_id' => null,
-            ]);
+            if (($result->raw['cancelled'] ?? false) === true) {
+                // Already cancelled at Stripe — reset locally the standard way (incl. the
+                // Auto_renewal row, so a later re-enable isn't silently ignored).
+                $this->autoRenewal->deactivate($subscription, cancelAtGateway: false);
+            }
+        } catch (Throwable $e) {
+            Logger::exception($e);
         }
     }
 }

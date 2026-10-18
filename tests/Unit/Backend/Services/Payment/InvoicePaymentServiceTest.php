@@ -519,4 +519,26 @@ class InvoicePaymentServiceTest extends DBTestCase
         $this->refusesWith($invoice, $this->captured($invoice, minor: 5000), ['credit_applied' => 50]);
         $this->assertSame(50.0, $this->service->availableCredit($user->id, 'USD'));
     }
+
+    // ── The gateway's webhook mode (no signature check) can't be switched on by request data ──
+
+    public function test_request_data_cannot_switch_on_webhook_mode(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->payments->shouldReceive('capture')->once()
+            ->withArgs(fn ($gateway, $payload) => $payload['is_webhook'] === false)
+            ->andReturn(new PaymentResult(paid: false, gateway: 'Razorpay'));
+
+        $this->assertFalse($this->service->confirm($invoice, 'Razorpay', ['razorpay_payment_id' => 'pay_x', 'is_webhook' => true]));
+    }
+
+    public function test_only_the_verified_webhook_runs_in_webhook_mode(): void
+    {
+        $invoice = $this->pendingInvoice(100.0);
+        $this->payments->shouldReceive('capture')->once()
+            ->withArgs(fn ($gateway, $payload) => $payload['is_webhook'] === true)
+            ->andReturn(new PaymentResult(paid: false, gateway: 'Razorpay'));
+
+        $this->assertFalse($this->service->confirm($invoice, 'Razorpay', ['razorpay_payment_id' => 'pay_x'], verifiedWebhook: true));
+    }
 }

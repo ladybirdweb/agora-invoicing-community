@@ -41,6 +41,7 @@ class KernelTest extends DBTestCase
         $this->schedule->shouldReceive('yearly')->andReturnSelf();
         $this->schedule->shouldReceive('name')->andReturnSelf();
         $this->schedule->shouldReceive('withoutOverlapping')->andReturnSelf();
+        $this->schedule->shouldReceive('onOneServer')->andReturnSelf();
     }
 
     // -------------------------------------------------------------------------
@@ -309,5 +310,16 @@ class KernelTest extends DBTestCase
 
         $this->schedule->shouldHaveReceived('command')->with('seo:generate-files')->once();
         $this->schedule->shouldHaveReceived('hourly')->atLeast()->once();
+    }
+
+    public function test_the_renewal_job_never_overlaps_itself(): void
+    {
+        // Two overlapping runs created two Stripe subscriptions for one renewal.
+        $event = collect(app(\Illuminate\Console\Scheduling\Schedule::class)->events())
+            ->first(fn ($e) => str_contains((string) $e->command, 'renewal:cron'));
+
+        $this->assertNotNull($event);
+        $this->assertTrue($event->withoutOverlapping);
+        $this->assertTrue($event->onOneServer);
     }
 }

@@ -86,6 +86,9 @@ class OpenPaymentService
             return true;
         }
 
+        // Browser callback: never let request data switch the gateway into webhook mode
+        // (which skips the signature check — see InvoicePaymentService::confirm).
+        $payload['is_webhook'] = false;
         $result = $this->payments->capture($order->gateway, $payload);
 
         // A genuine gateway payment is not necessarily one for THIS order: without this,
@@ -179,7 +182,7 @@ class OpenPaymentService
     }
 
     /** Mark an order paid, recording the gateway's transaction reference, and send emails. */
-    private function markPaid(OpenPaymentOrder $order, ?string $gatewayReference): void
+    public function markPaid(OpenPaymentOrder $order, ?string $gatewayReference): void
     {
         $order->update([
             'payment_status' => 'completed',
@@ -201,6 +204,10 @@ class OpenPaymentService
     /** Send success email to client + admin notification. */
     private function sendSuccessEmails(OpenPaymentOrder $order): void
     {
+        if (! emailSendingStatus()) {
+            return;
+        }
+
         $setting = Setting::find(1);
         $fromEmail = $setting->email ?? config('mail.from.address');
         $adminEmail = $setting->company_email ?? $fromEmail;
@@ -258,6 +265,10 @@ class OpenPaymentService
     /** Send payment failure emails to client and admin. */
     private function sendFailureEmail(OpenPaymentOrder $order): void
     {
+        if (! emailSendingStatus()) {
+            return;
+        }
+
         $setting = Setting::find(1);
         $fromEmail = $setting->email ?? config('mail.from.address');
         $adminEmail = $setting->company_email ?? $fromEmail;

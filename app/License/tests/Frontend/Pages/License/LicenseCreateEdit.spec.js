@@ -79,7 +79,7 @@ describe('LicenseCreateEdit.vue', () => {
         axiosMock.onGet(/\/api\/admin\/license\//).reply(200, {
             data: {
                 license: {
-                    id: 5, license_code: 'LIC-001', license_status: 1, license_require_domain: 1,
+                    id: 5, license_code: 'LIC-001', license_status: 1, license_require_domain: true, // the model's boolean cast
                     license_ip: '1.2.3.4', license_domain: 'example.com', license_limit: 10, // NOSONAR
                     license_order_number: 100, license_comments: 'test', api_key_secret: null,
                     license_expire_date: null, license_updates_date: null, license_support_date: null,
@@ -96,6 +96,8 @@ describe('LicenseCreateEdit.vue', () => {
         })
         await flushPromises()
         expect(wrapper.vm.license_code).toBe('LIC-001')
+        // The radio options are 1/0 — true would match neither and show "Yes" unselected.
+        expect(wrapper.vm.license_require_domain).toBe(1)
         expect(wrapper.vm.isEdit).toBe(true)
         expect(wrapper.vm.title).toBe('edit_license')
     })

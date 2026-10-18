@@ -271,6 +271,7 @@
             <h4>{{ __('message.cloud_data_centers') }}</h4>
         </template>
         <template #fields>
+            <AppAlert :componentName="DC_COMPONENT" />
             <DynamicSelect
                 name="cloud_countries"
                 :label="__('message.country')"
@@ -319,6 +320,7 @@ import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
 
 const COMPONENT = 'cloud-details'
+const DC_COMPONENT = 'cloud-data-center'
 const baseUrl = useBaseUrl()
 const { formatDate } = useDateTime()
 
@@ -522,7 +524,7 @@ async function saveDataCenter() {
             addMapMarkers()
         }
         closeDCModal()
-    } catch (e) { errorHandler(e, COMPONENT, { setErrors }) }
+    } catch (e) { errorHandler(e, DC_COMPONENT, { setErrors }) }
     finally { savingDC.value = false }
 }
 

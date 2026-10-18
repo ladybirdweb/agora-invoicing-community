@@ -74,6 +74,18 @@ class CartItem extends Model
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
+    /**
+     * False once the product is deleted, or its plan or this currency's price is gone —
+     * priceFor() would then charge 0, so such a line must leave the cart.
+     */
+    public function isAvailable(string $currency): bool
+    {
+        return $this->product !== null
+            && $this->plan !== null
+            && (int) $this->plan->product === (int) $this->product_id
+            && $this->plan->planPrice->contains('currency', $currency);
+    }
+
     public function priceFor(string $currency): float
     {
         $planPrice = $this->plan?->planPrice->firstWhere('currency', $currency);

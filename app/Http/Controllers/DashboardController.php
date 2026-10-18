@@ -431,6 +431,8 @@ class DashboardController extends Controller
                 'grand_total',
                 'currency',
                 'status',
+                'is_renewed',
+                'metadata',
             ]);
 
         return $invoices->map(function ($invoice): array {
@@ -444,6 +446,7 @@ class DashboardController extends Controller
                 'grand_total' => currencyFormat($invoice->grand_total, $invoice->currency),
                 'currency' => $invoice->currency,
                 'status' => getStatusLabel($invoice->status),
+                'type' => $invoice->type,
                 'paid_amount' => currencyFormat($paidAmount, $invoice->currency),
                 'balance' => currencyFormat($balance, $invoice->currency),
                 'user' => $invoice->user,

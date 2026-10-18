@@ -585,7 +585,7 @@ class ClientController extends AdvanceSearchController
                             ->orWhere('currency', 'like', sprintf('%%%s%%', $search));
                     });
                 })
-                ->orderBy($sortField, $sortOrder)
+                ->orderByField($sortField, $sortOrder)
                 ->paginate($limit, ['*'], 'page', $page);
 
             $invoices->getCollection()->transform(function ($invoice): array {
@@ -598,6 +598,7 @@ class ClientController extends AdvanceSearchController
                     'balance' => $invoice->outstanding(),
                     'currency' => $invoice->currency,
                     'status' => $invoice->status,
+                    'type' => $invoice->type,
                     // Same rule as InvoiceController::executeInvoice(): only an
                     // unfulfilled purchase can be executed.
                     'is_executed' => $invoice->order_relation_count > 0 || $invoice->type !== 'purchase',

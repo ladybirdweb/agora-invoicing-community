@@ -1,3 +1,6 @@
+import { h } from 'vue'
+import { __ } from '@/plugins/i18n'
+
 /**
  * makeRequestAdapter — factory for the kebab-key DataTable requestAdapter.
  *
@@ -18,3 +21,18 @@ export function makeRequestAdapter(defaultSort = 'created_at', filtersRef = null
     }
 }
 
+
+// bg-info/bg-warning need text-dark to stay readable in Bootstrap 5.
+const INVOICE_TYPE_BADGE = {
+    purchase:          'badge bg-primary',
+    renewal:           'badge bg-info text-dark',
+    upgrade_downgrade: 'badge bg-warning text-dark',
+    agent_alteration:  'badge bg-secondary',
+}
+
+/** Type badge (purchase / renewal / …) for an invoice's `type` — same look on every invoice list. */
+export function invoiceTypeBadge(type) {
+    if (!type) return h('span', '—')
+
+    return h('span', { class: INVOICE_TYPE_BADGE[type] ?? 'badge bg-secondary' }, __('message.invoice_type_' + type))
+}

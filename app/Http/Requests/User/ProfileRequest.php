@@ -43,8 +43,8 @@ class ProfileRequest extends Request
                 'email' => ['required'],
                 'mobile' => ['required', new PhoneNumber($this->mobile_country_iso)],
                 'address' => ['required'],
-                'user_name' => 'required|unique:users,user_name,'.$userid.'|unique:settings,email|unique:settings,company_email',
-                'timezone_id' => ['required'],
+                'user_name' => 'required|unique:users,user_name,'.$userid.'|unique:users,email,'.$userid.'|unique:settings,email|unique:settings,company_email',
+                'timezone_id' => ['required', 'exists:timezone,id'],
                 'profile_pic' => ['sometimes', 'mimes:jpeg,png,jpg', 'max:2048'],
                 'country' => ['required'],
                 'state' => [Rule::requiredIf(fn () => State::where('country_code', $this->country)->exists())],
@@ -61,12 +61,12 @@ class ProfileRequest extends Request
                 'first_name' => ['required', 'min:3', 'max:30'],
                 'last_name' => ['required', 'max:30'],
                 'mobile' => ['required', new PhoneNumber($this->mobile_country_iso)],
-                'email' => 'required|email|unique:users,email,'.$userid,
+                'email' => 'required|email|unique:users,email,'.$userid.'|unique:users,user_name,'.$userid,
                 'company' => ['required', 'max:50'],
                 'address' => ['required'],
                 'country' => ['required', 'exists:countries,country_code_char2'],
                 'profile_pic' => ['sometimes', 'mimes:jpeg,png,jpg', 'max:2048'],
-                'timezone_id' => ['required'],
+                'timezone_id' => ['required', 'exists:timezone,id'],
 
             ];
         }
@@ -87,7 +87,7 @@ class ProfileRequest extends Request
             return [
                 'first_name' => ['required', 'min:2', 'max:30'],
                 'last_name' => ['required', 'max:30'],
-                'email' => ['required', 'email', 'unique:users', 'unique:settings,email', 'unique:settings,company_email'],
+                'email' => ['required', 'email', 'unique:users', 'unique:users,user_name', 'unique:settings,email', 'unique:settings,company_email'],
                 'company' => ['required', 'max:50'],
                 'mobile' => ['required', 'unique:users', new PhoneNumber($this->mobile_country_iso)],
                 'address' => ['required', 'string', 'regex:/^[^<>]*$/'],
@@ -133,6 +133,7 @@ class ProfileRequest extends Request
             'user_name.unique' => __('validation.profile_form.user_name.unique'),
 
             'timezone_id.required' => __('validation.profile_form.timezone_id.required'),
+            'timezone_id.exists' => __('validation.profile_form.timezone_id.required'),
 
             'country.required' => __('validation.profile_form.country.required'),
             'country.exists' => __('validation.profile_form.country.exists'),

@@ -112,6 +112,19 @@ describe('ChangePassword.vue', () => {
         expect(errorHandler).not.toHaveBeenCalled()
     })
 
+    it('keeps the requirements checklist visible after a failed save, without focus', async () => {
+        expect(wrapper.find('ul[aria-live="polite"]').exists()).toBe(false)
+
+        axiosMock.onPost('/my-password').reply(422, {
+            errors: { new_password: ['message.password_requirements_not_met'] },
+        })
+
+        await wrapper.find('form').trigger('submit')
+        await flushPromises()
+
+        expect(wrapper.findAll('ul[aria-live="polite"] li')).toHaveLength(5)
+    })
+
     it('submit button is not disabled when not saving', () => {
         const btn = wrapper.find('button[type="submit"]')
         // saving is false by default, so button should not be disabled

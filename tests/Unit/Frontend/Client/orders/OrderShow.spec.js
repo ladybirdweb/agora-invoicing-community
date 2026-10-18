@@ -19,6 +19,7 @@ import OrderShow from '@/pages/client/orders/OrderShow.vue'
 
 const orderFixture = {
     id: 1,
+    can_renew: true,
     number: 'ORD-001',
     order_date: '2025-01-01',
     status: 'Active',
@@ -225,6 +226,11 @@ describe('OrderShow.vue — modal and state helpers', () => {
     it('showAutoRenewTab is true when autorenewal_enabled is true', () => {
         wrapper.vm.order = { ...orderFixture, autorenewal_enabled: true }
         expect(wrapper.vm.showAutoRenewTab).toBe(true)
+    })
+
+    it('showAutoRenewTab is false when nothing on the order expires', () => {
+        wrapper.vm.order = { ...orderFixture, autorenewal_enabled: true, can_renew: false }
+        expect(wrapper.vm.showAutoRenewTab).toBe(false)
     })
 
     // ── Domain modal ─────────────────────────────────────────────────

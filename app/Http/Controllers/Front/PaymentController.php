@@ -68,9 +68,10 @@ class PaymentController extends Controller
                 'currency' => $model->currency,
                 'status' => $model->status,
             ],
-            'items' => $items->map(function ($item) {
+            'items' => $items->map(function ($item) use ($model) {
                 $data = $item->toArray();
                 $data['image'] = Product::find($item->product_id)?->image;
+                $data['subtotal'] = currencyFormat($item->subtotal, $model->currency, includeSymbol: false);
 
                 return $data;
             }),
@@ -161,12 +162,16 @@ class PaymentController extends Controller
     {
         $model = $this->authorizedInvoice($request, $invoice);
 
-        $payment = $model->payments()->latest('payments.created_at')->first();
+        // Credit + gateway is two payments; show both, not only the latest.
+        $paymentMethods = $model->payments()->oldest('payments.created_at')->pluck('payment_method')->unique()->implode(' + ');
+        // This invoice's own line price — the order's price_override is the original purchase
+        // price, so a renewal at a different price showed the wrong amount.
+        $linePrices = $model->invoiceItem()->pluck('subtotal', 'product_id');
         $orderIds = OrderInvoiceRelation::where('invoice_id', $model->id)->pluck('order_id');
         $permissions = resolve(LicensePermissionsController::class);
         $cloudProducts = cloudPopupProducts();
 
-        $orders = Order::whereIn('id', $orderIds)->get()->map(function ($order) use ($permissions, $cloudProducts, $model): array {
+        $orders = Order::whereIn('id', $orderIds)->get()->map(function ($order) use ($permissions, $cloudProducts, $model, $linePrices): array {
             $product = Product::select('id', 'name', 'type')->find($order->product);
 
             $downloadable = false;
@@ -183,9 +188,9 @@ class PaymentController extends Controller
                 'product_id' => $product?->id,
                 'product_name' => $product?->name,
                 'qty' => $order->qty,
-                'price' => currencyFormat($order->price_override, $model->currency, includeSymbol: false),
+                'price' => currencyFormat($linePrices[$order->product] ?? $order->price_override, $model->currency, includeSymbol: false),
                 'downloadable' => $downloadable,
-                'download_url' => $downloadable ? url('product/download/'.$order->product) : null,
+                'download_url' => $downloadable ? url('download/'.$order->id) : null,
             ];
         });
 
@@ -198,7 +203,7 @@ class PaymentController extends Controller
                 'status' => $model->status,
                 'date' => $model->created_at,
             ],
-            'payment_method' => $payment?->payment_method,
+            'payment_method' => $paymentMethods ?: null,
             'orders' => $orders,
         ]);
     }

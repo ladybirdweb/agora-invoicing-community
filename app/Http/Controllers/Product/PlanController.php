@@ -68,6 +68,7 @@ class PlanController extends ExtendedPlanController
         $plans = Plan::with([
             'planPrice:id,plan_id,currency',
             'productRelation:id,name',
+            'periods:id,name',
         ])
             ->when($searchQuery, function ($query, $searchQuery): void {
                 $query->where(function (Builder $q) use ($searchQuery): void {
@@ -89,7 +90,8 @@ class PlanController extends ExtendedPlanController
             'name' => $plan->name,
             'product' => $plan->productRelation?->name,
             'product_id' => $plan->product,
-            'period' => formatDays((int) $plan->days),
+            // The chosen period ("One Time") beats the days, which on a one-time plan are only the updates window.
+            'period' => $plan->periods->first()->name ?? formatDays((int) $plan->days),
             'currencies' => $plan->planPrice->pluck('currency')->toArray(),
             'created_at' => $plan->created_at,
         ]);
@@ -171,6 +173,7 @@ class PlanController extends ExtendedPlanController
             $plan = Plan::with([
                 'planPrice',
                 'productRelation:id,name',
+                'periods:id,name',
             ])->findOrFail($planId);
 
             $firstPrice = $plan->planPrice->first();

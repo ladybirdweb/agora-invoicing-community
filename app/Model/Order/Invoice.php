@@ -6,6 +6,7 @@ use App\BaseModel;
 use App\Model\Product\Subscription;
 use App\Traits\SystemActivityLogsTrait;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Override;
 use Spatie\Activitylog\Models\Activity;
 
@@ -239,6 +241,20 @@ class Invoice extends BaseModel
     public function outstanding(): float
     {
         return max(0, round((float) $this->grand_total - $this->paidTotal(), 2));
+    }
+
+    /**
+     * grand_total is a varchar column, so it is cast to sort by amount, not as text.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeOrderByField(Builder $query, string $field, string $direction): void
+    {
+        $column = $field === 'grand_total'
+            ? DB::raw('CAST(invoices.grand_total AS DECIMAL(20,2))')
+            : $field;
+
+        $query->orderBy($column, $direction);
     }
 
     /** Re-derive the status from what has actually been paid, and persist it. */

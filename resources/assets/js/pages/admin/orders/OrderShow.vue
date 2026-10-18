@@ -68,7 +68,7 @@
                                                         <button class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.copy')" @click="copyLicenseCode">
                                                             <i :class="copied ? 'fas fa-check' : 'fas fa-clipboard'"></i>
                                                         </button>
-                                                        <button class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.reissue_license')" :disabled="saving.reissue" @click="reissueLicense">
+                                                        <button class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.reissue_license')" :disabled="saving.reissue" @click="showReissueModal = true">
                                                             <i class="fas fa-credit-card"></i>
                                                         </button>
                                                     </div>
@@ -249,8 +249,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Auto Renewal card -->
-                                <div class="card card-light">
+                                <!-- Auto Renewal card — hidden when nothing on the order expires (lifetime) -->
+                                <div v-if="canRenew" class="card card-light">
                                     <div class="card-header">
                                         <h4 class="card-title">
                                             {{ __('message.auto_renewal') }}
@@ -264,8 +264,8 @@
                                             </div>
                                             <Switch
                                                 name="auto_renewal"
-                                                :value="autorenewal == 1"
-                                                :disabled="autorenewal != 1 || saving.renewal"
+                                                :value="isSubscribed == 1"
+                                                :disabled="isSubscribed != 1 || saving.renewal"
                                                 :onChange="disableRenewal"
                                             />
                                         </div>
@@ -361,6 +361,21 @@
             </template>
         </AppModal>
 
+        <!-- ── Reissue License confirmation ── -->
+        <AppModal :showModal="showReissueModal" :onClose="() => showReissueModal = false" :showCloseBtn="false">
+            <template #title><h4>{{ __('message.are_you_sure') }}</h4></template>
+            <template #fields>
+                <p class="mb-0">{{ __('message.reissuing_license') }}</p>
+            </template>
+            <template #controls>
+                <action-button action="cancel" @click="showReissueModal = false" />
+                <action-button action="confirm" icon="fas fa-id-card-alt"
+                               :label="__('message.reissue_license')"
+                               :loading="saving.reissue"
+                               @click="reissueLicense" />
+            </template>
+        </AppModal>
+
         <!-- ── Bind license (domain + machine ID) before first download ── -->
         <AppModal :showModal="showBindingModal" :onClose="closeBindingModal" :showCloseBtn="false">
             <template #title><h4>{{ __('message.localized_license') }}</h4></template>
@@ -436,7 +451,7 @@ import Switch from '@/components/Reusable/FormField/Switch.vue'
 import Tooltip from '@/components/Reusable/Tooltip.vue'
 import { useDateTime } from '@/core/composables/useDateTime'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
-import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { makeRequestAdapter, invoiceTypeBadge } from '@/helpers/tableUtils'
 
 const { formatDate } = useDateTime()
 
@@ -457,9 +472,9 @@ const copied         = ref(false)
 const order          = ref(null)
 const licenseDetails = ref(null)
 const permissions    = ref({})
-const autorenewal    = ref(0)
 const isSubscribed   = ref(0)
 const autoRenewState = ref('inactive')
+const canRenew       = ref(false)
 const paymentLog     = ref(null)
 const tab            = ref('installations')
 const pluginLicenses = ref([])
@@ -553,6 +568,8 @@ async function copyLicenseCode(e) {
     setTimeout(() => { copied.value = false }, 2000)
 }
 
+const showReissueModal = ref(false)
+
 async function reissueLicense() {
     saving.reissue = true
     try {
@@ -563,6 +580,7 @@ async function reissueLicense() {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
         saving.reissue = false
+        showReissueModal.value = false
     }
 }
 
@@ -721,9 +739,9 @@ async function reload() {
     order.value          = d.order
     licenseDetails.value = d.license_details
     permissions.value    = d.permissions ?? {}
-    autorenewal.value    = d.autorenewal
     isSubscribed.value   = d.is_subscribed
     autoRenewState.value = d.auto_renew_state
+    canRenew.value       = !!d.can_renew
     paymentLog.value     = d.payment_log
     await loadPluginLicenses()
 }
@@ -784,7 +802,7 @@ const installTableOptions = reactive({
 })
 
 // ── Invoice table ──────────────────────────────────────────────────────────
-const invoiceColumns = ['number', 'products', 'date', 'amount', 'status']
+const invoiceColumns = ['number', 'products', 'date', 'amount', 'status', 'type']
 const invoiceTableOptions = reactive({
     headings: {
         number:   __('message.invoice_no'),
@@ -792,6 +810,7 @@ const invoiceTableOptions = reactive({
         date:     __('message.date'),
         amount:   __('message.total'),
         status:   __('message.status'),
+        type:     __('message.type'),
     },
     columnsClasses: {
         number:   'dt-number',
@@ -799,6 +818,7 @@ const invoiceTableOptions = reactive({
         date:     'dt-date',
         amount:   'dt-amount',
         status:   'dt-status',
+        type:     'dt-status',
     },
     templates: {
         number:   (f, row) => row.number && row.id ? h(RouterLink, { to: '/invoices/' + row.id }, () => row.number) : (row.number || '—'),
@@ -807,6 +827,7 @@ const invoiceTableOptions = reactive({
         status:   (f, row) => h('span', {
             class: row.status?.toLowerCase() === 'success' ? 'badge bg-success' : 'badge bg-secondary',
         }, row.status),
+        type:     (f, row) => invoiceTypeBadge(row.type),
     },
     sortable:   ['date', 'number', 'amount', 'status'],
     filterable: false,

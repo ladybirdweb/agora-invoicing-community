@@ -613,6 +613,34 @@ class InvoiceControllerTest extends DBTestCase
         $this->assertIsFloat($result['discount']);
     }
 
+    /**
+     * The fee is charged only on the gateway's share. When credit paid part, the
+     * invoice showed 2% of the whole total (1,594.32) instead of the 475.59 charged.
+     */
+    public function test_calculate_invoice_fee_is_only_what_the_gateway_charged(): void
+    {
+        $this->getLoggedInUser('admin');
+        $user = \App\User::factory()->create(['email' => 'calc-fee-'.uniqid().'@test.local']);
+        $invoice = \App\Model\Order\Invoice::factory()->create([
+            'user_id' => $user->id, 'grand_total' => 81310.31, 'currency' => 'INR',
+            'status' => 'success', 'processing_fee' => '2%', 'discount' => 0,
+        ]);
+        $item = \App\Model\Order\InvoiceItem::create([
+            'invoice_id' => $invoice->id, 'product_name' => 'Fee item',
+            'regular_price' => 68504, 'quantity' => 1, 'subtotal' => 68504,
+        ]);
+        foreach (['UGST', 'SGST'] as $label) {
+            \App\Model\Order\InvoiceTaxLine::create(['invoice_id' => $invoice->id, 'invoice_item_id' => $item->id,
+                'label' => $label, 'rate' => 9, 'compound' => false, 'amount' => 6165.36]);
+        }
+
+        $result = \App\Http\Controllers\Order\InvoiceController::calculateInvoice($invoice->id);
+
+        $this->assertSame(475.59, $result['processing_fee']);
+        $this->assertSame('Subtotal', $result['subtotal_label']);
+        $this->assertEqualsWithDelta(81310.31, $result['subtotal'] + array_sum($result['tax']) + $result['processing_fee'], 0.01);
+    }
+
     // =========================================================================
     // getInvoice — happy path with Setting configured
     // =========================================================================
@@ -712,6 +740,23 @@ class InvoiceControllerTest extends DBTestCase
     // =========================================================================
     // createInvoiceItemsByAdmin — direct call
     // =========================================================================
+
+    public function test_create_invoice_items_by_admin_keeps_the_fraction_of_a_pro_rata_price(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = \App\Model\Product\Product::factory()->create();
+        $user = \App\User::factory()->create(['email' => 'ci-frac-'.uniqid().'@test.local']);
+        $invoice = \App\Model\Order\Invoice::factory()->create(['user_id' => $user->id, 'currency' => 'INR']);
+
+        $plan = \App\Model\Payment\Plan::factory()->create(['product' => $product->id]);
+
+        $item = (new \App\Http\Controllers\Order\InvoiceController)->createInvoiceItemsByAdmin(
+            $invoice->id, (string) $product->id, 11560.5, 'INR', 1, 3, $plan->id, $user->id, 'VAT', 10.0, 11560.5
+        );
+
+        // intval() stored 11560 while the invoice total charged 11560.50.
+        $this->assertEquals(rounding(11560.5), (float) $item->subtotal);
+    }
 
     public function test_create_invoice_items_by_admin_returns_invoice_item(): void
     {

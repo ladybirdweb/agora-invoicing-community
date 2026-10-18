@@ -86,7 +86,7 @@ import ColumnSelector from '@/components/Reusable/ColumnSelector.vue'
 import BulkActionIcons from '@/components/Reusable/BulkActionIcons.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { useTableSelection } from '@/core/composables/useTableSelection'
-import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { makeRequestAdapter, invoiceTypeBadge } from '@/helpers/tableUtils'
 
 const { formatDate } = useDateTime()
 
@@ -166,14 +166,6 @@ const REPORT_TO_COL = {
 }
 
 // Labels shown in the ColumnSelector dropdown (keyed by report_columns key).
-// bg-info/bg-warning need text-dark to stay readable in Bootstrap 5.
-const TYPE_BADGE = {
-    purchase:          'badge bg-primary',
-    renewal:           'badge bg-info text-dark',
-    upgrade_downgrade: 'badge bg-warning text-dark',
-    agent_alteration:  'badge bg-secondary',
-}
-
 const columnLabels = {
     user_id:     __('message.user'),
     email:       __('message.email'),
@@ -270,11 +262,7 @@ const tableOptions = reactive({
             else if (row.status === 'Partially Paid') badgeClass = 'badge bg-info text-dark'
             return h('span', { class: badgeClass }, row.status)
         },
-        type:         (f, row) => {
-            if (!row.type) return '—'
-            const badgeClass = TYPE_BADGE[row.type] ?? 'badge bg-secondary'
-            return h('span', { class: badgeClass }, __('message.invoice_type_' + row.type))
-        },
+        type:         (f, row) => invoiceTypeBadge(row.type),
         action:       (f, row) => h(InvoiceTableActions, { invoiceId: row.id, isExecuted: !!row.is_executed, isPaid: ['Paid', 'Success'].includes(row.status), showDelete: true }),
     },
 

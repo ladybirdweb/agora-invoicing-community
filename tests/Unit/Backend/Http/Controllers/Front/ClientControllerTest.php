@@ -354,6 +354,82 @@ class ClientControllerTest extends DBTestCase
         $this->assertEquals($this->user->id, $response->json('data.user_id'));
     }
 
+    public function test_version_popup_features_the_latest_release_and_the_latest_official_when_latest_is_an_rc(): void
+    {
+        $product = Product::create(['name' => 'Test Product '.uniqid()]);
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id, 'number' => random_int(100000000, 999999999)]);
+        $upload = fn (string $version, string $type, string $date) => \App\Model\Product\ProductUpload::create([
+            'product_id' => $product->id, 'title' => $version, 'version' => $version, 'file' => 'x.zip',
+            'is_private' => 0, 'release_type' => $type,
+        ])->forceFill(['created_at' => $date])->save();
+        $featured = fn () => collect($this->getJson("/get-versions/{$order->id}?limit=1")->assertStatus(200)->json('data.featured'))
+            ->map(fn ($v) => [$v['version'], $v['release_type']])->all();
+
+        $upload('v1.0.0', 'official', '2026-01-01');
+        $upload('v1.1.0', 'official', '2026-02-01');
+        // Latest is official → only that one.
+        $this->assertSame([['v1.1.0', 'official']], $featured());
+
+        $upload('v1.2.0.RC.1', 'pre_release', '2026-03-01');
+        // Latest is an RC → the RC first, then the latest official alongside it.
+        $this->assertSame([['v1.2.0.RC.1', 'pre_release'], ['v1.1.0', 'official']], $featured());
+
+        // "Latest" = last added (highest id), even if its date is older.
+        $upload('v1.3.0', 'official', '2025-12-01');
+        $this->assertSame([['v1.3.0', 'official']], $featured());
+    }
+
+    public function test_version_list_pages_never_skip_or_repeat_versions_uploaded_at_the_same_time(): void
+    {
+        // QA case: a bulk upload gives several versions one timestamp; sorted by date,
+        // v9.4.3.RC.3 went missing between pages.
+        $product = Product::create(['name' => 'Test Product '.uniqid()]);
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id, 'number' => random_int(100000000, 999999999)]);
+        $versions = ['v9.4.3.RC.1', 'v9.4.3.RC.2', 'v9.4.3.RC.3', 'v9.4.3.RC.4', 'v9.4.3.RC.5'];
+        foreach ($versions as $version) {
+            \App\Model\Product\ProductUpload::create([
+                'product_id' => $product->id, 'title' => $version, 'version' => $version, 'file' => 'x.zip',
+                'is_private' => 0, 'release_type' => 'pre_release',
+            ])->forceFill(['created_at' => '2026-04-20 12:21:34'])->save();
+        }
+
+        $seen = [];
+        foreach ([1, 2, 3] as $page) {
+            $rows = $this->getJson("/get-versions/{$order->id}?limit=2&page={$page}&sort-field=created_at&sort-order=desc")->json('data.data');
+            $seen = array_merge($seen, array_column($rows, 'version'));
+        }
+
+        $this->assertSame(array_reverse($versions), $seen);
+    }
+
+    public function test_renew_popup_vue_shows_one_time_plans_only_to_one_time_orders(): void
+    {
+        $product = Product::create(['name' => 'Test Product '.uniqid()]);
+        $oneTimePeriod = \App\Model\Payment\Period::firstOrCreate(['name' => 'One Time'], ['days' => 365]);
+        $currency = getCurrencyForClient($this->user->country);
+        $makePlan = function (string $name) use ($product, $currency) {
+            $plan = \App\Model\Payment\Plan::create(['name' => $name, 'product' => $product->id, 'days' => 180, 'status' => 1]);
+            \App\Model\Payment\PlanPrice::create(['plan_id' => $plan->id, 'currency' => $currency, 'add_price' => 100, 'renew_price' => 100]);
+
+            return $plan;
+        };
+        $recurring = $makePlan('Half yearly');
+        $oneTime = $makePlan('Lifetime');
+        $oneTime->periods()->attach($oneTimePeriod->id);
+
+        $makeOrder = function ($plan) use ($product) {
+            $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id, 'number' => random_int(100000000, 999999999)]);
+            \App\Model\Product\Subscription::create(['user_id' => $this->user->id, 'plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id]);
+
+            return $order;
+        };
+
+        $planIds = fn ($order) => collect($this->getJson("/renew-popup-details/{$product->id}?order={$order->id}")->json('data.plans'))->pluck('id')->all();
+
+        $this->assertSame([$recurring->id], $planIds($makeOrder($recurring)));
+        $this->assertSame([$oneTime->id], $planIds($makeOrder($oneTime)));
+    }
+
     // -------------------------------------------------------------------------
     // getOrderInstallations — with a real order owned by auth user
     // -------------------------------------------------------------------------

@@ -37,7 +37,7 @@
                                     class="btn btn-outline-secondary btn-sm"
                                     :title="__('message.download_pdf')"
                                     :disabled="!!downloadingUrl"
-                                    @click="downloadFile(pdfUrl)"
+                                    @click="downloadFile(pdfUrl, `${__('message.invoice')} #${invoice?.number ?? ''}`)"
                                 >
                                     <i :class="['me-1', downloadingUrl ? 'fas fa-spinner fa-spin' : 'fas fa-download']" aria-hidden="true"></i>{{ __('message.download_pdf') }}
                                 </button>

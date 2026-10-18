@@ -472,4 +472,23 @@ describe('CheckoutPage.vue — loadInvoice() direct method coverage', () => {
 
         expect(wrapper.vm.invError).toBeTruthy()
     })
+
+    it('shows the server-formatted credit preview and total, not JS-formatted numbers', async () => {
+        wrapper = createWrapper({ ...cartStateWithItems, cart: { ...cartStateWithItems.cart,
+            grand_total: '80,834.72', available_credit: '57,055.00',
+            credit_preview: '57,055.00', grand_total_after_credit: '23,779.72' } })
+        wrapper.vm.useCredit = true
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.vm.cartCreditPreview).toBe('57,055.00')
+        expect(wrapper.vm.cartTotalPreview).toBe('23,779.72')
+        expect(wrapper.text()).toContain('23,779.72')
+    })
+
+    it('hides the use-balance option on a zero-total order', async () => {
+        wrapper = createWrapper({ ...cartStateWithItems, cart: { ...cartStateWithItems.cart, grand_total: '0.00', available_credit: '500.00' } })
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.find('#use-credit').exists()).toBe(false)
+    })
 })

@@ -4,9 +4,7 @@ export const licenseSchema = yup.object({
     product:              yup.string().required(() => __('validation.license.product.required')),
     client:               yup.string().nullable(),
     license_code:         yup.string().required(() => __('validation.license.license_code.required')),
-    license_expire_date:  yup.mixed().nullable().test('required', () => __('validation.license.license_expire_date.required'), val => val !== null && val !== undefined && val !== ''),
-    license_updates_date: yup.mixed().nullable().test('required', () => __('validation.license.license_updates_date.required'), val => val !== null && val !== undefined && val !== ''),
-    license_support_date: yup.mixed().nullable().test('required', () => __('validation.license.license_support_date.required'), val => val !== null && val !== undefined && val !== ''),
+    // The three expiry dates are optional: empty means it never expires (lifetime licenses).
 })
 
 // IPv4 (octet-bounded) or IPv6 (loose, backend does the strict check via Laravel's `ip` rule)

@@ -220,7 +220,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $invoice = $relatedSort
                 ? $invoice->orderBy($relatedSort, $sortOrder)->paginate($limit)
-                : $invoice->orderBy($sortField, $sortOrder)->paginate($limit);
+                : $invoice->orderByField($sortField, $sortOrder)->paginate($limit);
 
             $invoice->getCollection()->transform(function ($invoice): array {
                 $statusMapping = [
@@ -397,7 +397,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $product = $this->product->findOrFail($productid);
-            $subtotal = $qty * intval($grandTotalAfterCoupon);
+            $subtotal = $qty * (float) $grandTotalAfterCoupon; // was intval(): dropped paise/cents off pro-rata prices
 
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
@@ -683,22 +683,30 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 : round($value, 2);
         }
 
-        // Processing fee: grand_total is stored fee-inclusive, so the fee amount
-        // is the part of grand_total above the pre-fee total (NOT the % itself).
-        $feeAmount = ProcessingFee::fromInclusive((float) $invoice->grand_total, $invoice->processing_fee);
+        // Tax-inclusive or not, and the processing fee, are both read off the invoice's own
+        // numbers — not today's TaxOption (flipping it would mis-state older invoices) and not
+        // "the fee % of the whole total": the fee is charged only on what went through the
+        // gateway, so when credit paid part, that overstated it (2% of 81,310 = 1,594 shown,
+        // 475.59 actually charged on the gateway's 23,779.72).
+        // ponytail: credits ignored (no taxed invoice uses them yet); add them to the
+        // adjustment if credits turn out to reduce grand_total.
+        $grandTotal = (float) $invoice->grand_total;
+        $netOfDiscount = $itemSubtotal - (float) ($invoice->discount ?? 0);
+        if ($invoice->processing_fee) {
+            // Exclusive: grand = items − discount + tax + fee. Inclusive: grand = items − discount + fee.
+            $pricesIncludeTax = $taxTotal > 0 && $grandTotal - ($netOfDiscount + $taxTotal) < -0.01;
+            $derivedFee = $grandTotal - $netOfDiscount - ($pricesIncludeTax ? 0 : $taxTotal);
+            // Never more than the fee on the whole total — bounds odd legacy invoices.
+            $feeAmount = max(0.0, min($derivedFee, ProcessingFee::fromInclusive($grandTotal, $invoice->processing_fee)));
+        } else {
+            $feeAmount = 0.0;
+            $pricesIncludeTax = $taxTotal > 0
+                && abs($netOfDiscount - $grandTotal) < abs($netOfDiscount + $taxTotal - $grandTotal);
+        }
         $processingFee = $formatCurrency ? currencyFormat($feeAmount, $invoice->currency) : round($feeAmount, 2);
 
         // Subtotal shown ex-tax: for tax-inclusive pricing the item subtotal is
         // gross, so strip the tax out so subtotal + tax + fee reconciles to total.
-        // Read it off the invoice's own numbers, not today's TaxOption — flipping that
-        // setting would otherwise mis-state every older invoice. Inclusive: the pre-fee
-        // total already equals items − discount with no tax added on top.
-        // ponytail: credits ignored (no taxed invoice uses them yet); add them to the
-        // adjustment if credits turn out to reduce grand_total.
-        $netOfDiscount = $itemSubtotal - (float) ($invoice->discount ?? 0);
-        $preFeeTotal = (float) $invoice->grand_total - $feeAmount;
-        $pricesIncludeTax = $taxTotal > 0
-            && abs($netOfDiscount - $preFeeTotal) < abs($netOfDiscount + $taxTotal - $preFeeTotal);
         $netSubtotal = $pricesIncludeTax ? ($itemSubtotal - $taxTotal) : $itemSubtotal;
         $subtotal = $formatCurrency ? currencyFormat($netSubtotal, $invoice->currency) : round($netSubtotal, 2);
 

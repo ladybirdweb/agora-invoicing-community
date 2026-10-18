@@ -277,7 +277,7 @@ class ProfileVerificationController extends BaseAuthController
 
     private function handleInitialEmailChange(mixed $user, string $newEmail): JsonResponse
     {
-        if (User::where('email', $newEmail)->exists()) {
+        if ($newEmail === $user->email || $this->emailTaken($newEmail)) {
             return errorResponse(__('message.email_already_used'));
         }
 
@@ -371,16 +371,23 @@ class ProfileVerificationController extends BaseAuthController
         RateLimiter::hit($key.':'.auth()->id(), 600);
     }
 
+    /** Taken if another user has it as their email OR username — login accepts either. */
+    private function emailTaken(string $email): bool
+    {
+        return User::where('id', '!=', auth()->id())
+            ->where(fn ($q) => $q->where('email', $email)->orWhere('user_name', $email))
+            ->exists();
+    }
+
     private function updateUserEmail(string $email): JsonResponse
     {
-        if (User::where('email', $email)->where('id', '!=', auth()->id())->exists()) {
+        if ($this->emailTaken($email)) {
             return errorResponse(__('message.email_already_used'));
         }
 
         /** @var User $user */
         $user = auth()->user();
         $user->email = $email;
-        $user->user_name = $email;
         $user->save();
 
         return successResponse(__('message.new_email_updated'), [

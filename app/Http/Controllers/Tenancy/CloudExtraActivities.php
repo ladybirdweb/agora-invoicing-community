@@ -968,12 +968,21 @@ class CloudExtraActivities extends Controller
         $request->validate(['cloud_countries' => ['required'], 'cloud_state' => ['required']]);
 
         $countryName = Country::where('country_code_char2', strtoupper((string) $request->input('cloud_countries')))->value('country_name');
-        $state = $request->input('cloud_state');
+        $stateCode = $request->input('cloud_state');
         $city = $request->input('cloud_city');
+        $state = State::where('country_code', strtoupper((string) $request->input('cloud_countries')))->where('iso2', $stateCode)->value('state_subdivision_name');
+
+        $exists = CloudDataCenters::where('cloud_countries', $countryName)
+            ->where('cloud_state', $state)
+            ->where(fn ($q) => filled($city) ? $q->where('cloud_city', $city) : $q->whereNull('cloud_city')->orWhere('cloud_city', ''))
+            ->exists();
+        if ($exists) {
+            return errorResponse(__('message.data_center_exists'));
+        }
+
         $geo = empty($city)
-            ? $this->getStateCoordinates(strtoupper((string) $request->input('cloud_countries')).'-'.$state)
+            ? $this->getStateCoordinates(strtoupper((string) $request->input('cloud_countries')).'-'.$stateCode)
             : $this->getStateCoordinates($city);
-        $state = State::where('country_code', strtoupper((string) $request->input('cloud_countries')))->where('iso2', $state)->value('state_subdivision_name');
 
         if ($geo !== null && $geo !== []) {
             CloudDataCenters::create([

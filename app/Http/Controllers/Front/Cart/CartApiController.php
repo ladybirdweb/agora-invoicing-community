@@ -90,6 +90,11 @@ class CartApiController extends Controller
         $user = $request->user();
         $cart = $this->cartService->resolveCart($request)->load('items.product');
 
+        // Lines were just dropped as unavailable: don't charge for a cart the customer hasn't seen.
+        if ($cart->itemsRemoved) {
+            return errorResponse(__('message.cart_items_unavailable_removed'), 422);
+        }
+
         if ($cart->items->isEmpty()) {
             return errorResponse(__('message.cart_empty'), 422);
         }

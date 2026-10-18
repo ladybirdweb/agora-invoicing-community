@@ -64,8 +64,16 @@ app.use(i18n)
 app.use(VueProgressBar, progressBarOptions)
 app.use(FloatingVue)
 
-// Load system date/time settings non-blocking; auth store provides user timezone
-useDateTimeStore().bootstrap()
+// System date/time settings come with the page: /settings/system-data is admin-only,
+// so fetching it here 401'd and every customer fell back to UTC and d/m/Y.
+// The auth store provides the user's own timezone, which wins when set.
+const appEl = document.getElementById('app-client')
+useDateTimeStore().init({
+    timezone:   appEl?.dataset?.systemTimezone,
+    dateFormat: appEl?.dataset?.dateFormat,
+    timeFormat: appEl?.dataset?.timeFormat,
+})
+useDateTimeStore().setUserTimezone(appEl?.dataset?.userTimezone)
 
 setupLoaderInterceptors(app.config.globalProperties.$Progress)
 

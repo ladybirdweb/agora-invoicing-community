@@ -240,6 +240,10 @@ onMounted(async () => {
         form.name = plan.name ?? ''
         form.product = plan.product ?? null
         form.days = plan.days ?? ''
+        // Older plans store days no period option has (e.g. One Time at 365) — list it so the box isn't empty.
+        if (form.days && !periods.value.some(p => p.id === form.days)) {
+            periods.value.push({ id: form.days, name: plan.periods?.[0]?.name ?? `${form.days} days` })
+        }
         form.status = plan.status ?? 1
         form.no_of_agents = plan.no_of_agents ?? ''
         form.product_quantity = plan.product_quantity ?? ''

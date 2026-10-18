@@ -41,7 +41,7 @@ trait AppliesBuildToProducts
             // what the frontend sends by default.
             'dependencies' => ['present', 'array'],
             'description' => ['required'],
-            'release_type' => ['required'],
+            'release_type' => ['required', \Illuminate\Validation\Rule::in(ProductUpload::RELEASE_TYPES)],
             'products' => ['required', 'array', 'min:1'],
             'products.*.id' => ['required', 'integer', 'exists:products,id'],
             'products.*.version' => ['required', 'string', 'max:50'],

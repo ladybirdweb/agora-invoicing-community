@@ -361,6 +361,32 @@ class LoginTest extends DBTestCase
         ]);
     }
 
+    #[Group('postLogin')]
+    public function test_login_with_email_shaped_username_after_email_changed(): void
+    {
+        \App\DefaultPage::query()->delete(); // ensure url('/') fallback
+        $this->withoutMiddleware();
+        // Username was copied from the original email; the email was changed later.
+        User::factory()->create([
+            'user_name' => 'old-address@example.com',
+            'email' => 'new-address@example.com',
+            'password' => bcrypt('password123'),
+            'role' => 'user',
+        ]);
+
+        $response = $this->post('/login', [
+            'email_username' => 'old-address@example.com',
+            'password1' => 'password123',
+            'login' => [
+                'pot_field' => '',
+                'time_field' => encrypt(time() - 10),
+            ],
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true, 'data' => ['redirect' => url('/')]]);
+    }
+
     public function test_login_page(): void
     {
         $this->withoutMiddleware();

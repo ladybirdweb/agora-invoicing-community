@@ -70,14 +70,8 @@ class PromotionController extends BasePromotionController
         try {
             /** @var Promotion $promotion */
             $promotion = $this->promotion->where('code', $code)->first();
-            $uses = (int) $promotion->uses;
 
-            $used_number = $this->invoice->where('coupon_code', $code)->count();
-            if ($uses > $used_number) {
-                return 'success';
-            }
-
-            return 'fails';
+            return $promotion->isUsedUp() ? 'fails' : 'success';
         } catch (Exception) {
             throw new Exception(__('message.find-cost-error'));
         }

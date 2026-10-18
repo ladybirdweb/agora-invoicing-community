@@ -259,16 +259,18 @@ class PromotionControllerTest extends DBTestCase
         // When unused, returns 'success'
         $this->assertSame('success', $controller->checkNumberOfUses($codeSingle));
 
-        // Create an invoice with this coupon code
+        // An unpaid invoice with this code is only a reservation — the coupon is still usable
         $client = \App\User::factory()->create(['role' => 'user']);
-        \App\Model\Order\Invoice::factory()->create([
+        $invoice = \App\Model\Order\Invoice::factory()->create([
             'user_id' => $client->id,
             'coupon_code' => $codeSingle,
             'grand_total' => 50.0,
             'status' => 'pending',
         ]);
+        $this->assertSame('success', $controller->checkNumberOfUses($codeSingle));
 
-        // Now that it has been used once, single-use coupon must return 'fails'
+        // Once that invoice is paid it has been used once, so a single-use coupon must return 'fails'
+        $invoice->update(['status' => 'success']);
         $this->assertSame('fails', $controller->checkNumberOfUses($codeSingle));
     }
 

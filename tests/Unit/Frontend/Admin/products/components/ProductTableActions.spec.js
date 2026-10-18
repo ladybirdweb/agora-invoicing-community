@@ -57,8 +57,9 @@ describe('ProductTableActions.vue', () => {
     })
 
     it('calls downloadFile when download button is clicked', async () => {
-        wrapper = mountComponent({ downloadUrl: 'https://example.com/file.zip' })
+        wrapper = mountComponent({ downloadUrl: 'https://example.com/file.zip', productName: 'Helpdesk Pro' })
         await wrapper.find('button').trigger('click')
-        expect(mockDownloadFile).toHaveBeenCalledWith('https://example.com/file.zip')
+        // The name labels the download tray row until the server's filename arrives.
+        expect(mockDownloadFile).toHaveBeenCalledWith('https://example.com/file.zip', 'Helpdesk Pro')
     })
 })

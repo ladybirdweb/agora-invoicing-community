@@ -100,7 +100,7 @@
             </div>
           </div>
 
-          <div v-if="passwordFocused" class="mb-3 text-1">
+          <div v-if="passwordFocused || regErrors.password" class="mb-3 text-1">
             <strong class="d-block mb-1 text-dark">{{ __('message.password_requirements') }}</strong>
             <ul class="list-unstyled mb-0" aria-live="polite">
               <li v-for="c in checklist" :key="c.key" :class="c.ok ? 'text-success' : 'text-danger'">
@@ -185,7 +185,7 @@ const checklist = computed(() => {
   ]
 })
 
-// Show the requirements list only while the password field is focused.
+// Requirements list: shown while typing, and kept after a failed submit so it shows which rule failed.
 const passwordFocused = ref(false)
 
 onMounted(async () => {

@@ -56,7 +56,7 @@
               <div v-if="summary.subtotal_ex_tax !== undefined" class="d-flex justify-content-between py-3 border-bottom">
                 <strong class="text-color-dark">
                   {{ __('message.sub_total') }}
-                  <small v-if="summary.tax_total > 0 && summary.tax_label" class="text-color-grey fw-normal">(ex. {{ summary.tax_label }})</small>
+                  <small v-if="toNumber(summary.tax_total) > 0 && summary.tax_label" class="text-color-grey fw-normal">(ex. {{ summary.tax_label }})</small>
                 </strong>
                 <span class="amount font-weight-medium">{{ symbol }}{{ summary.subtotal_ex_tax }}</span>
               </div>
@@ -66,7 +66,7 @@
                 <span class="amount font-weight-medium">{{ symbol }}{{ t.amount }}</span>
               </div>
 
-              <div v-if="summary.discount > 0" class="d-flex justify-content-between py-3 border-bottom">
+              <div v-if="toNumber(summary.discount) > 0" class="d-flex justify-content-between py-3 border-bottom">
                 <strong class="text-color-dark">{{ summary.coupon_code ? __('message.coupon') : __('message.discount') }}<span v-if="summary.coupon_code" class="text-color-grey fw-normal"> : {{ summary.coupon_code }}</span></strong>
                 <span class="amount text-success">−{{ symbol }}{{ summary.discount }}</span>
               </div>
@@ -81,7 +81,7 @@
                 <span class="amount text-success">−{{ symbol }}{{ creditApplied }}</span>
               </div>
 
-              <div v-if="feeAmount > 0" class="d-flex justify-content-between py-3 border-bottom">
+              <div v-if="toNumber(feeAmount) > 0" class="d-flex justify-content-between py-3 border-bottom">
                 <strong class="text-color-dark">{{ __('message.processing_fee') }}<span v-if="feePercent" class="text-color-grey fw-normal"> ({{ feePercent }}%)</span></strong>
                 <span class="amount font-weight-medium">{{ symbol }}{{ feeAmount }}</span>
               </div>

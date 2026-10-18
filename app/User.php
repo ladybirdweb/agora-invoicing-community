@@ -318,6 +318,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * profile_pic's accessor builds a Gravatar URL from the email, so log the stored file name instead.
+     *
+     * @return list<string>
+     */
+    protected function logRawAttributes(): array
+    {
+        return ['profile_pic'];
+    }
+
+    /**
      * @return Attribute<mixed, mixed>
      */
     protected function profilePic(): Attribute

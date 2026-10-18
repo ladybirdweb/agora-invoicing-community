@@ -8,7 +8,6 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\User\AdvanceSearchController;
 use App\License\Models\License;
 use App\Model\Common\StatusSetting;
-use App\Model\Github\Github;
 use App\Model\Order\CreditTransaction;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -73,21 +72,6 @@ class ClientController extends BaseClientController
 
         $payment = new Payment;
         $this->payment = $payment;
-
-        $product_upload = new ProductUpload;
-        $this->product_upload = $product_upload; // @phpstan-ignore property.notFound
-
-        $product = new Product;
-        $this->product = $product; // @phpstan-ignore property.notFound
-
-        $github_controller = new GithubApiController;
-        $this->github_api = $github_controller; // @phpstan-ignore property.notFound
-
-        $model = new Github;
-        $this->github = $model->firstOrFail(); // @phpstan-ignore property.notFound
-
-        $this->client_id = $this->github->client_id; // @phpstan-ignore property.notFound
-        $this->client_secret = $this->github->client_secret; // @phpstan-ignore property.notFound
     }
 
     /**
@@ -123,7 +107,7 @@ class ClientController extends BaseClientController
         $allowed = ['number' => 'number', 'date' => 'date', 'grand_total' => 'grand_total'];
         $sortCol = $allowed[$request->input('sort-field', 'date')] ?? 'date';
         $sortDir = $request->input('sort-order', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy($sortCol, $sortDir);
+        $query->orderByField($sortCol, $sortDir);
 
         $paginated = $query->paginate((int) $request->input('limit', 10));
 
@@ -249,6 +233,7 @@ class ClientController extends BaseClientController
             'order_date' => $order->created_at,
             'update_ends_at' => $order->subscription?->update_ends_at,
             'license_ends_at' => $order->subscription?->ends_at,
+            'support_ends_at' => $order->subscription?->support_ends_at,
             'serial_key' => $order->serial_key,
             'license_mode' => $order->license_mode,
             'license_domain' => $license?->license_domain,
@@ -266,6 +251,7 @@ class ClientController extends BaseClientController
             'autorenew_status' => (bool) $order->subscription?->autoRenew_status,
             'is_subscribed' => (bool) $order->subscription?->is_subscribed,
             'auto_renew_state' => $order->subscription?->autoRenewState() ?? 'inactive',
+            'can_renew' => (bool) $order->subscription?->canRenew(),
             'autorenew_log' => Payment_log::where('order', $order->number)
                 ->where('payment_type', 'Payment method updated')
                 ->orderByDesc('id')
@@ -330,8 +316,8 @@ class ClientController extends BaseClientController
                 Product::select('name')->whereColumn('id', 'orders.product'),
                 $sortDir
             ),
-            'update_ends_at' => $query->orderBy(
-                Subscription::select('update_ends_at')->whereColumn('order_id', 'orders.id')->limit(1),
+            'license_ends_at' => $query->orderBy(
+                Subscription::select('ends_at')->whereColumn('order_id', 'orders.id')->limit(1),
                 $sortDir
             ),
             default => $query->orderBy('created_at', $sortDir),
@@ -349,7 +335,7 @@ class ClientController extends BaseClientController
         $paginated->getCollection()->transform(function ($order) use ($downloadPerms): array {
             $hasDownload = $downloadPerms[$order->productRelation?->id] ?? false;
             $latestInvoice = $order->invoices->first();
-            $updateEndsAt = (string) $order->subscription?->update_ends_at;
+            $licenseEndsAt = (string) $order->subscription?->ends_at;
 
             return [
                 'id' => $order->id,
@@ -358,7 +344,7 @@ class ClientController extends BaseClientController
                 'version' => $order->subscription?->version,
                 'status' => $order->order_status,
                 'order_date' => $order->created_at,
-                'update_ends_at' => $order->subscription?->update_ends_at,
+                'license_ends_at' => $order->subscription?->ends_at,
                 'agents' => agentCount($order->invoiceItem?->agents),
                 'current_plan' => $order->subscription?->plan?->name,
                 'product_id' => $order->productRelation?->id,
@@ -370,8 +356,9 @@ class ClientController extends BaseClientController
                 // Instance already deleted — no renew either (see OrderIndex.vue).
                 'is_cloud_deleted' => (bool) $order->subscription?->is_deleted,
                 'is_terminated' => $order->order_status === 'Terminated',
+                'can_renew' => (bool) $order->subscription?->canRenew(),
                 // Same label the admin order page badges expiry dates with.
-                'expiry_status' => strtotime($updateEndsAt) > 1 ? getExpiryLabel($updateEndsAt)['status'] : null,
+                'expiry_status' => strtotime($licenseEndsAt) > 1 ? getExpiryLabel($licenseEndsAt)['status'] : null,
             ];
         });
 
@@ -448,9 +435,19 @@ class ClientController extends BaseClientController
             }
             $currency = getCurrencyForClient($user->country);
 
+            // A recurring order can't renew onto a one-time (lifetime) plan; a one-time
+            // order still needs its own plan here to renew updates/support.
+            $order = Order::where('client', $user->id)->find($request->integer('order'));
+            $isOneTime = (bool) $order?->subscription?->plan?->periods()->where('name', 'One Time')->exists();
+
             $plans = Plan::where('product', $productid)
                 ->where('status', 1)
                 ->where('days', '!=', 14)
+                ->when(
+                    $isOneTime,
+                    fn ($q) => $q->whereHas('periods', fn ($p) => $p->where('name', 'One Time')),
+                    fn ($q) => $q->whereDoesntHave('periods', fn ($p) => $p->where('name', 'One Time')),
+                )
                 ->with([
                     'planPrice' => fn ($q) => $q->where('currency', $currency)
                         ->where('renew_price', '!=', '0')])
@@ -577,8 +574,12 @@ class ClientController extends BaseClientController
 
     private function githubVersions(Request $request, Product $product, ?Subscription $subscription): JsonResponse
     {
+        // Built here, not in the constructor: it loads the GitHub settings row and would
+        // otherwise run (and could fail) on every client-panel request.
+        $githubApi = new GithubApiController;
+
         $allReleases = array_slice(
-            $this->github_api->releases($product->github_owner, $product->github_repository), // @phpstan-ignore property.notFound
+            $githubApi->releases($product->github_owner, $product->github_repository),
             0, 3, preserve_keys: true
         );
 
@@ -620,14 +621,15 @@ class ClientController extends BaseClientController
 
             if ($canDownload) {
                 try {
-                    $downloadUrl = $this->github_api->resolveDownloadUrl($release['zipball_url']); // @phpstan-ignore property.notFound
+                    $downloadUrl = $githubApi->resolveDownloadUrl($release['zipball_url']);
                 } catch (Exception) {
                     $downloadUrl = null;
                 }
             }
 
             $items->push([
-                'version' => ucfirst((string) $release['tag_name']),
+                'version' => (string) $release['tag_name'],
+                'release_type' => empty($release['prerelease']) ? 'official' : 'pre_release',
                 'name' => ucfirst((string) $release['name']),
                 'description' => $release['body'] ?? '',
                 'created_at' => $release['created_at'],
@@ -652,7 +654,40 @@ class ClientController extends BaseClientController
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return successResponse('', $paginator);
+        $newestFirst = $items->sortByDesc('created_at')->values();
+
+        return successResponse('', $paginator->toArray() + $this->versionPopupMeta(
+            $newestFirst->first(),
+            $newestFirst->firstWhere('release_type', 'official'),
+            $subscription,
+            $allowTillExpiry,
+        ));
+    }
+
+    /**
+     * Extra fields for the version popup, beside the paginated table rows:
+     *  - featured: the latest release; when that is an RC/Beta, the latest official one after it
+     *    — so customers aren't left to guess among every past version.
+     *  - updates_ended_on / can_download_older: drive the "updates ended" notice.
+     *
+     * @param  array<string, mixed>|null  $latest
+     * @param  array<string, mixed>|null  $latestOfficial
+     * @return array<string, mixed>
+     */
+    private function versionPopupMeta(?array $latest, ?array $latestOfficial, ?Subscription $subscription, bool $allowTillExpiry): array
+    {
+        $featured = $latest && ($latest['release_type'] ?? null) !== 'official'
+            ? array_filter([$latest, $latestOfficial])
+            : ($latest ? [$latest] : []);
+
+        $updatesEnd = $subscription?->update_ends_at;
+        $ended = $updatesEnd && $updatesEnd !== '0000-00-00 00:00:00' && strtotime((string) $updatesEnd) < time();
+
+        return [
+            'featured' => $featured,
+            'updates_ended_on' => $ended ? $updatesEnd : null,
+            'can_download_older' => $allowTillExpiry,
+        ];
     }
 
     private function uploadVersions(Request $request, Order $order, Product $product, ?Subscription $subscription): JsonResponse
@@ -660,9 +695,10 @@ class ClientController extends BaseClientController
         $search = trim((string) $request->input('search-query', ''));
         $order->invoices->first()?->number;
 
-        $base = ProductUpload::where('product_id', $product->id)
+        $all = ProductUpload::where('product_id', $product->id)
             ->where('is_private', 0)
             ->select('id', 'product_id', 'version', 'title', 'description', 'created_at', 'release_type');
+        $base = clone $all;
 
         if ($search !== '' && $search !== '0') {
             $base->where(function ($q) use ($search): void {
@@ -672,10 +708,14 @@ class ClientController extends BaseClientController
             });
         }
 
-        $allowed = ['version' => 'version', 'name' => 'title', 'created_at' => 'created_at'];
-        $sortCol = $allowed[$request->input('sort-field', 'created_at')] ?? 'created_at';
+        // Newest = last added (highest id). Sorting the version text would put v9 above v10,
+        // so the Version column sorts by the same added order.
+        $allowed = ['version' => 'id', 'name' => 'title', 'created_at' => 'created_at'];
+        $sortCol = $allowed[$request->input('sort-field', '')] ?? 'id';
         $sortDir = $request->input('sort-order', 'desc') === 'asc' ? 'asc' : 'desc';
-        $base->orderBy($sortCol, $sortDir);
+        // id breaks ties: bulk uploads share one timestamp, and without a fixed order a row
+        // could slip between pages (missing from one, repeated on the next).
+        $base->orderBy($sortCol, $sortDir)->orderBy('id', $sortDir);
 
         $downloadPermission = LicensePermissionsController::getPermissionsForProduct((int) $product->id);
         $allowTillExpiry = $downloadPermission['allowDownloadTillExpiry'] == 1;
@@ -691,7 +731,7 @@ class ClientController extends BaseClientController
 
         $paginator = $base->paginate((int) $request->input('limit', 10));
 
-        $paginator->getCollection()->transform(function ($version) use ($allowTillExpiry, $countExpiry, $countVersions, $subscription, $order): array {
+        $toRow = function ($version) use ($allowTillExpiry, $countExpiry, $countVersions, $subscription, $order): array {
             $canDownload = false;
 
             if (! $subscription instanceof Subscription) {
@@ -705,7 +745,7 @@ class ClientController extends BaseClientController
             }
 
             return [
-                'version' => ucfirst((string) $version->version),
+                'version' => (string) $version->version,
                 'release_type' => getPreReleaseStatusLabel($version->release_type),
                 'name' => ucfirst((string) $version->title),
                 'description' => ucfirst($version->description ?? ''),
@@ -715,9 +755,21 @@ class ClientController extends BaseClientController
                     ? url(sprintf('download/%s/%s', $order->id, $version->id))
                     : null,
             ];
-        });
+        };
+        $paginator->getCollection()->transform($toRow);
 
-        return successResponse('', $paginator);
+        // Featured cards ignore the table's search — they're always the true latest releases.
+        $latest = (clone $all)->latest('id')->first();
+        $latestOfficial = $latest && $latest->release_type !== 'official'
+            ? (clone $all)->where('release_type', 'official')->latest('id')->first()
+            : null;
+
+        return successResponse('', $paginator->toArray() + $this->versionPopupMeta(
+            $latest ? $toRow($latest) : null,
+            $latestOfficial ? $toRow($latestOfficial) : null,
+            $subscription,
+            $allowTillExpiry,
+        ));
     }
 
     /**
@@ -729,7 +781,7 @@ class ClientController extends BaseClientController
     {
         return Order::with([
             'productRelation:id,name,github_owner,github_repository,type,whatsapp_integration',
-            'subscription:id,order_id,plan_id,version,update_ends_at,ends_at,is_subscribed,is_deleted,autoRenew_status,rzp_subscription',
+            'subscription:id,order_id,plan_id,version,update_ends_at,ends_at,support_ends_at,is_subscribed,is_deleted,autoRenew_status,rzp_subscription',
             'subscription.plan:id,name',
             'invoiceItem:id,agents',
             'invoices' => fn ($q) => $q->select('invoices.id', 'invoices.number')->latest('invoices.id'),
@@ -745,7 +797,8 @@ class ClientController extends BaseClientController
     public function profile(Request $request): JsonResponse
     {
         try {
-            $user = $this->user->where('id', Auth::id())->first();
+            // With its timezone, or the profile's Timezone box always loads empty.
+            $user = $this->user->with('timezone')->where('id', Auth::id())->first();
 
             return successResponse('', ['user' => $user]);
         } catch (Exception $exception) {

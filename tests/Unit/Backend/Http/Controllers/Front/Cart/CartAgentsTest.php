@@ -71,6 +71,93 @@ class CartAgentsTest extends DBTestCase
         return $this->service->resolveCart($this->request())->items->sole();
     }
 
+    public function test_a_stale_cart_currency_follows_the_user_and_drops_lines_it_cannot_price(): void
+    {
+        // QA case: cart created as INR, user now gets GBP — the cart must switch, and a line
+        // with no price in the new currency is dropped rather than charged 0.
+        $currency = getCurrencyForClient($this->user->country);
+        $old = $currency === 'EUR' ? 'JPY' : 'EUR';
+        [$priced, $pricedPlan] = $this->product(canModifyAgents: false, planAgents: '1');
+        PlanPrice::where('plan_id', $pricedPlan->id)->delete();
+        PlanPrice::factory()->create(['plan_id' => $pricedPlan->id, 'currency' => $currency, 'add_price' => 100, 'offer_price' => 0, 'no_of_agents' => '1']);
+        PlanPrice::factory()->create(['plan_id' => $pricedPlan->id, 'currency' => $old, 'add_price' => 100, 'offer_price' => 0, 'no_of_agents' => '1']);
+        [$unpriced, $unpricedPlan] = $this->product(canModifyAgents: false, planAgents: '1');
+        PlanPrice::where('plan_id', $unpricedPlan->id)->delete();
+        PlanPrice::factory()->create(['plan_id' => $unpricedPlan->id, 'currency' => $old, 'add_price' => 100, 'offer_price' => 0, 'no_of_agents' => '1']);
+
+        $cart = Cart::create(['user_id' => $this->user->id, 'currency' => $old]);
+        CartItem::create(['cart_id' => $cart->id, 'product_id' => $priced->id, 'plan_id' => $pricedPlan->id, 'quantity' => 1, 'agents' => 1]);
+        CartItem::create(['cart_id' => $cart->id, 'product_id' => $unpriced->id, 'plan_id' => $unpricedPlan->id, 'quantity' => 1, 'agents' => 1]);
+
+        $cart = $this->service->resolveCart($this->request());
+
+        $this->assertSame($currency, $cart->currency);
+        $this->assertSame([$priced->id], $cart->items->pluck('product_id')->map(fn ($id) => (int) $id)->all());
+    }
+
+    public function test_guest_usd_cart_becomes_inr_with_the_inr_price_when_an_indian_user_logs_in(): void
+    {
+        // QA case: guest adds a $50 product, an Indian user (whose old cart row is USD) logs in.
+        $this->user->update(['country' => 'IN']);
+        $inr = \App\Model\Payment\Currency::updateOrCreate(['code' => 'INR'], ['name' => 'Indian Rupee', 'symbol' => '₹', 'status' => 1]);
+        \App\Model\Common\Country::where('country_code_char2', 'IN')->update(['currency_id' => $inr->id]);
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1');
+        PlanPrice::where('plan_id', $plan->id)->where('currency', 'USD')->update(['add_price' => 50]);
+        PlanPrice::where('plan_id', $plan->id)->where('currency', 'INR')->update(['add_price' => 4000]);
+        Cart::create(['user_id' => $this->user->id, 'currency' => 'USD']);
+        $guest = new GuestCart;
+        $guest->clear();
+        $guest->add(['product_id' => $product->id, 'plan_id' => $plan->id, 'agents' => 1], 'USD');
+
+        $this->service->mergeGuestCart($this->user);
+        $cart = $this->service->resolveCart($this->request());
+
+        $this->assertSame('INR', $cart->currency);
+        $this->assertEqualsWithDelta(4000.0, $cart->items->sole()->lineTotal(), 0.001);
+    }
+
+    public function test_a_deleted_product_leaves_the_cart_instead_of_costing_zero(): void
+    {
+        // QA case: product added, then the admin deletes it before checkout.
+        [$kept, $keptPlan] = $this->product(canModifyAgents: false, planAgents: '1');
+        [$gone, $gonePlan] = $this->product(canModifyAgents: false, planAgents: '1');
+        $this->service->addItem($this->request(), ['product_id' => $kept->id, 'plan_id' => $keptPlan->id]);
+        $this->service->addItem($this->request(), ['product_id' => $gone->id, 'plan_id' => $gonePlan->id]);
+        $gone->delete();
+
+        $cart = $this->service->resolveCart($this->request());
+
+        $this->assertTrue($cart->itemsRemoved);
+        $this->assertSame([$kept->id], $cart->items->pluck('product_id')->map(fn ($id) => (int) $id)->all());
+        $this->assertFalse($this->service->resolveCart($this->request())->itemsRemoved); // told once
+    }
+
+    public function test_a_guest_line_whose_price_is_gone_leaves_the_guest_cart(): void
+    {
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1');
+        $guest = new GuestCart;
+        $guest->clear();
+        $guest->add(['product_id' => $product->id, 'plan_id' => $plan->id], 'USD');
+        PlanPrice::where('plan_id', $plan->id)->delete();
+
+        $cart = $guest->toCart();
+
+        $this->assertTrue($cart->itemsRemoved);
+        $this->assertCount(0, $cart->items);
+        $this->assertSame([], $guest->all());
+    }
+
+    public function test_place_order_stops_when_lines_were_just_removed(): void
+    {
+        [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '1');
+        $this->service->addItem($this->request(), ['product_id' => $product->id, 'plan_id' => $plan->id]);
+        $product->delete();
+
+        $this->actingAs($this->user)->postJson('/my-cart/place-order')
+            ->assertStatus(422)
+            ->assertJson(['message' => __('message.cart_items_unavailable_removed')]);
+    }
+
     public function test_fixed_agent_plan_gets_the_plans_count_at_the_plan_price(): void
     {
         [$product, $plan] = $this->product(canModifyAgents: false, planAgents: '2');
@@ -341,6 +428,51 @@ class CartAgentsTest extends DBTestCase
         $this->assertEqualsWithDelta(9.0, $summary['tax_total'], 0.001);
         $this->assertEqualsWithDelta(59.0, $summary['grand_total'], 0.001);
         $this->assertEqualsWithDelta(100.0, $summary['items'][0]['subtotal'], 0.001); // line price itself unchanged
+    }
+
+    public function test_a_coupon_for_another_product_is_rejected(): void
+    {
+        // QA case: coupon made for HD Enterprise, cart holds only HD Enterprise Pro.
+        [$a] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        [$b, $bPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $b->id, 'plan_id' => $bPlan->id]);
+
+        try {
+            $this->service->applyCoupon($this->request(), $this->coupon(for: $a, value: '10', type: 2));
+            $this->fail('A coupon for another product was applied.');
+        } catch (\Exception $e) {
+            $this->assertSame(__('message.invalid_coupon_code'), $e->getMessage());
+        }
+        $this->assertSame(0.0, $this->cartDiscount());
+    }
+
+    public function test_a_used_up_coupon_for_another_product_says_invalid_not_used_up(): void
+    {
+        [$a] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        [$b, $bPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 100);
+        $this->service->addItem($this->request(), ['product_id' => $b->id, 'plan_id' => $bPlan->id]);
+        $code = $this->coupon(for: $a, value: '10', type: 2);
+        \App\Model\Payment\Promotion::where('code', $code)->update(['uses' => 0]);
+
+        $this->expectExceptionMessage(__('message.invalid_coupon_code'));
+
+        $this->service->applyCoupon($this->request(), $code);
+    }
+
+    public function test_a_coupon_bigger_than_the_price_leaves_no_tax_and_nothing_to_pay(): void
+    {
+        // QA case: 48.60 with a fixed 70 coupon at 3% — the coupon is capped at 48.60, so 0 is taxed.
+        [$a, $aPlan] = $this->product(canModifyAgents: false, planAgents: '1', price: 48.60);
+        $this->service->addItem($this->request(), ['product_id' => $a->id, 'plan_id' => $aPlan->id]);
+        Cart::where('user_id', $this->user->id)->update(['currency' => 'USD']);
+        $this->service->applyCoupon($this->request(), $this->coupon(for: $a, value: '70', type: 2));
+        $this->flatTax(3);
+
+        $summary = $this->cartSummary();
+
+        $this->assertEqualsWithDelta(48.60, $summary['discount'], 0.001);
+        $this->assertEqualsWithDelta(0.0, $summary['tax_total'], 0.001);
+        $this->assertEqualsWithDelta(0.0, $summary['grand_total'], 0.001);
     }
 
     public function test_only_the_coupons_product_gets_the_lower_tax(): void

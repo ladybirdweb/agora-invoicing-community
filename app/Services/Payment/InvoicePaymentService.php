@@ -7,6 +7,7 @@ use App\Http\Controllers\Order\InvoiceController;
 use App\Http\Controllers\User\AdvanceSearchController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
+use App\Model\Payment\Promotion;
 use App\Plugins\Payment\Dto\Customer;
 use App\Plugins\Payment\Dto\PaymentRequest;
 use App\Plugins\Payment\Dto\PaymentResult;
@@ -117,6 +118,8 @@ class InvoicePaymentService
                 return [false, true, $invoice];
             }
 
+            $this->ensureCouponNotUsedUp($invoice);
+
             $toApply = $this->creditApplied($invoice);
 
             // Nothing owed at all (e.g. a free product) needs no credit — only a
@@ -181,6 +184,8 @@ class InvoicePaymentService
      */
     public function start(Invoice $invoice, string $gateway, bool $useCredit = false): PaymentSession
     {
+        $this->ensureCouponNotUsedUp($invoice);
+
         $request = $this->invoiceRequest($invoice, $gateway, $useCredit ? $this->creditApplied($invoice) : 0);
 
         // Stripe uses a PaymentIntent so the SPA can collect card details in its
@@ -326,6 +331,25 @@ class InvoicePaymentService
      * Never lets a failure here fail the purchase itself — auto-renewal is a
      * bonus, not a requirement of a successful purchase.
      */
+    /**
+     * Unpaid invoices don't count as coupon uses, so several could carry a 1-use code —
+     * stop the one that would go past the limit before anything is charged. An invoice
+     * already part-paid is itself one of the counted uses, so it may finish.
+     * ponytail: two payments starting at the same instant can both pass; lock the
+     * promotion row if that ever matters.
+     */
+    private function ensureCouponNotUsedUp(Invoice $invoice): void
+    {
+        if (! $invoice->coupon_code || $invoice->paidTotal() > 0) {
+            return;
+        }
+
+        $promo = Promotion::where('code', $invoice->coupon_code)->first();
+        if ($promo?->isUsedUp($invoice->id)) {
+            throw new Exception(__('message.usage-of-code-completed'));
+        }
+    }
+
     private function activateAutoRenewalOptIn(Invoice $invoice, string $gateway, PaymentResult $result): void
     {
         // Re-checked here, not just trusted from the flag captured at checkout

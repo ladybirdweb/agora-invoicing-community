@@ -7,7 +7,7 @@
                 <h4 class="card-title">{{ __('message.invoice') }} #{{ invoice?.number }}</h4>
                 <div class="card-tools">
                     <!-- Fetched (not a plain link) so a failed PDF shows as an alert instead of raw JSON -->
-                    <button type="button" class="btn btn-tool" v-tooltip="__('message.download_pdf')" :disabled="!!downloadingUrl" @click="downloadFile(pdfUrl)">
+                    <button type="button" class="btn btn-tool" v-tooltip="__('message.download_pdf')" :disabled="!!downloadingUrl" @click="downloadFile(pdfUrl, `${__('message.invoice')} #${invoice?.number ?? ''}`)">
                         <i :class="downloadingUrl ? 'fas fa-spinner fa-spin' : 'fas fa-download'"></i>
                     </button>
                 </div>

@@ -102,6 +102,19 @@ class Promotion extends BaseModel
         return $this->hasMany(PromoProductRelation::class, 'promotion_id');
     }
 
+    /**
+     * Uses = invoices paid (fully or partly) with this code. An unpaid invoice is only a
+     * reservation that may be abandoned, so it doesn't count; the payment itself
+     * re-checks (InvoicePaymentService) so unpaid ones can't push past the limit.
+     */
+    public function isUsedUp(?int $exceptInvoiceId = null): bool
+    {
+        return \App\Model\Order\Invoice::where('coupon_code', $this->code)
+            ->whereIn('status', ['success', 'partially paid'])
+            ->when($exceptInvoiceId, fn ($q) => $q->whereKeyNot($exceptInvoiceId))
+            ->count() >= (int) $this->uses;
+    }
+
     #[Override]
     public function delete()
     {

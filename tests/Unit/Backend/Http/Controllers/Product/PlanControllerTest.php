@@ -64,6 +64,17 @@ class PlanControllerTest extends DBTestCase
         $this->assertSame(['Aaa Sort Test', 'Zzz Sort Test'], $products);
     }
 
+    public function test_list_shows_one_time_period_not_the_updates_days(): void
+    {
+        $this->getLoggedInUser('admin');
+        $plan = Plan::factory()->create(['name' => 'one-time-period-test', 'days' => 365]);
+        $plan->periods()->attach(\App\Model\Payment\Period::firstOrCreate(['name' => 'One Time'], ['days' => 190])->id);
+
+        $period = $this->getJson('/plans?search-query=one-time-period-test')->json('data.data.0.period');
+
+        $this->assertSame('One Time', $period);
+    }
+
     public function test_list_ignores_an_unknown_sort_field(): void
     {
         $this->getLoggedInUser('admin');

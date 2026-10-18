@@ -30,8 +30,8 @@
                             {{ order.status || '—' }}
                         </div>
                         <div class="mt-3 mt-md-0">
-                            <strong>{{ __('message.expiry_date') }}</strong><br>
-                            {{ formatDate(order.update_ends_at) }}
+                            <strong>{{ __('message.license_expiry') }}</strong><br>
+                            {{ formatDate(order.license_ends_at) }}
                         </div>
                     </div>
                 </div>
@@ -161,12 +161,18 @@
                                 <span class="visually-hidden" aria-live="polite">{{ copied ? __('message.copied') : '' }}</span>
                                 <button v-if="order.serial_key && !order.is_cloud" type="button"
                                         class="btn btn-light btn-sm table_btn"
-                                        :aria-label="__('message.reissue_license')"
                                         :disabled="reissuing"
-                                        v-tooltip="__('message.reissue_license')"
-                                        @click="reissueLicense">
-                                    <i v-if="reissuing" class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
-                                    <i v-else class="fas fa-id-card-alt" aria-hidden="true"></i>
+                                        @click="showReissueModal = true">
+                                    <i v-if="reissuing" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
+                                    <i v-else class="fas fa-id-card-alt me-1" aria-hidden="true"></i>{{ __('message.reissue_license') }}
+                                </button>
+                                <!-- One renewal extends license, updates and support together, so it sits with
+                                     the license rather than beside any one date. Hidden when nothing expires,
+                                     or the cloud instance is deleted (nothing left to pay for). -->
+                                <button v-if="order.can_renew && !order.is_cloud_deleted" type="button"
+                                        class="btn btn-light btn-sm table_btn"
+                                        @click="showRenewModal = true">
+                                    <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.renew') }}
                                 </button>
                             </div>
                         </div>
@@ -181,14 +187,6 @@
                             </div>
                             <div class="col-sm-7 d-flex align-items-center gap-2">
                                 <span>{{ formatDate(order.license_ends_at) }}</span>
-                                <!-- A deleted cloud instance can't be renewed — there's nothing left to pay for. -->
-                                <button v-if="order.license_ends_at && !order.is_cloud_deleted"
-                                        type="button" class="btn btn-light btn-sm ms-2 table_btn"
-                                        :aria-label="__('message.renew')"
-                                        v-tooltip="__('message.renew')"
-                                        @click="showRenewModal = true">
-                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                                </button>
                             </div>
                         </div>
 
@@ -202,17 +200,19 @@
                             </div>
                             <div class="col-sm-7 d-flex align-items-center gap-2">
                                 <span>{{ formatDate(order.update_ends_at) }}</span>
-                                <!-- One-time (lifetime license) products have no license expiry to renew,
-                                     so the renew action lives here instead, since updates/support are what run out.
-                                     But if updates never expire either (product has no expiring permissions at all),
-                                     there's nothing to renew. -->
-                                <button v-if="!order.license_ends_at && order.update_ends_at && !order.is_cloud_deleted"
-                                        type="button" class="btn btn-light btn-sm ms-2 table_btn"
-                                        :aria-label="__('message.renew')"
-                                        v-tooltip="__('message.renew')"
-                                        @click="showRenewModal = true">
-                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row"><div class="col"><hr class="solid my-3"></div></div>
+
+                        <div class="row align-items-center">
+                            <div class="col-sm-5">
+                                <div class="pe-3 pe-sm-5 pb-3 pb-sm-0 border-right-light">
+                                    <span class="fw-bold">{{ __('message.support_expiry_date') }}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <span>{{ formatDate(order.support_ends_at) }}</span>
                             </div>
                         </div>
 
@@ -447,7 +447,7 @@
                                     <div>
                                         <span class="fw-bold">
                                             {{ __('message.auto_renewal') }}
-                                            <span class="badge rounded-pill badge-soft-success ms-1">
+                                            <span class="badge rounded-pill ms-1" :class="['active', 'pending', 'enabled'].includes(order.auto_renew_state) ? 'badge-soft-success' : 'badge-soft-secondary'">
                                                 <template v-if="order.auto_renew_state === 'active'">{{ __('message.active') }}</template>
                                                 <template v-else-if="order.auto_renew_state === 'pending'">{{ __('message.pending_authorization') }}</template>
                                                 <template v-else-if="order.auto_renew_state === 'enabled'">{{ __('message.enabled') }}</template>
@@ -726,6 +726,23 @@
             </template>
         </Modal>
 
+        <!-- ── Reissue License confirmation ───────────────────────── -->
+        <Modal :showModal="showReissueModal" :onClose="() => showReissueModal = false" :showCloseBtn="false">
+            <template #title>
+                <h5 class="modal-title fw-bold">{{ __('message.are_you_sure') }}</h5>
+            </template>
+            <template #fields>
+                <p class="mb-0">{{ __('message.reissuing_license') }}</p>
+            </template>
+            <template #controls>
+                <action-button action="cancel" @click="showReissueModal = false" />
+                <action-button action="confirm" icon="fas fa-id-card-alt"
+                               :label="__('message.reissue_license')"
+                               :loading="reissuing"
+                               @click="reissueLicense" />
+            </template>
+        </Modal>
+
         <!-- ── Disable Auto-Renewal confirmation ─────────────────── -->
         <Modal :showModal="showDisableRenewalModal" :onClose="closeDisableRenewalModal" :showCloseBtn="false">
             <template #title>
@@ -989,7 +1006,7 @@ const alertStore = useAlertStore()
 const loaderStore = useLoaderStore()
 
 const showCloudTab      = computed(() => !!order.value?.is_cloud && !order.value?.is_cloud_deleted && order.value?.status !== 'Terminated')
-const showAutoRenewTab  = computed(() => !!order.value?.autorenewal_enabled && !order.value?.is_cloud_deleted && order.value?.status !== 'Terminated')
+const showAutoRenewTab  = computed(() => !!order.value?.autorenewal_enabled && !!order.value?.can_renew && !order.value?.is_cloud_deleted && order.value?.status !== 'Terminated')
 
 /* ── Auto Renewal ─────────────────────────────────────────── */
 const showRenewalModal = ref(false)
@@ -1230,9 +1247,9 @@ async function finalizeRenewalStripe() {
             payment_intent: renewalPaymentIntentId,
         })
         order.value.is_subscribed    = true
-        // The real Stripe subscription isn't created until renewal:cron runs
-        // near the actual expiry date — not truly active yet.
-        order.value.auto_renew_state = 'pending'
+        // From the server: 'pending' until renewal:cron creates the Stripe
+        // subscription near expiry, 'active' if one is already live.
+        order.value.auto_renew_state = res.data?.data?.auto_renew_state ?? 'pending'
         closeStripeRenewalModal()
         successHandler(res, 'client-page')
     } catch (e) {
@@ -1281,6 +1298,8 @@ async function copyLicense() {
 const reissuing  = ref(false)
 const installKey = ref(0)
 
+const showReissueModal = ref(false)
+
 async function reissueLicense() {
     if (reissuing.value) return
     reissuing.value = true
@@ -1296,6 +1315,7 @@ async function reissueLicense() {
         errorHandler(e, 'client-page')
     } finally {
         reissuing.value = false
+        showReissueModal.value = false
     }
 }
 
@@ -1588,6 +1608,7 @@ watch(orderId, async () => {
     cursor: pointer;
 }
 .badge-soft-success { background-color: #e6f9ef; color: #1a9d5c; }
+.badge-soft-secondary { background-color: #eef0f2; color: #5c636a; }
 .download-section-label {
     font-weight: 600;
     font-size: 0.75rem;

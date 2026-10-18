@@ -160,8 +160,8 @@ html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
 /* ── Client Orders / Tables ─────────────────────────────────────────────────── */
 #app-client .dt-product-col { min-width: 180px; }
 #app-client .dt-date-col    { min-width: 145px; max-width: 145px; white-space: nowrap; } /* fits "Purchase Date" + sort icon */
-#app-client .dt-expiry-col  { min-width: 125px; max-width: 125px; white-space: nowrap; } /* "Expiry Date" is shorter */
-#app-client .dt-number-col  { min-width: 130px; max-width: 130px; }
+#app-client .dt-expiry-col  { min-width: 150px; max-width: 150px; white-space: nowrap; } /* fits "License Expiry" + sort icon */
+#app-client .dt-number-col  { min-width: 105px; max-width: 105px; }
 #app-client .dt-number-col a { white-space: nowrap; }
 #app-client .dt-agents-col  { min-width: 80px;  max-width: 80px; text-align: center; }
 #app-client .dt-action-col  { min-width: 155px; max-width: 155px; }

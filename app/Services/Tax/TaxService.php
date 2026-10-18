@@ -73,8 +73,12 @@ class TaxService
         $lines = [];
         $percent = 0.0;
         $labels = [];
+        $total = 0.0;
         foreach ($rates as $rate) {
-            $amountForRate = (float) ($taxes[$rate['id']] ?? 0);
+            // Each line rounded to what it is stored/shown as, and the total is their sum —
+            // otherwise 1,387.22 + 1,387.22 showed against a 2,774.45 tax in the total.
+            $amountForRate = round((float) ($taxes[$rate['id']] ?? 0), 2);
+            $total += $amountForRate;
             $lines[] = [
                 'tax_rate_id' => (int) $rate['id'],
                 'label' => $rate['label'],
@@ -90,7 +94,7 @@ class TaxService
             'applicable' => true,
             'prices_include_tax' => $pricesIncludeTax,
             'rates' => $rates,
-            'total' => array_sum($taxes),
+            'total' => $total,
             'percent' => $percent,
             'name' => implode(' + ', array_unique($labels)),
             'lines' => $lines,

@@ -204,7 +204,7 @@ class OrderController extends BaseOrderController
                     // Shown unless terminated (renewed on its replacement order instead); shown but
                     // disabled, with this reason, while the instance is deleted or an invoice is unpaid.
                     // ponytail: one invoice query per row — fine at page sizes; batch it if lists grow.
-                    'can_renew' => strcasecmp((string) $order->order_status, 'terminated') !== 0 && $order->subscription !== null,
+                    'can_renew' => strcasecmp((string) $order->order_status, 'terminated') !== 0 && $order->subscription?->canRenew(),
                     'renew_blocked_reason' => $order->subscription !== null ? $order->renewBlockedReason() : null,
                     'user' => $user,
                 ];
@@ -266,9 +266,9 @@ class OrderController extends BaseOrderController
             // SubscriptionRenewalService::setDate — the write side of the
             // same permission check).
             'permissions' => LicensePermissionsController::getPermissionsForProduct((int) $order->product),
-            'autorenewal' => $order->subscription?->autoRenew_status,
             'is_subscribed' => $order->subscription?->is_subscribed,
             'auto_renew_state' => $order->subscription?->autoRenewState() ?? 'inactive',
+            'can_renew' => (bool) $order->subscription?->canRenew(),
             'payment_log' => $paymentLog,
         ]);
     }
@@ -490,15 +490,16 @@ class OrderController extends BaseOrderController
     public function getOrderInvoices(Request $request, int $orderId): JsonResponse
     {
         $request->input('search-query', '');
-        $sortOrder = $request->input('sort-order', 'asc');
-        $sortField = $request->input('sort-field', 'created_at');
+        $sortOrder = $request->input('sort-order') === 'desc' ? 'desc' : 'asc';
+        $allowedSorts = ['date' => 'date', 'number' => 'number', 'amount' => 'grand_total', 'status' => 'status'];
+        $sortField = $allowedSorts[$request->input('sort-field')] ?? 'created_at';
         $limit = $request->input('limit', 10);
 
         $order = Order::with('user:id,first_name,last_name,email')->findOrFail($orderId);
 
         $invoices = $order->invoices()
             ->with(['invoiceItem:id,invoice_id,product_name'])
-            ->orderBy($sortField, $sortOrder)
+            ->orderByField($sortField, $sortOrder)
             ->paginate($limit);
 
         $invoices->getCollection()->transform(fn ($invoice): array => [
@@ -507,6 +508,7 @@ class OrderController extends BaseOrderController
             'amount' => currencyFormat($invoice->grand_total, $invoice->currency),
             'status' => $invoice->status,
             'date' => $invoice->date,
+            'type' => $invoice->type,
             'products' => $invoice->invoiceItem->pluck('product_name')->toArray(),
         ]);
 

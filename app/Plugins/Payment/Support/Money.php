@@ -55,4 +55,3 @@ final class Money
         return round($minor / (10 ** $decimals), $decimals);
     }
 }
-

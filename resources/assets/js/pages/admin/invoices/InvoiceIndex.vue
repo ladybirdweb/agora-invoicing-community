@@ -167,7 +167,7 @@ const REPORT_TO_COL = {
 
 // Labels shown in the ColumnSelector dropdown (keyed by report_columns key).
 const columnLabels = {
-    user_id:     __('message.user'),
+    user_id:     __('message.contact'),
     email:       __('message.email'),
     mobile:      __('message.mobile'),
     country:     __('message.country'),
@@ -198,7 +198,7 @@ function onColumnsChange(reportKeys) {
 const tableOptions = reactive({
     headings: {
         select:        () => h('input', { type: 'checkbox', checked: allSelected.value, onChange: toggleAll }),
-        user:          __('message.user'),
+        user:          __('message.contact'),
         email:         __('message.email'),
         mobile:        __('message.mobile'),
         country:       __('message.country'),

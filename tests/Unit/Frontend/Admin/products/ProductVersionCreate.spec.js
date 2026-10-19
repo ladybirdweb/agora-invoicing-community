@@ -81,7 +81,7 @@ describe('ProductVersionCreate.vue', () => {
         wrapper.vm.form.title = 'Test Title'
         wrapper.vm.form.version = '1.0.0'
         wrapper.vm.form.description = 'A description'
-        wrapper.vm.form.dependencies = '[]'
+        wrapper.vm.form.dependencies = '{"min_php_version": "8.1.0"}'
         // Drive the file through the same chunked-upload flow the DOM input
         // triggers, so uploadedName/uploadedForFile are populated for submit().
         const file = new File(['content'], 'test.zip', { type: 'application/zip' })

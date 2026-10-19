@@ -34,7 +34,7 @@ class TenatExport implements FromCollection, WithHeadings, WithTitle
     public function headings(): array
     {
         $headingsMap = [
-            'name' => 'User',
+            'name' => 'Contact',
             'email' => 'Email',
             'mobile' => 'Mobile',
             'Order' => 'Order',

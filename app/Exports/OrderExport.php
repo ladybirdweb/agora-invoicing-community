@@ -34,7 +34,7 @@ class OrderExport implements FromCollection, WithHeadings, WithTitle
     public function headings(): array
     {
         $headingsMap = [
-            'client' => 'User',
+            'client' => 'Contact',
             'email' => 'Email',
             'mobile' => 'Mobile',
             'country' => 'Country',

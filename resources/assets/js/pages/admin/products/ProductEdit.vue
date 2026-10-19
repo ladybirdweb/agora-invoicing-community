@@ -654,9 +654,11 @@ onMounted(async () => {
         form.hidden               = Boolean(p.hidden)
         form.invoice_hidden       = Boolean(p.invoice_hidden)
         form.whatsapp_integration = String(p.whatsapp_integration) === '1'
-        form.type                 = p.type ?? null
+        // type/group stay null if the linked record was deleted, so the empty
+        // dropdown fails validation instead of silently resubmitting a dead id.
+        form.type                 = (p.license_type ?? p.licenseType) ? p.type : null
         form.product_type         = p.product_type ?? 'independent'
-        form.group                = p.group ?? null
+        form.group                = (p.group_relation ?? p.groupRelation) ? p.group : null
         form.parent               = p.parent || null // 0 = no parent
         // Tax status is driven by whether the product has a tax class assigned.
         const assigned = (p.taxes ?? [])

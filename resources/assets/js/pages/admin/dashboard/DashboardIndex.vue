@@ -131,7 +131,7 @@
                 <tr>
                   <th>{{ __('message.invoice_no') }}</th>
                   <th>{{ __('message.total') }}</th>
-                  <th>{{ __('message.user') }}</th>
+                  <th>{{ __('message.contact') }}</th>
                   <th>{{ __('message.date') }}</th>
                   <th>{{ __('message.paid') }}</th>
                   <th>{{ __('message.balance') }}</th>
@@ -182,7 +182,7 @@
               <table class="table table-striped table-valign-middle">
                 <thead class="table-light">
                 <tr>
-                  <th>{{ __('message.user') }}</th>
+                  <th>{{ __('message.contact') }}</th>
                   <th>{{ __('message.order_no') }}</th>
                   <th>{{ __('message.expiry') }}</th>
                   <th>{{ __('message.days_passed') }}</th>
@@ -233,7 +233,7 @@
               <table class="table table-striped table-valign-middle">
                 <thead class="table-light">
                 <tr>
-                  <th>{{ __('message.user') }}</th>
+                  <th>{{ __('message.contact') }}</th>
                   <th>{{ __('message.order_no') }}</th>
                   <th>{{ __('message.expiry') }}</th>
                   <th>{{ __('message.days_left') }}</th>
@@ -286,7 +286,7 @@
               <table class="table table-striped table-valign-middle">
                 <thead class="table-light">
                 <tr>
-                  <th>{{ __('message.user') }}</th>
+                  <th>{{ __('message.contact') }}</th>
                   <th>{{ __('message.version') }}</th>
                   <th>{{ __('message.product') }}</th>
                   <th>{{ __('message.expiry') }}</th>
@@ -336,7 +336,7 @@
                   <th>{{ __('message.order_no') }}</th>
                   <th>{{ __('message.product') }}</th>
                   <th>{{ __('message.date') }}</th>
-                  <th>{{ __('message.user') }}</th>
+                  <th>{{ __('message.contact') }}</th>
                 </tr>
                 </thead>
                 <tbody>

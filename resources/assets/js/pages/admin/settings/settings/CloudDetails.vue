@@ -185,7 +185,6 @@
                                         <ColumnSelector
                                             entityType="tenats"
                                             :labels="tenantColumnLabels"
-                                            :pinStart="[]"
                                             componentName="cloud-details"
                                             @change="onTenantColumnsChange"
                                         />
@@ -636,7 +635,7 @@ const TENANT_REPORT_TO_COL = {
 
 const tenantColumnLabels = {
     Order:          __('message.order'),
-    name:           __('message.user'),
+    name:           __('message.contact'),
     email:          __('message.email'),
     mobile:         __('message.mobile'),
     country:        __('message.country'),
@@ -662,7 +661,7 @@ const tenantColumns = ref([...DEFAULT_TENANT_COLUMNS])
 const selectedTenantReportColumns = ref([])
 
 function onTenantColumnsChange(reportKeys) {
-    selectedTenantReportColumns.value = reportKeys.filter(k => k !== 'action')
+    selectedTenantReportColumns.value = reportKeys.filter(k => !['checkbox', 'action'].includes(k))
     const mapped = reportKeys.map(k => TENANT_REPORT_TO_COL[k]).filter(Boolean)
     tenantColumns.value = mapped.length ? mapped : [...DEFAULT_TENANT_COLUMNS]
 }
@@ -670,7 +669,7 @@ function onTenantColumnsChange(reportKeys) {
 const tenantTableOptions = reactive({
     headings: {
         order:       __('message.order'),
-        user:        __('message.user'),
+        user:        __('message.contact'),
         email:       __('message.email'),
         mobile:      __('message.mobile'),
         country:     __('message.country'),

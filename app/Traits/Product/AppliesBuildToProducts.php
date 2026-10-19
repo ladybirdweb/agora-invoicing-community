@@ -35,20 +35,17 @@ trait AppliesBuildToProducts
     {
         $validated = $request->validate([
             'filename' => ['required', 'string', 'max:255'],
-            // 'present' not 'required': an empty [] is a legitimate "no
-            // dependencies" — 'required' rejects empty arrays outright
-            // (Laravel treats count() < 1 as "missing"), which is exactly
-            // what the frontend sends by default.
-            'dependencies' => ['present', 'array'],
-            'description' => ['required'],
+            // 'required' also rejects an empty array — favMer needs real
+            // dependencies to run its pre-update checks.
+            'dependencies' => ['required', 'array'],
+            'description' => ['nullable', 'string'],
             'release_type' => ['required', \Illuminate\Validation\Rule::in(ProductUpload::RELEASE_TYPES)],
             'products' => ['required', 'array', 'min:1'],
             'products.*.id' => ['required', 'integer', 'exists:products,id'],
             'products.*.version' => ['required', 'string', 'max:50'],
         ], [
             'filename.required' => __('validation.product_validate.filename_required'),
-            'dependencies.present' => __('validation.product_validate.dependencies_required'),
-            'description' => __('validation.product_validate.description_required'),
+            'dependencies.required' => __('validation.product_validate.dependencies_required'),
             'release_type' => __('validation.product_validate.release_type_required'),
             'products.required' => __('message.select-a-row'),
             'products.*.id.exists' => __('validation.product_validate.product_invalid'),

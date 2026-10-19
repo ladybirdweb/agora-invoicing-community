@@ -151,8 +151,8 @@ describe('PlanIndex.vue', () => {
     // ── requestAdapter ───────────────────────────────────────────────
     describe('tableOptions.requestAdapter', () => {
         const adapt = (d) => wrapper.vm.tableOptions.requestAdapter(d)
-        it('maps period to days in sort-field', () => {
-            expect(adapt({ orderBy: 'period', ascending: true, query: '', page: 1, limit: 10 })['sort-field']).toBe('days')
+        it('period is not sortable', () => {
+            expect(wrapper.vm.tableOptions.sortable).not.toContain('period')
         })
         it('defaults sort-field to created_at when orderBy is undefined', () => {
             expect(adapt({ ascending: true, query: '', page: 1, limit: 10 })['sort-field']).toBe('created_at')

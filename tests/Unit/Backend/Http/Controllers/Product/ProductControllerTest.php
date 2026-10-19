@@ -166,9 +166,9 @@ class ProductControllerTest extends DBTestCase
         $product = Product::factory()->make();
         $response = $this->postJson('/product', [
             'name' => 'Test Product '.uniqid(),
-            'type' => $product->type ?? 1,
+            'type' => \App\Model\License\LicenseType::factory()->create()->id,
             'product_type' => 'independent',
-            'group' => $product->group ?? 1,
+            'group' => \App\Model\Product\ProductGroup::factory()->create()->id,
             'require_domain' => 0,
             'description' => 'Test description',
             'product_description' => 'Full description',
@@ -189,9 +189,9 @@ class ProductControllerTest extends DBTestCase
 
         $response = $this->patchJson('/product/'.$product->id, [
             'name' => 'Updated Product',
-            'type' => $product->type ?? 1,
+            'type' => \App\Model\License\LicenseType::factory()->create()->id,
             'product_type' => 'independent',
-            'group' => $product->group ?? 1,
+            'group' => \App\Model\Product\ProductGroup::factory()->create()->id,
             'require_domain' => 0,
             'description' => 'Updated description',
             'product_description' => 'Updated full description',
@@ -388,6 +388,23 @@ class ProductControllerTest extends DBTestCase
         ]);
     }
 
+    public function test_product_upload_create_without_description_saves_blank(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = Product::factory()->create();
+
+        $response = $this->postJson("/product/upload/{$product->id}", [
+            'producttitle' => 'Version 2.1',
+            'version' => '2.1.0',
+            'filename' => 'product-v2.1.0.zip',
+            'dependencies' => ['core'],
+            'release_type' => 'official',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('product_uploads', ['product_id' => $product->id, 'version' => '2.1.0', 'description' => '']);
+    }
+
     public function test_product_upload_create_for_nonexistent_product_returns_400(): void
     {
         $this->getLoggedInUser('admin');
@@ -441,6 +458,7 @@ class ProductControllerTest extends DBTestCase
 
         $response->assertStatus(412);
         $this->assertArrayHasKey('title', $response->json('message'));
+        $this->assertArrayHasKey('dependencies', $response->json('message'));
     }
 
     public function test_update_product_upload_with_new_filename_updates_file_field(): void
@@ -728,9 +746,9 @@ class ProductControllerTest extends DBTestCase
     {
         return array_merge([
             'name' => 'Test Product '.uniqid(),
-            'type' => 1,
+            'type' => \App\Model\License\LicenseType::factory()->create()->id,
             'product_type' => 'independent',
-            'group' => 1,
+            'group' => \App\Model\Product\ProductGroup::factory()->create()->id,
             'require_domain' => 0,
             'description' => 'Test description',
             'product_description' => 'Full description',

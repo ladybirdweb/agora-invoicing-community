@@ -135,7 +135,7 @@ class ProductUpload extends Model
         self::create([
             'product_id' => $product->id,
             'title' => $title,
-            'description' => $validated['description'],
+            'description' => (string) ($validated['description'] ?? ''), // optional; column is NOT NULL
             'version' => $version,
             'file' => $file,
             'is_private' => $isPrivate,

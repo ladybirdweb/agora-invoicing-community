@@ -42,7 +42,7 @@
 
                     <div class="col-md-12">
                         <TextArea name="dependencies" type="textarea" :rows="6" :length="100000" :label="__('message.dependencies')" :required="true"
-                            :hint="__('message.enter_json_format')" :value="form.dependencies"
+                            :hint="__('message.enter_json_format')" placeholder="{}" :value="form.dependencies"
                             :onChange="(v) => { form.dependencies = v; setFieldError('dependencies', undefined) }" :error="errors.dependencies" />
                     </div>
                 </div>
@@ -307,15 +307,20 @@ const selectedReleaseType = computed(() => releaseTypes.find(r => r.value === fo
 
 const form = ref({
     description: '', release_type: 'official',
-    is_private: false, is_restricted: false, dependencies: '[]',
+    is_private: false, is_restricted: false, dependencies: '',
 })
 
 function parseDependencies() {
-    const raw = (form.value.dependencies || '').trim() || '[]'
+    const raw = (form.value.dependencies || '').trim()
+    if (!raw) return { error: 'required' }
     try {
         const data = JSON.parse(raw)
 
-        return Array.isArray(data) ? { data } : { error: 'invalid_json' }
+        // Must be a non-empty JSON object/array - favMer reads this to check
+        // PHP/extension requirements before updating.
+        if (typeof data !== 'object' || data === null) return { error: 'invalid_json' }
+
+        return Object.keys(data).length ? { data } : { error: 'required' }
     } catch {
         return { error: 'invalid_json' }
     }
@@ -342,13 +347,10 @@ async function submit() {
     } else if (selectedProductIds.value.some(id => !productVersions.value[id]?.trim())) {
         errs.products = __('message.version_required_per_product') || 'Every selected product needs a version.'
     }
-    const descTpl = document.createElement('template')
-    descTpl.innerHTML = form.value.description || ''
-    if (!descTpl.content.textContent.trim()) {
-        errs.description = __('message.description')
-    }
     const deps = parseDependencies()
-    if (deps.error) errs.dependencies = __('message.enter_json_format') || 'Enter valid JSON format.'
+    if (deps.error) errs.dependencies = deps.error === 'required'
+        ? __('validation.product_validate.dependencies_required')
+        : __('message.enter_json_format') || 'Enter valid JSON format.'
     setErrors(errs)
     if (Object.keys(errs).length || fileError.value) return
 

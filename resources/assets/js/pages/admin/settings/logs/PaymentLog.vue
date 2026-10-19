@@ -162,7 +162,7 @@ const tableOptions = reactive({
             onChange: toggleAll,
         }),
         date:           __('message.date'),
-        user:           __('message.user'),
+        user:           __('message.contact'),
         order:          __('message.order_no'),
         amount:         __('message.amount'),
         payment_type:   __('message.description'),

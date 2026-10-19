@@ -86,7 +86,7 @@ const columns = [
 const tableOptions = reactive({
     headings: {
         request_id:     __('message.request_id'),
-        user_fullname:  __('message.user'),
+        user_fullname:  __('message.contact'),
         user_email:     __('message.email'),
         mobile_number:  __('message.mobile_number'),
         source:         __('message.source'),

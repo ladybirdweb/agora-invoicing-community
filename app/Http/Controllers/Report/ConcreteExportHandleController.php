@@ -517,7 +517,7 @@ class ConcreteExportHandleController extends ExportHandleController
         $client = new Client;
 
         // Similar logic to export users but for orders
-        $this->selectedColumns = array_filter($this->selectedColumns, fn ($column): bool => $column != 'action');
+        $this->selectedColumns = array_filter($this->selectedColumns, fn ($column): bool => ! in_array($column, ['checkbox', 'action']));
 
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
         if (! $keys) {

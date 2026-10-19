@@ -124,7 +124,7 @@ class ExportsTest extends DBTestCase
 
         $headings = $export->headings();
 
-        $this->assertSame('User', $headings[0]);
+        $this->assertSame('Contact', $headings[0]);
         $this->assertSame('Email', $headings[1]);
     }
 
@@ -223,7 +223,7 @@ class ExportsTest extends DBTestCase
     {
         $export = new TenatExport(['name', 'email', 'mobile'], collect(), 1);
         $headings = $export->headings();
-        $this->assertSame(['User', 'Email', 'Mobile'], $headings);
+        $this->assertSame(['Contact', 'Email', 'Mobile'], $headings);
     }
 
     public function test_tenat_export_headings_falls_back_to_column_name_for_unknown(): void

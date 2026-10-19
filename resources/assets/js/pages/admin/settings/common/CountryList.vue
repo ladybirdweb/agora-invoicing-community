@@ -28,7 +28,7 @@ const columns = ['country', 'count']
 const tableOptions = reactive({
     headings: {
         country: __('message.country'),
-        count:   __('message.users'),
+        count:   __('message.contacts'),
     },
     columnsClasses: {
         country: 'dt-name',

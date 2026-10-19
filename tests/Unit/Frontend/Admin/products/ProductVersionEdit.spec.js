@@ -13,7 +13,7 @@ const VERSION_RESPONSE = {
     data: {
         id: 7, title: 'Test Version', version: '2.0.0', description: 'A description',
         release_type: 'official', is_private: false, is_restricted: false,
-        dependencies: [], file: 'existing-file.zip',
+        dependencies: { min_php_version: '8.1.0' }, file: 'existing-file.zip',
     },
 }
 

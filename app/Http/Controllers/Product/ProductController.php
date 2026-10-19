@@ -278,19 +278,16 @@ class ProductController extends BaseProductController
             'producttitle' => ['required', 'string', 'max:255'],
             'version' => ['required', 'string', 'max:50'],
             'filename' => ['required', 'string', 'max:255'],
-            // 'present' not 'required': an empty [] is a legitimate "no
-            // dependencies" — 'required' rejects empty arrays outright
-            // (Laravel treats count() < 1 as "missing"), which is exactly
-            // what the frontend sends by default.
-            'dependencies' => ['present', 'array'],
-            'description' => ['required'],
+            // 'required' also rejects an empty array — favMer needs real
+            // dependencies to run its pre-update checks.
+            'dependencies' => ['required', 'array'],
+            'description' => ['nullable', 'string'],
             'release_type' => ['required', Rule::in(ProductUpload::RELEASE_TYPES)],
         ], [
             'producttitle.required' => __('validation.product_validate.producttitle_required'),
             'version.required' => __('validation.product_validate.version_required'),
             'filename.required' => __('validation.product_validate.filename_required'),
-            'dependencies.present' => __('validation.product_validate.dependencies_required'),
-            'description' => __('validation.product_validate.description_required'),
+            'dependencies.required' => __('validation.product_validate.dependencies_required'),
             'release_type' => __('validation.product_validate.release_type_required'),
         ]);
 
@@ -393,16 +390,14 @@ class ProductController extends BaseProductController
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'version' => ['required', 'string', 'max:50'],
-            // 'present' not 'required': an empty [] is a legitimate "no
-            // dependencies" — 'required' rejects empty arrays outright
-            // (Laravel treats count() < 1 as "missing"), which is exactly
-            // what the frontend sends by default.
-            'dependencies' => ['present', 'array'],
+            // 'required' also rejects an empty array — favMer needs real
+            // dependencies to run its pre-update checks.
+            'dependencies' => ['required', 'array'],
             'release_type' => ['required', Rule::in(ProductUpload::RELEASE_TYPES)],
         ], [
             'title.required' => __('validation.extend_product.title_required'),
             'version.required' => __('validation.extend_product.version_required'),
-            'dependencies.present' => __('validation.extend_product.dependencies_required'),
+            'dependencies.required' => __('validation.extend_product.dependencies_required'),
         ]);
 
         try {
@@ -410,7 +405,7 @@ class ProductController extends BaseProductController
 
             $payload = [
                 'title' => $validated['title'],
-                'description' => $request->input('description'),
+                'description' => (string) $request->input('description'), // column is NOT NULL
                 'version' => $validated['version'],
                 'dependencies' => ProductUpload::encodeDependencies($validated['dependencies']),
                 'is_private' => $request->boolean('is_private'),
@@ -475,7 +470,7 @@ class ProductController extends BaseProductController
             // "Helpdesk Enterprise" under Perpetual/Recurring/Cloud), just never
             // twice within the same group.
             'name' => ['required', Rule::unique('products', 'name')->where('group', $request->input('group'))],
-            'type' => ['required'],
+            'type' => ['required', 'exists:license_types,id'],
             'product_type' => ['required', 'in:independent,addon'],
             'config_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
             'license_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
@@ -485,7 +480,7 @@ class ProductController extends BaseProductController
             'short_description' => ['nullable', 'string'],
             'image' => ['sometimes', 'mimes:jpeg,png,jpg', 'max:2048'],
             'product_sku' => ['required', 'unique:products,product_sku'],
-            'group' => ['required'],
+            'group' => ['required', 'exists:product_groups,id'],
             'show_agent' => ['required'],
             // Saved only if listed here (validated-only save), so every editable column must be.
             'parent' => ['nullable', 'integer'],
@@ -494,6 +489,8 @@ class ProductController extends BaseProductController
             'github_repository' => ['nullable', 'string', 'max:225'],
             'version' => ['nullable', 'string', 'max:225'],
         ], [
+            'type.exists' => __('validation.product_controller.type_required'),
+            'group.exists' => __('validation.product_controller.group_required'),
             'product_sku.unique' => __('validation.product_sku_unique'),
             'name.unique' => __('validation.product_name_unique'),
             'show_agent.required' => __('validation.product_show_agent_required'),
@@ -571,7 +568,7 @@ class ProductController extends BaseProductController
         $validated = $request->validate([
             // Scoped to the group, not global — see productCreate for why.
             'name' => ['required', Rule::unique('products', 'name')->where('group', $request->input('group'))->ignore($productId)],
-            'type' => ['required'],
+            'type' => ['required', 'exists:license_types,id'],
             'product_type' => ['required', 'in:independent,addon'],
             'config_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
             'license_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
@@ -582,7 +579,7 @@ class ProductController extends BaseProductController
             'image' => ['sometimes', 'mimes:jpeg,png,jpg', 'max:2048'],
             'file' => ['sometimes', 'file', 'max:102400'], // NOSONAR — 100 MB limit is intentional for product file downloads
             'product_sku' => ['required', Rule::unique('products', 'product_sku')->ignore($productId)],
-            'group' => ['required'],
+            'group' => ['required', 'exists:product_groups,id'],
             'show_agent' => ['required'],
             // Saved only if listed here (validated-only save), so every editable column must be.
             'parent' => ['nullable', 'integer'],
@@ -594,6 +591,7 @@ class ProductController extends BaseProductController
             'name.required' => __('validation.product_controller.name_required'),
             'name.unique' => __('validation.product_name_unique'),
             'type.required' => __('validation.product_controller.type_required'),
+            'type.exists' => __('validation.product_controller.type_required'),
             'description.required' => __('validation.product_controller.description_required'),
             'product_description.required' => __('validation.product_controller.product_description_required'),
             'image.mimes' => __('validation.product_controller.image_mimes'),
@@ -601,6 +599,7 @@ class ProductController extends BaseProductController
             'product_sku.required' => __('validation.product_controller.product_sku_required'),
             'product_sku.unique' => __('validation.product_sku_unique'),
             'group.required' => __('validation.product_controller.group_required'),
+            'group.exists' => __('validation.product_controller.group_required'),
             'show_agent.required' => __('validation.product_controller.show_agent_required'),
             'config_file_path.regex' => __('validation.config_file_path_regex'),
             'license_file_path.regex' => __('validation.license_file_path_regex'),

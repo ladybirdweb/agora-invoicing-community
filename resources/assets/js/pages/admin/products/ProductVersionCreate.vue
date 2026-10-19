@@ -39,12 +39,12 @@
                     </div>
 
                     <div class="col-md-12">
-                        <TinyMCE name="description" id="editor-version-description-create" :label="__('message.description')" :required="true"
+                        <TinyMCE name="description" id="editor-version-description-create" :label="__('message.description')"
                             :value="form.description" :onChange="(v) => { form.description = v; setFieldError('description', undefined) }" :error="errors.description" />
                     </div>
 
                     <div class="col-md-12">
-                        <TextArea name="dependencies" type="textarea" :rows="8" :length="100000" :label="__('message.dependencies')"
+                        <TextArea name="dependencies" type="textarea" :rows="8" :length="100000" :label="__('message.dependencies')" :required="true"
                             :hint="__('message.enter_json_format')" placeholder="{}" :value="form.dependencies"
                             :onChange="(v) => { form.dependencies = v; setFieldError('dependencies', undefined) }" :error="errors.dependencies" />
                     </div>
@@ -96,14 +96,16 @@ const releaseTypes = [
 const selectedReleaseType = computed(() => releaseTypes.find(r => r.value === form.value.release_type) ?? releaseTypes[0])
 
 function parseDependencies() {
-    const raw = (form.value.dependencies || '').trim() || '{}'
+    const raw = (form.value.dependencies || '').trim()
+    if (!raw) return { error: 'required' }
     try {
         const data = JSON.parse(raw)
 
-        // Backend just needs an `array` (json_decode(..., true) turns both a
-        // JSON array and a JSON object into a PHP array) - reject only what
-        // that would actually reject: a bare string/number/bool/null.
-        return typeof data === 'object' && data !== null ? { data } : { error: 'invalid_json' }
+        // Must be a non-empty JSON object/array - favMer reads this to check
+        // PHP/extension requirements before updating.
+        if (typeof data !== 'object' || data === null) return { error: 'invalid_json' }
+
+        return Object.keys(data).length ? { data } : { error: 'required' }
     } catch {
         return { error: 'invalid_json' }
     }
@@ -127,9 +129,10 @@ async function submit() {
     const errs = {}
     if (!form.value.title)       errs.title       = __('validation.product_validate.producttitle_required')
     if (!form.value.version)     errs.version     = __('validation.product_validate.version_required')
-    if (!form.value.description) errs.description = __('validation.product_validate.description_required')
     const deps = parseDependencies()
-    if (deps.error) errs.dependencies = __('message.enter_json_format') || 'Enter valid JSON format.'
+    if (deps.error) errs.dependencies = deps.error === 'required'
+        ? __('validation.product_validate.dependencies_required')
+        : __('message.enter_json_format') || 'Enter valid JSON format.'
     setErrors(errs)
     if (Object.keys(errs).length || fileError.value) return
 

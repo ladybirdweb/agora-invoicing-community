@@ -127,7 +127,7 @@ const options = {
     requestAdapter: makeRequestAdapter('created_at'),
     orderBy: { column: 'created_at', ascending: false },
     headings: {
-        user_name:       __('message.user'),
+        user_name:       __('message.contact'),
         phone_number:    __('message.phone_number'),
         waba_id:         __('message.waba_id'),
         phone_number_id: __('message.phone_number_id'),

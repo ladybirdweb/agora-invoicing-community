@@ -87,9 +87,9 @@ const tableOptions = reactive({
         currencies: (f, row) => (row.currencies ?? []).join(', ') || '—',
         action:     (f, row) => h(RouterLink, { to: `/products/plans/${row.id}/edit`, class: 'btn btn-light table_btn', title: __('message.edit') }, () => h('i', { class: 'fas fa-edit' })),
     },
-    sortable: ['name', 'product', 'period'],
+    sortable: ['name', 'product'],
     filterable: true,
-    requestAdapter: makeRequestAdapter('created_at', null, { period: 'days' }),
+    requestAdapter: makeRequestAdapter('created_at'),
     orderBy: { column: 'created_at', ascending: false },
 })
 </script>

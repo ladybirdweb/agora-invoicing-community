@@ -68,7 +68,7 @@ describe('ProductBuildApply.vue', () => {
     async function makeSubmitValid() {
         wrapper.vm.toggleProduct(1)
         wrapper.vm.productVersions[1] = '1.0.0'
-        wrapper.vm.form.description = 'A description'
+        wrapper.vm.form.dependencies = '{"min_php_version": "8.1.0"}'
         wrapper.vm.onFile({ target: { files: [new File(['content'], 'source.zip', { type: 'application/zip' })] } })
         await flushPromises()
     }
@@ -207,12 +207,20 @@ describe('ProductBuildApply.vue', () => {
         expect(wrapper.vm.errors.products).toBeTruthy()
     })
 
-    it('submit sets a description error when description is blank', async () => {
+    it('submit allows a blank description (optional)', async () => {
         wrapper.vm.toggleProduct(1)
         wrapper.vm.productVersions[1] = '1.0.0'
-        wrapper.vm.form.description = '<p></p>'
+        wrapper.vm.form.description = ''
         await wrapper.vm.submit()
-        expect(wrapper.vm.errors.description).toBeTruthy()
+        expect(wrapper.vm.errors.description).toBeFalsy()
+    })
+
+    it.each(['', '{}', '[]'])('submit sets a dependencies required error for %p', async (deps) => {
+        wrapper.vm.toggleProduct(1)
+        wrapper.vm.productVersions[1] = '1.0.0'
+        wrapper.vm.form.dependencies = deps
+        await wrapper.vm.submit()
+        expect(wrapper.vm.errors.dependencies).toBe('validation.product_validate.dependencies_required')
     })
 
     it('submit sets a dependencies error on invalid JSON', async () => {

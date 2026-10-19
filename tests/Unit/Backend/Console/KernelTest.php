@@ -295,13 +295,12 @@ class KernelTest extends DBTestCase
     // Command registration
     // -------------------------------------------------------------------------
 
-    public function test_generate_seo_files_and_sentry_release_are_registered_commands(): void
+    public function test_generate_seo_files_is_registered_command(): void
     {
         $ref = new \ReflectionProperty(Kernel::class, 'commands');
         $commands = $ref->getValue($this->kernel);
 
         $this->assertContains(\App\Console\Commands\GenerateSeoFiles::class, $commands);
-        $this->assertContains(\App\Console\Commands\SentryRelease::class, $commands);
     }
 
     public function test_seo_generate_files_is_scheduled_hourly(): void

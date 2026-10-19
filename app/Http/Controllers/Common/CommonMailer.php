@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Common;
 
 use Exception;
 use Illuminate\Mail\Mailer;
-use Mail;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 
 class CommonMailer
@@ -25,7 +24,7 @@ class CommonMailer
 
             // Set the mailer
             /** @var Mailer $mailer */
-            $mailer = Mail::mailer();
+            $mailer = app('mailer');
             $mailer->setSymfonyTransport($transport);
 
             return true;

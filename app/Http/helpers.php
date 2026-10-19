@@ -171,7 +171,7 @@ function userTimezone(): string
 {
     $valid = timezone_identifiers_list();
 
-    foreach ([Auth::user()?->timezone->name, systemTimezone()] as $tz) {
+    foreach ([Auth::user()?->timezone?->name, systemTimezone()] as $tz) {
         if (! $tz) {
             continue;
         }

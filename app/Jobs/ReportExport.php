@@ -44,7 +44,7 @@ class ReportExport implements ShouldQueue
         try {
             $this->export();
         } finally {
-            Auth::forgetUser(); // the worker is long-lived; don't leak this user into the next job
+            app('auth')->forgetGuards(); // the worker is long-lived; don't leak this user into the next job
         }
     }
 

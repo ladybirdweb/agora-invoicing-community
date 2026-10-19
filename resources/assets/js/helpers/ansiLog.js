@@ -11,8 +11,7 @@ const ESCAPE = /(\x1b\[[0-9;?]*[A-Za-z])/
 export function parseLog(raw) {
     const lines = raw.split('\n').map(rawLine => {
         // Progress bars redraw the line with \r: keep only its final state.
-        const trimmed = rawLine.replace(/\r+$/, '')
-        const line    = trimmed.slice(trimmed.lastIndexOf('\r') + 1)
+        const line = rawLine.split('\r').filter(Boolean).at(-1) ?? ''
 
         const segments = []
         let color = ''
@@ -68,5 +67,9 @@ const STAGE = /^(Installing|Configuring|Downloading|Obtaining|Generating|Setting
 export function stages(lines) {
     return lines
         .filter(l => l.color === 'yellow' && STAGE.test(l.text.trim()))
-        .map(l => l.text.trim().replace(/[.…]+$/, '').trim())
+        .map(l => {
+            let text = l.text.trim()
+            while (text.endsWith('.') || text.endsWith('…')) text = text.slice(0, -1)
+            return text.trim()
+        })
 }

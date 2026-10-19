@@ -3540,7 +3540,7 @@
     ]
   },
   "resources/assets/js/client.js": {
-    "file": "assets/client-CqNm3SbC.js",
+    "file": "assets/client-DHiUaZBD.js",
     "name": "client",
     "src": "resources/assets/js/client.js",
     "isEntry": true,
@@ -6206,7 +6206,7 @@
     ]
   },
   "resources/assets/js/pages/client/orders/OrderIndex.vue": {
-    "file": "assets/OrderIndex-WrxNWF7z.js",
+    "file": "assets/OrderIndex-DAgPM2CO.js",
     "name": "OrderIndex",
     "src": "resources/assets/js/pages/client/orders/OrderIndex.vue",
     "isDynamicEntry": true,
@@ -6225,7 +6225,7 @@
     ]
   },
   "resources/assets/js/pages/client/orders/OrderShow.vue": {
-    "file": "assets/OrderShow-aNmMZNSi.js",
+    "file": "assets/OrderShow-BaCvhTGd.js",
     "name": "OrderShow",
     "src": "resources/assets/js/pages/client/orders/OrderShow.vue",
     "isDynamicEntry": true,

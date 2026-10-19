@@ -289,7 +289,11 @@ const notesText = (html) => new DOMParser().parseFromString(html ?? '', 'text/ht
 const notesTruncated = (html) => notesText(html).length > NOTES_PREVIEW
 function notesPreview(html) {
     const text = notesText(html)
-    return text.length > NOTES_PREVIEW ? `${text.slice(0, NOTES_PREVIEW).replace(/\s+\S*$/, '')}…` : text
+    if (text.length <= NOTES_PREVIEW) return text
+    const cut = text.slice(0, NOTES_PREVIEW)
+    let end = cut.length
+    while (end && !/\s/.test(cut[end - 1])) end--
+    return `${end ? cut.slice(0, end).trimEnd() : cut}…`
 }
 
 function toggleNotes(key) {

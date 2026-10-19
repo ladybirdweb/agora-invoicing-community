@@ -238,7 +238,7 @@
                 <div class="card card-light card-outline">
 
                     <div class="card-header border-0">
-                        <!-- Action buttons — float-end, btn-xs btn-light matching favMer -->
+                        <!-- Action buttons — float-end, btn-xs btn-light -->
                         <div class="float-end user_view">
                             <RouterLink :to="`/users/${userId}/edit`" class="btn btn-xs btn-light">
                                 <i class="fas fa-edit">&nbsp;</i>{{ __('message.edit') }}
@@ -852,11 +852,11 @@ const orderOptions = {
   width: 100px;
 }
 
-/* Match favMer verification icon colours */
+/* Verification icon colours */
 .icon-success { color: #017701 !important; cursor: pointer; padding: 3px; }
 .icon-danger  { color: red     !important; cursor: pointer; padding: 3px; }
 
-/* Copied tooltip — matches favMer .copyClip */
+/* Copied tooltip */
 .copy-clip {
     position: absolute;
     background: black;
@@ -877,7 +877,7 @@ const orderOptions = {
     border-color: black transparent transparent transparent;
 }
 
-/* Match favMer .user_view button spacing */
+/* Action button spacing */
 .user_view .btn { margin-left: 4px; }
 .nowrap-hidden { white-space: nowrap; overflow: hidden; }
 .truncate-with-copy { max-width: calc(100% - 22px); }

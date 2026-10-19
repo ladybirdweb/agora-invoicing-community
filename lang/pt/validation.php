@@ -425,6 +425,7 @@ return [
             'numeric' => 'A taxa deve ser um número.',
             'decimal' => 'A taxa deverá ter no máximo 3 casas decimais.',
             'max' => 'A taxa não deve ser superior a 999,999.',
+            'min' => 'A taxa deve ser maior ou igual a 0.',
         ],
         'priority' => [
             'required' => 'O campo de prioridade é obrigatório.',

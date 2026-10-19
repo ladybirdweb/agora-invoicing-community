@@ -231,13 +231,9 @@ class BaseOrderController extends ExtendedOrderController
         $orders = new Order;
         /** @var Order $order */
         $order = $orders->where('id', $orderid)->first();
-        $invoiceId = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
-        /** @var Invoice|null $invoice */
-        $invoice = Invoice::find($invoiceId);
-        $number = $invoice?->number;
         $downloadurl = '';
         if ($user && $order->order_status == 'Executed') { // @phpstan-ignore booleanAnd.leftAlwaysTrue
-            $downloadurl = url('product/download/'.$productId.'/'.$number);
+            $downloadurl = url('download/'.$orderid);
         }
 
         $myaccounturl = url('my-order/'.$orderid);

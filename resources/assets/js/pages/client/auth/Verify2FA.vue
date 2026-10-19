@@ -106,7 +106,7 @@ onMounted(async () => {
 })
 
 function onTotpInput(value) {
-    form.totp = String(value).replace(/\D/g, '')
+    form.totp = String(value).replace(/\D/g, '').slice(0, 6)
     setFieldError('totp', undefined)
 }
 

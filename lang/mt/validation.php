@@ -425,6 +425,7 @@ return [
             'numeric' => 'Ir-rata għandha tkun numru.',
             'decimal' => 'Ir-rata għandu jkollha mhux aktar minn 3 postijiet deċimali.',
             'max' => 'Ir-rata m\'għandhiex tkun akbar minn 999.999.',
+            'min' => 'Ir-rata għandha tkun akbar minn jew ugwali għal 0.',
         ],
         'priority' => [
             'required' => 'Il-qasam prijoritarju huwa meħtieġ.',

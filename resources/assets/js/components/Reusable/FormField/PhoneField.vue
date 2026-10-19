@@ -40,7 +40,11 @@ let iti = null
 
 function onInput(e) {
     localError.value = ''
-    props.onChange(e.target.value, props.name)
+    // intl-tel-input rewrites the box in its own input listener, which runs after this one
+    // (a pasted "+91 95005 75754" becomes "9500575754" and the dial code moves to the flag).
+    // Read the value once it has, or the form keeps "+91 …" and the page sends "+91 +91 …".
+    const input = e.target
+    setTimeout(() => props.onChange(input.value, props.name))
 }
 
 // Validate the settled value on blur (not per keystroke) — an in-progress

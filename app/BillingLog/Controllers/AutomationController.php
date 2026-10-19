@@ -8,14 +8,12 @@ use App\BillingLog\Model\LogCategory;
 use App\BillingLog\Model\MailLog;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Jobs\Job;
-use Illuminate\Support\Facades\Date;
 use Lang;
 use Logger;
 
@@ -30,7 +28,7 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             'log_type' => ['required', 'in:exception,cron,mail'],
         ]);
 
-        $date = $this->parseDate($request->date);
+        $date = (string) $request->date;
         $type = strtolower($request->log_type);
 
         switch ($type) {
@@ -47,15 +45,10 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
         }
     }
 
-    private function parseDate(mixed $date): mixed
-    {
-        return Date::parse($date ?? Date::today());
-    }
-
-    private function getCronCommands(Carbon $date): mixed
+    private function getCronCommands(string $date): mixed
     {
         return CronLog::select('command', 'status', DB::raw('count(id) as status_count'))
-            ->whereBetween('created_at', [$date->copy()->startOfDay(), $date->endOfDay()])
+            ->whereBetween('created_at', [userDayStart($date), userDayEnd($date)])
             ->groupBy('command', 'status')
             ->cursor()
             ->groupBy('command')
@@ -67,12 +60,12 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             ], $logs->pluck('status_count', 'status')->toArray()))->values();
     }
 
-    private function getMailCategoryLog(Carbon $date): mixed
+    private function getMailCategoryLog(string $date): mixed
     {
         $categoryNames = LogCategory::pluck('name', 'id');
 
         return MailLog::select('status', 'log_category_id', DB::raw('count(id) as status_count'))
-            ->whereBetween('created_at', [$date->copy()->startOfDay(), $date->endOfDay()])
+            ->whereBetween('created_at', [userDayStart($date), userDayEnd($date)])
             ->groupBy('log_category_id', 'status')
             ->cursor()
             ->groupBy('log_category_id')
@@ -85,12 +78,12 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             ], $logs->pluck('status_count', 'status')->toArray()))->values();
     }
 
-    private function getExceptionCategoryLog(Carbon $date): mixed
+    private function getExceptionCategoryLog(string $date): mixed
     {
         $categoryNames = LogCategory::pluck('name', 'id');
 
         return ExceptionLog::select('log_category_id', DB::raw('count(id) as count'))
-            ->whereBetween('created_at', [$date->copy()->startOfDay(), $date->endOfDay()])
+            ->whereBetween('created_at', [userDayStart($date), userDayEnd($date)])
             ->groupBy('log_category_id')
             ->get()
             ->map(fn ($log): array => [ // @phpstan-ignore method.unresolvableReturnType, argument.unresolvableType

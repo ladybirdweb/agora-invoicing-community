@@ -101,7 +101,7 @@ function parseDependencies() {
     try {
         const data = JSON.parse(raw)
 
-        // Must be a non-empty JSON object/array - favMer reads this to check
+        // Must be a non-empty JSON object/array - the installed product reads this to check
         // PHP/extension requirements before updating.
         if (typeof data !== 'object' || data === null) return { error: 'invalid_json' }
 

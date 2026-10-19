@@ -350,4 +350,16 @@ class HelpersBoostTest extends DBTestCase
         $result = systemTimezone();
         $this->assertIsString($result);
     }
+
+    public function test_user_day_bounds_follow_the_users_timezone(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $user->setRelation('timezone', new \App\Model\Common\Timezone(['name' => 'Asia/Kolkata']));
+        $this->actingAs($user);
+
+        // 19 Oct in IST is 18 Oct 18:30 → 19 Oct 18:29:59 UTC.
+        $this->assertSame('2026-10-18 18:30:00', userDayStart('2026-10-19')->toDateTimeString());
+        $this->assertSame('2026-10-19 18:29:59', userDayEnd('2026-10-19')->toDateTimeString());
+        $this->assertSame('2026-10-20', userDate('2026-10-19 20:00:00'));
+    }
 }

@@ -425,6 +425,7 @@ return [
             'numeric' => 'Satsen må være et tall.',
             'decimal' => 'Satsen må ha maksimalt 3 desimaler.',
             'max' => 'Satsen må ikke være høyere enn 999.999.',
+            'min' => 'Satsen må være større enn eller lik 0.',
         ],
         'priority' => [
             'required' => 'Prioritetsfeltet er obligatorisk.',

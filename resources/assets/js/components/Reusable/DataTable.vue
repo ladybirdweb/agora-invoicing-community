@@ -214,7 +214,7 @@ table                             { border-collapse: collapse; }
 .dt-action{min-width:200px;max-width:200px;}
 .dt-email{min-width:220px;max-width:220px;}
 .dt-name{min-width:180px;max-width:180px;}
-.dt-mobile{min-width:140px;max-width:140px;}
+.dt-mobile{min-width:170px;max-width:170px;}
 .dt-country{min-width:120px;max-width:120px;}
 .dt-status{min-width:130px;max-width:130px;}
 .dt-date{min-width:160px;max-width:160px;}

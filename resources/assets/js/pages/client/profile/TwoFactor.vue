@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import http from '@/plugins/axios'
 import { __ } from '@/plugins/i18n'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
@@ -221,6 +221,8 @@ const qrImage           = ref('')
 const qrSecret          = ref('')
 const showSecretKey     = ref(false)
 const totp              = ref('')
+// Digits only, max 6 — same as every other code box.
+watch(totp, (v) => { const clean = String(v).replace(/\D/g, '').slice(0, 6); if (clean !== v) totp.value = clean })
 const totp2faCode       = ref({})
 const totpHpReady       = ref(false)
 const verifying2fa      = ref(false)

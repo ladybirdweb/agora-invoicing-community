@@ -79,7 +79,7 @@ class OrderController extends BaseOrderController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except' => ['getInstallationDetails']]);
+        $this->middleware('admin');
 
         $order = new Order;
         $this->order = $order;
@@ -168,7 +168,7 @@ class OrderController extends BaseOrderController
                     $user->setRawAttributes(array_merge($user->getAttributes(), ['country' => $name]), sync: true);
                 }
 
-                $threshold = now()->subDays(7);
+                $threshold = now()->subDays(OrderSearchController::ACTIVE_INSTALL_DAYS);
                 $versions = $order->installationLogs
                     ->whereNotNull('version_number')->where('version_number', '!=', '')
                     ->sortByDesc('installation_last_active_date')
@@ -196,7 +196,7 @@ class OrderController extends BaseOrderController
                     'plan_id' => $order->subscription?->plan?->id,
                     'versions' => $versions,
                     'agents' => $licenseAgents,
-                    'status' => $order->installationLogs->isEmpty() ? 'Inactive' : 'Active',
+                    'installed' => $order->installationLogs->isNotEmpty(),
                     'order_date' => $order->created_at,
                     'update_ends_at' => strtotime((string) $order->subscription?->ends_at) > 1 ? $order->subscription?->ends_at : null,
                     'subscription_updated_at' => $order->subscription?->updated_at,

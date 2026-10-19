@@ -844,11 +844,11 @@ class ClientController extends AdvanceSearchController
             )
             ->when($request->hasAny(['reg_from', 'reg_till']), function ($q) use ($request): void {
                 $from = $request->filled('reg_from')
-                    ? Date::parse($request->input('reg_from'))->startOfDay()
+                    ? userDayStart($request->input('reg_from'))
                     : CarbonImmutable::startOfTime();
 
                 $till = $request->filled('reg_till')
-                    ? Date::parse($request->input('reg_till'))->endOfDay()
+                    ? userDayEnd($request->input('reg_till'))
                     : Date::now()->endOfDay();
 
                 $q->whereBetween('created_at', [$from, $till]);

@@ -425,6 +425,7 @@ return [
             'numeric' => 'Thuế suất phải là một số.',
             'decimal' => 'Tỷ giá phải có tối đa 3 chữ số thập phân.',
             'max' => 'Tỷ lệ không được lớn hơn 999,999.',
+            'min' => 'Tỷ lệ phải lớn hơn hoặc bằng 0.',
         ],
         'priority' => [
             'required' => 'Trường ưu tiên là bắt buộc.',

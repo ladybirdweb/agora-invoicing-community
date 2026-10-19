@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common\Dependency;
 
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\License\Models\InstallationLog;
 use App\Model\Common\Bussiness;
 use App\Model\Common\PricingTemplate;
 use App\Model\License\LicenseType;
@@ -14,7 +15,6 @@ use App\Model\Payment\PromotionType;
 use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
-use App\Model\Product\Subscription;
 use App\User;
 
 class NonPublicDependencies extends BaseDependencyController
@@ -171,11 +171,13 @@ class NonPublicDependencies extends BaseDependencyController
      */
     private function orderVersions(): array
     {
-        $versions = Subscription::where('version', '!=', '')
-            ->whereNotNull('version')
-            ->orderByDesc('version')
+        // The installed versions the orders list shows, newest first (v9.4.3.7 above v9.4.3.RC.4).
+        $versions = InstallationLog::where('version_number', '!=', '')
+            ->whereNotNull('version_number')
             ->distinct()
-            ->pluck('version')
+            ->pluck('version_number')
+            ->sort(fn ($a, $b): int => version_compare(ltrim((string) $b, 'v'), ltrim((string) $a, 'v')))
+            ->values()
             ->map(fn ($v): array => ['id' => $v, 'name' => $v]);
 
         $special = collect([

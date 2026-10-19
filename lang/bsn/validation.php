@@ -425,6 +425,7 @@ return [
             'numeric' => 'Stopa mora biti broj.',
             'decimal' => 'Stopa mora imati najviše 3 decimale.',
             'max' => 'Stopa ne smije biti veća od 999.999.',
+            'min' => 'Stopa mora biti veća ili jednaka 0.',
         ],
         'priority' => [
             'required' => 'Polje prioriteta je obavezno.',

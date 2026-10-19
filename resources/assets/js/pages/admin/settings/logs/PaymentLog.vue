@@ -152,7 +152,7 @@ async function copyException() {
 }
 
 // ── table ─────────────────────────────────────────────────────────────────────
-const columns = ['select', 'date', 'user', 'order', 'amount', 'payment_type', 'payment_method', 'status', 'action']
+const columns = ['select', 'user', 'order', 'amount', 'payment_type', 'payment_method', 'status', 'date', 'action']
 
 const tableOptions = reactive({
     headings: {
@@ -191,9 +191,11 @@ const tableOptions = reactive({
         user: (f, row) => {
             const name = row.user || '—'
             if (!row.user_id) return name
-            return h('a', { href: `${baseUrl}/admin/clients/${row.user_id}` }, name)
+            return h('a', { href: `${baseUrl}/admin/users/${row.user_id}` }, name)
         },
-        order:          (f, row) => row.order          || '—',
+        order: (f, row) => row.order_id
+            ? h('a', { href: `${baseUrl}/admin/orders/${row.order_id}` }, row.order)
+            : (row.order || '—'),
         payment_type:   (f, row) => row.payment_type   || '—',
         payment_method: (f, row) => row.payment_method || '—',
         status: (f, row) => {

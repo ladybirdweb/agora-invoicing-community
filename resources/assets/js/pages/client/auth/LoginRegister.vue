@@ -211,6 +211,17 @@ onMounted(async () => {
     globalThis.history.replaceState({}, '', globalThis.location.pathname)
   }
 
+  // Verify sends a freshly verified account here as ?verified=1.
+  if (new URLSearchParams(globalThis.location.search).has('verified')) {
+    useAlertStore().setAlert({
+      type: 'success',
+      message: __('message.registration_complete'),
+      component_name: COMPONENT,
+    })
+    globalThis.history.replaceState({}, '', globalThis.location.pathname)
+    globalThis.document.querySelector('[name="email_username"]')?.focus()
+  }
+
   // The OAuth callback sends failures back here as ?social_error=<reason>.
   const socialError = new URLSearchParams(globalThis.location.search).get('social_error')
   if (socialError) {

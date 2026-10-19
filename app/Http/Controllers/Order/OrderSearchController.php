@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Date;
 
 class OrderSearchController extends Controller
 {
+    /** An installation counts as active if it checked in within this many days (Status/Version badges too). */
+    public const int ACTIVE_INSTALL_DAYS = 7;
+
     public function __construct()
     {
         $this->middleware(['auth', 'admin']);
@@ -41,14 +44,14 @@ class OrderSearchController extends Controller
         $this->filterDomain($query, $request->domain);
         $this->filterInstallation($query, $request->act_ins);
         $this->filterRenewal($query, $request->renewal);
-        $this->filterVersion($query, $request->version, $request->product_id);
+        $this->filterVersion($query, $request->version);
         if ($request->filled('client')) {
             $query->where('client', $request->client);
         }
 
         if (in_array($request->renewal, ['expiring_subscription', 'expired_subscription'])) {
             $query->orderByDesc(
-                Subscription::select('update_ends_at')
+                Subscription::select('ends_at')
                     ->whereColumn('subscriptions.order_id', 'orders.id')
                     ->limit(1)
             );
@@ -90,28 +93,21 @@ class OrderSearchController extends Controller
      */
     private function filterDateRange(Builder $query, Request $request): void
     {
-        if ($request->renewal) {
-            $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($request): void {
-                $this->applyDateRange($q, 'update_ends_at', $request);
-            });
-
-            return;
-        }
-
-        $this->applyDateRange($query, 'created_at', $request);
+        // Always the order date — the From/To the admin picks matches the Order Date column.
+        $this->applyDateRange($query, 'orders.created_at', $request);
     }
 
     private function applyDateRange(\Illuminate\Contracts\Database\Query\Builder|Builder $query, string $column, Request $request): void
     {
         if ($request->from && $request->till) {
             $query->whereBetween($column, [
-                Date::parse($request->from)->startOfDay(),
-                Date::parse($request->till)->endOfDay(),
+                userDayStart($request->from),
+                userDayEnd($request->till),
             ]);
         } elseif ($request->from) {
-            $query->where($column, '>=', Date::parse($request->from)->startOfDay());
+            $query->where($column, '>=', userDayStart($request->from));
         } elseif ($request->till) {
-            $query->where($column, '<=', Date::parse($request->till)->endOfDay());
+            $query->where($column, '<=', userDayEnd($request->till));
         }
     }
 
@@ -133,24 +129,36 @@ class OrderSearchController extends Controller
      */
     private function filterInstallation(Builder $query, mixed $filter): void
     {
-        if (! $filter) {
-            return;
-        }
+        // Same installation records the list's Status and Version columns are built from.
+        $active = fn ($q) => $q->where('installation_logs.installation_last_active_date', '>=', Date::now()->subDays(self::ACTIVE_INSTALL_DAYS));
 
-        $minus30 = Date::now()->subDays(30);
+        match ($filter) {
+            'installed' => $query->whereIn('orders.number', $this->installedOrderNumbers()),
+            'not_installed' => $query->whereNotIn('orders.number', $this->installedOrderNumbers()),
+            'paid_ins' => $query->whereIn('orders.number', $this->installedOrderNumbers($active)),
+            'paid_inactive_ins' => $query->whereIn('orders.number', $this->installedOrderNumbers())
+                ->whereNotIn('orders.number', $this->installedOrderNumbers($active)),
+            default => null,
+        };
+    }
 
-        $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($filter, $minus30): void {
-            if ($filter === 'installed') {
-                $q->whereColumn('created_at', '!=', 'updated_at');
-            } elseif ($filter === 'not_installed') {
-                $q->whereColumn('created_at', '=', 'updated_at');
-            } elseif ($filter === 'paid_inactive_ins') {
-                $q->where('updated_at', '<', $minus30);
-            } elseif ($filter === 'paid_ins') {
-                $q->whereColumn('created_at', '!=', 'updated_at')
-                    ->where('updated_at', '>', $minus30);
-            }
-        });
+    /**
+     * Order numbers with at least one installation (optionally narrowed by $scope).
+     * Fetched as a list: as a subquery, MySQL runs NOT IN / whereDoesntHave() once per order
+     * here (licenses.license_order_number has no index) — minutes instead of milliseconds.
+     * ponytail: one id per installed order in memory; index licenses.license_order_number if that grows large.
+     *
+     * @return list<string>
+     */
+    private function installedOrderNumbers(?\Closure $scope = null): array
+    {
+        return DB::table('licenses')
+            ->join('installation_logs', 'installation_logs.license_code', '=', 'licenses.license_code')
+            ->whereNotNull('licenses.license_order_number')
+            ->when($scope, $scope)
+            ->distinct()
+            ->pluck('licenses.license_order_number')
+            ->all();
     }
 
     /**
@@ -166,16 +174,16 @@ class OrderSearchController extends Controller
 
         if ($renewal === 'expired_subscription') {
             $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($now): void {
-                $q->where('update_ends_at', '<', $now);
+                $q->where('ends_at', '<', $now);
             });
         } elseif ($renewal === 'active_subscription') {
             $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($now): void {
-                $q->where('update_ends_at', '>=', $now);
+                $q->where('ends_at', '>=', $now);
             });
         } elseif ($renewal === 'expiring_subscription') {
             $thirtyDaysFromNow = $now->copy()->addDays(30);
             $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($now, $thirtyDaysFromNow): void {
-                $q->whereBetween('update_ends_at', [$now, $thirtyDaysFromNow]);
+                $q->whereBetween('ends_at', [$now, $thirtyDaysFromNow]);
             });
         }
     }
@@ -183,27 +191,39 @@ class OrderSearchController extends Controller
     /**
      * @param  Builder<Order>  $query
      */
-    private function filterVersion(Builder $query, mixed $version, mixed $productId): void
+    private function filterVersion(Builder $query, mixed $version): void
     {
         if (! $version) {
             return;
         }
 
-        if (in_array($productId, ['paid', 'unpaid'])) {
-            $latest = ProductUpload::orderBy('version', 'desc')->value('version');
-        } else {
-            $latest = Subscription::where('product_id', $productId)->orderBy('version', 'desc')->value('version');
+        if (! in_array($version, ['Latest', 'Outdated'], true)) {
+            $query->whereIn('orders.number', $this->installedOrderNumbers(fn ($q) => $q->where('installation_logs.version_number', $version)));
+
+            return;
         }
 
-        $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($version, $latest): void {
-            if ($version === 'Latest') {
-                $q->where('version', $latest);
-            } elseif ($version === 'Outdated') {
-                $q->where('version', '<', $latest)->whereNotNull('version')->where('version', '!=', '');
-            } else {
-                $q->where('version', $version);
-            }
+        // "Latest" = each product's most recently uploaded release, as everywhere else in the app.
+        $latest = ProductUpload::latest()->get(['product_id', 'version'])->unique('product_id')->pluck('version', 'product_id');
+
+        $onLatest = $this->installedOrderNumbers(function ($q) use ($latest): void {
+            $q->where(function ($q) use ($latest): void {
+                foreach ($latest as $productId => $latestVersion) {
+                    $q->orWhere(fn ($q) => $q->where('licenses.product_id', $productId)->where('installation_logs.version_number', $latestVersion));
+                }
+            });
         });
+
+        if ($version === 'Latest') {
+            $latest->isEmpty() ? $query->whereRaw('0 = 1') : $query->whereIn('orders.number', $onLatest);
+
+            return;
+        }
+
+        $query->whereIn('orders.number', $this->installedOrderNumbers(fn ($q) => $q->where('installation_logs.version_number', '!=', '')));
+        if ($latest->isNotEmpty()) {
+            $query->whereNotIn('orders.number', $onLatest);
+        }
     }
 
     /**

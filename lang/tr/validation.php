@@ -425,6 +425,7 @@ return [
             'numeric' => 'Oran bir sayı olmalıdır.',
             'decimal' => 'Oranın en fazla 3 ondalık basamağı olmalıdır.',
             'max' => 'Kur 999.999\'dan büyük olmamalıdır.',
+            'min' => 'Kur 0\'dan büyük veya eşit olmalıdır.',
         ],
         'priority' => [
             'required' => 'Öncelik alanı zorunludur.',

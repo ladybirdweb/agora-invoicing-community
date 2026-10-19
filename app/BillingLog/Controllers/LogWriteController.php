@@ -190,7 +190,7 @@ class LogWriteController
         ]);
 
         // Parse to_date with end of day
-        $toDate = $validated['to_date'] ? Date::parse($validated['to_date'])->endOfDay() : null;
+        $toDate = $validated['to_date'] ? userDayEnd($validated['to_date']) : null;
 
         new LogViewController()->deleteLogsByDate($validated['log_types'], $toDate);
 

@@ -164,6 +164,52 @@ function systemTimezone(): string
 }
 
 /**
+ * The timezone the current user sees and picks dates in — the same one the SPA's
+ * dateTimeStore uses: their own, else the system timezone.
+ */
+function userTimezone(): string
+{
+    $valid = timezone_identifiers_list();
+
+    foreach ([Auth::user()?->timezone->name, systemTimezone()] as $tz) {
+        if (! $tz) {
+            continue;
+        }
+        // The timezones table still lists old names (US/Samoa, US/Pacific…) this PHP build
+        // rejects — use their current name (Pacific/Pago_Pago, America/Los_Angeles) instead.
+        if (! in_array($tz, $valid, true) && class_exists(IntlTimeZone::class)) {
+            $tz = IntlTimeZone::getCanonicalID($tz) ?: $tz;
+        }
+        if (in_array($tz, $valid, true)) {
+            return $tz;
+        }
+    }
+
+    return 'UTC';
+}
+
+/**
+ * Date filters: the user picks "2026-10-19" in their own timezone, but every column is
+ * stored in UTC. These give that local day's bounds in UTC, so the filtered rows match
+ * the dates the table shows.
+ */
+function userDayStart(string $date): Carbon
+{
+    return Date::parse($date, userTimezone())->startOfDay()->utc();
+}
+
+function userDayEnd(string $date): Carbon
+{
+    return Date::parse($date, userTimezone())->endOfDay()->utc();
+}
+
+/** A stored UTC value as the user would see it — for exports, which aren't rendered by the SPA. */
+function userDate(mixed $utc, string $format = 'Y-m-d'): string
+{
+    return Date::parse($utc, 'UTC')->setTimezone(userTimezone())->format($format);
+}
+
+/**
  * Gets date in a formatted HTML.
  */
 function getDateHtml(?string $dateTimeString = null): string

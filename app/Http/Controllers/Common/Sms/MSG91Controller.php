@@ -297,11 +297,11 @@ class MSG91Controller extends Controller
             // Date Range Filter (with safe logic)
             ->when($from || $till, function ($q) use ($from, $till): void {
                 $from = $from
-                    ? Date::parse($from)->startOfDay()
+                    ? userDayStart($from)
                     : CarbonImmutable::startOfTime();
 
                 $till = $till
-                    ? Date::parse($till)->endOfDay()
+                    ? userDayEnd($till)
                     : Date::now();
 
                 if ($from->lessThanOrEqualTo($till)) {

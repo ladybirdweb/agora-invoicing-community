@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Common\PHPController as PaymentSettingsController;
 use App\Traits\ApiKeySettings;
-use Illuminate\Support\Facades\Date;
 use Spatie\Activitylog\Models\Activity;
 
 class BaseSettingsController extends PaymentSettingsController
@@ -30,10 +29,10 @@ class BaseSettingsController extends PaymentSettingsController
                 $query->whereIn('activity_log.causer_id', $performedBy);
             })
             ->when($from, function ($query) use ($from): void {
-                $query->where('activity_log.created_at', '>=', Date::parse($from)->startOfDay());
+                $query->where('activity_log.created_at', '>=', userDayStart($from));
             })
             ->when($till, function ($query) use ($till): void {
-                $query->where('activity_log.created_at', '<=', Date::parse($till)->endOfDay());
+                $query->where('activity_log.created_at', '<=', userDayEnd($till));
             });
     }
 

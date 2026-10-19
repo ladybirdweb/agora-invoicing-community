@@ -35,7 +35,7 @@ trait AppliesBuildToProducts
     {
         $validated = $request->validate([
             'filename' => ['required', 'string', 'max:255'],
-            // 'required' also rejects an empty array — favMer needs real
+            // 'required' also rejects an empty array — the installed product needs real
             // dependencies to run its pre-update checks.
             'dependencies' => ['required', 'array'],
             'description' => ['nullable', 'string'],

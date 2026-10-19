@@ -425,6 +425,7 @@ return [
             'numeric' => 'Tarif harus berupa angka.',
             'decimal' => 'Nilai tukar harus mempunyai paling banyak 3 angka desimal.',
             'max' => 'Tarifnya tidak boleh lebih besar dari 999.999.',
+            'min' => 'Tarifnya harus lebih besar dari atau sama dengan 0.',
         ],
         'priority' => [
             'required' => 'Bidang prioritas wajib diisi.',

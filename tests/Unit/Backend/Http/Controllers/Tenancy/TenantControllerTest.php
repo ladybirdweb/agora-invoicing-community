@@ -526,6 +526,31 @@ class TenantControllerTest extends DBTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
+    public function test_destroy_tenant_succeeds_from_expiry_cron_with_no_logged_in_user(): void
+    {
+        $this->setCloudConfig();
+        \Illuminate\Support\Facades\Auth::logout();
+
+        ThirdPartyApp::firstOrCreate(
+            ['app_name' => 'faveo_app_key'],
+            ['app_key' => 'test-key', 'app_secret' => 'test-secret']
+        );
+        $cloud = FaveoCloud::firstOrCreate([], [
+            'cloud_central_domain' => 'https://cloud.test.local',
+            'cloud_cname' => 'test',
+        ]);
+
+        $client = $this->bindMockClientWithResponses([
+            new Response(200, [], json_encode(['status' => 'success', 'message' => 'deleted'])),
+            new Response(200, [], ''), // deleteCronForTenant
+            new Response(200, [], ''), // googleChat
+        ]);
+
+        $response = new TenantController($client, $cloud)->destroyTenant(new \Illuminate\Http\Request(['id' => 'test.cloud.local']));
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function test_destroy_tenant_returns_400_when_api_returns_fails_status(): void
     {
         $this->setCloudConfig();

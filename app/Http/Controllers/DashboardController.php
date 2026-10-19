@@ -112,7 +112,7 @@ class DashboardController extends Controller
 
                 $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->client)?->first_name.' '.User::onlyTrashed()->find($element->client)?->last_name; // @phpstan-ignore property.notFound
 
-                $element->client_profile_link = \Config('app.url').'/clients/'.$element->client; // @phpstan-ignore property.notFound
+                $element->client_profile_link = url('admin/users/'.$element->client); // @phpstan-ignore property.notFound
                 unset($element->user);
 
                 return $element;
@@ -148,7 +148,7 @@ class DashboardController extends Controller
 
         return $baseQuery->get()->map(function ($element) {
             $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)?->first_name.' '.User::onlyTrashed()->find($element->user_id)?->last_name; // @phpstan-ignore property.notFound
-            $element->client_profile_link = config('app.url').'/clients/'.$element->user_id; // @phpstan-ignore property.notFound
+            $element->client_profile_link = url('admin/users/'.$element->user_id); // @phpstan-ignore property.notFound
             $element->order_link = config('app.url').'/orders/'.$element->order_id; // @phpstan-ignore property.notFound
             $element->days_difference = date_diff(now(), new DateTime($element->subscription_ends_at))->format('%a days'); // @phpstan-ignore property.notFound, property.notFound
             $element->subscription_ends_at = getDateHtml($element->subscription_ends_at); // @phpstan-ignore property.notFound, property.notFound

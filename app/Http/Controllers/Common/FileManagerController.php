@@ -6,6 +6,7 @@ use App\Facades\Attach;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class FileManagerController extends Controller
 {
@@ -30,7 +31,10 @@ class FileManagerController extends Controller
     {
         $path = $request->input('path');
 
-        if (! $path || ! Attach::exists($path)) {
+        // Public on purpose (S3 image URLs on guest pages), so only the image folders are served —
+        // the same disk also holds keys, exports and product builds.
+        if (! $path || str_contains((string) $path, '..') || ! Str::startsWith($path, ['images/', 'common/images/', 'admin/images/'])
+            || ! Attach::exists($path)) {
             abort(404, __('message.file_not_exist'));
         }
 

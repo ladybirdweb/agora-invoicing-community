@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 use Throwable;
 
 /**
@@ -358,8 +357,8 @@ class OpenPaymentController extends Controller
                 ->when($status && $status !== 'all', fn (Builder $query) => $query->where('payment_status', $status))
                 ->when($gateway && $gateway !== 'all', fn (Builder $query) => $query->where('gateway', $gateway))
                 ->when($currency && $currency !== 'all', fn (Builder $query) => $query->where('currency', $currency))
-                ->when($fromDate, fn (Builder $query) => $query->where('created_at', '>=', Date::parse($fromDate)->startOfDay()))
-                ->when($toDate, fn (Builder $query) => $query->where('created_at', '<=', Date::parse($toDate)->endOfDay()))
+                ->when($fromDate, fn (Builder $query) => $query->where('created_at', '>=', userDayStart($fromDate)))
+                ->when($toDate, fn (Builder $query) => $query->where('created_at', '<=', userDayEnd($toDate)))
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($perPage);
 

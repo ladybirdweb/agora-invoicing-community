@@ -123,7 +123,7 @@ function onClose() {
     showRestoreModal.value = false
 }
 
-/* ── Dropdown positioning (favMer pattern) ── */
+/* ── Dropdown positioning ── */
 const dropdownBtn = ref(null)
 const dropdownMenu = ref(null)
 const isOpen = ref(false)

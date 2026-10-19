@@ -4,7 +4,7 @@ use App\Plugins\Zoho\Controllers\ZohoOAuthController;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\ZohoCampaignsController;
 use App\Plugins\Zoho\Integrations\Crm\Controllers\ZohoCrmController;
 
-Route::prefix('zoho')->group(function (): void {
+Route::middleware(['auth', 'admin'])->prefix('zoho')->group(function (): void {
     // Oauth 2.0 connect
     Route::get('integrations', [ZohoOAuthController::class, 'getIntegrations']);
     Route::get('getKeys/{integrationId}', [ZohoOAuthController::class, 'getOauthClientKeys']);

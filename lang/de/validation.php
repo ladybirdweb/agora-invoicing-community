@@ -425,6 +425,7 @@ return [
             'numeric' => 'Der Steuersatz muss eine Zahl sein.',
             'decimal' => 'Der Kurs darf höchstens 3 Dezimalstellen haben.',
             'max' => 'Der Kurs darf nicht größer als 999,999 sein.',
+            'min' => 'Der Kurs muss größer oder gleich 0 sein.',
         ],
         'priority' => [
             'required' => 'Das Prioritätsfeld ist erforderlich.',

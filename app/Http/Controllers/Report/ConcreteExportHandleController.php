@@ -99,11 +99,11 @@ class ConcreteExportHandleController extends ExportHandleController
                     if ($key === 'reg_from') {
                         $time = strtotime((string) $value);
                         $date = $time !== false ? date('Y-m-d', $time) : date('Y-m-d');
-                        $users->where('created_at', '>=', Date::parse($date)->startOfDay());
+                        $users->where('created_at', '>=', userDayStart($date));
                     } elseif ($key === 'reg_till') {
                         $time = strtotime((string) $value);
                         $date = $time !== false ? date('Y-m-d', $time) : date('Y-m-d');
-                        $users->where('created_at', '<=', Date::parse($date)->endOfDay());
+                        $users->where('created_at', '<=', userDayEnd($date));
                     } else {
                         match ($key) {
                             'company' => $users->where('company', 'LIKE', '%'.$value.'%'),
@@ -151,7 +151,7 @@ class ConcreteExportHandleController extends ExportHandleController
                             $userData[$column] = $user->$column ? 'Active' : 'Inactive';
                             break;
                         case 'created_at':
-                            $userData['created_at'] = Date::parse($user->created_at)->format('Y-m-d');
+                            $userData['created_at'] = userDate($user->created_at);
                             break;
                         case 'country':
                             $country = Country::where('country_code_char2', $user->country)->value('country_name');
@@ -283,7 +283,7 @@ class ConcreteExportHandleController extends ExportHandleController
                             $invoiceData['product'] = $item ? $item->product_name : null;
                             break;
                         case 'date':
-                            $invoiceData['date'] = Date::parse($invoice->created_at)->format('Y-m-d');
+                            $invoiceData['date'] = userDate($invoice->created_at);
                             break;
                         case 'status':
                             $invoiceData['status'] = $this->getStatus($invoice->status);
@@ -404,7 +404,7 @@ class ConcreteExportHandleController extends ExportHandleController
 
                             break;
                         case 'status':
-                            $orderData['status'] = $order->installationLogs->isNotEmpty() ? 'Active' : 'Inactive';
+                            $orderData['status'] = __($order->installationLogs->isNotEmpty() ? 'message.order_installed' : 'message.order_not_installed');
                             break;
                         case 'product_name':
                             $orderData['product_name'] = $order->productRelation?->name;
@@ -424,12 +424,12 @@ class ConcreteExportHandleController extends ExportHandleController
                             break;
                         case 'order_date':
                             $orderData['order_date'] = $order->subscription
-                                ? Date::parse($order->subscription->created_at)->format('Y-m-d')
+                                ? userDate($order->subscription->created_at)
                                 : null;
                             break;
                         case 'update_ends_at':
                             $orderData['update_ends_at'] = $order->subscription
-                                ? Date::parse($order->subscription->ends_at)->format('Y-m-d')
+                                ? userDate($order->subscription->ends_at)
                                 : null;
                             break;
                         default:
@@ -622,7 +622,7 @@ class ConcreteExportHandleController extends ExportHandleController
                         if (empty($subscription_date)) {
                             $tenantData['Expiry day'] = null;
                         } else {
-                            $tenantData['Expiry day'] = Date::parse($subscription_date)->format('d M Y');
+                            $tenantData['Expiry day'] = userDate($subscription_date, 'd M Y');
                         }
 
                         break;
@@ -634,7 +634,7 @@ class ConcreteExportHandleController extends ExportHandleController
                         } else {
                             $days = (int) DB::table('expiry_mail_days')->where('cloud_days', '!=', null)->value('cloud_days');
                             $originalDate = Date::parse($subscription_date)->addDays($days);
-                            $formattedDate = Date::parse($originalDate)->format('d M Y');
+                            $formattedDate = userDate($originalDate, 'd M Y');
                             $tenantData['Deletion day'] = $formattedDate;
                         }
 

@@ -108,7 +108,7 @@ const emit = defineEmits(['apply', 'reset', 'close'])
 
 const installationOptions = [
     { id: 'installed',         name: __('message.installed_at_least_once') },
-    { id: 'not_installed',     name: __('message.not_installed') },
+    { id: 'not_installed',     name: __('message.order_not_installed') },
     { id: 'paid_ins',          name: __('message.active_installation') },
     { id: 'paid_inactive_ins', name: __('message.inactive_installation') },
 ]

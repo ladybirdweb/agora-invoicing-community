@@ -3202,6 +3202,8 @@ return [
     'delete_selected_users_confirm' => ':count चयनित उपयोगकर्ता(उपयोगकर्ताओं) को हटाएं? इस एक्शन को वापस नहीं किया जा सकता।',
     'select_date' => 'Select date',
     'installed_at_least_once' => 'Installed (at least once)',
+    'order_installed' => 'Installed',
+    'order_not_installed' => 'Not installed',
     'active_installation' => 'Active Installation',
     'inactive_installation' => 'Inactive Installation',
     'expiring_subscription' => 'Expiring (within 30 days)',

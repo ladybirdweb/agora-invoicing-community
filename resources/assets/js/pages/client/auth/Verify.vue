@@ -71,11 +71,6 @@
                                 </div>
                             </form>
 
-                            <!-- Success -->
-                            <div v-else-if="done" class="text-center py-4">
-                                <h2 class="text-primary fw-bold mb-0">{{ __('message.all_success') }}</h2>
-                            </div>
-
                             <div class="mt-3 text-2">
                                 {{ __('message.trouble_logging_in') }}
                                 <a :href="`${baseUrl}/contact-us`" class="text-decoration-none" target="_blank">
@@ -214,18 +209,18 @@ async function verify() {
     const url = current.value.type === 'mobile' ? `${baseUrl}/otp/verify` : `${baseUrl}/email/verify`
     try {
         const res = await http.post(url, { eid: eid.value, otp: form.otp, ...captchaPayload })
-        successHandler(res, COMPONENT)
         form.otp = ''
 
         if (stepIndex.value < steps.value.length - 1) {
+            successHandler(res, COMPONENT)
             stepIndex.value++
             stopCooldown()
             sendInitial()
         } else {
-            // All steps verified — show the success state, then redirect to login.
+            // All steps verified — straight to login, which shows the "registration complete" notice.
             done.value = true
             stopCooldown()
-            setTimeout(() => { globalThis.location.href = `${baseUrl}/login` }, 1500)
+            globalThis.location.href = `${baseUrl}/login?verified=1`
         }
     } catch (e) {
         if (e?.response?.data?.data?.show_v2_recaptcha) {

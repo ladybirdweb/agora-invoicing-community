@@ -425,6 +425,7 @@ return [
             'numeric' => 'Het tarief moet een getal zijn.',
             'decimal' => 'Het tarief mag maximaal 3 decimalen bevatten.',
             'max' => 'Het tarief mag niet hoger zijn dan 999.999.',
+            'min' => 'Het tarief moet groter dan of gelijk aan 0 zijn.',
         ],
         'priority' => [
             'required' => 'Het prioriteitsveld is verplicht.',

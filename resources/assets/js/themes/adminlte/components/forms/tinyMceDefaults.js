@@ -4,9 +4,8 @@ const TOOLTIP_CLASS = 'has-tooltip'
 const TOOLTIP_ATTR  = 'data-bs-title'
 
 // Backs the toolbar's "image" button — without this, TinyMCE's image dialog
-// only accepts a pasted external URL, no local file upload. Same shape as
-// favMer's customImageUploadHandler (blobInfo, progress) -> Promise<location>,
-// built on this project's shared `http` client instead of a raw XHR so it
+// only accepts a pasted external URL, no local file upload. Signature is
+// (blobInfo, progress) -> Promise<location>, built on this project's shared `http` client instead of a raw XHR so it
 // keeps the axios instance's CSRF header + 401/419 session handling.
 function uploadEditorImage(blobInfo, progress) {
     return new Promise((resolve, reject) => {

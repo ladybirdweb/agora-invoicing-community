@@ -425,6 +425,7 @@ return [
             'numeric' => 'Il tasso deve essere un numero.',
             'decimal' => 'La tariffa deve avere al massimo 3 cifre decimali.',
             'max' => 'La tariffa non deve essere superiore a 999.999.',
+            'min' => 'La tariffa deve essere maggiore o uguale a 0.',
         ],
         'priority' => [
             'required' => 'Il campo priorità è obbligatorio.',

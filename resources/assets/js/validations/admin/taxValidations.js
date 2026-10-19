@@ -8,7 +8,7 @@ function rateShape() {
         rate: yup
             .number()
             .typeError(() => __('validation.tax_form.rate.required'))
-            .min(0)
+            .min(0, () => __('validation.tax_form.rate.min'))
             .max(999.999, () => __('validation.tax_form.rate.max'))
             .test(
                 'max-3-decimals',

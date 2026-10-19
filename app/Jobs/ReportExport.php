@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Http\Controllers\Report\ConcreteExportHandleController;
+use App\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Auth;
 
 class ReportExport implements ShouldQueue
 {
@@ -31,6 +33,22 @@ class ReportExport implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
+    {
+        // Runs on a queue worker with no session: act as the admin who asked for it, so its
+        // date filters and exported dates use their timezone (userTimezone()), as on screen.
+        $requester = User::where('email', $this->email)->first();
+        if ($requester) {
+            Auth::setUser($requester);
+        }
+
+        try {
+            $this->export();
+        } finally {
+            Auth::forgetUser(); // the worker is long-lived; don't leak this user into the next job
+        }
+    }
+
+    private function export(): void
     {
         switch ($this->reportType) {
             case 'users':

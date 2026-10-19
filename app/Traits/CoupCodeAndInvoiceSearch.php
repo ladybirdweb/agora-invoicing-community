@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 
 // ////////////////////////////////////////////////////////////////////////////
 // ADVANCE SEARCH FOR INVOICE AND COUPON CODE CALCULATION
@@ -45,8 +44,8 @@ trait CoupCodeAndInvoiceSearch
                     $q->where('product_id', $product);
                 });
             })
-            ->when($request->from_date, fn ($query, $from) => $query->where('date', '>=', Date::parse($from)->startOfDay()))
-            ->when($request->to_date, fn ($query, $to) => $query->where('date', '<=', Date::parse($to)->endOfDay()));
+            ->when($request->from_date, fn ($query, $from) => $query->where('date', '>=', userDayStart($from)))
+            ->when($request->to_date, fn ($query, $to) => $query->where('date', '<=', userDayEnd($to)));
     }
 
     public function deleteBulkInvoices(Request $request): JsonResponse

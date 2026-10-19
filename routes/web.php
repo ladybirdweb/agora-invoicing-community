@@ -486,7 +486,7 @@ Route::middleware('installAgora')->group(function (): void {
     Route::get('getOrderInvoices/{orderId}', [OrderController::class, 'getOrderInvoices']);
 
     // Legacy order endpoints
-    Route::post('update-license-details', [BaseOrderController::class, 'updateLicenseDetails']);
+    Route::post('update-license-details', [BaseOrderController::class, 'updateLicenseDetails'])->middleware(['auth', 'admin']);
     Route::get('get-installation-details/{orderId}', [OrderController::class, 'getInstallationDetails']);
     Route::get('export-orders', [OrderController::class, 'exportOrders'])->name('export-orders');
 
@@ -658,7 +658,7 @@ Route::middleware('installAgora')->group(function (): void {
     Route::get('settings/msg91', [SettingsController::class, 'getMsg91Settings']);
     Route::post('mobile-settings-save', [SettingsController::class, 'mobileSettingsSave']);
     Route::get('settings/mobile-validation', [SettingsController::class, 'getMobileValidationSettings']);
-    Route::post('updatemobileDetails', [BaseSettingsController::class, 'updateMobileDetails'])->name('updatemobileDetails');
+    Route::post('updatemobileDetails', [BaseSettingsController::class, 'updateMobileDetails'])->name('updatemobileDetails')->middleware(['auth', 'admin']);
 
     // GitHub settings
     Route::get('settings/github', [SettingsController::class, 'getGithubSettings']);
@@ -666,7 +666,7 @@ Route::middleware('installAgora')->group(function (): void {
 
     // Terms settings
     Route::get('settings/terms', [SettingsController::class, 'getTermsSettings']);
-    Route::post('updateTermsDetails', [BaseSettingsController::class, 'updateTermsDetails'])->name('updateTermsDetails');
+    Route::post('updateTermsDetails', [BaseSettingsController::class, 'updateTermsDetails'])->name('updateTermsDetails')->middleware(['auth', 'admin']);
     Route::get('settings/deployment', [Common\SettingsController::class, 'getDeploymentSettings'])->name('getDeploymentSettings');
     Route::post('settings/deployment', [Common\SettingsController::class, 'saveDeploymentSettings'])->name('saveDeploymentSettings');
 
@@ -709,7 +709,7 @@ Route::middleware('installAgora')->group(function (): void {
     // Dashboard
     // --------------------------------------------------------
 
-    Route::get('dashboard', [DashboardController::class, 'dashboard']);
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'admin']);
 
     // --------------------------------------------------------
     // Language Management
@@ -763,10 +763,10 @@ Route::middleware('installAgora')->group(function (): void {
     Route::post('cloud-pop-up', [TenantController::class, 'cloudPopUp'])->name('cloud-pop-up')->middleware('admin');
     Route::post('cloud-product-store', [TenantController::class, 'cloudProductStore'])->name('cloud-product-store')->middleware('admin');
     Route::post('enable/cloud', [TenantController::class, 'enableCloud'])->name('enable-cloud')->middleware('admin');
-    Route::get('fetch-data', [CloudExtraActivities::class, 'fetchData'])->name('fetch-data');
-    Route::post('update-trial-status', [CloudExtraActivities::class, 'updateTrialStatus'])->name('update-trial-status');
-    Route::delete('delete-cloud-product', [CloudExtraActivities::class, 'DeleteProductConfig'])->name('delete-cloud-product');
-    Route::delete('remove-location', [CloudExtraActivities::class, 'removeLocation'])->name('remove-location');
+    Route::get('fetch-data', [CloudExtraActivities::class, 'fetchData'])->name('fetch-data')->middleware('admin');
+    Route::post('update-trial-status', [CloudExtraActivities::class, 'updateTrialStatus'])->name('update-trial-status')->middleware('admin');
+    Route::delete('delete-cloud-product', [CloudExtraActivities::class, 'DeleteProductConfig'])->name('delete-cloud-product')->middleware('admin');
+    Route::delete('remove-location', [CloudExtraActivities::class, 'removeLocation'])->name('remove-location')->middleware('admin');
     Route::post('cloud-data-center-store', [CloudExtraActivities::class, 'storeCloudDataCenter'])->middleware('admin')->name('cloud-data-center-store');
     Route::get('export-tenats', [TenantController::class, 'exportTenats'])->middleware('admin')->name('export-tenats');
 

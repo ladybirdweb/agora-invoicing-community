@@ -15,6 +15,12 @@ class DependencyController extends NonPublicDependencies
 {
     public function handle(mixed $type, Request $request): JsonResponse
     {
+        // Only these lookups feed guest/client forms; the rest expose users, products and pricing.
+        abort_unless(
+            in_array($type, ['time-zones', 'languages', 'countries', 'states'], true) || $request->user()?->role === 'admin',
+            403
+        );
+
         try {
             $this->initializeParameterValues($request);
 

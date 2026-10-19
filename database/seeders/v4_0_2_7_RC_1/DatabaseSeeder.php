@@ -33,6 +33,52 @@ class DatabaseSeeder extends Seeder
         $this->seedSeoDefaultPages();
         $this->razorpayAutoRenewSetupEmailTemplate();
         $this->removeDeadEmailEventTemplateTypes();
+        $this->updateTimeZones();
+    }
+
+    /**
+     * v2_0_0 seeded old timezone aliases (US/Samoa, Europe/Kiev…) that PHP's tz database
+     * no longer accepts, so date code crashed for users who picked one. Renamed in place —
+     * same ids, so users/settings keep their choice. Urumqi/Canberra share an offset with Shanghai/Sydney, so their
+     * users are moved over and the duplicate rows dropped.
+     */
+    public function updateTimeZones(): void
+    {
+        $renames = [
+            'US/Samoa' => 'Pacific/Pago_Pago',
+            'US/Hawaii' => 'Pacific/Honolulu',
+            'US/Alaska' => 'America/Anchorage',
+            'US/Pacific' => 'America/Los_Angeles',
+            'US/Arizona' => 'America/Phoenix',
+            'US/Mountain' => 'America/Denver',
+            'Canada/Saskatchewan' => 'America/Regina',
+            'US/Central' => 'America/Chicago',
+            'US/Eastern' => 'America/New_York',
+            'US/East-Indiana' => 'America/Indiana/Indianapolis',
+            'Canada/Atlantic' => 'America/Halifax',
+            'Canada/Newfoundland' => 'America/St_Johns',
+            'America/Buenos_Aires' => 'America/Argentina/Buenos_Aires',
+            'Greenland' => 'America/Nuuk',
+            'Europe/Kiev' => 'Europe/Kyiv',
+            'Asia/Chongqing' => 'Asia/Shanghai',
+        ];
+
+        foreach ($renames as $old => $new) {
+            DB::table('timezone')->where('name', $old)->update(['name' => $new]);
+        }
+        DB::table('timezone')->where('name', 'Asia/Shanghai')->update(['location' => '(GMT+08:00) Chongqing/Urumqi']);
+
+        foreach (['Asia/Urumqi' => 'Asia/Shanghai', 'Australia/Canberra' => 'Australia/Sydney'] as $old => $new) {
+            $from = DB::table('timezone')->where('name', $old)->value('id');
+            $to = DB::table('timezone')->where('name', $new)->value('id');
+            if (! $from || ! $to) {
+                continue;
+            }
+            foreach (['users', 'settings', 'email_validation_results'] as $table) {
+                DB::table($table)->where('timezone_id', $from)->update(['timezone_id' => $to]);
+            }
+            DB::table('timezone')->where('id', $from)->delete();
+        }
     }
 
     /**

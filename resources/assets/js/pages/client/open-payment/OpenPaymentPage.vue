@@ -51,13 +51,13 @@
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.op_personal_info') }}</p>
 
-                  <ClientField name="name" :label="__('message.full_name')" placeholder="John Doe…" autocomplete="name"
+                  <ClientField name="name" :label="__('message.full_name')" placeholder="John Doe" autocomplete="name"
                                v-model="form.name" :error="errors.name" :required="true"
                                @update:modelValue="setFieldError('name', undefined)" />
 
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <ClientField name="email" type="email" :label="__('message.email')" placeholder="john@example.com…" autocomplete="email" :spellcheck="false"
+                      <ClientField name="email" type="email" :label="__('message.email')" placeholder="john@example.com" autocomplete="email" :spellcheck="false"
                                    v-model="form.email" :error="errors.email" :required="true"
                                    @update:modelValue="setFieldError('email', undefined)" />
                     </div>
@@ -70,19 +70,19 @@
                     </div>
                   </div>
 
-                  <ClientField name="company" :label="__('message.company')" placeholder="Acme Inc…" autocomplete="organization"
+                  <ClientField name="company" :label="__('message.company')" placeholder="Acme Inc" autocomplete="organization"
                                v-model="form.company" :error="errors.company" :required="true"
                                @update:modelValue="setFieldError('company', undefined)" />
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.billing_address') }}</p>
 
-                  <ClientField name="address" :label="__('message.op_street_address')" placeholder="123 Main Street…" autocomplete="street-address"
+                  <ClientField name="address" :label="__('message.op_street_address')" placeholder="123 Main Street" autocomplete="street-address"
                                v-model="form.address" :error="errors.address" :required="true"
                                @update:modelValue="setFieldError('address', undefined)" />
 
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <ClientField name="city" :label="__('message.city')" placeholder="New York…" autocomplete="address-level2"
+                      <ClientField name="city" :label="__('message.city')" placeholder="New York" autocomplete="address-level2"
                                    v-model="form.city" :error="errors.city" :required="true"
                                    @update:modelValue="setFieldError('city', undefined)" />
                     </div>
@@ -105,7 +105,7 @@
                                     :disabled="!selectedCountryObj" />
                     </div>
                     <div class="col-md-6">
-                      <ClientField name="zip" :label="__('message.op_zip_code')" placeholder="10001…" autocomplete="postal-code"
+                      <ClientField name="zip" :label="__('message.op_zip_code')" placeholder="10001" autocomplete="postal-code"
                                    v-model="form.zip" :error="errors.zip" :required="true"
                                    @update:modelValue="setFieldError('zip', undefined)" />
                     </div>
@@ -118,7 +118,7 @@
 
                   <p class="op-section-label text-uppercase fw-semibold text-muted mb-3">{{ __('message.op_payment_info') }}</p>
 
-                  <ClientField name="amount" type="number" :label="__('message.amount')" placeholder="0.00…"
+                  <ClientField name="amount" type="number" :label="__('message.amount')" placeholder="0.00"
                                v-model="form.amount" :error="errors.amount" :required="true"
                                @update:modelValue="setFieldError('amount', undefined)" />
 

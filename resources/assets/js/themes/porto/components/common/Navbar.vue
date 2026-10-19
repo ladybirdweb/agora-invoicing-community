@@ -1105,8 +1105,7 @@ onUnmounted(() => {
   padding: 6px;
 }
 
-/* Thin custom scrollbar for the overflowing language list, matching the
-   convention used across favMer's notification/search/lang dropdowns. */
+/* Thin custom scrollbar for the overflowing language list. */
 .lang-dropdown::-webkit-scrollbar {
   width: 6px;
 }

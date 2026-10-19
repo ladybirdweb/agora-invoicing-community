@@ -83,6 +83,7 @@ describe('PhoneField.vue', () => {
         const input = wrapper.find('input')
         await input.setValue('1234567890')
         await input.trigger('input')
+        await new Promise(r => setTimeout(r)) // onChange waits for intl-tel-input's rewrite
         expect(onChangeMock).toHaveBeenCalled()
     })
 
@@ -90,7 +91,17 @@ describe('PhoneField.vue', () => {
         const input = wrapper.find('input')
         input.element.value = '9876543210'
         await input.trigger('input')
+        await new Promise(r => setTimeout(r))
         expect(onChangeMock).toHaveBeenCalledWith('9876543210', 'phone')
+    })
+
+    it('reports the value as the box shows it after intl-tel-input rewrites it (pasted dial code)', async () => {
+        const input = wrapper.find('input')
+        input.element.value = '+91 95005 75754'
+        await input.trigger('input')
+        input.element.value = '9500575754' // what intl-tel-input leaves in the box
+        await new Promise(r => setTimeout(r))
+        expect(onChangeMock).toHaveBeenLastCalledWith('9500575754', 'phone')
     })
 
     it('emits countryChange event on mount when ITI is initialized', () => {

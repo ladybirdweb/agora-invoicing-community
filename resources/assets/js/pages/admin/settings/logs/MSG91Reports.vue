@@ -113,7 +113,7 @@ const tableOptions = reactive({
         user_fullname: (f, row) => {
             const name = row.user_fullname || '—'
             if (!row.user_id) return name
-            return h('a', { href: `${baseUrl}/admin/clients/${row.user_id}` }, name)
+            return h('a', { href: `${baseUrl}/admin/users/${row.user_id}` }, name)
         },
         user_email:     (f, row) => row.user_email     || '—',
         mobile_number:  (f, row) => row.mobile_number  || '—',

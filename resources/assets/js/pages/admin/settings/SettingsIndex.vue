@@ -9,7 +9,7 @@
                     <div class="col" v-for="item in section.items" :key="item.to ?? item.href ?? item.monitor">
 
                         <!-- Tiles with sub-links open a hover popover instead of navigating directly (e.g. SEO: Settings / Pages). -->
-                        <!-- The popover is anchored to the icon circle only (not the whole tile), matching favMer's pattern, -->
+                        <!-- The popover is anchored to the icon circle only (not the whole tile), -->
                         <!-- so it starts right beside the icon instead of centering on the icon+label block. -->
                         <a v-if="item.children" href="javascript:;" class="settings-tile d-flex flex-column align-items-center text-center text-decoration-none gap-2 py-2">
                             <VDropdown placement="right" :distance="8"

@@ -425,6 +425,7 @@ return [
             'numeric' => 'Le taux doit être un nombre.',
             'decimal' => 'Le taux doit comporter au plus 3 décimales.',
             'max' => 'Le taux ne doit pas être supérieur à 999,999.',
+            'min' => 'Le taux doit être supérieur ou égal à 0.',
         ],
         'priority' => [
             'required' => 'Le champ priorité est obligatoire.',

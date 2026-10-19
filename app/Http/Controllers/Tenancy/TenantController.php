@@ -288,7 +288,7 @@ class TenantController extends Controller
                 ];
 
                 logActivity(
-                    sprintf("Cloud instance <b><a href='http://%s' target='_blank'>%s</a></b> created successfully for user <b><a href='", $faveoCloud, $faveoCloud).url('clients/'.$userId).sprintf("'><strong>%s %s</strong></a></b>", $userFirstName, $userLastName),
+                    sprintf("Cloud instance <b><a href='http://%s' target='_blank'>%s</a></b> created successfully for user <b><a href='", $faveoCloud, $faveoCloud).url('admin/users/'.$userId).sprintf("'><strong>%s %s</strong></a></b>", $userFirstName, $userLastName),
                     'created',
                     'Cloud'
                 );
@@ -361,7 +361,7 @@ class TenantController extends Controller
             if (! is_array($responseArray)) {
                 return errorResponse(__('message.cloud_deleted_failed'));
             }
-            $user = $this->authUser()->email ?? 'Auto deletion';
+            $user = Auth::user()->email ?? 'Auto deletion'; // also runs from the expiry cron, with no logged-in user
 
             if (($responseArray['status'] ?? null) == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
                 $this->deleteCronForTenant($request->input('id'));
@@ -379,7 +379,7 @@ class TenantController extends Controller
                 }
 
                 $loggingUser = Auth::check()
-                    ? "<a href='".url('clients/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
+                    ? "<a href='".url('admin/users/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
                     : 'Auto deletion';
 
                 logActivity(
@@ -543,7 +543,7 @@ class TenantController extends Controller
                         DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
 
                         $loggingUser = Auth::check()
-                            ? "<a href='".url('clients/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
+                            ? "<a href='".url('admin/users/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
                             : 'Auto deletion';
 
                         logActivity(
@@ -759,7 +759,7 @@ class TenantController extends Controller
                 ? '+'.$user->mobile_code.' '.$user->mobile
                 : null,
             'country' => Country::where('country_code_char2', $user->country)->value('country_name'),
-            'profile' => url('clients/'.$user->id),
+            'profile' => url('admin/users/'.$user->id),
         ];
     }
 

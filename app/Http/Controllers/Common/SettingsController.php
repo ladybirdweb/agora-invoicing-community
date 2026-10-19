@@ -716,8 +716,14 @@ class SettingsController extends BaseSettingsController
             $sortOrder = $request->input('sort-order', 'desc');
             $limit = $request->input('limit', 10);
 
+            // Contact: the user with the logged email, else the order's client — the email
+            // goes stale when a user changes it, but the order still knows who paid.
+            $contactName = "COALESCE(CONCAT(users.first_name, ' ', users.last_name), CONCAT(clients.first_name, ' ', clients.last_name), payment_logs.from)";
+
             $query = Payment_log::query()
                 ->leftJoin('users', 'payment_logs.from', '=', 'users.email')
+                ->leftJoin('orders', 'orders.number', '=', 'payment_logs.order')
+                ->leftJoin('users as clients', 'clients.id', '=', 'orders.client')
                 ->select(
                     'payment_logs.id',
                     'payment_logs.from',
@@ -729,8 +735,9 @@ class SettingsController extends BaseSettingsController
                     'payment_logs.amount',
                     'payment_logs.payment_type',
                     'payment_logs.created_at',
-                    'users.id as user_id',
-                    DB::raw("CONCAT(users.first_name, ' ', users.last_name) as user_name")
+                    'orders.id as order_id',
+                    DB::raw('COALESCE(users.id, clients.id) as user_id'),
+                    DB::raw($contactName.' as user_name')
                 );
 
             if ($status = $request->input('status')) {
@@ -738,20 +745,20 @@ class SettingsController extends BaseSettingsController
             }
 
             if ($dateFrom = $request->input('date_from')) {
-                $query->where('payment_logs.date', '>=', Date::parse($dateFrom)->startOfDay());
+                $query->where('payment_logs.date', '>=', userDayStart($dateFrom));
             }
 
             if ($dateTill = $request->input('date_till')) {
-                $query->where('payment_logs.date', '<=', Date::parse($dateTill)->endOfDay());
+                $query->where('payment_logs.date', '<=', userDayEnd($dateTill));
             }
 
             if ($searchString) {
-                $query->where(function (Builder $q) use ($searchString): void {
+                $query->where(function (Builder $q) use ($searchString, $contactName): void {
                     $q->where('payment_logs.order', 'like', sprintf('%%%s%%', $searchString))
                         ->orWhere('payment_logs.status', 'like', sprintf('%%%s%%', $searchString))
                         ->orWhere('payment_logs.payment_method', 'like', sprintf('%%%s%%', $searchString))
                         ->orWhere('payment_logs.from', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", [sprintf('%%%s%%', $searchString)])
+                        ->orWhereRaw($contactName.' LIKE ?', [sprintf('%%%s%%', $searchString)])
                         ->orWhere('payment_logs.payment_type', 'like', sprintf('%%%s%%', $searchString));
                 });
             }
@@ -761,16 +768,23 @@ class SettingsController extends BaseSettingsController
                 $sortField = 'date';
             }
 
-            $paymentSortMap = ['user' => 'users.first_name'];
-            $paymentSortColumn = $paymentSortMap[$sortField] ?? 'payment_logs.'.$sortField;
-            $logs = $query->orderBy($paymentSortColumn, $sortOrder)->paginate($limit);
+            $sortOrder = $sortOrder === 'asc' ? 'asc' : 'desc';
+            // amount is stored formatted ("₹4,95,600.50") — sort on the number, not the text.
+            $paymentSortMap = [
+                'user' => $contactName,
+                'amount' => "REGEXP_REPLACE(payment_logs.amount, '[^0-9.]', '') + 0",
+            ];
+            $logs = isset($paymentSortMap[$sortField])
+                ? $query->orderByRaw($paymentSortMap[$sortField].' '.$sortOrder)->paginate($limit)
+                : $query->orderBy('payment_logs.'.$sortField, $sortOrder)->paginate($limit);
 
             $logs->getCollection()->transform(fn ($row): array => [ // @phpstan-ignore method.unresolvableReturnType, argument.unresolvableType
                 'id' => $row->id,
                 'date' => $row->date,
-                'user' => $row->user_name ? trim((string) $row->user_name) : ($row->from ?? '—'), // @phpstan-ignore property.notFound
+                'user' => trim((string) $row->user_name) ?: '—', // @phpstan-ignore property.notFound
                 'user_id' => $row->user_id, // @phpstan-ignore property.notFound
                 'order' => $row->order ?? '—',
+                'order_id' => $row->order_id, // @phpstan-ignore property.notFound
                 'amount' => $row->amount ?? '—',
                 'payment_method' => ucfirst($row->payment_method ?? '—'),
                 'payment_type' => ucfirst($row->payment_type ?? '—'),
@@ -856,11 +870,11 @@ class SettingsController extends BaseSettingsController
 
         if ($from || $till) {
             $fromDate = $from !== '' && $from !== '0'
-                ? Date::parse($this->DateFormat($from))->startOfDay()
+                ? userDayStart($this->DateFormat($from))
                 : Date::parse(Payment_log::oldest('date')->value('date'))->startOfDay();
 
             $tillDate = $till !== '' && $till !== '0'
-                ? Date::parse($this->DateFormat($till))->endOfDay()
+                ? userDayEnd($this->DateFormat($till))
                 : Date::now()->endOfDay();
 
             $join->whereBetween('date', [$fromDate, $tillDate]);

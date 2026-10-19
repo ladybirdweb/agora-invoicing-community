@@ -167,4 +167,17 @@ class OrderSearchControllerTest extends DBTestCase
         $result = $this->controller->advanceOrderSearch($request);
         $this->assertEquals(0, $result->count());
     }
+
+    public function test_installation_and_version_filters_split_orders_without_a_product(): void
+    {
+        $this->getLoggedInUser('admin');
+        $count = fn (array $filters): int => $this->controller->advanceOrderSearch(new \Illuminate\Http\Request($filters))->count();
+
+        // Installed / not installed partition every order (both read the installation records).
+        $this->assertSame($count([]), $count(['act_ins' => 'installed']) + $count(['act_ins' => 'not_installed']));
+
+        // Used to throw "Illegal operator and value combination" when no product was picked.
+        $this->assertGreaterThanOrEqual(0, $count(['version' => 'Outdated']));
+        $this->assertGreaterThanOrEqual(0, $count(['version' => 'Latest']));
+    }
 }

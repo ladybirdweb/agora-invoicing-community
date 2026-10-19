@@ -483,6 +483,7 @@ return [
             'numeric' => 'The rate must be a number.',
             'decimal' => 'The rate must have at most 3 decimal places.',
             'max' => 'The rate must not be greater than 999.999.',
+            'min' => 'The rate must be greater than or equal to 0.',
         ],
         'priority' => [
             'required' => 'The priority field is required.',

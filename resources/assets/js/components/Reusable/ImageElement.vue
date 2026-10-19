@@ -38,7 +38,7 @@ const GENERIC_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     + '</svg>'
 )
 
-// Real static file (like favMer's contacthead.png) rather than an inline SVG,
+// Real static file rather than an inline SVG,
 // so it matches the person-avatar used in Navbar/UserShow. Still can't loop:
 // onImageLoadError bails out once the placeholder is already showing.
 const AVATAR_PLACEHOLDER = asset('images/avatar.png')

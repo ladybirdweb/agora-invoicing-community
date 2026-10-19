@@ -136,7 +136,7 @@ describe('Verify.vue', () => {
         expect(reqs.length).toBe(1)
     })
 
-    it('calls successHandler on successful OTP verification', async () => {
+    it('goes straight to login (no success toast) once the last step is verified', async () => {
         axiosMock.onPost('/otp/verify').reply(200, { data: {} })
 
         await flushPromises()
@@ -144,7 +144,9 @@ describe('Verify.vue', () => {
         await wrapper.find('form').trigger('submit')
         await flushPromises()
 
-        expect(successHandler).toHaveBeenCalled()
+        // Login shows the "registration complete" notice via ?verified=1 instead.
+        expect(successHandler).not.toHaveBeenCalled()
+        expect(wrapper.find('form').exists()).toBe(false)
     })
 
     it('calls errorHandler when OTP verify API returns 500', async () => {

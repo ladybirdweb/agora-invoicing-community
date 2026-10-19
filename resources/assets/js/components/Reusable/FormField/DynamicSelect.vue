@@ -94,7 +94,7 @@ const props = defineProps({
     dataKey:       { type: String, default: null },
     required:      { type: Boolean, default: false },
     error:         { type: String, default: undefined },
-    // Same fix favMer's DynamicSelect uses: truncate the label text itself
+    // Truncate the label text itself
     // (title attribute carries the full value on hover). This is a
     // defensive ceiling on the DOM text, not the real visual truncation —
     // the CSS ellipsis on .vs__selected handles clipping precisely to

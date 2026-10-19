@@ -3213,6 +3213,8 @@ return [
     'delete_selected_users_confirm' => '删除 :count 选定的用户？此操作无法撤消。',
     'select_date' => 'Select date',
     'installed_at_least_once' => 'Installed (at least once)',
+    'order_installed' => 'Installed',
+    'order_not_installed' => 'Not installed',
     'active_installation' => 'Active Installation',
     'inactive_installation' => 'Inactive Installation',
     'expiring_subscription' => 'Expiring (within 30 days)',

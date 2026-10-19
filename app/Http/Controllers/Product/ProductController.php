@@ -93,7 +93,7 @@ class ProductController extends BaseProductController
         parent::__construct($stampingService);
 
         $this->middleware('auth');
-        $this->middleware('admin', ['except' => ['adminDownload', 'userDownload']]);
+        $this->middleware('admin', ['except' => ['userDownload']]);
 
         $product = new Product;
         $this->product = $product;
@@ -278,7 +278,7 @@ class ProductController extends BaseProductController
             'producttitle' => ['required', 'string', 'max:255'],
             'version' => ['required', 'string', 'max:50'],
             'filename' => ['required', 'string', 'max:255'],
-            // 'required' also rejects an empty array — favMer needs real
+            // 'required' also rejects an empty array — the installed product needs real
             // dependencies to run its pre-update checks.
             'dependencies' => ['required', 'array'],
             'description' => ['nullable', 'string'],
@@ -390,7 +390,7 @@ class ProductController extends BaseProductController
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'version' => ['required', 'string', 'max:50'],
-            // 'required' also rejects an empty array — favMer needs real
+            // 'required' also rejects an empty array — the installed product needs real
             // dependencies to run its pre-update checks.
             'dependencies' => ['required', 'array'],
             'release_type' => ['required', Rule::in(ProductUpload::RELEASE_TYPES)],

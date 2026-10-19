@@ -82,6 +82,18 @@ describe('LoginRegister.vue', () => {
         expect(btns.length).toBe(2)
     })
 
+    it('shows the "registration complete" notice when Verify sends ?verified=1', async () => {
+        globalThis.history.replaceState({}, '', '/login?verified=1')
+        const { useAlertStore } = await import('@/core/stores/alert.js')
+        const verified = mount(LoginRegister, {
+            global: { plugins: [createTestingPinia()], stubs: ['client-field', 'client-checkbox', 'dynamic-select', 'phone-field', 'honeypot', 'recaptcha-field', 'social-buttons', 'router-link'] },
+        })
+
+        expect(useAlertStore().setAlert).toHaveBeenCalledWith(expect.objectContaining({ type: 'success', message: 'message.registration_complete' }))
+        expect(globalThis.location.search).toBe('') // flag stripped so a refresh doesn't repeat it
+        verified.unmount()
+    })
+
     it('fetches login config on mount', async () => {
         await flushPromises()
         const reqs = axiosMock.history.get.filter(r => r.url === '/auth/login-config')

@@ -331,7 +331,7 @@
                         label=""
                         :labelStyle="{ display: 'none' }"
                         :value="totp"
-                        :onChange="(val) => totp = val"
+                        :onChange="(val) => totp = String(val).replace(/\D/g, '').slice(0, 6)"
                         placehold="Enter Passcode..."
                         :max="6"
                     />

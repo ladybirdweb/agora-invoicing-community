@@ -425,6 +425,7 @@ return [
             'numeric' => 'La tasa debe ser un número.',
             'decimal' => 'La tasa deberá tener como máximo 3 decimales.',
             'max' => 'La tarifa no debe ser superior a 999,999.',
+            'min' => 'La tarifa debe ser mayor o igual a 0.',
         ],
         'priority' => [
             'required' => 'El campo de prioridad es obligatorio.',

@@ -280,9 +280,8 @@ const tableOptions = reactive({
             )
         },
         agents:       (f, row) => row.agents ?? '—',
-        status:       (f, row) => row.status
-            ? h('span', { class: `badge ${row.status === 'Active' ? 'bg-success' : 'bg-danger'}` }, row.status)
-            : '—',
+        status:       (f, row) => h('span', { class: `badge ${row.installed ? 'bg-success' : 'bg-danger'}` },
+            __(row.installed ? 'message.order_installed' : 'message.order_not_installed')),
         order_date:   (f, row) => row.order_date ? formatDate(row.order_date) : '—',
         update_ends_at: (f, row) => row.update_ends_at ? formatDate(row.update_ends_at) : '—',
         action: (f, row) => h(OrderTableActions, { orderId: row.id, canRenew: !!row.can_renew, renewBlockedReason: row.renew_blocked_reason || '', baseUrl: baseUrl, showDelete: true }),

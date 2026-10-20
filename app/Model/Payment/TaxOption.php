@@ -18,13 +18,12 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $round_at_subtotal
  * @property int $shop_inclusive
  * @property int $cart_inclusive
- * @property string $Gst_No
  * @property int $rounding
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string $Gst_No
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption query()
@@ -39,7 +38,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption whereTaxBasedOn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption whereTaxEnable($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxOption whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class TaxOption extends BaseModel

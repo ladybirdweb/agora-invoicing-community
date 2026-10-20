@@ -19,7 +19,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, ProductGroup> $productGroups
  * @property-read int|null $product_groups_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate query()
@@ -29,7 +28,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingTemplate whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class PricingTemplate extends Model

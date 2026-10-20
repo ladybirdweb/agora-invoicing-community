@@ -40,7 +40,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $stripe_webhook_secret
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
  * @method static \Database\Factories\ApiKeyFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey newQuery()
@@ -72,7 +71,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereVerificationPreference($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereZohoApiKey($value)
- *
  * @mixin \Eloquent
  */
 class ApiKey extends Model

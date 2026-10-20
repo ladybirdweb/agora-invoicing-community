@@ -20,12 +20,12 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $og_title
  * @property string|null $og_description
  * @property string|null $og_image
- * @property bool $og_same_as_meta
+ * @property int $og_same_as_meta
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
+ * @method static \Database\Factories\Model\Common\SeoDefaultPageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage query()
@@ -33,9 +33,12 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereMetaDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereMetaTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereOgDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereOgImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereOgSameAsMeta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereOgTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage wherePageKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SeoDefaultPage whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class SeoDefaultPage extends BaseModel

@@ -22,20 +22,18 @@ use Override;
  * @property Carbon|null $updated_at
  * @property-read Product $product
  * @property-read ProductUpload $version
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation active()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereInstallationDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereInstallationStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VersionInstallation whereVersionId($value)
- *
+ * @method static Builder<static>|VersionInstallation active()
+ * @method static Builder<static>|VersionInstallation newModelQuery()
+ * @method static Builder<static>|VersionInstallation newQuery()
+ * @method static Builder<static>|VersionInstallation query()
+ * @method static Builder<static>|VersionInstallation whereCreatedAt($value)
+ * @method static Builder<static>|VersionInstallation whereId($value)
+ * @method static Builder<static>|VersionInstallation whereInstallationDate($value)
+ * @method static Builder<static>|VersionInstallation whereInstallationStatus($value)
+ * @method static Builder<static>|VersionInstallation whereProductId($value)
+ * @method static Builder<static>|VersionInstallation whereUpdatedAt($value)
+ * @method static Builder<static>|VersionInstallation whereUserId($value)
+ * @method static Builder<static>|VersionInstallation whereVersionId($value)
  * @mixin \Eloquent
  */
 class VersionInstallation extends Model

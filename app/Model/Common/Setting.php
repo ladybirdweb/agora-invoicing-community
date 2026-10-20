@@ -39,14 +39,16 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $welcome_mail
  * @property int $download
  * @property int $invoice_template
- * @property string $city
+ * @property string $error_email
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property State|null $state
+ * @property string $city
  * @property Country|null $country
  * @property int $timezone_id
  * @property string $date_format
  * @property string $time_format
  * @property string|null $content
- * @property string $error_email
  * @property string|null $title
  * @property string|null $admin_logo
  * @property string|null $fav_icon
@@ -56,8 +58,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $default_currency
  * @property string|null $default_symbol
  * @property string|null $file_storage
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * @property string|null $cin_no
  * @property string|null $gstin
  * @property string|null $key
@@ -66,8 +66,8 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $domain
  * @property int $sending_status
  * @property string|null $zip
- * @property string|null $version
  * @property string|null $password_mail
+ * @property string|null $version
  * @property string|null $payment_successfull
  * @property string|null $payment_failed
  * @property string|null $card_failed
@@ -79,13 +79,16 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $from_name
  * @property string|null $phone_code
  * @property string|null $knowledge_base_url
+ * @property string|null $help_support_url
+ * @property string|null $help_docs_url
+ * @property string|null $help_description
+ * @property int $deployment_enabled
  * @property int $autorenewal_status
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read Currency|null $defaultCurrency
  * @property-read Language|null $language
  * @property-read Timezone|null $timezone
- *
  * @method static \Database\Factories\Model\Common\SettingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newQuery()
@@ -107,6 +110,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDateFormat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDefaultCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDefaultSymbol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDeploymentEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDownload($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereDriver($value)
@@ -123,6 +127,9 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereFreeTrailGonnaExpired($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereFromName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereGstin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereHelpDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereHelpDocsUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereHelpSupportUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereHost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereInvoice($value)
@@ -153,7 +160,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereWebsite($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereWelcomeMail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereZip($value)
- *
  * @mixin \Eloquent
  */
 class Setting extends Model

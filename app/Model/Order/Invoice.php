@@ -28,7 +28,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $number
  * @property Carbon $date
  * @property string|null $discount
- * @property string $discount_mode
+ * @property string|null $discount_mode
  * @property string|null $coupon_code
  * @property string $grand_total
  * @property string $currency
@@ -42,46 +42,47 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $credits
  * @property string|null $cloud_domain
  * @property array<array-key, mixed>|null $metadata
- * @property string|null $fulfillment_intent
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ * @property-read Collection<int, PaymentInvoice> $allocations
+ * @property-read int|null $allocations_count
  * @property-read Collection<int, InvoiceItem> $invoiceItem
  * @property-read int|null $invoice_item_count
  * @property-read Collection<int, OrderInvoiceRelation> $orderRelation
  * @property-read int|null $order_relation_count
  * @property-read Collection<int, Order> $orders
  * @property-read int|null $orders_count
- * @property-read Collection<int, Payment> $payment
- * @property-read int|null $payment_count
+ * @property-read PaymentInvoice|null $pivot
+ * @property-read Collection<int, Payment> $payments
+ * @property-read int|null $payments_count
  * @property-read Collection<int, Subscription> $subscriptions
  * @property-read int|null $subscriptions_count
+ * @property-read string $type
  * @property-read User|null $user
- *
  * @method static \Database\Factories\Model\Order\InvoiceFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereBillingPay($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCloudDomain($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCouponCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCredits($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCurrency($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDiscount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDiscountMode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereFulfillmentIntent($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereGrandTotal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereIsRenewed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereMetadata($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereProcessingFee($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereUserId($value)
- *
+ * @method static Builder<static>|Invoice newModelQuery()
+ * @method static Builder<static>|Invoice newQuery()
+ * @method static Builder<static>|Invoice orderByField(string $field, string $direction)
+ * @method static Builder<static>|Invoice query()
+ * @method static Builder<static>|Invoice whereBillingPay($value)
+ * @method static Builder<static>|Invoice whereCloudDomain($value)
+ * @method static Builder<static>|Invoice whereCouponCode($value)
+ * @method static Builder<static>|Invoice whereCreatedAt($value)
+ * @method static Builder<static>|Invoice whereCredits($value)
+ * @method static Builder<static>|Invoice whereCurrency($value)
+ * @method static Builder<static>|Invoice whereDate($value)
+ * @method static Builder<static>|Invoice whereDescription($value)
+ * @method static Builder<static>|Invoice whereDiscount($value)
+ * @method static Builder<static>|Invoice whereDiscountMode($value)
+ * @method static Builder<static>|Invoice whereGrandTotal($value)
+ * @method static Builder<static>|Invoice whereId($value)
+ * @method static Builder<static>|Invoice whereIsRenewed($value)
+ * @method static Builder<static>|Invoice whereMetadata($value)
+ * @method static Builder<static>|Invoice whereNumber($value)
+ * @method static Builder<static>|Invoice whereProcessingFee($value)
+ * @method static Builder<static>|Invoice whereStatus($value)
+ * @method static Builder<static>|Invoice whereUpdatedAt($value)
+ * @method static Builder<static>|Invoice whereUserId($value)
  * @mixin \Eloquent
  */
 class Invoice extends BaseModel

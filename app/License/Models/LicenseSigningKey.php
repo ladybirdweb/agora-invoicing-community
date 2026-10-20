@@ -10,6 +10,17 @@ use RuntimeException;
  * @property int $id
  * @property string $public_key
  * @property string $secret_key
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey wherePublicKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey whereSecretKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSigningKey whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class LicenseSigningKey extends Model
 {

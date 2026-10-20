@@ -30,13 +30,15 @@ use Illuminate\Support\Carbon;
  * @property string|null $currency
  * @property string|null $payment_method
  * @property string|null $payment_status
- * @property string|null $amt_to_credit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Invoice> $invoices
+ * @property string|null $amt_to_credit
  * @property-read \Illuminate\Database\Eloquent\Collection<int, PaymentInvoice> $allocations
+ * @property-read int|null $allocations_count
+ * @property-read PaymentInvoice|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Invoice> $invoices
+ * @property-read int|null $invoices_count
  * @property-read User|null $user
- *
  * @method static \Database\Factories\Model\Order\PaymentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
@@ -52,7 +54,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment wherePaymentStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class Payment extends BaseModel

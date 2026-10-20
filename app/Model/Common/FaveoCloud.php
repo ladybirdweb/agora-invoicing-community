@@ -14,20 +14,34 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $id
  * @property string|null $cloud_central_domain
  * @property string|null $cloud_cname
+ * @property string|null $cloud_job_url
+ * @property string|null $cloud_job_url_normal
+ * @property string|null $cloud_user
+ * @property string|null $cloud_delete_job_url_normal
+ * @property string|null $cloud_delete_job_url_custom
+ * @property string|null $cloud_auth
+ * @property string|null $cloud_oauth_token
+ * @property string|null $google_chat_webhook
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudAuth($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudCentralDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudCname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudDeleteJobUrlCustom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudDeleteJobUrlNormal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudJobUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudJobUrlNormal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudOauthToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCloudUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereGoogleChatWebhook($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoCloud whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class FaveoCloud extends Model

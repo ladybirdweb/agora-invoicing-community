@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  * @property int $product_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation query()
@@ -22,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation wherePromotionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PromoProductRelation whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class PromoProductRelation extends BaseModel

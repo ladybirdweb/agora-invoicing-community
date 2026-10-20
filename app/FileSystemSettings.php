@@ -22,7 +22,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $pdf_driver
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings query()
@@ -33,7 +32,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings whereLocalFileStoragePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings wherePdfDriver($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileSystemSettings whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class FileSystemSettings extends Model

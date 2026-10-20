@@ -17,7 +17,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $reply_to
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template query()
@@ -29,7 +28,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Template whereUrl($value)
- *
  * @mixin \Eloquent
  */
 class Template extends Model

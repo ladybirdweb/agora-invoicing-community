@@ -294,7 +294,6 @@ return [
         'GeoIP' => GeoIP::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         'Html' => Html::class,
-        'Input' => Request::class,
         'Redis' => Redis::class,
         'Gravatar' => Gravatar::class,
         'Socialite' => Socialite::class,

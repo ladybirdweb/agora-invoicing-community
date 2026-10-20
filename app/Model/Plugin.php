@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property string $type
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin query()
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Plugin whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Plugin extends BaseModel

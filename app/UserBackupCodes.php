@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User|null $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes query()
@@ -24,7 +23,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserBackupCodes whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class UserBackupCodes extends Model

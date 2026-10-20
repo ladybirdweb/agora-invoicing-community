@@ -25,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @property-read LogCategory|null $category
  * @property-read ExceptionLog|null $exception
  * @property-read bool $is_retry
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog query()
@@ -42,7 +41,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog whereSubject($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailLog whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class MailLog extends BaseModel

@@ -20,7 +20,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read ReportColumn|null $reportColumn
  * @property-read User|null $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport query()
@@ -31,7 +30,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLinkReport whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class UserLinkReport extends Model

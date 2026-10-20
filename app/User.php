@@ -54,6 +54,8 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $email
  * @property string $password
  * @property string $company
+ * @property string|null $company_type
+ * @property string|null $company_size
  * @property string|null $bussiness
  * @property string $mobile
  * @property string $mobile_code
@@ -70,8 +72,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $timezone_id
  * @property string $language
  * @property string|null $remember_token
- * @property string|null $company_type
- * @property string|null $company_size
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string $country
@@ -88,7 +88,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $google2fa_activation_date
  * @property int $is_2fa_enabled
  * @property string|null $backup_code
- * @property int|null $code_usage_count
+ * @property int $code_usage_count
  * @property Carbon|null $deleted_at
  * @property string|null $gstin
  * @property int $is_tax_exempt
@@ -140,7 +140,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $verification_attempts_count
  * @property-read Collection<int, WhatsappIntegrationUser> $whatsappUsers
  * @property-read int|null $whatsapp_users_count
- *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -195,7 +194,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereZip($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTrashed()
- *
  * @mixin \Eloquent
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract // @phpstan-ignore class.missingImplements

@@ -23,7 +23,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders query()
@@ -37,7 +36,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders whereToUse($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailMobileValidationProviders whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class EmailMobileValidationProviders extends Model

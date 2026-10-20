@@ -15,7 +15,6 @@ use Override;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Plan> $plans
  * @property-read int|null $plans_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period query()
@@ -24,7 +23,6 @@ use Override;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Period whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Period extends Model

@@ -45,22 +45,22 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $license_mode
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- * @property-read Collection<int, Installation> $licensedInstallations
- * @property-read int|null $licensed_installations_count
- * @property-read Collection<int, Invoice> $invoice
- * @property-read int|null $invoice_count
  * @property-read Collection<int, InstallationLog> $installationLogs
  * @property-read int|null $installation_logs_count
+ * @property-read Collection<int, Invoice> $invoice
+ * @property-read int|null $invoice_count
  * @property-read InvoiceItem|null $invoiceItem
  * @property-read Collection<int, OrderInvoiceRelation> $invoiceRelation
  * @property-read int|null $invoice_relation_count
  * @property-read Collection<int, Invoice> $invoices
  * @property-read int|null $invoices_count
+ * @property-read Collection<int, Installation> $licensedInstallations
+ * @property-read int|null $licensed_installations_count
  * @property-read Product|null $productRelation
  * @property-read Subscription|null $subscription
  * @property-read User|null $user
- *
  * @method static \Database\Factories\Model\Order\OrderFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order needsRenewal()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
@@ -77,7 +77,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereQty($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSerialKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[UsePolicy(OrderPolicy::class)]

@@ -434,4 +434,3 @@ class ClientOrderControllerTest extends DBTestCase
         $this->assertFalse($row['can_delete_cloud']);
     }
 }
-

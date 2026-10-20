@@ -530,4 +530,3 @@ class AutoRenewalControllerTest extends DBTestCase
             ->assertJson(['message' => __('message.plan_change_order_terminated')]);
     }
 }
-

@@ -265,4 +265,3 @@ class OrderPolicyTest extends DBTestCase
         $this->assertTrue($this->policy->enableAutoRenew($this->owner, $order, 'Razorpay')->denied());
     }
 }
-

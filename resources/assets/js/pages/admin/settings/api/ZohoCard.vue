@@ -10,9 +10,7 @@
                 <div class="provider-text-wrap">
                     <b class="text-header">{{ label }}</b>
                     <div class="mt-1">
-                        <span class="provider-status-label" :class="integration.is_active ? 'text-success' : 'text-danger'">
-                            {{ integration.is_active ? __('message.active') : __('message.inactive') }}
-                        </span>
+                        <span class="provider-status-label" :class="status.class">{{ status.label }}</span>
                     </div>
                 </div>
             </div>
@@ -22,8 +20,8 @@
 
         <!-- Actions -->
         <div class="d-flex align-items-center gap-2 ms-2 flex-shrink-0 align-self-start pt-1">
+            <!-- Always reachable: connecting happens on the settings page, before the switch can be turned on. -->
             <RouterLink
-                v-if="integration.is_active"
                 :to="`/settings/api/zoho/${integration.platform}`"
                 class="btn btn-link p-0 text-muted"
                 :title="__('message.settings')"
@@ -34,8 +32,8 @@
             <Switch
                 name="status"
                 :value="integration.is_active"
-                :disabled="toggling"
-                :title="integration.is_active ? __('message.disable') : __('message.enable')"
+                :disabled="toggling || !integration.has_token"
+                :title="switchTitle"
                 :onChange="() => $emit('toggle', integration)"
                 classname="gateway-toggle"
             />
@@ -55,6 +53,18 @@ const props = defineProps({
 })
 
 defineEmits(['toggle'])
+
+const status = computed(() => {
+    if (!props.integration.has_token) return { label: __('message.zoho_not_connected'), class: 'text-muted' }
+    return props.integration.is_active
+        ? { label: __('message.active'),   class: 'text-success' }
+        : { label: __('message.inactive'), class: 'text-danger' }
+})
+
+const switchTitle = computed(() => {
+    if (!props.integration.has_token) return __('message.zoho_connect_first')
+    return props.integration.is_active ? __('message.disable') : __('message.enable')
+})
 
 const label = computed(() => {
     const map = { crm: __('message.zoho_crm'), campaigns: __('message.zoho_campaigns') }

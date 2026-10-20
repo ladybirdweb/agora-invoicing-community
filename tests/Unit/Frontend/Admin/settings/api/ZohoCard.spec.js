@@ -18,6 +18,7 @@ const STUBS = [
 
 const makeIntegration = (overrides = {}) => ({
     is_active: false,
+    has_token: true,
     platform: 'crm',
     description: 'Zoho CRM integration',
     ...overrides,
@@ -145,7 +146,7 @@ describe('ZohoCard.vue', () => {
         expect(input.attributes('disabled')).toBeUndefined()
     })
 
-    // ── settings RouterLink shown only when active ─────────────────────────
+    // ── settings RouterLink always shown (connecting happens there) ────────
     it('settings gear link is rendered when is_active is true', () => {
         const wrapper = mount(ZohoCard, {
             props: { integration: makeIntegration({ is_active: true, platform: 'crm' }) },
@@ -157,12 +158,21 @@ describe('ZohoCard.vue', () => {
                wrapper.html().includes('settings/api/zoho')).toBe(true)
     })
 
-    it('settings gear link is NOT rendered when is_active is false', () => {
+    it('settings gear link is rendered even when is_active is false', () => {
         const wrapper = mount(ZohoCard, {
-            props: { integration: makeIntegration({ is_active: false }) },
+            props: { integration: makeIntegration({ is_active: false, has_token: false }) },
             global: { plugins: [createTestingPinia()], stubs: STUBS },
         })
-        expect(wrapper.html()).not.toContain('settings/api/zoho')
+        expect(wrapper.html()).toContain('settings/api/zoho')
+    })
+
+    it('shows "not connected" and disables the switch when there is no Zoho token', () => {
+        const wrapper = mount(ZohoCard, {
+            props: { integration: makeIntegration({ has_token: false }) },
+            global: { plugins: [createTestingPinia()], stubs: STUBS },
+        })
+        expect(wrapper.text()).toContain('zoho_not_connected')
+        expect(wrapper.find('input[type="checkbox"]').attributes('disabled')).toBeDefined()
     })
 
     // ── multiple toggle emissions ──────────────────────────────────────────

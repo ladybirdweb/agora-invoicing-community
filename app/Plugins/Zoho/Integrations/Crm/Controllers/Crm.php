@@ -67,7 +67,7 @@ class Crm
     }
 
     /**
-     * Create a CRM record.
+     * Create a CRM record, or update it if it already exists.
      *
      *
      * @param  array<mixed>  $data
@@ -75,9 +75,9 @@ class Crm
      * @throws ZohoCrmApiException
      * @throws HttpClientException
      */
-    public function create(string $module, array $data): void
+    public function upsert(string $module, array $data): void
     {
-        $this->zohoApi->create($module, $data);
+        $this->zohoApi->upsert($module, $data);
     }
 
     /**

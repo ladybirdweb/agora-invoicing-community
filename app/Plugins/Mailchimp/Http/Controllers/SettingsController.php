@@ -13,25 +13,35 @@ use App\Model\Product\Product;
 use App\Plugins\Mailchimp\Exceptions\MailchimpApiException;
 use App\Plugins\Mailchimp\Http\Client\MailchimpClient;
 use App\Plugins\Mailchimp\Http\Requests\UpdateSettingsRequest;
+use App\Plugins\Mailchimp\Services\ContactBuilder;
 use App\Plugins\Mailchimp\Services\MailchimpService;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class SettingsController extends Controller
 {
+    /** Faveo user fields that can be mapped to Mailchimp merge fields (see ContactBuilder::mergeFields). */
+    private const array USER_FIELDS = ['first_name', 'last_name', 'company', 'mobile', 'address', 'town', 'country', 'state', 'zip', 'active', 'role', 'source'];
+
     // ── Admin settings page data ──────────────────────────────────────────────
 
     public function getSettings(): JsonResponse
     {
         try {
             $setting = MailchimpSetting::first();
-            $apiKey = $setting->api_key ?? '';
+            $apiKey = (string) ($setting->api_key ?? '');
             $listsData = ['lists' => [], 'total' => 0, 'has_more' => false];
+            $account = null;
 
-            if ($apiKey) {
+            if ($apiKey !== '') {
                 try {
-                    $listsData = resolve(MailchimpService::class)->getLists(20, 0);
+                    $service = resolve(MailchimpService::class);
+                    $account = $service->accountName();
+                    $listsData = $service->getLists(20, 0);
                 } catch (Throwable) {
                     // bad key or network — return empty
                 }
@@ -39,6 +49,10 @@ class SettingsController extends Controller
 
             return successResponse('', [
                 'api_key' => $apiKey,
+                'has_key' => $apiKey !== '',
+                'key_hint' => $apiKey !== '' ? substr(strtok($apiKey, '-') ?: $apiKey, -4) : null,
+                'data_center' => $apiKey !== '' && str_contains($apiKey, '-') ? substr($apiKey, strrpos($apiKey, '-') + 1) : null,
+                'account_name' => $account,
                 'list_id' => $setting?->list_id,
                 'subscribe_status' => $setting->subscribe_status ?? 'subscribed',
                 'lists' => $listsData['lists'],
@@ -72,8 +86,14 @@ class SettingsController extends Controller
 
     public function saveApiKey(UpdateSettingsRequest $request): JsonResponse
     {
+        // Left blank = keep the saved key (the page never receives it).
         $apiKey = trim((string) $request->input('mailchimp_auth_key'));
+        $apiKey = $apiKey !== '' ? $apiKey : (string) MailchimpSetting::value('api_key');
         $status = $request->input('status', 0);
+
+        if ($apiKey === '') {
+            return errorResponse(__('message.enter_mailchimp_key'), 422);
+        }
 
         $client = new MailchimpClient($apiKey);
 
@@ -125,11 +145,9 @@ class SettingsController extends Controller
     public function syncMergeFields(): JsonResponse
     {
         try {
-            resolve(MailchimpService::class)->syncMergeFields();
-            $fields = MailchimpField::where('list_id', MailchimpSetting::value('list_id'))
-                ->pluck('name', 'tag');
+            $removed = resolve(MailchimpService::class)->syncMergeFields();
 
-            return successResponse(__('message.updated-successfully'), ['fields' => $fields]);
+            return successResponse($this->syncMessage($removed), ['fields' => $this->listFields()]);
         } catch (MailchimpApiException $mailchimpApiException) {
             return errorResponse($mailchimpApiException->getMessage());
         }
@@ -141,7 +159,7 @@ class SettingsController extends Controller
     {
         try {
             $service = resolve(MailchimpService::class);
-            $service->syncInterestGroups();
+            $removed = $service->syncInterestGroups();
 
             $listId = MailchimpSetting::value('list_id');
             $groups = MailchimpGroup::where('list_id', $listId)
@@ -149,13 +167,29 @@ class SettingsController extends Controller
                 ->get();
             $categories = $service->getInterestCategories();
 
-            return successResponse(__('message.updated-successfully'), [
+            return successResponse($this->syncMessage($removed), [
                 'groups' => $groups,
                 'categories' => $categories,
             ]);
         } catch (MailchimpApiException $mailchimpApiException) {
             return errorResponse($mailchimpApiException->getMessage());
         }
+    }
+
+    /**
+     * Sync result message, naming what had to be un-mapped because the audience no longer has it.
+     *
+     * @param  list<string>  $removed
+     */
+    private function syncMessage(array $removed): string
+    {
+        $message = (string) __('message.updated-successfully');
+
+        if ($removed === []) {
+            return $message;
+        }
+
+        return (string) __('message.mailchimp_sync_removed', ['message' => $message, 'items' => implode(', ', $removed)]);
     }
 
     // ── Mapping page data ─────────────────────────────────────────────────────
@@ -165,7 +199,7 @@ class SettingsController extends Controller
         try {
             $listId = MailchimpSetting::value('list_id');
             $relation = MailchimpFieldAgoraRelation::first();
-            $fields = MailchimpField::where('list_id', $listId)->pluck('name', 'tag');
+            $fields = $this->listFields();
             $groups = MailchimpGroup::where('list_id', $listId)
                 ->select('category_name', 'category_option_id', 'category_id')->get();
             $products = Product::pluck('name', 'id');
@@ -198,8 +232,24 @@ class SettingsController extends Controller
 
     public function saveFieldMapping(Request $request): JsonResponse
     {
+        $fields = $this->listFields();
+        $tags = $fields->pluck('tag')->all();
+
+        // Only Faveo user fields are mappable, each to a merge field of the selected audience.
+        $mapping = $request->only(self::USER_FIELDS);
+        $request->validate(array_fill_keys(self::USER_FIELDS, ['nullable', 'string', Rule::in($tags)]), [
+            'in' => __('message.mailchimp_unknown_field'),
+        ]);
+
+        $mapped = array_filter($mapping);
+        $missing = $fields->where('required', true)->whereNotIn('tag', $mapped)->pluck('name')->all();
+
+        if ($missing !== []) {
+            return errorResponse(__('message.mailchimp_required_missing', ['fields' => implode(', ', $missing)]), 422);
+        }
+
         try {
-            MailchimpFieldAgoraRelation::firstOrNew()->fill($request->all())->save();
+            MailchimpFieldAgoraRelation::firstOrNew()->fill(array_fill_keys(self::USER_FIELDS, null))->fill($mapping)->save();
 
             return successResponse(__('message.updated-successfully'));
         } catch (Throwable $throwable) {
@@ -266,6 +316,50 @@ class SettingsController extends Controller
         }
     }
 
+    // ── Disconnect ────────────────────────────────────────────────────────────
+
+    /**
+     * Forget the API key and audience and switch Mailchimp off. Field mapping and
+     * interest-group settings stay, so reconnecting the same account needs no setup.
+     */
+    public function disconnect(): JsonResponse
+    {
+        MailchimpSetting::firstOrNew()->fill(['api_key' => null, 'list_id' => null])->save();
+        StatusSetting::where('id', 1)->update(['mailchimp_status' => 0]);
+        app()->forgetInstance(MailchimpService::class);
+
+        return successResponse(__('message.mailchimp_disconnected'));
+    }
+
+    // ── Send test ─────────────────────────────────────────────────────────────
+
+    /**
+     * Subscribe the signed-in admin with the current audience and mapping, so they
+     * can see in Mailchimp exactly what gets sent.
+     */
+    public function sendTest(): JsonResponse
+    {
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        if (! MailchimpSetting::value('list_id')) {
+            return errorResponse(__('message.mailchimp_select_list_first'));
+        }
+
+        if (resolve(ContactBuilder::class)->mergeFields($admin) === []) {
+            return errorResponse(__('message.mailchimp_test_nothing_mapped'));
+        }
+
+        try {
+            resolve(MailchimpService::class)->subscribe($admin);
+
+            return successResponse(__('message.mailchimp_test_sent', ['email' => $admin->email]));
+        } catch (MailchimpApiException $mailchimpApiException) {
+            // Admin-only endpoint: show Mailchimp's real reason so the mapping can be fixed.
+            return errorResponse(__('message.mailchimp_test_failed', ['reason' => $mailchimpApiException->getMessage()]));
+        }
+    }
+
     // ── Toggle product/isPaid status flags ────────────────────────────────────
 
     public function updateProductStatus(Request $request): JsonResponse
@@ -280,5 +374,23 @@ class SettingsController extends Controller
         StatusSetting::where('id', 1)->update(['mailchimp_ispaid_status' => $request->boolean('status')]);
 
         return successResponse(__('message.updated-successfully'));
+    }
+
+    /**
+     * Merge fields of the selected audience, with Mailchimp's required flag.
+     *
+     * @return Collection<int, array{tag: string, name: string, type: string, required: bool}>
+     */
+    private function listFields(): Collection
+    {
+        return MailchimpField::where('list_id', MailchimpSetting::value('list_id'))
+            ->get(['tag', 'name', 'type', 'required'])
+            ->map(fn (MailchimpField $f): array => [
+                'tag' => (string) $f->tag,
+                'name' => (string) $f->name,
+                'type' => (string) $f->type,
+                'required' => (bool) $f->required,
+            ])
+            ->values();
     }
 }

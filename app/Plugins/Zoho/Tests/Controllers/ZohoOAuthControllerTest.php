@@ -5,6 +5,7 @@ namespace App\Plugins\Zoho\Tests\Controllers;
 use App\Plugins\Zoho\Controllers\ZohoOAuthController;
 use App\Plugins\Zoho\Models\ZohoIntegration;
 use App\Plugins\Zoho\Models\ZohoOAuthClient;
+use App\Plugins\Zoho\Models\ZohoOAuthToken;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
@@ -266,5 +267,106 @@ class ZohoOAuthControllerTest extends DBTestCase
         $url = $this->controller->tokenUrl('eu');
 
         $this->assertEquals('https://accounts.zoho.eu/oauth/v2/token', $url);
+    }
+
+    public function test_campaigns_cannot_use_the_canada_region(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $this->controller->saveOAuthClientKeys(new Request([
+            'integration_id' => ZohoIntegration::wherePlatform('campaigns')->firstOrFail()->id,
+            'client_id' => 'id',
+            'client_secret' => 'secret',
+            'region' => 'ca',
+        ]));
+    }
+
+    public function test_crm_can_use_the_canada_region(): void
+    {
+        Config::set('zoho.platforms.crm.scope', ['ZohoCRM.modules.all']);
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+
+        $response = $this->controller->saveOAuthClientKeys(new Request([
+            'integration_id' => $integration->id,
+            'client_id' => 'id',
+            'client_secret' => 'secret',
+            'region' => 'ca',
+        ]));
+
+        $this->assertStringStartsWith('https://accounts.zohocloud.ca/oauth/v2/auth', $response->getData()->data->redirect_url);
+    }
+
+    public function test_get_keys_returns_the_saved_client_secret(): void
+    {
+        $integration = ZohoIntegration::firstOrFail();
+        ZohoOAuthClient::create(['integration_id' => $integration->id, 'client_id' => 'id', 'client_secret' => 'top-secret']);
+
+        $data = (array) $this->controller->getOauthClientKeys($integration->id)->getData()->data;
+
+        $this->assertSame('top-secret', $data['client_secret']);
+        $this->assertTrue($data['has_secret']);
+    }
+
+    public function test_saving_keys_with_a_blank_secret_keeps_the_saved_one(): void
+    {
+        Config::set('zoho.platforms.crm.scope', ['ZohoCRM.modules.all']);
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+        ZohoOAuthClient::create(['integration_id' => $integration->id, 'client_id' => 'old', 'client_secret' => 'kept-secret', 'region' => 'in']);
+
+        $this->controller->saveOAuthClientKeys(new Request([
+            'integration_id' => $integration->id, 'client_id' => 'new', 'client_secret' => '', 'region' => 'us',
+        ]));
+
+        $client = ZohoOAuthClient::where('integration_id', $integration->id)->firstOrFail();
+        $this->assertSame('new', $client->client_id);
+        $this->assertSame('kept-secret', $client->client_secret);
+    }
+
+    public function test_saving_keys_without_any_secret_is_rejected(): void
+    {
+        $this->expectException(ValidationException::class);
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+        ZohoOAuthClient::where('integration_id', $integration->id)->delete();
+
+        $this->controller->saveOAuthClientKeys(new Request([
+            'integration_id' => $integration->id, 'client_id' => 'id', 'region' => 'us',
+        ]));
+    }
+
+    public function test_an_unconnected_integration_cannot_be_switched_on(): void
+    {
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+        ZohoOAuthToken::where('integration_id', $integration->id)->delete();
+        $integration->update(['is_active' => false]);
+
+        $response = $this->controller->toggleIntegration(new Request(['is_active' => true]), $integration->id);
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertFalse($integration->refresh()->is_active);
+    }
+
+    public function test_disconnect_forgets_tokens_and_switches_off(): void
+    {
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+        $integration->update(['is_active' => true]);
+        ZohoOAuthToken::create(['integration_id' => $integration->id, 'access_token' => 'a', 'refresh_token' => 'r', 'expires_at' => now()->addHour()]);
+
+        $this->controller->disconnect($integration->id);
+
+        $this->assertFalse(ZohoOAuthToken::where('integration_id', $integration->id)->exists());
+        $this->assertFalse($integration->refresh()->is_active);
+    }
+
+    public function test_integrations_list_reports_the_connection(): void
+    {
+        $integration = ZohoIntegration::wherePlatform('crm')->firstOrFail();
+        ZohoOAuthClient::create(['integration_id' => $integration->id, 'client_id' => 'id', 'client_secret' => 's', 'region' => 'eu']);
+        ZohoOAuthToken::create(['integration_id' => $integration->id, 'access_token' => 'a', 'refresh_token' => 'r', 'expires_at' => now()->addHour()]);
+
+        $crm = array_column($this->controller->getIntegrations()->getData(true)['data'], null, 'platform')['crm'];
+
+        $this->assertTrue($crm['has_token']);
+        $this->assertSame('Europe', $crm['region']);
+        $this->assertSame(now()->toDateString(), substr((string) $crm['connected_at'], 0, 10));
     }
 }

@@ -236,6 +236,11 @@ class ZohoCampaignsApi extends ZohoBaseApi
             ->json();
 
         if (isset($response['status']) && $response['status'] === 'error') {
+            // 992 = "No tags found to display": an account with no tags yet.
+            if ($response['code'] === '992') {
+                return [];
+            }
+
             throw ZohoCampaignsApiException::fromResponse($response);
         }
 
@@ -349,6 +354,33 @@ class ZohoCampaignsApi extends ZohoBaseApi
     }
 
     /**
+     * Create a mailing list. Zoho requires at least one contact to create one.
+     *
+     * @link https://www.zoho.com/campaigns/help/developers/add-new-list-contact.html
+     *
+     * @throws ZohoCampaignsApiException
+     * @throws HttpClientException
+     */
+    public function listCreate(string $listName, string $email): void
+    {
+        $params = [
+            'resfmt' => 'JSON',
+            'listname' => $listName,
+            'signupform' => 'private',
+            'mode' => 'newlist',
+            'emailids' => $email,
+        ];
+
+        $response = $this->newRequest()
+            ->post(sprintf('/addlistandcontacts?%s', http_build_query($params)))
+            ->json();
+
+        if (($response['status'] ?? '') === 'error') {
+            throw ZohoCampaignsApiException::fromResponse($response);
+        }
+    }
+
+    /**
      * Get all topics.
      *
      * @link https://www.zoho.com/campaigns/help/developers/get-topics.html
@@ -400,7 +432,8 @@ class ZohoCampaignsApi extends ZohoBaseApi
     #[Override]
     protected function newRequest(): PendingRequest
     {
-        return parent::newRequest()->throw();
+        // Campaigns takes every parameter in the query string, sent as a form post.
+        return parent::newRequest()->asForm()->throw();
     }
 
     protected function endpoint(): string

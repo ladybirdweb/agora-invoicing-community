@@ -5,7 +5,9 @@ namespace App\Plugins\Mailchimp\Services;
 use App\Model\Common\Mailchimp\MailchimpField;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpGroup;
+use App\Model\Common\Mailchimp\MailchimpGroupAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpSetting;
+use App\Model\Product\Product;
 use App\Plugins\Mailchimp\Exceptions\MailchimpApiException;
 use App\Plugins\Mailchimp\Http\Client\MailchimpClient;
 use App\User;
@@ -27,6 +29,14 @@ class MailchimpService
     public function ping(): bool
     {
         return $this->client->ping();
+    }
+
+    /**
+     * The connected Mailchimp account's name, for the settings page.
+     */
+    public function accountName(): ?string
+    {
+        return $this->client->get('/', ['fields' => 'account_name'])['account_name'] ?? null;
     }
 
     // ── Subscribers ──────────────────────────────────────────────────────────
@@ -180,8 +190,14 @@ class MailchimpService
      * is global — Mailchimp reuses the same merge_id numbers across lists,
      * so a plain delete-then-insert can still hit the constraint if a prior
      * record wasn't cleaned up. updateOrCreate is idempotent and safe.
+     *
+     * Then drops every saved mapping whose merge tag the audience no longer has
+     * (e.g. after switching audience), so the mapping page never shows a Faveo
+     * field mapped to nothing.
+     *
+     * @return list<string> Faveo fields whose mapping was removed and must be mapped again.
      */
-    public function syncMergeFields(): void
+    public function syncMergeFields(): array
     {
         $fields = $this->getMergeFields();
 
@@ -198,6 +214,30 @@ class MailchimpService
                 ]
             );
         }
+
+        $relation = MailchimpFieldAgoraRelation::first();
+
+        // No audience picked = Mailchimp told us nothing; don't read that as "every field is gone".
+        if (! $relation instanceof MailchimpFieldAgoraRelation || $this->listId === '' || $this->listId === '0') {
+            return [];
+        }
+
+        $tags = array_column($fields, 'tag');
+        $removed = [];
+
+        // is_paid_* hold interest ids, not merge tags; groups are checked in syncInterestGroups().
+        foreach (array_diff($relation->getFillable(), ['is_paid_yes', 'is_paid_no']) as $column) {
+            $tag = $relation->getAttribute($column);
+
+            if (filled($tag) && ! in_array($tag, $tags, true)) {
+                $relation->setAttribute($column, null);
+                $removed[] = ucfirst(str_replace('_', ' ', $column));
+            }
+        }
+
+        $relation->save();
+
+        return $removed;
     }
 
     // ── Interest Categories ───────────────────────────────────────────────────
@@ -234,16 +274,23 @@ class MailchimpService
     }
 
     /**
-     * Fetch all interest categories + their options and sync to local DB.
+     * Fetch all interest categories + their options and sync to local DB, then
+     * drop product → group mappings (and the is-paid interests) that point at
+     * groups this audience no longer has.
+     *
+     * @return list<string> Products whose group mapping was removed and must be mapped again.
      */
-    public function syncInterestGroups(): void
+    public function syncInterestGroups(): array
     {
         $categories = $this->getInterestCategories();
+        $interestIds = [];
 
         foreach ($categories as $category) {
             $options = $this->getInterestGroupOptions($category['id']);
 
             foreach ($options as $option) {
+                $interestIds[] = $option['id'];
+
                 MailchimpGroup::updateOrCreate(
                     ['category_option_id' => $option['id']],
                     [
@@ -254,6 +301,29 @@ class MailchimpService
                 );
             }
         }
+
+        // No audience picked = Mailchimp told us nothing; don't read that as "every group is gone".
+        if ($this->listId === '' || $this->listId === '0') {
+            return [];
+        }
+
+        $stale = MailchimpGroupAgoraRelation::whereNotIn('mailchimp_group_cat_id', $interestIds)->get();
+        $removed = array_values(array_unique(Product::whereIn('id', $stale->pluck('agora_product_id'))->get()
+            ->map(fn (Product $product): string => $product->name)
+            ->all()));
+        MailchimpGroupAgoraRelation::whereKey($stale->modelKeys())->delete();
+
+        $relation = MailchimpFieldAgoraRelation::first();
+
+        foreach (['is_paid_yes', 'is_paid_no'] as $column) {
+            if ($relation instanceof MailchimpFieldAgoraRelation && filled($relation->getAttribute($column)) && ! in_array($relation->getAttribute($column), $interestIds, true)) {
+                $relation->setAttribute($column, null);
+            }
+        }
+
+        $relation?->save();
+
+        return $removed;
     }
 
     /**

@@ -250,4 +250,16 @@ class ZohoCrmControllerTest extends DBTestCase
 
         Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'Contacts'));
     }
+
+    public function test_send_test_says_so_when_nothing_is_mapped(): void
+    {
+        $this->actingAs(User::create(['email' => 'admin-test@example.com']));
+        ZohoFieldMappings::query()->delete();
+        Http::fake();
+
+        $response = $this->controller->sendTest();
+
+        $this->assertSame(400, $response->getStatusCode());
+        Http::assertNothingSent();
+    }
 }

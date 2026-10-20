@@ -41,3 +41,9 @@ describe('zohoCredentialsSchema', () => {
         await expect(zohoCredentialsSchema.validate({ ...valid, region: null })).rejects.toThrow()
     })
 })
+
+describe('zohoCredentialsSchema with a saved secret', () => {
+    it('allows a blank secret when one is already saved', async () => {
+        await expect(zohoCredentialsSchema.validate({ client_id: 'id', client_secret: '', region: 'in', has_secret: true })).resolves.toBeTruthy()
+    })
+})

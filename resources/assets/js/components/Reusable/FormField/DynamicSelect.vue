@@ -32,12 +32,12 @@
         >
             <template #option="option">
                 <slot name="option" v-bind="option">
-                    <span :title="option[optionLabel]">{{ subString(option[optionLabel]) }}</span>
+                    <span :title="option[optionLabel]">{{ subString(option[optionLabel]) }}</span><span v-if="option.markRequired" class="text-danger ms-1">*</span>
                 </slot>
             </template>
             <template #selected-option="option">
                 <slot name="selected-option" v-bind="option">
-                    <span :title="option[optionLabel]">{{ subString(option[optionLabel]) }}</span>
+                    <span :title="option[optionLabel]">{{ subString(option[optionLabel]) }}</span><span v-if="option.markRequired" class="text-danger ms-1">*</span>
                 </slot>
             </template>
             <template #list-footer>

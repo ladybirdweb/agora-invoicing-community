@@ -370,7 +370,14 @@ class SettingsController extends BaseSettingsController
     public function updatePipedriveSettings(Request $request): JsonResponse
     {
         try {
-            $pipedriveKey = $request->input('pipedrive_key');
+            // Left blank = keep the saved key (the page never receives it).
+            $pipedriveKey = $request->filled('pipedrive_key')
+                ? (string) $request->input('pipedrive_key')
+                : (string) ApiKey::value('pipedrive_api_key');
+
+            if ($pipedriveKey === '') {
+                return errorResponse(__('message.enter_pipedrive_api'));
+            }
 
             $response = Http::get('https://api.pipedrive.com/v1/users/me', [
                 'api_token' => $pipedriveKey,
@@ -400,6 +407,17 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+    /**
+     * Forget the saved Pipedrive key and switch the integration off. Field mappings are kept.
+     */
+    public function disconnectPipedrive(): JsonResponse
+    {
+        ApiKey::query()->update(['pipedrive_api_key' => null]);
+        StatusSetting::query()->update(['pipedrive_status' => 0]);
+
+        return successResponse(__('message.pipedrive_disconnected'));
+    }
+
     public function getPipedriveSettings(): JsonResponse
     {
         try {
@@ -408,7 +426,8 @@ class SettingsController extends BaseSettingsController
 
             return successResponse('', [
                 'status' => (bool) StatusSetting::value('pipedrive_status'),
-                'pipedrive_key' => ApiKey::value('pipedrive_api_key'),
+                'pipedrive_key' => $key = (string) ApiKey::value('pipedrive_api_key'),
+                'has_key' => $key !== '',
                 'require_pipedrive_user_verification' => (bool) ApiKey::value('require_pipedrive_user_verification'),
                 'groups' => [
                     'personId' => $groups['Person'] ?? null,

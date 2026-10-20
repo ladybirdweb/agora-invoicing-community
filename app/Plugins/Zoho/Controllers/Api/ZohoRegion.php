@@ -12,6 +12,7 @@ enum ZohoRegion: string
     case Australia = 'au';
     case Japan = 'jp';
     case China = 'cn';
+    case Canada = 'ca';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum ZohoRegion: string
             self::Australia => 'Australia',
             self::Japan => 'Japan',
             self::China => 'China',
+            self::Canada => 'Canada',
         };
     }
 
@@ -34,6 +36,7 @@ enum ZohoRegion: string
             ZohoRegion::Japan => 'campaigns.zoho.jp',
             ZohoRegion::China => 'campaigns.zoho.com.cn',
             ZohoRegion::UnitedStates => 'campaigns.zoho.com',
+            ZohoRegion::Canada => throw new \LogicException('Zoho Campaigns is not available in the Canada data center'),
         };
     }
 
@@ -47,6 +50,7 @@ enum ZohoRegion: string
             self::Japan => 'accounts.zoho.jp',
             self::China => 'accounts.zoho.com.cn',
             self::UnitedStates => 'accounts.zoho.com',
+            self::Canada => 'accounts.zohocloud.ca',
         };
     }
 
@@ -60,6 +64,7 @@ enum ZohoRegion: string
             self::Japan => 'www.zohoapis.jp',
             self::China => 'www.zohoapis.com.cn',
             self::UnitedStates => 'www.zohoapis.com',
+            self::Canada => 'www.zohoapis.ca',
         };
     }
 }

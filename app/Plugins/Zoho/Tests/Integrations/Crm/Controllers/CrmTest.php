@@ -73,7 +73,7 @@ class CrmTest extends DBTestCase
         $this->assertInstanceOf(Collection::class, $records);
     }
 
-    public function test_it_creates_crm_record(): void
+    public function test_it_upserts_crm_record(): void
     {
         Http::fake([
             '*' => Http::response([
@@ -83,12 +83,13 @@ class CrmTest extends DBTestCase
             ], 200),
         ]);
 
-        $this->crm->create('Accounts', [
+        $this->crm->upsert('Accounts', [
             'First_Name' => 'Test',
             'Email' => 'test@example.com',
         ]);
 
-        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'Accounts'));
+        Http::assertSent(fn ($request): bool => str_ends_with((string) $request->url(), '/crm/v8/Accounts/upsert')
+            && $request->isJson());
     }
 
     public function test_it_surfaces_the_real_reason_when_create_fails(): void
@@ -107,7 +108,7 @@ class CrmTest extends DBTestCase
         ]);
 
         try {
-            $this->crm->create('Contacts', ['Owner' => 'Not A User Id']);
+            $this->crm->upsert('Contacts', ['Owner' => 'Not A User Id']);
             $this->fail('Expected a ZohoCrmApiException to be thrown.');
         } catch (\App\Plugins\Zoho\Integrations\Crm\Controllers\Exceptions\ZohoCrmApiException $exception) {
             $this->assertSame('INVALID_DATA', $exception->getZohoCode());

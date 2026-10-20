@@ -10,6 +10,7 @@ Route::middleware(['auth', 'admin'])->prefix('zoho')->group(function (): void {
     Route::get('getKeys/{integrationId}', [ZohoOAuthController::class, 'getOauthClientKeys']);
     Route::post('saveKeys', [ZohoOAuthController::class, 'saveOauthClientKeys']);
     Route::patch('integrations/{id}/toggle', [ZohoOAuthController::class, 'toggleIntegration']);
+    Route::post('integrations/{id}/disconnect', [ZohoOAuthController::class, 'disconnect']);
     Route::get('oauth/callback', [ZohoOAuthController::class, 'handleZohoCallback']);
 
     // Common Routes
@@ -22,6 +23,9 @@ Route::middleware(['auth', 'admin'])->prefix('zoho')->group(function (): void {
         Route::get('contacts/fields', [ZohoCampaignsController::class, 'getCampaignsContactFields']);
         Route::post('subscribe', [ZohoCampaignsController::class, 'subscribeCampaign']);
         Route::get('sync', [ZohoCampaignsController::class, 'syncFields']);
+        Route::get('lists', [ZohoCampaignsController::class, 'getLists']);
+        Route::post('list', [ZohoCampaignsController::class, 'saveList']);
+        Route::post('test', [ZohoCampaignsController::class, 'sendTest']);
     });
 
     // Crm Routes
@@ -30,5 +34,6 @@ Route::middleware(['auth', 'admin'])->prefix('zoho')->group(function (): void {
         Route::get('contacts/fields', [ZohoCrmController::class, 'getCrmContactsFields']);
         Route::get('accounts/fields', [ZohoCrmController::class, 'getCrmAccountsFields']);
         Route::get('sync', [ZohoCrmController::class, 'syncFields']);
+        Route::post('test', [ZohoCrmController::class, 'sendTest']);
     });
 });

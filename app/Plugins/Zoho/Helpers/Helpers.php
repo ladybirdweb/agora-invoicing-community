@@ -2,6 +2,7 @@
 
 use App\Plugins\Zoho\Controllers\Api\ZohoRegion;
 use App\Plugins\Zoho\Models\ZohoFieldMappings;
+use App\Plugins\Zoho\Models\ZohoIntegration;
 use Illuminate\Support\Collection;
 
 /**
@@ -141,4 +142,28 @@ function getZohoRegion(string $region): ZohoRegion
     return ZohoRegion::tryFrom($region)
         ?? ZohoRegion::tryFrom($default)
         ?? ZohoRegion::India;
+}
+
+/**
+ * Whether the admin has switched this Zoho integration (crm / campaigns) on.
+ */
+function zohoIntegrationActive(string $platform): bool
+{
+    return ZohoIntegration::where('platform', $platform)
+        ->where('is_active', true)
+        ->exists();
+}
+
+/**
+ * Sync result message, naming any fields whose mapping was removed and must be set again.
+ *
+ * @param  list<string>  $removedMappings
+ */
+function syncedMessage(string $message, array $removedMappings): string
+{
+    if ($removedMappings === []) {
+        return $message;
+    }
+
+    return __('message.zoho_sync_remap', ['message' => $message, 'fields' => implode(', ', $removedMappings)]);
 }

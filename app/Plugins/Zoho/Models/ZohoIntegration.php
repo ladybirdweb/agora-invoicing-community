@@ -12,6 +12,7 @@ use Override;
  * @property string $platform
  * @property string|null $description
  * @property bool $is_active
+ * @property string|null $list_key
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read ZohoOAuthClient|null $client
@@ -37,6 +38,7 @@ class ZohoIntegration extends Model
         'platform',
         'description',
         'is_active',
+        'list_key',
     ];
 
     /**

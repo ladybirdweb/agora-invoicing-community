@@ -7,6 +7,7 @@ use App\Plugins\Zoho\Models\ZohoIntegration;
 use App\Plugins\Zoho\Models\ZohoOAuthClient;
 use App\Plugins\Zoho\Models\ZohoOAuthToken;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
@@ -297,22 +298,41 @@ class CampaignsTest extends DBTestCase
         Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'test_list_key'));
     }
 
-    public function test_it_throws_exception_when_default_list_cannot_be_resolved(): void
+    public function test_it_creates_the_default_list_when_missing_then_subscribes(): void
+    {
+        Config::set('zoho_campaigns.defaultListName', 'New List');
+        Http::swap(new Factory);
+        Http::preventStrayRequests();
+        Http::fake([
+            '*/getmailinglists*' => Http::sequence()
+                ->push(['list_of_details' => [['listname' => 'Other List', 'listkey' => 'other_key']]])
+                ->push(['list_of_details' => [['listname' => 'New List', 'listkey' => 'new_key']]]),
+            '*/addlistandcontacts*' => Http::response(['status' => 'success']),
+            '*/listsubscribe*' => Http::response(['status' => 'success']),
+        ]);
+
+        new Campaigns()->subscribe('test@example.com');
+
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), '/addlistandcontacts')
+            && str_contains((string) $request->url(), 'listname=New+List')
+            && str_contains((string) $request->url(), 'emailids=test%40example.com'));
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), '/listsubscribe')
+            && str_contains((string) $request->url(), 'listkey=new_key'));
+    }
+
+    public function test_it_throws_exception_when_default_list_cannot_be_created(): void
     {
         $this->expectException(RuntimeException::class);
 
         Config::set('zoho_campaigns.defaultListName', 'NonExistent List');
-
+        Http::swap(new Factory);
+        Http::preventStrayRequests();
         Http::fake([
-            '*/api/v2/lists*' => Http::response([
-                'list_of_details' => [
-                    ['listname' => 'Other List', 'listkey' => 'other_key'],
-                ],
-            ], 200),
+            '*/getmailinglists*' => Http::response(['list_of_details' => [['listname' => 'Other List', 'listkey' => 'other_key']]]),
+            '*/addlistandcontacts*' => Http::response(['status' => 'success']),
         ]);
 
-        $campaigns = new Campaigns;
-        $campaigns->subscribe('test@example.com');
+        new Campaigns()->subscribe('test@example.com');
     }
 
     public function test_it_limits_chunk_size_to_650_for_subscribers(): void
@@ -350,5 +370,30 @@ class CampaignsTest extends DBTestCase
         $this->campaigns->subscribe('test@example.com', [], topic: 'Newsletter');
 
         Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'listsubscribe'));
+    }
+
+    public function test_tags_is_empty_when_zoho_has_no_tags(): void
+    {
+        Http::fake([
+            '*/tag/getalltags*' => Http::response(['code' => '992', 'message' => 'No tags found to display', 'status' => 'error']),
+        ]);
+
+        $this->assertTrue($this->campaigns->tags()->isEmpty());
+    }
+
+    public function test_it_subscribes_to_the_list_the_admin_picked(): void
+    {
+        ZohoIntegration::wherePlatform('campaigns')->update(['list_key' => 'picked_key']);
+        Http::fake(['*/listsubscribe*' => Http::response(['status' => 'success'])]);
+
+        new Campaigns()->subscribe('test@example.com');
+
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), '/listsubscribe')
+            && str_contains((string) $request->url(), 'listkey=picked_key'));
+    }
+
+    public function test_mailing_lists_are_listed_for_the_settings_page(): void
+    {
+        $this->assertSame([['key' => 'test_list_key', 'name' => 'Test List']], $this->campaigns->mailingLists());
     }
 }

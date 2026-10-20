@@ -23,7 +23,8 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mailchimp_auth_key' => ['required', 'string', 'min:10'],
+            // Blank keeps the saved key; the controller refuses blank when none is saved.
+            'mailchimp_auth_key' => ['nullable', 'string', 'min:10'],
         ];
     }
 
@@ -31,7 +32,6 @@ class UpdateSettingsRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'mailchimp_auth_key.required' => __('message.mailchimp_apikey_error'),
             'mailchimp_auth_key.min' => __('message.mailchimp_apikey_error'),
         ];
     }

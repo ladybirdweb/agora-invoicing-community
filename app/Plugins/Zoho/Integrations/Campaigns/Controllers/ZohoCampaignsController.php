@@ -7,6 +7,7 @@ use App\Plugins\Zoho\Controllers\ZohoSync;
 use App\Plugins\Zoho\Integrations\Campaigns\Facades\ZohoCampaigns;
 use App\Plugins\Zoho\Models\ZohoFieldMappings;
 use App\Plugins\Zoho\Models\ZohoFields;
+use App\Plugins\Zoho\Models\ZohoIntegration;
 use App\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -35,13 +36,13 @@ class ZohoCampaignsController extends ZohoBaseController
             $this->campaigns()->syncTopics();
 
             // Sync Fields
-            resolve(ZohoSync::class)->sync(
+            $removed = resolve(ZohoSync::class)->sync(
                 platform: 'campaigns',
                 module: 'Contacts',
                 fields: $this->campaigns()->contactFields()->toArray()
             );
 
-            return successResponse('Campaigns fields and topics synced successfully');
+            return successResponse(syncedMessage('Campaigns fields and topics synced successfully', $removed));
         } catch (Exception $exception) {
             \Logger::exception($exception);
 
@@ -78,6 +79,51 @@ class ZohoCampaignsController extends ZohoBaseController
         }
     }
 
+    public function getLists(): JsonResponse
+    {
+        try {
+            return successResponse('', [
+                'lists' => $this->campaigns()->mailingLists(),
+                'default_list_name' => config('zoho_campaigns.defaultListName'),
+            ]);
+        } catch (Exception $exception) {
+            \Logger::exception($exception);
+
+            return errorResponse(__('message.sorry_something_wrong'));
+        }
+    }
+
+    public function saveList(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'list_key' => ['nullable', 'string'],
+        ]);
+
+        ZohoIntegration::wherePlatform('campaigns')->update(['list_key' => $data['list_key'] ?? null]);
+
+        return successResponse(__('message.zoho_list_saved'));
+    }
+
+    /**
+     * Subscribe the signed-in admin with the current mapping, so they can see in Zoho exactly what gets sent.
+     */
+    public function sendTest(): JsonResponse
+    {
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        try {
+            $this->subscribe($admin->email, 'newsletter');
+
+            return successResponse(__('message.zoho_test_sent', ['email' => $admin->email]));
+        } catch (Exception $exception) {
+            \Logger::exception($exception);
+
+            // Admin-only endpoint: show Zoho's real reason so the mapping can be fixed.
+            return errorResponse(__('message.zoho_test_failed', ['reason' => $exception->getMessage()]));
+        }
+    }
+
     public function subscribe(string $email, string $type): void
     {
         $topicName = config('zoho_campaigns.topics.'.$type.'.name');
@@ -100,9 +146,17 @@ class ZohoCampaignsController extends ZohoBaseController
             $zohoUser
         );
 
+        // Subscribe takes contact fields by display name ("First Name"), not field name ("firstname").
+        $displayNames = $zohoFields->pluck('display_name', 'zoho_key');
+        $contactInfo = collect($contactInfo)
+            ->mapWithKeys(fn ($value, $key): array => [$displayNames[$key] ?? $key => $value])
+            ->all();
+
         ZohoCampaigns::subscribe(
             $email,
-            $contactInfo
+            $contactInfo,
+            null,
+            $topicName
         );
     }
 

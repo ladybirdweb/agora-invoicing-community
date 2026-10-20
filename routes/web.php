@@ -653,6 +653,8 @@ Route::middleware('installAgora')->group(function (): void {
     Route::post('sync/pipedrive', [PipedriveController::class, 'mappingFields']);
     Route::post('syncing/pipedriveFields', [PipedriveController::class, 'syncFields']);
     Route::post('pipedrive/get-dropdown', [PipedriveController::class, 'getDropdown']);
+    Route::post('settings/pipedrive/disconnect', [SettingsController::class, 'disconnectPipedrive']);
+    Route::post('pipedrive/test', [PipedriveController::class, 'sendTest']);
 
     // MSG91 / mobile settings
     Route::get('settings/msg91', [SettingsController::class, 'getMsg91Settings']);

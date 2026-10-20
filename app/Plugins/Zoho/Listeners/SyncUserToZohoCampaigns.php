@@ -3,7 +3,6 @@
 namespace App\Plugins\Zoho\Listeners;
 
 use App\Listeners\BaseExternalSyncListener;
-use App\Model\Common\StatusSetting;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\ZohoCampaignsController;
 use App\User;
 
@@ -16,7 +15,7 @@ class SyncUserToZohoCampaigns extends BaseExternalSyncListener
 
     protected function isEnabled(): bool
     {
-        return (bool) StatusSetting::value('zoho_status');
+        return zohoIntegrationActive('campaigns');
     }
 
     protected function sync(User $user): void

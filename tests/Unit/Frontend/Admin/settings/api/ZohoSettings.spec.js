@@ -95,12 +95,6 @@ describe('ZohoSettings.vue', () => {
         expect(wrapper.vm.loading).toBe(false)
     })
 
-    it('does not set alert when zoho_status query param is null', async () => {
-        await flushPromises()
-        // No alert store calls expected when zoho_status is null
-        expect(wrapper.exists()).toBeTruthy()
-    })
-
     it('calls errorHandler when toggle request fails', async () => {
         await flushPromises()
         globalThis.mockHttp.reset()

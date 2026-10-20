@@ -56,16 +56,17 @@ class ZohoCrmApi extends ZohoBaseApi
     }
 
     /**
-     * Create a CRM record.
+     * Create a CRM record, or update the existing one when Zoho's duplicate
+     * check (Email for Contacts, Account_Name for Accounts) finds a match.
      *
-     * @link https://www.zoho.com/crm/developer/docs/api/v8/insert-records.html
+     * @link https://www.zoho.com/crm/developer/docs/api/v8/upsert-records.html
      *
      * @param  array<mixed>  $data
      */
-    public function create(string $module, array $data): void
+    public function upsert(string $module, array $data): void
     {
         $response = $this->newRequest()
-            ->post('/crm/v8/'.$module, [
+            ->post(sprintf('/crm/v8/%s/upsert', $module), [
                 'data' => [
                     $data,
                 ],

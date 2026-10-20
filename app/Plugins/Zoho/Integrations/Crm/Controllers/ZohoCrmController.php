@@ -31,19 +31,17 @@ class ZohoCrmController extends ZohoBaseController
     public function syncFields(): JsonResponse
     {
         try {
-            resolve(ZohoSync::class)->sync(
-                platform: 'crm',
-                module: 'Contacts',
-                fields: $this->crm()->fields('Contacts')->toArray()
-            );
+            $removed = [];
 
-            resolve(ZohoSync::class)->sync(
-                platform: 'crm',
-                module: 'Accounts',
-                fields: $this->crm()->fields('Accounts')->toArray()
-            );
+            foreach (['Contacts', 'Accounts'] as $module) {
+                $removed = [...$removed, ...resolve(ZohoSync::class)->sync(
+                    platform: 'crm',
+                    module: $module,
+                    fields: $this->crm()->fields($module)->toArray()
+                )];
+            }
 
-            return successResponse('CRM fields synced successfully');
+            return successResponse(syncedMessage('CRM fields synced successfully', $removed));
         } catch (Exception $exception) {
             \Logger::exception($exception);
 
@@ -88,14 +86,45 @@ class ZohoCrmController extends ZohoBaseController
         }
     }
 
-    public function addUserDataToCrm(string $email): void
+    /**
+     * Push the signed-in admin with the current mapping, so they can see in Zoho exactly what gets sent.
+     */
+    public function sendTest(): JsonResponse
     {
-        $this->insertModuledata('Contacts', $email);
+        /** @var User $admin */
+        $admin = auth()->user();
 
-        $this->insertModuledata('Accounts', $email);
+        try {
+            $sent = $this->addUserDataToCrm($admin->email);
+
+            if ($sent === []) {
+                return errorResponse(__('message.zoho_test_nothing_mapped'));
+            }
+
+            return successResponse(__('message.zoho_test_sent_modules', ['email' => $admin->email, 'modules' => implode(', ', $sent)]));
+        } catch (Exception $exception) {
+            \Logger::exception($exception);
+
+            // Admin-only endpoint: show Zoho's real reason so the mapping can be fixed.
+            return errorResponse(__('message.zoho_test_failed', ['reason' => $exception->getMessage()]));
+        }
     }
 
-    protected function insertModuledata(string $module, string $email): void
+    /**
+     * @return list<string> The modules that had mapped data and were sent.
+     */
+    public function addUserDataToCrm(string $email): array
+    {
+        return array_values(array_filter(
+            ['Contacts', 'Accounts'],
+            fn (string $module): bool => $this->insertModuledata($module, $email)
+        ));
+    }
+
+    /**
+     * @return bool Whether anything was mapped (and so sent) for this module.
+     */
+    protected function insertModuledata(string $module, string $email): bool
     {
         $user = User::where('email', $email)->firstOrFail();
 
@@ -112,9 +141,11 @@ class ZohoCrmController extends ZohoBaseController
         );
 
         if ($recordData === []) {
-            return;
+            return false;
         }
 
-        ZohoCrm::create($module, $recordData);
+        ZohoCrm::upsert($module, $recordData);
+
+        return true;
     }
 }

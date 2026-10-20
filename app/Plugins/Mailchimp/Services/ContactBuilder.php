@@ -3,8 +3,11 @@
 namespace App\Plugins\Mailchimp\Services;
 
 use App\Model\Common\Country;
+use App\Model\Common\Mailchimp\MailchimpField;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
+use App\Model\Common\Mailchimp\MailchimpGroup;
 use App\Model\Common\Mailchimp\MailchimpGroupAgoraRelation;
+use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\User;
@@ -57,7 +60,10 @@ class ContactBuilder
             $fields[$relation->source] = Setting::value('title') ?? '';
         }
 
-        return $fields;
+        // A tag left over from another audience makes Mailchimp reject the whole subscriber; send only this audience's fields.
+        $known = MailchimpField::where('list_id', MailchimpSetting::value('list_id'))->pluck('tag')->all();
+
+        return array_intersect_key($fields, array_flip($known));
     }
 
     /**
@@ -88,7 +94,9 @@ class ContactBuilder
         }
 
         if ($productStatus) {
+            // Only groups of the selected audience: an interest from another audience fails the whole update.
             $groupId = MailchimpGroupAgoraRelation::where('agora_product_id', $productId)
+                ->whereIn('mailchimp_group_cat_id', MailchimpGroup::where('list_id', MailchimpSetting::value('list_id'))->select('category_option_id'))
                 ->value('mailchimp_group_cat_id');
 
             if ($groupId) {
@@ -96,6 +104,9 @@ class ContactBuilder
             }
         }
 
-        return $interests;
+        // The is-paid interests too: keep only ones the selected audience has.
+        $known = MailchimpGroup::where('list_id', MailchimpSetting::value('list_id'))->pluck('category_option_id')->all();
+
+        return array_intersect_key($interests, array_flip($known));
     }
 }

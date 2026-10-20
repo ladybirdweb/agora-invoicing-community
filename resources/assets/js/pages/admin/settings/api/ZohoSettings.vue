@@ -31,14 +31,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useAlertStore } from '@/core/stores/alert.js'
 import http from '@/plugins/axios'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import ZohoCard from './ZohoCard.vue'
 
 const COMPONENT = 'zoho-settings'
-const route   = useRoute()
 
 const PLATFORM_ICONS = {
     crm:       'fas fa-address-book',
@@ -66,13 +63,6 @@ async function loadIntegrations(silent = false) {
 }
 
 onMounted(async () => {
-    if (route.query.zoho_status) {
-        useAlertStore().setAlert({
-            type:           route.query.zoho_status === 'success' ? 'success' : 'danger',
-            message:        route.query.message ?? '',
-            component_name: COMPONENT,
-        })
-    }
     await loadIntegrations()
 })
 

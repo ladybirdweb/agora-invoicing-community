@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Zoho\Controllers;
 
+use App\Plugins\Zoho\Controllers\Api\ZohoRegion;
 use App\Plugins\Zoho\Models\ZohoIntegration;
 use App\Plugins\Zoho\Models\ZohoOAuthClient;
 use App\Plugins\Zoho\Models\ZohoOAuthToken;
@@ -12,6 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 
 class ZohoOAuthController extends Controller
@@ -21,8 +24,7 @@ class ZohoOAuthController extends Controller
      */
     public function getIntegrations(): JsonResponse
     {
-        $integrations = ZohoIntegration::with('token')
-            ->select('id', 'platform', 'description', 'is_active')
+        $integrations = ZohoIntegration::with(['token', 'client'])
             ->get()
             ->map(fn ($i): array => [
                 'id' => $i->id,
@@ -30,6 +32,9 @@ class ZohoOAuthController extends Controller
                 'description' => $i->description,
                 'is_active' => $i->is_active,
                 'has_token' => $i->token !== null,
+                'region' => $i->client ? getZohoRegion($i->client->region)->label() : null,
+                'connected_at' => $i->token?->created_at,
+                'list_key' => $i->list_key,
             ]);
 
         return successResponse('', $integrations);
@@ -39,7 +44,12 @@ class ZohoOAuthController extends Controller
     {
         $client = ZohoOAuthClient::where('integration_id', $integration)->first();
 
-        return successResponse('', $client);
+        return successResponse('', $client ? [
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'region' => $client->region,
+            'has_secret' => filled($client->client_secret),
+        ] : null);
     }
 
     public function saveOAuthClientKeys(Request $request): JsonResponse
@@ -47,12 +57,26 @@ class ZohoOAuthController extends Controller
         $validated = $request->validate([
             'integration_id' => ['required', 'exists:zoho_integrations,id'],
             'client_id' => ['required', 'string'],
-            'client_secret' => ['required', 'string'],
-            'region' => ['required', 'in:in,us,eu,au,jp,cn'],
+            'client_secret' => ['nullable', 'string'],
+            'region' => ['required', Rule::enum(ZohoRegion::class)],
         ]);
 
         /** @var ZohoIntegration $integration */
         $integration = ZohoIntegration::findOrFail($validated['integration_id']);
+
+        if ($integration->platform === 'campaigns' && $validated['region'] === ZohoRegion::Canada->value) {
+            throw ValidationException::withMessages(['region' => 'Zoho Campaigns is not available in the Canada data center.']);
+        }
+
+        // Left blank = keep the saved secret (the page never receives it).
+        $clientSecret = $validated['client_secret'] ?? null;
+        $clientSecret = $clientSecret !== null && $clientSecret !== ''
+            ? $clientSecret
+            : ZohoOAuthClient::where('integration_id', $integration->id)->value('client_secret');
+
+        if (! $clientSecret) {
+            throw ValidationException::withMessages(['client_secret' => __('message.zoho_client_secret_required')]);
+        }
 
         // There is exactly one callback route, so the redirect URI is fixed —
         // derive it instead of trusting client input (a mismatch breaks OAuth).
@@ -60,7 +84,7 @@ class ZohoOAuthController extends Controller
             ['integration_id' => $integration->id],
             [
                 'client_id' => $validated['client_id'],
-                'client_secret' => $validated['client_secret'],
+                'client_secret' => $clientSecret,
                 'redirect_uri' => url('zoho/oauth/callback'),
                 'region' => $validated['region'],
             ]
@@ -249,10 +273,28 @@ class ZohoOAuthController extends Controller
     {
         $newValue = $request->boolean('is_active') ? 1 : 0;
 
+        // Switching on an integration that was never connected would only make every sync fail.
+        if ($newValue === 1 && ! ZohoOAuthToken::where('integration_id', (int) $id)->exists()) {
+            return errorResponse(__('message.zoho_connect_first'), 422);
+        }
+
         DB::table('zoho_integrations')
             ->where('id', (int) $id)
             ->update(['is_active' => $newValue]);
 
         return successResponse(__('message.zoho_status'), ['is_active' => (bool) $newValue]);
+    }
+
+    /**
+     * Forget the Zoho tokens and switch the integration off. The client keys stay, so reconnecting is one click.
+     */
+    public function disconnect(mixed $id): JsonResponse
+    {
+        $integration = ZohoIntegration::findOrFail((int) $id);
+
+        ZohoOAuthToken::where('integration_id', $integration->id)->delete();
+        $integration->update(['is_active' => false]);
+
+        return successResponse(__('message.zoho_disconnected'));
     }
 }

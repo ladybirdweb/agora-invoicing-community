@@ -10,7 +10,7 @@ return [
                 'ZohoCRM.modules.ALL',
                 'ZohoCRM.settings.ALL',
             ],
-            'settings_url' => 'admin/settings/api/zoho',
+            'settings_url' => 'admin/settings/api/zoho/crm',
         ],
         'campaigns' => [
             'name' => 'Zoho Campaigns',
@@ -18,7 +18,7 @@ return [
                 'ZohoCampaigns.campaign.ALL',
                 'ZohoCampaigns.contact.ALL',
             ],
-            'settings_url' => 'admin/settings/api/zoho',
+            'settings_url' => 'admin/settings/api/zoho/campaigns',
         ],
     ],
 

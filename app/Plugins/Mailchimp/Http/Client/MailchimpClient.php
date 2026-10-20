@@ -99,7 +99,14 @@ class MailchimpClient
         if ($response->failed()) {
             $body = $response->json() ?? [];
             $message = $body['detail'] ?? $body['title'] ?? sprintf('Mailchimp API error (%s)', $response->status());
-            throw new MailchimpApiException($message, $response->status());
+
+            // A validation error only says "see the errors array"; name the fields so the admin can act on it.
+            $details = collect((array) ($body['errors'] ?? []))
+                ->map(fn ($e): string => trim(sprintf('%s: %s', $e['field'] ?? '', $e['message'] ?? ''), ': '))
+                ->filter()
+                ->implode('; ');
+
+            throw new MailchimpApiException($details !== '' ? sprintf('%s (%s)', $message, $details) : $message, $response->status());
         }
 
         return $response->json() ?? [];

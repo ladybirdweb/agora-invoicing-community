@@ -16,4 +16,8 @@ describe('apiKeySchema', () => {
     it('fails when apiKey is only whitespace', async () => {
         await expect(apiKeySchema.validate({ apiKey: '   ' })).rejects.toThrow()
     })
+
+    it('allows a blank apiKey when a key is already saved', async () => {
+        await expect(apiKeySchema.validate({ apiKey: '', hasKey: true })).resolves.toBeTruthy()
+    })
 })

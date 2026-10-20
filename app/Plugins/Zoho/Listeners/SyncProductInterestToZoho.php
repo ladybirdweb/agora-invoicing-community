@@ -3,7 +3,6 @@
 namespace App\Plugins\Zoho\Listeners;
 
 use App\Events\OrderPlacedEvent;
-use App\Model\Common\StatusSetting;
 use App\Model\Product\Product;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\ZohoCampaignsController;
 use App\User;
@@ -24,7 +23,7 @@ class SyncProductInterestToZoho implements ShouldQueue
 
     public function handle(OrderPlacedEvent $event): void
     {
-        if (! (bool) StatusSetting::value('zoho_status')) {
+        if (! zohoIntegrationActive('campaigns')) {
             return;
         }
 

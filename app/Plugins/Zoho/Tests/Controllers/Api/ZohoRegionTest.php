@@ -18,6 +18,7 @@ class ZohoRegionTest extends DBTestCase
             'au' => 'Australia',
             'jp' => 'Japan',
             'cn' => 'China',
+            'ca' => 'Canada',
         ];
 
         foreach ($expectations as $regionValue => $expectedDomain) {
@@ -43,6 +44,13 @@ class ZohoRegionTest extends DBTestCase
         }
     }
 
+    public function test_campaigns_is_not_available_in_canada(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        ZohoRegion::Canada->campaignsDomain();
+    }
+
     public function test_it_returns_correct_accounts_domain_for_each_region(): void
     {
         $expectations = [
@@ -52,6 +60,7 @@ class ZohoRegionTest extends DBTestCase
             'au' => 'accounts.zoho.com.au',
             'jp' => 'accounts.zoho.jp',
             'cn' => 'accounts.zoho.com.cn',
+            'ca' => 'accounts.zohocloud.ca',
         ];
 
         foreach ($expectations as $regionValue => $expectedDomain) {
@@ -69,6 +78,7 @@ class ZohoRegionTest extends DBTestCase
             'au' => 'www.zohoapis.com.au',
             'jp' => 'www.zohoapis.jp',
             'cn' => 'www.zohoapis.com.cn',
+            'ca' => 'www.zohoapis.ca',
         ];
 
         foreach ($expectations as $regionValue => $expectedDomain) {
@@ -106,7 +116,8 @@ class ZohoRegionTest extends DBTestCase
     {
         $cases = ZohoRegion::cases();
 
-        $this->assertCount(6, $cases);
+        $this->assertCount(7, $cases);
+        $this->assertContains(ZohoRegion::Canada, $cases);
         $this->assertContains(ZohoRegion::UnitedStates, $cases);
         $this->assertContains(ZohoRegion::Europe, $cases);
         $this->assertContains(ZohoRegion::India, $cases);

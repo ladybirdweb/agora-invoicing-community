@@ -39,7 +39,8 @@ class ZohoBaseController extends Controller
         $request->validate([
             'integration_id' => ['required', 'exists:zoho_integrations,id'],
             'module' => ['required', 'string'],
-            'mappings' => ['required', 'array'],
+            // May be empty: removing every row un-maps the module.
+            'mappings' => ['present', 'array'],
             'mappings.*.zoho_field_id' => ['required', 'exists:zoho_fields,id'],
             'mappings.*.selected.type' => ['required', 'in:local,zoho'],
             'mappings.*.selected.value' => ['required'],

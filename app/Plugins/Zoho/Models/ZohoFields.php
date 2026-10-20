@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Plugins\Zoho\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Override;
 
@@ -60,6 +61,14 @@ class ZohoFields extends Model
         'is_mandatory',
         'raw_metadata',
     ];
+
+    /**
+     * @return HasOne<ZohoFieldMappings, $this>
+     */
+    public function mapping(): HasOne
+    {
+        return $this->hasOne(ZohoFieldMappings::class, 'zoho_field_id');
+    }
 
     /**
      * Attribute casting.

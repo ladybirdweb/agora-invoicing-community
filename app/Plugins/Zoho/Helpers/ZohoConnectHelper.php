@@ -23,6 +23,8 @@ class ZohoConnectHelper
                 'id' => $z->id,
                 'field_name' => $z->display_name,
                 'type' => $z->field_type,
+                // Campaigns' Contact Email is always sent from the user's email, so the admin never has to map it.
+                'is_mandatory' => $z->is_mandatory && ! ($platform === 'campaigns' && $z->zoho_key === 'contact_email'),
             ])
             ->values();
     }
@@ -233,6 +235,24 @@ class ZohoConnectHelper
         }
 
         return null;
+    }
+
+    /**
+     * Whether a saved mapping still fits its Zoho field, e.g. after a sync
+     * changed the field's type or picklist choices.
+     */
+    public static function mappingStillValid(ZohoFieldMappings $mapping): bool
+    {
+        $zohoField = $mapping->zohoField;
+
+        if ($mapping->faveo_local_field_id !== null) {
+            return $mapping->faveoLocalField instanceof FaveoLocalFields
+                && self::incompatibleLocalMappingReason($zohoField, $mapping->faveoLocalField) === null;
+        }
+
+        $selected = json_decode((string) $mapping->selected_option, associative: true)['value'] ?? null;
+
+        return zohoPicklistOptions($zohoField)->contains('value', $selected);
     }
 
     /**

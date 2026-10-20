@@ -27,7 +27,8 @@ describe('Pipedrive.vue', () => {
         globalThis.mockHttp.reset()
         globalThis.mockHttp.onGet(/\/settings\/pipedrive/).reply(200, {
             data: {
-                pipedrive_key: 'pd-key',
+                has_key: true,
+                pipedrive_key: 'saved-pipedrive-key-ab12',
                 require_pipedrive_user_verification: false,
                 groups: {},
             },
@@ -51,9 +52,10 @@ describe('Pipedrive.vue', () => {
         expect(getCalls.length).toBeGreaterThan(0)
     })
 
-    it('populates form from API response', async () => {
+    it('populates form from API response, including the saved key', async () => {
         await flushPromises()
-        expect(wrapper.vm.form.apiKey).toBe('pd-key')
+        expect(wrapper.vm.form.apiKey).toBe('saved-pipedrive-key-ab12')
+        expect(wrapper.vm.form.hasKey).toBe(true)
     })
 
     it('connected is true after mount when a key is present', async () => {
@@ -315,12 +317,75 @@ describe('Pipedrive.vue', () => {
 
     // ── saveSettings validation guard ──────────────────────────────────────
     it('saveSettings does not PATCH when apiKey validation fails', async () => {
-        const { apiKeySchema } = require('@/validations/admin/pipedriveValidations')
-        apiKeySchema.validate.mockRejectedValueOnce(new Error('API key required'))
+        const { validateForm } = require('@/helpers/formUtils.js')
+        validateForm.mockResolvedValueOnce(false)
         await flushPromises()
         globalThis.mockHttp.reset()
         await wrapper.vm.saveSettings()
         await flushPromises()
         expect(globalThis.mockHttp.history.patch.length).toBe(0)
+    })
+
+    // ── parity with the Zoho page ──────────────────────────────────────────
+    const setRows = (...r) => wrapper.vm.rows.splice(0, wrapper.vm.rows.length, ...r)
+    const row = (over = {}) => ({ key: Math.random(), pipedriveField: null, faveoField: null, faveoOptions: [], isFaveoField: true, isMulti: false, ...over })
+    const mappingPosts = () => globalThis.mockHttp.history.post.filter(r => r.url.includes('/sync/pipedrive')).length
+
+    it('only shows the Field Mapping tab once Pipedrive is connected', async () => {
+        await flushPromises()
+        expect(wrapper.vm.tabs.map(t => t.key)).toEqual(['connection', 'field-mapping'])
+        wrapper.vm.form.hasKey = false
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.tabs.map(t => t.key)).toEqual(['connection'])
+    })
+
+    it('sends a blank key as null so the saved one is kept', async () => {
+        await flushPromises()
+        wrapper.vm.form.apiKey = ''
+        await wrapper.vm.saveSettings()
+        const req = globalThis.mockHttp.history.patch.find(r => /\/settings\/pipedrive/.test(r.url))
+        expect(JSON.parse(req.data).pipedrive_key).toBeNull()
+    })
+
+    it('saveMapping refuses rows with only one side picked', async () => {
+        await flushPromises()
+        setRows(row({ pipedriveField: { id: 1, name: 'Email' } }))
+        await wrapper.vm.saveMapping()
+        expect(mappingPosts()).toBe(0)
+    })
+
+    it('saveMapping refuses when a field Pipedrive requires is not mapped', async () => {
+        await flushPromises()
+        wrapper.vm.allPipedriveOptions = [{ id: 1, name: 'Name *', label: 'Name', mandatory: true }, { id: 2, name: 'Email', label: 'Email', mandatory: false }]
+        setRows(row({ pipedriveField: { id: 2 }, faveoField: { id: 9 } }))
+        expect(wrapper.vm.missingRequired).toEqual(['Name'])
+        await wrapper.vm.saveMapping()
+        expect(mappingPosts()).toBe(0)
+    })
+
+    it('saveMapping ignores fully empty rows and posts the rest', async () => {
+        globalThis.mockHttp.onPost(/\/sync\/pipedrive/).reply(200, { message: 'ok' })
+        await flushPromises()
+        wrapper.vm.allPipedriveOptions = [{ id: 2, name: 'Email', label: 'Email', mandatory: false }]
+        setRows(row({ pipedriveField: { id: 2 }, faveoField: { id: 9 } }), row())
+        await wrapper.vm.saveMapping()
+        const body = JSON.parse(globalThis.mockHttp.history.post.find(r => r.url.includes('/sync/pipedrive')).data)
+        expect(body.select1).toEqual([{ id: 2 }])
+        expect(body.select2).toEqual([{ id: 9, faveo_fields: true }])
+    })
+
+    it('deleting the last row leaves one empty row', async () => {
+        await flushPromises()
+        setRows(row({ pipedriveField: { id: 2 }, faveoField: { id: 9 } }))
+        wrapper.vm.deleteRow(0)
+        expect(wrapper.vm.rows).toHaveLength(1)
+        expect(wrapper.vm.rows[0].pipedriveField).toBeNull()
+    })
+
+    it('sendTest posts to /pipedrive/test', async () => {
+        globalThis.mockHttp.onPost(/\/pipedrive\/test/).reply(200, { message: 'ok' })
+        await flushPromises()
+        await wrapper.vm.sendTest()
+        expect(globalThis.mockHttp.history.post.some(r => r.url.includes('/pipedrive/test'))).toBe(true)
     })
 })

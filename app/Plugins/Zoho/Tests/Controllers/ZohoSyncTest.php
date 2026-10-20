@@ -3,6 +3,8 @@
 namespace App\Plugins\Zoho\Tests\Controllers;
 
 use App\Plugins\Zoho\Controllers\ZohoSync;
+use App\Plugins\Zoho\Models\FaveoLocalFields;
+use App\Plugins\Zoho\Models\ZohoFieldMappings;
 use App\Plugins\Zoho\Models\ZohoFields;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -272,5 +274,62 @@ class ZohoSyncTest extends DBTestCase
         $this->sync->sync('crm', 'Contacts', $fields);
 
         $this->assertEquals(3, ZohoFields::count());
+    }
+
+    public function test_reconnecting_another_zoho_account_keeps_fields_and_mappings(): void
+    {
+        $field = ZohoFields::create([
+            'platform' => 'crm', 'module' => 'Leads', 'zoho_field_uid' => 'old-account-1',
+            'zoho_key' => 'Email', 'display_name' => 'Email', 'field_type' => 'email', 'raw_metadata' => [],
+        ]);
+        $mapping = ZohoFieldMappings::create([
+            'zoho_field_id' => $field->id,
+            'faveo_local_field_id' => FaveoLocalFields::updateOrCreate(['field_key' => 'email'], ['display_name' => 'Email', 'field_type' => 'email'])->id,
+        ]);
+
+        $removed = $this->sync->sync('crm', 'Leads', [
+            ['id' => 'new-account-1', 'api_name' => 'Email', 'field_label' => 'Email', 'data_type' => 'email'],
+        ]);
+
+        $this->assertSame([], $removed);
+        $this->assertSame(1, ZohoFields::wherePlatform('crm')->whereModule('Leads')->count());
+        $this->assertSame('new-account-1', $field->refresh()->zoho_field_uid);
+        $this->assertNotNull($mapping->fresh());
+    }
+
+    public function test_it_removes_mappings_that_no_longer_fit_and_fields_zoho_dropped(): void
+    {
+        $local = FaveoLocalFields::updateOrCreate(['field_key' => 'first_name'], ['display_name' => 'First Name', 'field_type' => 'text']);
+
+        $phone = ZohoFields::create([
+            'platform' => 'crm', 'module' => 'Leads', 'zoho_field_uid' => '1',
+            'zoho_key' => 'Phone', 'display_name' => 'Phone', 'field_type' => 'text', 'raw_metadata' => [],
+        ]);
+        ZohoFieldMappings::create(['zoho_field_id' => $phone->id, 'faveo_local_field_id' => $local->id]);
+
+        $source = ZohoFields::create([
+            'platform' => 'crm', 'module' => 'Leads', 'zoho_field_uid' => '2',
+            'zoho_key' => 'Lead_Source', 'display_name' => 'Lead Source', 'field_type' => 'picklist', 'raw_metadata' => [],
+        ]);
+        ZohoFieldMappings::create(['zoho_field_id' => $source->id, 'selected_option' => json_encode(['value' => 'Advertisement'])]);
+
+        $gone = ZohoFields::create([
+            'platform' => 'crm', 'module' => 'Leads', 'zoho_field_uid' => '3',
+            'zoho_key' => 'Old_Field', 'display_name' => 'Old Field', 'field_type' => 'text', 'raw_metadata' => [],
+        ]);
+        ZohoFieldMappings::create(['zoho_field_id' => $gone->id, 'faveo_local_field_id' => $local->id]);
+
+        $removed = $this->sync->sync('crm', 'Leads', [
+            // Phone became a picklist with its own choices, so a text field can't feed it any more.
+            ['id' => '1', 'api_name' => 'Phone', 'field_label' => 'Phone', 'data_type' => 'picklist',
+                'pick_list_values' => [['actual_value' => 'Home', 'display_value' => 'Home']]],
+            // Lead Source no longer offers "Advertisement".
+            ['id' => '2', 'api_name' => 'Lead_Source', 'field_label' => 'Lead Source', 'data_type' => 'picklist',
+                'pick_list_values' => [['actual_value' => 'Web', 'display_value' => 'Web']]],
+        ]);
+
+        $this->assertEqualsCanonicalizing(['Old Field', 'Phone', 'Lead Source'], $removed);
+        $this->assertSame(0, ZohoFieldMappings::whereIn('zoho_field_id', [$phone->id, $source->id, $gone->id])->count());
+        $this->assertNull($gone->fresh());
     }
 }

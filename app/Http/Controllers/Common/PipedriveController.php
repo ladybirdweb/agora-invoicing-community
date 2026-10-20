@@ -71,6 +71,15 @@ class PipedriveController extends Controller
         'id_list_fields' => ['label' => 'label_ids'],
     ];
 
+    /**
+     * Fields Pipedrive rejects a record without, per group name.
+     */
+    private const array REQUIRED_FIELD_KEYS = [
+        'Person' => ['name'],
+        'Organization' => ['name'],
+        'Deal' => ['title'],
+    ];
+
     private const array DEAL_FIELD_MAP = [
         'top_level' => ['title', 'owner_id', 'person_id', 'org_id', 'pipeline_id', 'stage_id', 'value', 'currency', 'is_deleted', 'is_archived', 'archive_time', 'status', 'probability', 'lost_reason', 'visible_to', 'close_time', 'won_time', 'lost_time', 'expected_close_date', 'label_ids'],
         'id_list_fields' => ['label' => 'label_ids'],
@@ -94,10 +103,6 @@ class PipedriveController extends Controller
     public function __construct()
     {
         $this->middleware(['auth', 'admin']);
-
-        if (! StatusSetting::value('pipedrive_status')) {
-            abort(404);
-        }
 
         $token = ApiKey::value('pipedrive_api_key');
 
@@ -441,22 +446,107 @@ class PipedriveController extends Controller
                 return;
             }
 
-            // Create organization first
-            $organization = $this->transformPipedriveData($user, $this->groups['organizationId']);
-            $orgID = $this->addOrGetOrganization($organization);
-
-            // Create person with org reference
-            $person = $this->transformPipedriveData($user, $this->groups['personId'], ['org_id' => $orgID]);
-            $personID = $this->addPerson($person);
-
-            // Create deal with both references
-            $deal = $this->transformPipedriveData($user, $this->groups['dealId'], [
-                'org_id' => $orgID,
-                'person_id' => $personID,
-            ]);
-            $this->addDeal($deal);
+            $this->syncUser($user);
         } catch (Exception $exception) {
             Logger::exception($exception);
+        }
+    }
+
+    /**
+     * Send one user to Pipedrive with the current mapping: organization (found by name or created),
+     * person (found by email and updated, or created) and a deal (only if the person has none yet,
+     * so syncing the same user again doesn't pile up deals).
+     *
+     * @return list<string> What was sent ("Organization", "Person", "Deal")
+     *
+     * @throws Exception With Pipedrive's own reason when a request is rejected.
+     */
+    public function syncUser(User $user): array
+    {
+        $sent = [];
+
+        // Organization is optional: no mapped name means no organization.
+        $organization = $this->transformPipedriveData($user, $this->groups['organizationId']);
+        $orgID = null;
+        if (! empty($organization['name'])) {
+            $orgID = $this->addOrGetOrganization($organization);
+            $this->assertCreated($orgID, 'Organization');
+            $sent[] = 'Organization';
+        }
+
+        $person = $this->transformPipedriveData($user, $this->groups['personId'], array_filter(['org_id' => $orgID]));
+        $existingPersonID = $user->email ? $this->findPersonIdByEmail($user->email) : null;
+        $personID = $existingPersonID !== null
+            ? $this->performApiAction('persons', 'updatePerson', $existingPersonID, $this->toV2RequestBody($person, self::PERSON_FIELD_MAP))
+            : $this->addPerson($person);
+        $this->assertCreated($personID, 'Person');
+        $sent[] = 'Person';
+
+        $deal = $this->transformPipedriveData($user, $this->groups['dealId'], array_filter([
+            'org_id' => $orgID,
+            'person_id' => $personID,
+        ]));
+        if (! empty($deal['title']) && ! $this->personHasDeal((int) $personID)) {
+            $this->assertCreated($this->addDeal($deal), 'Deal');
+            $sent[] = 'Deal';
+        }
+
+        return $sent;
+    }
+
+    /**
+     * performApiAction() returns the new record's id on success and Pipedrive's decoded error body otherwise.
+     *
+     * @throws Exception
+     */
+    private function assertCreated(mixed $result, string $what): void
+    {
+        if (is_numeric($result)) {
+            return;
+        }
+
+        $reason = is_object($result) ? ($result->error ?? $result->message ?? null) : null;
+
+        throw new Exception(sprintf('%s: %s', $what, is_string($reason) ? $reason : __('message.sorry_something_wrong')));
+    }
+
+    protected function findPersonIdByEmail(string $email): ?int
+    {
+        $result = json_decode((string) json_encode($this->fetchApiData('persons', 'searchPersons', $email, 'email', true)), associative: true);
+        $id = $result['items'][0]['item']['id'] ?? null;
+
+        return is_numeric($id) ? (int) $id : null;
+    }
+
+    protected function personHasDeal(int $personID): bool
+    {
+        $deals = $this->fetchApiData('deals', 'getDeals', null, null, null, $personID);
+
+        return $deals !== [];
+    }
+
+    /**
+     * Push the signed-in admin through the real sync with the saved mapping, so they can see in Pipedrive
+     * exactly what gets sent.
+     */
+    public function sendTest(): JsonResponse
+    {
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        if (PipedriveField::whereNotNull('local_field_id')->doesntExist()
+            && PipedriveFieldOption::where('status', 1)->doesntExist()) {
+            return errorResponse(__('message.zoho_test_nothing_mapped'));
+        }
+
+        try {
+            $sent = $this->syncUser($admin);
+
+            return successResponse(__('message.pipedrive_test_sent', ['email' => $admin->email, 'modules' => implode(', ', $sent)]));
+        } catch (Exception $exception) {
+            Logger::exception($exception);
+
+            return errorResponse(__('message.pipedrive_test_failed', ['reason' => $exception->getMessage()]));
         }
     }
 
@@ -498,11 +588,26 @@ class PipedriveController extends Controller
             ->filter(fn ($id): bool => $id !== null)
             ->all();
 
+        // Every row needs both sides: a half-filled row would otherwise be dropped silently.
+        if (count((array) $select1) !== count((array) $select2)
+            || collect((array) $select2)->contains(fn ($row): bool => empty($row['id'] ?? null))) {
+            return errorResponse(__('message.zoho_incomplete_rows'));
+        }
+
         // Validate title field for deals
         if ($group_name === 'Deal' && ! PipedriveField::whereIn('id', $selectedFieldIds)
             ->where('field_key', 'title')
             ->exists()) {
             return errorResponse(__('message.title_field_deals'));
+        }
+
+        // Fields Pipedrive requires (Person/Organization name) — only once something is mapped for the group.
+        $missing = PipedriveField::where('pipedrive_group_id', $groupID)
+            ->whereIn('field_key', self::REQUIRED_FIELD_KEYS[$group_name] ?? [])
+            ->whereNotIn('id', $selectedFieldIds)
+            ->pluck('field_name');
+        if ($selectedFieldIds !== [] && $missing->isNotEmpty()) {
+            return errorResponse(__('message.pipedrive_required_missing', ['fields' => $missing->implode(', ')]));
         }
 
         try {
@@ -512,7 +617,7 @@ class PipedriveController extends Controller
                     $fieldId = is_array($row) ? $row['id'] : $row;
                     $localField = $select2[$key];
 
-                    if ($localField['faveo_fields'] === 'true') {
+                    if (filter_var($localField['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
                         PipedriveField::where('id', $fieldId)->update([
                             'local_field_id' => $localField['id'],
                         ]);
@@ -533,7 +638,8 @@ class PipedriveController extends Controller
                 // Reset non-selected options
                 $fieldIds = PipedriveField::where('pipedrive_group_id', $groupID)->pluck('id')->toArray();
                 $selectedOptionIds = collect((array) $select2)
-                    ->filter(fn ($item): bool => isset($item['id']) && $item['faveo_fields'] !== 'true')
+                    // JSON sends a real boolean, form posts send the string "true" — accept both.
+                    ->filter(fn ($item): bool => isset($item['id']) && ! filter_var($item['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN))
                     ->flatMap(fn ($item): array => (array) $item['id'])
                     ->all();
 
@@ -630,7 +736,7 @@ class PipedriveController extends Controller
             $pipedriveFields = PipedriveField::with(['pipedriveOptions', 'localField'])
                 ->where('pipedrive_group_id', $group_id)
                 ->get()
-                ->map(function ($field) use ($localFields, $localFieldsArray) {
+                ->map(function ($field) use ($localFields, $localFieldsArray, $group_name) {
                     $selectedField = [];
 
                     if ($field->local_field_id !== null) {
@@ -660,6 +766,7 @@ class PipedriveController extends Controller
                     }
 
                     $field->selected_field = $selectedField; // @phpstan-ignore property.notFound
+                    $field->is_mandatory = in_array($field->field_key, self::REQUIRED_FIELD_KEYS[$group_name] ?? [], true); // @phpstan-ignore property.notFound
                     $field->local_field_options = $localFieldsArray; // @phpstan-ignore property.notFound
 
                     return $field;

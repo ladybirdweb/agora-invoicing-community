@@ -20,10 +20,7 @@ abstract class ZohoBaseApi
             ->withToken(
                 $this->accessToken->get($this->integrationId),
                 'Zoho-oauthtoken'
-            )
-            ->withHeaders([
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ]);
+            );
     }
 
     abstract protected function endpoint(): string;

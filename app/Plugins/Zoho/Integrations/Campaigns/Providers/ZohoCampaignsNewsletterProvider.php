@@ -3,7 +3,6 @@
 namespace App\Plugins\Zoho\Integrations\Campaigns\Providers;
 
 use App\Contracts\NewsletterProvider;
-use App\Model\Common\StatusSetting;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\ZohoCampaignsController;
 
 class ZohoCampaignsNewsletterProvider implements NewsletterProvider
@@ -15,7 +14,7 @@ class ZohoCampaignsNewsletterProvider implements NewsletterProvider
 
     public function isEnabled(): bool
     {
-        return (bool) StatusSetting::value('zoho_status');
+        return zohoIntegrationActive('campaigns');
     }
 
     public function subscribeEmail(string $email): void

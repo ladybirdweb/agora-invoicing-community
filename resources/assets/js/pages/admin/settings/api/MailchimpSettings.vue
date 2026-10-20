@@ -3,28 +3,10 @@
         <AppAlert :componentName="COMPONENT" />
 
         <div class="card card-light">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('message.mailchimp') }}</h4>
-                <div class="card-tools">
-                    <button v-if="activeTab === 'field-mapping' && form.listId"
-                        class="btn btn-tool" v-tooltip="__('message.sync_fields')"
-                        :disabled="syncingFields" @click="syncFields">
-                        <i class="fas fa-sync" :class="{ 'fa-spin': syncingFields }"></i>
-                    </button>
-                    <button v-if="activeTab === 'interest-groups' && form.listId"
-                        class="btn btn-tool" v-tooltip="__('message.sync_groups')"
-                        :disabled="syncingGroups" @click="syncGroups">
-                        <i class="fas fa-sync" :class="{ 'fa-spin': syncingGroups }"></i>
-                    </button>
-                </div>
-            </div>
-
             <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
 
             <template v-else>
                 <div class="card-body">
-
-                    <!-- Tabs -->
                     <ul class="nav nav-tabs mb-4">
                         <li class="nav-item" v-for="tab in tabs" :key="tab.key">
                             <a class="nav-link" :class="{ active: activeTab === tab.key }"
@@ -34,219 +16,241 @@
                         </li>
                     </ul>
 
-                    <!-- ── Tab 1: Connection ─────────────────────────────── -->
+                    <!-- Tab: Connection -->
                     <div v-show="activeTab === 'connection'">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">
-                                    {{ __('message.mailchimp_key') }}<span class="text-danger ms-1">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    :class="{ 'is-invalid': errors.apiKey }"
-                                    :value="form.apiKey"
-                                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us21"
-                                    @input="e => { form.apiKey = e.target.value; setFieldError('apiKey', undefined) }"
-                                    @keyup.enter="connect"
-                                />
-                                <div v-if="errors.apiKey" class="text-danger small mt-1">{{ errors.apiKey }}</div>
+                        <div class="card card-light">
+                            <div class="card-header">
+                                <h4 class="card-title">{{ __('message.mailchimp') }}</h4>
+                                <span v-if="connected" class="badge bg-success ms-2">{{ __('message.connected') }}</span>
+                                <span v-else class="badge bg-warning text-dark ms-2">{{ __('message.not_connected') }}</span>
+                                <!-- card-title floats left in AdminLTE; clear it so this sits on its own line under the title -->
+                                <small v-if="connected" class="d-block text-muted clear-both">{{ connectionDetail }}</small>
                             </div>
-
-                            <template v-if="connected">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">
-                                        {{ __('message.list_id') }}<span class="text-danger ms-1">*</span>
-                                    </label>
-                                    <v-select
-                                        v-model="selectedList"
-                                        :options="lists"
-                                        :filterable="true"
-                                        :searchable="true"
-                                        :clearable="true"
-                                        label="name"
-                                        :placeholder="__('message.select_list')"
-                                        @open="onListOpen"
-                                        @update:modelValue="val => { form.listId = val?.id ?? null; setFieldError('listId', undefined) }"
-                                        :class="['faveo-dynamic-select', { 'is-invalid': errors.listId }]"
-                                    >
-                                        <template #list-footer>
-                                            <ul class="list-unstyled m-0 p-0">
-                                            <li v-if="listsLoading" class="text-center py-2 text-muted small">
-                                                <span class="spinner-border spinner-border-sm me-1"></span>
-                                                {{ __('message.loading') }}…
-                                            </li>
-                                            <li v-else-if="listsHasMore" ref="listSentinelRef"
-                                                class="py-1 text-muted small text-center list-unstyled">
-                                                {{ __('message.loading') }}…
-                                            </li>
-                                            </ul>
-                                        </template>
-                                        <template #no-options="{ search }">
-                                            <span v-if="search">{{ __('message.no_results') }}: <em>{{ search }}</em></span>
-                                            <span v-else-if="!listsLoading">{{ __('message.no_results') }}</span>
-                                            <span v-else></span>
-                                        </template>
-                                    </v-select>
-                                    <div v-if="errors.listId" class="text-danger small mt-1">{{ errors.listId }}</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <TextField
+                                            name="apiKey"
+                                            type="password"
+                                            :label="__('message.mailchimp_key')"
+                                            :value="form.apiKey"
+                                            :required="!account.has_key"
+                                            :placeholder="account.has_key ? __('message.mailchimp_key_saved_placeholder') : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us21'"
+                                            :error="errors.apiKey"
+                                            :onChange="(val, key) => { setFieldError(key, undefined); form[key] = val }"
+                                        />
+                                    </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <DynamicSelect
-                                        name="subscribe_status"
-                                        :label="__('message.subscribe_status')"
-                                        :required="true"
-                                        :elements="subscribeOptions"
-                                        :value="subscribeOptions.find(o => o.id === form.subscribeStatus) ?? null"
-                                        :onChange="val => { form.subscribeStatus = val?.id ?? 'subscribed'; setFieldError('subscribeStatus', undefined) }"
-                                        :clearable="false"
-                                        :searchable="false"
-                                        :error="errors.subscribeStatus"
-                                    />
-                                </div>
-                            </template>
+                            </div>
+                            <div class="card-footer">
+                                <action-button action="save" :icon="connected ? 'fas fa-sync-alt' : 'fas fa-plug'"
+                                    :label="connected ? __('message.save') : __('message.connect')"
+                                    :loading="connecting" @click="connect" />
+                                <action-button v-if="connected" variant="secondary" icon="fas fa-unlink" class="ms-2"
+                                    :label="__('message.mailchimp_disconnect')" @click="showDisconnect = true" />
+                            </div>
                         </div>
-
-                        <action-button
-                            v-if="!connected"
-                            icon="fas fa-plug"
-                            variant="primary"
-                            :label="__('message.connect')"
-                            :loading="connecting"
-                            @click="connect"
-                        />
-                        <action-button v-else action="save" :loading="savingConnection" @click="saveConnection" />
                     </div>
 
-                    <!-- ── Tab 2: Field Mapping ──────────────────────────── -->
+                    <!-- Tab: Field Mapping -->
                     <div v-show="activeTab === 'field-mapping'">
-                        <div v-if="!form.listId" class="alert alert-warning py-2 mb-3">
-                            <i class="fas fa-exclamation-triangle me-1"></i>
-                            {{ __('message.mailchimp_select_list_first') }}
-                        </div>
-
-                        <template v-else>
-                            <div v-if="syncingFields" class="row justify-content-center py-3"><loader /></div>
-
-                            <template v-else>
-                                <div v-for="(row, idx) in fieldRows" :key="idx" class="row mb-3 align-items-end">
-                                    <div class="col-5">
-                                        <DynamicSelect
-                                            :name="'faveo_field_' + idx"
-                                            :label="idx === 0 ? __('message.faveo_fields') : ''"
-                                            :elements="userFields"
-                                            :value="userFields.find(f => f.id === row.faveoFieldId) ?? null"
-                                            :onChange="val => { row.faveoFieldId = val?.id ?? null; setFieldError('field_row_' + idx, undefined) }"
+                        <!-- Which audience new subscribers go to -->
+                        <div class="card card-light">
+                            <div class="card-header">
+                                <h4 class="card-title">{{ __('message.mailchimp_audience') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">
+                                            {{ __('message.mailchimp_audience') }}<span class="text-danger ms-1">*</span>
+                                            <ToolTip :message="__('message.mailchimp_audience_help')" size="small" />
+                                        </label>
+                                        <v-select
+                                            v-model="selectedList"
+                                            :options="lists"
+                                            :filterable="true"
                                             :searchable="true"
-                                            :clearable="true"
-                                            :error="errors['field_row_' + idx]"
-                                        />
-                                    </div>
-                                    <div class="col-5">
-                                        <DynamicSelect
-                                            :name="'merge_tag_' + idx"
-                                            :label="idx === 0 ? __('message.mailchimp_merge_tag') : ''"
-                                            :elements="mergeTagOptions"
-                                            :value="mergeTagOptions.find(t => t.id === row.mergeTagId) ?? null"
-                                            :onChange="val => { row.mergeTagId = val?.id ?? null; setFieldError('field_row_' + idx, undefined) }"
-                                            :searchable="true"
-                                            :clearable="true"
-                                        />
-                                    </div>
-                                    <div class="col-2 mb-3">
-                                        <button
-                                            type="button"
-                                            class="btn btn-light table_btn"
-                                            v-tooltip="__('message.Delete')"
-                                            @click="removeFieldRow(idx)"
+                                            :clearable="false"
+                                            label="name"
+                                            :placeholder="__('message.select_list')"
+                                            @open="onListOpen"
+                                            @update:modelValue="val => { form.listId = val?.id ?? null; setFieldError('listId', undefined) }"
+                                            :class="['faveo-dynamic-select', { 'is-invalid': errors.listId }]"
                                         >
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                            <template #list-footer>
+                                                <ul class="list-unstyled m-0 p-0">
+                                                    <li v-if="listsLoading" class="text-center py-2 text-muted small">
+                                                        <span class="spinner-border spinner-border-sm me-1"></span>
+                                                        {{ __('message.loading') }}…
+                                                    </li>
+                                                    <li v-else-if="listsHasMore" ref="listSentinelRef" class="py-1 text-muted small text-center">
+                                                        {{ __('message.loading') }}…
+                                                    </li>
+                                                </ul>
+                                            </template>
+                                            <template #no-options="{ search }">
+                                                <span v-if="search">{{ __('message.no_results') }}: <em>{{ search }}</em></span>
+                                                <span v-else-if="!listsLoading">{{ __('message.no_results') }}</span>
+                                                <span v-else></span>
+                                            </template>
+                                        </v-select>
+                                        <div v-if="errors.listId" class="text-danger small mt-1">{{ errors.listId }}</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <DynamicSelect
+                                            name="subscribe_status"
+                                            :label="__('message.subscribe_status')"
+                                            :required="true"
+                                            :elements="subscribeOptions"
+                                            :value="subscribeOptions.find(o => o.id === form.subscribeStatus) ?? null"
+                                            :tooltip="__('message.mailchimp_subscribe_status_help')"
+                                            :onChange="val => { form.subscribeStatus = val?.id ?? 'subscribed'; setFieldError('subscribeStatus', undefined) }"
+                                            :clearable="false"
+                                            :searchable="false"
+                                            :error="errors.subscribeStatus"
+                                        />
                                     </div>
                                 </div>
-
-                                <div class="mb-3">
-                                    <action-button
-                                        action="add"
-                                        type="button"
-                                        :disabled="fieldRows.length >= userFields.length"
-                                        :label="__('message.add-new')"
-                                        @click="addFieldRow"
-                                    />
-                                </div>
-                            </template>
-                        </template>
-                    </div>
-
-                    <!-- ── Tab 3: Interest Groups ────────────────────────── -->
-                    <div v-show="activeTab === 'interest-groups'">
-                        <div v-if="!form.listId" class="alert alert-warning py-2 mb-3">
-                            <i class="fas fa-exclamation-triangle me-1"></i>
-                            {{ __('message.mailchimp_select_list_first') }}
+                            </div>
+                            <div class="card-footer">
+                                <action-button action="save" :loading="savingList" @click="saveList" />
+                            </div>
                         </div>
 
-                        <template v-else>
-                            <!-- Map Is Paid Group -->
-                            <div class="border rounded p-3 mb-4">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div class="flex-grow-1 me-3">
-                                        <h6 class="fw-bold mb-1">{{ __('message.map_is_paid_group') }}</h6>
-                                        <p class="text-muted small mb-0">{{ __('message.map_is_paid_hint') }}</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <Switch name="isPaidStatus" :value="isPaidStatus" :onChange="val => isPaidStatus = val" />
-                                    </div>
+                        <div class="card card-light">
+                            <div class="card-header">
+                                <h4 class="card-title">{{ __('message.mailchimp_mapping') }}</h4>
+                                <div v-if="savedListId" class="card-tools">
+                                    <button class="btn btn-tool" v-tooltip="__('message.sync_fields')"
+                                        :disabled="syncingFields" @click="syncFields">
+                                        <i class="fas fa-sync" :class="{ 'fa-spin': syncingFields }"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div v-if="!savedListId" class="text-muted">
+                                    {{ __('message.mailchimp_select_list_first') }}
                                 </div>
 
-                                <template v-if="isPaidStatus">
-                                    <div class="row mt-2">
-                                        <div class="col-md-5">
+                                <div v-else-if="syncingFields" class="row justify-content-center py-3"><loader /></div>
+
+                                <template v-else>
+                                    <div v-if="missingRequired.length" class="alert alert-warning py-2">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        {{ __('message.mailchimp_required_missing', { fields: missingRequired.join(', ') }) }}
+                                    </div>
+
+                                    <div v-for="(row, idx) in fieldRows" :key="row.key" class="row mb-3 align-items-end">
+                                        <div class="col-5">
                                             <DynamicSelect
-                                                name="isPaid_category"
-                                                :label="__('message.select_a_group')"
-                                                :required="true"
-                                                :elements="categoryOptions"
-                                                :value="categoryOptions.find(o => o.id === isPaidCategoryId) ?? null"
-                                                :onChange="val => { isPaidCategoryId = val?.id ?? null; setFieldError('isPaidCategoryId', undefined) }"
+                                                :name="`merge_tag_${idx}`"
+                                                :label="idx === 0 ? __('message.mailchimp_field') : ''"
+                                                :elements="tagOptionsFor(row)"
+                                                :value="mergeTagOptions.find(o => o.id === row.tag) ?? null"
                                                 :searchable="true"
                                                 :clearable="true"
-                                                :error="errors.isPaidCategoryId"
+                                                :onChange="val => row.tag = val?.id ?? null"
                                             />
                                         </div>
+                                        <div class="col-5">
+                                            <DynamicSelect
+                                                :name="`faveo_field_${idx}`"
+                                                :label="idx === 0 ? __('message.faveo_field') : ''"
+                                                :elements="userFieldOptionsFor(row)"
+                                                :value="userFields.find(f => f.id === row.faveoFieldId) ?? null"
+                                                :searchable="true"
+                                                :clearable="true"
+                                                :onChange="val => row.faveoFieldId = val?.id ?? null"
+                                            />
+                                        </div>
+                                        <div class="col-2 mb-3">
+                                            <button type="button" class="btn btn-light table_btn"
+                                                v-tooltip="__('message.delete_attribute')" @click="removeFieldRow(idx)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
+                                    <p v-if="hasRequiredFields" class="text-muted small mb-3"><span class="text-danger">*</span> {{ __('message.mailchimp_required_legend') }}</p>
+                                    <action-button action="add" type="button" :label="__('message.add-new')"
+                                        :disabled="fieldRows.length >= userFields.length" @click="addFieldRow" />
                                 </template>
                             </div>
+                            <div v-if="savedListId" class="card-footer">
+                                <action-button action="save" :label="__('message.save_mapping')" :loading="savingMapping" @click="saveMapping" />
+                                <action-button variant="secondary" icon="fas fa-paper-plane" class="ms-2"
+                                    :label="__('message.mailchimp_send_test')" v-tooltip="__('message.mailchimp_send_test_tooltip')"
+                                    :loading="testing" @click="sendTest" />
+                            </div>
+                        </div>
+                    </div>
 
-                            <!-- Group Fields Mapping -->
-                            <div class="border rounded p-3 mb-4">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div class="flex-grow-1 me-3">
-                                        <h6 class="fw-bold mb-1">{{ __('message.group_fields_mapping') }}</h6>
-                                        <p class="text-muted small mb-0">{{ __('message.group_fields_mapping_hint') }}</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <Switch name="productStatus" :value="productStatus" :onChange="val => productStatus = val" />
+                    <!-- Tab: Interest Groups -->
+                    <div v-show="activeTab === 'interest-groups'">
+                        <!-- Is-paid group -->
+                        <div class="card card-light">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    {{ __('message.map_is_paid_group') }}
+                                    <ToolTip :message="__('message.map_is_paid_hint')" size="small" />
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <label class="form-label fw-bold d-block">{{ __('message.enable') }}</label>
+                                <Switch name="isPaidStatus" :value="isPaidStatus" :onChange="val => isPaidStatus = val" />
+                                <div v-if="isPaidStatus" class="row mt-3">
+                                    <div class="col-md-6">
+                                        <DynamicSelect
+                                            name="isPaid_category"
+                                            :label="__('message.select_a_group')"
+                                            :required="true"
+                                            :elements="categoryOptions"
+                                            :value="categoryOptions.find(o => o.id === isPaidCategoryId) ?? null"
+                                            :onChange="val => { isPaidCategoryId = val?.id ?? null; setFieldError('isPaidCategoryId', undefined) }"
+                                            :searchable="true"
+                                            :clearable="true"
+                                            :error="errors.isPaidCategoryId"
+                                        />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="card-footer">
+                                <action-button action="save" :loading="savingIsPaid" @click="saveIsPaid" />
+                            </div>
+                        </div>
+
+                        <!-- Product → interest group -->
+                        <div class="card card-light">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    {{ __('message.group_fields_mapping') }}
+                                    <ToolTip :message="__('message.group_fields_mapping_hint')" size="small" />
+                                </h4>
+                                <div class="card-tools">
+                                    <button class="btn btn-tool" v-tooltip="__('message.sync_groups')"
+                                        :disabled="syncingGroups" @click="syncGroups">
+                                        <i class="fas fa-sync" :class="{ 'fa-spin': syncingGroups }"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <label class="form-label fw-bold d-block">{{ __('message.enable') }}</label>
+                                <Switch name="productStatus" :value="productStatus" :onChange="val => productStatus = val" />
 
                                 <template v-if="productStatus">
-                                    <div v-if="syncingGroups" class="text-muted small">
-                                        <span class="spinner-border spinner-border-sm me-1"></span>
-                                        {{ __('message.loading') }}…
-                                    </div>
+                                    <div v-if="syncingGroups" class="row justify-content-center py-3"><loader /></div>
 
-                                    <template v-else-if="interestGroups.length">
-                                        <div v-for="(row, idx) in productRows" :key="idx" class="row mb-3 align-items-end">
+                                    <template v-else-if="interestGroupOptions.length">
+                                        <div v-for="(row, idx) in productRows" :key="row.key" class="row mb-3 align-items-end" :class="{ 'mt-3': idx === 0 }">
                                             <div class="col-5">
                                                 <DynamicSelect
                                                     :name="'product_' + idx"
                                                     :label="idx === 0 ? __('message.product') : ''"
-                                                    :elements="productOptions"
-                                                    :value="productOptions.find(o => o.id === String(row.productId)) ?? null"
-                                                    :onChange="val => { row.productId = val?.id ?? null; setFieldError('product_row_' + idx, undefined) }"
+                                                    :elements="productOptionsFor(row)"
+                                                    :value="productOptions.find(o => o.id === row.productId) ?? null"
+                                                    :onChange="val => row.productId = val?.id ?? null"
                                                     :searchable="true"
                                                     :clearable="true"
-                                                    :error="errors['product_row_' + idx]"
                                                 />
                                             </div>
                                             <div class="col-5">
@@ -255,54 +259,47 @@
                                                     :label="idx === 0 ? __('message.interest_group') : ''"
                                                     :elements="interestGroupOptions"
                                                     :value="interestGroupOptions.find(o => o.id === row.groupId) ?? null"
-                                                    :onChange="val => { row.groupId = val?.id ?? null; setFieldError('product_row_' + idx, undefined) }"
+                                                    :onChange="val => row.groupId = val?.id ?? null"
                                                     :searchable="true"
                                                     :clearable="true"
                                                 />
                                             </div>
                                             <div class="col-2 mb-3">
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-light table_btn"
-                                                    v-tooltip="__('message.Delete')"
-                                                    @click="removeProductRow(idx)"
-                                                >
+                                                <button type="button" class="btn btn-light table_btn"
+                                                    v-tooltip="__('message.delete_attribute')" @click="removeProductRow(idx)">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
                                         </div>
-
-                                        <div class="mb-1">
-                                            <action-button
-                                                action="add"
-                                                type="button"
-                                                :disabled="productRows.length >= productOptions.length"
-                                                :label="__('message.add-new')"
-                                                @click="addProductRow"
-                                            />
-                                        </div>
+                                        <action-button action="add" type="button" :label="__('message.add-new')"
+                                            :disabled="productRows.length >= productOptions.length" @click="addProductRow" />
                                     </template>
 
-                                    <p v-else class="text-muted small">
-                                        {{ __('message.no_interest_groups_found') }}
-                                    </p>
+                                    <p v-else class="text-muted mt-3 mb-0">{{ __('message.no_interest_groups_found') }}</p>
                                 </template>
                             </div>
-                        </template>
+                            <div class="card-footer">
+                                <action-button action="save" :loading="savingGroups" @click="saveProductGroups" />
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
-                <!-- Card footer — save only shown on tabs 2 & 3 when list is set -->
-                <div v-if="activeTab === 'field-mapping' && form.listId" class="card-footer">
-                    <action-button action="save" :loading="savingMapping" @click="saveMapping" />
-                </div>
-                <div v-if="activeTab === 'interest-groups' && form.listId" class="card-footer">
-                    <action-button action="save" :loading="savingGroups" @click="saveInterestGroups" />
-                </div>
-
             </template>
         </div>
+
+        <DeleteModal
+            v-if="showDisconnect"
+            :showModal="true"
+            :onClose="() => showDisconnect = false"
+            deleteUrl="/mailchimp/disconnect"
+            method="post"
+            :title="__('message.mailchimp_disconnect')"
+            :message="__('message.mailchimp_disconnect_confirm')"
+            :btnLabel="__('message.mailchimp_disconnect')"
+            btnIcon="fa-unlink"
+            :componentName="COMPONENT"
+            @deleted="onDisconnected"
+        />
     </div>
 </template>
 
@@ -312,44 +309,67 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
+import { useAlertStore } from '@/core/stores/alert.js'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
+import TextField from '@/components/Reusable/FormField/TextField.vue'
 import DynamicSelect from '@/components/Reusable/FormField/DynamicSelect.vue'
 import Switch from '@/components/Reusable/FormField/Switch.vue'
+import ToolTip from '@/components/Reusable/Tooltip.vue'
+import DeleteModal from '@/components/Reusable/DeleteModal.vue'
 import { connectionSchema, listSchema } from '@/validations/admin/mailchimpValidations'
 
 const COMPONENT = 'mailchimp-settings'
 
 const { errors, setErrors, setFieldError } = useForm()
 
+function showError(message) {
+    useAlertStore().setAlert({ type: 'danger', message, component_name: COMPONENT })
+}
+
+// ── Flags ──────────────────────────────────────────────────────────────────
+const loading        = ref(true)
+const connecting     = ref(false)
+const savingList     = ref(false)
+const savingMapping  = ref(false)
+const savingIsPaid   = ref(false)
+const savingGroups   = ref(false)
+const syncingFields  = ref(false)
+const syncingGroups  = ref(false)
+const testing        = ref(false)
+const showDisconnect = ref(false)
+
+// ── Connection ─────────────────────────────────────────────────────────────
+// has_key says a key is saved; key_hint is its last 4 characters for the header line.
+const account   = reactive({ has_key: false, key_hint: null, data_center: null, account_name: null })
+const connected = computed(() => account.has_key)
+const form      = reactive({ apiKey: '', listId: null, subscribeStatus: 'subscribed' })
+
+// Audience last saved on the server — mapping and interest groups belong to it.
+const savedListId = ref(null)
+
+const connectionDetail = computed(() =>
+    [account.account_name ?? (account.key_hint ? `•••• ${account.key_hint}` : null), account.data_center]
+        .filter(Boolean).join(' · ')
+)
+
 // ── Tabs ───────────────────────────────────────────────────────────────────
+// Mapping needs a connection; interest groups also need a saved audience.
+const tabs = computed(() => [
+    { key: 'connection', icon: 'fas fa-plug', label: __('message.connection') },
+    ...(connected.value ? [{ key: 'field-mapping', icon: 'fas fa-sliders', label: __('message.field_mapping') }] : []),
+    ...(connected.value && savedListId.value ? [{ key: 'interest-groups', icon: 'fas fa-tags', label: __('message.interest_groups') }] : []),
+])
 const activeTab = ref('connection')
-const tabs = [
-    { key: 'connection',      icon: 'fas fa-plug',    label: __('message.connection')      },
-    { key: 'field-mapping',   icon: 'fas fa-sliders', label: __('message.field_mapping')   },
-    { key: 'interest-groups', icon: 'fas fa-tags',    label: __('message.interest_groups') },
-]
 
 watch(activeTab, async tab => {
-    if (tab === 'field-mapping' && form.listId && !syncingFields.value) {
-        if (!mergeTags.value.length) await syncFields()
+    if (tab === 'field-mapping' && savedListId.value && !mergeTags.value.length && !syncingFields.value) {
+        await syncFields()
     }
-    if (tab === 'interest-groups' && form.listId && !syncingGroups.value) {
-        // Always reload mapping data (product rows) from DB on tab open
+    if (tab === 'interest-groups' && savedListId.value && !syncingGroups.value) {
         await loadMappingData()
-        // Only call Mailchimp API if no groups synced yet
         if (!interestGroups.value.length) await syncGroups()
     }
 })
-
-// ── Flags ──────────────────────────────────────────────────────────────────
-const loading          = ref(true)
-const connecting       = ref(false)
-const savingConnection = ref(false)
-const savingMapping    = ref(false)
-const savingGroups     = ref(false)
-const syncingFields    = ref(false)
-const syncingGroups    = ref(false)
-const connected        = ref(false)   // has a validated key been saved
 
 // ── Lists (infinite scroll) ────────────────────────────────────────────────
 const lists           = ref([])
@@ -359,9 +379,6 @@ const listsOffset     = ref(0)
 const PAGE_SIZE       = 20
 const listSentinelRef = ref(null)
 let   listObserver    = null
-
-// ── Connection form ────────────────────────────────────────────────────────
-const form = reactive({ apiKey: '', listId: null, subscribeStatus: 'subscribed' })
 
 const selectedList = computed({
     get: () => lists.value.find(l => l.id === form.listId) ?? null,
@@ -374,7 +391,7 @@ const subscribeOptions = [
     { id: 'pending',      name: __('message.pending_optin') },
 ]
 
-// ── User fields (fixed list for left column) ───────────────────────────────
+// ── Field mapping ──────────────────────────────────────────────────────────
 const userFields = [
     { id: 'first_name', name: __('message.first_name') },
     { id: 'last_name',  name: __('message.last_name')  },
@@ -390,18 +407,39 @@ const userFields = [
     { id: 'source',     name: __('message.source')     },
 ]
 
-// ── Field mapping rows ─────────────────────────────────────────────────────
-// Rows store IDs only (not object references) to avoid Vue proxy ≠ plain-object
-// mismatch that causes DynamicSelect's elements watcher to clear selections.
-const mergeTags = ref([])
-const fieldRows = ref([{ faveoFieldId: null, mergeTagId: null }])
+let rowKey = 0
+const mergeTags = ref([])   // [{ tag, name, type, required }]
+const fieldRows = ref([])   // [{ key, tag, faveoFieldId }] — IDs only, never option objects
 
 const mergeTagOptions = computed(() =>
-    mergeTags.value.map(t => ({ id: t.tag, name: `${t.name} (${t.tag})` }))
+    mergeTags.value.map(t => ({ id: t.tag, name: `${t.name} (${t.tag})`, markRequired: t.required }))
 )
 
-function addFieldRow()       { fieldRows.value.push({ faveoFieldId: null, mergeTagId: null }) }
-function removeFieldRow(idx) { fieldRows.value.splice(idx, 1) }
+// Each Mailchimp field and each Faveo field can be used once: hide the ones other rows already use.
+function tagOptionsFor(row) {
+    const taken = new Set(fieldRows.value.filter(r => r !== row && r.tag).map(r => r.tag))
+    return mergeTagOptions.value.filter(o => !taken.has(o.id))
+}
+
+function userFieldOptionsFor(row) {
+    const taken = new Set(fieldRows.value.filter(r => r !== row && r.faveoFieldId).map(r => r.faveoFieldId))
+    return userFields.filter(f => !taken.has(f.id))
+}
+
+const hasRequiredFields = computed(() => mergeTags.value.some(t => t.required))
+
+// Mailchimp rejects every subscriber without its required fields, so they must always be mapped.
+const missingRequired = computed(() => {
+    const mapped = new Set(fieldRows.value.filter(r => r.tag && r.faveoFieldId).map(r => r.tag))
+    return mergeTags.value.filter(t => t.required && !mapped.has(t.tag)).map(t => t.name)
+})
+
+function addFieldRow() { fieldRows.value.push({ key: ++rowKey, tag: null, faveoFieldId: null }) }
+
+function removeFieldRow(idx) {
+    fieldRows.value.splice(idx, 1)
+    if (!fieldRows.value.length) addFieldRow()
+}
 
 // ── Interest groups ────────────────────────────────────────────────────────
 const productStatus      = ref(false)
@@ -409,41 +447,55 @@ const isPaidStatus       = ref(false)
 const interestGroups     = ref([])
 const interestCategories = ref([])
 const products           = ref([])
-const productRows        = ref([{ productId: null, groupId: null }])
+const productRows        = ref([])
 const isPaidCategoryId   = ref(null)
 
-const productOptions = computed(() => products.value.map(p => ({ id: String(p.id), name: p.name })))
-
-// All interest group options (for isPaid category selector — shows category-level)
+const productOptions  = computed(() => products.value.map(p => ({ id: String(p.id), name: p.name })))
 const categoryOptions = computed(() => interestCategories.value.map(c => ({ id: c.id, name: c.title ?? c.name })))
 
-// Product mapping dropdown: exclude whichever category is designated for isPaid (YES/NO)
-// so those options don't pollute the product-to-group mapping list.
-const interestGroupOptions = computed(() => {
-    const isPaidCategory = isPaidCategoryId.value
-    return interestGroups.value
-        .filter(g => g.category_id !== isPaidCategory)
+// Product mapping: leave out the is-paid (Yes/No) category so its options don't pollute the list.
+const interestGroupOptions = computed(() =>
+    interestGroups.value
+        .filter(g => g.category_id !== isPaidCategoryId.value)
         .map(g => ({ id: g.category_option_id, name: g.category_name }))
-})
+)
 
-function addProductRow()       { productRows.value.push({ productId: null, groupId: null }) }
-function removeProductRow(idx) { productRows.value.splice(idx, 1) }
+// One group per product: a purchase only ever applies the first mapping for a product.
+function productOptionsFor(row) {
+    const taken = new Set(productRows.value.filter(r => r !== row && r.productId).map(r => r.productId))
+    return productOptions.value.filter(o => !taken.has(o.id))
+}
+
+function addProductRow() { productRows.value.push({ key: ++rowKey, productId: null, groupId: null }) }
+
+function removeProductRow(idx) {
+    productRows.value.splice(idx, 1)
+    if (!productRows.value.length) addProductRow()
+}
 
 // ── Init ───────────────────────────────────────────────────────────────────
+async function loadSettings() {
+    const res = await http.get(`/settings/mailchimp`)
+    const d   = res.data?.data ?? {}
+
+    account.has_key      = !!d.has_key
+    account.key_hint     = d.key_hint     ?? null
+    account.data_center  = d.data_center  ?? null
+    account.account_name = d.account_name ?? null
+
+    form.apiKey          = d.api_key ?? ''
+    form.listId          = d.list_id          ?? null
+    form.subscribeStatus = d.subscribe_status ?? 'subscribed'
+    savedListId.value    = d.list_id          ?? null
+    lists.value          = d.lists            ?? []
+    listsHasMore.value   = d.lists_has_more   ?? false
+    listsOffset.value    = lists.value.length
+}
+
 onMounted(async () => {
     try {
-        const res = await http.get(`/settings/mailchimp`)
-        const d   = res.data?.data ?? {}
-
-        form.apiKey          = d.api_key          ?? ''
-        form.listId          = d.list_id          ?? null
-        form.subscribeStatus = d.subscribe_status ?? 'subscribed'
-        lists.value           = d.lists            ?? []
-        listsHasMore.value    = d.lists_has_more   ?? false
-        listsOffset.value     = lists.value.length
-
-        if (form.apiKey)  connected.value = true
-        if (form.listId)  loadMappingData()
+        await loadSettings()
+        if (savedListId.value) await loadMappingData()
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
@@ -451,23 +503,22 @@ onMounted(async () => {
     }
 })
 
-// ── Connect (validate + save key, fetch lists) ──────────────────────────────
+// ── Connect (validate + save key, fetch lists) ─────────────────────────────
 async function connect() {
-    try { await connectionSchema.validate({ apiKey: form.apiKey }) }
-    catch (err) { setErrors({ apiKey: err.message }); return }
+    // A saved key may be kept by leaving the field blank.
+    if (!account.has_key) {
+        try { await connectionSchema.validate({ apiKey: form.apiKey }) }
+        catch (err) { setErrors({ apiKey: err.message }); return }
+    }
 
     connecting.value = true
     try {
         const res = await http.post(`/updateMailchimpDetails`, {
-            mailchimp_auth_key: form.apiKey,
+            mailchimp_auth_key: form.apiKey || null,
             status: 1,
         })
-        const d = res.data?.data ?? {}
-        lists.value        = d.lists          ?? []
-        listsHasMore.value = d.lists_has_more ?? false
-        listsOffset.value  = lists.value.length
-        connected.value = true
         successHandler(res, COMPONENT)
+        await loadSettings()
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
@@ -475,8 +526,19 @@ async function connect() {
     }
 }
 
-// ── Save list settings (once connected) ─────────────────────────────────────
-async function saveConnection() {
+function onDisconnected() {
+    account.has_key      = false
+    account.key_hint     = null
+    account.data_center  = null
+    account.account_name = null
+    savedListId.value    = null
+    form.listId          = null
+    lists.value          = []
+    activeTab.value      = 'connection'
+}
+
+// ── Save audience + subscribe status ───────────────────────────────────────
+async function saveList() {
     try {
         await listSchema.validate(
             { listId: form.listId, subscribeStatus: form.subscribeStatus },
@@ -489,18 +551,26 @@ async function saveConnection() {
         return
     }
 
-    savingConnection.value = true
+    savingList.value = true
     try {
         const res = await http.patch(`/mailchimp`, {
             list_id:          form.listId,
             subscribe_status: form.subscribeStatus,
         })
+        const changed = savedListId.value !== form.listId
+        savedListId.value = form.listId
         successHandler(res, COMPONENT)
-        loadMappingData()
+        // A different audience has its own merge fields and groups.
+        if (changed) {
+            mergeTags.value = []
+            interestGroups.value = []
+            await syncFields()
+        }
+        await loadMappingData()
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
-        savingConnection.value = false
+        savingList.value = false
     }
 }
 
@@ -535,33 +605,36 @@ async function loadMoreLists() {
 }
 
 // ── Load mapping data ──────────────────────────────────────────────────────
+function applyFields(fields) {
+    mergeTags.value = (fields ?? []).map(f => ({ ...f, required: !!f.required }))
+}
+
 async function loadMappingData() {
     try {
         const res = await http.get(`/mailchimp/mapping-data`)
         const d   = res.data?.data ?? {}
 
-        // Merge tags
-        const fields = d.fields ?? {}
-        mergeTags.value = Object.entries(fields).map(([tag, name]) => ({ tag, name }))
+        applyFields(d.fields)
 
-        // Field rows — store IDs only, never object references
+        // A tag from another audience isn't selectable: leave it blank so the row shows as incomplete.
+        const known    = new Set(mergeTags.value.map(t => t.tag))
         const relation = d.relation ?? {}
-        const mapped   = userFields.filter(f => relation[f.id])
-        fieldRows.value = mapped.length
-            ? mapped.map(f => ({ faveoFieldId: f.id, mergeTagId: relation[f.id] }))
-            : [{ faveoFieldId: null, mergeTagId: null }]
+        fieldRows.value = userFields
+            .filter(f => relation[f.id])
+            .map(f => ({ key: ++rowKey, tag: known.has(relation[f.id]) ? relation[f.id] : null, faveoFieldId: f.id }))
+        if (!fieldRows.value.length) addFieldRow()
 
-        // Interest groups
         productStatus.value      = !!(d.status?.mailchimp_product_status)
         isPaidStatus.value       = !!(d.status?.mailchimp_ispaid_status)
-        interestGroups.value     = d.groups      ?? []
-        interestCategories.value = d.categories  ?? []
+        interestGroups.value     = d.groups     ?? []
+        interestCategories.value = d.categories ?? []
         products.value           = Object.entries(d.products ?? {}).map(([id, name]) => ({ id: String(id), name }))
 
-        const relations = d.group_relations ?? []
-        productRows.value = relations.length
-            ? relations.map(r => ({ productId: String(r.agora_product_id), groupId: r.mailchimp_group_cat_id }))
-            : [{ productId: null, groupId: null }]
+        const seen = new Set()
+        productRows.value = (d.group_relations ?? [])
+            .filter(r => !seen.has(String(r.agora_product_id)) && seen.add(String(r.agora_product_id)))
+            .map(r => ({ key: ++rowKey, productId: String(r.agora_product_id), groupId: r.mailchimp_group_cat_id }))
+        if (!productRows.value.length) addProductRow()
 
         if (d.relation?.is_paid_yes) {
             const match = interestGroups.value.find(g => g.category_option_id === d.relation.is_paid_yes)
@@ -574,9 +647,10 @@ async function loadMappingData() {
 async function syncFields() {
     syncingFields.value = true
     try {
-        const res    = await http.post(`/mailchimp/sync-fields`)
-        const fields = res.data?.data?.fields ?? {}
-        mergeTags.value = Object.entries(fields).map(([tag, name]) => ({ tag, name }))
+        const res = await http.post(`/mailchimp/sync-fields`)
+        applyFields(res.data?.data?.fields)
+        // Sync drops mappings to fields this audience no longer has; reload so those rows go too.
+        await loadMappingData()
         successHandler(res, COMPONENT)
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
@@ -587,21 +661,23 @@ async function syncFields() {
 
 // ── Save field mapping ─────────────────────────────────────────────────────
 async function saveMapping() {
-    // Validate: each row must have both fields filled or both empty
-    const rowErrors = {}
-    fieldRows.value.forEach((row, idx) => {
-        if (row.faveoFieldId && !row.mergeTagId)
-            rowErrors[`field_row_${idx}`] = __('message.select_merge_tag')
-        else if (!row.faveoFieldId && row.mergeTagId)
-            rowErrors[`field_row_${idx}`] = __('message.select_field')
-    })
-    if (Object.keys(rowErrors).length) { setErrors(rowErrors); return }
+    // A row with only one side picked would otherwise be dropped without a word.
+    if (fieldRows.value.some(r => !!r.tag !== !!r.faveoFieldId)) {
+        showError(__('message.mailchimp_incomplete_rows'))
+        return
+    }
+
+    if (missingRequired.value.length) {
+        showError(__('message.mailchimp_required_missing', { fields: missingRequired.value.join(', ') }))
+        return
+    }
 
     const payload = {}
     userFields.forEach(f => { payload[f.id] = null })
     fieldRows.value.forEach(row => {
-        if (row.faveoFieldId && row.mergeTagId) payload[row.faveoFieldId] = row.mergeTagId
+        if (row.faveoFieldId && row.tag) payload[row.faveoFieldId] = row.tag
     })
+
     savingMapping.value = true
     try {
         const res = await http.patch(`/mail-chimp/mapping`, payload)
@@ -613,6 +689,19 @@ async function saveMapping() {
     }
 }
 
+// ── Send test ──────────────────────────────────────────────────────────────
+async function sendTest() {
+    testing.value = true
+    try {
+        const res = await http.post(`/mailchimp/test`)
+        successHandler(res, COMPONENT)
+    } catch (e) {
+        errorHandler(e, COMPONENT)
+    } finally {
+        testing.value = false
+    }
+}
+
 // ── Sync interest groups ───────────────────────────────────────────────────
 async function syncGroups() {
     syncingGroups.value = true
@@ -621,6 +710,9 @@ async function syncGroups() {
         const d   = res.data?.data ?? {}
         interestGroups.value     = d.groups     ?? interestGroups.value
         interestCategories.value = d.categories ?? interestCategories.value
+        // Sync drops product → group mappings to groups this audience no longer has; reload so those rows go too.
+        await loadMappingData()
+        successHandler(res, COMPONENT)
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
@@ -628,43 +720,44 @@ async function syncGroups() {
     }
 }
 
-// ── Save interest groups ───────────────────────────────────────────────────
-async function saveInterestGroups() {
-    const groupErrors = {}
-
-    // isPaid: category required if toggle is on
-    if (isPaidStatus.value && !isPaidCategoryId.value)
-        groupErrors.isPaidCategoryId = __('message.select_a_group')
-
-    // Product rows: both product and group required if either is filled
-    if (productStatus.value) {
-        productRows.value.forEach((row, idx) => {
-            if (row.productId && !row.groupId)
-                groupErrors[`product_row_${idx}`] = __('message.select_group')
-            else if (!row.productId && row.groupId)
-                groupErrors[`product_row_${idx}`] = __('message.select_product')
-        })
+// ── Save is-paid group ─────────────────────────────────────────────────────
+async function saveIsPaid() {
+    if (isPaidStatus.value && !isPaidCategoryId.value) {
+        setErrors({ isPaidCategoryId: __('message.select_a_group') })
+        return
     }
 
-    if (Object.keys(groupErrors).length) { setErrors(groupErrors); return }
+    savingIsPaid.value = true
+    try {
+        await http.post(`/mailchimp-paid-status`, { status: isPaidStatus.value ? 1 : 0 })
+        const res = isPaidStatus.value
+            ? await http.patch(`/mailchimp-ispaid/mapping`, { group: isPaidCategoryId.value })
+            : { data: { message: __('message.updated-successfully') } }
+        successHandler(res, COMPONENT)
+    } catch (e) {
+        errorHandler(e, COMPONENT, { setErrors })
+    } finally {
+        savingIsPaid.value = false
+    }
+}
+
+// ── Save product → group mapping ───────────────────────────────────────────
+async function saveProductGroups() {
+    if (productStatus.value && productRows.value.some(r => !!r.productId !== !!r.groupId)) {
+        showError(__('message.mailchimp_incomplete_rows'))
+        return
+    }
 
     savingGroups.value = true
     try {
-        await Promise.all([
-            http.post(`/mailchimp-prod-status`, { status: productStatus.value ? 1 : 0 }),
-            http.post(`/mailchimp-paid-status`, { status: isPaidStatus.value  ? 1 : 0 }),
-        ])
-        const extra = []
-        if (productStatus.value) {
-            const rows = productRows.value.filter(r => r.productId && r.groupId)
-            if (rows.length)
-                extra.push(http.patch(`/mailchimp-group/mapping`, { row: rows.map(r => [r.productId, r.groupId]) }))
-        }
-        if (isPaidStatus.value && isPaidCategoryId.value)
-            extra.push(http.patch(`/mailchimp-ispaid/mapping`, { group: isPaidCategoryId.value }))
-        if (extra.length) await Promise.all(extra)
-
-        successHandler({ data: { message: __('message.updated-successfully') } }, COMPONENT)
+        await http.post(`/mailchimp-prod-status`, { status: productStatus.value ? 1 : 0 })
+        // Sent even when empty, so removing every row clears the mapping.
+        const res = productStatus.value
+            ? await http.patch(`/mailchimp-group/mapping`, {
+                row: productRows.value.filter(r => r.productId && r.groupId).map(r => [r.productId, r.groupId]),
+            })
+            : { data: { message: __('message.updated-successfully') } }
+        successHandler(res, COMPONENT)
     } catch (e) {
         errorHandler(e, COMPONENT, { setErrors })
     } finally {
@@ -672,3 +765,8 @@ async function saveInterestGroups() {
     }
 }
 </script>
+
+<style scoped>
+/* card-title floats left in AdminLTE; put the connected line on its own row under it */
+.clear-both { clear: both; }
+</style>

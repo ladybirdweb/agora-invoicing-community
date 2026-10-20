@@ -1,9 +1,11 @@
 jest.mock('@/helpers/extraLogics', () => ({ lang: (key) => key, getIdFromUrl: jest.fn(() => 0) }))
 jest.mock('@/helpers/responseHandler', () => ({ successHandler: jest.fn(), errorHandler: jest.fn() }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
+const mockRoute = { params: { platform: 'crm' }, query: {} }
+const mockReplace = jest.fn()
 jest.mock('vue-router', () => ({
-    useRouter: () => ({ push: jest.fn() }),
-    useRoute: () => ({ params: { platform: 'crm' }, query: {} }),
+    useRouter: () => ({ push: jest.fn(), replace: mockReplace }),
+    useRoute: () => mockRoute,
 }))
 jest.mock('vee-validate', () => ({
     useForm: () => ({ errors: {}, setErrors: jest.fn(), setFieldError: jest.fn() }),
@@ -20,7 +22,7 @@ const INTEGRATIONS_RESPONSE = {
 }
 
 const KEYS_RESPONSE = {
-    data: { client_id: 'cid123', client_secret: 'csecret456', region: 'us' },
+    data: { client_id: 'cid123', has_secret: true, region: 'us' },
 }
 
 const FIELDS_RESPONSE = {
@@ -76,7 +78,9 @@ describe('ZohoPlatformSettings.vue', () => {
         await flushPromises()
         expect(wrapper.vm.integrationId).toBe(5)
         expect(wrapper.vm.form.client_id).toBe('cid123')
-        expect(wrapper.vm.form.client_secret).toBe('csecret456')
+        // the saved secret never comes back to the page
+        expect(wrapper.vm.form.client_secret).toBe('')
+        expect(wrapper.vm.form.has_secret).toBe(true)
         expect(wrapper.vm.form.region).toBe('us')
     })
 
@@ -315,5 +319,95 @@ describe('ZohoPlatformSettings.vue', () => {
         await flushPromises()
         expect(w.vm.loading).toBe(false)
         w.unmount()
+    })
+
+    // ── mapping guards ─────────────────────────────────────────────────────
+    const mappingSaves = () => globalThis.mockHttp.history.post.filter(r => r.url.includes('/zoho/mapping/save')).length
+
+    it('saveMapping refuses rows with only one side picked', async () => {
+        await flushPromises()
+        wrapper.vm.rows.splice(0, wrapper.vm.rows.length, { key: 1, zohoId: 10, targetOptions: [], targetValue: null, targetType: '' })
+        await wrapper.vm.saveMapping()
+        expect(mappingSaves()).toBe(0)
+    })
+
+    it('saveMapping refuses when a field Zoho requires is not mapped', async () => {
+        await flushPromises()
+        wrapper.vm.zohoFields = [
+            { id: 10, field_name: 'First Name', is_mandatory: false },
+            { id: 11, field_name: 'Last Name', is_mandatory: true },
+        ]
+        wrapper.vm.rows.splice(0, wrapper.vm.rows.length, { key: 1, zohoId: 10, targetOptions: [], targetValue: 3, targetType: 'local' })
+        expect(wrapper.vm.missingRequired).toEqual(['Last Name'])
+        await wrapper.vm.saveMapping()
+        expect(mappingSaves()).toBe(0)
+    })
+
+    it('does not ask for required fields while the module has no mapping at all', async () => {
+        await flushPromises()
+        wrapper.vm.zohoFields = [{ id: 11, field_name: 'Last Name', is_mandatory: true }]
+        wrapper.vm.rows.splice(0, wrapper.vm.rows.length, { key: 1, zohoId: null, targetOptions: [], targetValue: null, targetType: '' })
+        expect(wrapper.vm.missingRequired).toEqual([])
+    })
+
+    it('hides Zoho fields already used by another row', async () => {
+        await flushPromises()
+        wrapper.vm.zohoFields = [{ id: 10, field_name: 'First Name' }, { id: 11, field_name: 'Last Name' }]
+        const used = { key: 1, zohoId: 10, targetOptions: [], targetValue: null, targetType: '' }
+        const other = { key: 2, zohoId: null, targetOptions: [], targetValue: null, targetType: '' }
+        wrapper.vm.rows.splice(0, wrapper.vm.rows.length, used, other)
+        expect(wrapper.vm.zohoOptionsFor(wrapper.vm.rows[1]).map(o => o.id)).toEqual([11])
+        expect(wrapper.vm.zohoOptionsFor(wrapper.vm.rows[0]).map(o => o.id)).toEqual([10, 11])
+    })
+
+    it('removing the last row leaves one empty row', async () => {
+        await flushPromises()
+        wrapper.vm.rows.splice(0, wrapper.vm.rows.length, { key: 1, zohoId: 10, targetOptions: [], targetValue: 3, targetType: 'local' })
+        wrapper.vm.removeRow(0)
+        expect(wrapper.vm.rows).toHaveLength(1)
+        expect(wrapper.vm.rows[0].zohoId).toBeNull()
+    })
+
+    it('sendTest posts to /zoho/:platform/test', async () => {
+        globalThis.mockHttp.onPost(/\/zoho\/crm\/test/).reply(200, { message: 'ok' })
+        await flushPromises()
+        await wrapper.vm.sendTest()
+        expect(globalThis.mockHttp.history.post.some(r => r.url.includes('/zoho/crm/test'))).toBe(true)
+        expect(successHandler).toHaveBeenCalled()
+    })
+
+    it('only shows the Field Mapping tab once Zoho is connected', async () => {
+        await flushPromises()
+        expect(wrapper.vm.tabs.map(t => t.key)).toEqual(['connection'])
+
+        wrapper.vm.integration.has_token = true
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.tabs.map(t => t.key)).toEqual(['connection', 'field-mapping'])
+    })
+
+    it('saves the picked mailing list only when Save is clicked', async () => {
+        globalThis.mockHttp.onPost(/\/zoho\/campaigns\/list/).reply(200, { message: 'ok' })
+        await flushPromises()
+
+        wrapper.vm.selectedList = 'list_abc'
+        expect(globalThis.mockHttp.history.post.some(r => r.url.includes('/zoho/campaigns/list'))).toBe(false)
+
+        await wrapper.vm.saveList()
+        const req = globalThis.mockHttp.history.post.find(r => r.url.includes('/zoho/campaigns/list'))
+        expect(JSON.parse(req.data)).toEqual({ list_key: 'list_abc' })
+        expect(wrapper.vm.integration.list_key).toBe('list_abc')
+    })
+
+    it('shows the result of the Zoho sign-in once, then clears it from the address bar', async () => {
+        wrapper.unmount()
+        mockRoute.query = { zoho_status: 'success', message: 'Zoho connected successfully' }
+        const w = mount(ZohoPlatformSettings, {
+            global: { plugins: [createTestingPinia()], stubs: ['AppAlert', 'action-button', 'DeleteModal', 'DynamicSelect', 'TextField', 'loader'] },
+        })
+        await flushPromises()
+        expect(mockReplace).toHaveBeenCalledWith({ query: {} })
+        mockRoute.query = {}
+        w.unmount()
+        wrapper = mount(ZohoPlatformSettings, { global: { plugins: [createTestingPinia()], stubs: ['AppAlert', 'action-button', 'DeleteModal', 'DynamicSelect', 'TextField', 'loader'] } })
     })
 })

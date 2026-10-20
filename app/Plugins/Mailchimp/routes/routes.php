@@ -37,6 +37,9 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::patch('mailchimp-group/mapping', [SettingsController::class, 'saveGroupMapping']);
     Route::patch('mailchimp-ispaid/mapping', [SettingsController::class, 'saveIsPaidMapping']);
 
+    Route::post('mailchimp/disconnect', [SettingsController::class, 'disconnect']);
+    Route::post('mailchimp/test', [SettingsController::class, 'sendTest']);
+
     // Status toggles
     Route::post('mailchimp-prod-status', [SettingsController::class, 'updateProductStatus'])
         ->name('mailchimp-prod-status');

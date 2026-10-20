@@ -301,4 +301,192 @@ class PipedriveControllerTest extends DBTestCase
         $this->assertArrayHasKey('local_fields', $data['data']);
         $this->assertArrayHasKey('pipedrive_fields', $data['data']);
     }
+
+    // =========================================================================
+    // syncUser — one record per customer, Pipedrive's reason on failure
+    // =========================================================================
+
+    /**
+     * A partial mock with real group ids and every outbound Pipedrive call stubbed.
+     *
+     * @return array{0: \Mockery\MockInterface&PipedriveController, 1: User}
+     */
+    private function syncFixture(bool $mapOrganization = true): array
+    {
+        $groups = PipedriveGroups::pluck('id', 'group_name');
+        $first = PipedriveLocalFields::firstOrCreate(['field_key' => 'first_name'], ['field_name' => 'First Name']);
+        $company = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+
+        PipedriveField::create(['pipedrive_group_id' => $groups['Person'], 'field_key' => 'name', 'field_name' => 'Name', 'local_field_id' => $first->id]);
+        PipedriveField::create(['pipedrive_group_id' => $groups['Deal'], 'field_key' => 'title', 'field_name' => 'Title', 'local_field_id' => $company->id]);
+        if ($mapOrganization) {
+            PipedriveField::create(['pipedrive_group_id' => $groups['Organization'], 'field_key' => 'name', 'field_name' => 'Name', 'local_field_id' => $company->id]);
+        }
+
+        $mock = Mockery::mock(PipedriveController::class)->makePartial()->shouldAllowMockingProtectedMethods();
+        (new ReflectionClass(PipedriveController::class))->getProperty('groups')->setValue($mock, [
+            'personId' => $groups['Person'], 'organizationId' => $groups['Organization'], 'dealId' => $groups['Deal'],
+        ]);
+
+        return [$mock, User::factory()->create(['first_name' => 'Ann', 'company' => 'Acme', 'email' => 'ann-'.uniqid().'@test.local'])];
+    }
+
+    public function test_sync_user_updates_an_existing_person_and_does_not_add_a_second_deal(): void
+    {
+        [$mock, $user] = $this->syncFixture();
+        $mock->shouldReceive('addOrGetOrganization')->once()->andReturn(10);
+        $mock->shouldReceive('findPersonIdByEmail')->once()->with($user->email)->andReturn(20);
+        $mock->shouldNotReceive('addPerson');
+        $mock->shouldReceive('personHasDeal')->once()->with(20)->andReturn(true);
+        $mock->shouldNotReceive('addDeal');
+
+        // updatePerson goes through performApiAction — stub the v2 client it calls.
+        $persons = Mockery::mock();
+        $persons->shouldReceive('updatePerson')->once()->with(20, Mockery::on(fn ($body): bool => $body['name'] === 'Ann'))->andReturn(new class
+        {
+            /** @return array<string, int> */
+            public function getRawData(): array
+            {
+                return ['id' => 20];
+            }
+        });
+        $clients = (new ReflectionClass(PipedriveController::class))->getProperty('apiClients');
+        $clients->setValue($mock, ['persons' => $persons] + (array) $clients->getValue($mock));
+
+        $this->assertSame(['Organization', 'Person'], $mock->syncUser($user));
+    }
+
+    public function test_sync_user_creates_person_and_deal_for_a_new_customer(): void
+    {
+        [$mock, $user] = $this->syncFixture();
+        $mock->shouldReceive('addOrGetOrganization')->andReturn(10);
+        $mock->shouldReceive('findPersonIdByEmail')->andReturn(null);
+        $mock->shouldReceive('addPerson')->once()->with(Mockery::on(fn ($p): bool => $p['name'] === 'Ann' && $p['org_id'] === 10))->andReturn(21);
+        $mock->shouldReceive('personHasDeal')->with(21)->andReturn(false);
+        $mock->shouldReceive('addDeal')->once()->with(Mockery::on(fn ($d): bool => $d['title'] === 'Acme' && $d['person_id'] === 21))->andReturn(31);
+
+        $this->assertSame(['Organization', 'Person', 'Deal'], $mock->syncUser($user));
+    }
+
+    public function test_sync_user_skips_the_organization_when_none_is_mapped(): void
+    {
+        [$mock, $user] = $this->syncFixture(mapOrganization: false);
+        $mock->shouldNotReceive('addOrGetOrganization');
+        $mock->shouldReceive('findPersonIdByEmail')->andReturn(null);
+        $mock->shouldReceive('addPerson')->once()->with(Mockery::on(fn ($p): bool => ! array_key_exists('org_id', $p)))->andReturn(21);
+        $mock->shouldReceive('personHasDeal')->andReturn(false);
+        $mock->shouldReceive('addDeal')->andReturn(31);
+
+        $this->assertSame(['Person', 'Deal'], $mock->syncUser($user));
+    }
+
+    public function test_sync_user_throws_pipedrives_reason_when_a_record_is_rejected(): void
+    {
+        [$mock, $user] = $this->syncFixture(mapOrganization: false);
+        $mock->shouldReceive('findPersonIdByEmail')->andReturn(null);
+        $mock->shouldReceive('addPerson')->andReturn((object) ['success' => false, 'error' => 'Name is required']);
+
+        $this->expectExceptionMessage('Person: Name is required');
+        $mock->syncUser($user);
+    }
+
+    public function test_send_test_says_so_when_nothing_is_mapped(): void
+    {
+        PipedriveField::query()->update(['local_field_id' => null]);
+        \App\Model\Common\PipedriveFieldOption::query()->update(['status' => 0]);
+
+        $mock = Mockery::mock(PipedriveController::class)->makePartial();
+        $mock->shouldNotReceive('syncUser');
+
+        $this->assertSame(400, $mock->sendTest()->getStatusCode());
+    }
+
+    public function test_send_test_reports_what_was_sent_or_why_it_failed(): void
+    {
+        app('translator')->addLines(['message.pipedrive_test_sent' => 'Sent :modules', 'message.pipedrive_test_failed' => 'Rejected: :reason'], 'en');
+
+        [$mock] = $this->syncFixture();
+        $mock->shouldReceive('syncUser')->once()->andReturn(['Person', 'Deal']);
+        $this->assertStringContainsString('Person, Deal', $mock->sendTest()->getData()->message);
+
+        [$failing] = $this->syncFixture();
+        $failing->shouldReceive('syncUser')->andThrow(new \Exception('Deal: title is required'));
+        $response = $failing->sendTest();
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringContainsString('Deal: title is required', $response->getData()->message);
+    }
+
+    // =========================================================================
+    // mappingFields — incomplete rows, required fields, JSON booleans
+    // =========================================================================
+
+    public function test_mapping_rejects_a_row_with_only_one_side(): void
+    {
+        $person = PipedriveGroups::where('group_name', 'Person')->first();
+        $field = PipedriveField::create(['pipedrive_group_id' => $person->id, 'field_key' => 'name', 'field_name' => 'Name']);
+
+        $response = $this->pipedriveController->mappingFields(new Request([
+            'group_id' => $person->id,
+            'select1' => [['id' => $field->id]],
+            'select2' => [['id' => null, 'faveo_fields' => true]],
+        ]));
+
+        $this->assertFalse($response->getData(true)['success']);
+    }
+
+    public function test_mapping_requires_the_fields_pipedrive_requires(): void
+    {
+        app('translator')->addLines(['message.pipedrive_required_missing' => 'Missing: :fields'], 'en');
+
+        $person = PipedriveGroups::where('group_name', 'Person')->first();
+        PipedriveField::create(['pipedrive_group_id' => $person->id, 'field_key' => 'name', 'field_name' => 'Name']);
+        $email = PipedriveField::create(['pipedrive_group_id' => $person->id, 'field_key' => 'email', 'field_name' => 'Email']);
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'email'], ['field_name' => 'Email']);
+
+        $response = $this->pipedriveController->mappingFields(new Request([
+            'group_id' => $person->id,
+            'select1' => [['id' => $email->id]],
+            'select2' => [['id' => $local->id, 'faveo_fields' => true]],
+        ]));
+
+        $data = $response->getData(true);
+        $this->assertFalse($data['success']);
+        $this->assertStringContainsString('Name', $data['message']);
+    }
+
+    public function test_mapping_saves_a_faveo_field_sent_as_a_json_boolean(): void
+    {
+        $org = PipedriveGroups::where('group_name', 'Organization')->first();
+        $name = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'name', 'field_name' => 'Name']);
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+
+        // The save runs a real round-trip check through these public calls — stub them.
+        $mock = Mockery::mock(PipedriveController::class)->makePartial();
+        (new ReflectionClass(PipedriveController::class))->getProperty('groups')->setValue($mock, PipedriveGroups::pluck('id', 'group_name')
+            ->mapWithKeys(fn ($id, $group): array => [lcfirst((string) $group).'Id' => $id])->all());
+        $mock->shouldReceive('addOrGetOrganization')->andReturn(55);
+        $mock->shouldReceive('deleteOrganization')->with(55)->andReturn(true);
+        app()->instance(PipedriveController::class, $mock);
+
+        $response = $mock->mappingFields(new Request([
+            'group_id' => $org->id,
+            'select1' => [['id' => $name->id]],
+            'select2' => [['id' => $local->id, 'faveo_fields' => true]],
+        ]));
+
+        $this->assertTrue($response->getData(true)['success']);
+        $this->assertSame($local->id, $name->refresh()->local_field_id);
+    }
+
+    public function test_map_fields_marks_the_fields_pipedrive_requires(): void
+    {
+        $person = PipedriveGroups::where('group_name', 'Person')->first();
+        PipedriveField::create(['pipedrive_group_id' => $person->id, 'field_key' => 'name', 'field_name' => 'Name']);
+        PipedriveField::create(['pipedrive_group_id' => $person->id, 'field_key' => 'email', 'field_name' => 'Email']);
+
+        $fields = collect($this->pipedriveController->getMapFields($person->id)->getData(true)['data']['pipedriveData']['pipedrive_fields']);
+
+        $this->assertTrue($fields->firstWhere('field_key', 'name')['is_mandatory']);
+        $this->assertFalse($fields->firstWhere('field_key', 'email')['is_mandatory']);
+    }
 }

@@ -24,6 +24,11 @@ class Campaigns
     protected string $defaultListName;
 
     /**
+     * Mailing list the admin picked on the settings page; wins over $defaultListName.
+     */
+    protected ?string $defaultListKey;
+
+    /**
      * @var Collection<string,array{listKey:string}>
      */
     protected Collection $lists;
@@ -47,6 +52,7 @@ class Campaigns
         );
 
         $this->defaultListName = config('zoho_campaigns.defaultListName', '');
+        $this->defaultListKey = $campaignsIntegration->list_key;
         $this->lists = $this->loadLists(); // @phpstan-ignore assign.propertyType
     }
 
@@ -58,7 +64,7 @@ class Campaigns
      */
     public function subscribe(string $email, array $contactInfo = [], ?string $list = null, ?string $topic = null): void
     {
-        $listKey = $this->resolveListKey($list);
+        $listKey = $this->resolveListKey($list, $email);
 
         $topicId = $topic !== null ? $this->getTopicId($topic) : null;
 
@@ -73,7 +79,7 @@ class Campaigns
      */
     public function resubscribe(string $email, array $contactInfo = [], ?string $list = null, ?string $topic = null): void
     {
-        $listKey = $this->resolveListKey($list);
+        $listKey = $this->resolveListKey($list, $email);
 
         $topicId = $topic !== null ? $this->getTopicId($topic) : null;
 
@@ -201,17 +207,43 @@ class Campaigns
         return Collection::make($this->zohoApi->contactFields());
     }
 
-    protected function resolveListKey(?string $list = null): string
+    /**
+     * @param  string|null  $email  When given and the default list doesn't exist in Zoho yet, the list is created with this contact.
+     */
+    protected function resolveListKey(?string $list = null, ?string $email = null): string
     {
+        if ($list === null && $this->defaultListKey !== null) {
+            return $this->defaultListKey;
+        }
+
         $listName = $list ?? $this->defaultListName;
 
         $listKey = Arr::get($this->lists->get($listName, []), 'listKey');
+
+        if ($listKey === null && $list === null && $email !== null && $listName !== '') {
+            $this->zohoApi->listCreate($listName, $email);
+            $this->lists = $this->loadLists(); // @phpstan-ignore assign.propertyType
+            $listKey = Arr::get($this->lists->get($listName, []), 'listKey');
+        }
 
         if ($listKey === null && $list === null) {
             throw new RuntimeException(sprintf('Cannot resolve list %s', $listName));
         }
 
         return $listKey ?? $list;
+    }
+
+    /**
+     * Mailing lists in the connected Zoho account, for the settings page.
+     *
+     * @return array<int, array{key: string, name: string}>
+     */
+    public function mailingLists(): array
+    {
+        return $this->lists
+            ->map(fn (array $list, string $name): array => ['key' => $list['listKey'], 'name' => $name])
+            ->values()
+            ->all();
     }
 
     /**
@@ -262,12 +294,6 @@ class Campaigns
 
         $matched = $topics->first(fn ($topic): bool => strtolower(trim($topic['topicName'] ?? '')) === $topicName);
 
-        if ($matched) {
-            return $matched['topicId'] ?? null;
-        }
-
-        $first = $topics->first();
-
-        return $first['topicId'] ?? null;
+        return $matched['topicId'] ?? null;
     }
 }

@@ -6,6 +6,7 @@ use App\Plugins\Zoho\Controllers\Api\ZohoRegion;
 use App\Plugins\Zoho\Models\FaveoLocalFields;
 use App\Plugins\Zoho\Models\ZohoFieldMappings;
 use App\Plugins\Zoho\Models\ZohoFields;
+use App\Plugins\Zoho\Models\ZohoIntegration;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
@@ -314,5 +315,14 @@ class HelpersTest extends DBTestCase
         $result = zohoMappedFields($zohoFields, $mappings, $source);
 
         $this->assertEquals(['Email' => 'object@example.com'], $result);
+    }
+
+    public function test_zoho_integration_active_follows_the_integration_switch(): void
+    {
+        ZohoIntegration::wherePlatform('campaigns')->update(['is_active' => true]);
+        ZohoIntegration::wherePlatform('crm')->update(['is_active' => false]);
+
+        $this->assertTrue(zohoIntegrationActive('campaigns'));
+        $this->assertFalse(zohoIntegrationActive('crm'));
     }
 }

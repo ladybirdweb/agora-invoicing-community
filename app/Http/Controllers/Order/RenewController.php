@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Enums\OrderAbility;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -22,6 +23,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Session;
 
 class RenewController extends BaseRenewController
@@ -76,11 +78,12 @@ class RenewController extends BaseRenewController
 
         try {
             $sub = Subscription::where('order_id', $id)->firstOrFail();
+            $order = Order::findOrFail($id);
 
-            // Same rules as the admin Renew button: deleted instance, or an unpaid invoice to settle first.
-            $order = Order::find($id);
-            if ($reason = $order?->renewBlockedReason()) {
-                return errorResponse($reason);
+            // Same rule as the admin Renew button — see OrderPolicy::adminRenew.
+            $access = Gate::inspect(OrderAbility::AdminRenew, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
             $this->renewBySubId(
@@ -216,16 +219,15 @@ class RenewController extends BaseRenewController
 
             $planId = (int) $request->input('plan');
             $sub = Subscription::findOrFail($id);
-
-            // A client may only renew their own subscription — otherwise looping over ids
-            // creates renewal invoices on other people's accounts.
-            if (! authorizeOwnership((int) $sub->user_id)) {
+            $order = Order::find($sub->order_id);
+            if (! $order instanceof Order) {
                 return errorResponse(__('message.unauthorized_action'), 403);
             }
 
-            // The cloud instance behind this subscription was deleted — renewing would charge for nothing.
-            if ($sub->is_deleted) {
-                return errorResponse(__('message.cloud_instance_deleted_no_renew'));
+            // Ownership, terminated order, deleted cloud instance, nothing to renew — see OrderPolicy::renew.
+            $access = Gate::inspect(OrderAbility::Renew, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
             $plan = Plan::findOrFail($planId);
@@ -239,11 +241,7 @@ class RenewController extends BaseRenewController
             // Any other unpaid invoice on the order (a renewal on another plan, an agent change)
             // must be settled or cancelled first — the same rule as admin renew. Otherwise plan A
             // then plan B left two renewal invoices, and paying both extended the dates twice.
-            $order = Order::find($sub->order_id);
-            if ($order?->order_status === 'Terminated') {
-                return errorResponse(__('message.plan_change_order_terminated'));
-            }
-            $unpaid = $order?->latestUnpaidInvoice();
+            $unpaid = $order->latestUnpaidInvoice();
             if ($unpaid) {
                 return errorResponse(__('message.renew_blocked_unpaid_invoice', ['number' => $unpaid->number]));
             }

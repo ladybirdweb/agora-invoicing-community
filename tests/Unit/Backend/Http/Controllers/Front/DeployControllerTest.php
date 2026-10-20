@@ -49,7 +49,7 @@ class DeployControllerTest extends DBTestCase
     /** @param  array<string, mixed>  $subscriptionOverrides */
     private function orderWithSubscription(Product $product, User $owner, array $subscriptionOverrides = []): Order
     {
-        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id]);
+        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id, 'order_status' => 'executed']);
 
         Subscription::factory()->create(array_merge([
             'order_id' => $order->id,

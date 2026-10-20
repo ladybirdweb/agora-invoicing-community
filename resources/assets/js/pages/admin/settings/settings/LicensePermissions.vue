@@ -29,7 +29,8 @@
                 <div v-for="perm in editPerms" :key="perm.id" class="mb-1">
                     <Checkbox
                         :name="`perm-${perm.id}`"
-                        :label="perm.permissions"
+                        :label="permLabel(perm.permissions)"
+                        :hint="permHint(perm.permissions)"
                         :value="!!perm.assigned"
                         :disabled="isDisabled(perm)"
                         :onChange="(val) => togglePerm(perm, val)"
@@ -69,6 +70,20 @@ function closeModal() {
 }
 
 const NO_PERMISSIONS = 'No Permissions'
+
+// Plain-language label + hover hint per permission. Keyed by the stored name, which
+// stays unchanged because the backend matches on it (LicensePermissionsController::permissionMap).
+const PERMISSION_DISPLAY = {
+    'Can be Downloaded':                     'license_perm_download',
+    'Generate License Expiry Date':          'license_perm_license_expiry',
+    'Generate Updates Expiry Date':          'license_perm_updates_expiry',
+    'Generate Support Expiry Date':          'license_perm_support_expiry',
+    [NO_PERMISSIONS]:                        'license_perm_none',
+    'Allow Downloads Before Updates Expire': 'license_perm_old_downloads',
+}
+
+const permLabel = (name) => (PERMISSION_DISPLAY[name] ? __(`message.${PERMISSION_DISPLAY[name]}`) : name)
+const permHint = (name) => (PERMISSION_DISPLAY[name] ? __(`message.${PERMISSION_DISPLAY[name]}_hint`) : '')
 
 // "No Permissions" is mutually exclusive with every real permission (see
 // LicensePermissionsController::addPermission) — mirror that here so the
@@ -126,7 +141,7 @@ const tableOptions = reactive({
         permissions: (f, row) => {
             const perms = row.permissions ?? []
             if (!perms.length) return h('span', { class: 'text-muted fst-italic' }, __('message.no_permissions_selected'))
-            return h('ul', { class: 'mb-0 ps-3' }, perms.map(p => h('li', { class: 'fw-bold' }, p)))
+            return h('ul', { class: 'mb-0 ps-3' }, perms.map(p => h('li', { class: 'fw-bold' }, permLabel(p))))
         },
         action: (f, row) => h('button', {
             class: 'btn btn-secondary btn-sm',

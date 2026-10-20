@@ -26,10 +26,12 @@ class LocalizedLicenseControllerTest extends DBTestCase
 
     private function createOrder(int $clientId, array $overrides = []): Order
     {
+        // File mode: every license-file action needs it (OrderPolicy::useLicenseFile).
         return Order::create(array_merge([
             'client' => $clientId,
             'order_status' => 'executed',
             'number' => (string) mt_rand(10000000, 99999999),
+            'license_mode' => 'File',
         ], $overrides));
     }
 
@@ -98,8 +100,36 @@ class LocalizedLicenseControllerTest extends DBTestCase
 
     public function test_download_file_admin_returns_404_when_no_license(): void
     {
-        $response = $this->get('/LocalizedLicense/downloadLicense/NO_SUCH_ORDER');
-        $response->assertStatus(404);
+        $order = $this->createOrder($this->user->id);
+
+        $this->get('/LocalizedLicense/downloadLicense/'.$order->number)->assertStatus(404);
+    }
+
+    public function test_download_file_admin_is_refused_for_a_missing_order(): void
+    {
+        $this->get('/LocalizedLicense/downloadLicense/NO_SUCH_ORDER')->assertStatus(403);
+    }
+
+    public function test_license_file_actions_are_refused_unless_the_order_is_in_file_mode(): void
+    {
+        $this->getLoggedInUser('user');
+        $product = $this->createProduct();
+        $order = $this->createOrder($this->user->id, ['product' => $product->id, 'license_mode' => 'Database']);
+        $this->createLicense($order->number, $product->id);
+
+        $this->get('/downloadLicenseFile?orderNo='.$order->number)->assertStatus(403);
+        $this->get('/LocalizedLicense/'.$order->number.'/plugins')->assertStatus(403);
+        $this->postJson('/license-binding', ['orderNo' => $order->number, 'activation_code' => 'x'])->assertStatus(403);
+    }
+
+    public function test_a_customer_cannot_use_the_license_file_of_a_terminated_order(): void
+    {
+        $this->getLoggedInUser('user');
+        $product = $this->createProduct();
+        $order = $this->createOrder($this->user->id, ['product' => $product->id, 'order_status' => 'Terminated']);
+        $this->createLicense($order->number, $product->id);
+
+        $this->get('/downloadLicenseFile?orderNo='.$order->number)->assertStatus(403);
     }
 
     public function test_download_file_admin_returns_signed_file(): void

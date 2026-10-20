@@ -26,6 +26,15 @@ class AutoRenewalControllerTest extends DBTestCase
         parent::tearDown();
     }
 
+    /** Auto-renewal switched on for both gateways, as OrderPolicy::enableAutoRenew requires. */
+    private function offerAutoRenewal(): void
+    {
+        \App\Model\Common\Setting::where('id', 1)->update(['autorenewal_status' => 1]);
+        \App\Model\Common\StatusSetting::query()->update(['stripe_auto_renewal' => 1, 'razorpay_auto_renewal' => 1]);
+        \App\Model\Plugin::whereIn('name', ['Stripe', 'Razorpay'])->update(['status' => 1]);
+        $this->user->update(['country' => 'IN']);
+    }
+
     public function test_disable_returns_404_for_nonexistent_order(): void
     {
         $paymentServiceMock = Mockery::mock(PaymentService::class);
@@ -207,11 +216,13 @@ class AutoRenewalControllerTest extends DBTestCase
 
     public function test_stripe_session_for_owned_order_returns_error_or_success(): void
     {
+        $this->offerAutoRenewal();
         $order = Order::create([
             'client' => $this->user->id,
             'order_status' => 'executed',
             'number' => mt_rand(100000, 999999),
         ]);
+        Subscription::factory()->create(['order_id' => $order->id, 'user_id' => $this->user->id, 'is_deleted' => 0]);
 
         $paymentServiceMock = Mockery::mock(PaymentService::class);
         $paymentServiceMock->shouldReceive('startCardPayment')
@@ -219,7 +230,7 @@ class AutoRenewalControllerTest extends DBTestCase
         $this->app->instance(PaymentService::class, $paymentServiceMock);
 
         $response = $this->postJson("/auto-renewal/{$order->id}/stripe/session");
-        // Either 400 (gateway exception caught) or 403 (ownership)
+        // Allowed by the policy, so the gateway's own failure comes back as 400.
         $response->assertStatus(400);
         $response->assertJson(['success' => false]);
     }
@@ -229,7 +240,7 @@ class AutoRenewalControllerTest extends DBTestCase
     // → prepareRazorpaySubscriptionForAuthorization() can't proceed → 400
     // =========================================================================
 
-    public function test_razorpay_order_for_owned_order_returns_400_when_no_subscription(): void
+    public function test_razorpay_order_is_refused_without_a_subscription(): void
     {
         $order = Order::create([
             'client' => $this->user->id,
@@ -238,8 +249,8 @@ class AutoRenewalControllerTest extends DBTestCase
         ]);
 
         $response = $this->postJson("/auto-renewal/{$order->id}/razorpay/order");
-        $response->assertStatus(400);
-        $response->assertJson(['success' => false]);
+        // Nothing to renew without a subscription → refused before the gateway (OrderPolicy::renew).
+        $response->assertStatus(403);
     }
 
     // =========================================================================
@@ -250,8 +261,9 @@ class AutoRenewalControllerTest extends DBTestCase
 
     public function test_razorpay_order_with_full_context_returns_subscription_id(): void
     {
+        $this->offerAutoRenewal();
         /** @var Order $order */
-        $order = Order::factory()->withRelations()->create(['client' => $this->user->id]);
+        $order = Order::factory()->withRelations()->create(['client' => $this->user->id, 'order_status' => 'executed']);
 
         $mockController = Mockery::mock(\App\Http\Controllers\RazorpayController::class);
         $mockController->shouldReceive('handleRzpAutoPay')
@@ -494,4 +506,28 @@ class AutoRenewalControllerTest extends DBTestCase
             ->assertOk()
             ->assertJsonPath('data.auto_renew_state', 'active');
     }
+
+    public function test_turning_auto_renewal_on_is_refused_for_a_gateway_that_is_not_offered(): void
+    {
+        $this->offerAutoRenewal();
+        \App\Model\Common\StatusSetting::query()->update(['stripe_auto_renewal' => 0]);
+        $order = Order::factory()->withRelations()->create(['client' => $this->user->id, 'order_status' => 'executed']);
+
+        $paymentServiceMock = Mockery::mock(PaymentService::class);
+        $paymentServiceMock->shouldNotReceive('startCardPayment');
+        $this->app->instance(PaymentService::class, $paymentServiceMock);
+
+        $this->postJson("/auto-renewal/{$order->id}/stripe/session")->assertStatus(403);
+    }
+
+    public function test_turning_auto_renewal_on_is_refused_for_a_terminated_order(): void
+    {
+        $this->offerAutoRenewal();
+        $order = Order::factory()->withRelations()->create(['client' => $this->user->id, 'order_status' => 'Terminated']);
+
+        $this->postJson("/auto-renewal/{$order->id}/razorpay/order")
+            ->assertStatus(403)
+            ->assertJson(['message' => __('message.plan_change_order_terminated')]);
+    }
 }
+

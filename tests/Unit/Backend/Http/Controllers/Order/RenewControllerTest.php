@@ -168,9 +168,10 @@ class RenewControllerTest extends DBTestCase
     {
         $sub = Subscription::factory()->create(['user_id' => $this->user->id]); // their own
         Subscription::where('id', $sub->id)->update(['is_deleted' => 1]);
+        \App\Model\Order\Order::where('id', $sub->order_id)->update(['client' => $this->user->id, 'order_status' => 'executed']);
 
         $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id])
-            ->assertStatus(400)
+            ->assertStatus(403)
             ->assertJson(['success' => false, 'message' => __('message.cloud_instance_deleted_no_renew')]);
 
         $this->assertDatabaseMissing('invoices', ['user_id' => $sub->user_id, 'is_renewed' => 1]);
@@ -186,7 +187,21 @@ class RenewControllerTest extends DBTestCase
 
     private function adminRenew(Subscription $sub)
     {
+        // The factory may pick a Terminated order, which is never renewable.
+        Order::whereKey($sub->order_id)->where('order_status', 'Terminated')->update(['order_status' => 'executed']);
+
         return $this->postJson("/admin/renew/{$sub->order_id}", ['plan' => $sub->plan_id, 'payment_method' => 'cash', 'cost' => 10]);
+    }
+
+    public function test_admin_renew_refuses_a_terminated_order(): void
+    {
+        $sub = Subscription::factory()->create();
+        Order::whereKey($sub->order_id)->update(['order_status' => 'Terminated']);
+
+        $this->postJson("/admin/renew/{$sub->order_id}", ['plan' => $sub->plan_id, 'payment_method' => 'cash', 'cost' => 10])
+            ->assertStatus(403)
+            ->assertJson(['success' => false, 'message' => __('message.no_permission_for_action')]);
+        $this->assertDatabaseMissing('invoices', ['user_id' => $sub->user_id, 'is_renewed' => 1]);
     }
 
     public function test_admin_renew_refuses_a_deleted_cloud_instance(): void
@@ -194,7 +209,7 @@ class RenewControllerTest extends DBTestCase
         $sub = Subscription::factory()->create();
         Subscription::where('id', $sub->id)->update(['is_deleted' => 1]);
 
-        $this->adminRenew($sub)->assertStatus(400)
+        $this->adminRenew($sub)->assertStatus(403)
             ->assertJson(['success' => false, 'message' => __('message.renew_blocked_instance_deleted')]);
     }
 
@@ -204,7 +219,7 @@ class RenewControllerTest extends DBTestCase
         $this->linkInvoice($sub, 'Success');
         $unpaid = $this->linkInvoice($sub, 'Pending');
 
-        $this->adminRenew($sub)->assertStatus(400)
+        $this->adminRenew($sub)->assertStatus(403)
             ->assertJson(['success' => false, 'message' => __('message.renew_blocked_unpaid_invoice', ['number' => $unpaid->number])]);
     }
 
@@ -293,7 +308,7 @@ class RenewControllerTest extends DBTestCase
         $sub = Subscription::factory()->create();
         $this->linkInvoice($sub, 'Success');
 
-        $this->postJson("/admin/renew/{$sub->order_id}", ['plan' => $sub->plan_id, 'payment_method' => 'cash', 'cost' => 10])->assertOk();
+        $this->adminRenew($sub)->assertOk();
 
         $renewal = \App\Model\Order\Invoice::whereHas('orders', fn ($q) => $q->whereKey($sub->order_id))
             ->where('is_renewed', 1)->latest('id')->firstOrFail();
@@ -350,7 +365,7 @@ class RenewControllerTest extends DBTestCase
         $sub = Subscription::factory()->create();
         $original = $this->linkInvoice($sub, 'Success');
         \App\Model\Order\InvoiceItem::factory()->create(['invoice_id' => $original->id, 'product_id' => $sub->product_id]);
-        Order::whereKey($sub->order_id)->update(['invoice_item_id' => 0]); // like the 145 pre-pivot orders
+        Order::whereKey($sub->order_id)->update(['invoice_item_id' => 0, 'order_status' => 'executed']); // like the 145 pre-pivot orders
 
         $this->postJson("/admin/renew/{$sub->order_id}", ['plan' => $sub->plan_id, 'payment_method' => 'cash', 'cost' => 10])
             ->assertOk()->assertJson(['success' => true]);
@@ -414,7 +429,7 @@ class RenewControllerTest extends DBTestCase
         $sub = $this->ownSubscription();
         Order::whereKey($sub->order_id)->update(['order_status' => 'Terminated']);
 
-        $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id])->assertStatus(400);
+        $this->postJson("/client/renew/{$sub->id}", ['plan' => $sub->plan_id])->assertStatus(403)->assertJson(['message' => __('message.plan_change_order_terminated')]);
     }
 
     // ── Batch 3 #1: the renew popup prices the order's real agent count, like the invoice ──

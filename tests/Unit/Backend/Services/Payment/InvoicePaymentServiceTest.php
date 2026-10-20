@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Backend\Services\Payment;
 
+use App\Jobs\SendEmail;
+use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Plugins\Payment\Dto\PaymentResult;
 use App\Plugins\Payment\Dto\PaymentSession;
@@ -13,6 +15,7 @@ use App\Services\Payment\PaymentService;
 use App\Services\Payment\PostPaymentService;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\DBTestCase;
@@ -575,5 +578,38 @@ class InvoicePaymentServiceTest extends DBTestCase
             ->andReturn(new PaymentResult(paid: false, gateway: 'Razorpay'));
 
         $this->assertFalse($this->service->confirm($invoice, 'Razorpay', ['razorpay_payment_id' => 'pay_x'], verifiedWebhook: true));
+    }
+
+    public function test_notify_failure_mails_admin_for_unpaid_invoice(): void
+    {
+        Queue::fake();
+        Setting::where('id', 1)->update(['sending_status' => 1]);
+        $invoice = Invoice::factory()->create(['user_id' => \App\User::factory()->create()->id, 'grand_total' => 100, 'status' => 'pending']);
+
+        $this->service->notifyFailure($invoice, 'Your card was declined.');
+
+        Queue::assertPushed(SendEmail::class, 1);
+    }
+
+    public function test_notify_failure_skips_settled_invoice(): void
+    {
+        Queue::fake();
+        Setting::where('id', 1)->update(['sending_status' => 1]);
+        $invoice = Invoice::factory()->create(['user_id' => \App\User::factory()->create()->id, 'grand_total' => 0, 'status' => 'success']);
+
+        $this->service->notifyFailure($invoice, 'Your card was declined.');
+
+        Queue::assertNotPushed(SendEmail::class);
+    }
+
+    public function test_notify_failure_skips_when_email_sending_is_off(): void
+    {
+        Queue::fake();
+        Setting::where('id', 1)->update(['sending_status' => 0]);
+        $invoice = Invoice::factory()->create(['user_id' => \App\User::factory()->create()->id, 'grand_total' => 100, 'status' => 'pending']);
+
+        $this->service->notifyFailure($invoice, 'Your card was declined.');
+
+        Queue::assertNotPushed(SendEmail::class);
     }
 }

@@ -95,14 +95,14 @@ describe('OrderIndex.vue', () => {
         axiosMock.onGet(/\/get-versions\/7/).reply(200, { data: {
             data: [], total: 0,
             featured: [{ version: 'v10.2.2', release_type: 'official', can_download: true }],
-            updates_ended_on: '2026-07-01 00:00:00', can_download_older: true,
+            updates_ended_on: '2026-07-01 00:00:00',
         } })
 
         wrapper.vm.openDownloadModal({ id: 7, product_name: 'Helpdesk Pro' })
         await flushPromises()
 
         expect(wrapper.vm.featured.map(v => v.version)).toEqual(['v10.2.2'])
-        expect(wrapper.vm.versionsMeta).toEqual({ updates_ended_on: '2026-07-01 00:00:00', can_download_older: true })
+        expect(wrapper.vm.versionsMeta).toEqual({ updates_ended_on: '2026-07-01 00:00:00', has_previous: false })
         expect(wrapper.vm.versionsLoading).toBe(false)
     })
 

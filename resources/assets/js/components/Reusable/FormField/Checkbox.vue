@@ -9,17 +9,19 @@
             :disabled="!!disabled"
             @change="checked = $event.target.checked"
         />
-        <label v-if="label" class="form-check-label" :for="name">{{ label }}</label>
+        <label v-if="label" class="form-check-label" :for="name" v-tooltip="hint ? lang(hint) : null">{{ label }}</label>
     </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
+import { lang } from '@/helpers/extraLogics'
 
 const props = defineProps({
     name:      { type: [String, Number], required: true },
     value:     { type: [Boolean, Number], default: false },
     label:     { type: String,           default: '' },
+    hint:      { type: String,           default: '' },
     classname: { type: String,           default: '' },
     onChange:  { type: Function,         required: true },
     disabled:  { type: [Boolean, Number], default: false },

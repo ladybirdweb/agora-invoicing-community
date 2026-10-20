@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\License\LicensePermissionsController;
 use App\License\Services\LicenseService;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\User;
-use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Logger;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -122,45 +121,22 @@ class BaseProductController extends ExtendedBaseProductController
             /** @var Order $order */
             $order = Order::with('subscription')->findOrFail($order_id);
 
-            /** @var User $authUser2 */
-            $authUser2 = Auth::user();
-            if ($authUser2->role !== 'admin' && $authUser2->id !== $order->client) {
-                throw new Exception(__('message.no_permission_for_action'));
-            }
-
-            $permissions = LicensePermissionsController::getPermissionsForProduct((int) $order->product);
-            if (($permissions['downloadPermission'] ?? 0) != 1) {
-                throw new Exception(__('message.no_permission_for_action'));
-            }
-
-            $subscription = $order->subscription;
-
-            if (! $subscription) {
-                throw new Exception(__('message.no_order_exists_invoice'));
-            }
-
-            // A product with allowDownloadTillExpiry keeps serving whatever was
-            // released before the update window closed — the per-version query
-            // below already enforces that date — so only the plain block-everything
-            // behavior needs to skip itself here once that permission is on.
-            if (! ($permissions['allowDownloadTillExpiry'] ?? false)
-                && $subscription->update_ends_at
-                && now()->gt($subscription->update_ends_at)) {
-                throw new Exception(__('message.renew_subscription_download'));
+            $access = Gate::inspect(OrderAbility::Download, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
             $product = Product::findOrFail($order->product);
 
             if ($product->github_owner) {
-                $tag = $version_id
-                    ?: resolve(GithubApiController::class)->latestTag($product->github_owner, $product->github_repository);
-
-                return $this->download($product, tag: $tag);
+                return $this->download($product, tag: $this->allowedGithubTag($order, $product, (string) $version_id));
             }
 
+            // Only releases from before the updates period ended (OrderPolicy::downloadVersion).
+            $updateEndsAt = $order->subscription?->update_ends_at;
             $version = ProductUpload::where('product_id', $order->product)
                 ->when($version_id, fn ($q) => $q->where('id', $version_id))
-                ->when($subscription->update_ends_at, fn ($q) => $q->where('created_at', '<', $subscription->update_ends_at))
+                ->when($updateEndsAt && $updateEndsAt !== '0000-00-00 00:00:00', fn ($q) => $q->where('created_at', '<', $updateEndsAt))
                 ->where('is_private', 0)
                 ->latest()
                 ->first();
@@ -175,6 +151,25 @@ class BaseProductController extends ExtendedBaseProductController
 
             return errorResponse($exception->getMessage());
         }
+    }
+
+    /**
+     * The GitHub release tag this order may download: the requested one, or else the
+     * newest stable release — either way only one released before updates ended.
+     */
+    private function allowedGithubTag(Order $order, Product $product, string $requestedTag): string
+    {
+        $releases = collect(resolve(GithubApiController::class)->releases((string) $product->github_owner, (string) $product->github_repository));
+
+        $release = $requestedTag !== ''
+            ? $releases->firstWhere('tag_name', $requestedTag)
+            : $releases->first(fn (array $r): bool => empty($r['prerelease']) && Gate::allows(OrderAbility::DownloadVersion, [$order, $r['created_at'] ?? null]));
+
+        if (! is_array($release) || Gate::denies(OrderAbility::DownloadVersion, [$order, $release['created_at'] ?? null])) {
+            throw new Exception(trans('message.renew_subscription_download'));
+        }
+
+        return (string) $release['tag_name'];
     }
 
     /**

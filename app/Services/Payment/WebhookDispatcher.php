@@ -110,6 +110,16 @@ class WebhookDispatcher
      */
     private static function failStripePayment(array $object): void
     {
+        if ($invoiceId = $object['metadata']['invoice_id'] ?? null) {
+            /** @var Invoice|null $invoice */
+            $invoice = Invoice::find($invoiceId);
+            if ($invoice) {
+                resolve(InvoicePaymentService::class)->notifyFailure($invoice, (string) ($object['last_payment_error']['message'] ?? 'Payment failed'));
+            }
+
+            return;
+        }
+
         $orderId = $object['metadata']['order_id'] ?? null;
         /** @var OpenPaymentOrder|null $failStripeOrder */
         $failStripeOrder = $orderId ? OpenPaymentOrder::find($orderId) : null;
@@ -137,6 +147,10 @@ class WebhookDispatcher
                     'razorpay_payment_id' => $payment['id'] ?? null,
                     'razorpay_order_id' => $payment['order_id'] ?? null,
                 ], verifiedWebhook: true);
+            }
+
+            if ($invoice2 && $type === 'payment.failed') {
+                resolve(InvoicePaymentService::class)->notifyFailure($invoice2, (string) ($payment['error_description'] ?? 'Payment failed'));
             }
 
             return;

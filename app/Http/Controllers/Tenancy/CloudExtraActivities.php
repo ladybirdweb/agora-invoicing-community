@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenancy;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\InvoiceController as InvoiceCtrl;
 use App\Http\Controllers\Order\RenewController;
@@ -34,6 +35,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Lang;
 use Logger;
@@ -120,7 +122,7 @@ class CloudExtraActivities extends Controller
     /**
      * @return array<mixed>
      */
-    public function getUpgradeCost(Request $request): array
+    public function getUpgradeCost(Request $request): array|JsonResponse
     {
         try {
             $this->validate($request, [
@@ -132,7 +134,11 @@ class CloudExtraActivities extends Controller
             // calculatePlanChange()/licenseAgents(): the client cannot be
             // trusted to report its own agent count.
             $planId = (int) $request->input('plan');
-            $order = $this->authorizedOrder((int) $request->input('orderId'));
+            // Same rule as the purchase, so a price is never shown for a change that would be refused.
+            $order = $this->cloudOrder((int) $request->input('orderId'), OrderAbility::ChangeCloudPlan, $planId);
+            if ($order instanceof JsonResponse) {
+                return $order;
+            }
             $plan = Plan::find($planId);
 
             $planDetails = userCurrencyAndPrice($this->authUser()->id, $plan);
@@ -160,25 +166,24 @@ class CloudExtraActivities extends Controller
     {
         try {
             $this->validate($request, [
-                'currentDomain' => 'required',
                 'newDomain' => 'required',
             ], [
-                'currentDomain.required' => __('validation.current_domain_required'),
                 'newDomain.required' => __('validation.new_domain_required'),
             ]);
 
-            $orderId = $request->input('order_id');
-            $order = Order::where('id', $orderId)->first();
-            if (! $order) {
-                return errorResponse(trans('message.something_went_wrong'));
+            $order = $this->cloudOrder((int) $request->input('order_id'), OrderAbility::ManageCloud);
+            if ($order instanceof JsonResponse) {
+                return $order;
             }
 
-            if ($order->client != $this->authUser()->id) {
-                return errorResponse(trans('message.invalid_user'));
+            // The instance being moved is this order's own — never a domain, license or
+            // product sent by the browser, which could point at someone else's instance.
+            $currentDomain = $order->installedDomains()->first();
+            if (empty($currentDomain)) {
+                return errorResponse(trans('message.installation_path_not_found'));
             }
 
             $newDomain = $request->input('newDomain');
-            $currentDomain = $request->input('currentDomain');
 
             if (! filter_var($newDomain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
                 return errorResponse(trans('message.not_allowed_domain'));
@@ -201,8 +206,8 @@ class CloudExtraActivities extends Controller
             $this->cloudApiPost('/changeDomain', [
                 'currentDomain' => $currentDomain,
                 'newDomain' => $newDomain,
-                'lic_code' => $request->input('lic_code'),
-                'product_id' => $request->product_id,
+                'lic_code' => $order->serial_key,
+                'product_id' => $order->getRawOriginal('product'),
             ]);
 
             $this->jobsForCloudDomain($newDomain);
@@ -234,10 +239,14 @@ class CloudExtraActivities extends Controller
         try {
             $this->validate($request, [
                 'orderId' => 'required|integer',
-                'desiredAgents' => 'required|integer|min:1',
+                // The license stores agents in 4 digits; more would be written as 0000.
+                'desiredAgents' => 'required|integer|min:1|max:9999',
             ]);
 
-            $order = $this->authorizedOrder((int) $request->input('orderId'));
+            $order = $this->cloudOrder((int) $request->input('orderId'), OrderAbility::ChangeCloudAgents);
+            if ($order instanceof JsonResponse) {
+                return $order;
+            }
             $oldAgents = $this->licenseAgents($order->serial_key);
             $desiredAgents = (int) $request->input('desiredAgents');
 
@@ -311,20 +320,12 @@ class CloudExtraActivities extends Controller
             // calculatePlanChange()/licenseAgents(): the client cannot be
             // trusted to report its own agent count when it's the very thing
             // the price is multiplied by.
-            $order = $this->authorizedOrder((int) $request->input('orderId'));
-
-            // One plan change per order: a terminated order was already replaced, and a second
-            // invoice while one is unpaid would let the same old plan be credited again per
-            // invoice (each downgrade banks its leftover value).
-            if ($order->order_status === 'Terminated') {
-                return errorResponse(trans('message.plan_change_order_terminated'));
-            }
-            $pending = Invoice::where('status', '!=', 'success')
-                ->where('metadata->type', 'upgrade_downgrade')
-                ->where('metadata->old_order_id', $order->id)
-                ->value('number');
-            if ($pending) {
-                return errorResponse(trans('message.plan_change_invoice_pending', ['number' => $pending]));
+            // One change at a time on a live cloud order, and only to an offered plan — see
+            // OrderPolicy::changeCloudPlan. A second unpaid invoice would credit the same old
+            // plan again (each downgrade banks its leftover value).
+            $order = $this->cloudOrder((int) $request->input('orderId'), OrderAbility::ChangeCloudPlan, $planId);
+            if ($order instanceof JsonResponse) {
+                return $order;
             }
 
             $installationPath = $order->installedDomains()->first();
@@ -503,19 +504,21 @@ class CloudExtraActivities extends Controller
     }
 
     /**
-     * Load a cloud order and enforce it belongs to the signed-in user. Same
-     * failure for "doesn't exist" and "not yours" so neither leaks which one
-     * it was. Every endpoint that prices or mutates a specific order must
-     * resolve it through here, never read $request->orderId's Order directly.
+     * The order a cloud action is for, or the refusal to send back. OrderPolicy decides
+     * (owner, live cloud instance, nothing pending, an offered plan…); "doesn't exist"
+     * and "not yours" get the same 403 so neither leaks which it was. Every endpoint that
+     * prices or changes a cloud order resolves it here.
      */
-    private function authorizedOrder(int $orderId): Order
+    private function cloudOrder(int $orderId, OrderAbility $ability, mixed ...$arguments): Order|JsonResponse
     {
         $order = Order::find($orderId);
-        if (! $order instanceof Order || $order->client != $this->authUser()->id) {
-            throw new Exception('Unauthorized');
+        if (! $order instanceof Order) {
+            return errorResponse(__('message.unauthorized_action'), 403);
         }
 
-        return $order;
+        $access = Gate::inspect($ability, [$order, ...$arguments]);
+
+        return $access->allowed() ? $order : deniedResponse($access);
     }
 
     /**
@@ -820,10 +823,13 @@ class CloudExtraActivities extends Controller
         try {
             $this->validate($request, [
                 'orderId' => 'required|integer',
-                'desiredAgents' => 'required|integer|min:1',
+                'desiredAgents' => 'required|integer|min:1|max:9999',
             ]);
 
-            $order = $this->authorizedOrder((int) $request->input('orderId'));
+            $order = $this->cloudOrder((int) $request->input('orderId'), OrderAbility::ChangeCloudAgents);
+            if ($order instanceof JsonResponse) {
+                return $order;
+            }
             $oldAgents = $this->licenseAgents($order->serial_key);
             $desiredAgents = (int) $request->input('desiredAgents');
 
@@ -858,7 +864,7 @@ class CloudExtraActivities extends Controller
         } catch (Exception $exception) {
             Logger::exception($exception);
 
-            return errorResponse('', ['data' => ['pricePerAgent' => 'NaN', 'totalPrice' => 'NaN', 'priceToPay' => 'NaN']]); // @phpstan-ignore argument.type
+            return errorResponse(trans('message.wrong_agents'));
         }
     }
 

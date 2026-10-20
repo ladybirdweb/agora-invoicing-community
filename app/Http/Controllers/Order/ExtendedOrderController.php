@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Controller;
 use App\License\Services\InstallationService;
 use App\License\Services\LicenseService;
 use App\Model\Order\Order;
-use App\User;
-use Auth;
 use DB;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Logger;
 
@@ -63,10 +63,9 @@ class ExtendedOrderController extends Controller
             /** @var Order $order */
             $order = Order::with('subscription')->findOrFail($request->input('id'));
 
-            /** @var User $authUser */
-            $authUser = Auth::user();
-            if ($authUser->role !== 'admin' && $order->client != Auth::id()) {
-                return errorResponse(__('message.reissue_license_invalid_modification_data'), 403);
+            $access = Gate::inspect(OrderAbility::Reissue, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
             $licenseCode = $order->serial_key;

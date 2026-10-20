@@ -2,11 +2,16 @@
 
 namespace Tests\Unit\Backend\Http\Controllers\Front\Cart;
 
+use App\Jobs\SendEmail;
+use App\Model\Common\Setting;
+use App\Model\Common\Template;
+use App\Model\Common\TemplateType;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Queue;
 use Tests\DBTestCase;
 
 class CartControllerTest extends DBTestCase
@@ -183,5 +188,44 @@ class CartControllerTest extends DBTestCase
 
         // Either succeeds (201/200) or validation fails — both paths valid
         $this->assertContains($response->status(), [200, 201, 400, 422, 500]);
+    }
+
+    public function test_place_order_mails_the_invoice_once_per_new_invoice(): void
+    {
+        Queue::fake();
+        Setting::where('id', 1)->update(['sending_status' => 1]);
+        $typeId = TemplateType::where('name', 'invoice_mail')->value('id');
+        TemplateType::whereKey($typeId)->update(['selected_template_id' => Template::where('type', $typeId)->value('id')]);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $product = Product::factory()->create(['require_domain' => 0]);
+        $plan = Plan::factory()->create(['product' => $product->id, 'status' => 1]);
+        PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => 'USD', 'add_price' => 100]);
+        $this->postJson('my-cart/items', ['product_id' => $product->id, 'plan_id' => $plan->id, 'quantity' => 1]);
+
+        $first = $this->postJson('my-cart/place-order', ['gateway' => 'Stripe'])->assertOk();
+        // Re-checkout rebuilds the same pending invoice, so no second mail.
+        $second = $this->postJson('my-cart/place-order', ['gateway' => 'Stripe'])->assertOk();
+
+        $this->assertSame($first->json('data.invoice_id'), $second->json('data.invoice_id'));
+        Queue::assertPushed(SendEmail::class, 1);
+    }
+
+    public function test_place_order_sends_no_mail_when_email_sending_is_off(): void
+    {
+        Queue::fake();
+        Setting::where('id', 1)->update(['sending_status' => 0]);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $product = Product::factory()->create(['require_domain' => 0]);
+        $plan = Plan::factory()->create(['product' => $product->id, 'status' => 1]);
+        PlanPrice::factory()->create(['plan_id' => $plan->id, 'currency' => 'USD', 'add_price' => 100]);
+        $this->postJson('my-cart/items', ['product_id' => $product->id, 'plan_id' => $plan->id, 'quantity' => 1]);
+
+        $this->postJson('my-cart/place-order', ['gateway' => 'Stripe'])->assertOk();
+
+        Queue::assertNotPushed(SendEmail::class);
     }
 }

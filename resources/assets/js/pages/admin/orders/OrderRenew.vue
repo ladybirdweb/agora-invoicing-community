@@ -7,6 +7,7 @@
             </div>
 
             <div class="card-body">
+                <div v-if="renewBlocked" class="alert alert-warning">{{ renewBlocked }}</div>
                 <form @submit.prevent="submit">
                     <div class="row">
                         <!-- Plan -->
@@ -60,7 +61,7 @@
             </div>
 
             <div class="card-footer">
-                <action-button action="create" type="button" :loading="saving" :label="__('message.renew')" @click="submit" />
+                <action-button action="create" type="button" :loading="saving" :disabled="!!renewBlocked" :label="__('message.renew')" @click="submit" />
             </div>
         </div>
     </div>
@@ -87,6 +88,8 @@ const orderId = route.params.id
 const saving = ref(false)
 const productId = ref(null)
 const currencySymbol = ref('')
+// Why this order can't be renewed now (OrderPolicy::adminRenew via /order/{id}); the server refuses too.
+const renewBlocked = ref('')
 
 const form = reactive({
     plan:           null,
@@ -114,7 +117,9 @@ const planEndpoint = computed(() =>
 onMounted(async () => {
     try {
         const res = await http.get(`/order/${orderId}`)
-        const order = res.data?.data?.order
+        const data = res.data?.data
+        renewBlocked.value = data?.renew_blocked_reason || (data?.can_renew === false ? __('message.no_permission_for_action') : '')
+        const order = data?.order
         if (order) {
             productId.value = order.product
             const planId = order.subscription?.plan?.id

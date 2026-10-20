@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\License;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Controller;
 use App\License\Helpers\LicenseHelper;
 use App\License\Models\License;
@@ -12,6 +13,7 @@ use App\Model\Order\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use SodiumException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -41,8 +43,8 @@ class LocalizedLicenseController extends Controller
 
         $orderNo = (string) $request->query('orderNo');
 
-        if (! $this->findOwnedOrder($orderNo)) {
-            return errorResponse(__('message.access_denied'), 403);
+        if ($denied = $this->licenseFileDenied($orderNo)) {
+            return $denied;
         }
 
         $productId = $request->query('productId');
@@ -63,11 +65,9 @@ class LocalizedLicenseController extends Controller
         }
 
         $orderNo = (string) $request->input('orderNo');
-        $order = Order::where('number', $orderNo)->first();
-        $isAdmin = Auth::user()?->role === 'admin';
 
-        if (! $order || (! $isAdmin && $order->client !== Auth::id())) {
-            return errorResponse(__('message.access_denied'), 403);
+        if ($denied = $this->licenseFileDenied($orderNo)) {
+            return $denied;
         }
 
         return $this->updateLicenseBinding($orderNo, $request);
@@ -128,11 +128,17 @@ class LocalizedLicenseController extends Controller
         return successResponse(__('message.saved-successfully'));
     }
 
-    private function findOwnedOrder(string $orderNo): ?Order
+    /** The refusal for this order's license file, or null when OrderPolicy::useLicenseFile allows it. */
+    private function licenseFileDenied(string $orderNo): ?JsonResponse
     {
         $order = Order::where('number', $orderNo)->first();
+        if (! $order instanceof Order) {
+            return errorResponse(__('message.access_denied'), 403);
+        }
 
-        return $order && $order->client === Auth::id() ? $order : null;
+        $access = Gate::inspect(OrderAbility::UseLicenseFile, $order);
+
+        return $access->allowed() ? null : deniedResponse($access);
     }
 
     /**
@@ -144,6 +150,10 @@ class LocalizedLicenseController extends Controller
      */
     public function downloadFileAdmin(string $orderNo, ?string $productId = null): StreamedResponse|JsonResponse
     {
+        if ($denied = $this->licenseFileDenied($orderNo)) {
+            return $denied;
+        }
+
         return $this->streamFile($this->buildSignedLicenseFile($orderNo, $productId !== null ? (int) $productId : null));
     }
 
@@ -160,11 +170,8 @@ class LocalizedLicenseController extends Controller
             return errorResponse(__('message.access_denied'), 401);
         }
 
-        $order = Order::where('number', $orderNo)->first();
-        $isAdmin = Auth::user()?->role === 'admin';
-
-        if (! $order || (! $isAdmin && $order->client !== Auth::id())) {
-            return errorResponse(__('message.access_denied'), 403);
+        if ($denied = $this->licenseFileDenied($orderNo)) {
+            return $denied;
         }
 
         $license = License::where('license_order_number', $orderNo)->first();

@@ -152,6 +152,20 @@ class DependencyControllerTest extends DBTestCase
         $this->assertContains($response->getStatusCode(), [200, 400]);
     }
 
+    public function test_product_plans_show_the_same_period_as_the_plan_list(): void
+    {
+        $product = Product::factory()->create();
+        $yearly = \App\Model\Payment\Plan::create(['name' => 'Yearly', 'product' => $product->id, 'days' => 365]);
+        $oneTime = \App\Model\Payment\Plan::create(['name' => 'Lifetime', 'product' => $product->id, 'days' => 365]);
+        $oneTime->periods()->attach(\App\Model\Payment\Period::firstOrCreate(['name' => 'One Time'], ['days' => 365])->id);
+
+        $plans = collect($this->getJson('/dependency/product-plans?product_id='.$product->id.'&paginate=1')->assertOk()->json('data.data'))->keyBy('name');
+
+        $this->assertSame('1 Year', $plans['Yearly']['period']);
+        $this->assertSame('One Time', $plans['Lifetime']['period']); // the chosen period, not the days
+        $this->assertSame($yearly->fresh()->periodLabel(), $plans['Yearly']['period']);
+    }
+
     public function test_license_types_dependency_returns_200(): void
     {
         $response = $this->getJson('/dependency/license-types');

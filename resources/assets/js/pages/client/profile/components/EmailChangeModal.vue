@@ -32,7 +32,7 @@
                 <div class="d-flex align-items-center gap-2 mt-2">
                     <button type="button" class="btn btn-link text-primary p-0 fw-semibold text-decoration-none"
                             :disabled="cooldown > 0" @click="resend">
-                        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_email') }}
+                        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_otp') }}
                     </button>
                     <span v-if="cooldown > 0" class="text-muted fw-semibold">{{ String(cooldown).padStart(2, '0') }}s</span>
                 </div>

@@ -8,10 +8,12 @@ use App\License\Models\InstallationLog;
 use App\License\Models\License;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Policies\OrderPolicy;
 use App\Traits\SystemActivityLogsTrait;
 use App\User;
 use Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -78,6 +80,7 @@ use Spatie\Activitylog\Models\Activity;
  *
  * @mixin \Eloquent
  */
+#[UsePolicy(OrderPolicy::class)]
 class Order extends BaseModel
 {
     /**
@@ -193,6 +196,21 @@ class Order extends BaseModel
         $invoice = $this->invoices()->latest('invoices.id')->first();
 
         return $invoice && strcasecmp((string) $invoice->status, 'Success') !== 0 ? $invoice : null;
+    }
+
+    /**
+     * Number of an unpaid plan or agent change already raised for this order. A second one
+     * would charge for the same change twice, and paying both rewrites the license twice.
+     */
+    public function pendingCloudChangeInvoice(): ?string
+    {
+        $number = Invoice::where('status', '!=', 'success')
+            ->where(fn ($q) => $q
+                ->where(fn ($q) => $q->where('metadata->type', 'upgrade_downgrade')->where('metadata->old_order_id', $this->id))
+                ->orWhere(fn ($q) => $q->where('metadata->type', 'agent_alteration')->where('metadata->order_id', $this->id)))
+            ->value('number');
+
+        return $number === null ? null : (string) $number;
     }
 
     /**

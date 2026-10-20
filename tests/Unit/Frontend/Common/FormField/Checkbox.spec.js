@@ -77,6 +77,30 @@ describe('Checkbox.vue', () => {
         expect(wrapper.find('label').text()).toBe('Accept Terms')
     })
 
+    describe('hover tooltip', () => {
+        // Records what v-tooltip receives (the global jest stub ignores it).
+        const tooltip = { mounted: (el, { value }) => { el.dataset.tip = value ?? '' } }
+        const mountWithTooltip = (props) => mount(Checkbox, {
+            props: { name: 'accept_terms', onChange: onChangeMock, ...props },
+            global: { directives: { tooltip } },
+        })
+
+        it('shows the hint on hover of the label text', () => {
+            wrapper = mountWithTooltip({ label: 'Accept', hint: 'Read the terms first' })
+            expect(wrapper.find('label').element.dataset.tip).toBe('Read the terms first')
+        })
+
+        it('has no tooltip without a hint', () => {
+            wrapper = mountWithTooltip({ label: 'Accept' })
+            expect(wrapper.find('label').element.dataset.tip).toBe('')
+        })
+
+        it('renders no help icon', () => {
+            wrapper = mountWithTooltip({ label: 'Accept', hint: 'Read the terms first' })
+            expect(wrapper.find('.tooltip-icon').exists()).toBe(false)
+        })
+    })
+
     it('label has for attribute matching name', () => {
         wrapper = mountCheckbox({ label: 'Accept' })
         expect(wrapper.find('label').attributes('for')).toBe('accept_terms')

@@ -526,21 +526,22 @@ const taxStatusOptions = [
 
 const plansApiUrl = `/dependency/product-plans?product_id=${route.params.id}`
 
-const planColumns = ['name', 'months', 'action']
+const planColumns = ['name', 'period', 'action']
 
 const planTableOptions = reactive({
     headings: {
         name:   __('message.name'),
-        months: __('message.months'),
+        period: __('message.period'),
         action: __('message.action'),
     },
     columnsClasses: {
         name:   'dt-name',
-        months: 'dt-number',
+        period: 'dt-code',
         action: 'dt-action',
     },
     templates: {
-        months: (f, row) => row.days ? Math.round(row.days / 30) : '—',
+        // Same label as the plan list (Plan::periodLabel on the server).
+        period: (f, row) => row.period || '—',
         action: (f, row) => h(RouterLink, { to: `/products/plans/${row.id}/edit`, class: 'btn btn-light table_btn', title: __('message.edit') }, () => h('i', { class: 'fas fa-edit' })),
     },
     sortable: ['name'],

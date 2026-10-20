@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->seedSeoDefaultPages();
         $this->razorpayAutoRenewSetupEmailTemplate();
         $this->removeDeadEmailEventTemplateTypes();
+        $this->renameDefaultTemplates();
         $this->updateTimeZones();
     }
 
@@ -99,6 +100,26 @@ class DatabaseSeeder extends Seeder
 
         DB::table('templates')->whereIn('type', $deadTypeIds)->delete();
         DB::table('template_types')->whereIn('id', $deadTypeIds)->delete();
+    }
+
+    /**
+     * Default template names that are mail subjects: cloud_created now takes its subject from
+     * the template name, and payment_successfull's default was misspelled. Only a still-default
+     * name is renamed — an admin's own wording is kept.
+     */
+    public function renameDefaultTemplates(): void
+    {
+        $renames = [
+            'cloud_created' => ['New instance created', 'Your instance is ready for use. Get started!'],
+            'payment_successfull' => ['Auto payment successfull', 'Auto payment successful'],
+        ];
+
+        foreach ($renames as $typeName => [$from, $to]) {
+            DB::table('templates')
+                ->where('type', DB::table('template_types')->where('name', $typeName)->value('id'))
+                ->where('name', $from)
+                ->update(['name' => $to, 'updated_at' => now()]);
+        }
     }
 
     /**

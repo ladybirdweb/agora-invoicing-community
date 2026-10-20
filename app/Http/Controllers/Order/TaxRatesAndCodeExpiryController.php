@@ -112,10 +112,11 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         /** @var Setting $setting */
         $setting = $settings::find(1);
         $invoiceurl = $this->invoiceUrl($invoiceid);
-        // template
-        /** @var Template $template */
         $template = TemplateType::getSelectedTemplate('invoice_mail');
-        $type = '';
+        if (! $template instanceof Template) {
+            return;
+        }
+
         $replace = [
             'name' => ($user->first_name ?? '').' '.($user->last_name ?? ''),
             'number' => $number,
@@ -129,7 +130,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         ];
         $type = $template->type()->value('name') ?? '';
         $mail = new PhpMailController;
-        $mail->SendEmail($setting->email, $user->email ?? '', $template->data, $template->name, $template->type()->value('name'), $replace, $type);
+        $mail->SendEmail($setting->email, $user->email ?? '', $template->data, $template->name, $type, $replace, $type);
     }
 
     public function invoiceUrl(int $invoiceid): UrlGenerator|string

@@ -24,6 +24,16 @@ class PaymentSettingsControllerTest extends DBTestCase
             ->assertJson(['success' => true]);
     }
 
+    public function test_gateway_list_flags_a_missing_webhook_secret(): void
+    {
+        \App\ApiKey::query()->update(['stripe_webhook_secret' => 'whsec_test', 'razorpay_webhook_secret' => '']);
+
+        $gateways = collect($this->getJson('/payment-gateway-list')->assertOk()->json('data'))->keyBy('name');
+
+        $this->assertTrue($gateways['Stripe']['webhook_configured']);
+        $this->assertFalse($gateways['Razorpay']['webhook_configured']);
+    }
+
     public function test_fetch_config_can_be_called_directly(): void
     {
         $controller = new \App\Http\Controllers\Common\PaymentSettingsController;

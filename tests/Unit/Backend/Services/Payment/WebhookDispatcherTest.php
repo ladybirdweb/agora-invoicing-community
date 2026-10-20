@@ -236,4 +236,40 @@ class WebhookDispatcherTest extends TestCase
 
         $this->assertSame('failed', $order->fresh()->payment_status);
     }
+
+    public function test_stripe_payment_failed_for_invoice_notifies_failure_with_reason(): void
+    {
+        $invoice = Invoice::factory()->create();
+
+        $mockService = Mockery::mock(InvoicePaymentService::class);
+        $mockService->shouldReceive('notifyFailure')->once()
+            ->with(Mockery::on(fn (Invoice $i): bool => $i->id === $invoice->id), 'Your card was declined.');
+        $this->app->instance(InvoicePaymentService::class, $mockService);
+
+        WebhookDispatcher::stripe()->dispatch('payment_intent.payment_failed', [
+            'data' => ['object' => [
+                'metadata' => ['invoice_id' => (string) $invoice->id],
+                'last_payment_error' => ['message' => 'Your card was declined.'],
+            ]],
+        ]);
+    }
+
+    public function test_razorpay_payment_failed_for_invoice_notifies_failure_with_reason(): void
+    {
+        $invoice = Invoice::factory()->create();
+
+        $mockService = Mockery::mock(InvoicePaymentService::class);
+        $mockService->shouldNotReceive('confirm');
+        $mockService->shouldReceive('notifyFailure')->once()
+            ->with(Mockery::on(fn (Invoice $i): bool => $i->id === $invoice->id), 'Card declined by bank');
+        $this->app->instance(InvoicePaymentService::class, $mockService);
+
+        WebhookDispatcher::razorpay()->dispatch('payment.failed', [
+            'event' => 'payment.failed',
+            'payload' => ['payment' => ['entity' => [
+                'notes' => ['invoice_id' => (string) $invoice->id],
+                'error_description' => 'Card declined by bank',
+            ]]],
+        ]);
+    }
 }

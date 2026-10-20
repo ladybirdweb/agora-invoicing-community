@@ -5,8 +5,10 @@ namespace App\Services\Payment;
 use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\Common\PhpMailController;
+use App\Http\Controllers\Common\SettingsController;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\Subscription\SubscriptionController;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
@@ -36,6 +38,24 @@ use Throwable;
 class AutoRenewalActivationService
 {
     use TaxCalculation;
+
+    /**
+     * Gateways a customer in $country can turn auto-renewal on with: switched on for
+     * auto-renewal in settings and active for their currency. The order page offers
+     * these, and OrderPolicy::enableAutoRenew allows only these.
+     *
+     * @return list<string>
+     */
+    public static function gatewaysFor(string $country): array
+    {
+        $active = SettingsController::checkPaymentGateway(getCurrencyForClient($country));
+        $active = array_map(strtolower(...), is_array($active) ? $active : []);
+
+        return array_values(array_filter(
+            ['Stripe', 'Razorpay'],
+            fn (string $gateway): bool => StatusSetting::autoRenewalEnabledFor(strtolower($gateway)) && in_array(strtolower($gateway), $active, true)
+        ));
+    }
 
     /**
      * Idempotent — a repeat call for the same order + gateway (e.g. both the

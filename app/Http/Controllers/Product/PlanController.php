@@ -90,8 +90,7 @@ class PlanController extends ExtendedPlanController
             'name' => $plan->name,
             'product' => $plan->productRelation?->name,
             'product_id' => $plan->product,
-            // The chosen period ("One Time") beats the days, which on a one-time plan are only the updates window.
-            'period' => $plan->periods->first()->name ?? formatDays((int) $plan->days),
+            'period' => $plan->periodLabel(),
             'currencies' => $plan->planPrice->pluck('currency')->toArray(),
             'created_at' => $plan->created_at,
         ]);

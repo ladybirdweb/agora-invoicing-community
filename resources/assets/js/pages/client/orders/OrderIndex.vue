@@ -30,19 +30,19 @@
                                        :label="__('message.view')" :icon-only="true"
                                        v-tooltip="__('message.view')" />
 
-                        <action-button v-if="row.can_renew && !row.is_terminated && !row.is_cloud_deleted"
+                        <action-button v-if="row.can_renew"
                                        icon="fas fa-sync-alt" class="table_btn"
                                        v-tooltip="__('message.click_renew')"
                                        :label="__('message.click_renew')" :icon-only="true"
                                        @click="openRenewModal(row)" />
 
-                        <action-button v-if="row.show_download && !row.is_terminated"
+                        <action-button v-if="row.can_download"
                                        icon="fas fa-download" class="table_btn"
                                        v-tooltip="__('message.click_to_download')"
                                        :label="__('message.click_to_download')" :icon-only="true"
                                        @click="openDownloadModal(row)" />
 
-                        <action-button v-if="row.show_cloud_delete && !row.is_terminated"
+                        <action-button v-if="row.can_delete_cloud"
                                        icon="fas fa-trash" class="table_btn"
                                        v-tooltip="__('message.click_cloud')"
                                        :label="__('message.click_cloud')" :icon-only="true"
@@ -75,12 +75,14 @@
                 </div>
 
                 <template v-else>
-                    <div v-if="versionsMeta.updates_ended_on" class="alert alert-danger d-flex flex-wrap align-items-center gap-2 py-2">
-                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    <!-- A notice, not an error: older versions still download. One line on wider screens,
+                         with the single main Renew action at the end. -->
+                    <div v-if="versionsMeta.updates_ended_on" class="alert alert-warning d-flex flex-wrap flex-sm-nowrap align-items-center gap-2 py-2">
+                        <i class="fa-solid fa-circle-exclamation flex-shrink-0" aria-hidden="true"></i>
                         <span class="flex-grow-1">
-                            {{ __(versionsMeta.can_download_older ? 'message.updates_ended_download_older' : 'message.updates_ended_renew', { date: formatDate(versionsMeta.updates_ended_on) }) }}
+                            {{ __('message.updates_ended_download_older', { date: formatDate(versionsMeta.updates_ended_on) }) }}
                         </span>
-                        <button type="button" class="btn btn-sm btn-danger" @click="renewFromVersions">{{ __('message.renew_now') }}</button>
+                        <button type="button" class="btn btn-sm btn-warning flex-shrink-0 text-nowrap ms-sm-auto" @click="renewFromVersions">{{ __('message.renew_now') }}</button>
                     </div>
 
                     <!-- Latest release; when that's an RC/Beta, the latest official one follows it. -->
@@ -109,7 +111,7 @@
                                     @click="downloadVersion(version)">
                                 <i class="fa-solid fa-download me-2" aria-hidden="true"></i>{{ __('message.download') }}
                             </button>
-                            <button v-else type="button" class="btn btn-lg btn-danger flex-shrink-0 align-self-start align-self-md-center" @click="renewFromVersions">
+                            <button v-else type="button" class="btn btn-lg btn-warning flex-shrink-0 align-self-start align-self-md-center" @click="renewFromVersions">
                                 <i class="fa-solid fa-lock me-2" aria-hidden="true"></i>{{ __('message.renew_to_download') }}
                             </button>
                         </div>
@@ -126,12 +128,13 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-link px-0 text-decoration-none" @click="showPrevious = !showPrevious">
+                    <!-- Only versions other than the cards above; hidden when there are none. -->
+                    <button v-if="versionsMeta.has_previous" type="button" class="btn btn-link px-0 text-decoration-none" @click="showPrevious = !showPrevious">
                         {{ showPrevious ? __('message.hide_previous_versions') : __('message.show_previous_versions') }}
                         <i :class="[showPrevious ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down', 'ms-2 small']" aria-hidden="true"></i>
                     </button>
 
-                    <div v-if="showPrevious" class="mt-2">
+                    <div v-if="showPrevious && versionsMeta.has_previous" class="mt-2">
                         <DataTable :key="downloadVersionsUrl"
                                    :url="downloadVersionsUrl"
                                    :dataColumns="versionColumns"
@@ -148,7 +151,7 @@
                                         @click="downloadVersion(row)">
                                     <i class="fa-solid fa-download me-1" aria-hidden="true"></i>{{ __('message.download') }}
                                 </button>
-                                <button v-else type="button" class="btn btn-sm btn-danger text-nowrap" @click="renewFromVersions">
+                                <button v-else type="button" class="btn btn-sm btn-warning text-nowrap" @click="renewFromVersions">
                                     <i class="fa-solid fa-lock me-1" aria-hidden="true"></i>{{ __('message.renew_to_download') }}
                                 </button>
                             </template>
@@ -262,7 +265,7 @@ async function loadFeatured() {
         const res  = await http.get(downloadVersionsUrl.value, { params: { limit: 1 } })
         const data = res.data?.data ?? {}
         featured.value     = data.featured ?? []
-        versionsMeta.value = { updates_ended_on: data.updates_ended_on, can_download_older: data.can_download_older }
+        versionsMeta.value = { updates_ended_on: data.updates_ended_on, has_previous: !!data.has_previous }
     } catch (e) {
         errorHandler(e, 'order-download')
     } finally {

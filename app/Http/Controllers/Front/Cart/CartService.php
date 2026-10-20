@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front\Cart;
 
 use App\Http\Controllers\Common\SettingsController;
+use App\Http\Controllers\Order\InvoiceController;
 use App\Model\Cart\Cart;
 use App\Model\Cart\CartItem;
 use App\Model\Common\StatusSetting;
@@ -23,6 +24,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Logger;
 use Throwable;
 
 class CartService
@@ -247,7 +249,7 @@ class CartService
         $this->recalculateCoupon($cart);   // drop a coupon that expired since it was applied
         $cart->refresh()->loadMissing('items.plan.planPrice', 'items.product');
 
-        return DB::transaction(function () use ($cart, $user, $autoRenewOptIn, $gateway) {
+        $invoice = DB::transaction(function () use ($cart, $user, $autoRenewOptIn, $gateway) {
             $summary = $this->summary($cart, $user);
             $invoice = $this->reusablePendingInvoice($cart);
 
@@ -307,6 +309,24 @@ class CartService
 
             return $invoice;
         });
+
+        // Only a newly created invoice is mailed: re-checking out rebuilds the same
+        // pending invoice, and the customer already has its link.
+        if ($invoice->wasRecentlyCreated && emailSendingStatus()) {
+            $this->mailInvoice($invoice);
+        }
+
+        return $invoice;
+    }
+
+    /** The invoice is already saved, so a mail failure is logged rather than failing checkout. */
+    private function mailInvoice(Invoice $invoice): void
+    {
+        try {
+            app(InvoiceController::class)->sendMail((int) $invoice->user_id, $invoice->id);
+        } catch (Throwable $throwable) {
+            Logger::exception($throwable);
+        }
     }
 
     /**

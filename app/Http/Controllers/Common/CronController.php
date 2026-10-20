@@ -198,7 +198,6 @@ class CronController extends BaseCronController
     {
         $subscriptions = [];
         foreach ($days as $day) {
-
             // Calculate the start and end dates
 
             $endDate = Date::now()->addDays($day)->toDateString();
@@ -236,7 +235,6 @@ class CronController extends BaseCronController
     {
         $subscriptions = [];
         foreach ($days as $day) {
-
             // Calculate the start and end dates
             $endDate = Date::now()->addDays($day)->toDateString();
 
@@ -277,7 +275,6 @@ class CronController extends BaseCronController
         // Calculate the end date as today
 
         foreach ($days as $day) {
-
             // Calculate the start date based on the specific day value from $days
             $endDate = Date::now()->subDays($day)->toDateString(); // Use $day here
 

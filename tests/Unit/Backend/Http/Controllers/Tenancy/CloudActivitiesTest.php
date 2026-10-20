@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Backend\Http\Controllers\Tenancy;
 
-use App\Http\Controllers\Common\PhpMailController;
 use App\Http\Controllers\Tenancy\CloudExtraActivities;
 use App\License\Models\License;
 use App\Model\Common\FaveoCloud;

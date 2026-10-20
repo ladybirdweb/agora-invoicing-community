@@ -21,12 +21,12 @@ use App\Services\Payment\AutoRenewalActivationService;
 use App\User;
 use App\WhatsappIntegration;
 use Auth;
-use Illuminate\Support\Facades\Gate;
 use Exception;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Gate;
 use Logger;
 
 class ClientController extends BaseClientController

@@ -70,13 +70,13 @@ class SeoTemplateFormatter
     }
 
     /** General SEO title (favicon_title_client), else the bare name. */
-    public function title(string $name): string
+    public function title(?string $name): string
     {
-        return $this->resolveShortcodes($this->generalTitleFormat, $name) ?: $name;
+        return $this->resolveShortcodes($this->generalTitleFormat, $name) ?: ($name ?? '');
     }
 
     /** General SEO description, else a hardcoded sentence built from the name. */
-    public function description(string $name): string
+    public function description(?string $name): string
     {
         return $this->resolveShortcodes($this->settings['general_description'] ?? null, $name) ?: $this->apply(self::DEFAULT_DESCRIPTION_FORMAT, $name);
     }
@@ -86,7 +86,7 @@ class SeoTemplateFormatter
      * literal meta_title/meta_description/og_title/og_description. Null-safe
      * since those DB columns are nullable.
      */
-    public function resolveShortcodes(?string $text, string $name): ?string
+    public function resolveShortcodes(?string $text, ?string $name): ?string
     {
         return $text === null ? null : $this->apply($text, $name);
     }
@@ -98,8 +98,8 @@ class SeoTemplateFormatter
         return $filename ? Attach::getUrlPath('images/'.$filename) : null;
     }
 
-    private function apply(string $format, string $name): string
+    private function apply(string $format, ?string $name): string
     {
-        return str_replace(['{name}', '{company}', '{title}'], [$name, $this->company, $this->appTitle], $format);
+        return str_replace(['{name}', '{company}', '{title}'], [$name ?? '', $this->company, $this->appTitle], $format);
     }
 }

@@ -11,7 +11,7 @@ use App\Http\Controllers\RazorpayController;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\TemplateType;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -146,21 +146,11 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @return array<mixed>
+     * @return list<int>
      */
     private function getRenewalDays(): array
     {
-        $raw = ExpiryMailDay::value('autorenewal_days');
-        if (empty($raw)) {
-            return [];
-        }
-
-        $decoded = json_decode((string) $raw);
-        if (json_last_error() !== JSON_ERROR_NONE || ! $decoded) {
-            return [];
-        }
-
-        return array_map(intval(...), (array) $decoded);
+        return Condition::dayList('subsExpirymail');
     }
 
     // ── Per-subscription renewal ──────────────────────────────────────────

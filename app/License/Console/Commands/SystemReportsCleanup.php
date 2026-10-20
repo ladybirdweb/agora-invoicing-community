@@ -3,7 +3,7 @@
 namespace App\License\Console\Commands;
 
 use App\License\Models\LicenseReport;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use Illuminate\Console\Command;
 
 class SystemReportsCleanup extends Command
@@ -14,7 +14,7 @@ class SystemReportsCleanup extends Command
 
     public function handle(): void
     {
-        $days = ExpiryMailDay::value('license_system_reports_cleanup_days');
+        $days = Condition::dayCount('licenseSystemReportsCleanup');
         if ($days === null) {
             return;
         }

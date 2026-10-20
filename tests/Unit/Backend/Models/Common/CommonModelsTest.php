@@ -350,9 +350,10 @@ class CommonModelsTest extends TestCase
     {
         $model = new StatusSetting();
         $fillable = $model->getFillable();
-        $this->assertContains('expiry_mail', $fillable);
         $this->assertContains('github_status', $fillable);
         $this->assertContains('whatsapp_status', $fillable);
+        // Cron task on/off switches live on each task's `conditions` row now.
+        $this->assertNotContains('expiry_mail', $fillable);
     }
 
     public function test_status_setting_get_log_url_default(): void
@@ -373,12 +374,11 @@ class CommonModelsTest extends TestCase
         $model = new StatusSetting();
         $ref = new \ReflectionMethod($model, 'getMappings');
         $mappings = $ref->invoke($model);
-        $this->assertArrayHasKey('expiry_mail', $mappings);
         $this->assertArrayHasKey('github_status', $mappings);
         // Test enable/disable callbacks
-        $enabled = $mappings['expiry_mail'][1](1);
+        $enabled = $mappings['github_status'][1](1);
         $this->assertNotNull($enabled);
-        $disabled = $mappings['expiry_mail'][1](0);
+        $disabled = $mappings['github_status'][1](0);
         $this->assertNotNull($disabled);
     }
 

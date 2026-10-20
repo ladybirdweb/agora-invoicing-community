@@ -12,7 +12,6 @@ use App\Model\Common\Bussiness;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\State;
-use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Mailjob\QueueService;
 use App\Model\Order\CreditTransaction;
@@ -80,14 +79,12 @@ class ClientController extends AdvanceSearchController
         $this->product = $product;
     }
 
-    public function sendWelcomeMail(User $user): void
+    public function sendWelcomeMail(User $user, string $password): void
     {
         // Retrieve necessary data
         $contact = getContactData();
         $settings = Setting::find(1);
-        /** @var TemplateType $template_type */
-        $template_type = TemplateType::where('name', 'registration_mail')->firstOrFail();
-        $template = Template::find($template_type->id);
+        $template = TemplateType::getSelectedTemplate('registration_mail');
 
         // Check if settings or template is missing
         if (! $settings || ! $template) {
@@ -98,7 +95,7 @@ class ClientController extends AdvanceSearchController
         $replace = [
             'name' => $user->first_name.' '.$user->last_name,
             'username' => $user->email,
-            'password' => 'demopass',
+            'password' => $password,
             'website_url' => url('/'),
             'contact' => $contact['contact'] ?? '',
             'logo' => $contact['logo'] ?? '',
@@ -359,7 +356,8 @@ class ClientController extends AdvanceSearchController
     public function userCreate(ClientRequest $request): JsonResponse
     {
         try {
-            $password = Hash::make(Str::password(12));
+            $plainPassword = Str::password(12);
+            $password = Hash::make($plainPassword);
 
             $mobile_code = str_replace('+', '', $request->input('mobile_code') ??
                 Country::where('country_code_char2', $request->input('country'))->value('phonecode'));
@@ -389,7 +387,7 @@ class ClientController extends AdvanceSearchController
             $user->save();
 
             if (emailSendingStatus()) {
-                $this->sendWelcomeMail($user);
+                $this->sendWelcomeMail($user, $plainPassword);
             }
 
             dispatch(new AddUserToExternalService($user));

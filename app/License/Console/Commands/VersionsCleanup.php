@@ -2,7 +2,7 @@
 
 namespace App\License\Console\Commands;
 
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Product\ProductUpload;
 use Illuminate\Console\Command;
 
@@ -14,7 +14,7 @@ class VersionsCleanup extends Command
 
     public function handle(): void
     {
-        $days = ExpiryMailDay::value('license_versions_cleanup_days');
+        $days = Condition::dayCount('licenseVersionsCleanup');
         if ($days === null) {
             return;
         }

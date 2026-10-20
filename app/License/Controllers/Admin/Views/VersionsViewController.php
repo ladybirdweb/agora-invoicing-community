@@ -29,10 +29,10 @@ class VersionsViewController extends Controller
             'version_status' => $version->status,
             'version_install_count' => $version->version_install_count ?? 0,
             'product' => [
-                'id' => $version->product?->id,
-                'name' => $version->product?->name,
+                'id' => $version->product->id,
+                'name' => $version->product->name,
             ],
-            'product_title' => $version->product?->name,
+            'product_title' => $version->product->name,
         ]);
     }
 

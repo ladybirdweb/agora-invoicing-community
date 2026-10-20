@@ -3,7 +3,7 @@
 namespace App\License\Console\Commands;
 
 use App\License\Models\LicenseCallback;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use Illuminate\Console\Command;
 
 class CrackCallbackCleanup extends Command
@@ -14,7 +14,7 @@ class CrackCallbackCleanup extends Command
 
     public function handle(): void
     {
-        $days = ExpiryMailDay::value('license_callbacks_cleanup_days');
+        $days = Condition::dayCount('licenseCallbacksCleanup');
         if ($days === null) {
             return;
         }

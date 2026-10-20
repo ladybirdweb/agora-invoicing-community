@@ -36,7 +36,7 @@ class Timezone extends BaseModel
     protected function timezoneName(): Attribute
     {
         return Attribute::make(get: function (): string {
-            $extractGMT = explode(' ', $this->location);
+            $extractGMT = explode(' ', $this->location ?? '');
 
             return reset($extractGMT).' '.$this->name;
         });

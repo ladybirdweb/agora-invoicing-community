@@ -12,8 +12,8 @@ return [
     'enabled' => env('ACTIVITYLOG_ENABLED', default: true),
 
     /*
-     * Fallback age for activitylog:clean. The scheduler passes the admin's
-     * "delete logs after N days" setting as --days, which takes precedence.
+     * Fallback age for activity-logs:cleanup (and activitylog:clean), used only
+     * when the admin's "delete logs after N days" cron setting was never saved.
      */
     'clean_after_days' => 365,
 

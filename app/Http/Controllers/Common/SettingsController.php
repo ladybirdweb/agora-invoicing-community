@@ -20,9 +20,7 @@ use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Common\Timezone;
 use App\Model\Github\Github;
-use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\Condition;
-use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
@@ -428,50 +426,15 @@ class SettingsController extends BaseSettingsController
     public function getCronSettingsData(): JsonResponse
     {
         try {
-            $status = StatusSetting::find(1);
-            $days = ExpiryMailDay::first();
-            $activityDay = ActivityLogDay::first();
-            $conditions = Condition::pluck('value', 'job');
+            $tasks = Condition::orderBy('id')->get()->mapWithKeys(fn (Condition $task): array => [
+                $task->job => ['active' => $task->active, 'days' => $task->days] + $task->frequency(),
+            ]);
 
             return successResponse('', [
                 'cron_path' => base_path('artisan'),
                 'exec_enabled' => $this->execEnabled(),
                 'php_paths' => $this->getPHPBinPath(),
-                'statuses' => [
-                    'expiry_cron' => (bool) $status?->expiry_mail,
-                    'activity' => (bool) $status?->activity_log_delete,
-                    'subs_expirymail' => (bool) $status?->subs_expirymail,
-                    'postsubs_expirymail' => (bool) $status?->post_expirymail,
-                    'cloud_cron' => (bool) $status?->cloud_mail_status,
-                    'invoice_cron' => (bool) $status?->invoice_deletion_status,
-                    'msg91_cron' => (bool) $status?->msg91_report_delete_status,
-                    'reoon_cron' => (bool) $status?->reoon_deletion_status,
-                    'systemlogs_cron' => (bool) $status?->system_log_status,
-                    'installationlogs_cron' => (bool) $status?->installation_logs_status,
-                    'licensereports_cron' => (bool) $status?->license_reports_cleanup_status,
-                    'licensecallbacks_cron' => (bool) $status?->license_callbacks_cleanup_status,
-                    'licensecrack_cron' => (bool) $status?->license_crack_reports_cleanup_status,
-                    'licensesystem_cron' => (bool) $status?->license_system_reports_cleanup_status,
-                    'licenseversions_cron' => (bool) $status?->license_versions_cleanup_status,
-                ],
-                'conditions' => $conditions,
-                'days' => [
-                    'expiryday' => json_decode((string) $days?->days ?: '[]', associative: true),
-                    'subexpiryday' => json_decode((string) $days?->autorenewal_days ?: '[]', associative: true),
-                    'postsubexpiry_days' => json_decode((string) $days?->postexpiry_days ?: '[]', associative: true),
-                    'cloud_days' => $days?->cloud_days,
-                    'invoice_days' => $days?->invoice_days,
-                    'msg91_days' => $days?->msg91_days,
-                    'reoon_days' => $days?->reoon_logs_days,
-                    'system_logs_days' => $days?->system_logs_days,
-                    'installation_logs_days' => $days?->installation_logs_expire_days,
-                    'license_reports_days' => $days?->license_reports_cleanup_days,
-                    'license_callbacks_days' => $days?->license_callbacks_cleanup_days,
-                    'license_crack_days' => $days?->license_crack_reports_cleanup_days,
-                    'license_system_days' => $days?->license_system_reports_cleanup_days,
-                    'license_versions_days' => $days?->license_versions_cleanup_days,
-                    'logdelday' => $activityDay?->days,
-                ],
+                'tasks' => $tasks,
             ]);
         } catch (Exception $exception) {
             \Logger::exception($exception);
@@ -480,41 +443,20 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+    /**
+     * Saves each task's on/off and frequency ("daily", "dailyAt,08:00", ...).
+     */
     public function updateCronSettingsData(Request $request): JsonResponse
     {
         try {
-            $status = StatusSetting::findOrFail(1);
-            $map = [
-                'expiry_cron' => 'expiry_mail',
-                'activity' => 'activity_log_delete',
-                'subs_expirymail' => 'subs_expirymail',
-                'postsubs_expirymail' => 'post_expirymail',
-                'cloud_cron' => 'cloud_mail_status',
-                'invoice_cron' => 'invoice_deletion_status',
-                'reoon_cron' => 'reoon_deletion_status',
-                'systemlogs_cron' => 'system_log_status',
-                'installationlogs_cron' => 'installation_logs_status',
-                'licensereports_cron' => 'license_reports_cleanup_status',
-                'licensecallbacks_cron' => 'license_callbacks_cleanup_status',
-                'licensecrack_cron' => 'license_crack_reports_cleanup_status',
-                'licensesystem_cron' => 'license_system_reports_cleanup_status',
-                'licenseversions_cron' => 'license_versions_cleanup_status',
-            ];
-            $status->msg91_report_delete_status = (string) (int) $request->boolean('statuses.msg91_cron');
-            foreach ($map as $input => $column) {
-                $status->{$column} = (int) $request->boolean('statuses.'.$input);
-            }
-
-            $status->save();
-
-            Condition::truncate();
-            foreach ($request->input('conditions', []) as $job => $value) {
-                Condition::create(['job' => $job, 'value' => $value]);
+            foreach ((array) $request->input('tasks', []) as $job => $task) {
+                Condition::where('job', $job)->update([
+                    'active' => (bool) ($task['active'] ?? false),
+                    'value' => (string) ($task['value'] ?? 'daily'),
+                ]);
             }
 
             return successResponse($this->langStr('message.updated-successfully'));
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return errorResponse(__('message.record_not_found'));
         } catch (Exception $exception) {
             \Logger::exception($exception);
 
@@ -522,30 +464,21 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+    /**
+     * Saves each task's days: a list for reminders ([30, 15, 7]), one number for cleanups
+     * (0 = delete all), empty for none.
+     */
     public function updateCronDaysData(Request $request): JsonResponse
     {
         try {
-            ExpiryMailDay::truncate();
-            ExpiryMailDay::create([
-                'days' => json_encode($request->input('expiryday', [])),
-                'autorenewal_days' => json_encode($request->input('subexpiryday', [])),
-                'postexpiry_days' => json_encode($request->input('postsubexpiry_days', [])),
-            ]);
-
-            DB::table('expiry_mail_days')->update([
-                'cloud_days' => $request->input('cloud_days'),
-                'invoice_days' => $request->input('invoice_days'),
-                'msg91_days' => $request->input('msg91_days'),
-                'reoon_logs_days' => $request->input('reoon_days'),
-                'system_logs_days' => $request->input('system_logs_days'),
-                'installation_logs_expire_days' => $request->input('installation_logs_days'),
-                'license_reports_cleanup_days' => $request->input('license_reports_days'),
-                'license_callbacks_cleanup_days' => $request->input('license_callbacks_days'),
-                'license_crack_reports_cleanup_days' => $request->input('license_crack_days'),
-                'license_system_reports_cleanup_days' => $request->input('license_system_days'),
-                'license_versions_cleanup_days' => $request->input('license_versions_days'),
-            ]);
-            ActivityLogDay::updateOrCreate(['id' => 1], ['days' => $request->input('logdelday')]);
+            foreach ((array) $request->input('days', []) as $job => $days) {
+                $value = match (true) {
+                    is_array($days) => array_values(array_map(intval(...), $days)),
+                    is_numeric($days) => (int) $days,
+                    default => null,
+                };
+                Condition::where('job', $job)->update(['days' => $value === null ? null : json_encode($value)]);
+            }
 
             return successResponse($this->langStr('message.updated-successfully'));
         } catch (Exception $exception) {

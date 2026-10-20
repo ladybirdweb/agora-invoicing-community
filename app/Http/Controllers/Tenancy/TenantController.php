@@ -15,7 +15,7 @@ use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Mailjob\QueueService;
 use App\Model\Order\Order;
 use App\Model\Payment\PlanPrice;
@@ -26,7 +26,6 @@ use App\Services\Payment\AutoRenewalActivationService;
 use App\ThirdPartyApp;
 use App\User;
 use Auth;
-use Crypt;
 use DB;
 use Exception;
 use GuzzleHttp\Client;
@@ -372,10 +371,10 @@ class TenantController extends Controller
                 }
 
                 if (! empty($request->orderId)) {
-                    $encryptedKey = Order::where('id', $request->input('orderId'))->value('serial_key');
-                    if ($encryptedKey) {
-                        resolve(LicenseService::class)
-                            ->reissueLicenseCloud(Crypt::decrypt($encryptedKey));
+                    // The Order serial_key accessor already decrypts, so value() returns the plain key.
+                    $serialKey = Order::where('id', $request->input('orderId'))->value('serial_key');
+                    if ($serialKey) {
+                        resolve(LicenseService::class)->reissueLicenseCloud($serialKey);
                     }
                 }
 
@@ -790,7 +789,7 @@ class TenantController extends Controller
         $plan = $price ? 'Paid Subscription' : 'Free Trial';
 
         $expiry = Date::parse($subscription->ends_at);
-        $cloud_days = (int) ExpiryMailDay::whereNotNull('cloud_days')->value('cloud_days');
+        $cloud_days = (int) Condition::dayCount('cloud');
         $deletion_date = $cloud_days !== 0 ? $expiry->copy()->addDays($cloud_days)->toISOString() : null;
 
         return [

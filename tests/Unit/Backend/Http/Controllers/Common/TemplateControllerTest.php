@@ -147,4 +147,23 @@ class TemplateControllerTest extends DBTestCase
         $response->assertStatus(400);
         $response->assertJson(['success' => false]);
     }
+
+    public function test_get_selected_template_falls_back_to_first_template_of_type_when_none_selected(): void
+    {
+        $type = TemplateType::forceCreate(['name' => 'fallback_test_type']);
+        $first = Template::create(['name' => 'First', 'data' => '<p>1</p>', 'type' => $type->id]);
+        Template::create(['name' => 'Second', 'data' => '<p>2</p>', 'type' => $type->id]);
+
+        $this->assertSame($first->id, TemplateType::getSelectedTemplate('fallback_test_type')?->id);
+    }
+
+    public function test_get_selected_template_prefers_the_selected_template(): void
+    {
+        $type = TemplateType::forceCreate(['name' => 'selected_test_type']);
+        Template::create(['name' => 'First', 'data' => '<p>1</p>', 'type' => $type->id]);
+        $chosen = Template::create(['name' => 'Chosen', 'data' => '<p>2</p>', 'type' => $type->id]);
+        $type->forceFill(['selected_template_id' => $chosen->id])->save();
+
+        $this->assertSame($chosen->id, TemplateType::getSelectedTemplate('selected_test_type')?->id);
+    }
 }

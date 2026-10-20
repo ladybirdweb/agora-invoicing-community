@@ -3,7 +3,7 @@
 namespace Tests\Unit\Backend\Console;
 
 use App\Console\Kernel;
-use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\Condition;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Mockery;
@@ -42,6 +42,7 @@ class KernelTest extends DBTestCase
         $this->schedule->shouldReceive('name')->andReturnSelf();
         $this->schedule->shouldReceive('withoutOverlapping')->andReturnSelf();
         $this->schedule->shouldReceive('onOneServer')->andReturnSelf();
+        $this->schedule->shouldReceive('runInBackground')->andReturnSelf();
     }
 
     // -------------------------------------------------------------------------
@@ -94,9 +95,11 @@ class KernelTest extends DBTestCase
 
     public function test_get_condition_daily_at(): void
     {
-        $command = ['condition' => 'dailyAt', 'at' => '08:00'];
-        $this->kernel->getCondition($this->schedule, $command);
-        $this->assertTrue(true);
+        $event = (new Schedule)->command('inspire');
+
+        $this->kernel->getCondition($event, ['condition' => 'dailyAt', 'at' => '08:00']);
+
+        $this->assertSame('0 8 * * *', $event->expression);
     }
 
     public function test_get_condition_weekly(): void
@@ -128,167 +131,82 @@ class KernelTest extends DBTestCase
     }
 
     // -------------------------------------------------------------------------
-    // getConditionWithOption — simple branch
+    // scheduleConfigurableTasks — active `conditions` rows (requires config db_install = 1)
     // -------------------------------------------------------------------------
 
-    public function test_get_condition_with_option_daily_at(): void
+    public function test_active_task_is_scheduled_at_its_frequency(): void
     {
-        $this->kernel->getConditionWithOption($this->schedule, 'dailyAt', '09:00');
-        $this->assertTrue(true);
+        $events = $this->configurableEvents(['expiryMail' => ['active' => true, 'value' => 'dailyAt,08:30']]);
+
+        $this->assertSame(['expiry:notification' => '30 8 * * *'], $events);
     }
 
-    public function test_get_condition_with_option_non_daily_at_does_nothing(): void
+    public function test_inactive_tasks_are_not_scheduled(): void
     {
-        // Command is not 'dailyAt' → method returns without calling anything
-        $this->kernel->getConditionWithOption($this->schedule, 'weekly', '');
-        $this->assertTrue(true);
+        $this->assertSame([], $this->configurableEvents([]));
     }
 
-    // -------------------------------------------------------------------------
-    // execute — task branches (requires config db_install = 1)
-    // -------------------------------------------------------------------------
-
-    public function test_execute_expiry_mail_when_enabled(): void
+    public function test_cloud_task_schedules_the_cleanup_job_at_its_frequency(): void
     {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['expiry_mail' => 1]);
+        $events = $this->scheduleWith(['cloud' => ['active' => true, 'value' => 'hourly']])->events();
 
-        $this->kernel->execute($this->schedule, 'expiryMail');
-        $this->assertTrue(true);
+        $this->assertCount(1, $events);
+        $this->assertSame(\App\Jobs\DeleteExpiredCloudInstances::class, $events[0]->description);
+        $this->assertSame('0 * * * *', $events[0]->expression);
     }
 
-    public function test_execute_expiry_mail_when_disabled(): void
+    public function test_cloud_task_is_not_scheduled_when_switched_off(): void
     {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['expiry_mail' => 0]);
+        $events = $this->scheduleWith(['cloud' => ['active' => false, 'value' => 'hourly']])->events();
 
-        $this->kernel->execute($this->schedule, 'expiryMail');
-        $this->assertTrue(true);
+        $this->assertSame([], $events);
     }
 
-    public function test_execute_delete_logs_when_enabled(): void
+    public function test_background_task_runs_in_background(): void
     {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['activity_log_delete' => 1]);
+        $schedule = $this->scheduleWith(['invoice' => ['active' => true, 'value' => 'monthly', 'is_background' => true]]);
 
-        $this->kernel->execute($this->schedule, 'deleteLogs');
-        $this->assertTrue(true);
+        $this->assertTrue($schedule->events()[0]->runInBackground);
     }
 
-    public function test_execute_subs_expiry_mail_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['subs_expirymail' => 1]);
-
-        $this->kernel->execute($this->schedule, 'subsExpirymail');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_post_expiry_mail_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['post_expirymail' => 1]);
-
-        $this->kernel->execute($this->schedule, 'postExpirymail');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_invoice_deletion_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['invoice_deletion_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'invoice');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_msg91_reports_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['msg91_report_delete_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'msg91Reports');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_reoon_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['reoon_deletion_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'reoon');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_system_logs_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['system_log_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'systemLogs');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_installation_logs_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['installation_logs_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'installationLogs');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_license_reports_cleanup_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['license_reports_cleanup_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'licenseReportsCleanup');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_license_callbacks_cleanup_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['license_callbacks_cleanup_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'licenseCallbacksCleanup');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_license_crack_reports_cleanup_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['license_crack_reports_cleanup_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'licenseCrackReportsCleanup');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_license_system_reports_cleanup_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['license_system_reports_cleanup_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'licenseSystemReportsCleanup');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_license_versions_cleanup_when_enabled(): void
-    {
-        config(['custom.db_install' => 1]);
-        StatusSetting::updateOrCreate([], ['license_versions_cleanup_status' => 1]);
-
-        $this->kernel->execute($this->schedule, 'licenseVersionsCleanup');
-        $this->assertTrue(true);
-    }
-
-    public function test_execute_does_nothing_when_db_install_is_zero(): void
+    public function test_nothing_is_scheduled_when_db_install_is_zero(): void
     {
         config(['custom.db_install' => 0]);
+        Condition::query()->update(['active' => true]);
+        $schedule = new Schedule;
 
-        $this->kernel->execute($this->schedule, 'expiryMail');
-        $this->assertTrue(true);
+        $this->kernel->scheduleConfigurableTasks($schedule);
+
+        $this->assertSame([], $schedule->events());
+    }
+
+    /**
+     * Switches every task off except the given ones, then schedules.
+     *
+     * @param  array<string, array<string, mixed>>  $tasks
+     */
+    private function scheduleWith(array $tasks): Schedule
+    {
+        config(['custom.db_install' => 1]);
+        Condition::query()->update(['active' => false, 'is_background' => false]);
+        foreach ($tasks as $job => $values) {
+            Condition::where('job', $job)->update($values);
+        }
+        $schedule = new Schedule;
+        $this->kernel->scheduleConfigurableTasks($schedule);
+
+        return $schedule;
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $tasks
+     * @return array<string, string> artisan command => cron expression
+     */
+    private function configurableEvents(array $tasks): array
+    {
+        return collect($this->scheduleWith($tasks)->events())
+            ->mapWithKeys(fn ($e) => [preg_replace('/^.*artisan\'? /', '', (string) $e->command) => $e->expression])
+            ->all();
     }
 
     // -------------------------------------------------------------------------
@@ -309,6 +227,18 @@ class KernelTest extends DBTestCase
 
         $this->schedule->shouldHaveReceived('command')->with('seo:generate-files')->once();
         $this->schedule->shouldHaveReceived('hourly')->atLeast()->once();
+    }
+
+    public function test_cloud_instance_emails_run_in_background_without_overlap(): void
+    {
+        // Each domain check can take 10s; running in the foreground would delay later tasks.
+        $event = collect(app(\Illuminate\Console\Scheduling\Schedule::class)->events())
+            ->first(fn ($e) => str_contains((string) $e->command, 'cloud:send-instance-emails'));
+
+        $this->assertNotNull($event);
+        $this->assertSame('*/5 * * * *', $event->expression);
+        $this->assertTrue($event->runInBackground);
+        $this->assertTrue($event->withoutOverlapping);
     }
 
     public function test_the_renewal_job_never_overlaps_itself(): void

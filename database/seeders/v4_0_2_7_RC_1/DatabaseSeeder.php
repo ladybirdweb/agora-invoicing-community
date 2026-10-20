@@ -13,6 +13,7 @@ use App\ReportColumn;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,6 +36,23 @@ class DatabaseSeeder extends Seeder
         $this->removeDeadEmailEventTemplateTypes();
         $this->renameDefaultTemplates();
         $this->updateTimeZones();
+        $this->backfillSelectedTemplates();
+        $this->moveCronSettingsToConditions();
+    }
+
+    /**
+     * The migration that added template_types.selected_template_id runs before templates are
+     * seeded on a fresh install, leaving every type unselected. Pick each type's first template.
+     */
+    public function backfillSelectedTemplates(): void
+    {
+        DB::table('template_types')->whereNull('selected_template_id')->get(['id'])
+            ->each(function (object $type): void {
+                $firstId = DB::table('templates')->where('type', $type->id)->orderBy('id')->value('id');
+                if ($firstId) {
+                    DB::table('template_types')->where('id', $type->id)->update(['selected_template_id' => $firstId]);
+                }
+            });
     }
 
     /**
@@ -575,5 +593,82 @@ Dear {{name}},<br/><br/>
     {
         $this->call([LicenseModuleSeeder::class]);
         $this->command->info('Seeded License Module!');
+    }
+
+    /**
+     * Each cron task's on/off switch (one status_settings column per task) and day settings (one
+     * expiry_mail_days / activity_log_days column per task) move onto the task's own `conditions`
+     * row, then the old columns and tables are dropped. Runs here, after every older seeder,
+     * because those still write the old tables on a fresh install. Safe to run again: once the
+     * old storage is gone, active/days are left as they are.
+     */
+    public function moveCronSettingsToConditions(): void
+    {
+        // job => [artisan command (null: scheduled in code), status_settings switch, [day table, day column]]
+        $tasks = [
+            'expiryMail' => ['expiry:notification', 'expiry_mail', ['expiry_mail_days', 'days']],
+            'deleteLogs' => ['activity-logs:cleanup', 'activity_log_delete', ['activity_log_days', 'days']],
+            'subsExpirymail' => ['renewal:notification', 'subs_expirymail', ['expiry_mail_days', 'autorenewal_days']],
+            'postExpirymail' => ['postexpiry:notification', 'post_expirymail', ['expiry_mail_days', 'postexpiry_days']],
+            'cloud' => [null, 'cloud_mail_status', ['expiry_mail_days', 'cloud_days']],
+            'invoice' => ['invoices:delete', 'invoice_deletion_status', ['expiry_mail_days', 'invoice_days']],
+            'msg91Reports' => ['cleanup:msg-reports', 'msg91_report_delete_status', ['expiry_mail_days', 'msg91_days']],
+            'reoon' => ['reoon:logs-deletion', 'reoon_deletion_status', ['expiry_mail_days', 'reoon_logs_days']],
+            'systemLogs' => ['logs:delete', 'system_log_status', ['expiry_mail_days', 'system_logs_days']],
+            'installationLogs' => ['installation:logs', 'installation_logs_status', ['expiry_mail_days', 'installation_logs_expire_days']],
+            'licenseReportsCleanup' => ['app:license-reports-cleanup', 'license_reports_cleanup_status', ['expiry_mail_days', 'license_reports_cleanup_days']],
+            'licenseCallbacksCleanup' => ['app:crack-callback-cleanup', 'license_callbacks_cleanup_status', ['expiry_mail_days', 'license_callbacks_cleanup_days']],
+            'licenseCrackReportsCleanup' => ['app:crack-reports-cleanup', 'license_crack_reports_cleanup_status', ['expiry_mail_days', 'license_crack_reports_cleanup_days']],
+            'licenseSystemReportsCleanup' => ['app:system-reports-cleanup', 'license_system_reports_cleanup_status', ['expiry_mail_days', 'license_system_reports_cleanup_days']],
+            'licenseVersionsCleanup' => ['app:versions-cleanup', 'license_versions_cleanup_status', ['expiry_mail_days', 'license_versions_cleanup_days']],
+        ];
+
+        $oldRows = [
+            'status_settings' => (array) DB::table('status_settings')->first(),
+            'expiry_mail_days' => Schema::hasTable('expiry_mail_days') ? (array) DB::table('expiry_mail_days')->first() : [],
+            'activity_log_days' => Schema::hasTable('activity_log_days') ? (array) DB::table('activity_log_days')->first() : [],
+        ];
+
+        foreach ($tasks as $job => [$command, $switch, [$dayTable, $dayColumn]]) {
+            $values = ['command' => $command];
+            if (array_key_exists($switch, $oldRows['status_settings'])) {
+                $values['active'] = ! empty($oldRows['status_settings'][$switch]);
+            }
+            if (array_key_exists($dayColumn, $oldRows[$dayTable])) {
+                $values['days'] = $this->normaliseCronDays($oldRows[$dayTable][$dayColumn]);
+            }
+
+            if (DB::table('conditions')->where('job', $job)->exists()) {
+                DB::table('conditions')->where('job', $job)->update($values + ['updated_at' => now()]);
+            } else {
+                // 'daily' is what the cron settings page shows for a task that was never saved.
+                DB::table('conditions')->insert($values + ['job' => $job, 'value' => 'daily', 'created_at' => now(), 'updated_at' => now()]);
+            }
+        }
+
+        $oldSwitches = array_values(array_filter(
+            array_column($tasks, 1),
+            fn (string $column): bool => Schema::hasColumn('status_settings', $column)
+        ));
+        if ($oldSwitches !== []) {
+            Schema::table('status_settings', fn ($table) => $table->dropColumn($oldSwitches));
+        }
+        Schema::dropIfExists('expiry_mail_days');
+        Schema::dropIfExists('activity_log_days');
+    }
+
+    /**
+     * Old day values were a JSON list ('["30","15"]'), a number ('180', 0 meaning "delete all") or empty.
+     */
+    private function normaliseCronDays(mixed $raw): ?string
+    {
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        $decoded = json_decode((string) $raw, associative: true);
+        $days = is_array($decoded) ? array_values(array_map(intval(...), $decoded)) : (int) $raw;
+
+        return json_encode($days) ?: null;
     }
 }

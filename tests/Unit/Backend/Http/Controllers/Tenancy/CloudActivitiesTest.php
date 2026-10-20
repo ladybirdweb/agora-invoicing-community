@@ -8,7 +8,7 @@ use App\License\Models\License;
 use App\Model\Common\FaveoCloud;
 use App\Model\License\LicensePermission;
 use App\Model\License\LicenseType;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -778,7 +778,7 @@ class CloudActivitiesTest extends DBTestCase
             'version' => 'v6.0.0', 'update_ends_at' => '', 'ends_at' => Date::now()->subDays(8)]);
         Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id,
             'version' => 'v6.0.0', 'update_ends_at' => '', 'ends_at' => Date::now()->addDays(1)]);
-        $day = ExpiryMailDay::value('cloud_days');
+        $day = (int) Condition::dayCount('cloud');
         $today = Date::today();
         $sub = Subscription::whereNotNull('ends_at')
             ->whereIn('product_id', cloudPopupProducts())
@@ -788,8 +788,7 @@ class CloudActivitiesTest extends DBTestCase
                 $today
             )
             ->get();
-        // deleteCloudDetails() was removed from PhpMailController
-        // cloudPopupProducts() depends on ExpiryMailDay.cloud_days being seeded
+        // The query depends on the cloud task's days being seeded
         // Just assert the query ran without errors
         $this->assertIsArray($sub->toArray());
     }

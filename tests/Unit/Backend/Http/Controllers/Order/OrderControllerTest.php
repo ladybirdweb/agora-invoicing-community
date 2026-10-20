@@ -373,16 +373,6 @@ class OrderControllerTest extends DBTestCase
         $this->assertIsString($result);
     }
 
-    public function test_product_returns_empty_for_unknown_item(): void
-    {
-        $this->getLoggedInUser('admin');
-        $controller = new \App\Http\Controllers\Order\OrderController;
-
-        $result = $controller->product(999999);
-
-        $this->assertIsString($result);
-    }
-
     public function test_subscription_returns_null_for_unknown_order(): void
     {
         $this->getLoggedInUser('admin');

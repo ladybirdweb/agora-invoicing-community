@@ -37,11 +37,18 @@ describe('OpenPaymentsList.vue', () => {
     })
 
     it('toggles showFilter when filter button is clicked', async () => {
-        const btn = wrapper.find('button.btn-tool')
-        if (btn.exists()) {
-            await btn.trigger('click')
-        }
-        expect(wrapper.exists()).toBeTruthy()
+        await wrapper.find('button.btn-tool .fa-filter').element.parentElement.click()
+
+        expect(wrapper.vm.showFilter).toBe(true)
+    })
+
+    it('refresh button reloads the table', async () => {
+        const refresh = jest.fn()
+        wrapper.vm.dtRef = { refresh }
+
+        await wrapper.find('button.btn-tool .fa-sync-alt').element.parentElement.click()
+
+        expect(refresh).toHaveBeenCalledTimes(1)
     })
 
     it('renders DataTable stub', () => {

@@ -25,7 +25,6 @@ use Override;
  * @property Carbon|null $updated_at
  * @property-read Invoice|null $invoice
  * @property-read InvoiceItem|null $item
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine query()
@@ -39,7 +38,6 @@ use Override;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine whereRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine whereTaxRateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceTaxLine whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class InvoiceTaxLine extends BaseModel

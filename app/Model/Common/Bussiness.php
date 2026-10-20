@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  * @property string|null $short
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness query()
@@ -22,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bussiness whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Bussiness extends Model

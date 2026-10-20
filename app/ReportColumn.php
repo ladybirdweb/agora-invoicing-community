@@ -21,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, UserLinkReport> $userLinkReports
  * @property-read int|null $user_link_reports_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn query()
@@ -32,7 +31,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn whereLabel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReportColumn whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class ReportColumn extends Model

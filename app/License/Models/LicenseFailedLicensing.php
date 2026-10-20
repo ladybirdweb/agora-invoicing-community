@@ -16,11 +16,15 @@ use Illuminate\Support\Carbon;
  * @property string|null $failed_licensing_last_attempt_date
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing query()
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereFailedLicensingAttempts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereFailedLicensingIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereFailedLicensingLastAttemptDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseFailedLicensing whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class LicenseFailedLicensing extends Model

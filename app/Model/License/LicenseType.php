@@ -26,7 +26,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $permissions_count
  * @property-read Collection<int, Product> $products
  * @property-read int|null $products_count
- *
  * @method static \Database\Factories\Model\License\LicenseTypeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseType newQuery()
@@ -35,7 +34,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseType whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class LicenseType extends Model

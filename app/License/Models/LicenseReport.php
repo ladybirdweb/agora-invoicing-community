@@ -25,22 +25,20 @@ use Override;
  * @property-read License|null $license
  * @property-read Product|null $product
  * @property-read User|null $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport pending()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereLicenseCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereReportDateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereReportStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereReportSystem($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereReportText($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseReport whereUserId($value)
- *
+ * @method static Builder<static>|LicenseReport newModelQuery()
+ * @method static Builder<static>|LicenseReport newQuery()
+ * @method static Builder<static>|LicenseReport pending()
+ * @method static Builder<static>|LicenseReport query()
+ * @method static Builder<static>|LicenseReport whereCreatedAt($value)
+ * @method static Builder<static>|LicenseReport whereId($value)
+ * @method static Builder<static>|LicenseReport whereLicenseCode($value)
+ * @method static Builder<static>|LicenseReport whereProductId($value)
+ * @method static Builder<static>|LicenseReport whereReportDateTime($value)
+ * @method static Builder<static>|LicenseReport whereReportStatus($value)
+ * @method static Builder<static>|LicenseReport whereReportSystem($value)
+ * @method static Builder<static>|LicenseReport whereReportText($value)
+ * @method static Builder<static>|LicenseReport whereUpdatedAt($value)
+ * @method static Builder<static>|LicenseReport whereUserId($value)
  * @mixin \Eloquent
  */
 class LicenseReport extends Model

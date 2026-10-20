@@ -49,39 +49,38 @@ use Override;
  * @property-read int|null $license_options_count
  * @property-read Collection<int, LicenseOption> $options
  * @property-read int|null $options_count
+ * @property-read Order|null $order
  * @property-read Collection<int, LicensePlugin> $plugins
  * @property-read int|null $plugins_count
  * @property-read Product $product
  * @property-read User|null $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License active()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License suspended()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseCancelDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseComments($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseDomain($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseExpireDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseExpireEmailDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseMachineId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseLimit($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseOrderNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseRequireDomain($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseSupportDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseSupportEmailDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseUpdatesDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereLicenseUpdatesEmailDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|License whereUserId($value)
- *
+ * @method static Builder<static>|License active()
+ * @method static Builder<static>|License newModelQuery()
+ * @method static Builder<static>|License newQuery()
+ * @method static Builder<static>|License query()
+ * @method static Builder<static>|License suspended()
+ * @method static Builder<static>|License whereCreatedAt($value)
+ * @method static Builder<static>|License whereId($value)
+ * @method static Builder<static>|License whereLicenseCancelDate($value)
+ * @method static Builder<static>|License whereLicenseCode($value)
+ * @method static Builder<static>|License whereLicenseComments($value)
+ * @method static Builder<static>|License whereLicenseDate($value)
+ * @method static Builder<static>|License whereLicenseDomain($value)
+ * @method static Builder<static>|License whereLicenseExpireDate($value)
+ * @method static Builder<static>|License whereLicenseExpireEmailDate($value)
+ * @method static Builder<static>|License whereLicenseIp($value)
+ * @method static Builder<static>|License whereLicenseLimit($value)
+ * @method static Builder<static>|License whereLicenseMachineId($value)
+ * @method static Builder<static>|License whereLicenseOrderNumber($value)
+ * @method static Builder<static>|License whereLicenseRequireDomain($value)
+ * @method static Builder<static>|License whereLicenseStatus($value)
+ * @method static Builder<static>|License whereLicenseSupportDate($value)
+ * @method static Builder<static>|License whereLicenseSupportEmailDate($value)
+ * @method static Builder<static>|License whereLicenseUpdatesDate($value)
+ * @method static Builder<static>|License whereLicenseUpdatesEmailDate($value)
+ * @method static Builder<static>|License whereProductId($value)
+ * @method static Builder<static>|License whereUpdatedAt($value)
+ * @method static Builder<static>|License whereUserId($value)
  * @mixin \Eloquent
  */
 class License extends Model

@@ -42,30 +42,28 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, VersionInstallation> $installations
  * @property-read int|null $installations_count
  * @property-read Order|null $order
- * @property-read Product|null $product
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload active()
+ * @property-read Product $product
+ * @method static Builder<static>|ProductUpload active()
  * @method static \Database\Factories\Model\Product\ProductUploadFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereDependencies($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereFile($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereIsPreRelease($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereIsPrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereIsRestricted($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereReleaseType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereVersionExpireDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUpload whereVersionInstallCount($value)
- *
+ * @method static Builder<static>|ProductUpload newModelQuery()
+ * @method static Builder<static>|ProductUpload newQuery()
+ * @method static Builder<static>|ProductUpload query()
+ * @method static Builder<static>|ProductUpload whereCreatedAt($value)
+ * @method static Builder<static>|ProductUpload whereDependencies($value)
+ * @method static Builder<static>|ProductUpload whereDescription($value)
+ * @method static Builder<static>|ProductUpload whereFile($value)
+ * @method static Builder<static>|ProductUpload whereId($value)
+ * @method static Builder<static>|ProductUpload whereIsPreRelease($value)
+ * @method static Builder<static>|ProductUpload whereIsPrivate($value)
+ * @method static Builder<static>|ProductUpload whereIsRestricted($value)
+ * @method static Builder<static>|ProductUpload whereProductId($value)
+ * @method static Builder<static>|ProductUpload whereReleaseType($value)
+ * @method static Builder<static>|ProductUpload whereStatus($value)
+ * @method static Builder<static>|ProductUpload whereTitle($value)
+ * @method static Builder<static>|ProductUpload whereUpdatedAt($value)
+ * @method static Builder<static>|ProductUpload whereVersion($value)
+ * @method static Builder<static>|ProductUpload whereVersionExpireDate($value)
+ * @method static Builder<static>|ProductUpload whereVersionInstallCount($value)
  * @mixin \Eloquent
  */
 class ProductUpload extends Model

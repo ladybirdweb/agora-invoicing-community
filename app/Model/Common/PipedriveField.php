@@ -27,7 +27,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read PipedriveGroups|null $pipedriveGroups
  * @property-read Collection<int, PipedriveFieldOption> $pipedriveOptions
  * @property-read int|null $pipedrive_options_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField query()
@@ -39,7 +38,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField whereLocalFieldId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField wherePipedriveGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveField whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class PipedriveField extends Model

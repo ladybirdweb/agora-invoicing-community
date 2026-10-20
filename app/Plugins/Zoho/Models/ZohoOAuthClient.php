@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read ZohoIntegration $integration
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient query()
@@ -28,7 +27,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient whereRedirectUri($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient whereRegion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoOAuthClient whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class ZohoOAuthClient extends Model

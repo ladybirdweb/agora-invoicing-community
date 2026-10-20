@@ -18,7 +18,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $exception_log_id
  * @property int|null $duration
  * @property-read ExceptionLog|null $exception
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog query()
@@ -30,7 +29,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CronLog whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class CronLog extends BaseModel

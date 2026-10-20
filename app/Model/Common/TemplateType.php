@@ -17,7 +17,6 @@ use Illuminate\Support\Carbon;
  * @property-read Template|null $selectedTemplate
  * @property-read Collection<int, Template> $templates
  * @property-read int|null $templates_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType query()
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType whereSelectedTemplateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateType whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class TemplateType extends BaseModel

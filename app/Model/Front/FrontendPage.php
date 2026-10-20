@@ -19,6 +19,12 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $slug
  * @property string $name
  * @property string $content
+ * @property string|null $meta_title
+ * @property string|null $meta_description
+ * @property string|null $og_title
+ * @property string|null $og_description
+ * @property string|null $og_image
+ * @property int $og_same_as_meta
  * @property string $url
  * @property string $type
  * @property int $publish
@@ -28,7 +34,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read FrontendPage|null $parent
- *
  * @method static \Database\Factories\Model\Front\FrontendPageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage newQuery()
@@ -37,14 +42,19 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereHidden($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereMetaDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereMetaTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereOgDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereOgImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereOgSameAsMeta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereOgTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereParentPageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage wherePublish($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereUrl($value)
- *
  * @mixin \Eloquent
  */
 class FrontendPage extends BaseModel

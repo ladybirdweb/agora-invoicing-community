@@ -38,15 +38,15 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $short_description
  * @property string $category
  * @property int $parent
- * @property int $type
- * @property int $group
+ * @property int|null $type
+ * @property int|null $group
  * @property string $welcome_email
  * @property int $require_domain
  * @property int|null $can_modify_agent
  * @property int|null $can_modify_quantity
  * @property int|null $show_agent
- * @property int $tax_apply
  * @property int|null $show_product_quantity
+ * @property int $tax_apply
  * @property int $deny_after_subscription
  * @property int $hidden
  * @property int $invoice_hidden
@@ -64,24 +64,24 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $github_repository
  * @property string $process_url
  * @property Collection<int, Subscription> $subscription
- * @property string|null $product_sku
- * @property int|null $perpetual_license
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $product_sku
+ * @property int|null $perpetual_license
  * @property string $highlight
  * @property string $status
  * @property string $add_to_contact
  * @property string|null $product_type
- * @property string|null $config_file_path
- * @property string|null $license_file_path
- * @property string|null $product_path
  * @property string $product_description
  * @property string|null $product_url_homepage
  * @property string|null $product_url_download
  * @property string|null $product_envato_id
  * @property string|null $product_key
+ * @property string|null $config_file_path
+ * @property string|null $license_file_path
  * @property string|null $apl_salt
  * @property int $product_max_active_versions
+ * @property string|null $product_path
  * @property string $whatsapp_integration
  * @property-read Collection<int, PromoProductRelation> $PromoRelation
  * @property-read int|null $promo_relation_count
@@ -106,6 +106,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $licenses_count
  * @property-read Collection<int, Order> $order
  * @property-read int|null $order_count
+ * @property-read Product|null $parentRelation
  * @property-read Collection<int, Plan> $planRelation
  * @property-read int|null $plan_relation_count
  * @property-read Collection<int, PluginCompatibleWithProducts> $pluginCompWith
@@ -127,16 +128,17 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $taxes_count
  * @property-read Collection<int, ProductUpload> $versions
  * @property-read int|null $versions_count
- *
  * @method static \Database\Factories\Model\Product\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereAddToContact($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereAplSalt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereAutoTerminate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCanModifyAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCanModifyQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereConfigFilePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDenyAfterSubscription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
@@ -149,6 +151,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereInvoiceHidden($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereLicenseFilePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMultipleQty($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereNoAutoSetup($value)
@@ -159,6 +162,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductEnvatoId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductMaxActiveVersions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductSku($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductUrlDownload($value)
@@ -179,7 +183,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWelcomeEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWhatsappIntegration($value)
- *
  * @mixin \Eloquent
  */
 class Product extends BaseModel

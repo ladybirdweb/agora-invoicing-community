@@ -9,14 +9,13 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property string $api_key
- * @property string $list_id
+ * @property string|null $api_key
+ * @property string|null $list_id
  * @property string $subscribe_status
- * @property string $group_id_products
- * @property string $group_id_is_paid
+ * @property string|null $group_id_products
+ * @property string|null $group_id_is_paid
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting query()
@@ -28,7 +27,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting whereListId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting whereSubscribeStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpSetting whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class MailchimpSetting extends BaseModel

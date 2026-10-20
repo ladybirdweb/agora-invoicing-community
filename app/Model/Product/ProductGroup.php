@@ -16,32 +16,31 @@ use Spatie\Activitylog\Models\Activity;
 
 /**
  * @property int $id
- * @property string $name
- * @property string $headline
- * @property string $tagline
- * @property string $available_payment
- * @property int $hidden
- * @property string $cart_link
- * @property int|null $pricing_templates_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property string $status
+ * @property string|null $name
+ * @property string|null $headline
+ * @property string|null $tagline
+ * @property string|null $available_payment
+ * @property int|null $hidden
+ * @property string|null $cart_link
  * @property string|null $meta_title
  * @property string|null $meta_description
  * @property string|null $og_title
  * @property string|null $og_description
  * @property string|null $og_image
- * @property bool $og_same_as_meta
+ * @property int $og_same_as_meta
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property int $pricing_templates_id
+ * @property string $status
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read Collection<int, ConfigurableOption> $config
  * @property-read int|null $config_count
  * @property-read Collection<int, GroupFeatures> $features
  * @property-read int|null $features_count
- * @property-read PricingTemplate|null $pricingTemplate
+ * @property-read PricingTemplate $pricingTemplate
  * @property-read Collection<int, Product> $product
  * @property-read int|null $product_count
- *
  * @method static \Database\Factories\Model\Product\ProductGroupFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup newQuery()
@@ -52,12 +51,17 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereHeadline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereHidden($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereMetaDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereMetaTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereOgDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereOgImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereOgSameAsMeta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereOgTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup wherePricingTemplatesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereTagline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class ProductGroup extends BaseModel

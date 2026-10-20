@@ -24,11 +24,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int|null $payment_id
  * @property int|null $invoice_id
  * @property string|null $note
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction query()
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereInvoiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction wherePaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CreditTransaction whereUserId($value)
  * @mixin \Eloquent
  */
 class CreditTransaction extends BaseModel

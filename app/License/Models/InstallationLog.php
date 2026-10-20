@@ -22,22 +22,20 @@ use Override;
  * @property int $installation_status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog forLicense(string $licenseCode)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog recent()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereInstallationDomain($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereInstallationIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereInstallationLastActiveDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereInstallationStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereLicenseCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|InstallationLog whereVersionNumber($value)
- *
+ * @method static Builder<static>|InstallationLog forLicense(string $licenseCode)
+ * @method static Builder<static>|InstallationLog newModelQuery()
+ * @method static Builder<static>|InstallationLog newQuery()
+ * @method static Builder<static>|InstallationLog query()
+ * @method static Builder<static>|InstallationLog recent()
+ * @method static Builder<static>|InstallationLog whereCreatedAt($value)
+ * @method static Builder<static>|InstallationLog whereId($value)
+ * @method static Builder<static>|InstallationLog whereInstallationDomain($value)
+ * @method static Builder<static>|InstallationLog whereInstallationIp($value)
+ * @method static Builder<static>|InstallationLog whereInstallationLastActiveDate($value)
+ * @method static Builder<static>|InstallationLog whereInstallationStatus($value)
+ * @method static Builder<static>|InstallationLog whereLicenseCode($value)
+ * @method static Builder<static>|InstallationLog whereUpdatedAt($value)
+ * @method static Builder<static>|InstallationLog whereVersionNumber($value)
  * @mixin \Eloquent
  */
 class InstallationLog extends Model

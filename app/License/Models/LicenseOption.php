@@ -14,18 +14,16 @@ use Illuminate\Support\Carbon;
  * @property string|null $option_group
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption group(mixed $group)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereOptionGroup($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereOptionKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereOptionValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseOption whereUpdatedAt($value)
- *
+ * @method static Builder<static>|LicenseOption group(?mixed $group)
+ * @method static Builder<static>|LicenseOption newModelQuery()
+ * @method static Builder<static>|LicenseOption newQuery()
+ * @method static Builder<static>|LicenseOption query()
+ * @method static Builder<static>|LicenseOption whereCreatedAt($value)
+ * @method static Builder<static>|LicenseOption whereId($value)
+ * @method static Builder<static>|LicenseOption whereOptionGroup($value)
+ * @method static Builder<static>|LicenseOption whereOptionKey($value)
+ * @method static Builder<static>|LicenseOption whereOptionValue($value)
+ * @method static Builder<static>|LicenseOption whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class LicenseOption extends Model

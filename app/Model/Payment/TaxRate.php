@@ -34,7 +34,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, TaxRateLocation> $locations
  * @property-read int|null $locations_count
  * @property-read TaxClass|null $taxClass
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate query()
@@ -50,7 +49,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate whereTaxClass($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRate whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class TaxRate extends BaseModel

@@ -20,15 +20,15 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $user_id
  * @property int $plan_id
  * @property int $order_id
- * @property int $product_id
  * @property int $quantity
  * @property string|null $update_ends_at
  * @property Carbon|null $ends_at
- * @property string|null $support_ends_at
  * @property int $deny_after_subscription
- * @property string|null $version
+ * @property string $version
+ * @property int $product_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $support_ends_at
  * @property string|null $version_updated_at
  * @property int|null $is_subscribed
  * @property string|null $subscribe_id
@@ -39,9 +39,8 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $activities_as_subject_count
  * @property-read Order|null $order
  * @property-read Plan|null $plan
- * @property-read Product|null $product
+ * @property-read Product $product
  * @property-read User|null $user
- *
  * @method static \Database\Factories\Model\Product\SubscriptionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newQuery()
@@ -65,7 +64,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereVersionUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Subscription extends Model

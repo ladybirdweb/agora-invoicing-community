@@ -9,23 +9,22 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property string $first_name
- * @property string $last_name
- * @property string $company
- * @property string $mobile
- * @property string $address
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $company
+ * @property string|null $mobile
+ * @property string|null $address
  * @property string|null $country
- * @property string $town
- * @property string $state
- * @property string $zip
- * @property string $active
- * @property string $role
+ * @property string|null $town
+ * @property string|null $state
+ * @property string|null $zip
+ * @property string|null $active
+ * @property string|null $role
  * @property string|null $source
  * @property string|null $is_paid_yes
  * @property string|null $is_paid_no
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation query()
@@ -46,7 +45,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation whereTown($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpFieldAgoraRelation whereZip($value)
- *
  * @mixin \Eloquent
  */
 class MailchimpFieldAgoraRelation extends BaseModel

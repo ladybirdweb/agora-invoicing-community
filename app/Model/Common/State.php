@@ -18,7 +18,6 @@ use Illuminate\Support\Carbon;
  * @property int $country_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State query()
@@ -32,7 +31,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State whereStateSubdivisionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State whereStateSubdivisionName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|State whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class State extends BaseModel

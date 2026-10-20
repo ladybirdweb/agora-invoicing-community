@@ -18,7 +18,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property string $country
  * @property string $state_code
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState query()
@@ -32,7 +31,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState whereStateCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxByState whereUtGst($value)
- *
  * @mixin \Eloquent
  */
 class TaxByState extends Model

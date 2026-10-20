@@ -39,20 +39,19 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, PlanPrice> $planPrice
  * @property-read int|null $plan_price_count
  * @property-read Product|null $productRelation
- *
+ * @method static Builder<static>|Plan cloudPlanChangeOptions(Product $product)
  * @method static \Database\Factories\Model\Payment\PlanFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereAllowTax($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereDays($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereProduct($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Plan whereUpdatedAt($value)
- *
+ * @method static Builder<static>|Plan newModelQuery()
+ * @method static Builder<static>|Plan newQuery()
+ * @method static Builder<static>|Plan query()
+ * @method static Builder<static>|Plan whereAllowTax($value)
+ * @method static Builder<static>|Plan whereCreatedAt($value)
+ * @method static Builder<static>|Plan whereDays($value)
+ * @method static Builder<static>|Plan whereId($value)
+ * @method static Builder<static>|Plan whereName($value)
+ * @method static Builder<static>|Plan whereProduct($value)
+ * @method static Builder<static>|Plan whereStatus($value)
+ * @method static Builder<static>|Plan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Plan extends BaseModel

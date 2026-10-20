@@ -19,7 +19,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read PipedriveField $pipedriveField
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption query()
@@ -30,7 +29,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveFieldOption whereValue($value)
- *
  * @mixin \Eloquent
  */
 class PipedriveFieldOption extends Model

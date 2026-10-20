@@ -24,7 +24,6 @@ use Override;
  * @property-read Collection<int, CartItem> $items
  * @property-read int|null $items_count
  * @property-read User|null $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart query()
@@ -36,7 +35,6 @@ use Override;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart whereInvoiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cart whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class Cart extends Model

@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  * @property string $list_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists query()
@@ -22,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists whereListId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpLists whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class MailchimpLists extends BaseModel

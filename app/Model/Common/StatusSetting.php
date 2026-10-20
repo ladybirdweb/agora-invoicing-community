@@ -34,8 +34,8 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $stripe_auto_renewal
  * @property int $razorpay_auto_renewal
  * @property int $post_expirymail
- * @property string $cloud_button
  * @property int $cloud_mail_status
+ * @property string $cloud_button
  * @property int $invoice_deletion_status
  * @property int $reoon_deletion_status
  * @property string|null $msg91_report_delete_status
@@ -47,10 +47,10 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $license_crack_reports_cleanup_status
  * @property int $license_system_reports_cleanup_status
  * @property int $license_versions_cleanup_status
+ * @property int $open_payment_status
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
- *
- * @method static \Database\Factories\StatusSettingFactory factory($count = null, $state = [])
+ * @method static StatusSettingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting query()
@@ -76,6 +76,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereMobileValidationStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereMsg91ReportDeleteStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereMsg91Status($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereOpenPaymentStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting wherePipedriveStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting wherePostExpirymail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereRazorpayAutoRenewal($value)
@@ -90,7 +91,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereUpdateSettings($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereWhatsappStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereZohoStatus($value)
- *
  * @mixin \Eloquent
  */
 class StatusSetting extends Model

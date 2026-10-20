@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, FaveoQueue> $extraFieldRelation
  * @property-read int|null $extra_field_relation_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService query()
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService whereShortName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QueueService whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class QueueService extends Model

@@ -17,7 +17,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read PipedriveField|null $pipedrive
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields query()
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields whereFieldName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PipedriveLocalFields whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class PipedriveLocalFields extends Model

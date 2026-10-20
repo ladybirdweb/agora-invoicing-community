@@ -28,7 +28,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $timezone_id
  * @property string|null $registration
  * @property string|null $ip
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults query()
@@ -52,7 +51,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults whereTimezoneId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults whereTown($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EmailValidationResults whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class EmailValidationResults extends Model

@@ -21,8 +21,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property string $state
  * @property string $rate
  * @property int $compound
- * @property int $priority
- * @property int $apply_to_shipping
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string $c_gst
@@ -32,12 +30,10 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read TaxClass|null $taxClass
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereApplyToShipping($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCGst($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCompound($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCountry($value)
@@ -46,14 +42,12 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax wherePriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereSGst($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereTaxClassesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereUtGst($value)
- *
  * @mixin \Eloquent
  */
 class Tax extends BaseModel

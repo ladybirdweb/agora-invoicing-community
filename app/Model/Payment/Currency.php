@@ -19,7 +19,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property string|null $code
  * @property string|null $symbol
  * @property string|null $name
- * @property string|null $dashboard_currency
+ * @property int|null $dashboard_currency
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $status
@@ -27,7 +27,6 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $activities_as_subject_count
  * @property-read Collection<int, Country> $country
  * @property-read int|null $country_count
- *
  * @method static Builder<static>|Currency newModelQuery()
  * @method static Builder<static>|Currency newQuery()
  * @method static Builder<static>|Currency query()
@@ -39,7 +38,6 @@ use Spatie\Activitylog\Models\Activity;
  * @method static Builder<static>|Currency whereStatus($value)
  * @method static Builder<static>|Currency whereSymbol($value)
  * @method static Builder<static>|Currency whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Currency extends BaseModel

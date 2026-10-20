@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  * @property int $invoice_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation query()
@@ -22,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation whereInvoiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderInvoiceRelation whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class OrderInvoiceRelation extends BaseModel

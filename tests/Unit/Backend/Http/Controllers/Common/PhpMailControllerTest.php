@@ -4,7 +4,6 @@ namespace Tests\Unit\Backend\Http\Controllers\Common;
 
 use App\Http\Controllers\Common\PhpMailController;
 use App\Model\Common\Setting;
-use App\Model\Common\StatusSetting;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
 
@@ -34,19 +33,6 @@ class PhpMailControllerTest extends DBTestCase
     public function test_set_queue_does_not_throw(): void
     {
         $this->mailer->setQueue();
-        $this->assertTrue(true);
-    }
-
-    // -------------------------------------------------------------------------
-    // NotifyMailing — early exit when cloud_mail_status != 1
-    // -------------------------------------------------------------------------
-
-    public function test_notify_mailing_does_nothing_when_cloud_mail_status_off(): void
-    {
-        StatusSetting::updateOrCreate([], ['cloud_mail_status' => 0]);
-
-        $this->mailer->NotifyMailing();
-
         $this->assertTrue(true);
     }
 

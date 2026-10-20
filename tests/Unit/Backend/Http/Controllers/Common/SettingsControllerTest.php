@@ -517,29 +517,11 @@ class SettingsControllerTest extends DBTestCase
         $this->getLoggedInUser('admin');
         $this->withoutMiddleware();
         $response = $this->patchJson('/settings/cron-data', [
-            'statuses' => [
-                'expiry_cron' => 1,
-                'activity' => 0,
-                'subs_expirymail' => 0,
-                'postsubs_expirymail' => 0,
-                'cloud_cron' => 0,
-                'invoice_cron' => 0,
-                'msg91_cron' => 0,
-                'reoon_cron' => 0,
-                'systemlogs_cron' => 0,
-                'installationlogs_cron' => 0,
-                'licensereports_cron' => 0,
-                'licensecallbacks_cron' => 0,
-                'licensecrack_cron' => 0,
-                'licensesystem_cron' => 0,
-                'licenseversions_cron' => 0,
-            ],
-            'conditions' => [],
+            'tasks' => ['expiryMail' => ['active' => true, 'value' => 'daily']],
         ]);
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
-        // Verify actual DB change
-        $this->assertDatabaseHas('status_settings', ['expiry_mail' => 1]);
+        $this->assertDatabaseHas('conditions', ['job' => 'expiryMail', 'active' => true]);
     }
 
     public function test_update_cron_days_persists_to_database(): void
@@ -547,25 +529,12 @@ class SettingsControllerTest extends DBTestCase
         $this->getLoggedInUser('admin');
         $this->withoutMiddleware();
         $response = $this->patchJson('/settings/cron-days', [
-            'expiryday' => [7, 14],
-            'subexpiryday' => [3, 7],
-            'postsubexpiry_days' => [1],
-            'logdelday' => 30,
-            'cloud_days' => 7,
-            'invoice_days' => 30,
-            'msg91_days' => 15,
-            'reoon_days' => 10,
-            'system_logs_days' => 30,
-            'installation_logs_days' => 60,
-            'license_reports_days' => 30,
-            'license_callbacks_days' => 30,
-            'license_crack_days' => 30,
-            'license_system_days' => 30,
-            'license_versions_days' => 30,
+            'days' => ['expiryMail' => [7, 14], 'invoice' => 30],
         ]);
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
-        $this->assertDatabaseHas('expiry_mail_days', ['invoice_days' => 30]);
+        $this->assertSame(30, \App\Model\Mailjob\Condition::dayCount('invoice'));
+        $this->assertSame([7, 14], \App\Model\Mailjob\Condition::dayList('expiryMail'));
     }
 
     public function test_update_pipedrive_settings_with_invalid_token(): void
@@ -772,12 +741,11 @@ class SettingsControllerTest extends DBTestCase
         $response->assertJson(['success' => true]);
         $data = $response->json('data');
         // Assert actual fields in response
-        $this->assertArrayHasKey('statuses', $data);
-        $this->assertArrayHasKey('days', $data);
+        $this->assertArrayHasKey('tasks', $data);
         $this->assertArrayHasKey('cron_path', $data);
         $this->assertArrayHasKey('exec_enabled', $data);
-        $this->assertArrayHasKey('expiry_cron', $data['statuses']);
-        $this->assertArrayHasKey('expiryday', $data['days']);
+        $this->assertArrayHasKey('expiryMail', $data['tasks']);
+        $this->assertArrayHasKey('days', $data['tasks']['expiryMail']);
     }
 
     public function test_get_system_settings_returns_full_structure(): void

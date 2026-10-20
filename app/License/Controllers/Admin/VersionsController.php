@@ -50,7 +50,7 @@ class VersionsController extends Controller
             'version_date' => $version->created_at,
             'version_status' => $version->status,
             'version_install_count' => $version->version_install_count ?? 0,
-            'product_title' => $version->product?->name,
+            'product_title' => $version->product->name,
             'callback_count' => $version->callback_count, // @phpstan-ignore property.notFound
         ]);
 

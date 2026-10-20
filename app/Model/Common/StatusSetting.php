@@ -12,8 +12,6 @@ use Spatie\Activitylog\Models\Activity;
 
 /**
  * @property int $id
- * @property int $expiry_mail
- * @property int $activity_log_delete
  * @property int $github_status
  * @property int $mailchimp_status
  * @property int $twitter_status
@@ -30,23 +28,10 @@ use Spatie\Activitylog\Models\Activity;
  * @property int|null $terms
  * @property int|null $pipedrive_status
  * @property int $domain_check
- * @property int $subs_expirymail
  * @property int $stripe_auto_renewal
  * @property int $razorpay_auto_renewal
- * @property int $post_expirymail
- * @property int $cloud_mail_status
  * @property string $cloud_button
- * @property int $invoice_deletion_status
- * @property int $reoon_deletion_status
- * @property string|null $msg91_report_delete_status
- * @property int $system_log_status
  * @property int $whatsapp_status
- * @property int $installation_logs_status
- * @property int $license_reports_cleanup_status
- * @property int $license_callbacks_cleanup_status
- * @property int $license_crack_reports_cleanup_status
- * @property int $license_system_reports_cleanup_status
- * @property int $license_versions_cleanup_status
  * @property int $open_payment_status
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
@@ -108,7 +93,7 @@ class StatusSetting extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['expiry_mail', 'subs_expirymail', 'stripe_auto_renewal', 'razorpay_auto_renewal', 'activity_log_delete', 'github_status', 'mailchimp_status', 'twitter_status', 'msg91_status', 'emailverification_status', 'recaptcha_status', 'update_status', 'zoho_status', 'rzp_status', 'mailchimp_product_status', 'mailchimp_ispaid_status', 'terms', 'pipedrive_status', 'domain_check', 'msg91_report_delete_status', 'email_validation_status', 'cloud_button', 'reoon_deletion_status', 'whatsapp_status', 'installation_logs_status', 'license_reports_cleanup_status', 'license_callbacks_cleanup_status', 'license_crack_reports_cleanup_status', 'license_system_reports_cleanup_status', 'license_versions_cleanup_status'];
+    protected $fillable = ['stripe_auto_renewal', 'razorpay_auto_renewal', 'github_status', 'mailchimp_status', 'twitter_status', 'msg91_status', 'emailverification_status', 'recaptcha_status', 'update_status', 'zoho_status', 'rzp_status', 'mailchimp_product_status', 'mailchimp_ispaid_status', 'terms', 'pipedrive_status', 'domain_check', 'email_validation_status', 'cloud_button', 'whatsapp_status'];
 
     protected string $logName = 'api_key';
 
@@ -118,9 +103,6 @@ class StatusSetting extends Model
      * @var array<mixed>
      */
     protected array $logAttributes = [
-        'expiry_mail',
-        'subs_expirymail',
-        'activity_log_delete',
         'github_status',
         'mailchimp_status',
         'twitter_status',
@@ -135,7 +117,6 @@ class StatusSetting extends Model
         'terms',
         'pipedrive_status',
         'domain_check',
-        'msg91_report_delete_status',
         'email_validation_status',
         'cloud_button',
     ];
@@ -153,9 +134,6 @@ class StatusSetting extends Model
     protected function getMappings(): array
     {
         return [
-            'expiry_mail' => ['Expiry Mail', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
-            'subs_expirymail' => ['Subscription Expiry Mail', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
-            'activity_log_delete' => ['Activity Log Delete', fn ($value): int => (int) $value],
             'github_status' => ['Github Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'mailchimp_status' => ['Mailchimp Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'twitter_status' => ['Twitter Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
@@ -170,7 +148,6 @@ class StatusSetting extends Model
             'terms' => ['Terms and Condition', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'pipedrive_status' => ['Pipedrive Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'domain_check' => ['Domain Check', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
-            'msg91_report_delete_status' => ['Msg91 Report Delete Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'email_validation_status' => ['Email Validation Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'cloud_button' => ['Cloud Free Trial', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
         ];

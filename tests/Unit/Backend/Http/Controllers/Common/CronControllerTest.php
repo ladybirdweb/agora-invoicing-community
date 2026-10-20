@@ -3,6 +3,7 @@
 namespace Tests\Unit\Backend\Http\Controllers\Common;
 
 use App\Http\Controllers\Common\CronController;
+use App\Model\Mailjob\Condition;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
 
@@ -52,19 +53,19 @@ class CronControllerTest extends DBTestCase
     public function test_get_subscriptions_returns_array(): void
     {
         // getSubscriptions expects an array whose first element is JSON-encoded days
-        $result = $this->cron->getSubscriptions([json_encode([15, 30])]);
+        $result = $this->cron->getSubscriptions([15, 30]);
         $this->assertIsArray($result);
     }
 
     public function test_get_auto_subscriptions_returns_array(): void
     {
-        $result = $this->cron->getautoSubscriptions([json_encode([15, 30])]);
+        $result = $this->cron->getautoSubscriptions([15, 30]);
         $this->assertIsArray($result);
     }
 
     public function test_get_post_subscriptions_returns_array(): void
     {
-        $result = $this->cron->getPostSubscriptions([json_encode([15, 30])]);
+        $result = $this->cron->getPostSubscriptions([15, 30]);
         $this->assertIsArray($result);
     }
 
@@ -92,10 +93,9 @@ class CronControllerTest extends DBTestCase
         $this->assertIsArray($result);
     }
 
-    public function test_get_subscriptions_with_invalid_json_returns_empty_array(): void
+    public function test_get_subscriptions_with_no_days_returns_empty_array(): void
     {
-        // Invalid JSON as first element → early return []
-        $result = $this->cron->getSubscriptions(['not-valid-json']);
+        $result = $this->cron->getSubscriptions([]);
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -106,7 +106,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_each_subscription_does_nothing_when_expiry_mail_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['expiry_mail' => 0]);
+        $this->switchTask('expiryMail', false);
 
         $this->cron->eachSubscription();
 
@@ -119,7 +119,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_auto_renewal_expiry_notify_does_nothing_when_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['subs_expirymail' => 0]);
+        $this->switchTask('subsExpirymail', false);
 
         $this->cron->autoRenewalExpiryNotify();
 
@@ -132,7 +132,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_post_renewal_notify_does_nothing_when_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['post_expirymail' => 0]);
+        $this->switchTask('postExpirymail', false);
 
         $this->cron->postRenewalNotify();
 
@@ -145,7 +145,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_invoices_deletion_does_nothing_when_status_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['invoice_deletion_status' => 0]);
+        $this->switchTask('invoice', false);
 
         $this->cron->invoicesDeletion();
 
@@ -158,7 +158,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_reoon_logs_deletion_does_nothing_when_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['reoon_deletion_status' => 0]);
+        $this->switchTask('reoon', false);
 
         $this->cron->reoonLogsDeletion();
 
@@ -182,7 +182,7 @@ class CronControllerTest extends DBTestCase
 
     public function test_msg_deletions_does_nothing_when_status_off(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['msg91_report_delete_status' => 0]);
+        $this->switchTask('msg91Reports', false);
 
         $this->cron->msgDeletions();
 
@@ -195,9 +195,9 @@ class CronControllerTest extends DBTestCase
 
     public function test_each_subscription_runs_when_enabled_but_no_matching_subscriptions(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['expiry_mail' => 1]);
+        $this->switchTask('expiryMail', true);
         // Use a far-future day so no subscription matches
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['days' => '[999999]']);
+        $this->setTaskDays('expiryMail', [999999]);
 
         $this->cron->eachSubscription();
 
@@ -210,8 +210,8 @@ class CronControllerTest extends DBTestCase
 
     public function test_auto_renewal_expiry_notify_runs_when_enabled_but_no_matching(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['subs_expirymail' => 1]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[999999]']);
+        $this->switchTask('subsExpirymail', true);
+        $this->setTaskDays('subsExpirymail', [999999]);
 
         $this->cron->autoRenewalExpiryNotify();
 
@@ -224,8 +224,8 @@ class CronControllerTest extends DBTestCase
 
     public function test_post_renewal_notify_runs_when_enabled_but_no_matching(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['post_expirymail' => 1]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['postexpiry_days' => '[999999]']);
+        $this->switchTask('postExpirymail', true);
+        $this->setTaskDays('postExpirymail', [999999]);
 
         $this->cron->postRenewalNotify();
 
@@ -238,9 +238,9 @@ class CronControllerTest extends DBTestCase
 
     public function test_invoices_deletion_runs_when_enabled_but_no_deletable_invoices(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['invoice_deletion_status' => 1]);
+        $this->switchTask('invoice', true);
         // Set a very recent cutoff so no invoices qualify
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['invoice_days' => 99999]);
+        $this->setTaskDays('invoice', 99999);
 
         $this->cron->invoicesDeletion();
 
@@ -253,8 +253,8 @@ class CronControllerTest extends DBTestCase
 
     public function test_reoon_logs_deletion_runs_when_enabled_but_no_logs(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['reoon_deletion_status' => 1]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['reoon_logs_days' => 99999]);
+        $this->switchTask('reoon', true);
+        $this->setTaskDays('reoon', 99999);
 
         $this->cron->reoonLogsDeletion();
 
@@ -267,8 +267,8 @@ class CronControllerTest extends DBTestCase
 
     public function test_msg_deletions_runs_when_enabled(): void
     {
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['msg91_report_delete_status' => 1]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['msg91_days' => 99999]);
+        $this->switchTask('msg91Reports', true);
+        $this->setTaskDays('msg91Reports', 99999);
 
         $this->cron->msgDeletions();
 
@@ -279,15 +279,15 @@ class CronControllerTest extends DBTestCase
     // getAutoSubscriptions — with encoded days, returns array
     // -------------------------------------------------------------------------
 
-    public function test_get_auto_subscriptions_with_valid_json_days_returns_array(): void
+    public function test_get_auto_subscriptions_with_days_returns_array(): void
     {
-        $result = $this->cron->getautoSubscriptions([json_encode([30, 60])]);
+        $result = $this->cron->getautoSubscriptions([30, 60]);
         $this->assertIsArray($result);
     }
 
-    public function test_get_auto_subscriptions_with_invalid_json_returns_empty(): void
+    public function test_get_auto_subscriptions_with_no_days_returns_empty(): void
     {
-        $result = $this->cron->getautoSubscriptions(['not-valid-json']);
+        $result = $this->cron->getautoSubscriptions([]);
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -296,15 +296,15 @@ class CronControllerTest extends DBTestCase
     // getPostSubscriptions — with encoded days, returns array
     // -------------------------------------------------------------------------
 
-    public function test_get_post_subscriptions_with_valid_json_days_returns_array(): void
+    public function test_get_post_subscriptions_with_days_returns_array(): void
     {
-        $result = $this->cron->getPostSubscriptions([json_encode([7, 14])]);
+        $result = $this->cron->getPostSubscriptions([7, 14]);
         $this->assertIsArray($result);
     }
 
-    public function test_get_post_subscriptions_with_invalid_json_returns_empty(): void
+    public function test_get_post_subscriptions_with_no_days_returns_empty(): void
     {
-        $result = $this->cron->getPostSubscriptions(['invalid-json']);
+        $result = $this->cron->getPostSubscriptions([]);
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -313,26 +313,36 @@ class CronControllerTest extends DBTestCase
     // getSubscriptions — with valid encoded days, covers branch inside CronController
     // -------------------------------------------------------------------------
 
-    public function test_get_subscriptions_with_valid_encoded_days_returns_array(): void
+    public function test_get_subscriptions_with_days_returns_array_for_each_day(): void
     {
-        $result = $this->cron->getSubscriptions([json_encode([7, 30])]);
+        $result = $this->cron->getSubscriptions([7, 30]);
         $this->assertIsArray($result);
     }
 
     // -------------------------------------------------------------------------
-    // eachSubscription — status check verifies it reads from StatusSetting
+    // eachSubscription — reads its on/off from the expiryMail task
     // -------------------------------------------------------------------------
 
-    public function test_each_subscription_reads_status_setting(): void
+    public function test_each_subscription_reads_its_task_switch(): void
     {
         // Flip status and verify no exception raised either way
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['expiry_mail' => 0]);
+        $this->switchTask('expiryMail', false);
         $this->cron->eachSubscription();
 
-        \App\Model\Common\StatusSetting::updateOrCreate([], ['expiry_mail' => 1]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['days' => '[0]']);
+        $this->switchTask('expiryMail', true);
+        $this->setTaskDays('expiryMail', [0]);
         $this->cron->eachSubscription();
 
         $this->assertTrue(true);
+    }
+
+    private function switchTask(string $job, bool $on): void
+    {
+        Condition::where('job', $job)->update(['active' => $on]);
+    }
+
+    private function setTaskDays(string $job, mixed $days): void
+    {
+        Condition::where('job', $job)->update(['days' => json_encode($days)]);
     }
 }

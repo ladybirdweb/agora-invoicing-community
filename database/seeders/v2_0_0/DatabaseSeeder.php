@@ -11,7 +11,6 @@ use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
 use App\Model\License\LicensePermission;
-use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\Condition;
 use App\Model\Payment\Period;
 use App\Model\Payment\Promotion;
@@ -943,7 +942,7 @@ class ActivityLogDelSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('activity_log_days')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ActivityLogDay::create(['id' => 1, 'days' => '']);
+        DB::table('activity_log_days')->insert(['id' => 1, 'days' => '', 'created_at' => now(), 'updated_at' => now()]);
     }
 }
 

@@ -217,10 +217,7 @@ class BaseOrderController extends ExtendedOrderController
     {
         // order
         $order = Order::find($orderid);
-        // product
-        $product = $this->product($itemid); // @phpstan-ignore method.notFound
-        // user
-        $productId = Product::where('id', $product)->value('id');
+        $productId = InvoiceItem::whereKey($itemid)->value('product_id');
         $users = new User;
         /** @var User $user */
         $user = $users->find($userid);

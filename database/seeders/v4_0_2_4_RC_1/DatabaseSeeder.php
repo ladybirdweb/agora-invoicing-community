@@ -7,7 +7,6 @@ use App\Model\Common\Msg91Status;
 use App\Model\Common\PipedriveGroups;
 use App\Model\Common\PipedriveLocalFields;
 use App\Model\Github\Github;
-use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
@@ -168,7 +167,7 @@ class DatabaseSeeder extends Seeder
     public function update_is_deleted(): void
     {
         $today = Date::today();
-        $day = ExpiryMailDay::value('cloud_days');
+        $day = DB::table('expiry_mail_days')->value('cloud_days');
         // Equivalent to DATE(DATE_ADD(ends_at, INTERVAL $day DAY)) < $today,
         // rewritten as a sargable range on ends_at itself (verified boundary shift).
         Subscription::whereNotNull('ends_at')

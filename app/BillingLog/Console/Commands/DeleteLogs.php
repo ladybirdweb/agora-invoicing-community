@@ -4,8 +4,7 @@ namespace App\BillingLog\Console\Commands;
 
 use App\BillingLog\Controllers\LogViewController;
 use App\Console\LoggableCommand;
-use App\Model\Common\StatusSetting;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use Illuminate\Support\Facades\Date;
 
 class DeleteLogs extends LoggableCommand
@@ -29,11 +28,11 @@ class DeleteLogs extends LoggableCommand
      */
     public function handleAndLog(): void
     {
-        if (StatusSetting::value('system_log_status') != 1) {
+        if (! Condition::isActive('systemLogs')) {
             return;
         }
 
-        $days = ExpiryMailDay::value('system_logs_days');
+        $days = (int) Condition::dayCount('systemLogs');
 
         $deleteBefore = Date::now()->subDays($days)->endOfDay();
 

@@ -49,11 +49,14 @@ class TemplateType extends BaseModel
 
     public static function getSelectedTemplate(string $name): ?Template
     {
-        $templateId = static::where('name', $name)->value('selected_template_id');
+        $type = static::where('name', $name)->first(['id', 'selected_template_id']);
+        if (! $type) {
+            return null;
+        }
 
-        /** @var Template|null $template */
-        $template = $templateId ? Template::find($templateId) : null;
-
-        return $template;
+        // Fresh installs seed templates after the migration that fills selected_template_id,
+        // so a type can have templates but no selection; fall back to its first template.
+        return ($type->selected_template_id ? Template::find($type->selected_template_id) : null)
+            ?? Template::where('type', $type->id)->orderBy('id')->first();
     }
 }

@@ -11,6 +11,7 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Queue;
 use Tests\DBTestCase;
 
 /**
@@ -117,6 +118,7 @@ class BaseCronControllerTest extends DBTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Queue::fake(); // mails are queued; these tests check the cron logic, not delivery
         $this->withoutMiddleware();
         $this->getLoggedInUser('admin');
         $this->cron = new ConcreteCronStub;
@@ -375,7 +377,7 @@ class BaseCronControllerTest extends DBTestCase
     public function test_mail_returns_early_when_product_not_found(): void
     {
         $order = $this->order;
-        $sub = new Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         // Product 999999 doesn't exist → early return (void)
         $this->cron->mail($this->user, date('Y-m-d'), 999999, $order, $sub);
@@ -388,7 +390,7 @@ class BaseCronControllerTest extends DBTestCase
         $product = $this->product;
 
         $order = $this->order;
-        $sub = new Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         // TemplateType::getSelectedTemplate may return null → early return
         // Either way, the method should not throw
@@ -402,7 +404,7 @@ class BaseCronControllerTest extends DBTestCase
         $product = $this->product;
 
         $order = $this->order;
-        $sub = new Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         // Passing an empty string for $end; date_create('') returns false → early return
         $this->cron->mail($this->user, '', $product->id, $order, $sub);
@@ -460,7 +462,7 @@ class BaseCronControllerTest extends DBTestCase
         $product = $this->product;
 
         $order = $this->order;
-        $sub = new \App\Model\Product\Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         // Attempt to send mail — will exit early if Setting/template not configured
         try {
@@ -477,7 +479,7 @@ class BaseCronControllerTest extends DBTestCase
         $product = $this->product; // created in setUp
 
         $order = $this->order;
-        $sub = new \App\Model\Product\Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         try {
             $this->cron->mail($this->user, date('Y-m-d H:i:s'), $product->id, $order, $sub);
@@ -550,7 +552,7 @@ class BaseCronControllerTest extends DBTestCase
         $product = $this->product;
 
         $order = $this->order;
-        $sub = new \App\Model\Product\Subscription;
+        $sub = 0; // subscription id; mail() does not use it
 
         // Pass non-parseable date to hit the date_create() false branch
         $this->cron->mail($this->user, '0000-00-00 00:00:00', $product->id, $order, $sub);

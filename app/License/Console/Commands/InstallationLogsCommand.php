@@ -3,7 +3,7 @@
 namespace App\License\Console\Commands;
 
 use App\License\Models\InstallationLog;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Date;
 
@@ -15,7 +15,7 @@ class InstallationLogsCommand extends Command
 
     public function handle(): void
     {
-        $days = ExpiryMailDay::value('installation_logs_expire_days') ?? 5;
+        $days = Condition::dayCount('installationLogs') ?? 5;
         $expireDate = Date::now()->subDays($days)->toDateString();
 
         InstallationLog::where('installation_last_active_date', '<', $expireDate)

@@ -6,9 +6,8 @@ use App\EmailValidationResults;
 use App\FailedWhatsappMessage;
 use App\Jobs\SendWhatsappMessage;
 use App\Model\Common\MsgDeliveryReports;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -191,20 +190,14 @@ class CronController extends BaseCronController
     }
 
     /**
+     * @param  list<int>  $days
      * @return mixed[]
      */
     #[Override]
-    public function getSubscriptions(mixed $days): array
+    public function getSubscriptions(array $days): array
     {
-        $decodedData = json_decode((string) $days[0]);
-
-        if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
-            return [];
-        }
-
         $subscriptions = [];
-        foreach ($decodedData as $day) {
-            $day = (int) $day;
+        foreach ($days as $day) {
 
             // Calculate the start and end dates
 
@@ -236,19 +229,13 @@ class CronController extends BaseCronController
     }
 
     /**
+     * @param  list<int>  $days
      * @return mixed[]
      */
-    public function getautoSubscriptions(mixed $days): array
+    public function getautoSubscriptions(array $days): array
     {
-        $decodedData = json_decode((string) $days[0]);
-
-        if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
-            return [];
-        }
-
         $subscriptions = [];
-        foreach ($decodedData as $day) {
-            $day = (int) $day;
+        foreach ($days as $day) {
 
             // Calculate the start and end dates
             $endDate = Date::now()->addDays($day)->toDateString();
@@ -280,24 +267,18 @@ class CronController extends BaseCronController
     }
 
     /**
+     * @param  list<int>  $days
      * @return mixed[]
      */
-    public function getPostSubscriptions(mixed $days): array
+    public function getPostSubscriptions(array $days): array
     {
-        $decodedData = json_decode((string) $days[0]);
-
-        if ($decodedData === null && json_last_error() !== JSON_ERROR_NONE) {
-            return [];
-        }
-
         $subscriptions = [];
 
         // Calculate the end date as today
 
-        foreach ($decodedData as $day) {
-            $day = (int) $day;
+        foreach ($days as $day) {
 
-            // Calculate the start date based on the specific day value from $decodedData
+            // Calculate the start date based on the specific day value from $days
             $endDate = Date::now()->subDays($day)->toDateString(); // Use $day here
 
             // Dates grouped: ungrouped orWhere()s let the conditions below apply only to the last date.
@@ -328,10 +309,8 @@ class CronController extends BaseCronController
 
     public function eachSubscription(): void
     {
-        $status = StatusSetting::value('expiry_mail');
-        if ($status == 1) {
-            $allDays = ExpiryMailDay::pluck('days')->toArray();
-            $sub = $this->getSubscriptions($allDays);
+        if (Condition::isActive('expiryMail')) {
+            $sub = $this->getSubscriptions(Condition::dayList('expiryMail'));
             foreach ($sub as $value) {
                 $value = (object) $value;
                 $userid = $value->user_id;
@@ -354,10 +333,8 @@ class CronController extends BaseCronController
 
     public function autoRenewalExpiryNotify(): void
     {
-        $status = StatusSetting::value('subs_expirymail');
-        if ($status == 1) {
-            $Days = ExpiryMailDay::pluck('autorenewal_days')->toArray();
-            $Autosub = $this->getautoSubscriptions($Days);
+        if (Condition::isActive('subsExpirymail')) {
+            $Autosub = $this->getautoSubscriptions(Condition::dayList('subsExpirymail'));
             foreach ($Autosub as $value) {
                 $value = (object) $value;
                 $userid = $value->user_id;
@@ -380,10 +357,8 @@ class CronController extends BaseCronController
 
     public function postRenewalNotify(): void
     {
-        $status = StatusSetting::value('post_expirymail');
-        if ($status == 1) {
-            $periods = ExpiryMailDay::pluck('postexpiry_days')->toArray();
-            $postSub = $this->getPostSubscriptions($periods);
+        if (Condition::isActive('postExpirymail')) {
+            $postSub = $this->getPostSubscriptions(Condition::dayList('postExpirymail'));
             foreach ($postSub as $value) {
                 $value = (object) $value;
                 $userid = $value->user_id;
@@ -420,7 +395,7 @@ class CronController extends BaseCronController
             return;
         }
 
-        $days = ExpiryMailDay::value('invoice_days');
+        $days = Condition::dayCount('invoice');
         $dueInvoices = $this->getOldInvoices($days);
 
         foreach ($dueInvoices as $invoice) {
@@ -436,7 +411,7 @@ class CronController extends BaseCronController
             return;
         }
 
-        $days = ExpiryMailDay::value('reoon_logs_days');
+        $days = Condition::dayCount('reoon');
         $logs = $this->getOldReoonLogs($days);
         foreach ($logs as $log) {
             $log->delete();
@@ -458,12 +433,12 @@ class CronController extends BaseCronController
 
     private function shouldDeleteInvoices(): bool
     {
-        return StatusSetting::value('invoice_deletion_status') == 1;
+        return Condition::isActive('invoice');
     }
 
     private function shouldDeleteReooLogs(): bool
     {
-        return StatusSetting::value('reoon_deletion_status') == 1;
+        return Condition::isActive('reoon');
     }
 
     private function getOldInvoices(mixed $days): mixed
@@ -515,11 +490,11 @@ class CronController extends BaseCronController
 
     public function msgDeletions(): void
     {
-        if (StatusSetting::value('msg91_report_delete_status') != 1) {
+        if (! Condition::isActive('msg91Reports')) {
             return;
         }
 
-        $days = ExpiryMailDay::value('msg91_days');
+        $days = (int) Condition::dayCount('msg91Reports');
 
         CarbonImmutable::startOfTime();
 

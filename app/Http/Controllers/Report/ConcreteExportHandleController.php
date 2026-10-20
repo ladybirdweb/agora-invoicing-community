@@ -12,6 +12,7 @@ use App\Http\Controllers\Order\OrderSearchController;
 use App\Model\Common\Country;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\PlanPrice;
@@ -632,7 +633,7 @@ class ConcreteExportHandleController extends ExportHandleController
                         if (empty($subscription_date)) {
                             $tenantData['Deletion day'] = null;
                         } else {
-                            $days = (int) DB::table('expiry_mail_days')->where('cloud_days', '!=', null)->value('cloud_days');
+                            $days = (int) Condition::dayCount('cloud');
                             $originalDate = Date::parse($subscription_date)->addDays($days);
                             $formattedDate = userDate($originalDate, 'd M Y');
                             $tenantData['Deletion day'] = $formattedDate;

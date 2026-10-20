@@ -4,29 +4,19 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\PageController;
-use App\Http\Controllers\Tenancy\TenantController;
 use App\Jobs\SendEmail;
-use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Mailjob\FaveoQueue;
 use App\Model\Mailjob\QueueService;
-use App\Model\Order\Order;
-use App\Model\Product\Product;
-use App\Model\Product\Subscription;
 use App\Payment_log;
 use App\Traits\QueueTrait;
 use Config;
 use Crypt;
 use DB;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 use Log;
 use Logger;
 use Mail;
@@ -137,83 +127,6 @@ class PhpMailController extends Controller
 
             return (object) ['driver' => $short, 'config' => $field];
         });
-    }
-
-    public function NotifyMailing(): void
-    {
-        try {
-            $status = StatusSetting::value('cloud_mail_status');
-            if ($status == 1) {
-                $this->deleteCloudDetails();
-            }
-        } catch (Exception $exception) {
-            Logger::exception($exception);
-        }
-    }
-
-    public function deleteCloudDetails(): void
-    {
-        try {
-            $contact = getContactData();
-            $day = ExpiryMailDay::value('cloud_days');
-            $today = Date::today();
-
-            // Equivalent to DATE(DATE_ADD(ends_at, INTERVAL $day DAY)) <= $today,
-            // rewritten as a sargable range on ends_at itself (verified boundary shift).
-            $sub = Subscription::whereNotNull('ends_at')
-                ->where('is_deleted', 0)
-                ->whereIn('product_id', cloudPopupProducts())
-                ->where('ends_at', '<', $today->copy()->subDays(((int) $day) - 1))
-                ->get();
-
-            foreach ($sub as $data) {
-                $cron = new CronController;
-                $user = DB::table('users')->find($data->user_id);
-                /** @var Product $product */
-                $product = Product::find($data->product_id);
-                $order = $cron->getOrderById($data->order_id);
-
-                if (! $order instanceof Order) {
-                    continue;
-                }
-
-                $id = $order->installedDomains()->first();
-                if (is_null($id)) {
-                    continue;
-                }
-
-                // Destroy the tenat
-                $destroy = new TenantController(new Client, new FaveoCloud)->destroyTenant(new Request(['id' => $id, 'orderId' => $data->order_id]));
-                // Mail Sending
-                if ($destroy->status() == 200) {
-                    $data->is_deleted = 1;
-                    $data->save();
-                    // check in the settings
-                    $settings = new Setting;
-                    /** @var Setting $setting */
-                    $setting = $settings::find(1);
-
-                    // template
-                    /** @var Template $template */
-                    $template = TemplateType::getSelectedTemplate('cloud_deleted');
-
-                    $mail = new PhpMailController;
-                    $type = $template->type()->value('name') ?? '';
-                    $replace = ['name' => $user->first_name.' '.$user->last_name, // @phpstan-ignore property.nonObject, property.nonObject
-                        'product' => $product->name,
-                        'number' => $order->number,
-                        'expiry' => date('j M Y', (int) strtotime((string) $data->update_ends_at)),
-                        'contact' => $contact['contact'],
-                        'logo' => $contact['logo'],
-                        'reply_email' => $setting->company_email,
-                    ];
-                    // @phpstan-ignore property.nonObject
-                    $mail->SendEmail($setting->email, $user->email, $template->data, $template->name, $template->type()->value('name'), $replace, $type);
-                }
-            }
-        } catch (Exception $exception) {
-            Logger::exception($exception);
-        }
     }
 
     /**

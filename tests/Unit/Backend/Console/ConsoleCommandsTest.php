@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Backend\Console;
 
 use App\Console\Commands\AutorenewalExpirymail;
+use App\Console\Commands\CleanupActivityLogs;
 use App\Console\Commands\CleanupMsg91Reports;
 use App\Console\Commands\ExpiryCron;
 use App\Console\Commands\FailedMessageDelivery;
@@ -14,8 +15,13 @@ use App\Console\Commands\moveImages;
 use App\Console\Commands\PostExpiryCron;
 use App\Console\Commands\RenewalCron;
 use App\Console\Commands\ReoonLogsDeletion;
+use App\Console\Commands\SendCloudInstanceEmails;
 use App\Console\Commands\SetupTestEnv;
 use App\Console\LoggableCommand;
+use App\Model\Mailjob\Condition;
+use App\Services\Cloud\CloudInstanceEmailNotifier;
+use Illuminate\Support\Facades\DB;
+use Mockery;
 use Tests\DBTestCase;
 
 /**
@@ -92,6 +98,77 @@ class ConsoleCommandsTest extends DBTestCase
         // StatusSetting.msg91_report_delete_status = null → exits early
         $this->artisan('cleanup:msg-reports');
         $this->assertTrue(true);
+    }
+
+    // ─────────────────── SendCloudInstanceEmails ───────────────────
+
+    public function test_send_cloud_instance_emails_command_has_correct_signature(): void
+    {
+        $this->assertSame('cloud:send-instance-emails', (new SendCloudInstanceEmails())->getName());
+    }
+
+    public function test_send_cloud_instance_emails_runs_the_notifier(): void
+    {
+        $notifier = Mockery::mock(CloudInstanceEmailNotifier::class);
+        $notifier->shouldReceive('__invoke')->once();
+        $this->app->instance(CloudInstanceEmailNotifier::class, $notifier);
+
+        $this->artisan('cloud:send-instance-emails')->assertExitCode(0);
+    }
+
+    // ─────────────────── CleanupActivityLogs ───────────────────
+
+    public function test_cleanup_activity_logs_command_has_correct_signature(): void
+    {
+        $this->assertSame('activity-logs:cleanup', (new CleanupActivityLogs())->getName());
+    }
+
+    public function test_cleanup_activity_logs_deletes_logs_older_than_admin_setting(): void
+    {
+        [$old, $recent] = $this->seedActivities(daysAgo: [40, 5]);
+        Condition::where('job', 'deleteLogs')->update(['days' => json_encode(30)]);
+
+        $this->artisan('activity-logs:cleanup')->assertExitCode(0);
+
+        $this->assertDatabaseMissing('activity_log', ['id' => $old]);
+        $this->assertDatabaseHas('activity_log', ['id' => $recent]);
+    }
+
+    public function test_cleanup_activity_logs_zero_days_deletes_all(): void
+    {
+        [$old, $recent] = $this->seedActivities(daysAgo: [40, 0]);
+        Condition::where('job', 'deleteLogs')->update(['days' => json_encode(0)]);
+
+        $this->artisan('activity-logs:cleanup')->assertExitCode(0);
+
+        $this->assertDatabaseMissing('activity_log', ['id' => $old]);
+        $this->assertDatabaseMissing('activity_log', ['id' => $recent]);
+    }
+
+    public function test_cleanup_activity_logs_falls_back_to_config_when_never_saved(): void
+    {
+        config(['activitylog.clean_after_days' => 30]);
+        [$old, $recent] = $this->seedActivities(daysAgo: [40, 5]);
+        Condition::where('job', 'deleteLogs')->update(['days' => null]);
+
+        $this->artisan('activity-logs:cleanup')->assertExitCode(0);
+
+        $this->assertDatabaseMissing('activity_log', ['id' => $old]);
+        $this->assertDatabaseHas('activity_log', ['id' => $recent]);
+    }
+
+    /**
+     * @param  list<int>  $daysAgo
+     * @return list<int> activity_log ids, in the same order
+     */
+    private function seedActivities(array $daysAgo): array
+    {
+        return array_map(fn (int $days): int => DB::table('activity_log')->insertGetId([
+            'log_name' => 'default',
+            'description' => 'cleanup test',
+            'created_at' => now()->subDays($days)->subMinute(),
+            'updated_at' => now()->subDays($days)->subMinute(),
+        ]), $daysAgo);
     }
 
     // ─────────────────── ExpiryCron ───────────────────

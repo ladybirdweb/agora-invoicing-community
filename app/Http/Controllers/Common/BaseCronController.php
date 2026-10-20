@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\TemplateType;
-use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -197,7 +197,7 @@ class BaseCronController extends Controller
             ->whereBetween('update_ends_at', [$minus1day, $plus1day]);
     }
 
-    public function mail(User $user, string $end, int $productId, Order $order, Subscription $sub): void
+    public function mail(User $user, string $end, int $productId, Order $order, int $sub): void
     {
         $contact = getContactData();
         $product = Product::where('id', $productId)->first();
@@ -205,8 +205,7 @@ class BaseCronController extends Controller
             return;
         }
         $product_type = $product->type;
-        $expiryMailDay = ExpiryMailDay::first();
-        $expiryDays = $expiryMailDay ? $expiryMailDay->cloud_days : 0;
+        $expiryDays = Condition::dayCount('cloud') ?? 0;
 
         $setting = Setting::find(1);
         if (! $setting) {
@@ -263,8 +262,7 @@ class BaseCronController extends Controller
         $currency = getCurrencyForClient((string) $user->country);
 
         $renewPrice = PlanPrice::where('plan_id', $plan_id->plan_id)->where('currency', $currency)->value('renew_price');
-        $expiryMailDay = ExpiryMailDay::first();
-        $expiryDays = $expiryMailDay ? $expiryMailDay->cloud_days : 0;
+        $expiryDays = Condition::dayCount('cloud') ?? 0;
 
         $setting = Setting::where('id', 1)->first();
         if (! $setting) {
@@ -319,8 +317,7 @@ class BaseCronController extends Controller
             return;
         }
         $product_type = $product->type;
-        $expiryMailDay = ExpiryMailDay::first();
-        $expiryDays = $expiryMailDay ? $expiryMailDay->cloud_days : 0;
+        $expiryDays = Condition::dayCount('cloud') ?? 0;
 
         // check in the settings
         $setting = Setting::where('id', 1)->first();

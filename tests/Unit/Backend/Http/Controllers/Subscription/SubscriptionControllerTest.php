@@ -6,6 +6,7 @@ use App\ApiKey;
 use App\Http\Controllers\ConcretePostSubscriptionHandleController;
 use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\Condition;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -259,12 +260,13 @@ class SubscriptionControllerTest extends DBTestCase
             'razorpay_auto_renewal' => 0,
         ]);
 
-        // ExpiryMailDay has no records → getRenewalDays() returns [] → early return
+        // No renewal days set → getRenewalDays() returns [] → early return
+        Condition::where('job', 'subsExpirymail')->update(['days' => null]);
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
 
         $result = $subController->getOnDayExpiryInfoSubs();
-        $this->assertIsArray($result);
+        $this->assertSame([], $result);
     }
 
     // =========================================================================
@@ -297,8 +299,8 @@ class SubscriptionControllerTest extends DBTestCase
             'razorpay_auto_renewal' => 0,
         ]);
 
-        // Ensure ExpiryMailDay has autorenewal_days so getRenewalDays() returns non-empty
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[3,7,14]']);
+        // Give the subsExpirymail task renewal days so getRenewalDays() returns non-empty
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[3,7,14]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -315,7 +317,7 @@ class SubscriptionControllerTest extends DBTestCase
             'stripe_auto_renewal' => 0,
             'razorpay_auto_renewal' => 1,
         ]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[3]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[3]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -578,9 +580,9 @@ class SubscriptionControllerTest extends DBTestCase
     // getRenewalDays — via reflection, tests empty / invalid / valid cases
     // =========================================================================
 
-    public function test_get_renewal_days_returns_empty_when_no_expiry_mail_days(): void
+    public function test_get_renewal_days_returns_empty_when_no_days_set(): void
     {
-        \App\Model\Mailjob\ExpiryMailDay::query()->delete();
+        Condition::where('job', 'subsExpirymail')->update(['days' => null]);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -593,9 +595,9 @@ class SubscriptionControllerTest extends DBTestCase
         $this->assertEmpty($result);
     }
 
-    public function test_get_renewal_days_returns_empty_when_autorenewal_days_is_invalid_json(): void
+    public function test_get_renewal_days_returns_empty_when_days_is_not_a_list(): void
     {
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => 'not-json']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '7']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -610,7 +612,7 @@ class SubscriptionControllerTest extends DBTestCase
 
     public function test_get_renewal_days_returns_int_array_when_valid(): void
     {
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[3,7,14]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[3,7,14]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -636,7 +638,7 @@ class SubscriptionControllerTest extends DBTestCase
             'stripe_auto_renewal' => 1,
             'razorpay_auto_renewal' => 1,
         ]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[99999]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[99999]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -658,7 +660,7 @@ class SubscriptionControllerTest extends DBTestCase
             'stripe_auto_renewal' => 1,
             'razorpay_auto_renewal' => 0,
         ]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[0]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[0]']);
 
         // Country left unmatched so getCurrencyForClient() falls back to
         // Setting::default_currency deterministically — read it rather than
@@ -705,7 +707,7 @@ class SubscriptionControllerTest extends DBTestCase
             'stripe_auto_renewal' => 1,
             'razorpay_auto_renewal' => 0,
         ]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[99999]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[99999]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -720,7 +722,7 @@ class SubscriptionControllerTest extends DBTestCase
             'stripe_auto_renewal' => 0,
             'razorpay_auto_renewal' => 1,
         ]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[99999]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[99999]']);
 
         $controller = $this->instantiateDependencies();
         $subController = new SubscriptionController($controller);
@@ -738,7 +740,7 @@ class SubscriptionControllerTest extends DBTestCase
     {
         \App\Model\Common\Setting::where('id', 1)->update(['autorenewal_status' => 0]);
         StatusSetting::updateOrCreate([], ['stripe_auto_renewal' => 1, 'razorpay_auto_renewal' => 0]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[7]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[7]']);
 
         Subscription::factory()->create([
             'is_subscribed' => 1,
@@ -756,7 +758,7 @@ class SubscriptionControllerTest extends DBTestCase
     {
         \App\Model\Common\Setting::where('id', 1)->update(['autorenewal_status' => 1]);
         StatusSetting::updateOrCreate([], ['stripe_auto_renewal' => 1, 'razorpay_auto_renewal' => 0]);
-        \App\Model\Mailjob\ExpiryMailDay::updateOrCreate([], ['autorenewal_days' => '[7]']);
+        Condition::where('job', 'subsExpirymail')->update(['days' => '[7]']);
 
         Subscription::factory()->create([
             'is_subscribed' => 1,

@@ -22,9 +22,6 @@ class StatusSettingFactory extends Factory
     public function definition(): array
     {
         return [
-            'expiry_mail' => random_int(0, 1),
-            'subs_expirymail' => random_int(0, 1),
-            'activity_log_delete' => random_int(0, 1),
             'github_status' => random_int(0, 1),
             'mailchimp_status' => random_int(0, 1),
             'twitter_status' => random_int(0, 1),

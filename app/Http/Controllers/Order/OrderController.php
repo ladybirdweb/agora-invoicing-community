@@ -380,14 +380,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-    public function product(int $itemid): string
-    {
-        $invoice_items = new InvoiceItem;
-        $invoice_item = $invoice_items->find($itemid);
-
-        return $invoice_item->product_name ?? '';
-    }
-
     public function subscription(int $orderid): ?Subscription
     {
         return $this->subscription->where('order_id', $orderid)->first();

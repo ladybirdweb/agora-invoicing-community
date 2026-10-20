@@ -11,6 +11,9 @@
                     </span>
                 </h4>
                 <div class="card-tools">
+                    <button class="btn btn-tool" v-tooltip="__('message.refresh')" @click="dtRef?.refresh()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                     <button class="btn btn-tool" v-tooltip="__('message.settings')" @click="openSettingsModal">
                         <i class="fas fa-gear"></i>
                     </button>

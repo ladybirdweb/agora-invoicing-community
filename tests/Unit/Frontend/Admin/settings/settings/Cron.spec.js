@@ -16,9 +16,10 @@ describe('Cron.vue', () => {
                 cron_path: '/var/www/html/artisan',
                 php_paths: ['/usr/bin/php'],
                 exec_enabled: true,
-                statuses: {},
-                days: {},
-                conditions: {},
+                tasks: {
+                    expiryMail: { active: true, condition: 'dailyAt', at: '08:30', days: [30, 7] },
+                    deleteLogs: { active: false, condition: 'daily', at: '', days: 0 },
+                },
             },
         })
         globalThis.mockHttp.onPatch(/\/settings\/cron-data/).reply(200, { data: {} })
@@ -79,6 +80,31 @@ describe('Cron.vue', () => {
         await wrapper.vm.saveScheduler()
         await flushPromises()
         expect(globalThis.mockHttp.history.patch.some(r => r.url.includes('cron-data'))).toBe(true)
+    })
+
+    it('loads each task by job key', async () => {
+        await flushPromises()
+        expect(wrapper.vm.statuses.expiryMail).toBe(true)
+        expect(wrapper.vm.statuses.deleteLogs).toBe(false)
+        expect(wrapper.vm.conditionForms.expiryMail).toEqual({ condition: 'dailyAt', at: '08:30' })
+        expect(wrapper.vm.days.expiryMail).toEqual([30, 7])
+        expect(wrapper.vm.days.deleteLogs).toBe(0)
+    })
+
+    it('saves switches and frequencies keyed by job', async () => {
+        await flushPromises()
+        await wrapper.vm.saveScheduler()
+        const body = JSON.parse(globalThis.mockHttp.history.patch.find(r => r.url.includes('cron-data')).data)
+        expect(body.tasks.expiryMail).toEqual({ active: true, value: 'dailyAt,08:30' })
+        expect(body.tasks.deleteLogs).toEqual({ active: false, value: 'daily' })
+    })
+
+    it('saves days keyed by job', async () => {
+        await flushPromises()
+        await wrapper.vm.saveDays()
+        const body = JSON.parse(globalThis.mockHttp.history.patch.find(r => r.url.includes('cron-days')).data)
+        expect(body.days.expiryMail).toEqual([30, 7])
+        expect(body.days.deleteLogs).toBe(0)
     })
 
     it('saveScheduler handles error gracefully', async () => {

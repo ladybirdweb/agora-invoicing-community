@@ -307,10 +307,6 @@ class DeployController extends Controller
 
         $product = $upload->product;
 
-        if (! $product) {
-            return errorResponse(__('message.deploy_file_not_found'));
-        }
-
         $resolvedFile = $upload->resolvedFile();
         $filePath = 'products/'.$resolvedFile;
 

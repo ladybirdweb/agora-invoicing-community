@@ -50,6 +50,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $open_payment_status
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static StatusSettingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting newQuery()
@@ -91,6 +92,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereUpdateSettings($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereWhatsappStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StatusSetting whereZohoStatus($value)
+ *
  * @mixin \Eloquent
  */
 class StatusSetting extends Model

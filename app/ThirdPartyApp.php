@@ -19,6 +19,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp query()
@@ -28,6 +29,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ThirdPartyApp whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ThirdPartyApp extends Model

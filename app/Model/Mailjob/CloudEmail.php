@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property int $counter
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail query()
@@ -27,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail whereResultPassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudEmail whereUser($value)
+ *
  * @mixin \Eloquent
  */
 class CloudEmail extends Model

@@ -35,6 +35,7 @@ use Str;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Currency|null $currencyInfo
+ *
  * @method static Builder<static>|OpenPaymentOrder completed()
  * @method static Builder<static>|OpenPaymentOrder failed()
  * @method static Builder<static>|OpenPaymentOrder newModelQuery()
@@ -64,6 +65,7 @@ use Str;
  * @method static Builder<static>|OpenPaymentOrder whereTransactionId($value)
  * @method static Builder<static>|OpenPaymentOrder whereUpdatedAt($value)
  * @method static Builder<static>|OpenPaymentOrder whereZip($value)
+ *
  * @mixin \Eloquent
  */
 class OpenPaymentOrder extends Model

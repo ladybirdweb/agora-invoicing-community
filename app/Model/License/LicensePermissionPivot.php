@@ -16,6 +16,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot query()
@@ -24,6 +25,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot whereLicensePermissionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot whereLicenseTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermissionPivot whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicensePermissionPivot extends Pivot

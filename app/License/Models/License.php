@@ -54,6 +54,7 @@ use Override;
  * @property-read int|null $plugins_count
  * @property-read Product $product
  * @property-read User|null $user
+ *
  * @method static Builder<static>|License active()
  * @method static Builder<static>|License newModelQuery()
  * @method static Builder<static>|License newQuery()
@@ -81,6 +82,7 @@ use Override;
  * @method static Builder<static>|License whereProductId($value)
  * @method static Builder<static>|License whereUpdatedAt($value)
  * @method static Builder<static>|License whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class License extends Model

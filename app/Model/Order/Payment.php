@@ -39,6 +39,7 @@ use Illuminate\Support\Carbon;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Invoice> $invoices
  * @property-read int|null $invoices_count
  * @property-read User|null $user
+ *
  * @method static \Database\Factories\Model\Order\PaymentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
@@ -54,6 +55,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment wherePaymentStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class Payment extends BaseModel

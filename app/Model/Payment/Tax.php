@@ -30,6 +30,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read TaxClass|null $taxClass
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax query()
@@ -48,6 +49,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereTaxClassesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereUtGst($value)
+ *
  * @mixin \Eloquent
  */
 class Tax extends BaseModel

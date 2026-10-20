@@ -39,6 +39,7 @@ use Illuminate\Support\Carbon;
  * @property-read Product|null $product
  * @property-read Collection<int, InvoiceTaxLine> $taxLines
  * @property-read int|null $tax_lines_count
+ *
  * @method static \Database\Factories\Model\Order\InvoiceItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem newQuery()
@@ -62,6 +63,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereTaxPercentage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereTaxRateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class InvoiceItem extends BaseModel

@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings query()
@@ -25,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings whereOptionalField($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CommonSettings whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class CommonSettings extends Model

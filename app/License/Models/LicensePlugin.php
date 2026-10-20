@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read License $license
  * @property-read Product $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin query()
@@ -23,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin whereLicenseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePlugin whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicensePlugin extends Model

@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Product> $product
  * @property-read int|null $product_count
  * @property-read TaxClass $tax
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation query()
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation whereTaxClassId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxProductRelation whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class TaxProductRelation extends BaseModel

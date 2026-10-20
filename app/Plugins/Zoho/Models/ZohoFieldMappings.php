@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read FaveoLocalFields|null $faveoLocalField
  * @property-read ZohoFields $zohoField
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings query()
@@ -32,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings whereUseDefaultIfEmpty($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoFieldMappings whereZohoFieldId($value)
+ *
  * @mixin \Eloquent
  */
 class ZohoFieldMappings extends Model

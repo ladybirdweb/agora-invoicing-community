@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string $required
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField query()
@@ -31,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField whereTag($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailchimpField whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class MailchimpField extends BaseModel

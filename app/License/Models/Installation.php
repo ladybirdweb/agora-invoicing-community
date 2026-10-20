@@ -29,6 +29,7 @@ use Override;
  * @property-read License|null $license
  * @property-read Product $product
  * @property-read User|null $user
+ *
  * @method static Builder<static>|Installation active()
  * @method static Builder<static>|Installation newModelQuery()
  * @method static Builder<static>|Installation newQuery()
@@ -47,6 +48,7 @@ use Override;
  * @method static Builder<static>|Installation whereUpdatedAt($value)
  * @method static Builder<static>|Installation whereUserId($value)
  * @method static Builder<static>|Installation whereVersion($value)
+ *
  * @mixin \Eloquent
  */
 class Installation extends Model

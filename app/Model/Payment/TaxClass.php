@@ -26,6 +26,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $tax_count
  * @property-read Collection<int, TaxProductRelation> $tax_product_relation
  * @property-read int|null $tax_product_relation_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass query()
@@ -34,6 +35,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxClass whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class TaxClass extends BaseModel

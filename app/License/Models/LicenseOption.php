@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $option_group
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static Builder<static>|LicenseOption group(?mixed $group)
  * @method static Builder<static>|LicenseOption newModelQuery()
  * @method static Builder<static>|LicenseOption newQuery()
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|LicenseOption whereOptionKey($value)
  * @method static Builder<static>|LicenseOption whereOptionValue($value)
  * @method static Builder<static>|LicenseOption whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicenseOption extends Model

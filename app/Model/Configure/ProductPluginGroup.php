@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Product $plugin
  * @property-read Product $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup query()
@@ -27,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup wherePluginId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductPluginGroup whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ProductPluginGroup extends Model

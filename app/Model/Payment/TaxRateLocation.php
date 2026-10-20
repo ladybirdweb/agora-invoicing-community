@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read TaxRate $taxRate
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation query()
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation whereLocationType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation whereTaxRateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxRateLocation whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class TaxRateLocation extends BaseModel

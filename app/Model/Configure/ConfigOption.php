@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $config_option_values_count
  * @property-read Plan $plan
  * @property-read Product|null $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption query()
@@ -39,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption wherePlanId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConfigOption whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ConfigOption extends Model

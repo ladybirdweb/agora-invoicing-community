@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read LogCategory|null $category
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog query()
@@ -29,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog whereMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog whereTrace($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExceptionLog whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ExceptionLog extends Model

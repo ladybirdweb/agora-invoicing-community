@@ -22,6 +22,7 @@ use Override;
  * @property Carbon|null $updated_at
  * @property-read Product $product
  * @property-read ProductUpload $version
+ *
  * @method static Builder<static>|VersionInstallation active()
  * @method static Builder<static>|VersionInstallation newModelQuery()
  * @method static Builder<static>|VersionInstallation newQuery()
@@ -34,6 +35,7 @@ use Override;
  * @method static Builder<static>|VersionInstallation whereUpdatedAt($value)
  * @method static Builder<static>|VersionInstallation whereUserId($value)
  * @method static Builder<static>|VersionInstallation whereVersionId($value)
+ *
  * @mixin \Eloquent
  */
 class VersionInstallation extends Model

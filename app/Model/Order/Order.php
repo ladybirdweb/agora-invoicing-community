@@ -59,6 +59,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Product|null $productRelation
  * @property-read Subscription|null $subscription
  * @property-read User|null $user
+ *
  * @method static \Database\Factories\Model\Order\OrderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order needsRenewal()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
@@ -77,6 +78,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereQty($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSerialKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 #[UsePolicy(OrderPolicy::class)]

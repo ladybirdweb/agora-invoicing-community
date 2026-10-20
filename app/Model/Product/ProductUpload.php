@@ -43,6 +43,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $installations_count
  * @property-read Order|null $order
  * @property-read Product $product
+ *
  * @method static Builder<static>|ProductUpload active()
  * @method static \Database\Factories\Model\Product\ProductUploadFactory factory($count = null, $state = [])
  * @method static Builder<static>|ProductUpload newModelQuery()
@@ -64,6 +65,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static Builder<static>|ProductUpload whereVersion($value)
  * @method static Builder<static>|ProductUpload whereVersionExpireDate($value)
  * @method static Builder<static>|ProductUpload whereVersionInstallCount($value)
+ *
  * @mixin \Eloquent
  */
 class ProductUpload extends Model

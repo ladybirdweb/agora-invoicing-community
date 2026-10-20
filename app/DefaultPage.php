@@ -18,6 +18,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage query()
@@ -26,6 +27,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage wherePageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage wherePageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPage whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class DefaultPage extends Model

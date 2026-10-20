@@ -25,6 +25,7 @@ use Override;
  * @property-read License|null $license
  * @property-read Product|null $product
  * @property-read User|null $user
+ *
  * @method static Builder<static>|LicenseReport newModelQuery()
  * @method static Builder<static>|LicenseReport newQuery()
  * @method static Builder<static>|LicenseReport pending()
@@ -39,6 +40,7 @@ use Override;
  * @method static Builder<static>|LicenseReport whereReportText($value)
  * @method static Builder<static>|LicenseReport whereUpdatedAt($value)
  * @method static Builder<static>|LicenseReport whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class LicenseReport extends Model

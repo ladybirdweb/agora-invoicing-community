@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string $event_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent query()
@@ -26,6 +27,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent whereGateway($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayEvent whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class GatewayEvent extends Model

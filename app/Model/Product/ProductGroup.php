@@ -41,6 +41,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read PricingTemplate $pricingTemplate
  * @property-read Collection<int, Product> $product
  * @property-read int|null $product_count
+ *
  * @method static \Database\Factories\Model\Product\ProductGroupFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup newQuery()
@@ -62,6 +63,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereTagline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductGroup whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ProductGroup extends BaseModel

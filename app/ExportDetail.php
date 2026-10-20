@@ -24,6 +24,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail query()
@@ -34,6 +35,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExportDetail whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class ExportDetail extends Model

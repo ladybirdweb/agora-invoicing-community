@@ -89,6 +89,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Currency|null $defaultCurrency
  * @property-read Language|null $language
  * @property-read Timezone|null $timezone
+ *
  * @method static \Database\Factories\Model\Common\SettingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newQuery()
@@ -160,6 +161,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereWebsite($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereWelcomeMail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereZip($value)
+ *
  * @mixin \Eloquent
  */
 class Setting extends Model

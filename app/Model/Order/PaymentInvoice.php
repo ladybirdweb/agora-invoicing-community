@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Invoice|null $invoice
  * @property-read Payment|null $payment
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice query()
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice whereInvoiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice wherePaymentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaymentInvoice whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PaymentInvoice extends Pivot

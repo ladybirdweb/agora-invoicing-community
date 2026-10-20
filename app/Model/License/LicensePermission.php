@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property-read LicensePermissionPivot|null $pivot
  * @property-read Collection<int, LicenseType> $licenseTypes
  * @property-read int|null $license_types_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission query()
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission wherePermissions($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicensePermission whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicensePermission extends Model

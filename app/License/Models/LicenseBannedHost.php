@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $comments
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost query()
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseBannedHost whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicenseBannedHost extends Model

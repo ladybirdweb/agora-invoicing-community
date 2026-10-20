@@ -16,6 +16,7 @@ use Override;
  * @property Carbon|null $updated_at
  * @property-read ZohoOAuthClient|null $client
  * @property-read ZohoOAuthToken|null $token
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration query()
@@ -25,6 +26,7 @@ use Override;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration wherePlatform($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ZohoIntegration whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ZohoIntegration extends Model

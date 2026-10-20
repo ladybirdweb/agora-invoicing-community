@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $payment_method
  * @property string|null $payment_intent_id
  * @property-read User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal query()
@@ -33,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal wherePaymentMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Auto_renewal whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class Auto_renewal extends Model

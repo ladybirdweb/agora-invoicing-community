@@ -41,6 +41,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Plan|null $plan
  * @property-read Product $product
  * @property-read User|null $user
+ *
  * @method static \Database\Factories\Model\Product\SubscriptionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newQuery()
@@ -64,6 +65,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereVersionUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Subscription extends Model

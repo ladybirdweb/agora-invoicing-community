@@ -31,6 +31,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read PromotionType $promotionType
  * @property-read Collection<int, PromoProductRelation> $relation
  * @property-read int|null $relation_count
+ *
  * @method static \Database\Factories\Model\Payment\PromotionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion newQuery()
@@ -44,6 +45,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereUses($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class Promotion extends BaseModel

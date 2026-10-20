@@ -22,6 +22,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $activities_as_subject_count
  * @property-read Plan $plan
  * @property-read Product $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts query()
@@ -32,6 +33,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts whereTrialStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudProducts whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class CloudProducts extends BaseModel

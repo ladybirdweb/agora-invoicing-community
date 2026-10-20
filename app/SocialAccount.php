@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $provider_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount query()
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount whereProviderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialAccount whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class SocialAccount extends Model

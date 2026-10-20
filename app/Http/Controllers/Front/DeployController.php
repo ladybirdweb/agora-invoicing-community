@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\License\LicensePermissionsController;
 use App\License\Services\ProductBundleStampingService;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
@@ -11,6 +11,7 @@ use App\Model\Product\ProductUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage as Attach;
 use Illuminate\Validation\Rule;
 use phpseclib3\Crypt\PublicKeyLoader;
@@ -396,30 +397,12 @@ class DeployController extends Controller
         ]);
     }
 
-    /** Same rules as BaseProductController::userDownload — deploy must never hand out what download wouldn't. */
+    /** Deploy hands out the same files as download — see OrderPolicy::deploy. */
     private function deployBlockedReason(Order $order): ?string
     {
-        if (! Setting::where('id', 1)->value('deployment_enabled')) {
-            return __('message.no_permission_for_action');
-        }
+        $access = Gate::inspect(OrderAbility::Deploy, $order);
 
-        $permissions = LicensePermissionsController::getPermissionsForProduct((int) $order->getRawOriginal('product'));
-        if (($permissions['downloadPermission'] ?? 0) != 1) {
-            return __('message.no_permission_for_action');
-        }
-
-        $subscription = $order->subscription;
-        if (! $subscription) {
-            return __('message.no_order_exists_invoice');
-        }
-
-        if (! ($permissions['allowDownloadTillExpiry'] ?? false)
-            && $subscription->update_ends_at
-            && now()->gt($subscription->update_ends_at)) {
-            return __('message.renew_subscription_download');
-        }
-
-        return null;
+        return $access->allowed() ? null : (string) $access->message();
     }
 
     /** @return Builder<ProductUpload> */

@@ -51,7 +51,7 @@ class BaseProductControllerTest extends DBTestCase
 
     private function orderWithSubscription(Product $product, User $owner, array $subscriptionOverrides = []): Order
     {
-        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id]);
+        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id, 'order_status' => 'executed']);
 
         Subscription::factory()->create(array_merge([
             'order_id' => $order->id,
@@ -82,7 +82,7 @@ class BaseProductControllerTest extends DBTestCase
     {
         $owner = User::factory()->create(['role' => 'user']);
         $product = $this->productWithPermissions();
-        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id]);
+        $order = Order::factory()->create(['product' => $product->id, 'client' => $owner->id, 'order_status' => 'executed']);
 
         $this->be($owner);
 

@@ -38,13 +38,14 @@ class GithubApiController
     }
 
     /**
-     * All releases for a repository, newest first.
+     * A repository's releases, newest first — the latest 100 (GitHub's maximum per call;
+     * its default is only 30).
      *
      * @return array<mixed>
      */
     public function releases(string $owner, string $repo): array
     {
-        return $this->http->get(sprintf('/repos/%s/%s/releases', $owner, $repo))->json() ?? [];
+        return $this->http->get(sprintf('/repos/%s/%s/releases', $owner, $repo), ['per_page' => 100])->json() ?? [];
     }
 
     /**

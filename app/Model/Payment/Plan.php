@@ -7,6 +7,8 @@ use App\Model\Configure\ConfigOption;
 use App\Model\Product\Product;
 use App\Traits\SystemActivityLogsTrait;
 use DB;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -107,11 +109,37 @@ class Plan extends BaseModel
     }
 
     /**
+     * Plans a cloud order on $product can switch to: another cloud product that allows agent
+     * changes, priced to renew, and not a free plan. The client's plan list and the
+     * plan-change endpoints both read this, so only listed plans can be bought.
+     *
+     * @param  Builder<Plan>  $query
+     */
+    #[Scope]
+    protected function cloudPlanChangeOptions(Builder $query, Product $product): void
+    {
+        $query->where('product', '!=', $product->id)
+            ->whereHas('productRelation', fn ($q) => $q->where('type', 4)->where('can_modify_agent', 1))
+            ->whereHas('planPrice', fn ($q) => $q->where('renew_price', '!=', 0))
+            ->where('name', 'not like', '%free%');
+    }
+
+    /**
      * @return BelongsTo<Product, $this>
      */
     public function productRelation(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product', 'id');
+    }
+
+    /**
+     * How long the plan runs, as the admin lists show it. The chosen period ("One Time") beats
+     * the days, which on a one-time plan are only the updates window; else the days ("1 Month").
+     * Load `periods` first when listing many plans.
+     */
+    public function periodLabel(): ?string
+    {
+        return $this->periods->first()->name ?? formatDays((int) $this->days);
     }
 
     /**

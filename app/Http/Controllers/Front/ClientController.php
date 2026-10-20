@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Common\SettingsController;
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\User\AdvanceSearchController;
 use App\License\Models\License;
 use App\Model\Common\StatusSetting;
@@ -18,9 +17,11 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Payment_log;
+use App\Services\Payment\AutoRenewalActivationService;
 use App\User;
 use App\WhatsappIntegration;
 use Auth;
+use Illuminate\Support\Facades\Gate;
 use Exception;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
@@ -251,13 +252,17 @@ class ClientController extends BaseClientController
             'autorenew_status' => (bool) $order->subscription?->autoRenew_status,
             'is_subscribed' => (bool) $order->subscription?->is_subscribed,
             'auto_renew_state' => $order->subscription?->autoRenewState() ?? 'inactive',
-            'can_renew' => (bool) $order->subscription?->canRenew(),
+            'can_renew' => Gate::allows(OrderAbility::Renew, $order),
+            'can_deploy' => Gate::allows(OrderAbility::Deploy, $order),
+            'can_manage_cloud' => Gate::allows(OrderAbility::ManageCloud, $order),
+            'can_reissue' => Gate::allows(OrderAbility::Reissue, $order),
+            'can_use_license_file' => Gate::allows(OrderAbility::UseLicenseFile, $order),
             'autorenew_log' => Payment_log::where('order', $order->number)
                 ->where('payment_type', 'Payment method updated')
                 ->orderByDesc('id')
                 ->first(['payment_method', 'date']),
-            'available_gateways' => $this->autoRenewalGateways($user->country),
-            'autorenewal_enabled' => $this->autoRenewalGateways($user->country) !== [],
+            'available_gateways' => AutoRenewalActivationService::gatewaysFor((string) $user->country),
+            'autorenewal_enabled' => AutoRenewalActivationService::gatewaysFor((string) $user->country) !== [],
             'whatsapp_enabled' => (bool) $order->productRelation?->whatsapp_integration,
             'whatsapp_signup_enabled' => (bool) StatusSetting::value('whatsapp_status'),
             'whatsapp_app_id' => WhatsappIntegration::first()?->app_id,
@@ -279,7 +284,6 @@ class ClientController extends BaseClientController
                 ->where('file', '!=', '')
                 ->exists(),
             'manual_install_guide_url' => \App\Model\Common\Setting::where('id', 1)->value('help_docs_url'),
-            'deploy_enabled' => (bool) \App\Model\Common\Setting::where('id', 1)->value('deployment_enabled'),
             'replacement_order' => $replacementOrder ? ['id' => $replacementOrder->id, 'number' => $replacementOrder->number] : null,
             'predecessor_order' => $predecessorOrder ? ['id' => $predecessorOrder->id, 'number' => $predecessorOrder->number] : null,
         ]);
@@ -325,15 +329,7 @@ class ClientController extends BaseClientController
 
         $paginated = $query->paginate((int) $request->input('limit', 10));
 
-        $productIds = $paginated->getCollection()->pluck('productRelation.id')->unique()->filter()->values()->toArray();
-        $downloadPerms = [];
-        foreach ($productIds as $pid) {
-            $perms = LicensePermissionsController::getPermissionsForProduct((int) $pid);
-            $downloadPerms[$pid] = $perms['downloadPermission'] == 1;
-        }
-
-        $paginated->getCollection()->transform(function ($order) use ($downloadPerms): array {
-            $hasDownload = $downloadPerms[$order->productRelation?->id] ?? false;
+        $paginated->getCollection()->transform(function ($order): array {
             $latestInvoice = $order->invoices->first();
             $licenseEndsAt = (string) $order->subscription?->ends_at;
 
@@ -351,12 +347,12 @@ class ClientController extends BaseClientController
                 'client_id' => $order->client,
                 'invoice_number' => $latestInvoice?->number,
                 'sub_id' => $order->subscription?->id,
-                'show_download' => $hasDownload,
-                'show_cloud_delete' => ! $hasDownload && ! $order->subscription?->is_deleted,
-                // Instance already deleted — no renew either (see OrderIndex.vue).
                 'is_cloud_deleted' => (bool) $order->subscription?->is_deleted,
                 'is_terminated' => $order->order_status === 'Terminated',
-                'can_renew' => (bool) $order->subscription?->canRenew(),
+                // Action buttons — decided by OrderPolicy, which the endpoints enforce too.
+                'can_renew' => Gate::allows(OrderAbility::Renew, $order),
+                'can_download' => Gate::allows(OrderAbility::Download, $order),
+                'can_delete_cloud' => Gate::allows(OrderAbility::DeleteCloud, $order),
                 // Same label the admin order page badges expiry dates with.
                 'expiry_status' => strtotime($licenseEndsAt) > 1 ? getExpiryLabel($licenseEndsAt)['status'] : null,
             ];
@@ -380,8 +376,13 @@ class ClientController extends BaseClientController
             $order = $this->getClientPanelOrdersData()->where('id', $orderId)->first();
             $product = $order?->productRelation;
 
-            if (! $order || ! $product || ! in_array($product->id, cloudPopupProducts())) {
+            if (! $order || ! $product) {
                 return errorResponse(__('message.no_records_found'));
+            }
+
+            $access = Gate::inspect(OrderAbility::ManageCloud, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
             $currency = getCurrencyForClient($user->country);
@@ -521,8 +522,8 @@ class ClientController extends BaseClientController
     {
         try {
             $order = Order::with([
-                'productRelation:id,github_owner,github_repository',
-                'subscription:id,order_id,product_id,update_ends_at',
+                'productRelation:id,github_owner,github_repository,type',
+                'subscription:id,order_id,product_id,update_ends_at,is_deleted',
                 'invoices' => fn ($q) => $q->select('invoices.id', 'invoices.number')->latest('invoices.id'),
             ])->where('id', $orderid)->where('client', Auth::id())->first();
 
@@ -534,13 +535,16 @@ class ClientController extends BaseClientController
             if (! $product instanceof Product) {
                 return errorResponse(__('message.product_relation_not_found'), 404);
             }
-            $subscription = $order->subscription;
-
-            if ($product->github_owner && $product->github_repository) {
-                return $this->githubVersions($request, $product, $subscription);
+            $access = Gate::inspect(OrderAbility::Download, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
 
-            return $this->uploadVersions($request, $order, $product, $subscription);
+            if ($product->github_owner && $product->github_repository) {
+                return $this->githubVersions($request, $order, $product);
+            }
+
+            return $this->uploadVersions($request, $order, $product);
         } catch (Exception $exception) {
             \Logger::exception($exception);
 
@@ -548,94 +552,56 @@ class ClientController extends BaseClientController
         }
     }
 
-    /**
-     * @return array<mixed>
-     */
-    private function autoRenewalGateways(string $country): array
-    {
-        $currency = getCurrencyForClient($country);
-        $active = SettingsController::checkPaymentGateway($currency);
-        if (! is_array($active)) {
-            $active = [];
-        }
-        $active = array_map(strtolower(...), $active);
-
-        $enabled = [];
-        if (StatusSetting::autoRenewalEnabledFor('stripe') && in_array('stripe', $active)) {
-            $enabled[] = 'Stripe';
-        }
-
-        if (StatusSetting::autoRenewalEnabledFor('razorpay') && in_array('razorpay', $active)) {
-            $enabled[] = 'Razorpay';
-        }
-
-        return $enabled;
-    }
-
-    private function githubVersions(Request $request, Product $product, ?Subscription $subscription): JsonResponse
+    private function githubVersions(Request $request, Order $order, Product $product): JsonResponse
     {
         // Built here, not in the constructor: it loads the GitHub settings row and would
         // otherwise run (and could fail) on every client-panel request.
-        $githubApi = new GithubApiController;
+        $githubApi = resolve(GithubApiController::class);
 
-        $allReleases = array_slice(
-            $githubApi->releases($product->github_owner, $product->github_repository),
-            0, 3, preserve_keys: true
-        );
-
-        $downloadPermission = LicensePermissionsController::getPermissionsForProduct((int) $product->id);
-        $allowTillExpiry = $downloadPermission['allowDownloadTillExpiry'] == 1;
-        $countVersions = count($allReleases);
-        $countExpiry = 0;
-
-        if ($subscription instanceof Subscription) {
-            foreach ($allReleases as $release) {
-                if (! $subscription->update_ends_at
-                    || $subscription->update_ends_at == '0000-00-00 00:00:00'
-                    || strtotime((string) $release['created_at']) < strtotime((string) $subscription->update_ends_at)) {
-                    $countExpiry++;
-                }
-            }
-        }
-
-        $search = trim((string) $request->input('search-query', ''));
-        $items = collect();
-
-        foreach ($allReleases as $release) {
-            if ($search && stripos($release['tag_name'].$release['name'], $search) === false) {
-                continue;
-            }
-
-            $canDownload = false;
-            $downloadUrl = null;
-
-            if (! $subscription instanceof Subscription) {
-                $canDownload = true;
-            } elseif ($allowTillExpiry) {
-                $canDownload = ! $subscription->update_ends_at
-                    || $subscription->update_ends_at == '0000-00-00 00:00:00'
-                    || strtotime((string) $release['created_at']) < strtotime((string) $subscription->update_ends_at);
-            } else {
-                $canDownload = $countExpiry === $countVersions;
-            }
-
-            if ($canDownload) {
-                try {
-                    $downloadUrl = $githubApi->resolveDownloadUrl($release['zipball_url']);
-                } catch (Exception) {
-                    $downloadUrl = null;
-                }
-            }
-
-            $items->push([
+        $items = collect($githubApi->releases($product->github_owner, $product->github_repository))
+            ->map(fn (array $release): array => [
                 'version' => (string) $release['tag_name'],
                 'release_type' => empty($release['prerelease']) ? 'official' : 'pre_release',
                 'name' => ucfirst((string) $release['name']),
                 'description' => $release['body'] ?? '',
                 'created_at' => $release['created_at'],
-                'can_download' => $canDownload,
-                'download_url' => $downloadUrl,
+                'can_download' => Gate::allows(OrderAbility::DownloadVersion, [$order, $release['created_at'] ?? null]),
+                'zipball_url' => $release['zipball_url'] ?? null,
             ]);
+
+        // A download link costs one GitHub call each, so only rows actually shown get one:
+        // this page of the table and the featured cards — never the whole release history.
+        $withDownloadUrl = function (?array $item) use ($githubApi): ?array {
+            if ($item === null) {
+                return null;
+            }
+
+            $url = null;
+            if ($item['can_download'] && $item['zipball_url']) {
+                try {
+                    $url = $githubApi->resolveDownloadUrl($item['zipball_url']);
+                } catch (Exception) {
+                    $url = null;
+                }
+            }
+
+            unset($item['zipball_url']);
+
+            return $item + ['download_url' => $url];
+        };
+
+        // The featured cards are picked from every release (ignoring the table's search), and
+        // the "previous versions" table lists only the rest — never a card's version again.
+        $newestFirst = $items->sortByDesc('created_at')->values();
+        $latest = $newestFirst->first();
+        $latestOfficial = ($latest['release_type'] ?? null) !== 'official' ? $newestFirst->firstWhere('release_type', 'official') : null;
+        $featuredVersions = array_column(array_filter([$latest, $latestOfficial]), 'version');
+        $items = $items->reject(fn (array $item): bool => in_array($item['version'], $featuredVersions, true));
+        $hasPrevious = $items->isNotEmpty();
+
+        $search = trim((string) $request->input('search-query', ''));
+        if ($search !== '') {
+            $items = $items->filter(fn (array $item): bool => stripos($item['version'].$item['name'], $search) !== false);
         }
 
         $allowed = ['version', 'name', 'created_at'];
@@ -647,20 +613,18 @@ class ClientController extends BaseClientController
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('limit', 10);
         $paginator = new LengthAwarePaginator(
-            $items->forPage($page, $perPage)->values(),
+            $items->forPage($page, $perPage)->map($withDownloadUrl)->values(),
             $items->count(),
             $perPage,
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        $newestFirst = $items->sortByDesc('created_at')->values();
-
         return successResponse('', $paginator->toArray() + $this->versionPopupMeta(
-            $newestFirst->first(),
-            $newestFirst->firstWhere('release_type', 'official'),
-            $subscription,
-            $allowTillExpiry,
+            $withDownloadUrl($latest),
+            $withDownloadUrl($latestOfficial),
+            $order->subscription,
+            $hasPrevious,
         ));
     }
 
@@ -668,13 +632,15 @@ class ClientController extends BaseClientController
      * Extra fields for the version popup, beside the paginated table rows:
      *  - featured: the latest release; when that is an RC/Beta, the latest official one after it
      *    — so customers aren't left to guess among every past version.
-     *  - updates_ended_on / can_download_older: drive the "updates ended" notice.
+     *  - has_previous: whether any version exists beyond the featured ones (the toggle hides otherwise).
+     *  - updates_ended_on: drives the "updates ended" notice. Reaching this list after
+     *    updates ended means old versions are kept (OrderPolicy::download), so no flag for that.
      *
      * @param  array<string, mixed>|null  $latest
      * @param  array<string, mixed>|null  $latestOfficial
      * @return array<string, mixed>
      */
-    private function versionPopupMeta(?array $latest, ?array $latestOfficial, ?Subscription $subscription, bool $allowTillExpiry): array
+    private function versionPopupMeta(?array $latest, ?array $latestOfficial, ?Subscription $subscription, bool $hasPrevious): array
     {
         $featured = $latest && ($latest['release_type'] ?? null) !== 'official'
             ? array_filter([$latest, $latestOfficial])
@@ -685,12 +651,12 @@ class ClientController extends BaseClientController
 
         return [
             'featured' => $featured,
+            'has_previous' => $hasPrevious,
             'updates_ended_on' => $ended ? $updatesEnd : null,
-            'can_download_older' => $allowTillExpiry,
         ];
     }
 
-    private function uploadVersions(Request $request, Order $order, Product $product, ?Subscription $subscription): JsonResponse
+    private function uploadVersions(Request $request, Order $order, Product $product): JsonResponse
     {
         $search = trim((string) $request->input('search-query', ''));
         $order->invoices->first()?->number;
@@ -698,7 +664,15 @@ class ClientController extends BaseClientController
         $all = ProductUpload::where('product_id', $product->id)
             ->where('is_private', 0)
             ->select('id', 'product_id', 'version', 'title', 'description', 'created_at', 'release_type');
-        $base = clone $all;
+
+        // Featured cards ignore the table's search — they're always the true latest releases —
+        // and the "previous versions" table lists only the rest, never a card's version again.
+        $latest = (clone $all)->latest('id')->first();
+        $latestOfficial = $latest && $latest->release_type !== 'official'
+            ? (clone $all)->where('release_type', 'official')->latest('id')->first()
+            : null;
+        $base = (clone $all)->whereKeyNot(array_filter([$latest?->id, $latestOfficial?->id]));
+        $hasPrevious = (clone $base)->exists();
 
         if ($search !== '' && $search !== '0') {
             $base->where(function ($q) use ($search): void {
@@ -717,32 +691,10 @@ class ClientController extends BaseClientController
         // could slip between pages (missing from one, repeated on the next).
         $base->orderBy($sortCol, $sortDir)->orderBy('id', $sortDir);
 
-        $downloadPermission = LicensePermissionsController::getPermissionsForProduct((int) $product->id);
-        $allowTillExpiry = $downloadPermission['allowDownloadTillExpiry'] == 1;
-
-        $countVersions = (clone $base)->count();
-        $countExpiry = 0;
-
-        if ($subscription && ! $allowTillExpiry) {
-            $countExpiry = ! $subscription->update_ends_at || $subscription->update_ends_at == '0000-00-00 00:00:00'
-                ? $countVersions
-                : (clone $base)->where('created_at', '<', $subscription->update_ends_at)->count();
-        }
-
         $paginator = $base->paginate((int) $request->input('limit', 10));
 
-        $toRow = function ($version) use ($allowTillExpiry, $countExpiry, $countVersions, $subscription, $order): array {
-            $canDownload = false;
-
-            if (! $subscription instanceof Subscription) {
-                $canDownload = true;
-            } elseif ($allowTillExpiry) {
-                $createdAt = $version->created_at;
-                $noExpiry = ! $subscription->update_ends_at || $subscription->update_ends_at == '0000-00-00 00:00:00';
-                $canDownload = $noExpiry || ($createdAt && $createdAt->toDateTimeString() < $subscription->update_ends_at);
-            } else {
-                $canDownload = $countExpiry == $countVersions;
-            }
+        $toRow = function ($version) use ($order): array {
+            $canDownload = Gate::allows(OrderAbility::DownloadVersion, [$order, $version->created_at?->toDateTimeString()]);
 
             return [
                 'version' => (string) $version->version,
@@ -758,17 +710,11 @@ class ClientController extends BaseClientController
         };
         $paginator->getCollection()->transform($toRow);
 
-        // Featured cards ignore the table's search — they're always the true latest releases.
-        $latest = (clone $all)->latest('id')->first();
-        $latestOfficial = $latest && $latest->release_type !== 'official'
-            ? (clone $all)->where('release_type', 'official')->latest('id')->first()
-            : null;
-
         return successResponse('', $paginator->toArray() + $this->versionPopupMeta(
             $latest ? $toRow($latest) : null,
             $latestOfficial ? $toRow($latestOfficial) : null,
-            $subscription,
-            $allowTillExpiry,
+            $order->subscription,
+            $hasPrevious,
         ));
     }
 
@@ -781,6 +727,7 @@ class ClientController extends BaseClientController
     {
         return Order::with([
             'productRelation:id,name,github_owner,github_repository,type,whatsapp_integration',
+            'productRelation.licenseType.permissions', // OrderPolicy reads these per row
             'subscription:id,order_id,plan_id,version,update_ends_at,ends_at,support_ends_at,is_subscribed,is_deleted,autoRenew_status,rzp_subscription',
             'subscription.plan:id,name',
             'invoiceItem:id,agents',
@@ -815,16 +762,7 @@ class ClientController extends BaseClientController
      */
     private function planPriceProductRelation(Product $product): array
     {
-        return Plan::where('product', '!=', $product->id)
-            ->whereHas('productRelation', function ($query): void {
-                $query->where('type', 4)
-                    ->where('can_modify_agent', 1);
-            })
-            ->whereHas('planPrice', function ($query): void {
-                $query->where('renew_price', '!=', 0);
-            })
-            ->pluck('name', 'id')
-            ->toArray();
+        return Plan::cloudPlanChangeOptions($product)->pluck('name', 'id')->toArray();
     }
 
     /**

@@ -19,6 +19,7 @@ use App\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
+use Illuminate\Auth\Access\Response as AccessResponse;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -85,6 +86,15 @@ function isInstall(): bool
 function errorResponse(string|array $message, int $statusCode = 400, mixed $data = null): JsonResponse
 {
     return response()->json(array_filter(['success' => false, 'message' => $message, 'data' => $data], fn ($v) => $v !== null), $statusCode);
+}
+
+/**
+ * The JSON reply for a refused policy check (e.g. Gate::inspect(OrderAbility::Download, $order)):
+ * its reason as the message, 403 unless the policy chose another status.
+ */
+function deniedResponse(AccessResponse $access): JsonResponse
+{
+    return errorResponse((string) $access->message(), $access->status() ?? 403);
 }
 
 /**

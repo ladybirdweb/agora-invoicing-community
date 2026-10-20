@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\CloudPopUp;
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Common\PhpMailController;
 use App\Http\Controllers\Controller;
 use App\Jobs\ReportExport;
@@ -34,6 +35,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -264,7 +266,6 @@ class TenantController extends Controller
 
                 $productName = Product::find($order->product)->name ?? '';
                 $type = $template?->type()->value('name') ?? '';
-                $subject = 'Your '.$productName.' is now ready for use. Get started!';
                 $resultMessage = $result['message'] ?? '';
                 $resultInstallationUrl = $result['installationUrl'] ?? '';
                 $resultReason = $result['reason'] ?? '';
@@ -295,7 +296,7 @@ class TenantController extends Controller
 
                 $this->prepareMessages($faveoCloud, $userEmail, success: true);
                 if ($template instanceof Template) {
-                    $mail->SendEmail($settings->email, $userEmail, $template->data, $subject, $template->type()->value('name'), $replace, $type);
+                    $mail->SendEmail($settings->email, $userEmail, $template->data, $template->name, $template->type()->value('name'), $replace, $type);
                 }
 
                 if ($resultReason != '') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
@@ -508,6 +509,12 @@ class TenantController extends Controller
             $order = Order::where('number', $orderNumber)->where('client', $this->authUser()->id)->first();
             if (! $order instanceof Order) {
                 return errorResponse(__('message.something_wrong_cloud_instance'));
+            }
+
+            // Only the owner's own, live cloud order — see OrderPolicy::deleteCloud.
+            $access = Gate::inspect(OrderAbility::DeleteCloud, $order);
+            if ($access->denied()) {
+                return deniedResponse($access);
             }
             $order_id = $order->id;
             $installation_path = $order->installedDomains()->first();

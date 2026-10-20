@@ -124,7 +124,7 @@
                                     <i class="fab fa-whatsapp fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.whatsapp_signup') }}
                                 </button>
                             </li>
-                            <li v-if="order.deploy_enabled && order.has_deployable_uploads && order.status !== 'Terminated'" class="nav-item">
+                            <li v-if="order.can_deploy && order.has_deployable_uploads" class="nav-item">
                                 <button type="button" class="nav-link w-100 text-start" :class="{ active: activeTab === 'deploy' }"
                                    :aria-current="activeTab === 'deploy' ? 'true' : undefined" @click="activeTab = 'deploy'">
                                     <i class="fas fa-rocket fa-fw nav-icon" aria-hidden="true"></i>{{ __('message.deploy') }}
@@ -159,7 +159,7 @@
                                     <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'" aria-hidden="true"></i>
                                 </button>
                                 <span class="visually-hidden" aria-live="polite">{{ copied ? __('message.copied') : '' }}</span>
-                                <button v-if="order.serial_key && !order.is_cloud" type="button"
+                                <button v-if="order.serial_key && order.can_reissue" type="button"
                                         class="btn btn-light btn-sm table_btn"
                                         :disabled="reissuing"
                                         @click="showReissueModal = true">
@@ -167,9 +167,8 @@
                                     <i v-else class="fas fa-id-card-alt me-1" aria-hidden="true"></i>{{ __('message.reissue_license') }}
                                 </button>
                                 <!-- One renewal extends license, updates and support together, so it sits with
-                                     the license rather than beside any one date. Hidden when nothing expires,
-                                     or the cloud instance is deleted (nothing left to pay for). -->
-                                <button v-if="order.can_renew && !order.is_cloud_deleted" type="button"
+                                     the license rather than beside any one date. -->
+                                <button v-if="order.can_renew" type="button"
                                         class="btn btn-light btn-sm table_btn"
                                         @click="showRenewModal = true">
                                     <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.renew') }}
@@ -216,7 +215,7 @@
                             </div>
                         </div>
 
-                        <template v-if="order.license_mode === 'File'">
+                        <template v-if="order.can_use_license_file">
                             <div class="row"><div class="col"><hr class="solid my-3"></div></div>
 
                             <div class="row align-items-center">
@@ -483,7 +482,7 @@
                     <!-- ── Deploy ──────────────────────────────────────────── -->
                     <div v-show="activeTab === 'deploy'">
                         <DeployWizard
-                            v-if="order.deploy_enabled && order.has_deployable_uploads"
+                            v-if="order.can_deploy && order.has_deployable_uploads"
                             :orderId="order.id"
                             :manualGuideUrl="order.manual_install_guide_url"
                         />
@@ -1005,8 +1004,8 @@ const planBusy   = ref(false)
 const alertStore = useAlertStore()
 const loaderStore = useLoaderStore()
 
-const showCloudTab      = computed(() => !!order.value?.is_cloud && !order.value?.is_cloud_deleted && order.value?.status !== 'Terminated')
-const showAutoRenewTab  = computed(() => !!order.value?.autorenewal_enabled && !!order.value?.can_renew && !order.value?.is_cloud_deleted && order.value?.status !== 'Terminated')
+const showCloudTab      = computed(() => !!order.value?.can_manage_cloud)
+const showAutoRenewTab  = computed(() => !!order.value?.autorenewal_enabled && !!order.value?.can_renew)
 
 /* ── Auto Renewal ─────────────────────────────────────────── */
 const showRenewalModal = ref(false)
@@ -1380,7 +1379,7 @@ function selectDownload(productId) {
 }
 
 async function loadPluginLicenses() {
-    if (!order.value?.number) return
+    if (!order.value?.number || !order.value?.can_use_license_file) return
     try {
         const res = await http.get(`/LocalizedLicense/${order.value.number}/plugins`)
         pluginLicenses.value = res.data?.data ?? res.data ?? []
@@ -1446,12 +1445,10 @@ async function submitDomain() {
     if (!cloud.value) return
     domainBusy.value = true
     try {
+        // The server takes the current domain, license and product from the order itself.
         const res = await http.post(`/change/domain`, {
-            newDomain:     domainForm.newDomain,
-            currentDomain: cloud.value.installation_path,
-            lic_code:      cloud.value.serial_key,
-            product_id:    cloud.value.product_id,
-            order_id:      cloud.value.order_id,
+            newDomain: domainForm.newDomain,
+            order_id:  cloud.value.order_id,
         })
         successHandler(res, 'client-page')
         closeDomainModal()

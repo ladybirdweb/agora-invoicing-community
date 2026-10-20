@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Plugin;
 use Exception;
@@ -133,6 +134,16 @@ class PaymentSettingsController extends Controller
             if ($configs instanceof JsonResponse) {
                 return $configs;
             }
+
+            // Without its webhook secret a gateway's webhooks are rejected, so failed-payment
+            // alerts and the backup payment confirmation never arrive. null = no webhooks used.
+            $secretColumns = ['stripe' => 'stripe_webhook_secret', 'razorpay' => 'razorpay_webhook_secret'];
+            $keys = ApiKey::first(array_values($secretColumns));
+            foreach ($configs as &$config) {
+                $column = $secretColumns[strtolower((string) $config['name'])] ?? null;
+                $config['webhook_configured'] = $column === null ? null : filled($keys?->{$column});
+            }
+            unset($config);
 
             return successResponse('', array_values($configs));
         } catch (Exception $exception) {

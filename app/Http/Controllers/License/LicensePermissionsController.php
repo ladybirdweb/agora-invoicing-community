@@ -150,33 +150,41 @@ class LicensePermissionsController extends Controller
      * Get All the Permissions Allowed for a Product.
      *
      * @param  int  $productid  Id of the Product
-     * @return array<mixed> Returns all the Permissions in booleam Form.
+     * @return array<string, bool> Every permission key, true when the product's license type grants it.
      */
-    public static function getPermissionsForProduct(int $productid)
+    public static function getPermissionsForProduct(int $productid): array
     {
         try {
-            $map = self::permissionMap();
-
-            $result = array_fill_keys(array_values($map), 0);
-
-            $product = Product::find($productid);
-
-            if (! $product || ! $product->licenseType || ! $product->licenseType->permissions) { // @phpstan-ignore booleanNot.alwaysFalse
-                return $result;
-            }
-
-            $permissions = $product->licenseType->permissions->pluck('permissions')->toArray();
-
-            foreach ($permissions as $permission) {
-                if (isset($map[$permission])) {
-                    $result[$map[$permission]] = 1;
-                }
-            }
-
-            return $result;
+            return self::permissionsFor(Product::find($productid));
         } catch (Exception $exception) {
             Logger::exception($exception);
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
+    }
+
+    /**
+     * Same as {@see getPermissionsForProduct}, from a product already in hand. Uses its
+     * licenseType.permissions relations, so a list that eager-loads them queries once.
+     *
+     * @return array<string, bool>
+     */
+    public static function permissionsFor(?Product $product): array
+    {
+        // Loaded with a column list that left out `type`: its license type can't be found, and
+        // every permission would silently read as off — so look the product up in full.
+        if ($product instanceof Product && ! array_key_exists('type', $product->getAttributes())) {
+            $product = $product->fresh();
+        }
+
+        $map = self::permissionMap();
+        $result = array_fill_keys(array_values($map), false);
+
+        foreach ($product?->licenseType->permissions ?? [] as $permission) {
+            if (isset($map[$permission->permissions])) {
+                $result[$map[$permission->permissions]] = true;
+            }
+        }
+
+        return $result;
     }
 }

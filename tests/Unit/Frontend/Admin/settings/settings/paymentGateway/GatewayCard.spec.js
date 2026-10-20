@@ -66,4 +66,22 @@ describe('GatewayCard.vue', () => {
         await wrapper.setProps({ logoSrc: '/img/stripe.png' })
         expect(wrapper.find('img').exists()).toBeTruthy()
     })
+
+    describe('missing webhook secret', () => {
+        const mountWith = (plugin) => mount(GatewayCard, { props: { plugin }, global: { plugins: [createTestingPinia()] } })
+
+        it('warns on an active gateway without its webhook secret', () => {
+            expect(mountWith({ name: 'Stripe', status: true, webhook_configured: false }).text()).toContain('message.webhook_secret_missing')
+        })
+
+        it('stays quiet when the secret is set, the gateway is off, or it uses no webhooks', () => {
+            for (const plugin of [
+                { name: 'Stripe', status: true, webhook_configured: true },
+                { name: 'Stripe', status: false, webhook_configured: false },
+                { name: 'Ccavenue', status: true, webhook_configured: null },
+            ]) {
+                expect(mountWith(plugin).text()).not.toContain('message.webhook_secret_missing')
+            }
+        })
+    })
 })

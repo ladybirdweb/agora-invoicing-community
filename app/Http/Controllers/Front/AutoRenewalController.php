@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Enums\OrderAbility;
 use App\Http\Controllers\Common\PhpMailController;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
@@ -18,6 +19,7 @@ use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AutoRenewalController extends Controller
 {
@@ -34,7 +36,7 @@ class AutoRenewalController extends Controller
      */
     public function stripeSession(Request $request, int $order): JsonResponse
     {
-        $order = $this->authorizedOrder($order);
+        $order = $this->enableableOrder($order, 'Stripe');
         /** @var User $authUser */
         $authUser = Auth::user();
         $currency = getCurrencyForClient($authUser->country);
@@ -64,6 +66,8 @@ class AutoRenewalController extends Controller
      */
     public function stripeConfirm(Request $request, int $order): JsonResponse
     {
+        // The start step enforced the full rule; refusing here would strand the customer's
+        // payment/authorization, so only ownership is re-checked.
         $order = $this->authorizedOrder($order);
         try {
             $paymentIntentId = $request->input('payment_intent');
@@ -114,7 +118,7 @@ class AutoRenewalController extends Controller
      */
     public function razorpayOrder(Request $request, int $order): JsonResponse
     {
-        $order = $this->authorizedOrder($order);
+        $order = $this->enableableOrder($order, 'Razorpay');
         try {
             /** @var User $user */
             $user = Auth::user();
@@ -134,6 +138,8 @@ class AutoRenewalController extends Controller
      */
     public function razorpayConfirm(Request $request, int $order): JsonResponse
     {
+        // The start step enforced the full rule; refusing here would strand the customer's
+        // payment/authorization, so only ownership is re-checked.
         $order = $this->authorizedOrder($order);
         try {
             // The signature only proves this (payment_id, subscription_id)
@@ -190,6 +196,16 @@ class AutoRenewalController extends Controller
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────
+
+    /** Starting to turn auto-renewal on: refused unless OrderPolicy::enableAutoRenew allows this gateway. */
+    private function enableableOrder(int $orderId, string $gateway): Order
+    {
+        $order = Order::findOrFail($orderId);
+        $access = Gate::inspect(OrderAbility::EnableAutoRenew, [$order, $gateway]);
+        abort_if($access->denied(), $access->status() ?? 403, (string) $access->message());
+
+        return $order;
+    }
 
     private function authorizedOrder(int $orderId, bool $allowAdmin = false): Order
     {

@@ -193,12 +193,13 @@ class NonPublicDependencies extends BaseDependencyController
         $productId = $this->request->input('product_id');
 
         $baseQuery = $this->baseQuery(new Plan)
+            ->with('periods:id,name')
             ->where('product', $productId)
             ->when($this->searchQuery, function ($query, string $searchQuery): void {
                 $query->where('name', 'like', sprintf('%%%s%%', $searchQuery));
             });
 
-        return $this->get('plans', $baseQuery, fn ($item): array => ['id' => $item->id, 'name' => $item->name, 'days' => $item->days]);
+        return $this->get('plans', $baseQuery, fn ($item): array => ['id' => $item->id, 'name' => $item->name, 'days' => $item->days, 'period' => $item->periodLabel()]);
     }
 
     private function licenseTypes(): mixed

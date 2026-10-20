@@ -283,12 +283,10 @@ class ClientOrderControllerTest extends DBTestCase
             'number' => mt_rand(100000, 999999),
         ]);
 
-        $response = $this->getJson('/get-versions/'.$order->id);
-        // Either 200 with upload versions or 400 if product relation missing
-        $this->assertContains($response->status(), [200, 400]);
-        if ($response->status() === 200) {
-            $response->assertJson(['success' => true]);
-        }
+        // A product with no license type has no "Allow downloads" permission (OrderPolicy::download).
+        $this->getJson('/get-versions/'.$order->id)
+            ->assertStatus(403)
+            ->assertJson(['success' => false, 'message' => __('message.no_permission_for_action')]);
     }
 
     // =========================================================================
@@ -350,4 +348,90 @@ class ClientOrderControllerTest extends DBTestCase
         $data = $response->json('data');
         $this->assertArrayHasKey('data', $data);
     }
+
+    // =========================================================================
+    // Action rules (OrderPolicy) — buttons and endpoints agree
+    // =========================================================================
+
+    /** @param  list<string>  $permissions */
+    private function policyOrder(User $user, array $permissions, array $productAttributes = [], array $subscription = []): Order
+    {
+        $type = LicenseType::factory()->create();
+        foreach ($permissions as $name) {
+            $type->permissions()->attach(LicensePermission::firstOrCreate(['permissions' => $name])->id);
+        }
+        $product = Product::factory()->create(['type' => $type->id] + $productAttributes);
+        $order = Order::factory()->create(['client' => $user->id, 'product' => $product->id, 'order_status' => 'executed']);
+        Subscription::factory()->create($subscription + [
+            'order_id' => $order->id, 'product_id' => $product->id, 'user_id' => $user->id, 'is_deleted' => 0,
+        ]);
+
+        return $order;
+    }
+
+    public function test_versions_are_refused_when_downloads_are_not_allowed_even_for_github_products(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $order = $this->policyOrder($user, [], ['github_owner' => 'acme', 'github_repository' => 'app']);
+
+        // Never asks GitHub for (direct) download links.
+        $github = Mockery::mock(\App\Http\Controllers\Github\GithubApiController::class);
+        $github->shouldNotReceive('releases');
+        $github->shouldNotReceive('resolveDownloadUrl');
+        $this->app->instance(\App\Http\Controllers\Github\GithubApiController::class, $github);
+
+        $this->getJson('/get-versions/'.$order->id)
+            ->assertStatus(403)
+            ->assertJson(['success' => false, 'message' => __('message.no_permission_for_action')]);
+    }
+
+    public function test_versions_are_refused_after_updates_end_when_old_downloads_are_not_kept(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $order = $this->policyOrder($user, ['Can be Downloaded'], subscription: ['update_ends_at' => now()->subDay()]);
+
+        $this->getJson('/get-versions/'.$order->id)
+            ->assertStatus(403)
+            ->assertJson(['success' => false, 'message' => __('message.renew_subscription_download')]);
+    }
+
+    public function test_versions_list_only_unlocks_releases_from_before_updates_end(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $order = $this->policyOrder($user, ['Can be Downloaded', 'Allow Downloads Before Updates Expire'], subscription: ['update_ends_at' => now()->subDays(10)]);
+        $productId = $order->getRawOriginal('product');
+        ProductUpload::factory()->create(['product_id' => $productId, 'version' => 'v1.0.0', 'is_private' => 0, 'created_at' => now()->subDays(20)]);
+        ProductUpload::factory()->create(['product_id' => $productId, 'version' => 'v2.0.0', 'is_private' => 0, 'created_at' => now()->subDays(5)]);
+
+        $data = $this->getJson('/get-versions/'.$order->id)->assertOk()->json('data');
+        // v2.0.0 is the newest, so it's the featured card; v1.0.0 is in the previous-versions table.
+        $older = collect($data['data'])->keyBy('version');
+        $newest = collect($data['featured'])->keyBy('version');
+
+        $this->assertTrue($older['v1.0.0']['can_download']);
+        $this->assertFalse($newest['v2.0.0']['can_download']);
+        $this->assertNull($newest['v2.0.0']['download_url']);
+    }
+
+    public function test_my_orders_flags_come_from_the_same_rules(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        // Self-hosted, downloads off: no download button and no cloud-delete button either.
+        $this->policyOrder($user, [], subscription: ['ends_at' => now()->addMonth()]);
+
+        $row = $this->getJson('/get-my-orders')->assertOk()->json('data.data.0');
+
+        $this->assertTrue($row['can_renew']);
+        $this->assertFalse($row['can_download']);
+        $this->assertFalse($row['can_delete_cloud']);
+    }
 }
+

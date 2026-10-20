@@ -321,6 +321,25 @@ class InvoicePaymentService
     }
 
     /**
+     * Alert the admin that a gateway payment attempt for this invoice failed
+     * (reported by the gateway's failure webhook). Nothing is sent once the
+     * invoice is settled, and a mail failure never fails the webhook.
+     */
+    public function notifyFailure(Invoice $invoice, string $reason): void
+    {
+        $user = $invoice->user;
+        if (! emailSendingStatus() || ! $user instanceof User || $this->outstanding($invoice) <= 0) {
+            return;
+        }
+
+        try {
+            PostPaymentService::sendFailedPaymenttoAdmin($invoice, (float) $invoice->grand_total, $reason, $user);
+        } catch (Throwable $throwable) {
+            Logger::exception($throwable);
+        }
+    }
+
+    /**
      * Turn a checkout-time auto-renewal opt-in into an active one, using the
      * card just saved on this purchase's PaymentIntent (setup_future_usage was
      * requested in {@see invoiceRequest} when the invoice carries the flag).

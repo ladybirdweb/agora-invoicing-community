@@ -20,6 +20,9 @@
             </div>
 
             <p class="text-muted fs-7 mt-2 mb-0">{{ description }}</p>
+            <p v-if="plugin.status && plugin.webhook_configured === false" class="text-warning fs-7 mt-2 mb-0">
+                <i class="fas fa-triangle-exclamation me-1" aria-hidden="true"></i>{{ __('message.webhook_secret_missing') }}
+            </p>
         </div>
 
         <!-- Actions -->

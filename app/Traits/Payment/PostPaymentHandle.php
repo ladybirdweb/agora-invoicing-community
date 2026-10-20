@@ -23,7 +23,7 @@ trait PostPaymentHandle
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for of '.$invoice->currency.' '.round($total).' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'<br>'.'Reason:'.$exceptionMessage;
         $mail = new PhpMailController;
-        $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentFailData, 'Payment failed ', 'payment-failed');
+        $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentFailData, 'Payment failed', 'payment-failed');
         if ($payment) {
             $message = $invoice->is_renewed == 1 ? 'Product renew' : 'Product purchase';
             $mail->payment_log($user->email, $payment->payment_method, $payment->payment_status, $orderNumber, $exceptionMessage, $amount, $message);

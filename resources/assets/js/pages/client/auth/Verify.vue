@@ -50,7 +50,7 @@
                                             <button type="button"
                                                     class="btn btn-link text-primary text-decoration-none fw-semibold p-0"
                                                     :disabled="cooldown > 0" @click="resend('text')">
-                                                <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ current.type === 'mobile' ? __('message.resend_otp') : __('message.resend_email') }}
+                                                <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_otp') }}
                                             </button>
                                             <span v-if="cooldown > 0" class="text-muted fw-semibold">
                                                 {{ String(cooldown).padStart(2, '0') }}s

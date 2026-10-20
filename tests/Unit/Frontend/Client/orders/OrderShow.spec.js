@@ -213,13 +213,14 @@ describe('OrderShow.vue — modal and state helpers', () => {
         expect(wrapper.vm.gatewayOptions.map(g => g.id)).toEqual(['stripe'])
     })
 
-    it('showCloudTab is true when order is_cloud and not Terminated', () => {
-        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Active' }
+    // The server decides (OrderPolicy::manageCloud) — the page only reads can_manage_cloud.
+    it('showCloudTab follows can_manage_cloud from the server', () => {
+        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Active', can_manage_cloud: true }
         expect(wrapper.vm.showCloudTab).toBe(true)
     })
 
-    it('showCloudTab is false when order status is Terminated', () => {
-        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Terminated' }
+    it('showCloudTab is false when the server says the cloud cannot be managed', () => {
+        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Active', can_manage_cloud: false }
         expect(wrapper.vm.showCloudTab).toBe(false)
     })
 
@@ -785,9 +786,9 @@ describe('OrderShow.vue — modal and state helpers', () => {
     })
 
     // ── Computed branches ─────────────────────────────────────────────────────
-    it('showCloudTab is true when order is_cloud and not Terminated', async () => {
+    it('showCloudTab is true when the server allows managing the cloud', async () => {
         await flushPromises()
-        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Active' }
+        wrapper.vm.order = { ...orderFixture, is_cloud: true, status: 'Active', can_manage_cloud: true }
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.showCloudTab).toBe(true)
     })

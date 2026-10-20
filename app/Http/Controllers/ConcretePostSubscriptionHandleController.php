@@ -135,7 +135,7 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
             $paymentSuccessdata = 'Payment for '.$productName.' of '.$currency.' '.$total.' successful by '.$user->first_name.' '.$user->last_name.' Email: '.$user->email;
 
             $mail = new PhpMailController;
-            $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentSuccessdata, 'payment-success', $template->type()->value('name'));
+            $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentSuccessdata, 'Payment Successful', $template->type()->value('name'));
             $paymentMethod = $payment instanceof Payment ? ($payment->payment_method ?? 'Unknown') : (string) $payment;
             $mail->payment_log($user->email, $paymentMethod, 'success', $order->number, amount: $amount, payment_type: 'Product renew');
         } catch (Throwable $throwable) {
@@ -168,7 +168,7 @@ class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleCon
             if (! $dbTemplate instanceof Template) {
                 return;
             }
-            $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentFailData, 'payment-failed', $dbTemplate->type()->value('name'));
+            $mail->SendEmail((string) $setting->email, (string) $setting->company_email, $paymentFailData, 'Payment failed', $dbTemplate->type()->value('name'));
             $paymentMethod = $payment->payment_method ?? 'Unknown';
             $mail->payment_log($user->email, $paymentMethod, 'failed', $order->number, $exceptionMessage, $amount, 'Product renew');
         } catch (Throwable $throwable) {

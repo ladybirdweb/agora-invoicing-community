@@ -145,13 +145,13 @@ class LicensePermissionsControllerTest extends DBTestCase
             ->assertJsonFragment(['success' => false]);
     }
 
-    public function test_get_permissions_for_product_returns_zeros_for_unknown_product(): void
+    public function test_get_permissions_for_product_returns_all_false_for_unknown_product(): void
     {
         $result = \App\Http\Controllers\License\LicensePermissionsController::getPermissionsForProduct(999999);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('generateLicenseExpiryDate', $result);
-        $this->assertSame(0, $result['generateLicenseExpiryDate']);
+        $this->assertFalse($result['generateLicenseExpiryDate']);
         $this->assertArrayHasKey('downloadPermission', $result);
     }
 
@@ -167,6 +167,19 @@ class LicensePermissionsControllerTest extends DBTestCase
         $result = \App\Http\Controllers\License\LicensePermissionsController::getPermissionsForProduct($product->id);
 
         $this->assertIsArray($result);
-        $this->assertSame(1, $result['generateLicenseExpiryDate']);
+        $this->assertTrue($result['generateLicenseExpiryDate']);
+    }
+
+    public function test_permissions_for_a_product_loaded_without_its_type_column_are_still_read(): void
+    {
+        $perm = LicensePermission::firstOrCreate(['permissions' => 'Can be Downloaded']);
+        $type = LicenseType::create(['name' => 'test-type-'.uniqid()]);
+        $type->permissions()->attach($perm->id);
+        $product = \App\Model\Product\Product::factory()->create(['type' => $type->id]);
+
+        // e.g. an eager load like 'productRelation:id,name'
+        $partial = \App\Model\Product\Product::select('id', 'name')->find($product->id);
+
+        $this->assertTrue(\App\Http\Controllers\License\LicensePermissionsController::permissionsFor($partial)['downloadPermission']);
     }
 }

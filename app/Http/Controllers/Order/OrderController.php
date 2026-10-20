@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Enums\OrderAbility;
 use App\Events\UserOrderDelete;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Jobs\ReportExport;
@@ -19,12 +20,14 @@ use App\Model\Product\ProductGroup;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Payment_log;
+use App\Policies\OrderPolicy;
 use App\User;
 use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Logger;
 
 class OrderController extends BaseOrderController
@@ -201,11 +204,8 @@ class OrderController extends BaseOrderController
                     'update_ends_at' => strtotime((string) $order->subscription?->ends_at) > 1 ? $order->subscription?->ends_at : null,
                     'subscription_updated_at' => $order->subscription?->updated_at,
                     'subscription_id' => $order->subscription?->id,
-                    // Shown unless terminated (renewed on its replacement order instead); shown but
-                    // disabled, with this reason, while the instance is deleted or an invoice is unpaid.
                     // ponytail: one invoice query per row — fine at page sizes; batch it if lists grow.
-                    'can_renew' => strcasecmp((string) $order->order_status, 'terminated') !== 0 && $order->subscription?->canRenew(),
-                    'renew_blocked_reason' => $order->subscription !== null ? $order->renewBlockedReason() : null,
+                    ...$this->renewFlags($order),
                     'user' => $user,
                 ];
             });
@@ -216,6 +216,23 @@ class OrderController extends BaseOrderController
 
             return errorResponse(__('message.sorry_something_wrong'));
         }
+    }
+
+    /**
+     * The admin Renew button (OrderPolicy::adminRenew): hidden when the order isn't renewable,
+     * shown disabled with the reason while it's blocked (deleted instance, unpaid invoice).
+     *
+     * @return array{can_renew: bool, renew_blocked_reason: string|null}
+     */
+    private function renewFlags(Order $order): array
+    {
+        $renew = Gate::inspect(OrderAbility::AdminRenew, $order);
+        $blocked = $renew->code() === OrderPolicy::RENEW_BLOCKED;
+
+        return [
+            'can_renew' => $renew->allowed() || $blocked,
+            'renew_blocked_reason' => $blocked ? (string) $renew->message() : null,
+        ];
     }
 
     public function getOrder(int $id): JsonResponse
@@ -268,7 +285,7 @@ class OrderController extends BaseOrderController
             'permissions' => LicensePermissionsController::getPermissionsForProduct((int) $order->product),
             'is_subscribed' => $order->subscription?->is_subscribed,
             'auto_renew_state' => $order->subscription?->autoRenewState() ?? 'inactive',
-            'can_renew' => (bool) $order->subscription?->canRenew(),
+            ...$this->renewFlags($order),
             'payment_log' => $paymentLog,
         ]);
     }

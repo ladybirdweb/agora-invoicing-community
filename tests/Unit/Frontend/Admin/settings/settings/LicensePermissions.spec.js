@@ -40,6 +40,23 @@ describe('LicensePermissions.vue', () => {
         expect(wrapper.find('app-modal-stub').exists()).toBe(false)
     })
 
+    it.each([
+        ['Can be Downloaded', 'license_perm_download'],
+        ['Generate License Expiry Date', 'license_perm_license_expiry'],
+        ['Generate Updates Expiry Date', 'license_perm_updates_expiry'],
+        ['Generate Support Expiry Date', 'license_perm_support_expiry'],
+        ['No Permissions', 'license_perm_none'],
+        ['Allow Downloads Before Updates Expire', 'license_perm_old_downloads'],
+    ])('shows a plain label and hover hint for "%s"', (stored, key) => {
+        expect(wrapper.vm.permLabel(stored)).toBe(`message.${key}`)
+        expect(wrapper.vm.permHint(stored)).toBe(`message.${key}_hint`)
+    })
+
+    it('falls back to the stored name, with no hint, for an unknown permission', () => {
+        expect(wrapper.vm.permLabel('Some New Permission')).toBe('Some New Permission')
+        expect(wrapper.vm.permHint('Some New Permission')).toBe('')
+    })
+
     it('calls delete endpoint on savePerms', async () => {
         await flushPromises()
         // Simulate openEdit being called by setting editLicense via DOM interaction

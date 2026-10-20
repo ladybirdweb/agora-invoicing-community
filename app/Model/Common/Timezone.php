@@ -10,12 +10,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @property string|null $name
  * @property string|null $location
  * @property-read string $timezone_name
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timezone whereName($value)
+ *
  * @mixin \Eloquent
  */
 class Timezone extends BaseModel

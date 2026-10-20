@@ -128,6 +128,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $taxes_count
  * @property-read Collection<int, ProductUpload> $versions
  * @property-read int|null $versions_count
+ *
  * @method static \Database\Factories\Model\Product\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -183,6 +184,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWelcomeEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWhatsappIntegration($value)
+ *
  * @mixin \Eloquent
  */
 class Product extends BaseModel

@@ -22,6 +22,7 @@ use Override;
  * @property int $installation_status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static Builder<static>|InstallationLog forLicense(string $licenseCode)
  * @method static Builder<static>|InstallationLog newModelQuery()
  * @method static Builder<static>|InstallationLog newQuery()
@@ -36,6 +37,7 @@ use Override;
  * @method static Builder<static>|InstallationLog whereLicenseCode($value)
  * @method static Builder<static>|InstallationLog whereUpdatedAt($value)
  * @method static Builder<static>|InstallationLog whereVersionNumber($value)
+ *
  * @mixin \Eloquent
  */
 class InstallationLog extends Model

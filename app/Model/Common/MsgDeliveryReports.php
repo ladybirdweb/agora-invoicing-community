@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property-read mixed $formatted_sender_id
  * @property-read Msg91Status|null $readableStatus
  * @property-read User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports query()
@@ -45,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MsgDeliveryReports whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class MsgDeliveryReports extends Model

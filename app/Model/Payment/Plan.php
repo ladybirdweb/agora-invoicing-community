@@ -39,6 +39,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, PlanPrice> $planPrice
  * @property-read int|null $plan_price_count
  * @property-read Product|null $productRelation
+ *
  * @method static Builder<static>|Plan cloudPlanChangeOptions(Product $product)
  * @method static \Database\Factories\Model\Payment\PlanFactory factory($count = null, $state = [])
  * @method static Builder<static>|Plan newModelQuery()
@@ -52,6 +53,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static Builder<static>|Plan whereProduct($value)
  * @method static Builder<static>|Plan whereStatus($value)
  * @method static Builder<static>|Plan whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Plan extends BaseModel

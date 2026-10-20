@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $balance
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance query()
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserCreditBalance whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class UserCreditBalance extends BaseModel

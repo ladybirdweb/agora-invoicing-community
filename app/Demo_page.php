@@ -19,6 +19,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page query()
@@ -26,6 +27,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Demo_page whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Demo_page extends Model

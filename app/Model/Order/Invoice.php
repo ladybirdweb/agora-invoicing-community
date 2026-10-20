@@ -59,6 +59,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $subscriptions_count
  * @property-read string $type
  * @property-read User|null $user
+ *
  * @method static \Database\Factories\Model\Order\InvoiceFactory factory($count = null, $state = [])
  * @method static Builder<static>|Invoice newModelQuery()
  * @method static Builder<static>|Invoice newQuery()
@@ -83,6 +84,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static Builder<static>|Invoice whereStatus($value)
  * @method static Builder<static>|Invoice whereUpdatedAt($value)
  * @method static Builder<static>|Invoice whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class Invoice extends BaseModel

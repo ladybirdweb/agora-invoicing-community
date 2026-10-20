@@ -18,6 +18,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory query()
@@ -25,6 +26,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ProductCategory extends Model

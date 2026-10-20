@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string $value
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue query()
@@ -23,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue whereServiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FaveoQueue whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class FaveoQueue extends Model

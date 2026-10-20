@@ -34,6 +34,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read FrontendPage|null $parent
+ *
  * @method static \Database\Factories\Model\Front\FrontendPageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage newQuery()
@@ -55,6 +56,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FrontendPage whereUrl($value)
+ *
  * @mixin \Eloquent
  */
 class FrontendPage extends BaseModel

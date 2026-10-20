@@ -140,6 +140,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read int|null $verification_attempts_count
  * @property-read Collection<int, WhatsappIntegrationUser> $whatsappUsers
  * @property-read int|null $whatsapp_users_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -194,6 +195,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereZip($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract // @phpstan-ignore class.missingImplements

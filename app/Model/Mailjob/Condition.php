@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $value
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition query()
@@ -20,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition whereJob($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Condition whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class Condition extends Model

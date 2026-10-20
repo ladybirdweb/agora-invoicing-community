@@ -27,6 +27,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property-read Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
  * @property-read Plan|null $plan
+ *
  * @method static \Database\Factories\Model\Payment\PlanPriceFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PlanPrice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PlanPrice newQuery()
@@ -42,6 +43,7 @@ use Spatie\Activitylog\Models\Activity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PlanPrice whereProductQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PlanPrice whereRenewPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PlanPrice whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PlanPrice extends Model

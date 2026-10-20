@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property int $failed_licensings_limit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting query()
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting whereFailedLicensingsLimit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LicenseSecuritySetting whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class LicenseSecuritySetting extends Model

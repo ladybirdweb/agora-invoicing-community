@@ -113,7 +113,7 @@
                                    class="form-control text-3 h-auto py-2"
                                    v-model="totp"
                                    :aria-label="__('message.authentication_code')"
-                                   autocomplete="one-time-code" inputmode="numeric" spellcheck="false"
+                                   :autocomplete="'one-time-code'" inputmode="numeric" spellcheck="false"
                                    :placeholder="__('message.enter_passcode')"
                                    maxlength="6"
                                    @keydown.enter="verify2fa" />

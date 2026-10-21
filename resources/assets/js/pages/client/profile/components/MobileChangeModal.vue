@@ -27,7 +27,7 @@
                 <ClientField type="text" name="otp" required
                              :label="__('message.enter_code')"
                              v-model="otp"
-                             autocomplete="one-time-code" inputmode="numeric" :spellcheck="false"
+                             :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
                              :placeholder="__('message.otp_placeholder')"
                              :error="otpError" />
                 <div class="d-flex align-items-center gap-2 mt-2">

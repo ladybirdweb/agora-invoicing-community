@@ -31,7 +31,7 @@
                             <!-- OTP entry -->
                             <form v-if="current && !done" @submit.prevent="verify" novalidate>
                                 <ClientField name="otp" type="text" :label="__('message.enter_code')" required
-                                             autocomplete="one-time-code" inputmode="numeric" :spellcheck="false"
+                                             :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
                                              :placeholder="__('message.otp_placeholder')"
                                              :model-value="form.otp" :error="errors.otp"
                                              @update:modelValue="onOtpInput" />

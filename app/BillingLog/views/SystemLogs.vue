@@ -224,7 +224,7 @@
                     />
                 </div>
                 <div class="mb-2">
-                    <label class="form-label">{{ __('log.log_types') }}</label>
+                    <span class="d-inline-block form-label fw-semibold">{{ __('log.log_types') }}</span>
                     <div class="row">
                         <div v-for="t in deletableTypes" :key="t.value" class="col-md-6">
                             <div class="form-check mb-2">
@@ -482,7 +482,7 @@ async function copyCode() {
         document.body.appendChild(ta)
         ta.select()
         document.execCommand('copy')
-        document.body.removeChild(ta)
+        ta.remove()
     }
     codeCopied.value = true
     setTimeout(() => { codeCopied.value = false }, 1500)

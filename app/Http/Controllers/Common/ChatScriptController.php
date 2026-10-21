@@ -32,7 +32,7 @@ class ChatScriptController extends Controller
             $scripts = $this->script // @phpstan-ignore property.notFound
                 ->select('id', 'name')
                 ->when($searchString, function ($query) use ($searchString): void {
-                    $query->where('name', 'like', sprintf('%%%s%%', $searchString));
+                    $query->where('name', 'like', likePattern($searchString));
                 })
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

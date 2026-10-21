@@ -50,9 +50,9 @@ class CurrencyController extends Controller
                 })
                 ->when($searchString, function ($q) use ($searchString): void {
                     $q->where(function ($inner) use ($searchString): void {
-                        $inner->where('name', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('code', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('symbol', 'like', sprintf('%%%s%%', $searchString));
+                        $inner->where('name', 'like', likePattern($searchString))
+                            ->orWhere('code', 'like', likePattern($searchString))
+                            ->orWhere('symbol', 'like', likePattern($searchString));
                     });
                 })
                 ->orderBy($sortField, $sortOrder)

@@ -95,7 +95,11 @@ class LicenseSchemeController extends Controller
 
         // Get scheme based on isPlugin and tableCreate parameters (matching original logic)
         // scheme_id 1 = standard, 2 = plugin with table create, 3 = plugin without table create
-        $schemeId = empty($isPlugin) ? 1 : ($tableCreate ? 2 : 3);
+        $schemeId = match (true) {
+            empty($isPlugin) => 1,
+            ! empty($tableCreate) => 2,
+            default => 3,
+        };
         $scheme = LicenseScheme::where('id', $schemeId)
             ->where('scheme_status', 1)
             ->first();

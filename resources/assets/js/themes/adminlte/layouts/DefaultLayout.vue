@@ -34,7 +34,7 @@
         </div>
 
         <!-- ── Page content ──────────────────────────────────────────────── -->
-        <div class="app-content" id="main" role="main" tabindex="-1">
+        <div class="app-content" id="main" tabindex="-1">
 
             <div class="container-fluid">
 

@@ -33,9 +33,9 @@ class SeoDefaultPageController extends Controller
 
             $rows = SeoDefaultPage::when($searchQuery, function ($query) use ($searchQuery): void {
                 $query->where(function ($q) use ($searchQuery): void {
-                    $q->where('page_key', 'like', sprintf('%%%s%%', $searchQuery))
-                        ->orWhere('meta_title', 'like', sprintf('%%%s%%', $searchQuery))
-                        ->orWhere('meta_description', 'like', sprintf('%%%s%%', $searchQuery));
+                    $q->where('page_key', 'like', likePattern($searchQuery))
+                        ->orWhere('meta_title', 'like', likePattern($searchQuery))
+                        ->orWhere('meta_description', 'like', likePattern($searchQuery));
                 });
             })
                 ->orderBy('id')

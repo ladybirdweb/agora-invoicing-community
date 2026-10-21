@@ -20,7 +20,6 @@ class BaseProductController extends ExtendedBaseProductController
 {
     public function getMyUrl(): string
     {
-        $server = new Request;
         $url = \Illuminate\Support\Facades\Request::server('REQUEST_URI');
         $server = parse_url(is_string($url) ? $url : '');
         $server = is_array($server) ? $server : [];

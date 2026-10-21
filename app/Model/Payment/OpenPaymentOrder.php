@@ -206,7 +206,7 @@ class OpenPaymentOrder extends Model
     protected function casts(): array
     {
         return [
-            'amount' => 'decimal:2',
+            'amount' => 'decimal:2', // NOSONAR - Laravel column/cast list, repeated by design
             'base_amount' => 'decimal:2',
             'processing_fee' => 'decimal:2',
             'processing_fee_rate' => 'decimal:2',

@@ -23,7 +23,7 @@
                     <div class="col-md-4">
                         <div class="mb-3">
                             <div class="d-flex align-items-center gap-1 mb-1">
-                                <label class="form-label fw-bold mb-0">{{ __('message.toggle_status') }}</label>
+                                <span class="form-label fw-bold mb-0">{{ __('message.toggle_status') }}</span>
                                 <ToolTip :message="__('message.check-this-box_to_toggle_status')" size="small" />
                             </div>
                             <Switch name="status" :value="!!form.status" :onChange="(val) => form.status = val ? 1 : 0" />
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label class="form-label fw-bold d-block">{{ __('message.hidden_group') }}</label>
+                            <span class="form-label fw-bold d-block">{{ __('message.hidden_group') }}</span>
                             <Switch name="hidden" :value="!!form.hidden" :onChange="(val) => form.hidden = val ? 1 : 0" />
                         </div>
                     </div>

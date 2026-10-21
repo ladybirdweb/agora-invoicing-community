@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">{{ __('message.content') }} <span class="text-danger ms-1">*</span></label>
+                        <label class="form-label fw-bold" for="editor-template">{{ __('message.content') }} <span class="text-danger ms-1">*</span></label>
                         <TinyMCE
                             name="data"
                             id="editor-template"

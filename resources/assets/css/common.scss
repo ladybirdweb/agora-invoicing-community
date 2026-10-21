@@ -89,7 +89,7 @@ $faveo-white: #fff;
 
 .box-header {
   h3{
-    font-family: Tahoma;
+    font-family: Tahoma, sans-serif;
     text-transform: capitalize;
   }
 }
@@ -144,7 +144,6 @@ input .form-control{
 }
 
 .menu-element {
-  padding: 4px 10px;
   border-bottom: 1px solid #eaecef;
   color: #828282;
   display: block;
@@ -174,7 +173,7 @@ input .form-control{
 .faveo-table>thead {
   padding-bottom: 4px;
   background-color: #eee;
-  font-family: Tahoma;
+  font-family: Tahoma, sans-serif;
   font-weight: 100 !important;
 }
 

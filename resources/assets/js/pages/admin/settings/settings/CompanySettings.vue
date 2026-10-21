@@ -85,7 +85,7 @@
                             <TextField name="zip" :label="__('message.zip')" :value="form.zip" :onChange="onChange" />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold d-block">{{ __('message.auto_renewal') }}</label>
+                            <span class="form-label fw-bold d-block">{{ __('message.auto_renewal') }}</span>
                             <Switch name="autorenewal_status" :value="form.autorenewal_status" :onChange="(val) => form.autorenewal_status = val" />
                         </div>
                     </div>

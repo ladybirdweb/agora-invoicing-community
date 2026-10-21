@@ -13,9 +13,9 @@
 
                     <!-- Enable Verification row -->
                     <div class="row mb-3 align-items-center">
-                        <label class="col-sm-4 col-form-label fw-semibold">
+                        <span class="col-sm-4 col-form-label fw-semibold">
                             {{ __('message.enable_verification') }}
-                        </label>
+                        </span>
                         <div class="col-sm-4 d-flex align-items-center gap-2">
                             <Switch name="email_enabled" :value="form.email_enabled" :onChange="(val) => { form.email_enabled = val; syncPreference() }" />
                             <span>{{ __('message.email') }}</span>

@@ -1,10 +1,11 @@
 <template>
     <div class="mb-3">
-        <label v-if="label" class="form-label fw-bold">
+        <label v-if="label" class="form-label fw-bold" :for="name">
             {{ label }}<span v-if="required" class="text-danger ms-1">*</span>
         </label>
         <input
             ref="phoneRef"
+            :id="name"
             type="tel"
             :class="['form-control', { 'is-invalid': fieldError }]"
             :value="value"

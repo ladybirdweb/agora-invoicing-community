@@ -30,7 +30,7 @@ trait CoupCodeAndInvoiceSearch
         ])
             ->when($request->name, function ($query, $name): void {
                 $query->whereHas('user', function (Builder $q) use ($name): void {
-                    $q->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', [sprintf('%%%s%%', $name)]);
+                    $q->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', [likePattern($name)]);
                 });
             })
             ->when($request->invoice_no, fn ($query, $invoice_no) => $query->where('number', $invoice_no)

@@ -19,6 +19,9 @@ use Session;
 
 class ResetPasswordController extends Controller
 {
+    /** Session flag set once the 2FA code is accepted. */
+    private const TWO_FA_VERIFIED_KEY = '2fa_verified';
+
     /*
     |--------------------------------------------------------------------------
     | Password Reset Controller
@@ -56,7 +59,7 @@ class ResetPasswordController extends Controller
             if ($reset && Date::parse($reset->created_at)->addMinutes(config('auth.passwords.users.expire')) > Date::now()) {
                 $user = User::where('email', $reset->email)->first();
 
-                if ($user && $user->is_2fa_enabled && Session::get('2fa_verified') !== $token) {
+                if ($user && $user->is_2fa_enabled && Session::get(self::TWO_FA_VERIFIED_KEY) !== $token) {
                     Session::put('2fa:user:id', $user->id);
                     Session::put('verification_user_id', $user->id);
                     Session::put('justStarted', true);
@@ -121,13 +124,13 @@ class ResetPasswordController extends Controller
             }
 
             // Same reason: 2FA must be passed for *this* link, not just on page load.
-            if ($user->is_2fa_enabled && Session::get('2fa_verified') !== $token) {
+            if ($user->is_2fa_enabled && Session::get(self::TWO_FA_VERIFIED_KEY) !== $token) {
                 return errorResponse(__('message.reset_link_expired'));
             }
 
             // Begin atomic transaction
             DB::transaction(function () use ($user, $newPassword): void {
-                Session::forget(['2fa_verified', 'reset_token']);
+                Session::forget([self::TWO_FA_VERIFIED_KEY, 'reset_token']);
 
                 $user->password = Hash::make($newPassword);
                 $user->save();

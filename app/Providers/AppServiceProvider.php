@@ -70,7 +70,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function fileMacros(): void
     {
-        // Clean directory except specified files and folders
+        $this->cleanDirectoryFilesMacro();
+        $this->filterFilesMacro();
+        $this->safeGetMacro();
+    }
+
+    /** Clean directory except specified files and folders. */
+    private function cleanDirectoryFilesMacro(): void
+    {
         File::macro('cleanDirectoryFiles', function (
             string $directory,
             array $excludedFiles = [],
@@ -97,8 +104,11 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+    }
 
-        // Filter files based on callback condition
+    /** Filter files based on callback condition. */
+    private function filterFilesMacro(): void
+    {
         File::macro('filterFiles', function (string $directory, callable $callback) {
             if (! File::isDirectory($directory)) {
                 return collect();
@@ -106,8 +116,11 @@ class AppServiceProvider extends ServiceProvider
 
             return collect(File::files($directory))->filter($callback);
         });
+    }
 
-        // Get file data safely with optional unserialization
+    /** Get file data safely with optional unserialization. */
+    private function safeGetMacro(): void
+    {
         File::macro('safeGet', function (string $filePath, bool $unserialize = false) {
             if (! File::exists($filePath)) {
                 return null;

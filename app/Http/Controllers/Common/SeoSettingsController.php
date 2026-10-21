@@ -78,7 +78,7 @@ class SeoSettingsController extends Controller
     public function update(Request $request): JsonResponse
     {
         $request->validate([
-            'favicon_title' => ['nullable', 'string', 'max:255'],
+            'favicon_title' => ['nullable', 'string', 'max:255'], // NOSONAR - Laravel validation rule, repeated by design
             'favicon_title_client' => ['nullable', 'string', 'max:255'],
             'general_description' => ['nullable', 'string', 'max:255'],
             'general_og_title' => ['nullable', 'string', 'max:255'],

@@ -215,8 +215,6 @@ class BaseOrderController extends ExtendedOrderController
 
     public function sendOrderMail(int $userid, string $orderid, int $itemid): void
     {
-        // order
-        $order = Order::find($orderid);
         $productId = InvoiceItem::whereKey($itemid)->value('product_id');
         $users = new User;
         /** @var User $user */

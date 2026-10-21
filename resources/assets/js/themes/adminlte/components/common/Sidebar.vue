@@ -1,6 +1,6 @@
 <template>
     <aside id="app-sidebar" class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"
-           role="navigation" aria-label="Main sidebar">
+           aria-label="Main sidebar">
 
         <!-- Brand -->
         <div class="sidebar-brand">
@@ -18,10 +18,8 @@
 
         <!-- Sidebar Wrapper -->
         <div class="sidebar-wrapper">
-            <nav class="mt-2">
-                <ul class="nav sidebar-menu flex-column nav-child-indent"
-                    role="navigation"
-                    :aria-label="__('message.main_navigation')">
+            <nav class="mt-2" :aria-label="__('message.main_navigation')">
+                <ul class="nav sidebar-menu flex-column nav-child-indent">
 
                     <!-- ── Dashboard ───────────────────────────────────────── -->
                     <li class="nav-item">

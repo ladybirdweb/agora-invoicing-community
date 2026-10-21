@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('status_setting', function (Blueprint $table): void {
+        Schema::table('status_setting', function (): void {
             Schema::table('status_settings', function (Blueprint $table): void {
                 $table->boolean('email_validation_status')->default(0)->after('v3_recaptcha_status');
                 $table->boolean('mobile_validation_status')->default(0)->after('email_validation_status');

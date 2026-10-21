@@ -71,15 +71,29 @@ class TaxOption extends BaseModel
      */
     protected function getMappings(): array
     {
+        $yesNo = self::label('Yes', 'No');
+        $orNa = fn ($value) => $value ?: 'N/A';
+
         return [
-            'tax_enable' => ['Tax Enable', fn ($value): array|string => $value === 1 ? __('message.active') : __('message.inactive')],
-            'inclusive' => ['Prices Entered With Tax', fn ($value): string => $value === 1 ? 'Yes' : 'No'],
-            'tax_based_on' => ['Calculate Tax Based On', fn ($value): string => $value === 'base' ? 'Company address' : 'Billing address'],
-            'shop_inclusive' => ['Shop Prices Entered With Tax', fn ($value): string => $value === 1 ? 'Yes' : 'No'],
-            'cart_inclusive' => ['Cart Prices Entered With Tax', fn ($value): string => $value === 1 ? 'Yes' : 'No'],
-            'rounding' => ['Round Tax To Whole Number', fn ($value): array|string => $value === 1 ? __('message.enable') : __('message.disable')],
-            'Gst_no' => ['GST Number', fn ($value) => $value ?: 'N/A'],
-            'cif_no' => ['CIF Number', fn ($value) => $value ?: 'N/A'],
+            'tax_enable' => ['Tax Enable', self::label(__('message.active'), __('message.inactive'))],
+            'inclusive' => ['Prices Entered With Tax', $yesNo],
+            'tax_based_on' => ['Calculate Tax Based On', self::label('Company address', 'Billing address', 'base')],
+            'shop_inclusive' => ['Shop Prices Entered With Tax', $yesNo],
+            'cart_inclusive' => ['Cart Prices Entered With Tax', $yesNo],
+            'rounding' => ['Round Tax To Whole Number', self::label(__('message.enable'), __('message.disable'))],
+            'Gst_no' => ['GST Number', $orNa],
+            'cif_no' => ['CIF Number', $orNa],
         ];
+    }
+
+    /**
+     * Formatter showing $on when the value is exactly $match, else $off.
+     *
+     * @param  array<mixed>|string  $on
+     * @param  array<mixed>|string  $off
+     */
+    private static function label(array|string $on, array|string $off, mixed $match = 1): \Closure
+    {
+        return fn ($value): array|string => $value === $match ? $on : $off;
     }
 }

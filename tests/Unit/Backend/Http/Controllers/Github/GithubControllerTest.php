@@ -14,8 +14,7 @@ class GithubControllerTest extends DBTestCase
         parent::setUp();
         $this->withoutMiddleware();
         $this->getLoggedInUser('admin');
-        // Reset any Http fakes from previous tests
-        Http::fake();
+        // No Http::fake() here: a stub-less fake is a catch-all that shadows each test's own stubs.
     }
 
     protected function tearDown(): void
@@ -57,8 +56,12 @@ class GithubControllerTest extends DBTestCase
             'status' => 1,
         ]);
 
-        // 200 = success; 400 = validation still fails
-        $this->assertContains($response->status(), [200, 400]);
+        $response->assertStatus(200);
+
+        // Token must be stored encrypted, not plaintext.
+        $github = \App\Model\Github\Github::find(1);
+        $this->assertNotSame('validtoken', $github->getRawOriginal('password'));
+        $this->assertSame('validtoken', $github->password);
     }
 
     public function test_post_settings_with_empty_username_returns_error(): void

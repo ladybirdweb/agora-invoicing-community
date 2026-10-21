@@ -82,10 +82,7 @@ class PageController extends Controller
                 ->first();
 
             if ($page) {
-                $page->meta_title = $formatter->resolveShortcodes($page->meta_title, $page->name) ?: $formatter->title($page->name);
-                $page->meta_description = $formatter->resolveShortcodes($page->meta_description, $page->name) ?: $formatter->description($page->name);
-                $page->og_title = $formatter->resolveShortcodes($page->og_title, $page->name) ?: ($formatter->generalOgTitle() ?: $page->meta_title);
-                $page->og_description = $formatter->resolveShortcodes($page->og_description, $page->name) ?: ($formatter->generalOgDescription() ?: $page->meta_description);
+                $this->applySeoFallbacks($page, $formatter);
             }
 
             return successResponse('', $page);
@@ -97,13 +94,24 @@ class PageController extends Controller
     }
 
     /**
+     * The page's own meta/OG (shortcodes resolved), else General SEO, else built from its name.
+     */
+    private function applySeoFallbacks(FrontendPage $page, SeoTemplateFormatter $formatter): void
+    {
+        $page->meta_title = $formatter->resolveShortcodes($page->meta_title, $page->name) ?: $formatter->title($page->name);
+        $page->meta_description = $formatter->resolveShortcodes($page->meta_description, $page->name) ?: $formatter->description($page->name);
+        $page->og_title = $formatter->resolveShortcodes($page->og_title, $page->name) ?: ($formatter->generalOgTitle() ?: $page->meta_title);
+        $page->og_description = $formatter->resolveShortcodes($page->og_description, $page->name) ?: ($formatter->generalOgDescription() ?: $page->meta_description);
+    }
+
+    /**
      * Public: company address/contact details for the Contact Us page.
      */
     public function contactUsInfo(): JsonResponse
     {
         try {
             $set = Setting::findOrFail(1);
-            $address = preg_replace("/^\R+|\R+\z/", '', (string) $set->address);
+            $address = preg_replace("/(?:^\R+)|(?:\R+\z)/", '', (string) $set->address);
             $state = State::where('country_code', $set->country)->where('iso2', $set->state)->value('state_subdivision_name');
             $country = Country::where('country_code_char2', $set->country)->value('country_name');
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
@@ -439,8 +447,8 @@ class PageController extends Controller
         $pages = FrontendPage::select('id', 'name', 'url', 'type', 'created_at')
             ->when($searchQuery, function ($query) use ($searchQuery): void {
                 $query->where(function ($q) use ($searchQuery): void {
-                    $q->where('name', 'like', sprintf('%%%s%%', $searchQuery))
-                        ->orWhere('url', 'like', sprintf('%%%s%%', $searchQuery));
+                    $q->where('name', 'like', likePattern($searchQuery))
+                        ->orWhere('url', 'like', likePattern($searchQuery));
                 });
             })
             // Editing a page: keep it out of its own "parent page" options.

@@ -1,5 +1,5 @@
 <template>
-  <div role="main" class="main shop pb-4">
+  <div class="main shop pb-4">
     <div class="container pt-4">
       <!-- Loading -->
       <div v-if="loading" class="row justify-content-center py-3"><loader /></div>
@@ -133,7 +133,7 @@
 
         <!-- Card Number -->
         <div class="mb-4">
-          <label id="card-number-label" class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
+          <label id="card-number-label" for="card-number" class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
           <div id="card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.number }"></div>
           <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.number }}</div>
         </div>
@@ -141,12 +141,12 @@
         <!-- Expiry + CVC -->
         <div class="row g-3 mb-4">
           <div class="col-6">
-            <label id="card-expiry-label" class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
+            <label id="card-expiry-label" for="card-expiry" class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
             <div id="card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.expiry }"></div>
             <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.expiry }}</div>
           </div>
           <div class="col-6">
-            <label id="card-cvc-label" class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
+            <label id="card-cvc-label" for="card-cvc" class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
             <div id="card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.cvc }"></div>
             <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.cvc }}</div>
           </div>

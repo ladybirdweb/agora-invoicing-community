@@ -238,23 +238,23 @@ function updateStatesWithData(data) {
     product_title.value = data.product_title || ''
     client_email.value = data.client_email || ''
     client_id.value = data.client_id || ''
-    if (data.latest_call_backs) latest_call_backs.value = data.latest_call_backs
-    if (data.license_date) license_date.value = data.license_date
     if (data.license_limit >= 0) installation_limit.value = data.license_limit
-    if (data.license_expire_date) license_expire_date.value = data.license_expire_date
-    if (data.license_updates_date) license_updates_date.value = data.license_updates_date
-    if (data.license_support_date) license_support_date.value = data.license_support_date
-    if (data.license_ip) license_ip.value = data.license_ip
-    if (data.license_domain) license_domain.value = data.license_domain
-    if (data.license_machine_id) license_machine_id.value = data.license_machine_id
-    if (data.license_code) license_code.value = data.license_code
     if (data.license_status !== undefined) license_status.value = data.license_status
-    if (data.installation_counts) installation_counts.value = data.installation_counts
-    if (data.call_backs_count) call_backs_count.value = data.call_backs_count
-    if (data.license_order_number) license_order_number.value = data.license_order_number
     license_order_id.value = data.license_order_id ?? null
-    if (data.product_id) product_id.value = data.product_id
-    if (data.id) license_id.value = data.id
+
+    // Copied only when the response has a value; otherwise the current one stays.
+    const keepUnlessEmpty = [
+        ['latest_call_backs', latest_call_backs], ['license_date', license_date],
+        ['license_expire_date', license_expire_date], ['license_updates_date', license_updates_date],
+        ['license_support_date', license_support_date], ['license_ip', license_ip],
+        ['license_domain', license_domain], ['license_machine_id', license_machine_id],
+        ['license_code', license_code], ['installation_counts', installation_counts],
+        ['call_backs_count', call_backs_count], ['license_order_number', license_order_number],
+        ['product_id', product_id], ['id', license_id],
+    ]
+    for (const [key, target] of keepUnlessEmpty) {
+        if (data[key]) target.value = data[key]
+    }
 }
 
 function getInitialValues(licId) {

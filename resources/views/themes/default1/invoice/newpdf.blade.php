@@ -190,7 +190,7 @@
     </table>
 
     {{-- ── TOTALS ── --}}
-    <table class="totals-table">
+    <table class="totals-table" role="presentation">
         <tbody>
             <tr>
                 <td class="label">{{ $totals['subtotal_label'] }}</td>

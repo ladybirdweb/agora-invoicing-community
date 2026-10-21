@@ -57,9 +57,10 @@
                         </div>
 
                         <div v-if="webhookUrl" class="col-md-12 mb-3">
-                            <label class="form-label fw-semibold">{{ __('message.msg91_webhook_url') }}</label>
+                            <label class="form-label fw-semibold" for="msg91-webhook-url">{{ __('message.msg91_webhook_url') }}</label>
                             <div class="input-group">
                                 <input
+                                    id="msg91-webhook-url"
                                     type="text"
                                     class="form-control"
                                     :value="webhookUrl"

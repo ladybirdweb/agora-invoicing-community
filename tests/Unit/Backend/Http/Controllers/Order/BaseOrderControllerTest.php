@@ -207,6 +207,25 @@ class BaseOrderControllerTest extends DBTestCase
         $this->assertEquals($licenseBefore, $licenseAfter);
     }
 
+    public function test_all_requested_dates_blocked_is_an_error_naming_them_in_order(): void
+    {
+        $order = Order::factory()->withRelations()->create();
+        $this->mockPermissions($order->product, []);
+        $this->mockLicenseController();
+
+        $this->postJson('/update-license-details', [
+            'orderid' => $order->id,
+            'support_end' => $this->date(),
+            'update_end' => $this->date(),
+            'subscription_end' => $this->date(),
+        ])->assertJson([
+            'success' => false,
+            'message' => __('message.fields_not_permitted', ['fields' => implode(', ', [
+                __('message.updates_expiry'), __('message.license_expiry'), __('message.support_expiry'),
+            ])]),
+        ]);
+    }
+
     // ========================================================= INSTALLATION LIMIT
 
     public function test_edit_installation_limit_success(): void

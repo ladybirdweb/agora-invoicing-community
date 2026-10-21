@@ -95,7 +95,7 @@ const tableOptions = reactive({
         products: (f, row) => {
             // `products` is a hasOneThrough relation, so the backend serializes
             // it as a single object (not an array). Normalize to an array.
-            const items = row.products == null ? [] : (Array.isArray(row.products) ? row.products : [row.products])
+            const items = row.products == null ? [] : [row.products].flat()
             if (!items.length) return '—'
             return h('span', {}, items.flatMap((p, i) => {
                 const link = p.id ? h(RouterLink, { to: '/products/' + p.id + '/edit' }, () => p.name) : p.name

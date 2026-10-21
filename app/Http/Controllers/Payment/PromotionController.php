@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Date;
 
 class PromotionController extends BasePromotionController
 {
+    private const DB_DATETIME = 'Y-m-d H:i:s';
+
     /**
      * @var Promotion
      */
@@ -84,7 +86,7 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('code', $code)->first();
             $start = $promotion->start;
             $end = $promotion->expiry;
-            $now = Date::now()->format('Y-m-d H:i:s');
+            $now = Date::now()->format(self::DB_DATETIME);
             $inv_cont = new InvoiceController;
 
             return $inv_cont->getExpiryStatus($start, $end, $now);
@@ -122,12 +124,12 @@ class PromotionController extends BasePromotionController
         ])
             ->when($searchQuery, function ($q) use ($searchQuery): void {
                 $q->where(function (Builder $query) use ($searchQuery): void {
-                    $query->where('code', 'like', sprintf('%%%s%%', $searchQuery))
+                    $query->where('code', 'like', likePattern($searchQuery))
                         ->orWhereHas('products', function (Builder $q) use ($searchQuery): void {
-                            $q->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                            $q->where('name', 'like', likePattern($searchQuery));
                         })
                         ->orWhereHas('promotionType', function (Builder $q) use ($searchQuery): void {
-                            $q->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                            $q->where('name', 'like', likePattern($searchQuery));
                         });
                 });
             })
@@ -164,8 +166,8 @@ class PromotionController extends BasePromotionController
             /** @var Promotion $promotion */
             $promotion = Promotion::findOrFail($promotionId);
 
-            $start = Date::parse($request->input('start'))->format('Y-m-d H:i:s');
-            $expiry = Date::parse($request->input('expiry'))->format('Y-m-d H:i:s');
+            $start = Date::parse($request->input('start'))->format(self::DB_DATETIME);
+            $expiry = Date::parse($request->input('expiry'))->format(self::DB_DATETIME);
 
             // Update promotion fields
             $promotion->update([
@@ -202,8 +204,8 @@ class PromotionController extends BasePromotionController
     {
         try {
             // Format start and expiry dates
-            $start = Date::parse($request->input('start'))->format('Y-m-d H:i:s');
-            $expiry = Date::parse($request->input('expiry'))->format('Y-m-d H:i:s');
+            $start = Date::parse($request->input('start'))->format(self::DB_DATETIME);
+            $expiry = Date::parse($request->input('expiry'))->format(self::DB_DATETIME);
 
             // Create the promotion
             $promotion = Promotion::create([

@@ -62,11 +62,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">
+                                        <label class="form-label fw-bold" for="mailchimp-audience">
                                             {{ __('message.mailchimp_audience') }}<span class="text-danger ms-1">*</span>
                                             <ToolTip :message="__('message.mailchimp_audience_help')" size="small" />
                                         </label>
                                         <v-select
+                                            input-id="mailchimp-audience"
                                             v-model="selectedList"
                                             :options="lists"
                                             :filterable="true"
@@ -196,7 +197,7 @@
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <label class="form-label fw-bold d-block">{{ __('message.enable') }}</label>
+                                <span class="form-label fw-bold d-block">{{ __('message.enable') }}</span>
                                 <Switch name="isPaidStatus" :value="isPaidStatus" :onChange="val => isPaidStatus = val" />
                                 <div v-if="isPaidStatus" class="row mt-3">
                                     <div class="col-md-6">
@@ -234,7 +235,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <label class="form-label fw-bold d-block">{{ __('message.enable') }}</label>
+                                <span class="form-label fw-bold d-block">{{ __('message.enable') }}</span>
                                 <Switch name="productStatus" :value="productStatus" :onChange="val => productStatus = val" />
 
                                 <template v-if="productStatus">

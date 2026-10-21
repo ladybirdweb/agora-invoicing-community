@@ -237,6 +237,6 @@ class SystemManagerControllerTest extends DBTestCase
 
         $response->assertStatus(200)
             ->assertJsonFragment(['email' => 'john@example.com'])
-            ->assertJsonFragment(['name' => 'John Doe']);
+            ->assertJsonFragment(['name' => 'John Doe <john@example.com>']);
     }
 }

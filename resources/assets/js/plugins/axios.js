@@ -73,6 +73,13 @@ let successfulResponses = 0
 let loaderStarted = false
 let setLoader = false
 let progressStatus = 0
+
+// Progress-bar step sized to how many requests are in flight: few, some (≤6), many.
+function byRequestLoad(few, some, many) {
+    if (totalAxiosRequests <= 3) return few
+    if (totalAxiosRequests <= 6) return some
+    return many
+}
 let stopClearAxiosCount = true
 let fromSetLoader = false
 
@@ -103,6 +110,14 @@ export function setupLoaderInterceptors(progress) {
         }, 90000)
     }
 
+    // Batch over (or abandoned): forget the counts so the next request starts a new bar.
+    const resetCounts = () => {
+        stopClearAxiosCount = false
+        successfulResponses = 0
+        totalAxiosRequests = 0
+        loaderStarted = false
+    }
+
     const startProgress = () => {
         if (!loaderStarted) {
             progress.start()
@@ -130,20 +145,13 @@ export function setupLoaderInterceptors(progress) {
                 } else {
                     setTimeout(() => progress.finish(), 500)
                 }
-                if (stopClearAxiosCount) stopClearAxiosCount = false
-                successfulResponses = 0
-                totalAxiosRequests = 0
-                loaderStarted = false
+                resetCounts()
             } else if (setLoader) {
-                const progressValue = totalAxiosRequests <= 3 ? 60 : (totalAxiosRequests <= 6 ? 50 : 30)
-                progress.set(progressValue)
+                progress.set(byRequestLoad(60, 50, 30))
                 setLoader = false
             } else if (successfulResponses > totalAxiosRequests) {
                 setTimeout(() => progress.finish(), 100)
-                if (stopClearAxiosCount) stopClearAxiosCount = false
-                successfulResponses = 0
-                totalAxiosRequests = 0
-                loaderStarted = false
+                resetCounts()
             } else {
                 progressStatus = progress.get()
                 if (progressStatus === 0) {
@@ -151,18 +159,14 @@ export function setupLoaderInterceptors(progress) {
                     fromSetLoader = true
                     startProgress()
                 }
-                const increaseValue = totalAxiosRequests <= 3 ? 5 : (totalAxiosRequests <= 6 ? 4 : 3)
-                progress.increase(increaseValue)
+                progress.increase(byRequestLoad(5, 4, 3))
             }
 
             return response
         },
         error => {
             progress.finish()
-            if (stopClearAxiosCount) stopClearAxiosCount = false
-            successfulResponses = 0
-            totalAxiosRequests = 0
-            loaderStarted = false
+            resetCounts()
             return Promise.reject(error)
         }
     )

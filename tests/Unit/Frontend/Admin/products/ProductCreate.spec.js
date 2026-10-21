@@ -92,4 +92,40 @@ describe('ProductCreate.vue', () => {
         jest.runAllTimers()
         expect(mockPush).toHaveBeenCalledWith('/products')
     })
+
+    it('sends every field, with switches as 1/0, in a fixed order', async () => {
+        await flushPromises()
+        Object.assign(wrapper.vm.form, {
+            name: 'P', type: null, product_type: 'addon', config_file_path: 'c', license_file_path: null, product_path: 'pp',
+            group: 3, parent: null, description: 'd', short_description: 's', product_description: 'pd', product_sku: 'SKU',
+            show_agent: true, highlight: 0, add_to_contact: 1, can_modify_agent: false, can_modify_quantity: true,
+            require_domain: null, hidden: 1, invoice_hidden: 0, whatsapp_integration: true, tax_status: 1, tax_class_id: 7,
+        })
+
+        await wrapper.vm.submit()
+        await flushPromises()
+
+        const fd = globalThis.mockHttp.history.post.find(r => /\/product$/.test(r.url)).data
+        expect([...fd.entries()]).toEqual([
+            ['name', 'P'], ['type', ''], ['product_type', 'addon'], ['config_file_path', 'c'], ['license_file_path', ''],
+            ['product_path', 'pp'], ['group', '3'], ['parent', ''], ['description', 'd'], ['short_description', 's'],
+            ['product_description', 'pd'], ['product_sku', 'SKU'],
+            ['show_agent', '1'], ['highlight', '0'], ['add_to_contact', '1'], ['can_modify_agent', '0'],
+            ['can_modify_quantity', '1'], ['require_domain', '0'], ['hidden', '1'], ['invoice_hidden', '0'],
+            ['whatsapp_integration', '1'], ['tax_status', '1'], ['tax_class_id', '7'],
+        ])
+    })
+
+    it('drops the product path for non-addons and the tax class when tax is off', async () => {
+        await flushPromises()
+        Object.assign(wrapper.vm.form, { product_type: 'product', product_path: 'pp', tax_status: 0, tax_class_id: 7 })
+
+        await wrapper.vm.submit()
+        await flushPromises()
+
+        const fd = globalThis.mockHttp.history.post.find(r => /\/product$/.test(r.url)).data
+        expect(fd.get('product_path')).toBe('')
+        expect(fd.get('tax_status')).toBe('0')
+        expect(fd.has('tax_class_id')).toBe(false)
+    })
 })

@@ -5,7 +5,7 @@
 
         <div :class="{ 'col-md-2 flex break': isInlineForm }">
             <label class="form-label" :for="label" :style="labelStyle">{{ label }}</label>
-            <label class="is-danger" :style="labelStyle" v-if="required">*</label>
+            <span class="is-danger d-inline-block fw-semibold" :style="[{ marginBottom: '5px' }, labelStyle]" v-if="required">*</span>
             <ToolTip v-if="hint !== '' && !tipRule" :message="getHint(hint)" size="small" />
             <slot name="word-limit-counter"></slot>
             <i v-if="isClearField && value && typeof value === 'object'" @click="clearField"

@@ -38,7 +38,7 @@ class SocialMediaController extends Controller
                 ->select('id', 'name', 'link', 'class', 'fa_class')
                 ->when($searchString, function ($query) use ($searchString): void {
                     $query->where(function ($q) use ($searchString): void {
-                        $q->where('name', 'like', sprintf('%%%s%%', $searchString));
+                        $q->where('name', 'like', likePattern($searchString));
                     });
                 })
                 ->orderBy($sortField, $sortOrder)

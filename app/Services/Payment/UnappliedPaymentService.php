@@ -89,7 +89,7 @@ class UnappliedPaymentService
      *
      * @throws Exception if the available amount can't cover what was asked for.
      */
-    public function apply(int $userId, string $currency, float $amount, int $invoiceId, string $method, ?Carbon $date = null, ?int $paymentId = null): void
+    public function apply(int $userId, string $currency, float $amount, int $invoiceId, ?Carbon $date = null, ?int $paymentId = null): void
     {
         if ($amount <= 0) {
             return;

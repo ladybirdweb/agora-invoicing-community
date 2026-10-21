@@ -28,7 +28,7 @@ export const getIdFromUrl = (url) => {
  * @return {object|null}                            found object if present else null
  */
 export const findObjectByKey = (array, key, value) => {
-    for (var i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
         if (array[i][key] == value) {
             return array[i];
         }
@@ -153,7 +153,7 @@ export const getCountry = () => {
         .then((response) => response.text())
         .then((response) => {
             const result = (response || '').toString();
-            if (!result || result[0] !== '1') {
+            if (!result.startsWith('1')) {
                 throw new Error('unable to fetch the country');
             }
             return result.substr(2, 2);

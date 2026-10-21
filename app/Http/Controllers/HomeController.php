@@ -282,51 +282,7 @@ class HomeController extends BaseHomeController
                 $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($this->mapOldBoys($title)))->orWhere('id', $id)->select('id')->first();
 
             if ($request->has('version')) {
-                if ($product) {
-                    /**
-                     * PLEASE NOTE (documenting updates in the logic change).
-                     *
-                     * This API logic has been updated considering
-                     * - We will maintain security patch releases for older version too that is if the current latest
-                     *   release series is v5.X and we have found the security issues than the security patch will be
-                     *   made for older versions too for version like v4.8 and v4.9
-                     * - We take all version records including new released version which may have happened for security patch
-                     *   updates for older version as explained above so we have to ensure that we consider updates available only
-                     *   after comparing the version. Meaning if record is for v4.8.2 and v5.0.0 is already released then for the
-                     *   clients using v5.0.0 no update should be available so we are filtering it using PHP's version_compare
-                     *   method.
-                     *
-                     * This methods gets all the version records and compares all these version with current version and returns
-                     * details of only those versions which are greater than current version else empty version details.
-                     */
-                    $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
-                    $releases = ['official'];
-
-                    /**
-                     * To handle the older version Faveo.
-                     */
-                    if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
-                        array_unshift($releases, 'pre_release');
-                    }
-
-                    /**
-                     * This condition will start work from Faveo v9.3.0.RC.1.
-                     */
-                    match ($request->input('release_type')) {
-                        'pre_release' => array_unshift($releases, 'pre_release'),
-                        'beta' => array_unshift($releases, 'beta', 'pre_release'),
-
-                        default => $releases
-                    };
-
-                    $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')
-                        ->whereIn('release_type', $releases)
-                        ->get()->filter(fn ($newVersion): bool => version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) === 1)->sortBy('version', SORT_NATURAL)->toArray();
-
-                    $message = ['version' => array_values($inBetweenVersions)];
-                } else {
-                    $message = ['error' => 'product_not_found'];
-                }
+                $message = $product ? ['version' => $this->versionsNewerThanRequested($request, $product)] : ['error' => 'product_not_found'];
             } elseif ($product) {
                 // For older clients in which version is not sent as parameter
                 // $product = $product->where('name', $title)->first();
@@ -436,6 +392,53 @@ class HomeController extends BaseHomeController
      *
      * @author  Manish Verma <manish.verma@ladybirdweb.com>
      */
+    /**
+     * PLEASE NOTE (documenting updates in the logic change).
+     *
+     * This API logic has been updated considering
+     * - We will maintain security patch releases for older version too that is if the current latest
+     *   release series is v5.X and we have found the security issues than the security patch will be
+     *   made for older versions too for version like v4.8 and v4.9
+     * - We take all version records including new released version which may have happened for security patch
+     *   updates for older version as explained above so we have to ensure that we consider updates available only
+     *   after comparing the version. Meaning if record is for v4.8.2 and v5.0.0 is already released then for the
+     *   clients using v5.0.0 no update should be available so we are filtering it using PHP's version_compare
+     *   method.
+     *
+     * This methods gets all the version records and compares all these version with current version and returns
+     * details of only those versions which are greater than current version else empty version details.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function versionsNewerThanRequested(Request $request, Product $product): array
+    {
+        $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
+        $releases = ['official'];
+
+        /**
+         * To handle the older version Faveo.
+         */
+        if ($request->has('is_pre_release') && $request->input('is_pre_release', 0)) {
+            array_unshift($releases, 'pre_release');
+        }
+
+        /**
+         * This condition will start work from Faveo v9.3.0.RC.1.
+         */
+        match ($request->input('release_type')) {
+            'pre_release' => array_unshift($releases, 'pre_release'),
+            'beta' => array_unshift($releases, 'beta', 'pre_release'),
+
+            default => $releases
+        };
+
+        $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')
+            ->whereIn('release_type', $releases)
+            ->get()->filter(fn ($newVersion): bool => version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) === 1)->sortBy('version', SORT_NATURAL)->toArray();
+
+        return array_values($inBetweenVersions);
+    }
+
     private function getPHPCompatibleVersionString(?string $version = null): string
     {
         $version = $version ?? '';

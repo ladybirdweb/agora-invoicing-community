@@ -79,7 +79,7 @@ class DashboardController extends Controller
         $dateBefore = $noOfDays ? new Carbon(sprintf('-%s days', $noOfDays))->toDateTimeString() : Date::now()->startOfMillennium()->toDateTimeString();
 
         return Order::join('products', 'products.id', '=', 'orders.product')
-            ->select(DB::raw('COUNT(*) as order_count'), 'products.id as product_id',
+            ->select(DB::raw('COUNT(*) as order_count'), 'products.id as product_id', // NOSONAR - Laravel column/cast list, repeated by design
                 'orders.created_at as order_created_at', 'products.image as product_image', 'products.name as product_name')
             ->where('order_status', 'executed')
             ->where('orders.created_at', '>', $dateBefore)
@@ -227,9 +227,9 @@ class DashboardController extends Controller
             DB::raw('DATEDIFF(NOW(), update_ends_at) as days_expired')
         )
             ->with([
-                'user:id,first_name,last_name',
+                'user:id,first_name,last_name', // NOSONAR - Laravel column/cast list, repeated by design
                 'order:id,number',
-                'product:id,name',
+                'product:id,name', // NOSONAR - Laravel column/cast list, repeated by design
             ])
             ->whereBetween('update_ends_at', [
                 Date::now()->subDays($days)->startOfDay(),
@@ -319,7 +319,7 @@ class DashboardController extends Controller
         return Invoice::join('payment_invoice', 'invoices.id', '=', 'payment_invoice.invoice_id')
             ->where('invoices.status', '!=', 'pending')
             ->groupBy('invoices.currency')
-            ->selectRaw('invoices.currency, SUM(payment_invoice.amount) as total')
+            ->selectRaw('invoices.currency, SUM(payment_invoice.amount) as total') // NOSONAR - Laravel column/cast list, repeated by design
             ->pluck('total', 'currency');
     }
 

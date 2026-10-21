@@ -269,18 +269,11 @@
             <span id="wait"></span>
             <form id="form">
                 @csrf
-                {{-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> --}}
-                <!-- <b>default</b><br> -->
                 <input type="hidden" name="default" value="{!! $default !!}"/>
-                <!-- <b>Host</b><br> -->
                 <input type="hidden" name="host" value="{!! $host !!}"/>
-                <!-- <b>Database Name</b><br> -->
                 <input type="hidden" name="databasename" value="{!! $databasename !!}"/>
-                <!-- <b>User Name</b><br> -->
                 <input type="hidden" name="username" value="{!! $username !!}"/>
-                <!-- <b>User Password</b><br> -->
                 <input type="hidden" name="password" value="{!! htmlspecialchars($password) !!}"/>
-                <!-- <b>Port</b><br> -->
                 <input type="hidden" name="port" value="{!! $port !!}"/>
                 <input type="hidden" name="db_ssl_key" value="{!! $sslKey !!}"/>
                 <input type="hidden" name="db_ssl_cert" value="{!! $sslCert !!}"/>

@@ -75,9 +75,9 @@ class SystemManagerController extends Controller
             $users = User::where('role', 'admin')
                 ->when($term, function ($query) use ($term): void {
                     $query->where(function ($q) use ($term): void {
-                        $q->where('first_name', 'LIKE', sprintf('%%%s%%', $term))
-                            ->orWhere('last_name', 'LIKE', sprintf('%%%s%%', $term))
-                            ->orWhere('email', 'LIKE', sprintf('%%%s%%', $term));
+                        $q->where('first_name', 'LIKE', likePattern($term))
+                            ->orWhere('last_name', 'LIKE', likePattern($term))
+                            ->orWhere('email', 'LIKE', likePattern($term));
                     });
                 })
                 ->select('id', 'email', 'first_name', 'last_name')

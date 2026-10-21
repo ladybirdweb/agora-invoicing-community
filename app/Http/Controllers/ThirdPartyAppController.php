@@ -36,8 +36,8 @@ class ThirdPartyAppController extends Controller
                 ->select('id', 'app_name', 'app_key', 'app_secret')
                 ->when($searchString, function ($q) use ($searchString): void {
                     $q->where(function ($sub) use ($searchString): void {
-                        $sub->where('app_name', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('app_key', 'like', sprintf('%%%s%%', $searchString));
+                        $sub->where('app_name', 'like', likePattern($searchString))
+                            ->orWhere('app_key', 'like', likePattern($searchString));
                     });
                 });
 

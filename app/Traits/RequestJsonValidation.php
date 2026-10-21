@@ -53,10 +53,12 @@ trait RequestJsonValidation
      */
     public function messages()
     {
+        $required = 'This field is required';
+
         return [
-            '*.required' => 'This field is required',
-            '*.required_if' => 'This field is required',
-            '*.required_unless' => 'This field is required',
+            '*.required' => $required,
+            '*.required_if' => $required,
+            '*.required_unless' => $required,
         ];
     }
 }

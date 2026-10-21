@@ -241,7 +241,11 @@ const tableOptions = reactive({
             if (row.user?.email && row.user?.id) return h(RouterLink, { to: '/users/' + row.user.id }, () => row.user.email)
             return '—'
         },
-        mobile:       (f, row) => row.user?.mobile ? `${row.user.mobile_code ? '+' + row.user.mobile_code + ' ' : ''}${row.user.mobile}`.trim() : '—',
+        mobile:       (f, row) => {
+            if (!row.user?.mobile) return '—'
+            const code = row.user.mobile_code ? `+${row.user.mobile_code} ` : ''
+            return `${code}${row.user.mobile}`.trim()
+        },
         country:      (f, row) => row.user?.country || '—',
         number:       (f, row) => row.number || '—',
         product:      (f, row) => {

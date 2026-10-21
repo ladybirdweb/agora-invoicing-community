@@ -11,7 +11,7 @@
                         {{ message.text }}
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">{{ __('message.new_date') }}</label>
+                        <label class="form-label fw-bold" for="expiry-new-date">{{ __('message.new_date') }}</label>
                         <VueDatePicker
                             v-model:value="selectedDate"
                             type="date"
@@ -22,6 +22,7 @@
                             :editable="true"
                             :append-to-body="false"
                             input-class="form-control"
+                            :input-attr="{ id: 'expiry-new-date' }"
                             @change="selectedDate = $event"
                         />
                     </div>

@@ -190,7 +190,7 @@ class LocalizedLicenseController extends Controller
         }
 
         return response()->streamDownload(
-            fn () => print($file),
+            fn () => print $file,
             'license.json',
             ['Content-Type' => 'application/json']
         );

@@ -185,6 +185,77 @@ class PageControllerTest extends DBTestCase
         $this->assertSame('Learn more about Refund Policy at Acme Inc.', $response->json('data.meta_description'));
     }
 
+    /** Sets the company + General SEO OG values, then makes the formatter singleton re-read them. */
+    private function seoSettings(string $ogTitle, string $ogDescription): void
+    {
+        \App\Model\Common\Setting::find(1)->update(['company' => 'Acme Inc', 'favicon_title_client' => '']);
+        \App\Model\Common\CommonSettings::where('option_name', 'seo')->whereIn('optional_field', ['general_description', 'general_og_title', 'general_og_description'])->delete();
+        foreach (['general_og_title' => $ogTitle, 'general_og_description' => $ogDescription] as $field => $value) {
+            \App\Model\Common\CommonSettings::create(['option_name' => 'seo', 'optional_field' => $field, 'option_value' => $value]);
+        }
+        $this->app->forgetInstance(\App\Services\Seo\SeoTemplateFormatter::class);
+    }
+
+    /** @param  array<string, string|null>  $meta */
+    private function publishedPage(array $meta): \App\Model\Front\FrontendPage
+    {
+        return \App\Model\Front\FrontendPage::create([
+            'name' => 'Refund Policy',
+            'slug' => 'refund-policy-'.uniqid(),
+            'content' => '<p>...</p>',
+            'publish' => 1,
+            'type' => 'custom',
+        ] + $meta);
+    }
+
+    public function test_page_by_slug_resolves_shortcodes_in_the_pages_own_meta(): void
+    {
+        $this->seoSettings('General OG', 'General OG desc');
+        $page = $this->publishedPage([
+            'meta_title' => '{name} | {company}',
+            'meta_description' => 'About {name}',
+            'og_title' => 'OG {name}',
+            'og_description' => 'OG about {company}',
+        ]);
+
+        $data = $this->getJson('/page-content/'.$page->slug)->assertOk()->json('data');
+
+        $this->assertSame('Refund Policy | Acme Inc', $data['meta_title']);
+        $this->assertSame('About Refund Policy', $data['meta_description']);
+        $this->assertSame('OG Refund Policy', $data['og_title']);
+        $this->assertSame('OG about Acme Inc', $data['og_description']);
+    }
+
+    public function test_page_by_slug_og_falls_back_to_general_og_settings(): void
+    {
+        $this->seoSettings('General OG {company}', 'General OG desc');
+        $page = $this->publishedPage(['meta_title' => 'Own title', 'meta_description' => 'Own desc', 'og_title' => null, 'og_description' => '']);
+
+        $data = $this->getJson('/page-content/'.$page->slug)->assertOk()->json('data');
+
+        $this->assertSame('General OG Acme Inc', $data['og_title']);
+        $this->assertSame('General OG desc', $data['og_description']);
+    }
+
+    public function test_page_by_slug_og_falls_back_to_resolved_meta_when_no_general_og(): void
+    {
+        $this->seoSettings('', '');
+        $page = $this->publishedPage(['meta_title' => '{name} title', 'meta_description' => null, 'og_title' => null, 'og_description' => null]);
+
+        $data = $this->getJson('/page-content/'.$page->slug)->assertOk()->json('data');
+
+        $this->assertSame('Refund Policy title', $data['og_title']);
+        $this->assertSame('Learn more about Refund Policy at Acme Inc.', $data['og_description']);
+    }
+
+    public function test_page_by_slug_hides_unpublished_pages(): void
+    {
+        $page = $this->publishedPage(['meta_title' => 'x']);
+        $page->update(['publish' => 0]);
+
+        $this->assertNull($this->getJson('/page-content/'.$page->slug)->assertOk()->json('data'));
+    }
+
     // =========================================================================
     // getPageSettings — GET /page-settings
     // =========================================================================

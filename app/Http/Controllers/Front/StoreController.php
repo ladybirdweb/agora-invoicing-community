@@ -124,6 +124,15 @@ class StoreController extends Controller
         $default = collect($plans)->firstWhere('is_default', operator: true);
         $isFree = ($default['price_raw'] ?? 0) == 0;
 
+        // No default plan counts as free too.
+        $displayPrice = __('message.free');
+        $displayLabel = strtoupper(__('message.free'));
+
+        if ($default && ! $isFree) {
+            $displayPrice = currencyFormat($default['price_raw'], $currency);
+            $displayLabel = strtoupper((string) ($default['description'] ?? ''));
+        }
+
         return [
             'id' => $product->id,
             'name' => $product->name,
@@ -131,12 +140,8 @@ class StoreController extends Controller
             'description' => $product->description,
             'highlighted' => $highlighted,
             'is_cloud' => in_array($product->id, cloudPopupProducts(), strict: true),
-            'display_price' => $default
-                ? ($isFree ? __('message.free') : currencyFormat($default['price_raw'], $currency))
-                : __('message.free'),
-            'display_label' => $default
-                ? ($isFree ? strtoupper(__('message.free')) : strtoupper((string) ($default['description'] ?? '')))
-                : strtoupper(__('message.free')),
+            'display_price' => $displayPrice,
+            'display_label' => $displayLabel,
             'plans' => $plans,
             'button' => $this->buildButton($product, $btnClass),
         ];

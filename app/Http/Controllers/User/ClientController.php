@@ -162,24 +162,7 @@ class ClientController extends AdvanceSearchController
 
             $zipFileName = $exportDetail->file.'.zip';
             $zipFilePath = storage_path('app/public/export/'.$zipFileName);
-            $zip = new ZipArchive;
-            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-                if (is_dir($filePath)) {
-                    // Add directory and its files to the zip
-                    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($filePath), RecursiveIteratorIterator::LEAVES_ONLY);
-                    foreach ($files as $file) {
-                        if (! $file->isDir()) {
-                            $filePath = $file->getRealPath();
-                            $relativePath = substr((string) $filePath, strlen((string) $exportDetail->file_path) + 1);
-                            $zip->addFile($filePath, $relativePath);
-                        }
-                    }
-                } else {
-                    $zip->addFile($filePath, basename((string) $filePath));
-                }
-
-                $zip->close();
-            } else {
+            if (! $this->zipExport($filePath, $zipFilePath)) {
                 return errorResponse(__('message.failed_create_zip_file'));
             }
 
@@ -191,6 +174,35 @@ class ClientController extends AdvanceSearchController
 
             return errorResponse(__('message.export_failed').__('message.sorry_something_wrong'));
         }
+    }
+
+    /**
+     * Zips an export (a folder, keeping its relative paths, or a single file) to $zipFilePath.
+     * False when the zip can't be opened.
+     */
+    private function zipExport(string $sourcePath, string $zipFilePath): bool
+    {
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            return false;
+        }
+
+        if (is_dir($sourcePath)) {
+            // Add directory and its files to the zip
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourcePath), RecursiveIteratorIterator::LEAVES_ONLY);
+            foreach ($files as $file) {
+                if (! $file->isDir()) {
+                    $realPath = $file->getRealPath();
+                    $zip->addFile($realPath, substr((string) $realPath, strlen($sourcePath) + 1));
+                }
+            }
+        } else {
+            $zip->addFile($sourcePath, basename($sourcePath));
+        }
+
+        $zip->close();
+
+        return true;
     }
 
     public function saveColumns(Request $request): JsonResponse
@@ -581,9 +593,9 @@ class ClientController extends AdvanceSearchController
                 ->withCount('orderRelation')
                 ->when($searchQuery, function ($query, $search): void {
                     $query->where(function ($q) use ($search): void {
-                        $q->where('number', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('status', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('currency', 'like', sprintf('%%%s%%', $search));
+                        $q->where('number', 'like', likePattern($search))
+                            ->orWhere('status', 'like', likePattern($search))
+                            ->orWhere('currency', 'like', likePattern($search));
                     });
                 })
                 ->orderByField($sortField, $sortOrder)
@@ -698,9 +710,9 @@ class ClientController extends AdvanceSearchController
                 ->with('allocations.invoice:id,number,currency')
                 ->when($searchQuery, function ($query, $search): void {
                     $query->where(function ($q) use ($search): void {
-                        $q->where('payment_method', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('payment_status', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('amount', 'like', sprintf('%%%s%%', $search));
+                        $q->where('payment_method', 'like', likePattern($search))
+                            ->orWhere('payment_status', 'like', likePattern($search))
+                            ->orWhere('amount', 'like', likePattern($search));
                     });
                 })
                 ->orderBy($sortField, $sortOrder)

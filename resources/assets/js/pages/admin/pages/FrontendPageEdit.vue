@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold d-block">{{ __('message.publish') }}</label>
+                                <span class="form-label fw-bold d-block">{{ __('message.publish') }}</span>
                                 <Switch name="publish" :value="form.publish" :onChange="(val) => form.publish = val" />
                             </div>
                         </div>

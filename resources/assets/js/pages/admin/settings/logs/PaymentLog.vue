@@ -145,7 +145,7 @@ async function copyException() {
         document.body.appendChild(ta)
         ta.select()
         document.execCommand('copy')
-        document.body.removeChild(ta)
+        ta.remove()
     }
     copied.value = true
     setTimeout(() => { copied.value = false }, 1500)

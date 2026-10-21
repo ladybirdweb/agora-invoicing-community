@@ -110,14 +110,14 @@ class WhatsappController extends Controller
             $users = WhatsappIntegrationUser::with('user:id,first_name,last_name,email')
                 ->when($searchString, function ($query) use ($searchString): void {
                     $query->where(function (Builder $q) use ($searchString): void {
-                        $q->where('phone_number', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('waba_id', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('phone_number_id', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('business_id', 'like', sprintf('%%%s%%', $searchString))
+                        $q->where('phone_number', 'like', likePattern($searchString))
+                            ->orWhere('waba_id', 'like', likePattern($searchString))
+                            ->orWhere('phone_number_id', 'like', likePattern($searchString))
+                            ->orWhere('business_id', 'like', likePattern($searchString))
                             ->orWhereHas('user', function (Builder $userQuery) use ($searchString): void {
-                                $userQuery->where('first_name', 'like', sprintf('%%%s%%', $searchString))
-                                    ->orWhere('last_name', 'like', sprintf('%%%s%%', $searchString))
-                                    ->orWhere('email', 'like', sprintf('%%%s%%', $searchString));
+                                $userQuery->where('first_name', 'like', likePattern($searchString))
+                                    ->orWhere('last_name', 'like', likePattern($searchString))
+                                    ->orWhere('email', 'like', likePattern($searchString));
                             });
                     });
                 })
@@ -164,10 +164,10 @@ class WhatsappController extends Controller
 
             if ($search !== '' && $search !== '0') {
                 $query->where(function ($q) use ($search): void {
-                    $q->where('phone_number', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('waba_id', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('phone_number_id', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('business_id', 'like', sprintf('%%%s%%', $search));
+                    $q->where('phone_number', 'like', likePattern($search))
+                        ->orWhere('waba_id', 'like', likePattern($search))
+                        ->orWhere('phone_number_id', 'like', likePattern($search))
+                        ->orWhere('business_id', 'like', likePattern($search));
                 });
             }
 

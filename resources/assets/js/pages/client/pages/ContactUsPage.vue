@@ -56,7 +56,7 @@
 
           <div class="row">
             <div class="form-group col">
-              <label class="form-label text-dark">
+              <label class="form-label text-dark" for="Mobile">
                 {{ __('message.mobile') }} <span class="text-color-danger">*</span>
               </label>
               <PhoneField

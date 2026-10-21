@@ -124,7 +124,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold">{{ __('message.recaptcha_v2') }} {{ __('message.preview') }}</label>
+                                    <span class="d-inline-block form-label fw-bold">{{ __('message.recaptcha_v2') }} {{ __('message.preview') }}</span>
                                     <div class="border rounded p-3 bg-light recaptcha-preview">
                                         <div id="v2_response"></div>
                                     </div>

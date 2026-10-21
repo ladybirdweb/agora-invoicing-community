@@ -72,7 +72,7 @@
 
                     <!-- Pricing Table -->
                     <div class="mt-3">
-                        <label class="form-label fw-bold">{{ __('message.pricing') }}</label>
+                        <span class="d-inline-block form-label fw-bold">{{ __('message.pricing') }}</span>
                         <table class="table table-bordered pricing-table">
                             <colgroup>
                                 <col style="width: 22%">

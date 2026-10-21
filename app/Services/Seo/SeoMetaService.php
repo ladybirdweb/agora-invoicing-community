@@ -24,6 +24,8 @@ use App\Model\Product\ProductGroup;
  */
 class SeoMetaService
 {
+    private const FORGOT_PASSWORD_PATH = 'password/reset';
+
     private const INDEX = 'index, follow';
 
     private const NOINDEX = 'noindex, nofollow';
@@ -69,7 +71,7 @@ class SeoMetaService
     {
         $defaultKey = match (true) {
             $path === '', $path === 'login' => 'login', // "/" redirects to the dashboard, which bounces guests to /login
-            $path === 'password/reset' => 'forgot_password',
+            $path === self::FORGOT_PASSWORD_PATH => 'forgot_password',
             (bool) preg_match('#^password/reset/.+$#', $path) => 'reset_password',
             $path === 'cart' => 'cart', // guest-accessible like login, not auth-gated
             default => null,
@@ -213,7 +215,7 @@ class SeoMetaService
     {
         $paths = [
             'login' => 'login',
-            'password/reset' => 'password/reset',
+            self::FORGOT_PASSWORD_PATH => self::FORGOT_PASSWORD_PATH,
             'password/reset/*' => 'password/reset/x',
             'contact-us' => 'contact-us',
             'cart' => 'cart',
@@ -346,35 +348,43 @@ class SeoMetaService
             // Purely-numeric keys ('404') come back as int, not string — PHP's
             // own array-key coercion, unrelated to the data.
             $patternSegments = explode('/', (string) $pattern);
-            if (count($patternSegments) !== count($segments)) {
+            $wildcards = $this->wildcardsIfMatches($patternSegments, $segments);
+            if ($wildcards === null) {
                 continue;
             }
 
-            $wildcards = 0;
-            $matches = true;
-            foreach ($patternSegments as $i => $patternSegment) {
-                if ($patternSegment === '*') {
-                    $wildcards++;
-
-                    continue;
-                }
-                if ($patternSegment !== $segments[$i]) {
-                    $matches = false;
-
-                    break;
-                }
-            }
-
-            if ($matches) {
-                $specificity = count($patternSegments) - $wildcards;
-                if ($specificity > $bestSpecificity) {
-                    $bestSpecificity = $specificity;
-                    $best = $entry;
-                }
+            $specificity = count($patternSegments) - $wildcards;
+            if ($specificity > $bestSpecificity) {
+                $bestSpecificity = $specificity;
+                $best = $entry;
             }
         }
 
         return $best;
+    }
+
+    /**
+     * How many `*` segments the pattern used to match the path, or null if it doesn't match.
+     *
+     * @param  list<string>  $patternSegments
+     * @param  list<string>  $segments
+     */
+    private function wildcardsIfMatches(array $patternSegments, array $segments): ?int
+    {
+        if (count($patternSegments) !== count($segments)) {
+            return null;
+        }
+
+        $wildcards = 0;
+        foreach ($patternSegments as $i => $patternSegment) {
+            if ($patternSegment === '*') {
+                $wildcards++;
+            } elseif ($patternSegment !== $segments[$i]) {
+                return null;
+            }
+        }
+
+        return $wildcards;
     }
 
     /**

@@ -1,5 +1,5 @@
 <template>
-  <div role="main" class="main shop pb-4">
+  <div class="main shop pb-4">
     <div class="container pt-4">
 
       <!-- Loading -->

@@ -32,7 +32,7 @@ class CarouselLight {
         this.autoPlayTimer = null
         this._handlers = []
 
-        const opts = parseOptions(el.getAttribute('data-plugin-options'))
+        const opts = parseOptions(el.dataset.pluginOptions)
         this.options = {
             autoplay:               opts.autoplay !== false,
             autoplayTimeout:        opts.autoplayTimeout ?? 7000,

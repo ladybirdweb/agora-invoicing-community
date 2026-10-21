@@ -693,19 +693,19 @@
                     <AppAlert componentName="stripe-renewal-modal" />
 
                     <div class="mb-4">
-                        <label class="form-label mb-1" @click="renewalCardNumber?.focus()">{{ __('message.card_number') }}</label>
+                        <label for="renewal-card-number" class="form-label mb-1" @click="renewalCardNumber?.focus()">{{ __('message.card_number') }}</label>
                         <div id="renewal-card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.number }"></div>
                         <div v-if="renewalCardErrors.number" class="invalid-feedback d-block">{{ renewalCardErrors.number }}</div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-6">
-                            <label class="form-label mb-1" @click="renewalCardExpiry?.focus()">{{ __('message.expiry_date') }}</label>
+                            <label for="renewal-card-expiry" class="form-label mb-1" @click="renewalCardExpiry?.focus()">{{ __('message.expiry_date') }}</label>
                             <div id="renewal-card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.expiry }"></div>
                             <div v-if="renewalCardErrors.expiry" class="invalid-feedback d-block">{{ renewalCardErrors.expiry }}</div>
                         </div>
                         <div class="col-6">
-                            <label class="form-label mb-1" @click="renewalCardCvc?.focus()">{{ __('message.cvc') }}</label>
+                            <label for="renewal-card-cvc" class="form-label mb-1" @click="renewalCardCvc?.focus()">{{ __('message.cvc') }}</label>
                             <div id="renewal-card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': renewalCardErrors.cvc }"></div>
                             <div v-if="renewalCardErrors.cvc" class="invalid-feedback d-block">{{ renewalCardErrors.cvc }}</div>
                         </div>

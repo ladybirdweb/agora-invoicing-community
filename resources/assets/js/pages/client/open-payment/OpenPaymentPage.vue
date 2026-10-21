@@ -403,7 +403,7 @@
         <template v-else>
           <!-- Card Number -->
           <div class="mb-4">
-            <label class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
+            <label for="card-number" class="form-label mb-1" @click="focusCard('number')">{{ __('message.card_number') }}</label>
             <div id="card-number" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.number }"></div>
             <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.number }}</div>
           </div>
@@ -411,12 +411,12 @@
           <!-- Expiry + CVC -->
           <div class="row g-3 mb-4">
             <div class="col-6">
-              <label class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
+              <label for="card-expiry" class="form-label mb-1" @click="focusCard('expiry')">{{ __('message.expiry_date') }}</label>
               <div id="card-expiry" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.expiry }"></div>
               <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.expiry }}</div>
             </div>
             <div class="col-6">
-              <label class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
+              <label for="card-cvc" class="form-label mb-1" @click="focusCard('cvc')">{{ __('message.cvc') }}</label>
               <div id="card-cvc" class="form-control h-auto py-3" :class="{ 'is-invalid': cardErrors.cvc }"></div>
               <div class="invalid-feedback d-block" aria-live="polite">{{ cardErrors.cvc }}</div>
             </div>

@@ -31,6 +31,8 @@ use Logger;
  */
 class OpenPaymentService
 {
+    private const DISPLAY_DATETIME = 'd M Y H:i';
+
     public function __construct(private readonly PaymentService $payments)
     {
     }
@@ -211,7 +213,7 @@ class OpenPaymentService
         $setting = Setting::find(1);
         $fromEmail = $setting->email ?? config('mail.from.address');
         $adminEmail = $setting->company_email ?? $fromEmail;
-        $date = $order->paid_at?->format('d M Y H:i') ?? now()->format('d M Y H:i');
+        $date = $order->paid_at?->format(self::DISPLAY_DATETIME) ?? now()->format(self::DISPLAY_DATETIME);
         $contact = getContactData();
 
         // Client success email
@@ -272,7 +274,7 @@ class OpenPaymentService
         $setting = Setting::find(1);
         $fromEmail = $setting->email ?? config('mail.from.address');
         $adminEmail = $setting->company_email ?? $fromEmail;
-        $date = now()->format('d M Y H:i');
+        $date = now()->format(self::DISPLAY_DATETIME);
         $contact = getContactData();
 
         // Client failure email

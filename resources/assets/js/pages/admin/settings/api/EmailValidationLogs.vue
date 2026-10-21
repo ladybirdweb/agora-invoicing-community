@@ -108,10 +108,10 @@ const tableOptions = reactive({
             const s = row.status?.toLowerCase()
             const danger  = ['invalid', 'disposable', 'disabled', 'spamtrap']
             const warning = ['catch all', 'unknown', 'inbox full', 'role account']
-            const cls = s === 'safe' || s === 'valid' ? 'bg-success'
-                : danger.includes(s) ? 'bg-danger'
-                : warning.includes(s) ? 'bg-warning'
-                : 'bg-secondary'
+            let cls = 'bg-secondary'
+            if (s === 'safe' || s === 'valid') cls = 'bg-success'
+            else if (danger.includes(s)) cls = 'bg-danger'
+            else if (warning.includes(s)) cls = 'bg-warning'
             return h('span', { class: `badge ${cls}` }, row.status || '—')
         },
         created_at: (f, row) => formatDateTime(row.created_at),

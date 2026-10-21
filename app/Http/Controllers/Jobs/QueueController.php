@@ -40,7 +40,7 @@ class QueueController extends Controller
             $queueData = $this->queue
                 ->select('id', 'name', 'status')
                 ->when($searchString, function ($query, string $searchString): void {
-                    $query->where('name', 'like', sprintf('%%%s%%', $searchString));
+                    $query->where('name', 'like', likePattern($searchString));
                 })
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

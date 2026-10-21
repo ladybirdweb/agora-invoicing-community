@@ -15,10 +15,10 @@
                         <!-- Enable / disable toggle -->
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label class="form-label">
+                                <span class="form-label d-inline-block fw-semibold">
                                     {{ __('message.client_deployments') }}
                                     <ToolTip :message="__('message.deployment_enabled_tooltip')" size="small" />
-                                </label>
+                                </span>
                                 <div class="d-flex align-items-center gap-2 mt-1">
                                     <status-switch
                                         name="deployment_enabled"

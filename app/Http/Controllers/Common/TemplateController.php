@@ -50,7 +50,7 @@ class TemplateController extends Controller
 
             $paginated = $this->template
                 ->select('id', 'name', 'type')
-                ->when($search, fn ($q) => $q->where('name', 'like', sprintf('%%%s%%', $search)))
+                ->when($search, fn ($q) => $q->where('name', 'like', likePattern($search)))
                 ->orderBy($sortField, $sortOrder === 'desc' ? 'desc' : 'asc')
                 ->paginate($limit);
 

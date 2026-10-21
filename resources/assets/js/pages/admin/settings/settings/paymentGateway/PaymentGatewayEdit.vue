@@ -36,12 +36,12 @@
                                  copies this first to create the webhook on the gateway's
                                  dashboard, which is what then gives them the secret below. -->
                             <div v-if="form.webhook_url" class="col-md-6 mb-3">
-                                <label class="form-label">
+                                <label class="form-label" for="gateway-webhook-url">
                                     {{ __('message.webhook_url') }}
                                     <Tooltip v-if="gatewayConfig.webhookUrlHint" :message="gatewayConfig.webhookUrlHint" size="small" />
                                 </label>
                                 <div class="input-group">
-                                    <input class="form-control" readonly :value="form.webhook_url" />
+                                    <input id="gateway-webhook-url" class="form-control" readonly :value="form.webhook_url" />
                                     <span class="input-group-text cursor-pointer" @click="copyWebhookUrl">
                                         <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
                                         {{ copied ? __('message.copied') : __('message.copy') }}

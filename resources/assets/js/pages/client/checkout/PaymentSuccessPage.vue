@@ -1,5 +1,5 @@
 <template>
-  <div role="main" class="main shop pb-4">
+  <div class="main shop pb-4">
     <div class="container py-4">
 
       <div v-if="loading" class="row justify-content-center py-3"><loader /></div>

@@ -121,6 +121,14 @@ function successResponse(string $message = '', mixed $data = '', int $statusCode
 }
 
 /**
+ * "Contains" pattern for a SQL LIKE search: wraps the term in % on both sides.
+ */
+function likePattern(mixed $term): string
+{
+    return sprintf('%%%s%%', $term);
+}
+
+/**
  * Gets time in logged in user's timezone.
  */
 function getTimeInLoggedInUserTimeZone(string $dateTimeString, ?string $format = null): string
@@ -477,25 +485,18 @@ function currencyFormat(mixed $amount = null, ?string $currency = null, bool $in
 function getLocalesByCurrency(string $currencyCode): string
 {
     return cache()->rememberForever('currency_locale_'.$currencyCode, function () use ($currencyCode) {
-        $firstMatch = null;
         $locales = ResourceBundle::getLocales('');
-        if (! is_array($locales)) {
-            $locales = [];
-        }
-        foreach ($locales as $locale) {
-            try {
-                $fmt = new NumberFormatter($locale, NumberFormatter::CURRENCY);
-                $defaultCurrency = $fmt->getTextAttribute(NumberFormatter::CURRENCY_CODE);
-                if ($defaultCurrency === $currencyCode) {
-                    if ($firstMatch === null) {
-                        $firstMatch = $locale;
-                    }
+        foreach (is_array($locales) ? $locales : [] as $locale) {
+            if (! str_starts_with($locale, 'en_')) {
+                continue;
+            }
 
-                    if (str_starts_with($locale, 'en_')) {
-                        return $locale;
-                    }
+            try {
+                if (new NumberFormatter($locale, NumberFormatter::CURRENCY)->getTextAttribute(NumberFormatter::CURRENCY_CODE) === $currencyCode) {
+                    return $locale;
                 }
             } catch (Throwable) {
+                // Locale lookup failed: fall back to the default below.
             }
         }
 
@@ -525,6 +526,7 @@ function rounding(mixed $price, ?string $currency = null): float
 
         return round((float) $price, $decimals);
     } catch (Exception) {
+        // Unknown currency precision: use the 2-decimal default below.
     }
 
     return round((float) $price, 2);
@@ -824,6 +826,7 @@ function rateLimitForKeyIp(string $key, int $maxAttempts, int $decayMinutes, str
 
     // Command 2: Handle persistent cache using RateLimiter.
     if (! RateLimiter::attempt($IpKey, $maxAttempts, function (): void {
+        // Nothing to run: attempt() is used only to count the hit.
     }, $decaySeconds)) {
         $remainingTime = RateLimiter::availableIn($IpKey);
 

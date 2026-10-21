@@ -41,10 +41,10 @@ class ReportController extends Controller
             ->when($searchQuery, function ($query) use ($searchQuery): void {
                 $query->where(function (Builder $q) use ($searchQuery): void {
                     $q->whereHas('user', function (Builder $q2) use ($searchQuery): void {
-                        $q2->where('first_name', 'like', sprintf('%%%s%%', $searchQuery))
-                            ->orWhere('last_name', 'like', sprintf('%%%s%%', $searchQuery));
+                        $q2->where('first_name', 'like', likePattern($searchQuery))
+                            ->orWhere('last_name', 'like', likePattern($searchQuery));
                     })
-                        ->orWhere('file', 'like', sprintf('%%%s%%', $searchQuery));
+                        ->orWhere('file', 'like', likePattern($searchQuery));
                 });
             })
             ->orderBy($sortField, $sortOrder)

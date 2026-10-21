@@ -89,7 +89,7 @@ class LicenseController extends Controller
             'license_status' => $request->input('license_status'),
         ]);
 
-        $license->load('user:id,email');
+        $license->load('user:id,email'); // NOSONAR - Laravel column/cast list, repeated by design
 
         $clientFormatted = LicenseHelper::formatClient($license->license_code, $license->user?->email);
 
@@ -120,6 +120,13 @@ class LicenseController extends Controller
             return errorResponse($checks->getOriginalContent()['message'], 400);
         }
 
+        // Active licenses have no cancel date; a cancelled one keeps its first cancel date.
+        $cancelDate = null;
+
+        if ($request->input('license_status') != 1) {
+            $cancelDate = $license->license_cancel_date ?: now();
+        }
+
         $license->update([
             'license_order_number' => $request->input('license_order_number'),
             'license_ip' => $request->input('license_ip'),
@@ -127,7 +134,7 @@ class LicenseController extends Controller
             'license_machine_id' => $request->input('license_machine_id'),
             'license_require_domain' => $request->input('license_require_domain'),
             'license_limit' => $request->input('license_limit'),
-            'license_cancel_date' => $request->input('license_status') == 1 ? null : ($license->license_cancel_date ?: now()),
+            'license_cancel_date' => $cancelDate,
             'license_expire_date' => $request->input('license_expire_date'),
             'license_expire_email_date' => $request->input('license_expire_date') !== $license->license_expire_date ? null : $license->license_expire_email_date,
             'license_updates_date' => $request->input('license_updates_date'),

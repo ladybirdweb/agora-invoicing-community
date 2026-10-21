@@ -306,8 +306,9 @@
             <template #alert><AppAlert :componentName="MODAL_COMPONENT" /></template>
             <template #fields>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">{{ __('message.installation_limit') }}</label>
+                    <label class="form-label fw-bold" for="license-installation-limit">{{ __('message.installation_limit') }}</label>
                     <input
+                        id="license-installation-limit"
                         type="number"
                         class="form-control"
                         :class="{ 'is-invalid': errors.limit }"
@@ -317,8 +318,9 @@
                     <div v-if="errors.limit" class="invalid-feedback">{{ errors.limit }}</div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">{{ __('message.agents') }}</label>
+                    <label class="form-label fw-bold" for="license-agents">{{ __('message.agents') }}</label>
                     <input
+                        id="license-agents"
                         type="number"
                         class="form-control"
                         :class="{ 'is-invalid': errors.agents }"
@@ -383,8 +385,8 @@
             <template #fields>
                 <p class="text-muted mb-3">{{ __('message.activation_code_tooltip') }}</p>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">{{ __('message.activation_code') }}</label>
-                    <textarea class="form-control" rows="4" v-model="bindingForm.activationCode" :placeholder="__('message.enter_activation_code')"></textarea>
+                    <label class="form-label fw-bold" for="binding-activation-code">{{ __('message.activation_code') }}</label>
+                    <textarea id="binding-activation-code" class="form-control" rows="4" v-model="bindingForm.activationCode" :placeholder="__('message.enter_activation_code')"></textarea>
                 </div>
             </template>
             <template #controls>
@@ -839,7 +841,7 @@ const invoiceTableOptions = reactive({
         const columnMap = { amount: 'grand_total' }
         return {
             'sort-field':   (columnMap[data.orderBy] ?? data.orderBy) || 'date',
-            'sort-order':   data.orderBy ? (data.ascending ? 'asc' : 'desc') : 'desc',
+            'sort-order':   data.orderBy && data.ascending ? 'asc' : 'desc',
             'search-query': '',
             page:           data.page,
             limit:          data.limit,

@@ -17,7 +17,6 @@ class RecaptchaVerifier
         string $type,
         string $ip,
         string $expectedHostname,
-        float $_scoreThreshold = 0.5
     ): array|string|null|true {
         $httpResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => $secretKey,

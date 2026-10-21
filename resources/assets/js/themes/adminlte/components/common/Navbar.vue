@@ -1,11 +1,11 @@
 <template>
 
-  <nav class="app-header navbar navbar-expand bg-body" role="banner">
+  <nav class="app-header navbar navbar-expand bg-body">
 
     <div class="container-fluid">
 
       <!-- ── Left ───────────────────────────────────────────────────── -->
-      <ul class="navbar-nav" role="listbox" :aria-label="__('message.primary_navigation')">
+      <ul class="navbar-nav" :aria-label="__('message.primary_navigation')">
 
         <!-- Sidebar toggle -->
         <li class="nav-item">
@@ -25,7 +25,7 @@
       </ul>
 
       <!-- ── Right ──────────────────────────────────────────────────── -->
-      <ul class="navbar-nav ms-auto" role="listbox" :aria-label="__('message.user_navigation')">
+      <ul class="navbar-nav ms-auto" :aria-label="__('message.user_navigation')">
 
         <!-- Language -->
         <li class="nav-item dropdown">
@@ -37,10 +37,10 @@
             <span class="d-none d-md-inline">{{ currentLocale.toUpperCase() }}</span>
           </a>
 
-          <ul ref="langMenu" class="dropdown-menu dropdown-menu-end lang-dropdown" role="listbox" :aria-label="__('message.languages')"
+          <ul ref="langMenu" class="dropdown-menu dropdown-menu-end lang-dropdown" :aria-label="__('message.languages')"
               @scroll="onMenuScroll">
 
-            <li v-for="lang in languages" :key="lang.id" role="option">
+            <li v-for="lang in languages" :key="lang.id">
               <a class="dropdown-item d-flex align-items-center gap-2" href="javascript:;"
                  :class="{ active: lang.locale === currentLocale }"
                  :aria-current="lang.locale === currentLocale ? 'true' : undefined"

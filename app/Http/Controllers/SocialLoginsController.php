@@ -25,8 +25,8 @@ class SocialLoginsController extends Controller
 
         $query = SocialLogin::select('id', 'type', 'client_id', 'client_secret', 'redirect_url', 'status')
             ->when($search, function ($q) use ($search): void {
-                $q->where('type', 'like', sprintf('%%%s%%', $search))
-                    ->orWhere('client_id', 'like', sprintf('%%%s%%', $search));
+                $q->where('type', 'like', likePattern($search))
+                    ->orWhere('client_id', 'like', likePattern($search));
             });
 
         $socialLogins = $query->orderBy($sortField, $sortOrder)

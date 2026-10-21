@@ -165,14 +165,14 @@ class MSG91Controller extends Controller
             // Search filter
             if (! empty($searchString)) {
                 $baseQuery->where(function (\Illuminate\Contracts\Database\Query\Builder $q) use ($searchString): void {
-                    $q->where('request_id', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('mobile_number', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhereHas('readableStatus', fn (\Illuminate\Contracts\Database\Query\Builder $q) => $q->where('status_label', 'like', sprintf('%%%s%%', $searchString)))
+                    $q->where('request_id', 'like', likePattern($searchString))
+                        ->orWhere('mobile_number', 'like', likePattern($searchString))
+                        ->orWhereHas('readableStatus', fn (\Illuminate\Contracts\Database\Query\Builder $q) => $q->where('status_label', 'like', likePattern($searchString)))
                         ->orWhereHas('user', function (\Illuminate\Contracts\Database\Query\Builder $sub) use ($searchString): void {
-                            $sub->where('email', 'like', sprintf('%%%s%%', $searchString))
-                                ->orWhere('user_name', 'like', sprintf('%%%s%%', $searchString))
-                                ->orWhere('first_name', 'like', sprintf('%%%s%%', $searchString))
-                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [sprintf('%%%s%%', $searchString)]);
+                            $sub->where('email', 'like', likePattern($searchString))
+                                ->orWhere('user_name', 'like', likePattern($searchString))
+                                ->orWhere('first_name', 'like', likePattern($searchString))
+                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [likePattern($searchString)]);
                         });
                 });
             }

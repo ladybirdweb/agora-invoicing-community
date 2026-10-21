@@ -66,7 +66,7 @@ class GroupController extends Controller
         $limit = $request->input('limit', 10);
 
         $groups = ProductGroup::when($searchQuery, function ($query) use ($searchQuery): void {
-            $query->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+            $query->where('name', 'like', likePattern($searchQuery));
         })
             ->orderBy($sortField, $sortOrder)
             ->paginate($limit);

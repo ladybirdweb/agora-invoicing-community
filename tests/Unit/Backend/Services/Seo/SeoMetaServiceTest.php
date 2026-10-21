@@ -346,4 +346,35 @@ class SeoMetaServiceTest extends DBTestCase
         $this->assertArrayHasKey('pay', $routes);
         $this->assertArrayNotHasKey('store', $routes);
     }
+
+    // --- matchRoute: picks the most specific pattern with the same segment count ---
+
+    private function matchRoute(array $routes, string $path): ?array
+    {
+        return (new \ReflectionMethod(SeoMetaService::class, 'matchRoute'))->invoke($this->service, $routes, $path);
+    }
+
+    public function test_match_route_prefers_the_most_specific_pattern(): void
+    {
+        $routes = ['orders/*' => ['id' => 'wild'], 'orders/new' => ['id' => 'exact'], '*/*' => ['id' => 'both']];
+
+        $this->assertSame(['id' => 'exact'], $this->matchRoute($routes, '/orders/new/'));
+        $this->assertSame(['id' => 'wild'], $this->matchRoute($routes, 'orders/42'));
+        $this->assertSame(['id' => 'both'], $this->matchRoute($routes, 'invoices/42'));
+    }
+
+    public function test_match_route_needs_the_same_segment_count_and_literal_segments(): void
+    {
+        $routes = ['orders/*' => ['id' => 'wild'], 'orders' => ['id' => 'list']];
+
+        $this->assertSame(['id' => 'list'], $this->matchRoute($routes, 'orders'));
+        $this->assertNull($this->matchRoute($routes, 'orders/1/edit'));
+        $this->assertNull($this->matchRoute($routes, 'invoices/1'));
+    }
+
+    public function test_match_route_keeps_the_first_of_equally_specific_patterns_and_handles_numeric_keys(): void
+    {
+        $this->assertSame(['id' => 'first'], $this->matchRoute(['*/a' => ['id' => 'first'], 'x/*' => ['id' => 'second']], 'x/a'));
+        $this->assertSame(['id' => 'nf'], $this->matchRoute([404 => ['id' => 'nf']], '404'));
+    }
 }

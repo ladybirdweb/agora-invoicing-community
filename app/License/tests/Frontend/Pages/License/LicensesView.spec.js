@@ -381,4 +381,49 @@ describe('LicensesView.vue', () => {
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.copied).toBe(false)
     })
+
+    describe('updateStatesWithData()', () => {
+        const FULL = {
+            product_title: 'P', client_email: 'e@x.test', client_id: 9, latest_call_backs: [{ id: 1 }],
+            license_date: '2024-01-01', license_limit: 4, license_expire_date: '2025-01-01', license_updates_date: '2025-02-01',
+            license_support_date: '2025-03-01', license_ip: '10.0.0.1', license_domain: 'd.test', license_machine_id: 'M1', // NOSONAR
+            license_code: 'C1', license_status: 2, installation_counts: 5, call_backs_count: 6, license_order_number: 777,
+            license_order_id: 88, product_id: 3, id: 42,
+        }
+        const state = vm => ({
+            product_title: vm.product_title, client_email: vm.client_email, client_id: vm.client_id,
+            latest_call_backs: vm.latest_call_backs, license_date: vm.license_date, installation_limit: vm.installation_limit,
+            license_expire_date: vm.license_expire_date, license_updates_date: vm.license_updates_date,
+            license_support_date: vm.license_support_date, license_ip: vm.license_ip, license_domain: vm.license_domain,
+            license_machine_id: vm.license_machine_id, license_code: vm.license_code, license_status: vm.license_status,
+            installation_counts: vm.installation_counts, call_backs_count: vm.call_backs_count,
+            license_order_number: vm.license_order_number, license_order_id: vm.license_order_id,
+            product_id: vm.product_id, license_id: vm.license_id,
+        })
+
+        it('copies every field from the response', async () => {
+            await flushPromises()
+            wrapper.vm.updateStatesWithData(FULL)
+
+            expect(state(wrapper.vm)).toEqual({
+                product_title: 'P', client_email: 'e@x.test', client_id: 9, latest_call_backs: [{ id: 1 }],
+                license_date: '2024-01-01', installation_limit: 4, license_expire_date: '2025-01-01', license_updates_date: '2025-02-01',
+                license_support_date: '2025-03-01', license_ip: '10.0.0.1', license_domain: 'd.test', license_machine_id: 'M1', // NOSONAR
+                license_code: 'C1', license_status: 2, installation_counts: 5, call_backs_count: 6, license_order_number: 777,
+                license_order_id: 88, product_id: 3, license_id: 42,
+            })
+        })
+
+        it('keeps earlier values for missing fields, but blanks the name/email/client and order id', async () => {
+            await flushPromises()
+            wrapper.vm.updateStatesWithData(FULL)
+            wrapper.vm.updateStatesWithData({ license_limit: 0, license_status: 0, license_code: '' })
+
+            expect(state(wrapper.vm)).toEqual({
+                ...state({ ...FULL, installation_limit: 4, license_id: 42 }),
+                product_title: '', client_email: '', client_id: '', license_order_id: null,
+                installation_limit: 0, license_status: 0, license_code: 'C1', license_id: 42,
+            })
+        })
+    })
 })

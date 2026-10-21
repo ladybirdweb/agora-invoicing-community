@@ -180,7 +180,7 @@ class OrderPolicy
 
         $product = $order->productRelation;
 
-        return $product instanceof Product && Plan::cloudPlanChangeOptions($product)->whereKey($planId)->exists()
+        return $product instanceof Product && Plan::query()->cloudPlanChangeOptions($product)->whereKey($planId)->exists()
             ? Response::allow()
             : Response::deny(__('message.no_permission_for_action'));
     }

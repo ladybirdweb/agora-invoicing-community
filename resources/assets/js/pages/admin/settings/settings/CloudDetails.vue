@@ -110,7 +110,7 @@
                                 </div>
                                 <hr />
                                 <p class="text-muted fw-bold mb-2">{{ __('message.set_cloud_free_trial') }}</p>
-                                <label class="form-label fw-bold d-block">{{ __('message.cloud_free_trial') }}</label>
+                                <span class="form-label fw-bold d-block">{{ __('message.cloud_free_trial') }}</span>
                                 <Switch name="cloud_button" :value="form.cloud_button" :onChange="(val) => form.cloud_button = val" />
                             </div>
                             <div class="card-footer">

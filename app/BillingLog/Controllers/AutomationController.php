@@ -71,11 +71,29 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             ->groupBy('log_category_id')
             ->map(fn ($logs, $categoryId): array => array_merge([
                 'id' => $categoryId,
-                'name' => ($key = $categoryNames[$categoryId] ?? '')
-                    ? (Template::where('type', TemplateType::where('name', $key)->value('id'))->value('name')
-                        ?: (Lang::has('log::lang.'.$key) ? __('log::lang.'.$key) : $key))
-                    : '',
+                'name' => $this->categoryLabel((string) ($categoryNames[$categoryId] ?? ''), withTemplate: true),
             ], $logs->pluck('status_count', 'status')->toArray()))->values();
+    }
+
+    /**
+     * Display name of a log category: its mail template's name (mail logs only), else the
+     * translated category, else the raw key. An unknown category shows as ''.
+     */
+    private function categoryLabel(string $key, bool $withTemplate = false): mixed
+    {
+        if (! $key) {
+            return '';
+        }
+
+        if ($withTemplate) {
+            $templateName = Template::where('type', TemplateType::where('name', $key)->value('id'))->value('name');
+
+            if ($templateName) {
+                return $templateName;
+            }
+        }
+
+        return Lang::has('log::lang.'.$key) ? __('log::lang.'.$key) : $key;
     }
 
     private function getExceptionCategoryLog(string $date): mixed
@@ -88,9 +106,7 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             ->get()
             ->map(fn ($log): array => [ // @phpstan-ignore method.unresolvableReturnType, argument.unresolvableType
                 'id' => $log->log_category_id,
-                'name' => ($key = $categoryNames[$log->log_category_id] ?? '')
-                    ? (Lang::has('log::lang.'.$key) ? __('log::lang.'.$key) : $key)
-                    : '',
+                'name' => $this->categoryLabel((string) ($categoryNames[$log->log_category_id] ?? '')),
                 'count' => $log->count, // @phpstan-ignore property.notFound
             ]);
     }

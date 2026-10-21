@@ -29,24 +29,21 @@ trait UpdateDates
             $requested = 0;
             $skipped = [];
 
-            if ($request->filled('update_end')) {
-                $requested++;
-                if (! $service->setDate($sub, 'update_ends_at', $this->parseDate($request->input('update_end')))) {
-                    $skipped[] = __('message.updates_expiry');
-                }
-            }
+            // input => [subscription column, label when the license type blocks it]
+            $dateFields = [
+                'update_end' => ['update_ends_at', 'message.updates_expiry'],
+                'subscription_end' => ['ends_at', 'message.license_expiry'],
+                'support_end' => ['support_ends_at', 'message.support_expiry'],
+            ];
 
-            if ($request->filled('subscription_end')) {
-                $requested++;
-                if (! $service->setDate($sub, 'ends_at', $this->parseDate($request->input('subscription_end')))) {
-                    $skipped[] = __('message.license_expiry');
+            foreach ($dateFields as $input => [$column, $label]) {
+                if (! $request->filled($input)) {
+                    continue;
                 }
-            }
 
-            if ($request->filled('support_end')) {
                 $requested++;
-                if (! $service->setDate($sub, 'support_ends_at', $this->parseDate($request->input('support_end')))) {
-                    $skipped[] = __('message.support_expiry');
+                if (! $service->setDate($sub, $column, $this->parseDate($request->input($input)))) {
+                    $skipped[] = __($label);
                 }
             }
 

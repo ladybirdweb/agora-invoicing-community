@@ -15,7 +15,9 @@ use RuntimeException;
 
 class LicenseDataMigration extends Command
 {
-    protected $signature = 'license:migrate-data // NOSONAR
+    // --username/--password are option names for the source database, not stored credentials.
+    protected $signature = // NOSONAR
+        'license:migrate-data
         {--host= : License database host}
         {--port= : License database port}
         {--database= : License database name}

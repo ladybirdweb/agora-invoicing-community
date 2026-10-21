@@ -459,11 +459,11 @@ class OrderController extends BaseOrderController
                 ->select(['id', 'currency', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at'])
                 ->when($searchQuery, function ($query) use ($searchQuery): void {
                     $query->where(function ($q) use ($searchQuery): void {
-                        $q->where('payment_method', 'like', sprintf('%%%s%%', $searchQuery))
-                            ->orWhere('payment_status', 'like', sprintf('%%%s%%', $searchQuery))
-                            ->orWhere('amount', 'like', sprintf('%%%s%%', $searchQuery))
+                        $q->where('payment_method', 'like', likePattern($searchQuery))
+                            ->orWhere('payment_status', 'like', likePattern($searchQuery))
+                            ->orWhere('amount', 'like', likePattern($searchQuery))
                             ->orWhereHas('invoices', function ($inv) use ($searchQuery): void {
-                                $inv->where('number', 'like', sprintf('%%%s%%', $searchQuery));
+                                $inv->where('number', 'like', likePattern($searchQuery));
                             });
                     });
                 })

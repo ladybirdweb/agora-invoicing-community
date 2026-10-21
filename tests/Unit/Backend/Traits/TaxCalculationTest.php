@@ -74,9 +74,9 @@ class TaxCalculationTest extends DBTestCase
         $this->assertEqualsWithDelta(17.0, $result, 0.001);
     }
 
-    public function test_tax_value_rounding_flag_false_returns_float(): void
+    public function test_tax_value_returns_float_for_fractional_result(): void
     {
-        $result = TaxCalculation::taxValue('18%', 99, round: false);
+        $result = TaxCalculation::taxValue('18%', 99);
         $this->assertIsFloat((float) $result);
     }
 

@@ -362,4 +362,15 @@ class HelpersBoostTest extends DBTestCase
         $this->assertSame('2026-10-19 18:29:59', userDayEnd('2026-10-19')->toDateTimeString());
         $this->assertSame('2026-10-20', userDate('2026-10-19 20:00:00'));
     }
+
+    public function test_get_locales_by_currency_returns_the_first_english_locale_using_it(): void
+    {
+        $expected = ['USD' => 'en_AS', 'EUR' => 'en_AT', 'INR' => 'en_IN', 'GBP' => 'en_GB', 'AUD' => 'en_AU', 'JPY' => 'en', 'BRL' => 'en', 'XYZ' => 'en'];
+
+        foreach ($expected as $currency => $locale) {
+            cache()->forget('currency_locale_'.$currency);
+            $this->assertSame($locale, getLocalesByCurrency($currency), $currency);
+            cache()->forget('currency_locale_'.$currency);
+        }
+    }
 }

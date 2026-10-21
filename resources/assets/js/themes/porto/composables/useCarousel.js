@@ -69,7 +69,7 @@ class Carousel {
         this._originals     = []
         this._visibleCount  = 1
 
-        const parsed = parseOptions(el.getAttribute('data-plugin-options'))
+        const parsed = parseOptions(el.dataset.pluginOptions)
         this.options = { ...DEFAULTS, ...parsed }
 
         // RTL from HTML dir attribute — theme.js PluginCarousel.build()

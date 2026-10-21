@@ -7,6 +7,16 @@ const COLORS = { 31: 'red', 32: 'green', 33: 'yellow', 34: 'blue', 36: 'cyan' }
 // eslint-disable-next-line no-control-regex
 const ESCAPE = /(\x1b\[[0-9;?]*[A-Za-z])/
 
+/** The colour in effect after an escape sequence. Only colour codes matter; cursor moves etc. are dropped. */
+function colorAfter(escape, color) {
+    if (!escape.endsWith('m')) return color
+    for (const n of escape.slice(2, -1).split(';')) {
+        if (n === '' || n === '0') color = ''
+        else if (COLORS[n]) color = COLORS[n]
+    }
+    return color
+}
+
 /** @returns {{ segments: {text: string, color: string}[], text: string, color: string }[]} */
 export function parseLog(raw) {
     const lines = raw.split('\n').map(rawLine => {
@@ -16,17 +26,8 @@ export function parseLog(raw) {
         const segments = []
         let color = ''
         for (const part of line.split(ESCAPE)) {
-            if (part.startsWith('\x1b[')) {
-                // Only colour codes matter; cursor moves etc. are dropped.
-                if (part.endsWith('m')) {
-                    for (const n of part.slice(2, -1).split(';')) {
-                        if (n === '' || n === '0') color = ''
-                        else if (COLORS[n]) color = COLORS[n]
-                    }
-                }
-                continue
-            }
-            if (part) segments.push({ text: part, color })
+            if (part.startsWith('\x1b[')) color = colorAfter(part, color)
+            else if (part) segments.push({ text: part, color })
         }
 
         return {

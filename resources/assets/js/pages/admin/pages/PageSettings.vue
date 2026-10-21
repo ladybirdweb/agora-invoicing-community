@@ -23,10 +23,10 @@
                             />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label fw-bold d-block">
+                            <span class="form-label fw-bold d-block">
                                 {{ __('message.demo_request_button') }}
                                 <ToolTip :message="__('message.tt_demo_request_button')" size="small" />
-                            </label>
+                            </span>
                             <Switch name="status" :value="form.status" :onChange="(val) => form.status = val" />
                         </div>
                     </div>

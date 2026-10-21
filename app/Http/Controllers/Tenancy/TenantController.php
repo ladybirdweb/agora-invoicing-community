@@ -43,6 +43,10 @@ use Throwable;
 
 class TenantController extends Controller
 {
+    private const AUTO_DELETION = 'Auto deletion';
+    private const USERS_PAGE = 'admin/users/';
+    private const REASON_SEPARATOR = '. Reason: ';
+
     private mixed $cloud = null;
 
     public function __construct(Client $client, FaveoCloud $cloud)
@@ -288,7 +292,7 @@ class TenantController extends Controller
                 ];
 
                 logActivity(
-                    sprintf("Cloud instance <b><a href='http://%s' target='_blank'>%s</a></b> created successfully for user <b><a href='", $faveoCloud, $faveoCloud).url('admin/users/'.$userId).sprintf("'><strong>%s %s</strong></a></b>", $userFirstName, $userLastName),
+                    sprintf("Cloud instance <b><a href='http://%s' target='_blank'>%s</a></b> created successfully for user <b><a href='", $faveoCloud, $faveoCloud).url(self::USERS_PAGE.$userId).sprintf("'><strong>%s %s</strong></a></b>", $userFirstName, $userLastName),
                     'created',
                     'Cloud'
                 );
@@ -361,7 +365,7 @@ class TenantController extends Controller
             if (! is_array($responseArray)) {
                 return errorResponse(__('message.cloud_deleted_failed'));
             }
-            $user = Auth::user()->email ?? 'Auto deletion'; // also runs from the expiry cron, with no logged-in user
+            $user = Auth::user()->email ?? self::AUTO_DELETION; // also runs from the expiry cron, with no logged-in user
 
             if (($responseArray['status'] ?? null) == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
                 $this->deleteCronForTenant($request->input('id'));
@@ -379,8 +383,8 @@ class TenantController extends Controller
                 }
 
                 $loggingUser = Auth::check()
-                    ? "<a href='".url('admin/users/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
-                    : 'Auto deletion';
+                    ? "<a href='".url(self::USERS_PAGE.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
+                    : self::AUTO_DELETION;
 
                 logActivity(
                     sprintf('Cloud instance <b>%s</b> deleted by <b>%s</b>', $request->input('id'), $loggingUser),
@@ -397,12 +401,12 @@ class TenantController extends Controller
                 $this->statusChange($request->orderId);
             }
 
-            $this->googleChat('Tenant deletion failed for '.$user.'. Reason: '.$responseBody);
+            $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.$responseBody);
 
             return errorResponse(__('message.cloud_deleted_failed'));
         } catch (Exception $exception) {
             Logger::exception($exception);
-            $message = 'Tenant deletion error, Request '.json_encode($request->all()).'. Reason: '.$exception->getMessage();
+            $message = 'Tenant deletion error, Request '.json_encode($request->all()).self::REASON_SEPARATOR.$exception->getMessage();
             $this->googleChat($message);
 
             return errorResponse(__('message.sorry_something_wrong'));
@@ -540,7 +544,7 @@ class TenantController extends Controller
                     );
                     $responseBody = (string) $response->getBody();
                     $response = json_decode($responseBody);
-                    $user = $this->authUser()->email ?? 'Auto deletion';
+                    $user = $this->authUser()->email ?? self::AUTO_DELETION;
                     if ($response->status == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
                         $this->deleteCronForTenant($domainArray[$i]->id);
                         $this->reissueCloudLicense($order_id);
@@ -549,8 +553,8 @@ class TenantController extends Controller
                         DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
 
                         $loggingUser = Auth::check()
-                            ? "<a href='".url('admin/users/'.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
-                            : 'Auto deletion';
+                            ? "<a href='".url(self::USERS_PAGE.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
+                            : self::AUTO_DELETION;
 
                         logActivity(
                             sprintf('Cloud instance <b>%s</b> deleted by <b>%s</b>', $installation_path, $loggingUser),
@@ -564,7 +568,7 @@ class TenantController extends Controller
                     }
 
                     Logger::exception(new Exception($response->message));
-                    $this->googleChat('Tenant deletion failed for '.$user.'. Reason: '.$responseBody);
+                    $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.$responseBody);
 
                     return errorResponse(__('message.cloud_deleted_failed'));
                 }
@@ -765,7 +769,7 @@ class TenantController extends Controller
                 ? '+'.$user->mobile_code.' '.$user->mobile
                 : null,
             'country' => Country::where('country_code_char2', $user->country)->value('country_name'),
-            'profile' => url('admin/users/'.$user->id),
+            'profile' => url(self::USERS_PAGE.$user->id),
         ];
     }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="mb-3">
-        <label v-if="label" class="form-label fw-bold">
+        <label v-if="label" class="form-label fw-bold" :for="id">
             {{ label }}<span v-if="required" class="text-danger ms-1">*</span>
         </label>
         <editor

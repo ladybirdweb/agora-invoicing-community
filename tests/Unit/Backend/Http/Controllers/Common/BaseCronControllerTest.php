@@ -370,6 +370,22 @@ class BaseCronControllerTest extends DBTestCase
         $this->assertNotEmpty($result);
     }
 
+    public function test_get_subscriptions_collects_each_day_in_order(): void
+    {
+        $stub = new ConcreteCronStubWithUsers;
+
+        // 2+ days → that day's subscription; 1 → one-day; 0 → today's then the +1 (expired) one; negative → nothing.
+        $this->assertSame(
+            [['id' => 1, 'plan' => 'Pro'], ['sub1'], ['sub0'], ['subplus'], ['id' => 1, 'plan' => 'Pro']],
+            $stub->getSubscriptions([7, 1, 0, -1, 2])
+        );
+    }
+
+    public function test_get_subscriptions_skips_days_without_users(): void
+    {
+        $this->assertSame([], $this->cron->getSubscriptions([30, 2, 1, 0, -1]));
+    }
+
     // -------------------------------------------------------------------------
     // mail() — early returns when dependencies missing in DB
     // -------------------------------------------------------------------------

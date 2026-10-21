@@ -1,8 +1,8 @@
 <template>
     <div class="mb-3">
-        <label v-if="label" class="form-label fw-bold">
+        <span v-if="label" class="form-label fw-bold d-inline-block">
             {{ label }}<span v-if="required" class="text-danger ms-1">*</span>
-        </label>
+        </span>
         <treeselect
             v-model="selectedValue"
             :options="listElements"

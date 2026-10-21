@@ -34,9 +34,9 @@ class LogViewController
                 return $this->getCronLogs($request);
             case 'mail':
                 return $this->getMailLogs($request);
+            default:
+                return errorResponse(__('message.invalid_log_type'), 400);
         }
-
-        return errorResponse(__('message.invalid_log_type'), 400);
     }
 
     public function getExceptionLogs(Request $request): JsonResponse
@@ -62,8 +62,8 @@ class LogViewController
                 ->when($this->searchString, function ($q): void {
                     $search = $this->searchString;
                     $q->where(function ($q) use ($search): void {
-                        $q->where('message', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('file', 'like', sprintf('%%%s%%', $search));
+                        $q->where('message', 'like', likePattern($search))
+                            ->orWhere('file', 'like', likePattern($search));
                     });
                 })
                 ->orderBy($this->sortField, $this->sortOrder)
@@ -94,8 +94,8 @@ class LogViewController
                 ->when($this->searchString, function ($q): void {
                     $search = $this->searchString;
                     $q->where(function ($q) use ($search): void {
-                        $q->where('description', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('command', 'like', sprintf('%%%s%%', $search));
+                        $q->where('description', 'like', likePattern($search))
+                            ->orWhere('command', 'like', likePattern($search));
                     });
                 })
                 ->orderBy($this->sortField, $this->sortOrder)
@@ -132,9 +132,9 @@ class LogViewController
                 ->when($this->searchString, function ($q): void {
                     $search = $this->searchString;
                     $q->where(function ($sub) use ($search): void {
-                        $sub->where('sender_mail', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('receiver_mail', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('carbon_copy', 'like', sprintf('%%%s%%', $search));
+                        $sub->where('sender_mail', 'like', likePattern($search))
+                            ->orWhere('receiver_mail', 'like', likePattern($search))
+                            ->orWhere('carbon_copy', 'like', likePattern($search));
                     });
                 })
                 ->orderBy($this->sortField, $this->sortOrder)

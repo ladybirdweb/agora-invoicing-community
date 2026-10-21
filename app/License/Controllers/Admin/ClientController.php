@@ -17,10 +17,10 @@ class ClientController extends Controller
         $query = User::select('id', 'first_name', 'last_name', 'email')
             ->when($search, function ($q) use ($search): void {
                 $q->where(function ($q2) use ($search): void {
-                    $q2->where('first_name', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('last_name', 'like', sprintf('%%%s%%', $search))
-                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [sprintf('%%%s%%', $search)])
-                        ->orWhere('email', 'like', sprintf('%%%s%%', $search));
+                    $q2->where('first_name', 'like', likePattern($search))
+                        ->orWhere('last_name', 'like', likePattern($search))
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [likePattern($search)])
+                        ->orWhere('email', 'like', likePattern($search));
                 });
             })
             ->orderBy('first_name');

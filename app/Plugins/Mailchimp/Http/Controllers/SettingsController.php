@@ -36,8 +36,12 @@ class SettingsController extends Controller
             $apiKey = (string) ($setting->api_key ?? '');
             $listsData = ['lists' => [], 'total' => 0, 'has_more' => false];
             $account = null;
+            $keyHint = null;
 
             if ($apiKey !== '') {
+                // Last 4 of the key itself, without the "-us7" data-center suffix.
+                $keyHint = substr(strtok($apiKey, '-') ?: $apiKey, -4);
+
                 try {
                     $service = resolve(MailchimpService::class);
                     $account = $service->accountName();
@@ -50,7 +54,7 @@ class SettingsController extends Controller
             return successResponse('', [
                 'api_key' => $apiKey,
                 'has_key' => $apiKey !== '',
-                'key_hint' => $apiKey !== '' ? substr(strtok($apiKey, '-') ?: $apiKey, -4) : null,
+                'key_hint' => $keyHint,
                 'data_center' => $apiKey !== '' && str_contains($apiKey, '-') ? substr($apiKey, strrpos($apiKey, '-') + 1) : null,
                 'account_name' => $account,
                 'list_id' => $setting?->list_id,

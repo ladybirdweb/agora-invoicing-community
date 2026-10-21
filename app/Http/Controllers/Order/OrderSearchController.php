@@ -119,7 +119,7 @@ class OrderSearchController extends Controller
         if ($domain) {
             $domain = rtrim((string) $domain, '/');
             $query->whereHas('licensedInstallations', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($domain): void {
-                $q->where('installations.installation_domain', 'like', sprintf('%%%s%%', $domain));
+                $q->where('installations.installation_domain', 'like', likePattern($domain));
             });
         }
     }
@@ -235,31 +235,31 @@ class OrderSearchController extends Controller
         return $query->when($search, function ($q) use ($search): void {
             $q->where(function (\Illuminate\Contracts\Database\Query\Builder $q) use ($search): void {
                 // Search in order-level columns
-                $q->where('number', 'like', sprintf('%%%s%%', $search))
-                    ->orWhere('order_status', 'like', sprintf('%%%s%%', $search))
+                $q->where('number', 'like', likePattern($search))
+                    ->orWhere('order_status', 'like', likePattern($search))
 
                     // Search in user-related fields
                     ->orWhereHas('user', function (\Illuminate\Contracts\Database\Query\Builder $uq) use ($search): void {
-                        $uq->where('email', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('mobile', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('first_name', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('last_name', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('country', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere(DB::raw('CONCAT(first_name, " ", last_name)'), 'like', sprintf('%%%s%%', $search));
+                        $uq->where('email', 'like', likePattern($search))
+                            ->orWhere('mobile', 'like', likePattern($search))
+                            ->orWhere('first_name', 'like', likePattern($search))
+                            ->orWhere('last_name', 'like', likePattern($search))
+                            ->orWhere('country', 'like', likePattern($search))
+                            ->orWhere(DB::raw('CONCAT(first_name, " ", last_name)'), 'like', likePattern($search));
                     })
 
                     // Search in product relation (product name)
                     ->orWhereHas('productRelation', function (\Illuminate\Contracts\Database\Query\Builder $pq) use ($search): void {
-                        $pq->where('name', 'like', sprintf('%%%s%%', $search));
+                        $pq->where('name', 'like', likePattern($search));
                     })
 
                     // Search in subscription & plan
                     ->orWhereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $sq) use ($search): void {
-                        $sq->where('version', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('updated_at', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('update_ends_at', 'like', sprintf('%%%s%%', $search))
+                        $sq->where('version', 'like', likePattern($search))
+                            ->orWhere('updated_at', 'like', likePattern($search))
+                            ->orWhere('update_ends_at', 'like', likePattern($search))
                             ->orWhereHas('plan', function (\Illuminate\Contracts\Database\Query\Builder $pq) use ($search): void {
-                                $pq->where('name', 'like', sprintf('%%%s%%', $search));
+                                $pq->where('name', 'like', likePattern($search));
                             });
                     });
             });

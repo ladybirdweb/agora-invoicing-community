@@ -1,6 +1,6 @@
 <template>
     <div class="mb-3 position-relative">
-        <label v-if="label" class="form-label fw-bold">
+        <label v-if="label" class="form-label fw-bold" :for="name">
             {{ label }}<span v-if="required" class="text-danger ms-1">*</span>
         </label>
         <VueDatePicker
@@ -18,7 +18,7 @@
             :popup-style="{ top: '100%', left: 0 }"
             v-bind="disabledDate ? { 'disabled-date': disabledDate } : {}"
             :input-class="['form-control mx-input', { 'is-invalid': fieldError }]"
-            :input-attr="{ required: required }"
+            :input-attr="{ required: required, id: name }"
             @change="onDateChange"
             @confirm="onDateChange"
         />

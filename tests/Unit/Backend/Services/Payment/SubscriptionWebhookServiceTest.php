@@ -6,12 +6,21 @@ use App\Http\Controllers\ConcretePostSubscriptionHandleController;
 use App\Services\Payment\SubscriptionWebhookService;
 use App\Services\Payment\WebhookDispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Tests\DBTestCase;
 
 class SubscriptionWebhookServiceTest extends DBTestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Cancelled/halted subscriptions email the customer; never send real mail from a test.
+        Mail::fake();
+    }
 
     // =========================================================================
     // WebhookDispatcher — on() and dispatch()

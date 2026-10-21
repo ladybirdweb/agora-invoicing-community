@@ -60,7 +60,7 @@ class LicenseViewController extends Controller
         $sortOrder = $request->input('sort-order', $request->input('sort_order', 'desc'));
         $sortField = $request->input('sort-field', $request->input('sort_field', 'id'));
 
-        $license = License::query()->select('id', 'user_id as client_id', 'license_code')->find($license_id);
+        $license = License::query()->select('id', 'user_id as client_id', 'license_code')->find($license_id); // NOSONAR - Laravel column/cast list, repeated by design
         if (! $license) {
             return successResponse(__('license::lang.license_installations'), collect([]));
         }

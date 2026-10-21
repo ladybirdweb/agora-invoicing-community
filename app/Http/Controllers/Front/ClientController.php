@@ -31,6 +31,8 @@ use Logger;
 
 class ClientController extends BaseClientController
 {
+    private const ONE_TIME = 'One Time';
+
     /**
      * @var User
      */
@@ -100,8 +102,8 @@ class ClientController extends BaseClientController
 
         if ($search !== '' && $search !== '0') {
             $query->where(function (Builder $q) use ($search): void {
-                $q->where('number', 'like', sprintf('%%%s%%', $search))
-                    ->orWhere('status', 'like', sprintf('%%%s%%', $search));
+                $q->where('number', 'like', likePattern($search))
+                    ->orWhere('status', 'like', likePattern($search));
             });
         }
 
@@ -300,8 +302,8 @@ class ClientController extends BaseClientController
 
         if ($search !== '' && $search !== '0') {
             $query->where(function (Builder $q) use ($search): void {
-                $q->where('number', 'like', sprintf('%%%s%%', $search))
-                    ->orWhereHas('productRelation', fn (Builder $pq) => $pq->where('name', 'like', sprintf('%%%s%%', $search)));
+                $q->where('number', 'like', likePattern($search))
+                    ->orWhereHas('productRelation', fn (Builder $pq) => $pq->where('name', 'like', likePattern($search)));
             });
         }
 
@@ -439,15 +441,15 @@ class ClientController extends BaseClientController
             // A recurring order can't renew onto a one-time (lifetime) plan; a one-time
             // order still needs its own plan here to renew updates/support.
             $order = Order::where('client', $user->id)->find($request->integer('order'));
-            $isOneTime = (bool) $order?->subscription?->plan?->periods()->where('name', 'One Time')->exists();
+            $isOneTime = (bool) $order?->subscription?->plan?->periods()->where('name', self::ONE_TIME)->exists();
 
             $plans = Plan::where('product', $productid)
                 ->where('status', 1)
                 ->where('days', '!=', 14)
                 ->when(
                     $isOneTime,
-                    fn ($q) => $q->whereHas('periods', fn ($p) => $p->where('name', 'One Time')),
-                    fn ($q) => $q->whereDoesntHave('periods', fn ($p) => $p->where('name', 'One Time')),
+                    fn ($q) => $q->whereHas('periods', fn ($p) => $p->where('name', self::ONE_TIME)),
+                    fn ($q) => $q->whereDoesntHave('periods', fn ($p) => $p->where('name', self::ONE_TIME)),
                 )
                 ->with([
                     'planPrice' => fn ($q) => $q->where('currency', $currency)
@@ -642,9 +644,13 @@ class ClientController extends BaseClientController
      */
     private function versionPopupMeta(?array $latest, ?array $latestOfficial, ?Subscription $subscription, bool $hasPrevious): array
     {
-        $featured = $latest && ($latest['release_type'] ?? null) !== 'official'
-            ? array_filter([$latest, $latestOfficial])
-            : ($latest ? [$latest] : []);
+        $featured = [];
+
+        if ($latest) {
+            $featured = ($latest['release_type'] ?? null) !== 'official'
+                ? array_filter([$latest, $latestOfficial])
+                : [$latest];
+        }
 
         $updatesEnd = $subscription?->update_ends_at;
         $ended = $updatesEnd && $updatesEnd !== '0000-00-00 00:00:00' && strtotime((string) $updatesEnd) < time();
@@ -676,9 +682,9 @@ class ClientController extends BaseClientController
 
         if ($search !== '' && $search !== '0') {
             $base->where(function ($q) use ($search): void {
-                $q->where('version', 'LIKE', sprintf('%%%s%%', $search))
-                    ->orWhere('title', 'LIKE', sprintf('%%%s%%', $search))
-                    ->orWhere('description', 'LIKE', sprintf('%%%s%%', $search));
+                $q->where('version', 'LIKE', likePattern($search))
+                    ->orWhere('title', 'LIKE', likePattern($search))
+                    ->orWhere('description', 'LIKE', likePattern($search));
             });
         }
 
@@ -762,7 +768,7 @@ class ClientController extends BaseClientController
      */
     private function planPriceProductRelation(Product $product): array
     {
-        return Plan::cloudPlanChangeOptions($product)->pluck('name', 'id')->toArray();
+        return Plan::query()->cloudPlanChangeOptions($product)->pluck('name', 'id')->toArray();
     }
 
     /**
@@ -829,15 +835,20 @@ class ClientController extends BaseClientController
                 ->orderBy($sortCol, $sortDir)
                 ->paginate(10);
 
-            $paginated->getCollection()->transform(fn ($payment): array => [
-                'id' => $payment->id,
-                'invoice_id' => $payment->invoices->first()?->id,
-                'invoice_number' => $payment->invoices->pluck('number')->implode(', ') ?: '—',
-                'amount' => currencyFormat($payment->amount, $payment->currency ?: ($payment->invoices->first() ? $payment->invoices->first()->currency : '')),
-                'payment_method' => $payment->payment_method,
-                'payment_status' => $payment->payment_status,
-                'created_at' => $payment->created_at,
-            ]);
+            $paginated->getCollection()->transform(function ($payment): array {
+                $firstInvoice = $payment->invoices->first();
+                $invoiceCurrency = $firstInvoice ? $firstInvoice->currency : '';
+
+                return [
+                    'id' => $payment->id,
+                    'invoice_id' => $firstInvoice?->id,
+                    'invoice_number' => $payment->invoices->pluck('number')->implode(', ') ?: '—',
+                    'amount' => currencyFormat($payment->amount, $payment->currency ?: $invoiceCurrency),
+                    'payment_method' => $payment->payment_method,
+                    'payment_status' => $payment->payment_status,
+                    'created_at' => $payment->created_at,
+                ];
+            });
 
             return successResponse('', $paginated);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
@@ -860,8 +871,8 @@ class ClientController extends BaseClientController
 
             if ($search !== '' && $search !== '0') {
                 $query->where(function ($q) use ($search): void {
-                    $q->where('installation_logs.installation_domain', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('installation_logs.installation_ip', 'like', sprintf('%%%s%%', $search));
+                    $q->where('installation_logs.installation_domain', 'like', likePattern($search))
+                        ->orWhere('installation_logs.installation_ip', 'like', likePattern($search));
                 });
             }
 

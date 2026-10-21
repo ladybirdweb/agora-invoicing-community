@@ -192,6 +192,7 @@ class Campaigns
         try {
             $this->zohoApi->tagDeassociate($tag, $email);
         } catch (TagNotFoundException) {
+            // Tag already gone in Zoho: nothing to detach.
         }
     }
 

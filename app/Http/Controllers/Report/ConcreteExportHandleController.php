@@ -654,7 +654,6 @@ class ConcreteExportHandleController extends ExportHandleController
                         break;
 
                     case 'tenants':
-                        $order_number = DB::table('orders')->where('id', $order_id)->value('number');
                         $tenantData['tenats'] = $tenats->id;
                         break;
 

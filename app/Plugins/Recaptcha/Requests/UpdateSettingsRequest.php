@@ -103,7 +103,6 @@ class UpdateSettingsRequest extends FormRequest
                         'v3',
                         (string) $this->ip(),
                         $this->getHost(),
-                        (float) $this->input('score_threshold', 0.5)
                     );
 
                     if ($result !== true) {

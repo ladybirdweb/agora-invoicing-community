@@ -102,7 +102,7 @@ async function copyToClipboard(id, text) {
         document.body.appendChild(el)
         el.select()
         document.execCommand('copy')
-        document.body.removeChild(el)
+        el.remove()
     }
     copiedId.value = id
     setTimeout(() => { copiedId.value = null }, 2000)

@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class BaseCronController extends Controller
 {
+    /** Date format used in expiry reminder mails. */
+    private const DATE_FORMAT = 'l, F j, Y';
+
     public function getUserById(int $id): ?User
     {
         return User::find($id);
@@ -55,26 +58,35 @@ class BaseCronController extends Controller
     {
         $sub = [];
         foreach ($allDays as $allDay) {
-            if ($allDay >= 2) {
-                if ($this->getAllDaysSubscription($allDay) != []) {
-                    $sub[] = $this->getAllDaysSubscription($allDay);
-                }
-            } elseif ($allDay == 1) {
-                if (count($this->get1DaysUsers()) > 0) {
-                    $sub[] = $this->get1DaysSubscription(); // @phpstan-ignore method.notFound
-                }
-            } elseif ($allDay == 0) {
-                if (count($this->get0DaysUsers()) > 0) {
-                    $sub[] = $this->get0DaysSubscription(); // @phpstan-ignore method.notFound
-                }
-
-                if (count($this->getPlus1Users()) > 0) {
-                    $sub[] = $this->getPlus1Subscription(); // @phpstan-ignore method.notFound
-                }
-            }
+            array_push($sub, ...$this->subscriptionsForDay($allDay));
         }
 
         return $sub;
+    }
+
+    /**
+     * @return list<mixed>
+     */
+    private function subscriptionsForDay(mixed $day): array
+    {
+        if ($day >= 2) {
+            $subscription = $this->getAllDaysSubscription($day);
+
+            return $subscription != [] ? [$subscription] : [];
+        }
+
+        if ($day == 1) {
+            return count($this->get1DaysUsers()) > 0 ? [$this->get1DaysSubscription()] : []; // @phpstan-ignore method.notFound
+        }
+
+        if ($day == 0) {
+            return array_merge(
+                count($this->get0DaysUsers()) > 0 ? [$this->get0DaysSubscription()] : [], // @phpstan-ignore method.notFound
+                count($this->getPlus1Users()) > 0 ? [$this->getPlus1Subscription()] : [], // @phpstan-ignore method.notFound
+            );
+        }
+
+        return [];
     }
 
     public function getAllDaysSubscription(int $day): mixed
@@ -221,13 +233,13 @@ class BaseCronController extends Controller
         if ($date === false) {
             return;
         }
-        $formattedEnd = date_format($date, 'l, F j, Y');
+        $formattedEnd = date_format($date, self::DATE_FORMAT);
 
         $delDate = strtotime($formattedEnd.' +'.$expiryDays.' days');
         if ($delDate === false) {
             return;
         }
-        $deletionDate = date('l, F j, Y', $delDate);
+        $deletionDate = date(self::DATE_FORMAT, $delDate);
 
         $replace = [
             'name' => ucfirst((string) $user->first_name).' '.ucfirst((string) $user->last_name),
@@ -286,7 +298,7 @@ class BaseCronController extends Controller
         if ($delDate === false) {
             return;
         }
-        $deletionDate = date('l, F j, Y', $delDate);
+        $deletionDate = date(self::DATE_FORMAT, $delDate);
 
         $replace = [
             'name' => ucfirst((string) $user->first_name).' '.ucfirst((string) $user->last_name),
@@ -342,7 +354,7 @@ class BaseCronController extends Controller
         if ($delDate === false) {
             return;
         }
-        $deletionDate = date('l, F j, Y', $delDate);
+        $deletionDate = date(self::DATE_FORMAT, $delDate);
 
         $replace = [
             'name' => ucfirst((string) $user->first_name).' '.ucfirst((string) $user->last_name),

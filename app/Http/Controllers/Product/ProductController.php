@@ -140,7 +140,7 @@ class ProductController extends BaseProductController
 
         $productsQuery = Product::where('invoice_hidden', 0)
             ->when($searchQuery, function ($query, string $searchQuery): void {
-                $query->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                $query->where('name', 'like', likePattern($searchQuery));
             })
             ->paginate($limit, ['*'], 'page', $page);
 
@@ -158,7 +158,7 @@ class ProductController extends BaseProductController
         $plans = Plan::select('id', 'name')
             ->where('product', $productId)
             ->when($searchQuery, function ($query, string $searchQuery): void {
-                $query->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                $query->where('name', 'like', likePattern($searchQuery));
             })
             ->paginate($limit);
 
@@ -185,12 +185,12 @@ class ProductController extends BaseProductController
                 'licenseType',
             ])
             ->when($searchQuery, function ($query, string $searchQuery): void {
-                $query->where('products.name', 'like', sprintf('%%%s%%', $searchQuery))
+                $query->where('products.name', 'like', likePattern($searchQuery))
                     ->orWhereHas('groupRelation', function ($q) use ($searchQuery): void {
-                        $q->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                        $q->where('name', 'like', likePattern($searchQuery));
                     })
                     ->orWhereHas('licenseType', function ($q) use ($searchQuery): void {
-                        $q->where('name', 'like', sprintf('%%%s%%', $searchQuery));
+                        $q->where('name', 'like', likePattern($searchQuery));
                     });
             })
             ->orderBy($sortField, $sortOrder)
@@ -324,9 +324,9 @@ class ProductController extends BaseProductController
             $uploads = ProductUpload::where('product_id', $productId)
                 ->when($search, function ($q, $search): void {
                     $q->where(function ($qq) use ($search): void {
-                        $qq->where('title', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('version', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('release_type', 'like', sprintf('%%%s%%', $search));
+                        $qq->where('title', 'like', likePattern($search))
+                            ->orWhere('version', 'like', likePattern($search))
+                            ->orWhere('release_type', 'like', likePattern($search));
                     });
                 })
                 ->orderBy($sortField, $sortOrder)

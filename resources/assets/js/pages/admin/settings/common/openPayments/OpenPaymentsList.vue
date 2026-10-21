@@ -168,9 +168,9 @@
                     :searchable="false"
                 />
                 <div class="mb-3">
-                    <label class="form-label">{{ __('message.open_payment_page_url') }}</label>
+                    <label class="form-label" for="open-payment-url">{{ __('message.open_payment_page_url') }}</label>
                     <div class="input-group">
-                        <input class="form-control" readonly :value="openPaymentUrl" />
+                        <input id="open-payment-url" class="form-control" readonly :value="openPaymentUrl" />
                         <span class="input-group-text cursor-pointer" @click="copyUrl">
                             <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
                             {{ copied ? __('message.copied') : __('message.copy') }}

@@ -50,4 +50,24 @@ describe('ansiLog', () => {
             'Configuring Faveo for you',
         ])
     })
+
+    it('drops non-colour escapes, resets on 0 or empty codes and ignores unknown colours', () => {
+        const [line] = parseLog('\x1b[2K\x1b[32mok\x1b[mplain\x1b[34;0mreset\x1b[1;36mcyan\x1b[35mstill cyan\x1b[0m')
+
+        expect(line.segments).toEqual([
+            { text: 'ok', color: 'green' },
+            { text: 'plain', color: '' },
+            { text: 'reset', color: '' },
+            { text: 'cyan', color: 'cyan' },
+            { text: 'still cyan', color: 'cyan' },
+        ])
+        expect(line.text).toBe('okplainresetcyanstill cyan')
+    })
+
+    it('takes the line colour from its first non-blank segment and keeps empty lines', () => {
+        const lines = parseLog(`${red('  ')}${yellow('Stage')}\n\nlast`)
+
+        expect(lines.map(l => [l.text, l.color])).toEqual([['  Stage', 'yellow'], ['', ''], ['last', '']])
+        expect(parseLog('')).toEqual([])
+    })
 })

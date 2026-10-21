@@ -306,6 +306,92 @@ class HomeControllerTest extends DBTestCase
         $this->assertArrayHasKey('version', $data);
     }
 
+    /**
+     * Fresh product with one upload per [version, release_type, is_restricted].
+     *
+     * @param  list<array{0: string, 1: string, 2?: int}>  $uploads
+     */
+    private function productWithUploads(array $uploads): Product
+    {
+        $product = Product::create(['name' => 'LV Product '.uniqid()]);
+        foreach ($uploads as $upload) {
+            \App\Model\Product\ProductUpload::factory()->create([
+                'product_id' => $product->id,
+                'version' => $upload[0],
+                'release_type' => $upload[1],
+                'is_restricted' => $upload[2] ?? 0,
+            ]);
+        }
+
+        return $product;
+    }
+
+    /** @return list<string> */
+    private function latestVersionList(string $query): array
+    {
+        return array_column($this->getJson('/version/latest?'.$query)->assertOk()->json('version'), 'version');
+    }
+
+    public function test_latest_version_lists_only_newer_official_versions_sorted(): void
+    {
+        $product = $this->productWithUploads([['v1.0.10', 'official'], ['v1.0.2', 'official'], ['v1.0.0', 'official'], ['v1.0.3', 'pre_release'], ['v1.0.4', 'beta']]);
+
+        $this->assertSame(['v1.0.2', 'v1.0.10'], $this->latestVersionList('title=x&id='.$product->id.'&version=v1.0.0'));
+    }
+
+    public function test_latest_version_legacy_pre_release_flag_adds_pre_releases(): void
+    {
+        $product = $this->productWithUploads([['v1.0.2', 'official'], ['v1.0.3', 'pre_release'], ['v1.0.4', 'beta']]);
+
+        $this->assertSame(['v1.0.2', 'v1.0.3'], $this->latestVersionList('title=x&id='.$product->id.'&version=v1.0.0&is_pre_release=1'));
+    }
+
+    public function test_latest_version_release_type_pre_release_adds_pre_releases(): void
+    {
+        $product = $this->productWithUploads([['v1.0.2', 'official'], ['v1.0.3', 'pre_release'], ['v1.0.4', 'beta']]);
+
+        $this->assertSame(['v1.0.2', 'v1.0.3'], $this->latestVersionList('title=x&id='.$product->id.'&version=v1.0.0&release_type=pre_release'));
+    }
+
+    public function test_latest_version_release_type_beta_adds_beta_and_pre_releases(): void
+    {
+        $product = $this->productWithUploads([['v1.0.2', 'official'], ['v1.0.3', 'pre_release'], ['v1.0.4', 'beta']]);
+
+        $this->assertSame(['v1.0.2', 'v1.0.3', 'v1.0.4'], $this->latestVersionList('title=x&id='.$product->id.'&version=v1.0.0&release_type=beta'));
+    }
+
+    public function test_latest_version_with_version_and_unknown_product_returns_not_found(): void
+    {
+        $this->getJson('/version/latest?title=NoSuchProduct'.uniqid().'&version=v1.0.0')
+            ->assertExactJson(['error' => 'product_not_found']);
+    }
+
+    public function test_latest_version_finds_product_by_title_when_no_id(): void
+    {
+        $product = $this->productWithUploads([['v2.0.0', 'official']]);
+
+        $this->assertSame(['v2.0.0'], $this->latestVersionList('title='.urlencode($product->name).'&version=v1.0.0'));
+    }
+
+    public function test_latest_version_without_version_returns_first_restricted_upload(): void
+    {
+        $product = $this->productWithUploads([['v3.0.0', 'official', 0], ['v3.1.0', 'official', 1], ['v3.2.0', 'official', 1]]);
+
+        $this->getJson('/version/latest?title=x&id='.$product->id)->assertExactJson(['version' => '3.1.0']);
+    }
+
+    public function test_latest_version_without_version_and_no_restricted_upload_returns_not_found(): void
+    {
+        $product = $this->productWithUploads([['v3.0.0', 'official', 0]]);
+
+        $this->getJson('/version/latest?title=x&id='.$product->id)->assertExactJson(['error' => 'version_not_found']);
+    }
+
+    public function test_latest_version_without_version_and_unknown_product_returns_not_found(): void
+    {
+        $this->getJson('/version/latest?title=NoSuchProduct'.uniqid())->assertExactJson(['error' => 'product_not_found']);
+    }
+
     // =========================================================================
     // getProductRelease — GET /api/billingRelease
     // =========================================================================
@@ -475,6 +561,96 @@ class HomeControllerTest extends DBTestCase
         $data = $response->json();
         $this->assertArrayHasKey('status', $data);
         $this->assertEquals('fails', $data['status']);
+    }
+
+    /**
+     * Order (numeric number, as in production) + subscription whose updates end at $updateEnds.
+     */
+    private function orderWithUpdatesEnding(string $updateEnds, ?string $serialKey = null): Order
+    {
+        $product = Product::create(['name' => 'CUE Product '.uniqid()]);
+        $plan = \App\Model\Payment\Plan::create(['name' => 'CUE Plan '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        $order = Order::create([
+            'client' => User::factory()->create()->id,
+            'order_status' => 'executed',
+            'product' => $product->id,
+            'number' => (string) random_int(10000000, 99999999),
+            'serial_key' => $serialKey,
+        ]);
+        \App\Model\Product\Subscription::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'plan_id' => $plan->id,
+            'update_ends_at' => $updateEnds,
+            'support_ends_at' => '2031-01-01 00:00:00',
+            'ends_at' => '2032-01-01 00:00:00',
+            'version' => 'v1.2.3',
+        ]);
+
+        return $order;
+    }
+
+    public function test_check_updates_expiry_by_order_number_returns_exact_success_payload(): void
+    {
+        $order = $this->orderWithUpdatesEnding('2099-01-01 00:00:00');
+
+        $this->postJson('/v1/checkUpdatesExpiry', ['order_number' => $order->number])
+            ->assertExactJson([
+                'status' => 'success',
+                'message' => 'New version available',
+                'data' => [
+                    'product' => Product::find($order->product)->name,
+                    'plan' => \App\Model\Payment\Plan::where('product', $order->product)->value('name'),
+                    'update_ends' => '2099-01-01 00:00:00',
+                    'version' => 'v1.2.3',
+                    'support_end' => '2031-01-01 00:00:00',
+                    'license_end' => '2032-01-01T00:00:00.000000Z', // ends_at is a date cast
+                ],
+            ]);
+    }
+
+    public function test_check_updates_expiry_by_order_number_fails_when_updates_expired(): void
+    {
+        $order = $this->orderWithUpdatesEnding('2001-01-01 00:00:00');
+
+        $this->postJson('/v1/checkUpdatesExpiry', ['order_number' => $order->number])
+            ->assertExactJson(['status' => 'fails', 'message' => 'do-not-allow-auto-update']);
+    }
+
+    public function test_check_updates_expiry_by_license_code_returns_exact_success_payload(): void
+    {
+        $code = 'CUE'.random_int(100000, 999999);
+        $order = $this->orderWithUpdatesEnding('2099-01-01 00:00:00', $code);
+
+        $this->postJson('/v1/checkUpdatesExpiry', ['license_code' => $code])
+            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('data.update_ends', '2099-01-01 00:00:00')
+            ->assertJsonPath('data.product', Product::find($order->product)->name);
+    }
+
+    public function test_check_updates_expiry_by_license_code_fails_when_updates_expired(): void
+    {
+        $code = 'CUE'.random_int(100000, 999999);
+        $this->orderWithUpdatesEnding('2001-01-01 00:00:00', $code);
+
+        $this->postJson('/v1/checkUpdatesExpiry', ['license_code' => $code])
+            ->assertExactJson(['status' => 'fails', 'message' => 'do-not-allow-auto-update']);
+    }
+
+    public function test_check_updates_expiry_order_number_wins_over_license_code(): void
+    {
+        $code = 'CUE'.random_int(100000, 999999);
+        $this->orderWithUpdatesEnding('2099-01-01 00:00:00', $code);
+
+        // An unknown order number is not retried as a license code.
+        $this->postJson('/v1/checkUpdatesExpiry', ['order_number' => '1', 'license_code' => $code])
+            ->assertExactJson(['status' => 'fails', 'message' => 'do-not-allow-auto-update']);
+    }
+
+    public function test_check_updates_expiry_with_no_inputs_fails(): void
+    {
+        $this->postJson('/v1/checkUpdatesExpiry', [])
+            ->assertExactJson(['status' => 'fails', 'message' => 'do-not-allow-auto-update']);
     }
 
     // =========================================================================

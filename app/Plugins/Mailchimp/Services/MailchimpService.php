@@ -14,6 +14,9 @@ use App\User;
 
 class MailchimpService
 {
+    /** Mailchimp API path of one audience member: list id, member hash. */
+    private const MEMBER_PATH = 'lists/%s/members/%s';
+
     private readonly string $listId;
 
     public function __construct(
@@ -65,7 +68,7 @@ class MailchimpService
             if ($mailchimpApiException->isMemberExists()) {
                 // Already subscribed — update instead
                 $this->client->put(
-                    sprintf('lists/%s/members/%s', $this->listId, $this->memberHash($user->email)),
+                    sprintf(self::MEMBER_PATH, $this->listId, $this->memberHash($user->email)),
                     array_merge($payload, ['status_if_new' => $payload['status']])
                 );
 
@@ -112,7 +115,7 @@ class MailchimpService
 
         try {
             $this->client->patch(
-                sprintf('lists/%s/members/%s', $this->listId, $this->memberHash($email)),
+                sprintf(self::MEMBER_PATH, $this->listId, $this->memberHash($email)),
                 ['status' => 'unsubscribed']
             );
         } catch (MailchimpApiException $mailchimpApiException) {
@@ -138,7 +141,7 @@ class MailchimpService
         }
 
         $this->client->patch(
-            sprintf('lists/%s/members/%s', $this->listId, $this->memberHash($user->email)),
+            sprintf(self::MEMBER_PATH, $this->listId, $this->memberHash($user->email)),
             ['interests' => $interests]
         );
     }

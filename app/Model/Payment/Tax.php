@@ -84,7 +84,11 @@ class Tax extends BaseModel
     protected function getMappings(): array
     {
         return [
-            'level' => ['Tax Level', fn ($value): string => $value === 1 ? 'Country' : ($value === 2 ? 'State' : 'City')],
+            'level' => ['Tax Level', fn ($value): string => match ($value) {
+                1 => 'Country',
+                2 => 'State',
+                default => 'City',
+            }],
             'name' => ['Tax Name', fn ($value) => $value],
             'country' => ['Country', fn ($value) => Country::where('country_code_char2', $value)->value('country_name')],
             'state' => [

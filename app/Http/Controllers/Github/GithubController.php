@@ -30,7 +30,8 @@ class GithubController extends Controller
             }
 
             StatusSetting::where('id', 1)->update(['github_status' => $request->input('status')]);
-            Github::where('id', 1)->update(['username' => $username, 'password' => $token]);
+            // Model update (not query-builder) so the password mutator encrypts the token.
+            Github::findOrFail(1)->update(['username' => $username, 'password' => $token]);
 
             return successResponse(__('message.github_valid'));
         } catch (Exception) {

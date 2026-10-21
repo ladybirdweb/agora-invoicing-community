@@ -74,11 +74,11 @@ class PlanController extends ExtendedPlanController
                 $query->where(function (Builder $q) use ($searchQuery): void {
                     $daysRange = $this->parsePeriodToDaysRange($searchQuery);
 
-                    $q->where('name', 'like', sprintf('%%%s%%', $searchQuery))
+                    $q->where('name', 'like', likePattern($searchQuery))
                         ->when($daysRange, fn ($q2) => $q2->orWhereBetween('days', $daysRange)) // @phpstan-ignore argument.type
-                        ->orWhereHas('productRelation', fn (Builder $q3) => $q3->where('name', 'like', sprintf('%%%s%%', $searchQuery))
+                        ->orWhereHas('productRelation', fn (Builder $q3) => $q3->where('name', 'like', likePattern($searchQuery))
                         )
-                        ->orWhereHas('planPrice', fn (Builder $q4) => $q4->where('currency', 'like', sprintf('%%%s%%', $searchQuery))
+                        ->orWhereHas('planPrice', fn (Builder $q4) => $q4->where('currency', 'like', likePattern($searchQuery))
                         );
                 });
             })

@@ -34,9 +34,9 @@
                             />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">{{ __('message.redirect_url') }}</label>
+                            <label class="form-label" for="social-redirect-url">{{ __('message.redirect_url') }}</label>
                             <div class="input-group">
-                                <input class="form-control" readonly :value="callbackUrl" />
+                                <input id="social-redirect-url" class="form-control" readonly :value="callbackUrl" />
                                 <span class="input-group-text cursor-pointer" @click="copyCallbackUrl">
                                     <i :class="copied ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
                                     {{ copied ? __('message.copied') : __('message.copy') }}
@@ -45,7 +45,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold d-block">{{ __('message.status') }}</label>
+                                <span class="form-label fw-bold d-block">{{ __('message.status') }}</span>
                                 <Switch name="status" :value="form.status" :onChange="(val) => form.status = val" />
                             </div>
                         </div>

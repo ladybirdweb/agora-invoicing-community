@@ -126,7 +126,7 @@ class CloudExtraActivities extends Controller
     {
         try {
             $this->validate($request, [
-                'plan' => 'required|integer',
+                'plan' => 'required|integer', // NOSONAR - Laravel validation rule, repeated by design
                 'orderId' => 'required|integer',
             ]);
 
@@ -342,6 +342,7 @@ class CloudExtraActivities extends Controller
             $discount = $calc['discount'] !== null ? round($calc['discount']) : null;
             $productNew = $calc['product'];
             $currencyNew = $calc['currency'];
+            $termDays = $calc['days'] !== null ? ['increase-decrease-days' => (int) $calc['days']] : [];
 
             if (! $productNew instanceof Product) {
                 return errorResponse(trans('message.something_went_wrong'));
@@ -375,7 +376,7 @@ class CloudExtraActivities extends Controller
                     // Same-length swap: the new subscription keeps the old order's expiry.
                     ? ['increase-decrease-days-dont-cloud' => $order->id]
                     // Otherwise the remaining/new-term days it was priced for — not a fresh full period.
-                    : ($calc['days'] !== null ? ['increase-decrease-days' => (int) $calc['days']] : [])),
+                    : $termDays),
             ]);
 
             // No OrderInvoiceRelation to the OLD order here on purpose: this
@@ -445,6 +446,9 @@ class CloudExtraActivities extends Controller
                     break;
                 case 'decrease':
                     $totalAgents = $oldAgents - $newAgents;
+                    break;
+                default:
+                    // No agent change requested: $totalAgents stays 0.
                     break;
             }
             $price = $this->agentProration($ends_at, $base_price, $totalAgents, $oldAgents, $planDays)['price'];
@@ -904,7 +908,7 @@ class CloudExtraActivities extends Controller
             $sortOrder = $request->input('sort-order', 'desc');
 
             $query = CloudProducts::with(['product', 'plan'])
-                ->when($request->input('search-query'), fn ($q, string $s) => $q->whereHas('product', fn (Builder $q2) => $q2->where('name', 'like', sprintf('%%%s%%', $s))));
+                ->when($request->input('search-query'), fn ($q, string $s) => $q->whereHas('product', fn (Builder $q2) => $q2->where('name', 'like', likePattern($s))));
 
             // cloud_product/cloud_free_plan display the related name (see transform
             // below), not the raw FK — sort by that same name via a correlated

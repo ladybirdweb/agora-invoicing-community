@@ -168,7 +168,7 @@ class OpenPaymentController extends Controller
      */
     public function stripeCardSession(Request $request): JsonResponse
     {
-        $request->validate(['order_id' => ['required', 'exists:open_payment_orders,id']]);
+        $request->validate(['order_id' => ['required', 'exists:open_payment_orders,id']]); // NOSONAR - Laravel validation rule, repeated by design
 
         try {
             /** @var OpenPaymentOrder $order */

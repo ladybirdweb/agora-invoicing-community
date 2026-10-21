@@ -20,8 +20,8 @@
                             :onChange="(v) => form.release_type = v?.value ?? ''" :clearable="false" :searchable="false" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold d-block">{{ __('message.file') }}<span class="text-danger ms-1">*</span></label>
-                        <input type="file" class="form-control" :class="{ 'is-invalid': fileError }" accept=".zip" :disabled="uploading" @change="onFile" />
+                        <label class="form-label fw-bold d-block" for="release-file">{{ __('message.file') }}<span class="text-danger ms-1">*</span></label>
+                        <input id="release-file" type="file" class="form-control" :class="{ 'is-invalid': fileError }" accept=".zip" :disabled="uploading" @change="onFile" />
                         <UploadStatus :uploading="uploading" :progress="uploadProgress" :error="fileError" :uploadedName="uploadedName" />
                     </div>
 

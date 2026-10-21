@@ -339,6 +339,12 @@ onMounted(async () => {
     }
 })
 
+// On/off fields, sent as '1' / '0'.
+const SWITCH_FIELDS = [
+    'show_agent', 'highlight', 'add_to_contact', 'can_modify_agent', 'can_modify_quantity',
+    'require_domain', 'hidden', 'invoice_hidden', 'whatsapp_integration', 'tax_status',
+]
+
 async function submit() {
     if (!await validateForm(productSchema, form, setErrors)) return
 
@@ -357,16 +363,7 @@ async function submit() {
         fd.append('short_description', form.short_description)
         fd.append('product_description', form.product_description)
         fd.append('product_sku', form.product_sku)
-        fd.append('show_agent', form.show_agent ? '1' : '0')
-        fd.append('highlight', form.highlight ? '1' : '0')
-        fd.append('add_to_contact', form.add_to_contact ? '1' : '0')
-        fd.append('can_modify_agent', form.can_modify_agent ? '1' : '0')
-        fd.append('can_modify_quantity', form.can_modify_quantity ? '1' : '0')
-        fd.append('require_domain', form.require_domain ? '1' : '0')
-        fd.append('hidden', form.hidden ? '1' : '0')
-        fd.append('invoice_hidden', form.invoice_hidden ? '1' : '0')
-        fd.append('whatsapp_integration', form.whatsapp_integration ? '1' : '0')
-        fd.append('tax_status', form.tax_status ? '1' : '0')
+        for (const key of SWITCH_FIELDS) fd.append(key, form[key] ? '1' : '0')
         if (form.tax_status === 1 && form.tax_class_id) fd.append('tax_class_id', form.tax_class_id)
         if (selectedImage.value?.file) fd.append('image', selectedImage.value.file, selectedImage.value.name || 'image.jpg')
 

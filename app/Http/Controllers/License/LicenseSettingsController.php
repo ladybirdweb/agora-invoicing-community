@@ -35,7 +35,7 @@ class LicenseSettingsController extends LicensePermissionsController
             $query = $this->licenseType
                 ->select('id', 'name')
                 ->when($searchString, function ($q) use ($searchString): void {
-                    $q->where('name', 'LIKE', sprintf('%%%s%%', $searchString));
+                    $q->where('name', 'LIKE', likePattern($searchString));
                 });
 
             $licenseTypes = $query->orderBy($sortField, $sortOrder)

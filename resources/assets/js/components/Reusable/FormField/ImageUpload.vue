@@ -17,7 +17,7 @@
 
         <h6 class="text-center fs-7 fw-light mt-2 d-inline-block" :style="labelCss">{{ label }}</h6>
         <span class="d-inline-block">
-            <label class="is-danger" v-if="required">*</label>
+            <span class="is-danger d-inline-block fw-semibold" style="margin-bottom: 5px" v-if="required">*</span>
         </span>
 
         <AppModal v-if="showModal" :showModal="showModal" :onClose="onClose">
@@ -193,9 +193,11 @@ function onSubmit() {
 }
 
 function tooltipValue(file) {
-    tooltip.value = file !== null && file?.name === undefined
-        ? file.split('/')[file.split('/').length - 1]
-        : file ? file.name : 'no_file'
+    // A string is a saved path (show its file name); an object is a freshly picked File.
+    let name = 'no_file'
+    if (file !== null && file?.name === undefined) name = file.split('/').pop()
+    else if (file) name = file.name
+    tooltip.value = name
     styleObj.value.background = tooltip.value === 'logo.png' ? 'black' : 'none'
 }
 

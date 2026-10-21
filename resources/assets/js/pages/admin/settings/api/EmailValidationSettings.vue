@@ -53,7 +53,7 @@
                     </div>
 
                     <div v-if="form.mode === 'power'" class="mt-2">
-                        <label class="form-label fw-bold">{{ __('message.allowed_estatus') }}</label>
+                        <span class="d-inline-block form-label fw-bold">{{ __('message.allowed_estatus') }}</span>
                         <div class="d-flex flex-wrap gap-3 mt-1">
                             <div
                                 v-for="opt in statusOptions"

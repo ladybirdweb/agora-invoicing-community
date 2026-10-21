@@ -28,7 +28,7 @@ class WelcomeController extends Controller
             $countryList = Country::withCount('users')
                 ->where('country_name', '!=', '')
                 ->when($searchQuery, function ($query, string $searchQuery): void {
-                    $query->where('country_name', 'like', sprintf('%%%s%%', $searchQuery));
+                    $query->where('country_name', 'like', likePattern($searchQuery));
                 })
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

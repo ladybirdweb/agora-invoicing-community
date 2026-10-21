@@ -37,8 +37,8 @@ class WidgetController extends Controller
             $widgets = $this->widget
                 ->select('id', 'name', 'type', 'created_at', 'content')
                 ->when($searchString, fn ($query) => $query->where(function ($q) use ($searchString): void {
-                    $q->where('name', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('type', 'like', sprintf('%%%s%%', $searchString));
+                    $q->where('name', 'like', likePattern($searchString))
+                        ->orWhere('type', 'like', likePattern($searchString));
                 }))
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

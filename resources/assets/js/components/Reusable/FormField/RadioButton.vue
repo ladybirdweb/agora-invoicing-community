@@ -1,7 +1,7 @@
 <template>
     <div :class="classname">
         <div class="d-flex align-items-center gap-1 mb-1">
-            <label class="form-label fw-bold mb-0" :style="labelStyle">{{ label }}</label>
+            <span class="form-label fw-bold mb-0 d-inline-block" :style="labelStyle">{{ label }}</span>
             <ToolTip v-if="hint" :message="lang(hint)" size="small" />
         </div>
         <div>

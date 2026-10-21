@@ -15,6 +15,8 @@ use Throwable;
 
 class CacheSettingsController extends Controller
 {
+    private const LOCAL_HOST = '127.0.0.1';
+
     private const array DRIVERS = [
         ['name' => 'File',      'short_name' => 'file'],
         ['name' => 'Database',  'short_name' => 'database'],
@@ -128,12 +130,12 @@ class CacheSettingsController extends Controller
         try {
             match ($driver) {
                 'redis' => $this->testRedis(
-                    $data['REDIS_HOST'] ?? config('database.redis.default.host', '127.0.0.1'),
+                    $data['REDIS_HOST'] ?? config('database.redis.default.host', self::LOCAL_HOST),
                     (int) ($data['REDIS_PORT'] ?? config('database.redis.default.port', 6379)),
                     $data['REDIS_PASSWORD'] ?? config('database.redis.default.password', '')
                 ),
                 'memcached' => $this->testMemcached(
-                    $data['MEMCACHED_HOST'] ?? config('cache.stores.memcached.servers.0.host', '127.0.0.1'),
+                    $data['MEMCACHED_HOST'] ?? config('cache.stores.memcached.servers.0.host', self::LOCAL_HOST),
                     (int) ($data['MEMCACHED_PORT'] ?? config('cache.stores.memcached.servers.0.port', 11211))
                 ),
                 default => null,
@@ -205,12 +207,12 @@ class CacheSettingsController extends Controller
     {
         return match ($driver) {
             'redis' => [
-                $this->field('Host', 'REDIS_HOST', config('database.redis.default.host', '127.0.0.1'), required: true),
+                $this->field('Host', 'REDIS_HOST', config('database.redis.default.host', self::LOCAL_HOST), required: true),
                 $this->field('Port', 'REDIS_PORT', config('database.redis.default.port', 6379), required: true),
                 $this->field('Password', 'REDIS_PASSWORD', '', required: false, type: 'password'),
             ],
             'memcached' => [
-                $this->field('Host', 'MEMCACHED_HOST', config('cache.stores.memcached.servers.0.host', '127.0.0.1'), required: true),
+                $this->field('Host', 'MEMCACHED_HOST', config('cache.stores.memcached.servers.0.host', self::LOCAL_HOST), required: true),
                 $this->field('Port', 'MEMCACHED_PORT', config('cache.stores.memcached.servers.0.port', 11211), required: true),
                 $this->field('Persistent ID', 'MEMCACHED_PERSISTENT_ID', config('cache.stores.memcached.persistent_id', ''), required: false),
                 $this->field('SASL Username', 'MEMCACHED_USERNAME', config('cache.stores.memcached.sasl.0', ''), required: false),

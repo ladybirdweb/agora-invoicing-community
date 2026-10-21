@@ -88,49 +88,12 @@ class LicenseInstallController extends Controller
         $license = $validation['license'];
         $installation_domain = $this->getInstallationDomain($root_url);
 
-        // Check if installation already exists on this domain by another user
-        $existingInstallation = Installation::where('product_id', $product_id)
-            ->where('installation_ip', $ip)
-            ->where('installation_domain', $installation_domain)
-            ->first();
+        $conflict = $this->installationConflict($license, $product_id, $ip, $installation_domain, $client_id);
+        if ($conflict !== null) {
+            [$notification, $report] = $conflict;
+            $this->createReport($product_id, $license->user_id, $license->license_code, $report, 1);
 
-        if ($existingInstallation && ($license->license_code != $existingInstallation->license_code || $this->validator->validateIntegerValue($client_id) && $client_id != $existingInstallation->user_id)) {
-            $this->createReport($product_id, $license->user_id, $license->license_code, sprintf('Installation on %s (%s) belongs to another user', $installation_domain, $ip), 1);
-
-            return $this->notificationResponse('notification_domain_in_use', [], $product, $license);
-        }
-
-        // Check installation limit
-        if ($license->license_limit > 0) {
-            // Count other installations (different IP or domain)
-            $otherInstallations = Installation::where('product_id', $product_id)
-                ->where('license_code', $license->license_code)
-                ->where(function ($query) use ($ip, $installation_domain): void {
-                    $query->where('installation_ip', '!=', $ip)
-                        ->orWhere('installation_domain', '!=', $installation_domain);
-                })
-                ->count();
-
-            if ($otherInstallations >= $license->license_limit) {
-                $this->createReport($product_id, $license->user_id, $license->license_code, sprintf('Maximum installations limit (%s) reached', $license->license_limit), 1);
-
-                return $this->notificationResponse('notification_license_limit', [], $product, $license);
-            }
-
-            // Total installations check (catches cases where limit was reduced after installations)
-            $allInstallations = Installation::where('product_id', $product_id)
-                ->where(function ($query) use ($client_id, $license): void {
-                    $query->where('user_id', $client_id)
-                        ->whereNotNull('user_id')
-                        ->orWhere('license_code', $license->license_code);
-                })
-                ->count();
-
-            if ($allInstallations > $license->license_limit) {
-                $this->createReport($product_id, $license->user_id, $license->license_code, sprintf('Maximum installations limit (%s) exceeded', $license->license_limit), 1);
-
-                return $this->notificationResponse('notification_license_limit', [], $product, $license);
-            }
+            return $this->notificationResponse($notification, [], $product, $license);
         }
 
         // Register/update installation
@@ -165,5 +128,56 @@ class LicenseInstallController extends Controller
             'license_domain' => $license->license_domain,
             'license_ip' => $license->license_ip,
         ], $product, $license);
+    }
+
+    /**
+     * Why this install may not proceed: [notification case, report text], or null when it may.
+     *
+     * @return array{0: string, 1: string}|null
+     */
+    private function installationConflict(License $license, mixed $product_id, string $ip, string $installation_domain, mixed $client_id): ?array
+    {
+        // Check if installation already exists on this domain by another user
+        $existingInstallation = Installation::where('product_id', $product_id)
+            ->where('installation_ip', $ip)
+            ->where('installation_domain', $installation_domain)
+            ->first();
+
+        if ($existingInstallation && ($license->license_code != $existingInstallation->license_code || $this->validator->validateIntegerValue($client_id) && $client_id != $existingInstallation->user_id)) {
+            return ['notification_domain_in_use', sprintf('Installation on %s (%s) belongs to another user', $installation_domain, $ip)];
+        }
+
+        // Check installation limit
+        if ($license->license_limit <= 0) {
+            return null;
+        }
+
+        // Count other installations (different IP or domain)
+        $otherInstallations = Installation::where('product_id', $product_id)
+            ->where('license_code', $license->license_code)
+            ->where(function ($query) use ($ip, $installation_domain): void {
+                $query->where('installation_ip', '!=', $ip)
+                    ->orWhere('installation_domain', '!=', $installation_domain);
+            })
+            ->count();
+
+        if ($otherInstallations >= $license->license_limit) {
+            return ['notification_license_limit', sprintf('Maximum installations limit (%s) reached', $license->license_limit)];
+        }
+
+        // Total installations check (catches cases where limit was reduced after installations)
+        $allInstallations = Installation::where('product_id', $product_id)
+            ->where(function ($query) use ($client_id, $license): void {
+                $query->where('user_id', $client_id)
+                    ->whereNotNull('user_id')
+                    ->orWhere('license_code', $license->license_code);
+            })
+            ->count();
+
+        if ($allInstallations > $license->license_limit) {
+            return ['notification_license_limit', sprintf('Maximum installations limit (%s) exceeded', $license->license_limit)];
+        }
+
+        return null;
     }
 }

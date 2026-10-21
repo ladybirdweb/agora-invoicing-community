@@ -123,8 +123,8 @@ class LanguageController extends Controller
             $limit = $request->input('limit', 10);
 
             $languages = Language::when($searchString, function ($query) use ($searchString): void {
-                $query->where('name', 'like', sprintf('%%%s%%', $searchString))
-                    ->orWhere('locale', 'like', sprintf('%%%s%%', $searchString));
+                $query->where('name', 'like', likePattern($searchString))
+                    ->orWhere('locale', 'like', likePattern($searchString));
             })
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

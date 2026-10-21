@@ -26,12 +26,13 @@
 
                         <!-- Cost -->
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">
+                            <label class="form-label fw-bold" for="renew-price">
                                 {{ __('message.renew-price') }}<span class="text-danger ms-1">*</span>
                             </label>
                             <div class="input-group" :class="{ 'is-invalid': errors.cost }">
                                 <span v-if="currencySymbol" class="input-group-text">{{ currencySymbol }}</span>
                                 <input
+                                    id="renew-price"
                                     type="number"
                                     step="0.01"
                                     class="form-control"

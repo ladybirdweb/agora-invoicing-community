@@ -66,9 +66,9 @@
                                         />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ __('message.redirect_uri') }}</label>
+                                        <label class="form-label fw-bold" for="zoho-redirect-uri">{{ __('message.redirect_uri') }}</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control bg-light cursor-default" :value="redirectUri" readonly>
+                                            <input id="zoho-redirect-uri" type="text" class="form-control bg-light cursor-default" :value="redirectUri" readonly>
                                             <span class="input-group-text cursor-pointer" @click="copyRedirectUri">
                                                 <i :class="uriCopied ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
                                                 {{ uriCopied ? __('message.copied') : __('message.copy') }}

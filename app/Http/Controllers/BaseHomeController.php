@@ -140,41 +140,15 @@ class BaseHomeController extends Controller
      */
     public function checkUpdatesExpiry(Request $request): array
     {
-        // $v = \Validator::make($request->all(), [
-        //     'order_number' => 'required',
-        // ]);
-        // if ($v->fails()) {
-
         try {
-            $order_number = $request->input('order_number');
-            $licenseCode = $request->input('license_code');
-            if ($order_number) {
-                $orderId = Order::where('number', 'LIKE', $order_number)->value('id');
-                if ($orderId) {
-                    $expiryDate = Subscription::where('order_id', $orderId)->value('update_ends_at');
-                    /** @var Subscription $subscription */
-                    $subscription = Subscription::where('order_id', $orderId)->select('id', 'support_ends_at', 'version', 'update_ends_at', 'product_id', 'plan_id', 'ends_at')->first();
-                    $data = $this->getData($subscription);
-                    if (Date::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'New version available', 'data' => $data];
-                    }
-                }
-            } elseif ($licenseCode) {
-                $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) { // @phpstan-ignore argument.type
-                    if ($order->serial_key == $licenseCode) {
-                        return $order;
-                    }
-                });
-                if (count($orderForLicense) > 0) {
-                    /** @var Order $firstOrderForLicense */
-                    $firstOrderForLicense = $orderForLicense->first();
-                    $expiryDate = Subscription::where('order_id', $firstOrderForLicense->id)->value('update_ends_at');
-                    /** @var Subscription $subscription */
-                    $subscription = Subscription::where('order_id', $firstOrderForLicense->id)->select('id', 'support_ends_at', 'version', 'update_ends_at', 'product_id', 'plan_id', 'ends_at')->first();
-                    $data = $this->getData($subscription);
-                    if (Date::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'New version available', 'data' => $data];
-                    }
+            $orderId = $this->orderIdForUpdateCheck($request);
+            if ($orderId) {
+                $expiryDate = Subscription::where('order_id', $orderId)->value('update_ends_at');
+                /** @var Subscription $subscription */
+                $subscription = Subscription::where('order_id', $orderId)->select('id', 'support_ends_at', 'version', 'update_ends_at', 'product_id', 'plan_id', 'ends_at')->first();
+                $data = $this->getData($subscription);
+                if (Date::now()->toDateTimeString() < $expiryDate) {
+                    return ['status' => 'success', 'message' => 'New version available', 'data' => $data];
                 }
             }
 
@@ -184,6 +158,25 @@ class BaseHomeController extends Controller
 
             return ['status' => 'fails', 'error' => __('message.sorry_something_wrong')];
         }
+    }
+
+    /**
+     * The order an update check is about: by order number, else by license code.
+     * An order number that matches nothing is not retried as a license code.
+     */
+    private function orderIdForUpdateCheck(Request $request): mixed
+    {
+        $orderNumber = $request->input('order_number');
+        if ($orderNumber) {
+            return Order::where('number', 'LIKE', $orderNumber)->value('id');
+        }
+
+        $licenseCode = $request->input('license_code');
+        if (! $licenseCode) {
+            return null;
+        }
+
+        return Order::all()->first(fn ($order): bool => $order->serial_key == $licenseCode)?->id;
     }
 
     /**

@@ -188,4 +188,51 @@ describe('ProductEdit.vue', () => {
         wrapper.vm.confirmBulkDeleteVersions()
         expect(wrapper.vm.pendingDeleteVersions).toBeNull()
     })
+
+    const FIELDS = {
+        name: 'P', type: 'x', product_type: 'product', config_file_path: null, license_file_path: 'l', product_path: 'pp',
+        group: null, parent: 4, description: 'd', short_description: 's', product_description: 'pd', product_sku: 'SKU',
+        show_agent: 0, highlight: true, add_to_contact: false, can_modify_agent: 1, can_modify_quantity: null,
+        require_domain: true, hidden: 0, invoice_hidden: 1, whatsapp_integration: false, tax_status: 0, tax_class_id: 7,
+        shoping_cart_link: 'cart',
+    }
+
+    async function submittedEntries(extra) {
+        await flushPromises()
+        Object.assign(wrapper.vm.form, FIELDS, extra)
+        await wrapper.vm.submit()
+        await flushPromises()
+        return [...globalThis.mockHttp.history.post.find(r => /\/product\/0/.test(r.url)).data.entries()]
+    }
+
+    const COMMON = [
+        ['name', 'P'], ['type', 'x'], ['product_type', 'product'], ['config_file_path', ''], ['license_file_path', 'l'],
+        ['product_path', ''], ['group', ''], ['parent', '4'], ['description', 'd'], ['short_description', 's'],
+        ['product_description', 'pd'], ['product_sku', 'SKU'],
+        ['show_agent', '0'], ['highlight', '1'], ['add_to_contact', '0'], ['can_modify_agent', '1'],
+        ['can_modify_quantity', '0'], ['require_domain', '1'], ['hidden', '0'], ['invoice_hidden', '1'],
+        ['whatsapp_integration', '0'], ['tax_status', '0'],
+    ]
+
+    it('sends every field in a fixed order, with GitHub details for a GitHub source', async () => {
+        expect(await submittedEntries({ file_source: 'github', github_owner: 'o', github_repository: 'r', version: 'v1' })).toEqual([
+            ...COMMON,
+            ['github_owner', 'o'], ['github_repository', 'r'], ['version', 'v1'],
+            ['shoping_cart_link', 'cart'], ['_method', 'PATCH'],
+        ])
+    })
+
+    it('blanks the GitHub details for other sources and sends the tax class when tax is on', async () => {
+        expect(await submittedEntries({ file_source: 'upload', github_owner: 'o', tax_status: 1, product_type: 'addon' })).toEqual([
+            ...COMMON.map(([k, v]) => {
+                if (k === 'product_type') return [k, 'addon']
+                if (k === 'product_path') return [k, 'pp']
+                if (k === 'tax_status') return [k, '1']
+                return [k, v]
+            }),
+            ['tax_class_id', '7'],
+            ['github_owner', ''], ['github_repository', ''],
+            ['shoping_cart_link', 'cart'], ['_method', 'PATCH'],
+        ])
+    })
 })

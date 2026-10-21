@@ -20,6 +20,9 @@ use SimpleXMLElement;
  */
 class SeoFileGenerator
 {
+    private const CONTACT_US_PATH = '/contact-us';
+    private const FORGOT_PASSWORD_TITLE = 'Forgot Password';
+
     /**
      * Authenticated/transactional route prefixes excluded from SEO. A single
      * robots.txt Disallow line blocks the whole family (e.g. "/my-order"
@@ -96,7 +99,7 @@ class SeoFileGenerator
             '## Pages',
             '',
             '- ['.($formatter->resolveShortcodes($login?->meta_title, 'Login') ?: 'Login').']('.url('/login').'): '.($formatter->resolveShortcodes($login?->meta_description, 'Login') ?: 'Sign in to your account.'),
-            '- ['.($formatter->resolveShortcodes($forgotPassword?->meta_title, 'Forgot Password') ?: 'Forgot Password').']('.url('/password/reset').'): '.($formatter->resolveShortcodes($forgotPassword?->meta_description, 'Forgot Password') ?: 'Reset your account password.'),
+            '- ['.($formatter->resolveShortcodes($forgotPassword?->meta_title, self::FORGOT_PASSWORD_TITLE) ?: self::FORGOT_PASSWORD_TITLE).']('.url('/password/reset').'): '.($formatter->resolveShortcodes($forgotPassword?->meta_description, self::FORGOT_PASSWORD_TITLE) ?: 'Reset your account password.'),
         ];
 
         $hasContactUsPage = false;
@@ -114,7 +117,7 @@ class SeoFileGenerator
         // SeoMetaService::fromContactUsPage) even before an admin creates a
         // "contactus"-type Pages-module entry for it — list it either way.
         if (! $hasContactUsPage) {
-            $lines[] = '- [Contact Us]('.url('/contact-us').'): Get in touch with our team.';
+            $lines[] = '- [Contact Us]('.url(self::CONTACT_US_PATH).'): Get in touch with our team.';
         }
 
         $lines[] = '';
@@ -140,7 +143,7 @@ class SeoFileGenerator
      */
     private function contactUsSlug(): string
     {
-        return basename(parse_url(url('/contact-us'), PHP_URL_PATH) ?: '/contact-us');
+        return basename(parse_url(url(self::CONTACT_US_PATH), PHP_URL_PATH) ?: self::CONTACT_US_PATH);
     }
 
     /**
@@ -167,7 +170,7 @@ class SeoFileGenerator
         // SeoMetaService::fromContactUsPage) even before an admin creates a
         // "contactus"-type Pages-module entry for it — list it either way.
         if (! $hasContactUsPage) {
-            $urls[] = ['loc' => url('/contact-us'), 'lastmod' => null];
+            $urls[] = ['loc' => url(self::CONTACT_US_PATH), 'lastmod' => null];
         }
 
         $urls[] = ['loc' => url('/store'), 'lastmod' => null];

@@ -23,7 +23,7 @@ export function useStickyHeader(headerSelector = '#header') {
         const headerBody = header?.querySelector('.header-body')
         if (!header || !headerBody) return
 
-        const opts = parseOptions(header.getAttribute('data-plugin-options'))
+        const opts = parseOptions(header.dataset.pluginOptions)
         const enabled        = opts.stickyEnabled !== false
         const enableOnMobile = opts.stickyEnableOnMobile === true
         const startAt        = parseInt(opts.stickyStartAt ?? 0, 10) || 0

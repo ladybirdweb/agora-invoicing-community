@@ -20,7 +20,7 @@ const { isReady, config, grecaptcha } = useRecaptchaContext()
 
 const root = ref(null)
 let widgetId = null
-let pending = null // { resolve, reject }
+let pending = null // the waiting promise's resolve and reject callbacks
 
 function settleResolve(token) {
     if (pending) { pending.resolve(token); pending = null }

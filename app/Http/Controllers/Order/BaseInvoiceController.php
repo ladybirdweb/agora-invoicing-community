@@ -10,6 +10,9 @@ use Session;
 
 class BaseInvoiceController extends ExtendedBaseInvoiceController
 {
+    /** How an unset datetime is stored. */
+    private const EMPTY_DATE = '0000-00-00 00:00:00';
+
     public function getExpiryStatus(?string $start, ?string $end, string $now): ?string
     {
         $whenDateNotSet = $this->whenDateNotSet($start, $end);
@@ -38,8 +41,8 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
     public function whenDateNotSet(?string $start, ?string $end): ?string
     {
         // both not set, always true
-        if (($start == null || $start === '0000-00-00 00:00:00') &&
-         ($end == null || $end === '0000-00-00 00:00:00')) {
+        if (($start == null || $start === self::EMPTY_DATE) &&
+         ($end == null || $end === self::EMPTY_DATE)) {
             return 'success';
         }
 
@@ -52,7 +55,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             return null;
         }
 
-        if ($end != null && $end !== '0000-00-00 00:00:00') {
+        if ($end != null && $end !== self::EMPTY_DATE) {
             return null;
         }
 
@@ -69,7 +72,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             return null;
         }
 
-        if ($start != null && $start !== '0000-00-00 00:00:00') {
+        if ($start != null && $start !== self::EMPTY_DATE) {
             return null;
         }
 
@@ -82,7 +85,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
     public function whenBothSet(?string $start, ?string $end, string $now): ?string
     {
-        if ($end == null && $start == '0000-00-00 00:00:00') {
+        if ($end == null && $start == self::EMPTY_DATE) {
             return null;
         }
 
@@ -106,6 +109,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return '';
         } catch (Exception) {
+            // No usable session: fall through to null.
         }
 
         return null;

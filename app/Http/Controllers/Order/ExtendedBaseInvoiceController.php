@@ -293,7 +293,6 @@ class ExtendedBaseInvoiceController extends Controller
                         (string) $payment->currency,
                         $amount,
                         (int) $invoice->id,
-                        (string) $payment->payment_method,
                         $date,
                         paymentId: (int) $payment->id,
                     );

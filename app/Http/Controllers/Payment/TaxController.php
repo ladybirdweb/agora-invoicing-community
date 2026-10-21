@@ -64,9 +64,9 @@ class TaxController extends Controller
                 })
                 ->when($searchString, function ($query) use ($searchString): void {
                     $query->where(function (Builder $q) use ($searchString): void {
-                        $q->where('name', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('country', 'like', sprintf('%%%s%%', $searchString))
-                            ->orWhere('state', 'like', sprintf('%%%s%%', $searchString));
+                        $q->where('name', 'like', likePattern($searchString))
+                            ->orWhere('country', 'like', likePattern($searchString))
+                            ->orWhere('state', 'like', likePattern($searchString));
                     });
                 })
                 ->orderBy($sortField, $sortOrder)

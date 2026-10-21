@@ -2,9 +2,9 @@
     <!-- Bottom-left: bottom-right is taken by third-party widgets. z-index 1039: above the admin
          sidebar (1038), below offcanvas/modals (1045+). Inline margin: admin common.scss forces
          .card { margin-bottom: 1.5rem !important }, which lifts the tray off the bottom edge. -->
-    <div v-if="downloadTray.open && downloadTray.items.length"
+    <section v-if="downloadTray.open && downloadTray.items.length"
          class="position-fixed bottom-0 start-0 ms-3 col-11 col-sm-6 col-lg-4 col-xxl-3 card shadow rounded-0 rounded-top"
-         role="region" :aria-label="headerTitle" style="z-index: 1039; margin-bottom: 0 !important">
+         :aria-label="headerTitle" style="z-index: 1039; margin-bottom: 0 !important">
         <div class="card-header d-flex align-items-center gap-2 py-2">
             <span class="flex-grow-1 text-truncate fw-semibold" aria-live="polite">{{ headerTitle }}</span>
             <!-- Plain icon button sized to sit beside Bootstrap's btn-close. -->
@@ -53,7 +53,7 @@
                 </li>
             </ul>
         </template>
-    </div>
+    </section>
 </template>
 
 <script setup>

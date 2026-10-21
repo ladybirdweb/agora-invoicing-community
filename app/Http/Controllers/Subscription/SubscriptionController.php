@@ -32,6 +32,8 @@ use Throwable;
 
 class SubscriptionController extends Controller
 {
+    private const DISPLAY_DATE = 'd M Y';
+
     public function __construct(
         protected ConcretePostSubscriptionHandleController $PostSubscriptionHandle
     ) {
@@ -528,14 +530,14 @@ class SubscriptionController extends Controller
             // checkout/enable opt-in, update_ends_at can be months away, and
             // the email would otherwise promise a deadline far sooner than real.
             'expiry_date' => $immediate
-                ? Date::parse($subscription->update_ends_at)->addDay()->format('d M Y')
-                : Date::tomorrow()->format('d M Y'),
+                ? Date::parse($subscription->update_ends_at)->addDay()->format(self::DISPLAY_DATE)
+                : Date::tomorrow()->format(self::DISPLAY_DATE),
             'reply_email' => $setting->company_email,
             'application_title' => $setting->title,
             'company_title' => $setting->company,
             'url' => $url,
             'number' => $order?->number,
-            'date' => Date::parse($subscription->update_ends_at)->format('d M Y'),
+            'date' => Date::parse($subscription->update_ends_at)->format(self::DISPLAY_DATE),
         ];
 
         new PhpMailController()

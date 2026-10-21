@@ -82,7 +82,7 @@ class DeployController extends Controller
             'install_email' => ['nullable', 'email', 'max:255', Rule::requiredIf($installing)],
             'web_server' => ['nullable', 'in:1,2', Rule::requiredIf($installing)],
             'ssl_type' => ['nullable', 'in:A,B,C', Rule::requiredIf($installing)],
-            'ssl_cert_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
+            'ssl_cert_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')], // NOSONAR - Laravel validation rule, repeated by design
             'ssl_key_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
             'ssl_ca_path' => ['nullable', 'string', 'max:500', Rule::requiredIf(fn (): bool => $installing() && $request->ssl_type === 'C')],
             'web_user' => ['nullable', 'string', 'max:64', 'regex:/^[a-z_][a-z0-9_.-]*$/i'],

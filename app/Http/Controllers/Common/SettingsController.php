@@ -235,7 +235,7 @@ class SettingsController extends BaseSettingsController
             'state' => ['required'],
             'country' => ['required'],
             'default_currency' => ['required'],
-            'logo' => ['sometimes', 'file', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'logo' => ['sometimes', 'file', 'mimes:jpeg,png,jpg', 'max:2048'], // NOSONAR - Laravel validation rule, repeated by design
             'admin-logo' => ['sometimes', 'file', 'mimes:jpeg,png,jpg', 'max:2048'],
             'fav-icon' => ['sometimes', 'file', 'mimes:jpeg,png,jpg', 'max:2048'],
         ]);
@@ -285,7 +285,7 @@ class SettingsController extends BaseSettingsController
     {
         $request->validate([
             'timezone_id' => ['required', 'integer', 'exists:timezone,id'],
-            'date_format' => ['required', 'string', 'max:20'],
+            'date_format' => ['required', 'string', 'max:20'], // NOSONAR - Laravel validation rule, repeated by design
             'time_format' => ['required', 'string', 'max:20'],
             'language' => ['required', 'string', 'max:20'],
         ], [
@@ -583,11 +583,11 @@ class SettingsController extends BaseSettingsController
 
             if ($searchString) {
                 $query->where(function ($q) use ($searchString): void {
-                    $q->where('activity_log.log_name', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('activity_log.event', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('activity_log.description', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('users.email', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", [sprintf('%%%s%%', $searchString)]);
+                    $q->where('activity_log.log_name', 'like', likePattern($searchString))
+                        ->orWhere('activity_log.event', 'like', likePattern($searchString))
+                        ->orWhere('activity_log.description', 'like', likePattern($searchString))
+                        ->orWhere('users.email', 'like', likePattern($searchString))
+                        ->orWhereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", [likePattern($searchString)]);
                 });
             }
 
@@ -706,12 +706,12 @@ class SettingsController extends BaseSettingsController
 
             if ($searchString) {
                 $query->where(function (Builder $q) use ($searchString, $contactName): void {
-                    $q->where('payment_logs.order', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('payment_logs.status', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('payment_logs.payment_method', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhere('payment_logs.from', 'like', sprintf('%%%s%%', $searchString))
-                        ->orWhereRaw($contactName.' LIKE ?', [sprintf('%%%s%%', $searchString)])
-                        ->orWhere('payment_logs.payment_type', 'like', sprintf('%%%s%%', $searchString));
+                    $q->where('payment_logs.order', 'like', likePattern($searchString))
+                        ->orWhere('payment_logs.status', 'like', likePattern($searchString))
+                        ->orWhere('payment_logs.payment_method', 'like', likePattern($searchString))
+                        ->orWhere('payment_logs.from', 'like', likePattern($searchString))
+                        ->orWhereRaw($contactName.' LIKE ?', [likePattern($searchString)])
+                        ->orWhere('payment_logs.payment_type', 'like', likePattern($searchString));
                 });
             }
 
@@ -904,9 +904,9 @@ class SettingsController extends BaseSettingsController
 
             if ($search = $request->input('search-query')) {
                 $query->where(function ($q) use ($search): void {
-                    $q->where('email', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('method', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('status', 'like', sprintf('%%%s%%', $search));
+                    $q->where('email', 'like', likePattern($search))
+                        ->orWhere('method', 'like', likePattern($search))
+                        ->orWhere('status', 'like', likePattern($search));
                 });
             }
 

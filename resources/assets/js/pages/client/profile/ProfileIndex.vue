@@ -257,9 +257,11 @@ function onImageChange({file, previewUrl}) {
 const showEmailModal  = ref(false)
 const showMobileModal = ref(false)
 
-const mobileDisplay = computed(() =>
-  form.mobile ? `${form.mobile_code ? '+' + form.mobile_code + ' ' : ''}${form.mobile}` : ''
-)
+const mobileDisplay = computed(() => {
+  if (!form.mobile) return ''
+  const code = form.mobile_code ? `+${form.mobile_code} ` : ''
+  return `${code}${form.mobile}`
+})
 
 function onEmailUpdated(email) {
   form.email = email

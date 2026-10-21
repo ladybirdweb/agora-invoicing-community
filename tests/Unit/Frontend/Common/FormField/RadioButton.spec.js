@@ -70,12 +70,12 @@ describe('RadioButton.vue', () => {
     })
 
     it('renders label text', () => {
-        expect(wrapper.find('label.form-label').text()).toContain('label')
+        expect(wrapper.find('.form-label').text()).toContain('label')
     })
 
     it('uses custom label prop', () => {
         wrapper = mountRadio({ label: 'Status' })
-        expect(wrapper.find('label.form-label').text()).toContain('Status')
+        expect(wrapper.find('.form-label').text()).toContain('Status')
     })
 
     it('disables all radios when disabled is true', () => {

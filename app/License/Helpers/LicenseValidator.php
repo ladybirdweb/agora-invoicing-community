@@ -123,19 +123,25 @@ class LicenseValidator
             ];
         }
 
+        return $this->locationError($license, $ip, $root_url) ?? ['valid' => true, 'license' => $license];
+    }
+
+    /**
+     * The license's IP / domain restrictions for this caller, or null when they all pass.
+     *
+     * @return array{valid: false, error: string, data: array<string, string>}|null
+     */
+    private function locationError(License $license, string $ip, string $root_url): ?array
+    {
         // Check IP restriction (supports comma-separated IPs)
-        if (! empty($license->license_ip)) {
-            $licensed_ips = array_map(trim(...), explode(',', (string) $license->license_ip));
-            if (! in_array($ip, $licensed_ips)) {
-                return ['valid' => false, 'error' => 'invalid_ip', 'data' => ['ip' => $ip]];
-            }
+        if (! empty($license->license_ip) && ! in_array($ip, array_map(trim(...), explode(',', (string) $license->license_ip)))) {
+            return ['valid' => false, 'error' => 'invalid_ip', 'data' => ['ip' => $ip]];
         }
 
         // Check domain restriction (supports comma-separated domains, uses stripos)
         if (! empty($license->license_domain)) {
             $licensed_domains = array_map(trim(...), explode(',', (string) $license->license_domain));
-            $domain_valid = array_any($licensed_domains, fn ($domain): bool => stripos($root_url, (string) $domain) !== false);
-            if (! $domain_valid) {
+            if (! array_any($licensed_domains, fn ($domain): bool => stripos($root_url, (string) $domain) !== false)) {
                 return ['valid' => false, 'error' => 'invalid_domain', 'data' => ['domain' => $root_url]];
             }
         }
@@ -150,7 +156,7 @@ class LicenseValidator
             }
         }
 
-        return ['valid' => true, 'license' => $license];
+        return null;
     }
 
     /**

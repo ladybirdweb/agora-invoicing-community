@@ -34,15 +34,15 @@
                                     />
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold d-block">{{ __('message.publish') }}</label>
+                                    <span class="form-label fw-bold d-block">{{ __('message.publish') }}</span>
                                     <Switch :name="`publish-${ft.key}`" :value="forms[ft.key].publish" :onChange="(val) => forms[ft.key].publish = val" />
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold d-flex align-items-center gap-1">
+                                    <span class="form-label fw-bold d-flex align-items-center gap-1">
                                         <span>{{ __('message.allow_newsletter') }}</span>
                                         <Tooltip v-if="!mailchimpStatus" :message="__('message.newsletter_not_configured')" />
                                         <Tooltip v-else-if="otherFooterHasMailchimp(ft.key)" :message="__('message.mailchimp_footer_error')" />
-                                    </label>
+                                    </span>
                                     <div :title="!mailchimpStatus ? __('message.newsletter_not_configured') : (otherFooterHasMailchimp(ft.key) ? __('message.mailchimp_footer_error') : '')">
                                         <Switch
                                             :name="`allow_mailchimp-${ft.key}`"
@@ -53,10 +53,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold d-flex align-items-center gap-1">
+                                    <span class="form-label fw-bold d-flex align-items-center gap-1">
                                         <span>{{ __('message.allow_social_media_icons') }}</span>
                                         <Tooltip v-if="otherFooterHasSocial(ft.key)" :message="__('message.social_icon_footer_warning')" />
-                                    </label>
+                                    </span>
                                     <div :title="otherFooterHasSocial(ft.key) ? __('message.social_icon_footer_warning') : ''">
                                         <Switch
                                             :name="`allow_social_media-${ft.key}`"
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('message.content') }}</label>
+                                <label class="form-label fw-bold" :for="`editor-${ft.key}`">{{ __('message.content') }}</label>
                                 <TinyMCE
                                     name="content"
                                     :id="`editor-${ft.key}`"

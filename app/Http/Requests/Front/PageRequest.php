@@ -60,7 +60,7 @@ class PageRequest extends Request
                 'nullable',
                 'integer',
                 Rule::exists('frontend_pages', 'id'),
-                function ($attribute, $value, $fail): void {
+                function ($attribute, $value, $fail): void { // NOSONAR - Laravel passes the attribute first
                     if (! $value) {
                         return;
                     }

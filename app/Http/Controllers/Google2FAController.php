@@ -24,6 +24,9 @@ class Google2FAController extends Controller
 {
     use ValidatesRequests;
 
+    /** Session key holding the user who is mid-way through 2FA. */
+    private const TWO_FA_USER_KEY = '2fa:user:id';
+
     /**
      * Create a new authentication controller instance.
      */
@@ -37,7 +40,7 @@ class Google2FAController extends Controller
 
     public function verify2fa(): JsonResponse
     {
-        if (Session::has('2fa:user:id')) {
+        if (Session::has(self::TWO_FA_USER_KEY)) {
             return successResponse('Redirect to 2fa');
         } else {
             return successResponse('Login page', ['redirect' => url('login')]);
@@ -96,7 +99,7 @@ class Google2FAController extends Controller
     {
         try {
             $session = $request->session();
-            $userId = $session->get('2fa:user:id');
+            $userId = $session->get(self::TWO_FA_USER_KEY);
             /** @var User $user */
             $user = User::findOrFail($userId);
 
@@ -201,7 +204,7 @@ class Google2FAController extends Controller
 
         try {
             $session = $request->session();
-            $userId = $session->get('2fa:user:id');
+            $userId = $session->get(self::TWO_FA_USER_KEY);
             /** @var User $user */
             $user = User::findOrFail($userId);
 
@@ -234,7 +237,7 @@ class Google2FAController extends Controller
         // Clear session identifiers
         $session = $request->session();
         $remember = $session->get('remember:user:id', default: false);
-        $session->forget(['2fa:user:id', 'remember:user:id']);
+        $session->forget([self::TWO_FA_USER_KEY, 'remember:user:id']);
 
         // If it's part of password reset flow
         if ($token = $session->get('reset_token')) {

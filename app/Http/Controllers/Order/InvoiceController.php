@@ -52,6 +52,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     use PaymentsAndInvoices;
     use TaxCalculation;
 
+    private const PARTIALLY_PAID = 'partially paid';
+
     /**
      * @var Invoice
      */
@@ -184,25 +186,25 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $statusMapping = [
                     'paid' => 'success',
                     'unpaid' => 'pending',
-                    'partially paid' => 'partially paid',
-                    'partially' => 'partially paid',
+                    self::PARTIALLY_PAID => self::PARTIALLY_PAID,
+                    'partially' => self::PARTIALLY_PAID,
                 ];
 
                 $status = array_key_exists($search, $statusMapping) ? $statusMapping[$search] : $search;
                 $query->where(function (Builder $q) use ($search, $status): void {
                     $q->whereHas('user', function (Builder $q2) use ($search): void {
-                        $q2->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', [sprintf('%%%s%%', $search)])
-                            ->orWhere('email', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('mobile', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('country', 'like', sprintf('%%%s%%', $search));
+                        $q2->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', [likePattern($search)])
+                            ->orWhere('email', 'like', likePattern($search))
+                            ->orWhere('mobile', 'like', likePattern($search))
+                            ->orWhere('country', 'like', likePattern($search));
                     })
                         ->orWhereHas('invoiceItem', function (Builder $q2) use ($search): void {
-                            $q2->where('product_name', 'like', sprintf('%%%s%%', $search));
+                            $q2->where('product_name', 'like', likePattern($search));
                         })
-                        ->orWhere('number', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('status', 'like', sprintf('%%%s%%', $status))
-                        ->orWhere('currency', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('grand_total', 'like', sprintf('%%%s%%', $search));
+                        ->orWhere('number', 'like', likePattern($search))
+                        ->orWhere('status', 'like', likePattern($status))
+                        ->orWhere('currency', 'like', likePattern($search))
+                        ->orWhere('grand_total', 'like', likePattern($search));
                 });
             });
 
@@ -226,7 +228,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $statusMapping = [
                     'success' => 'Paid',
                     'pending' => 'Unpaid',
-                    'partially paid' => 'Partially Paid',
+                    self::PARTIALLY_PAID => 'Partially Paid',
                 ];
                 $status = Str::lower($invoice->status);
 

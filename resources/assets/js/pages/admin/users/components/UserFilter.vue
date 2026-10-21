@@ -224,7 +224,11 @@ function apply() {
     const params = {}
     Object.entries(form).forEach(([k, v]) => {
         if (v !== '' && v !== null) {
-            params[k] = typeof v === 'object' ? (k === 'country' ? v.code : v.id) : v
+            if (typeof v !== 'object') {
+                params[k] = v
+            } else {
+                params[k] = k === 'country' ? v.code : v.id
+            }
         }
     })
     emit('apply', params)

@@ -109,7 +109,7 @@
                             <li v-if="user.role" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.role')">{{ __('message.role') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.role')">{{ __('message.role') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-capitalize">{{ user.role }}</div>
                                 </div>
@@ -118,7 +118,7 @@
                             <li v-if="user.company" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.company')">{{ __('message.company') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.company')">{{ __('message.company') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.company">{{ user.company }}</div>
                                 </div>
@@ -127,7 +127,7 @@
                             <li v-if="user.bussiness" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0">{{ __('message.business') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold">{{ __('message.business') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end">{{ user.bussiness?.name }}</div>
                                 </div>
@@ -136,7 +136,7 @@
                             <li v-if="user.mobile" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.mobile')">{{ __('message.mobile') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.mobile')">{{ __('message.mobile') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end">
                                         {{ user.mobile_code ? '+' + user.mobile_code + ' ' : '' }}{{ user.mobile }}
@@ -147,7 +147,7 @@
                             <li v-if="user.address" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.address')">{{ __('message.address') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.address')">{{ __('message.address') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.address">{{ user.address }}</div>
                                 </div>
@@ -156,7 +156,7 @@
                             <li v-if="user.town" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.town')">{{ __('message.town') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.town')">{{ __('message.town') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end">{{ user.town }}</div>
                                 </div>
@@ -165,7 +165,7 @@
                             <li v-if="user.state" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.state')">{{ __('message.state') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.state')">{{ __('message.state') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.state?.name">{{ user.state?.name }}</div>
                                 </div>
@@ -174,7 +174,7 @@
                             <li v-if="user.country" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.country')">{{ __('message.country') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.country')">{{ __('message.country') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.country?.name">{{ user.country?.name }}</div>
                                 </div>
@@ -183,7 +183,7 @@
                             <li v-if="user.zip" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.zip')">{{ __('message.zip') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.zip')">{{ __('message.zip') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end">{{ user.zip }}</div>
                                 </div>
@@ -192,7 +192,7 @@
                             <li v-if="user.timezone_id" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.timezone')">{{ __('message.timezone') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.timezone')">{{ __('message.timezone') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.timezone_id?.name">{{ user.timezone_id?.name }}</div>
                                 </div>
@@ -201,7 +201,7 @@
                             <li v-if="user.skype" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0">{{ __('message.skype') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold">{{ __('message.skype') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.skype">{{ user.skype }}</div>
                                 </div>
@@ -210,7 +210,7 @@
                             <li v-if="user.manager" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.sales_manager')">{{ __('message.sales_manager') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.sales_manager')">{{ __('message.sales_manager') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.manager?.name">{{ user.manager?.name }}</div>
                                 </div>
@@ -219,7 +219,7 @@
                             <li v-if="user.account_manager" class="list-group-item">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <label class="text-truncate mb-0" v-tooltip="__('message.account_manager')">{{ __('message.account_manager') }}</label>
+                                        <span class="d-inline-block mw-100 text-truncate mb-0 fw-semibold" v-tooltip="__('message.account_manager')">{{ __('message.account_manager') }}</span>
                                     </div>
                                     <div class="col-sm-7 text-end text-truncate" v-tooltip="user.account_manager?.name">{{ user.account_manager?.name }}</div>
                                 </div>
@@ -809,7 +809,10 @@ const orderOptions = {
         select:       (_, row) => selectCheckbox(selOrders, toggleOrderRow, row),
         order_date:   (_, row) => fmtDate(row.order_date),
         product_name: (_, row) => row.product_name && row.product_id ? h(RouterLink, { to: '/products/' + row.product_id + '/edit' }, () => row.product_name) : (row.product_name || '—'),
-        number:       (_, row) => row.number && row.id ? h(RouterLink, { to: `/orders/${row.id}` }, () => `#${row.number}`) : (row.number ? `#${row.number}` : '—'),
+        number:       (_, row) => {
+            if (!row.number) return '—'
+            return row.id ? h(RouterLink, { to: `/orders/${row.id}` }, () => `#${row.number}`) : `#${row.number}`
+        },
         version: (_, row) => {
             if (!row.versions?.length) return '—'
             const vTooltip = resolveDirective('tooltip')

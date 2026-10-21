@@ -68,7 +68,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $invoice = $this->invoice($client, 120.0);
         $this->service->record($client->id, 'USD', 500.0, 'cash');
 
-        $this->service->apply($client->id, 'USD', 120.0, (int) $invoice->id, 'Unapplied Payment');
+        $this->service->apply($client->id, 'USD', 120.0, (int) $invoice->id);
 
         $this->assertSame(380.0, $this->service->balance($client->id, 'USD'));
         $this->assertSame(120.0, $invoice->fresh()->paidTotal());
@@ -80,7 +80,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $invoice = $this->invoice($client, 120.0);
         $payment = $this->service->record($client->id, 'USD', 500.0, 'cash');
 
-        $this->service->apply($client->id, 'USD', 120.0, (int) $invoice->id, 'Unapplied Payment');
+        $this->service->apply($client->id, 'USD', 120.0, (int) $invoice->id);
 
         // "We received 500 by cash on this date" stays true; the allocation is
         // a row of its own, so there is still exactly one payment.
@@ -100,7 +100,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $first = $this->service->record($client->id, 'USD', 100.0, 'cash');
         $second = $this->service->record($client->id, 'USD', 100.0, 'cash');
 
-        $this->service->apply($client->id, 'USD', 150.0, (int) $invoice->id, 'Unapplied Payment');
+        $this->service->apply($client->id, 'USD', 150.0, (int) $invoice->id);
 
         // First payment fully consumed, second only half.
         $this->assertSame(100.0, (float) $first->allocations()->sum('amount'));
@@ -117,7 +117,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $this->expectException(Exception::class);
 
         try {
-            $this->service->apply($client->id, 'USD', 900.0, (int) $invoice->id, 'Unapplied Payment');
+            $this->service->apply($client->id, 'USD', 900.0, (int) $invoice->id);
         } finally {
             $this->assertSame(100.0, $this->service->balance($client->id, 'USD'));
             $this->assertSame(0.0, $invoice->fresh()->paidTotal());
@@ -133,7 +133,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $this->assertSame(0.0, $this->service->balance($client->id, 'INR'));
 
         $this->expectException(Exception::class);
-        $this->service->apply($client->id, 'INR', 50.0, (int) $invoice->id, 'Unapplied Payment');
+        $this->service->apply($client->id, 'INR', 50.0, (int) $invoice->id);
     }
 
     public function test_balances_reports_each_currency_separately(): void
@@ -154,7 +154,7 @@ class UnappliedPaymentServiceTest extends DBTestCase
         $invoice = $this->invoice($client, 100.0);
         $this->service->record($client->id, 'USD', 100.0, 'cash');
 
-        $this->service->apply($client->id, 'USD', 100.0, (int) $invoice->id, 'Unapplied Payment');
+        $this->service->apply($client->id, 'USD', 100.0, (int) $invoice->id);
 
         $this->assertSame(0.0, $this->service->balance($client->id, 'USD'));
         $this->assertSame([], $this->service->balances($client->id));

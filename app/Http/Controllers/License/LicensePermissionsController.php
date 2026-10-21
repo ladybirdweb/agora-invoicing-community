@@ -46,7 +46,7 @@ class LicensePermissionsController extends Controller
 
             $licenseTypes = LicenseType::with('permissions:id,permissions')
                 ->when($searchString, function ($query) use ($searchString): void {
-                    $query->where('name', 'like', sprintf('%%%s%%', $searchString));
+                    $query->where('name', 'like', likePattern($searchString));
                 })
                 ->orderBy($sortField, $sortOrder)
                 ->paginate($limit);

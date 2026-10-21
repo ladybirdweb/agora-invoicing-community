@@ -289,7 +289,7 @@ class SeoFileGeneratorTest extends DBTestCase
             '## Products',
             '',
             '- [Store]('.url('/store').'): Learn more about Store at Acme Inc.',
-        ]), substr($content, 0, strpos($content, "\n", strpos($content, '](' . url('/store') . ')'))));
+        ]), substr($content, 0, strpos($content, "\n", strpos($content, ']('.url('/store').')'))));
         $this->assertStringEndsWith("\n", $content);
     }
 

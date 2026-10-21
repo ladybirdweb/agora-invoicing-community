@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Il-qasam tal-isem huwa meħtieġ',
-        'product_quant_req' => 'Il-qasam tal-kwantità tal-prodott huwa meħtieġ jekk in-numru ta’ aġenti mhuwiex preżenti.',
-        'no_agent_req' => 'Il-qasam tan-numru ta’ aġenti huwa meħtieġ jekk il-kwantità tal-prodott mhijiex preżenti.',
+        'product_quant_req' => 'Jekk jogħġbok daħħal il-kwantità tal-prodott.',
+        'no_agent_req' => 'Jekk jogħġbok daħħal in-numru ta’ aġenti (daħħal 0 għal bla limitu).',
         'pro_req' => 'Il-qasam tal-prodott huwa meħtieġ',
         'offer_price' => 'Il-prezz tal-offerta ma jistax ikun ogħla minn 100',
         'currency_duplicate' => 'Kull munita tista \'tintuża darba biss.',

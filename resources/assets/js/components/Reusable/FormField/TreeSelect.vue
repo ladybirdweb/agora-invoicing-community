@@ -26,6 +26,10 @@
             <template #option-label="{ node }">
                 <span>{{ node.label }}</span>
             </template>
+            <!-- Only when a caller asks for it: the selected value's own label (e.g. "Group › Option"). -->
+            <template v-if="$slots['value-label']" #value-label="{ node }">
+                <slot name="value-label" :node="node" />
+            </template>
             <template #after-list>
                 <div v-if="hasNextPage || isLoading" ref="loaderRef" class="ts-loader">
                     <loader :duration="4000" :size="20" />

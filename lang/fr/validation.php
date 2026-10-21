@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Le champ nom est obligatoire',
-        'product_quant_req' => 'Le champ quantité du produit est obligatoire si le nombre d\'agents n\'est pas renseigné.',
-        'no_agent_req' => 'Le champ nombre d\'agents est obligatoire si la quantité du produit n\'est pas renseignée.',
+        'product_quant_req' => 'Veuillez saisir la quantité du produit.',
+        'no_agent_req' => 'Veuillez saisir le nombre d\'agents (saisissez 0 pour illimité).',
         'pro_req' => 'Le champ produit est obligatoire',
         'offer_price' => 'Le prix de l\'offre ne doit pas être supérieur à 100',
         'currency_duplicate' => 'Chaque devise ne peut être utilisée qu’une seule fois.',

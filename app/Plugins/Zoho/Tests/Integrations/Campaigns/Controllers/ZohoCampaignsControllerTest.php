@@ -161,29 +161,6 @@ class ZohoCampaignsControllerTest extends DBTestCase
         $this->assertEquals('First Name', $response->getData()->data[0]->field_name);
     }
 
-    public function test_it_validates_email_when_subscribing(): void
-    {
-        $request = new Request(['email' => 'invalid-email']);
-
-        $response = $this->controller->subscribeCampaign($request);
-
-        $this->assertFalse($response->getData()->success);
-        $this->assertEquals('Please enter a valid email address.', $response->getData()->message);
-    }
-
-    public function test_it_subscribes_to_campaign_successfully(): void
-    {
-        User::create(['email' => 'test@example.com']);
-
-        Config::set('zoho_campaigns.topics.newsletter.name', 'Newsletter');
-
-        $request = new Request(['email' => 'test@example.com']);
-
-        $response = $this->controller->subscribeCampaign($request);
-
-        $this->assertTrue($response->getData()->success);
-    }
-
     public function test_it_subscribes_with_topic_name_from_config(): void
     {
         User::create(['email' => 'test@example.com']);

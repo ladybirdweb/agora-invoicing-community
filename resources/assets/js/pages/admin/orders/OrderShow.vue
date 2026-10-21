@@ -68,7 +68,7 @@
                                                         <button class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.copy')" @click="copyLicenseCode">
                                                             <i :class="copied ? 'fas fa-check' : 'fas fa-clipboard'"></i>
                                                         </button>
-                                                        <button class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.reissue_license')" :disabled="saving.reissue" @click="showReissueModal = true">
+                                                        <button v-if="canReissue" class="btn btn-light table_btn flex-shrink-0" v-tooltip="__('message.reissue_license')" :disabled="saving.reissue" @click="showReissueModal = true">
                                                             <i class="fas fa-credit-card"></i>
                                                         </button>
                                                     </div>
@@ -119,7 +119,7 @@
                                                 </div>
                                             </li>
 
-                                            <li class="list-group-item py-3 px-3">
+                                            <li v-if="!isCloud" class="list-group-item py-3 px-3">
                                                 <div class="row align-items-center">
                                                     <div class="col-4 fw-semibold d-flex align-items-center gap-1">
                                                         {{ __('message.localized_license') }}
@@ -477,6 +477,8 @@ const permissions    = ref({})
 const isSubscribed   = ref(0)
 const autoRenewState = ref('inactive')
 const canRenew       = ref(false)
+const canReissue     = ref(false)
+const isCloud        = ref(false)
 const paymentLog     = ref(null)
 const tab            = ref('installations')
 const pluginLicenses = ref([])
@@ -748,6 +750,8 @@ async function reload() {
     isSubscribed.value   = d.is_subscribed
     autoRenewState.value = d.auto_renew_state
     canRenew.value       = !!d.can_renew
+    canReissue.value     = !!d.can_reissue
+    isCloud.value        = !!d.is_cloud
     paymentLog.value     = d.payment_log
     await loadPluginLicenses()
 }

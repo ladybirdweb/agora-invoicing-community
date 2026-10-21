@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'İsim alanı zorunludur',
-        'product_quant_req' => 'Ürün miktarı alanı, ajan sayısı yoksa zorunludur.',
-        'no_agent_req' => 'Ajan sayısı alanı, ürün miktarı yoksa zorunludur.',
+        'product_quant_req' => 'Lütfen ürün miktarını girin.',
+        'no_agent_req' => 'Lütfen ajan sayısını girin (sınırsız için 0 girin).',
         'pro_req' => 'Ürün alanı zorunludur',
         'offer_price' => 'Teklif fiyatları 100’den büyük olmamalıdır',
         'currency_duplicate' => 'Her para birimi yalnızca bir kez kullanılabilir.',

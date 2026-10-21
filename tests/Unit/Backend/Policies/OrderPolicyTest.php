@@ -230,7 +230,7 @@ class OrderPolicyTest extends DBTestCase
 
     // license actions
 
-    public function test_customers_reissue_only_their_own_live_self_hosted_license_admins_any(): void
+    public function test_customers_reissue_only_their_own_live_license_admins_any_never_cloud(): void
     {
         $selfHosted = $this->order(subscription: ['update_ends_at' => now()->addMonth()]);
         $admin = User::factory()->create(['role' => 'admin']);
@@ -239,7 +239,8 @@ class OrderPolicyTest extends DBTestCase
         $this->assertSame(403, $this->policy->reissue($this->stranger(), $selfHosted)->status());
         $this->assertTrue($this->policy->reissue($this->owner, $this->cloudOrder())->denied());
         $this->assertTrue($this->policy->reissue($this->owner, $this->order(order: ['order_status' => 'Terminated']))->denied());
-        $this->assertTrue($this->policy->reissue($admin, $this->cloudOrder())->allowed());
+        $this->assertTrue($this->policy->reissue($admin, $selfHosted)->allowed());
+        $this->assertTrue($this->policy->reissue($admin, $this->cloudOrder())->denied());
     }
 
     public function test_license_file_only_for_file_mode_orders(): void
@@ -251,6 +252,7 @@ class OrderPolicyTest extends DBTestCase
         $this->assertTrue($this->policy->useLicenseFile($this->owner, $this->order(order: ['license_mode' => 'File', 'order_status' => 'Terminated']))->denied());
         $this->assertTrue($this->policy->useLicenseFile(User::factory()->create(['role' => 'admin']), $file)->allowed());
         $this->assertSame(403, $this->policy->useLicenseFile($this->stranger(), $file)->status());
+        $this->assertTrue($this->policy->useLicenseFile($this->owner, $this->cloudOrder(order: ['license_mode' => 'File']))->denied());
     }
 
     public function test_auto_renewal_can_only_be_turned_on_with_an_offered_gateway(): void

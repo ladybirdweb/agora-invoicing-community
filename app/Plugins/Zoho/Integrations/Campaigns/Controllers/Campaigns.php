@@ -4,6 +4,7 @@ namespace App\Plugins\Zoho\Integrations\Campaigns\Controllers;
 
 use App\Plugins\Zoho\Controllers\Api\ZohoAccessToken;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\Api\ZohoCampaignsApi;
+use App\Plugins\Zoho\Integrations\Campaigns\Controllers\Exceptions\ContactNotFoundException;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\Exceptions\TagNotFoundException;
 use App\Plugins\Zoho\Integrations\Campaigns\Controllers\Exceptions\ZohoCampaignsApiException;
 use App\Plugins\Zoho\Models\ZohoIntegration;
@@ -191,8 +192,8 @@ class Campaigns
     {
         try {
             $this->zohoApi->tagDeassociate($tag, $email);
-        } catch (TagNotFoundException) {
-            // Tag already gone in Zoho: nothing to detach.
+        } catch (TagNotFoundException|ContactNotFoundException) {
+            // Tag or contact not in Zoho: nothing to detach.
         }
     }
 

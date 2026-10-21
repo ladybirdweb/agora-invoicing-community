@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Das Namensfeld ist erforderlich',
-        'product_quant_req' => 'Das Feld Produktmenge ist erforderlich, wenn keine Agentenanzahl vorhanden ist.',
-        'no_agent_req' => 'Das Feld Agentenanzahl ist erforderlich, wenn keine Produktmenge vorhanden ist.',
+        'product_quant_req' => 'Bitte geben Sie die Produktmenge ein.',
+        'no_agent_req' => 'Bitte geben Sie die Anzahl der Agenten ein (0 für unbegrenzt).',
         'pro_req' => 'Das Produktfeld ist erforderlich',
         'offer_price' => 'Der Angebotspreis darf 100 nicht überschreiten',
         'currency_duplicate' => 'Jede Währung kann nur einmal verwendet werden.',

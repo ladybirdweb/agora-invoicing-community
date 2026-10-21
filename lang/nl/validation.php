@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Het naamveld is verplicht',
-        'product_quant_req' => 'Het veld producthoeveelheid is verplicht als het aantal agenten niet is ingevuld.',
-        'no_agent_req' => 'Het veld aantal agenten is verplicht als de producthoeveelheid niet is ingevuld.',
+        'product_quant_req' => 'Voer de producthoeveelheid in.',
+        'no_agent_req' => 'Voer het aantal agenten in (voer 0 in voor onbeperkt).',
         'pro_req' => 'Het productveld is verplicht',
         'offer_price' => 'Aanbiedingsprijzen mogen niet hoger zijn dan 100',
         'currency_duplicate' => 'Elke valuta kan slechts één keer worden gebruikt.',

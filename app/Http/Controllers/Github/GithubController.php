@@ -34,8 +34,11 @@ class GithubController extends Controller
             Github::findOrFail(1)->update(['username' => $username, 'password' => $token]);
 
             return successResponse(__('message.github_valid'));
-        } catch (Exception) {
-            return errorResponse(__('message.github_invalid'));
+        } catch (Exception $exception) {
+            // Credentials were already checked above; anything thrown here is a save error, not bad credentials.
+            \Logger::exception($exception);
+
+            return errorResponse(__('message.sorry_something_wrong'));
         }
     }
 }

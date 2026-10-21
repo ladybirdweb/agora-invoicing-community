@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => '이름 필드는 필수입니다',
-        'product_quant_req' => '에이전트 수가 없는 경우 제품 수량 필드는 필수입니다.',
-        'no_agent_req' => '제품 수량이 없는 경우 에이전트 수 필드는 필수입니다.',
+        'product_quant_req' => '제품 수량을 입력하세요.',
+        'no_agent_req' => '에이전트 수를 입력하세요 (무제한은 0 입력).',
         'pro_req' => '제품 필드는 필수입니다',
         'offer_price' => '할인 가격은 100보다 클 수 없습니다',
         'currency_duplicate' => '각 통화는 한 번만 사용할 수 있습니다.',

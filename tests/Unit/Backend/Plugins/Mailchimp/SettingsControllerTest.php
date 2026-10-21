@@ -263,6 +263,23 @@ class SettingsControllerTest extends DBTestCase
         $this->assertNull($relation->is_paid_no);
     }
 
+    public function test_sync_groups_removes_stored_options_mailchimp_no_longer_has(): void
+    {
+        MailchimpGroup::create(['category_option_id' => 'gone-opt', 'category_id' => 'deleted-cat', 'list_id' => 'list1', 'category_name' => 'YES']);
+        MailchimpGroup::create(['category_option_id' => 'other-list-opt', 'category_id' => 'x', 'list_id' => 'list2', 'category_name' => 'Other']);
+        Http::fake([
+            'us7.api.mailchimp.com/3.0/lists/list1/interest-categories/cat1/interests*' => Http::response(['interests' => [
+                ['id' => 'int1', 'category_id' => 'cat1', 'list_id' => 'list1', 'name' => 'Gold'],
+            ]]),
+            'us7.api.mailchimp.com/3.0/lists/list1/interest-categories*' => Http::response(['categories' => [['id' => 'cat1', 'title' => 'Plans']]]),
+        ]);
+
+        $this->controller->syncInterestGroups();
+
+        $this->assertSame(['int1'], MailchimpGroup::where('list_id', 'list1')->pluck('category_option_id')->all());
+        $this->assertTrue(MailchimpGroup::where('category_option_id', 'other-list-opt')->exists(), 'another audience is left alone');
+    }
+
     public function test_sync_without_an_audience_leaves_every_mapping_alone(): void
     {
         MailchimpSetting::query()->update(['list_id' => null]);

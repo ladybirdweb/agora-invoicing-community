@@ -345,6 +345,15 @@ html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
 :is(#app-client, .modal) .faveo-dynamic-select .vs__search {
     line-height: 1.5;
 }
+/* Disabled: grey the whole field like a disabled ClientField. The white toggle above
+   outranks vue-select's own disabled grey, which then only painted the inner search
+   box — a grey patch inside a white field. */
+:is(#app-client, .modal) .faveo-dynamic-select.vs--disabled .vs__dropdown-toggle {
+    background-color: var(--bs-secondary-bg, #e9ecef);
+}
+:is(#app-client, .modal) .faveo-dynamic-select.vs--disabled :is(.vs__search, .vs__selected, .vs__clear, .vs__open-indicator) {
+    background-color: transparent;
+}
 :is(#app-client, .modal) .iti .form-control {
     line-height: 1.5;
     padding-top: .5rem;
@@ -413,4 +422,12 @@ html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
     letter-spacing: normal;
     line-height: 1.4;
     text-transform: none;
+}
+
+/* ── Centred icons on their own line ───────────────────────────────────────── */
+/* Font Awesome 7 gives every icon a fixed width (1.25em). A d-block icon is then a
+   narrow block that text-center can't move, so it hugs the left edge (e.g. the
+   "No versions available yet" box). Auto margins centre it. */
+:is(#app-client, .modal) .text-center i.d-block[class*="fa-"] {
+    margin-inline: auto;
 }

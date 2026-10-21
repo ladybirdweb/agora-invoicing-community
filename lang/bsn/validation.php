@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Polje za ime je obavezno',
-        'product_quant_req' => 'Polje za količinu proizvoda je obavezno kada broj agenata nije unesen.',
-        'no_agent_req' => 'Polje za broj agenata je obavezno kada količina proizvoda nije unesena.',
+        'product_quant_req' => 'Unesite količinu proizvoda.',
+        'no_agent_req' => 'Unesite broj agenata (unesite 0 za neograničeno).',
         'pro_req' => 'Polje za proizvod je obavezno',
         'offer_price' => 'Cijena ponude ne smije biti veća od 100',
         'currency_duplicate' => 'Svaka valuta se može koristiti samo jednom.',

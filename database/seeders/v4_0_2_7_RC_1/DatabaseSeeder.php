@@ -305,7 +305,7 @@ Dear {{name}},<br/><br/>
 </tr></thead>
 <tbody><tr>
 <td style="color:#333;font-family:monospace;font-size:12px;padding:12px 10px;">{{transaction_id}}</td>
-<td style="color:#333;font-family:Arial,sans-serif;font-size:13px;padding:12px 10px;font-weight:bold;">{{currency}} {{amount}}</td>
+<td style="color:#333;font-family:Arial,sans-serif;font-size:13px;padding:12px 10px;font-weight:bold;">{{amount}}</td>
 <td style="color:#333;font-family:Arial,sans-serif;font-size:13px;padding:12px 10px;">{{gateway}}</td>
 <td style="color:#333;font-family:Arial,sans-serif;font-size:13px;padding:12px 10px;">{{date}}</td>
 </tr></tbody></table>
@@ -327,7 +327,7 @@ Dear {{name}},<br/><br/>
 <td style="background:#fff;border-top:1px solid #ccc;padding:40px 0 20px 0;width:560px;" align="left">
 Dear {{name}},<br/><br/>
 <h1 style="color:#cc0000;font-family:Arial,sans-serif;font-size:22px;font-weight:bold;margin:0 0 16px 0;">Payment Failed</h1>
-<p style="color:#333;font-family:Arial,sans-serif;font-size:14px;line-height:22px;">Unfortunately your payment of <strong>{{currency}} {{amount}}</strong> via <strong>{{gateway}}</strong> could not be processed.</p>
+<p style="color:#333;font-family:Arial,sans-serif;font-size:14px;line-height:22px;">Unfortunately your payment of <strong>{{amount}}</strong> via <strong>{{gateway}}</strong> could not be processed.</p>
 <p style="color:#333;font-family:Arial,sans-serif;font-size:14px;line-height:22px;">Please try again or contact our support team if the issue persists.</p>
 </td>
 <td style="background:#fff;border-right:1px solid #ccc;border-top:1px solid #ccc;width:40px;padding:10px;">&nbsp;</td>
@@ -348,7 +348,7 @@ Dear {{name}},<br/><br/>
 <table style="width:560px;border:1px solid #ccc;border-collapse:collapse;" border="0" cellspacing="0" cellpadding="0"><tbody>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;width:180px;border-bottom:1px solid #eee;">Payer</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{name}} ({{company}})</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Email</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{email}}</td></tr>
-<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Amount</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{currency}} {{amount}}</td></tr>
+<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Amount</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{amount}}</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Gateway</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{gateway}}</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;">Date</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;">{{date}}</td></tr>
 </tbody></table>
@@ -371,9 +371,9 @@ Dear {{name}},<br/><br/>
 <table style="width:560px;border:1px solid #ccc;border-collapse:collapse;" border="0" cellspacing="0" cellpadding="0"><tbody>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;width:180px;border-bottom:1px solid #eee;">Payer</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{name}} ({{company}})</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Email</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{email}}</td></tr>
-<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Base Amount</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{currency}} {{base_amount}}</td></tr>
-<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Processing Fee ({{fee_rate}}%)</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{currency}} {{processing_fee}}</td></tr>
-<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Total Charged</td><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">{{currency}} {{amount}}</td></tr>
+<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Base Amount</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{base_amount}}</td></tr>
+<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Processing Fee ({{fee_rate}}%)</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{processing_fee}}</td></tr>
+<tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Total Charged</td><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">{{amount}}</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Gateway</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;border-bottom:1px solid #eee;">{{gateway}}</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;border-bottom:1px solid #eee;">Transaction ID</td><td style="font-family:monospace;font-size:12px;padding:10px 12px;border-bottom:1px solid #eee;">{{transaction_id}}</td></tr>
 <tr><td style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:10px 12px;">Date</td><td style="font-family:Arial,sans-serif;font-size:13px;padding:10px 12px;">{{date}}</td></tr>
@@ -477,18 +477,11 @@ Dear {{name}},<br/><br/>
 
     private function seedTemplate(string $name, int $typeId, string $html): void
     {
-        if (DB::table('templates')->where('name', $name)->exists()) {
-            return;
-        }
-
-        $id = DB::table('templates')->insertGetId([
-            'name' => $name,
-            'type' => $typeId,
-            'url' => '',
-            'data' => trim($html),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::table('templates')->updateOrInsert(
+            ['name' => $name],
+            ['type' => $typeId, 'url' => '', 'data' => trim($html), 'created_at' => now(), 'updated_at' => now()]
+        );
+        $id = DB::table('templates')->where('name', $name)->value('id');
 
         DB::table('template_types')->where('id', $typeId)->update(['selected_template_id' => $id, 'updated_at' => now()]);
     }

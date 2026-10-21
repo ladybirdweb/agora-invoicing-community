@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\LazyCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Tests\DBTestCase;
 
@@ -193,7 +194,18 @@ class CampaignsTest extends DBTestCase
         Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'tag/deassociate'));
     }
 
-    public function test_it_handles_detach_tag_when_tag_not_found(): void
+    /**
+     * Codes Zoho really returns: 992 = tag missing, 993 = contact missing.
+     *
+     * @return array<int, array{string}>
+     */
+    public static function detachNotFoundCodes(): array
+    {
+        return [['992'], ['993'], ['9001']];
+    }
+
+    #[DataProvider('detachNotFoundCodes')]
+    public function test_it_handles_detach_tag_when_tag_or_contact_not_found(string $code): void
     {
         Http::fake([
             '*/api/v1.1/getmailinglists*' => Http::response([
@@ -203,7 +215,7 @@ class CampaignsTest extends DBTestCase
             ], 200),
             '*/tag/deassociate*' => Http::response([
                 'status' => 'error',
-                'code' => '9001',
+                'code' => $code,
                 'message' => 'Tag not found',
             ], 200),
         ]);

@@ -299,8 +299,10 @@ class ZohoCampaignsApi extends ZohoBaseApi
             ->json();
 
         if (isset($response['status']) && $response['status'] === 'error') {
-            throw match ((int) $response['code']) {
-                993, 9001 => TagNotFoundException::fromResponse($response),
+            // Same codes as tagAssociate(): 993 is a missing contact despite Zoho's "tag not found" message.
+            throw match ($response['code']) {
+                '993' => ContactNotFoundException::fromResponse($response),
+                '992', '9001' => TagNotFoundException::fromResponse($response),
                 default => ZohoCampaignsApiException::fromResponse($response),
             };
         }

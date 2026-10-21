@@ -995,8 +995,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'The name field is required',
-        'product_quant_req' => 'The product quantity field is required when no of agents is not present.',
-        'no_agent_req' => 'The no of agents field is required when product quantity is not present.',
+        'product_quant_req' => 'Please enter the product quantity.',
+        'no_agent_req' => 'Please enter the number of agents (enter 0 for unlimited).',
         'pro_req' => 'The product field is required',
         'offer_price' => 'Offer price must be between 0 and 100.',
         'currency_duplicate' => 'Each currency can only be used once.',

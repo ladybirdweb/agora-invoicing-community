@@ -117,7 +117,7 @@ class OrderPolicy
     {
         return match (true) {
             ! $this->owns($user, $order) => Response::denyWithStatus(403, __('message.unauthorized_action')),
-            ! in_array($order->getRawOriginal('product'), cloudPopupProducts()) => Response::deny(__('message.no_permission_for_action')),
+            ! $this->isCloud($order) => Response::deny(__('message.no_permission_for_action')),
             $this->isTerminated($order) => Response::deny(__('message.no_permission_for_action')),
             (bool) $order->subscription?->is_deleted => Response::deny(__('message.no_permission_for_action')),
             default => Response::allow(),
@@ -125,26 +125,24 @@ class OrderPolicy
     }
 
     /**
-     * Reissue the license (frees it for a new domain/server). Admins may for any order; a
-     * customer only for their own live, self-hosted order — a cloud license is bound to the
-     * cloud instance, so the customer can't move it.
+     * Reissue the license (frees it for a new domain/server). Never for cloud — the license is
+     * bound to the cloud instance, so moving it would cut the instance off. Otherwise admins
+     * may for any order; a customer only for their own live order.
      */
     public function reissue(User $user, Order $order): Response
     {
-        if ($user->role === 'admin') {
-            return Response::allow();
-        }
+        $admin = $user->role === 'admin';
 
         return match (true) {
-            ! $this->owns($user, $order) => Response::denyWithStatus(403, __('message.reissue_license_invalid_modification_data')),
-            $this->isTerminated($order), in_array($order->getRawOriginal('product'), cloudPopupProducts()) => Response::deny(__('message.no_permission_for_action')),
+            ! $admin && ! $this->owns($user, $order) => Response::denyWithStatus(403, __('message.reissue_license_invalid_modification_data')),
+            $this->isCloud($order), ! $admin && $this->isTerminated($order) => Response::deny(__('message.no_permission_for_action')),
             default => Response::allow(),
         };
     }
 
     /**
-     * The offline license file — download, server binding, add-on files. Only for orders set to
-     * file mode; the owner (not once terminated) or an admin acting for them.
+     * The offline license file — download, server binding, add-on files. Only for self-hosted
+     * orders set to file mode; the owner (not once terminated) or an admin acting for them.
      */
     public function useLicenseFile(User $user, Order $order): Response
     {
@@ -152,7 +150,7 @@ class OrderPolicy
 
         return match (true) {
             ! $admin && ! $this->owns($user, $order) => Response::denyWithStatus(403, __('message.access_denied')),
-            $order->license_mode !== 'File' => Response::deny(__('message.no_permission_for_action')),
+            $order->license_mode !== 'File', $this->isCloud($order) => Response::deny(__('message.no_permission_for_action')),
             ! $admin && $this->isTerminated($order) => Response::deny(__('message.no_permission_for_action')),
             default => Response::allow(),
         };
@@ -163,7 +161,7 @@ class OrderPolicy
     {
         return match (true) {
             ! $this->owns($user, $order) => Response::denyWithStatus(403, __('message.unauthorized_action')),
-            ! in_array($order->getRawOriginal('product'), cloudPopupProducts()) => Response::deny(__('message.no_permission_for_action')),
+            ! $this->isCloud($order) => Response::deny(__('message.no_permission_for_action')),
             $this->isTerminated($order) => Response::deny(__('message.plan_change_order_terminated')),
             ! $order->subscription instanceof Subscription || (bool) $order->subscription->is_deleted => Response::deny(__('message.no_permission_for_action')),
             default => Response::allow(),
@@ -202,6 +200,11 @@ class OrderPolicy
     private function owns(User $user, Order $order): bool
     {
         return (int) $order->client === (int) $user->id;
+    }
+
+    private function isCloud(Order $order): bool
+    {
+        return in_array($order->getRawOriginal('product'), cloudPopupProducts());
     }
 
     private function isTerminated(Order $order): bool

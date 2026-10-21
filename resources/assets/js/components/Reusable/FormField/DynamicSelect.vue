@@ -13,8 +13,9 @@
             :multiple="multiple"
             :placeholder="placeholder"
             :disabled="disabled"
-            :clearable="clearable"
+            :clearable="clearable && !disabled"
             :searchable="searchable"
+            :selectable="selectable"
             :filterable="false"
             :closeOnSelect="closeOnSelect"
             :taggable="taggable"
@@ -100,6 +101,8 @@ const props = defineProps({
     // the CSS ellipsis on .vs__selected handles clipping precisely to
     // whatever width the field actually has, so keep this generous.
     strlength:     { type: [Number, String], default: 60 },
+    // vue-select's own: which options can be picked (the rest show greyed out).
+    selectable:    { type: Function, default: () => true },
 })
 
 const fieldError = computed(() => props.error ?? '')

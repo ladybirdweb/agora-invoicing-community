@@ -21,7 +21,6 @@ Route::middleware(['auth', 'admin'])->prefix('zoho')->group(function (): void {
     Route::prefix('campaigns')->group(function (): void {
         Route::get('{module}/mapping/data', [ZohoCampaignsController::class, 'getCampaignsMappedFields']);
         Route::get('contacts/fields', [ZohoCampaignsController::class, 'getCampaignsContactFields']);
-        Route::post('subscribe', [ZohoCampaignsController::class, 'subscribeCampaign']);
         Route::get('sync', [ZohoCampaignsController::class, 'syncFields']);
         Route::get('lists', [ZohoCampaignsController::class, 'getLists']);
         Route::post('list', [ZohoCampaignsController::class, 'saveList']);

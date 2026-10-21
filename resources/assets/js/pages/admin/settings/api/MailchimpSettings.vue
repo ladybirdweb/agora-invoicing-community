@@ -188,101 +188,133 @@
 
                     <!-- Tab: Interest Groups -->
                     <div v-show="activeTab === 'interest-groups'">
-                        <!-- Is-paid group -->
+                        <!-- What came from Mailchimp + Sync -->
                         <div class="card card-light">
-                            <div class="card-header">
-                                <h4 class="card-title">
-                                    {{ __('message.map_is_paid_group') }}
-                                    <ToolTip :message="__('message.map_is_paid_hint')" size="small" />
-                                </h4>
+                            <div class="card-body d-flex align-items-center flex-wrap gap-3">
+                                <i class="fab fa-mailchimp fs-3 text-body-secondary" aria-hidden="true"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">{{ __('message.mailchimp_groups_summary', { groups: groupList.length, options: interestGroups.length }) }}</div>
+                                    <small class="text-muted">{{ __('message.mailchimp_groups_summary_hint') }}</small>
+                                </div>
+                                <action-button variant="secondary" icon="fas fa-sync" :label="__('message.sync_groups')"
+                                    :loading="syncingGroups" @click="syncGroups" />
                             </div>
-                            <div class="card-body">
-                                <span class="form-label fw-bold d-block">{{ __('message.enable') }}</span>
-                                <Switch name="isPaidStatus" :value="isPaidStatus" :onChange="val => isPaidStatus = val" />
-                                <div v-if="isPaidStatus" class="row mt-3">
-                                    <div class="col-md-6">
-                                        <DynamicSelect
-                                            name="isPaid_category"
-                                            :label="__('message.select_a_group')"
-                                            :required="true"
-                                            :elements="categoryOptions"
-                                            :value="categoryOptions.find(o => o.id === isPaidCategoryId) ?? null"
-                                            :onChange="val => { isPaidCategoryId = val?.id ?? null; setFieldError('isPaidCategoryId', undefined) }"
-                                            :searchable="true"
-                                            :clearable="true"
-                                            :error="errors.isPaidCategoryId"
-                                        />
+                        </div>
+
+                        <!-- Sync refreshes the groups both cards use: one loader in their place. -->
+                        <div v-if="syncingGroups" class="row justify-content-center py-4"><loader /></div>
+                        <template v-else>
+                            <!-- Is-paid group -->
+                            <div class="card card-light">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        {{ __('message.map_is_paid_group') }}
+                                        <ToolTip :message="__('message.map_is_paid_hint')" size="small" />
+                                    </h4>
+                                    <div class="card-tools">
+                                        <Switch name="isPaidStatus" :value="isPaidStatus" :onChange="val => isPaidStatus = val" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <action-button action="save" :loading="savingIsPaid" @click="saveIsPaid" />
-                            </div>
-                        </div>
-
-                        <!-- Product → interest group -->
-                        <div class="card card-light">
-                            <div class="card-header">
-                                <h4 class="card-title">
-                                    {{ __('message.group_fields_mapping') }}
-                                    <ToolTip :message="__('message.group_fields_mapping_hint')" size="small" />
-                                </h4>
-                                <div class="card-tools">
-                                    <button class="btn btn-tool" v-tooltip="__('message.sync_groups')"
-                                        :disabled="syncingGroups" @click="syncGroups">
-                                        <i class="fas fa-sync" :class="{ 'fa-spin': syncingGroups }"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <span class="form-label fw-bold d-block">{{ __('message.enable') }}</span>
-                                <Switch name="productStatus" :value="productStatus" :onChange="val => productStatus = val" />
-
-                                <template v-if="productStatus">
-                                    <div v-if="syncingGroups" class="row justify-content-center py-3"><loader /></div>
-
-                                    <template v-else-if="interestGroupOptions.length">
-                                        <div v-for="(row, idx) in productRows" :key="row.key" class="row mb-3 align-items-end" :class="{ 'mt-3': idx === 0 }">
-                                            <div class="col-5">
+                                <div class="card-body">
+                                    <template v-if="isPaidStatus">
+                                        <p class="mb-3">{{ __('message.mailchimp_is_paid_explain') }}</p>
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <DynamicSelect
-                                                    :name="'product_' + idx"
-                                                    :label="idx === 0 ? __('message.product') : ''"
-                                                    :elements="productOptionsFor(row)"
-                                                    :value="productOptions.find(o => o.id === row.productId) ?? null"
-                                                    :onChange="val => row.productId = val?.id ?? null"
+                                                    name="isPaid_category"
+                                                    :label="__('message.mailchimp_group')"
+                                                    :required="true"
+                                                    :elements="paidGroupOptions"
+                                                    :value="paidGroupOptions.find(o => o.id === isPaidCategoryId) ?? null"
+                                                    :onChange="val => { isPaidCategoryId = val?.id ?? null; setFieldError('isPaidCategoryId', undefined) }"
+                                                    :selectable="o => o.valid || o.id === isPaidCategoryId"
                                                     :searchable="true"
                                                     :clearable="true"
-                                                />
-                                            </div>
-                                            <div class="col-5">
-                                                <DynamicSelect
-                                                    :name="'group_' + idx"
-                                                    :label="idx === 0 ? __('message.interest_group') : ''"
-                                                    :elements="interestGroupOptions"
-                                                    :value="interestGroupOptions.find(o => o.id === row.groupId) ?? null"
-                                                    :onChange="val => row.groupId = val?.id ?? null"
-                                                    :searchable="true"
-                                                    :clearable="true"
-                                                />
-                                            </div>
-                                            <div class="col-2 mb-3">
-                                                <button type="button" class="btn btn-light table_btn"
-                                                    v-tooltip="__('message.delete_attribute')" @click="removeProductRow(idx)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                    :error="errors.isPaidCategoryId"
+                                                >
+                                                    <template #option="o">
+                                                        <span class="d-flex justify-content-between gap-3">
+                                                            <span>{{ o.name }}</span>
+                                                            <small :class="o.valid ? 'text-muted' : 'text-warning'">{{ o.hint }}</small>
+                                                        </span>
+                                                    </template>
+                                                </DynamicSelect>
                                             </div>
                                         </div>
-                                        <action-button action="add" type="button" :label="__('message.add-new')"
-                                            :disabled="productRows.length >= productOptions.length" @click="addProductRow" />
                                     </template>
+                                    <p v-else class="text-muted text-center py-3 mb-0">{{ __('message.mailchimp_is_paid_off') }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <action-button action="save" :loading="savingIsPaid" @click="saveIsPaid" />
+                                </div>
+                            </div>
 
-                                    <p v-else class="text-muted mt-3 mb-0">{{ __('message.no_interest_groups_found') }}</p>
-                                </template>
+                            <!-- Product → interest group option -->
+                            <div class="card card-light">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        {{ __('message.group_fields_mapping') }}
+                                        <ToolTip :message="__('message.group_fields_mapping_hint')" size="small" />
+                                        <span v-if="productStatus" class="badge text-bg-light border fw-normal ms-2">
+                                            {{ __('message.mailchimp_products_mapped', { mapped: mappedCount, total: productOptions.length }) }}
+                                        </span>
+                                    </h4>
+                                    <div class="card-tools">
+                                        <Switch name="productStatus" :value="productStatus" :onChange="val => productStatus = val" />
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <template v-if="productStatus">
+                                        <p class="mb-3">{{ __('message.mailchimp_product_mapping_explain') }}</p>
+
+                                        <template v-if="interestGroupTree.length">
+                                            <div v-for="(row, idx) in productRows" :key="row.key" class="row mb-3 align-items-end">
+                                                <div class="col-5">
+                                                    <DynamicSelect
+                                                        :name="'product_' + idx"
+                                                        :label="idx === 0 ? __('message.product') : ''"
+                                                        :elements="productOptionsFor(row)"
+                                                        :value="productOptions.find(o => o.id === row.productId) ?? null"
+                                                        :onChange="val => row.productId = val?.id ?? null"
+                                                        :searchable="true"
+                                                        :clearable="true"
+                                                    />
+                                                </div>
+                                                <div class="col-5">
+                                                    <!-- Groups are branches (not selectable); a value reads "Group › Option",
+                                                         since option names repeat across groups (YES/NO). -->
+                                                    <TreeSelect
+                                                        :name="'group_' + idx"
+                                                        :label="idx === 0 ? __('message.mailchimp_option') : ''"
+                                                        :elements="interestGroupTree"
+                                                        :value="row.groupId"
+                                                        :onChange="val => row.groupId = val ?? null"
+                                                    >
+                                                        <template #value-label="{ node }">
+                                                            {{ node.parentNode ? `${node.parentNode.label} › ${node.label}` : node.label }}
+                                                        </template>
+                                                    </TreeSelect>
+                                                </div>
+                                                <div class="col-2 mb-3">
+                                                    <button type="button" class="btn btn-light table_btn"
+                                                        v-tooltip="__('message.delete_attribute')" @click="removeProductRow(idx)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <action-button action="add" type="button" :label="__('message.add-new')"
+                                                :disabled="productRows.length >= productOptions.length" @click="addProductRow" />
+                                        </template>
+
+                                        <p v-else class="text-muted mb-0">{{ __('message.no_interest_groups_found') }}</p>
+                                    </template>
+                                    <p v-else class="text-muted text-center py-3 mb-0">{{ __('message.mailchimp_product_mapping_off') }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <action-button action="save" :loading="savingGroups" @click="saveProductGroups" />
+                                </div>
                             </div>
-                            <div class="card-footer">
-                                <action-button action="save" :loading="savingGroups" @click="saveProductGroups" />
-                            </div>
-                        </div>
+                        </template>
                     </div>
                 </div>
             </template>
@@ -314,6 +346,7 @@ import { useAlertStore } from '@/core/stores/alert.js'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import TextField from '@/components/Reusable/FormField/TextField.vue'
 import DynamicSelect from '@/components/Reusable/FormField/DynamicSelect.vue'
+import TreeSelect from '@/components/Reusable/FormField/TreeSelect.vue'
 import Switch from '@/components/Reusable/FormField/Switch.vue'
 import ToolTip from '@/components/Reusable/Tooltip.vue'
 import DeleteModal from '@/components/Reusable/DeleteModal.vue'
@@ -454,12 +487,45 @@ const isPaidCategoryId   = ref(null)
 const productOptions  = computed(() => products.value.map(p => ({ id: String(p.id), name: p.name })))
 const categoryOptions = computed(() => interestCategories.value.map(c => ({ id: c.id, name: c.title ?? c.name })))
 
-// Product mapping: leave out the is-paid (Yes/No) category so its options don't pollute the list.
-const interestGroupOptions = computed(() =>
-    interestGroups.value
-        .filter(g => g.category_id !== isPaidCategoryId.value)
-        .map(g => ({ id: g.category_option_id, name: g.category_name }))
-)
+const YES = new Set(['yes', 'true'])
+const NO  = new Set(['no', 'false'])
+
+// The saved audience's groups with their options, in Mailchimp's order. A group's title
+// comes from the live categories; without them (Mailchimp unreachable) it stays null.
+const groupList = computed(() => {
+    const byId = new Map(categoryOptions.value.map(c => [c.id, { id: c.id, name: c.name, options: [] }]))
+    interestGroups.value.forEach(g => {
+        if (!byId.has(g.category_id)) byId.set(g.category_id, { id: g.category_id, name: null, options: [] })
+        byId.get(g.category_id).options.push(g)
+    })
+    return [...byId.values()]
+})
+
+// Is-paid picker: every group, with its Yes/No — or why it can't be used (the server refuses those too).
+const paidGroupOptions = computed(() => groupList.value.filter(g => g.name).map(g => {
+    const yes   = g.options.find(o => YES.has(String(o.category_name).toLowerCase()))
+    const no    = g.options.find(o => NO.has(String(o.category_name).toLowerCase()))
+    const valid = !!(yes && no)
+    return {
+        id: g.id, name: g.name, valid,
+        yes: yes?.category_name, no: no?.category_name,
+        hint: valid ? `${yes.category_name} / ${no.category_name}` : __('message.mailchimp_no_yes_no'),
+    }
+}))
+
+// While is-paid is on, its group's Yes/No mean paid/free — offering them for products too would mix the two.
+const reservedGroupId = computed(() => (isPaidStatus.value ? isPaidCategoryId.value : null))
+
+// Product mapping tree for TreeSelect: a branch per group, its options as leaves. Without a
+// group title (Mailchimp unreachable) the options are listed on their own.
+const interestGroupTree = computed(() => groupList.value
+    .filter(g => g.id !== reservedGroupId.value && g.options.length)
+    .flatMap(g => {
+        const leaves = g.options.map(o => ({ id: o.category_option_id, name: o.category_name }))
+        return g.name ? [{ id: `group:${g.id}`, name: g.name, children: leaves }] : leaves
+    }))
+
+const mappedCount = computed(() => productRows.value.filter(r => r.productId && r.groupId).length)
 
 // One group per product: a purchase only ever applies the first mapping for a product.
 function productOptionsFor(row) {

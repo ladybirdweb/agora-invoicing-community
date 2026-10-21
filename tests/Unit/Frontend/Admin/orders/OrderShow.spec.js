@@ -173,7 +173,7 @@ describe('OrderShow.vue', () => {
             subscription_end: true,
             support_end: true,
         })
-        expect(wrapper.vm.someExpiryFieldsHidden).toBe(false)
+        expect(wrapper.vm.lockedExpiryLabels).toBe('') // nothing locked, so no "not editable" note
     })
 
     it('saveLicenseEdit sends every date field when all three are permitted', async () => {
@@ -212,13 +212,13 @@ describe('OrderShow.vue', () => {
             await flushPromises()
         })
 
-        it('canEditExpiry marks the disallowed field false and flags someExpiryFieldsHidden', () => {
+        it('canEditExpiry marks the disallowed field false and names it in lockedExpiryLabels', () => {
             expect(wrapper.vm.canEditExpiry).toEqual({
                 update_end: true,
                 subscription_end: false,
                 support_end: true,
             })
-            expect(wrapper.vm.someExpiryFieldsHidden).toBe(true)
+            expect(wrapper.vm.lockedExpiryLabels).toBe('message.license_expiry') // only the locked field is named
         })
 
         it('saveLicenseEdit omits the disallowed field from the request body', async () => {

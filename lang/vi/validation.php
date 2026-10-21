@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Trường tên là bắt buộc',
-        'product_quant_req' => 'Trường số lượng sản phẩm là bắt buộc khi số lượng đại lý không có.',
-        'no_agent_req' => 'Trường số lượng đại lý là bắt buộc khi không có số lượng sản phẩm.',
+        'product_quant_req' => 'Vui lòng nhập số lượng sản phẩm.',
+        'no_agent_req' => 'Vui lòng nhập số lượng đại lý (nhập 0 để không giới hạn).',
         'pro_req' => 'Trường sản phẩm là bắt buộc',
         'offer_price' => 'Giá ưu đãi không được lớn hơn 100',
         'currency_duplicate' => 'Mỗi loại tiền chỉ được sử dụng một lần.',

@@ -272,7 +272,7 @@ onMounted(async () => {
 })
 
 async function submit() {
-    const schemaValid = await validateForm(planSchema, form, setErrors)
+    const schemaValid = await validateForm(planSchema, { ...form, show_agent: productShowAgent.value }, setErrors)
 
     const invalidRow = form.prices.find(p => !p.currency || p.add_price === '' || p.renew_price === '')
     const currencyValues = form.prices.map(p => p.currency).filter(Boolean)

@@ -222,6 +222,46 @@ describe('MailchimpSettings.vue', () => {
         expect(successHandler).toHaveBeenCalled()
     })
 
+    describe('interest group pickers', () => {
+        const setGroups = () => {
+            wrapper.vm.interestCategories = [{ id: 'h', title: 'Helpdesk' }, { id: 's', title: 'Servicedesk' }, { id: 'p', title: 'Products' }]
+            wrapper.vm.interestGroups = [
+                { category_id: 'h', category_option_id: 'h1', category_name: 'YES' },
+                { category_id: 'h', category_option_id: 'h2', category_name: 'NO' },
+                { category_id: 's', category_option_id: 's1', category_name: 'YES' },
+                { category_id: 's', category_option_id: 's2', category_name: 'NO' },
+                { category_id: 'p', category_option_id: 'p1', category_name: 'Faveo Helpdesk Pro' },
+            ]
+        }
+
+        it('builds the product option tree: one branch per group, its options as leaves', async () => {
+            await flushPromises()
+            setGroups()
+            wrapper.vm.isPaidStatus = false
+            const tree = wrapper.vm.interestGroupTree
+            expect(tree.map(g => g.name)).toEqual(['Helpdesk', 'Servicedesk', 'Products'])
+            expect(tree[0].children).toEqual([{ id: 'h1', name: 'YES' }, { id: 'h2', name: 'NO' }])
+        })
+
+        it('reserves the is-paid group only while that switch is on', async () => {
+            await flushPromises()
+            setGroups()
+            wrapper.vm.isPaidCategoryId = 's'
+            wrapper.vm.isPaidStatus = false
+            expect(wrapper.vm.interestGroupTree.some(g => g.name === 'Servicedesk')).toBe(true)
+            wrapper.vm.isPaidStatus = true
+            expect(wrapper.vm.interestGroupTree.some(g => g.name === 'Servicedesk')).toBe(false)
+        })
+
+        it('marks groups without Yes/No as unusable for is-paid', async () => {
+            await flushPromises()
+            setGroups()
+            const byName = Object.fromEntries(wrapper.vm.paidGroupOptions.map(o => [o.name, o]))
+            expect(byName.Helpdesk).toMatchObject({ valid: true, yes: 'YES', no: 'NO', hint: 'YES / NO' })
+            expect(byName.Products.valid).toBe(false)
+        })
+    })
+
     it('saveIsPaid needs a category when switched on', async () => {
         await flushPromises()
         wrapper.vm.isPaidStatus = true

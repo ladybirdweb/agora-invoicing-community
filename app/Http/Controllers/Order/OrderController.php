@@ -286,6 +286,8 @@ class OrderController extends BaseOrderController
             'is_subscribed' => $order->subscription?->is_subscribed,
             'auto_renew_state' => $order->subscription?->autoRenewState() ?? 'inactive',
             ...$this->renewFlags($order),
+            'is_cloud' => in_array($order->getRawOriginal('product'), cloudPopupProducts()),
+            'can_reissue' => Gate::allows(OrderAbility::Reissue, $order),
             'payment_log' => $paymentLog,
         ]);
     }

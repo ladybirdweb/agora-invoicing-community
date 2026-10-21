@@ -68,6 +68,18 @@ class GithubTest extends TestCase
         $this->assertNotEmpty($raw);
     }
 
+    public function test_github_password_reads_a_legacy_unencrypted_token_as_is(): void
+    {
+        $model = new Github();
+        $model->setRawAttributes(['password' => 'ghp_plaintextLegacyToken'], sync: true);
+
+        $this->assertSame('ghp_plaintextLegacyToken', $model->password);
+
+        // Saving reads the old value for the activity log — this used to throw DecryptException.
+        $model->password = 'new-token';
+        $this->assertTrue($model->isDirty('password'));
+    }
+
     public function test_github_password_decrypts_on_get(): void
     {
         $model = new Github();

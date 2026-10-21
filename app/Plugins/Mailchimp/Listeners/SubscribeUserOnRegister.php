@@ -6,6 +6,7 @@ use App\Listeners\BaseExternalSyncListener;
 use App\Model\Common\StatusSetting;
 use App\Plugins\Mailchimp\Services\MailchimpService;
 use App\User;
+use Override;
 
 class SubscribeUserOnRegister extends BaseExternalSyncListener
 {
@@ -16,6 +17,13 @@ class SubscribeUserOnRegister extends BaseExternalSyncListener
     protected function serviceKey(): string
     {
         return 'mailchimp';
+    }
+
+    /** Mailchimp only ever receives verified users (no per-service toggle like Pipedrive's). */
+    #[Override]
+    protected function requiresVerification(): bool
+    {
+        return true;
     }
 
     protected function isEnabled(): bool

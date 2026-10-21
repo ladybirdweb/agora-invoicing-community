@@ -60,25 +60,6 @@ class ZohoCampaignsController extends ZohoBaseController
         return $this->getModulesFields('campaigns', 'Contacts');
     }
 
-    public function subscribeCampaign(Request $request): JsonResponse
-    {
-        try {
-            $data = $request->validate([
-                'email' => ['required', 'email'],
-            ]);
-
-            $this->subscribe($data['email'], 'newsletter');
-
-            return successResponse('Subscribed successfully');
-        } catch (\Illuminate\Validation\ValidationException $exception) {
-            return errorResponse($exception->getMessage());
-        } catch (Exception $exception) {
-            \Logger::exception($exception);
-
-            return errorResponse(__('message.sorry_something_wrong'));
-        }
-    }
-
     public function getLists(): JsonResponse
     {
         try {
@@ -138,12 +119,11 @@ class ZohoCampaignsController extends ZohoBaseController
 
         $mappings = ZohoFieldMappings::with('faveoLocalField')->get();
 
-        /** @var User $zohoUser */
-        $zohoUser = User::where('email', $email)->first();
+        // Guests can subscribe from the newsletter form — no account means only mapped defaults go along.
         $contactInfo = zohoMappedFields(
             $zohoFields,
             $mappings,
-            $zohoUser
+            User::where('email', $email)->first() ?? []
         );
 
         // Subscribe takes contact fields by display name ("First Name"), not field name ("firstname").

@@ -34,7 +34,9 @@ class UpdateCartItemRequest extends FormRequest
             // so it must be a bare host (sub.domain.com) or an IP — no scheme or path.
             'domain' => ['nullable', 'string', 'max:255', function (string $attribute, mixed $value, Closure $fail): void { // NOSONAR - Laravel passes the attribute first
                 $isIp = filter_var($value, FILTER_VALIDATE_IP) !== false;
-                $isHost = str_contains((string) $value, '.') && filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+                // The last label (the TLD) needs a letter: "123.4444.889" is neither a domain nor an IP.
+                $isHost = str_contains((string) $value, '.') && filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false
+                    && preg_match('/[a-z]/i', (string) strrchr((string) $value, '.')) === 1;
                 if (! $isIp && ! $isHost) {
                     $fail(__('validation.invoice.domain.regex'));
                 }

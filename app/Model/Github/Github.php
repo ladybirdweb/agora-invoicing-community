@@ -5,6 +5,7 @@ namespace App\Model\Github;
 use App\BaseModel;
 use App\Traits\SystemActivityLogsTrait;
 use Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -79,11 +80,16 @@ class Github extends BaseModel
     protected function password(): Attribute
     {
         return Attribute::make(get: function ($value) {
-            if ($value) {
-                return Crypt::decrypt($value);
+            if (! $value) {
+                return $value;
             }
 
-            return $value;
+            try {
+                return Crypt::decrypt($value);
+            } catch (DecryptException) {
+                // Older installs stored the token unencrypted; read it as is (the next save encrypts it).
+                return $value;
+            }
         }, set: function ($value): array {
             $value = Crypt::encrypt($value);
 

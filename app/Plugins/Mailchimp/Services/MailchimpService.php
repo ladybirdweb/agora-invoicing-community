@@ -310,6 +310,9 @@ class MailchimpService
             return [];
         }
 
+        // Options deleted in Mailchimp (or whose group was) go too — otherwise they linger in the pickers.
+        MailchimpGroup::where('list_id', $this->listId)->whereNotIn('category_option_id', $interestIds)->delete();
+
         $stale = MailchimpGroupAgoraRelation::whereNotIn('mailchimp_group_cat_id', $interestIds)->get();
         $removed = array_values(array_unique(Product::whereIn('id', $stale->pluck('agora_product_id'))->get()
             ->map(fn (Product $product): string => $product->name)

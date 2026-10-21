@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Field nama wajib diisi',
-        'product_quant_req' => 'Field jumlah produk wajib diisi jika jumlah agen tidak ada.',
-        'no_agent_req' => 'Field jumlah agen wajib diisi jika jumlah produk tidak ada.',
+        'product_quant_req' => 'Masukkan jumlah produk.',
+        'no_agent_req' => 'Masukkan jumlah agen (masukkan 0 untuk tidak terbatas).',
         'pro_req' => 'Field produk wajib diisi',
         'offer_price' => 'Harga penawaran tidak boleh lebih dari 100',
         'currency_duplicate' => 'Setiap mata uang hanya dapat digunakan satu kali.',

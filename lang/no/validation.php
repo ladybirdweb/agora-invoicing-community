@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => 'Feltet navn er påkrevd',
-        'product_quant_req' => 'Produktmengdefeltet er påkrevd når antall agenter ikke er til stede.',
-        'no_agent_req' => 'Antall agenter-feltet er påkrevd når produktmengde ikke er til stede.',
+        'product_quant_req' => 'Angi produktmengde.',
+        'no_agent_req' => 'Angi antall agenter (angi 0 for ubegrenset).',
         'pro_req' => 'Produktfeltet er påkrevd',
         'offer_price' => 'Tilbudspriser må ikke være større enn 100',
         'currency_duplicate' => 'Hver valuta kan bare brukes én gang.',

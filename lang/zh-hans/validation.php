@@ -888,8 +888,8 @@ return [
     ],
     'plan_request' => [
         'name_required' => '名称字段是必填项',
-        'product_quant_req' => '当未填写代理人数时，产品数量字段是必填项。',
-        'no_agent_req' => '当未填写产品数量时，代理人数字段是必填项。',
+        'product_quant_req' => '请输入产品数量。',
+        'no_agent_req' => '请输入代理人数（输入 0 表示不限）。',
         'pro_req' => '产品字段是必填项',
         'offer_price' => '优惠价格不能大于 100',
         'currency_duplicate' => '每种货币只能使用一次。',

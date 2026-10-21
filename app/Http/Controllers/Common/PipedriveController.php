@@ -588,17 +588,40 @@ class PipedriveController extends Controller
             ->filter(fn ($id): bool => $id !== null)
             ->all();
 
+        $error = $this->mappingError($group_name, $groupID, (array) $select1, (array) $select2, $selectedFieldIds);
+        if ($error !== null) {
+            return errorResponse($error);
+        }
+
+        try {
+            DB::transaction(fn () => $this->saveMapping((array) $select1, (array) $select2, $selectedFieldIds, $groupID));
+        } catch (Exception $exception) {
+            return errorResponse($exception->getMessage());
+        }
+
+        return successResponse(__('message.fields_mapped_successfully'));
+    }
+
+    /**
+     * Why this mapping can't be saved, or null when it can.
+     *
+     * @param  array<mixed>  $select1
+     * @param  array<mixed>  $select2
+     * @param  array<mixed>  $selectedFieldIds
+     */
+    private function mappingError(?string $group_name, mixed $groupID, array $select1, array $select2, array $selectedFieldIds): ?string
+    {
         // Every row needs both sides: a half-filled row would otherwise be dropped silently.
-        if (count((array) $select1) !== count((array) $select2)
-            || collect((array) $select2)->contains(fn ($row): bool => empty($row['id'] ?? null))) {
-            return errorResponse(__('message.zoho_incomplete_rows'));
+        if (count($select1) !== count($select2)
+            || collect($select2)->contains(fn ($row): bool => empty($row['id'] ?? null))) {
+            return __('message.zoho_incomplete_rows');
         }
 
         // Validate title field for deals
         if ($group_name === 'Deal' && ! PipedriveField::whereIn('id', $selectedFieldIds)
             ->where('field_key', 'title')
             ->exists()) {
-            return errorResponse(__('message.title_field_deals'));
+            return __('message.title_field_deals');
         }
 
         // Fields Pipedrive requires (Person/Organization name) — only once something is mapped for the group.
@@ -607,58 +630,63 @@ class PipedriveController extends Controller
             ->whereNotIn('id', $selectedFieldIds)
             ->pluck('field_name');
         if ($selectedFieldIds !== [] && $missing->isNotEmpty()) {
-            return errorResponse(__('message.pipedrive_required_missing', ['fields' => $missing->implode(', ')]));
+            return __('message.pipedrive_required_missing', ['fields' => $missing->implode(', ')]);
         }
 
-        try {
-            DB::transaction(function () use ($select1, $select2, $selectedFieldIds, $groupID): void {
-                // Update selected fields
-                foreach ($select1 as $key => $row) {
-                    $fieldId = is_array($row) ? $row['id'] : $row;
-                    $localField = $select2[$key];
+        return null;
+    }
 
-                    if (filter_var($localField['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
-                        PipedriveField::where('id', $fieldId)->update([
-                            'local_field_id' => $localField['id'],
-                        ]);
-                    } else {
-                        // 'id' is a single option id (enum/label) or an array
-                        // of option ids (a 'set' multi-option field).
-                        PipedriveFieldOption::whereIn('id', (array) $localField['id'])->update([
-                            'status' => 1,
-                        ]);
-                    }
-                }
+    /**
+     * Saves the mapping, resets everything not selected, then checks it live against Pipedrive.
+     * Throws (rolling the caller's transaction back) when Pipedrive rejects the test record.
+     *
+     * @param  array<mixed>  $select1
+     * @param  array<mixed>  $select2
+     * @param  array<mixed>  $selectedFieldIds
+     */
+    private function saveMapping(array $select1, array $select2, array $selectedFieldIds, mixed $groupID): void
+    {
+        // Update selected fields
+        foreach ($select1 as $key => $row) {
+            $fieldId = is_array($row) ? $row['id'] : $row;
+            $localField = $select2[$key];
 
-                // Reset non-selected fields
-                PipedriveField::where('pipedrive_group_id', $groupID)
-                    ->whereNotIn('id', $selectedFieldIds)
-                    ->update(['local_field_id' => null]);
-
-                // Reset non-selected options
-                $fieldIds = PipedriveField::where('pipedrive_group_id', $groupID)->pluck('id')->toArray();
-                $selectedOptionIds = collect((array) $select2)
-                    // JSON sends a real boolean, form posts send the string "true" — accept both.
-                    ->filter(fn ($item): bool => isset($item['id']) && ! filter_var($item['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN))
-                    ->flatMap(fn ($item): array => (array) $item['id'])
-                    ->all();
-
-                PipedriveFieldOption::whereIn('pipedrive_field_id', $fieldIds)
-                    ->whereNotIn('id', $selectedOptionIds)
-                    ->update(['status' => 0]);
-
-                // Run mapping test **within** the transaction
-                $response = resolve(self::class)->testPipedriveMapping($groupID);
-                if ($response !== true) {
-                    // Throwing exception will trigger rollback
-                    throw new Exception((string) $response);
-                }
-            });
-        } catch (Exception $exception) {
-            return errorResponse($exception->getMessage());
+            if (filter_var($localField['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+                PipedriveField::where('id', $fieldId)->update([
+                    'local_field_id' => $localField['id'],
+                ]);
+            } else {
+                // 'id' is a single option id (enum/label) or an array
+                // of option ids (a 'set' multi-option field).
+                PipedriveFieldOption::whereIn('id', (array) $localField['id'])->update([
+                    'status' => 1,
+                ]);
+            }
         }
 
-        return successResponse(__('message.fields_mapped_successfully'));
+        // Reset non-selected fields
+        PipedriveField::where('pipedrive_group_id', $groupID)
+            ->whereNotIn('id', $selectedFieldIds)
+            ->update(['local_field_id' => null]);
+
+        // Reset non-selected options
+        $fieldIds = PipedriveField::where('pipedrive_group_id', $groupID)->pluck('id')->toArray();
+        $selectedOptionIds = collect($select2)
+            // JSON sends a real boolean, form posts send the string "true" — accept both.
+            ->filter(fn ($item): bool => isset($item['id']) && ! filter_var($item['faveo_fields'] ?? false, FILTER_VALIDATE_BOOLEAN))
+            ->flatMap(fn ($item): array => (array) $item['id'])
+            ->all();
+
+        PipedriveFieldOption::whereIn('pipedrive_field_id', $fieldIds)
+            ->whereNotIn('id', $selectedOptionIds)
+            ->update(['status' => 0]);
+
+        // Run mapping test **within** the transaction
+        $response = resolve(self::class)->testPipedriveMapping($groupID);
+        if ($response !== true) {
+            // Throwing exception will trigger rollback
+            throw new Exception((string) $response);
+        }
     }
 
     /**

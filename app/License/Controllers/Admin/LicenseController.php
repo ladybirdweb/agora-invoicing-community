@@ -286,7 +286,7 @@ class LicenseController extends Controller
         return filter_var($client_email, FILTER_VALIDATE_EMAIL) ? (string) $client_email : 'Unknown Client';
     }
 
-    protected function licenseChecks(mixed $client_id, ?string $license_code, ?string $license_ip, ?string $license_domain, mixed $license_limit, ?string $license_expire_date, ?string $license_updates_date, ?string $license_support_date, bool $isUpdate = false): ?JsonResponse
+    protected function licenseChecks(mixed $client_id, ?string $license_code, ?string $license_ip, ?string $license_domain, mixed $license_limit, ?string $license_expire_date, ?string $license_updates_date, ?string $license_support_date, bool $isUpdate = false): ?JsonResponse // NOSONAR - license checks, kept as is for now
     {
         if (! LicenseHelper::validateIntegerValue($client_id) && in_array($license_code, [null, '', '0'], strict: true)) {
             return errorResponse(__('license::lang.error_client_or_license_code'), 400);

@@ -82,10 +82,10 @@
 
         /* ── Totals ── */
         .totals-table { width: 45%; margin-left: auto; border-collapse: collapse; font-size: 12px; }
-        .totals-table td { padding: 10px 16px; }
-        .totals-table .label { color: #212529; font-weight: 600; }
+        .totals-table td, .totals-table th { padding: 10px 16px; }
+        .totals-table .label { color: #212529; font-weight: 600; text-align: left; }
         .totals-table .value { text-align: right; width: 140px; }
-        .totals-table .total-row td {
+        .totals-table .total-row td, .totals-table .total-row th {
             border-top: 2px solid #495057;
             font-weight: 700;
             font-size: 15px;
@@ -190,38 +190,38 @@
     </table>
 
     {{-- ── TOTALS ── --}}
-    <table class="totals-table" role="presentation">
+    <table class="totals-table">
         <tbody>
             <tr>
-                <td class="label">{{ $totals['subtotal_label'] }}</td>
+                <th scope="row" class="label">{{ $totals['subtotal_label'] }}</th>
                 <td class="value">{{ $totals['subtotal'] }}</td>
             </tr>
             @if($invoice->credits)
                 <tr>
-                    <td class="label">{{ __('message.discount') }} ({{ __('message.credits') }})</td>
+                    <th scope="row" class="label">{{ __('message.discount') }} ({{ __('message.credits') }})</th>
                     <td class="value">{{ $totals['credits'] }}</td>
                 </tr>
             @endif
             @if($invoice->discount)
                 <tr>
-                    <td class="label">{{ __('message.discount') }} ({{ $invoice->coupon_code }})</td>
+                    <th scope="row" class="label">{{ __('message.discount') }} ({{ $invoice->coupon_code }})</th>
                     <td class="value">{{ $totals['discount'] }}</td>
                 </tr>
             @endif
             @foreach($totals['tax'] as $taxLabel => $taxValue)
                 <tr>
-                    <td class="label">{{ $taxLabel }}</td>
+                    <th scope="row" class="label">{{ $taxLabel }}</th>
                     <td class="value">{{ $taxValue }}</td>
                 </tr>
             @endforeach
             @if($invoice->processing_fee)
                 <tr>
-                    <td class="label">{{ __('message.processing_fee') }} ({{ $invoice->processing_fee }})</td>
+                    <th scope="row" class="label">{{ __('message.processing_fee') }} ({{ $invoice->processing_fee }})</th>
                     <td class="value">{{ $totals['processing_fee'] }}</td>
                 </tr>
             @endif
             <tr class="total-row">
-                <td class="label fw-bold">{{ __('message.total') }}</td>
+                <th scope="row" class="label fw-bold">{{ __('message.total') }}</th>
                 <td class="value fw-bold">{{ $totals['total'] }}</td>
             </tr>
         </tbody>

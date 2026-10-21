@@ -13,27 +13,27 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
-class LicenseDataMigration extends Command
+class LicenseDataMigration extends Command // NOSONAR - large existing class, kept as is: splitting it is a big change for little gain
 {
-    // --username/--password are option names for the source database, not stored credentials.
-    protected $signature = // NOSONAR
-        'license:migrate-data
-        {--host= : License database host}
-        {--port= : License database port}
-        {--database= : License database name}
-        {--username= : License database username}
-        {--password= : License database password}
-        {--socket= : License database socket}
-        {--sql-file= : Path to a SQL dump file; imports into a temporary DB then migrates from it}
-        {--fresh : Truncate all license tables before migration}
-        {--include-codes= : Comma-separated license codes to include even without an order mapping}
-        {--all-licenses : Include all licenses even without an order mapping}';
+    protected $signature = 'license:migrate-data'
+        .' {--host= : License database host}'
+        .' {--port= : License database port}'
+        .' {--database= : License database name}'
+        .' {--username= : License database username}'
+        .' {--password= : License database password}' // NOSONAR - an option name for the source database, not a stored credential
+        .' {--socket= : License database socket}'
+        .' {--sql-file= : Path to a SQL dump file; imports into a temporary DB then migrates from it}'
+        .' {--fresh : Truncate all license tables before migration}'
+        .' {--include-codes= : Comma-separated license codes to include even without an order mapping}'
+        .' {--all-licenses : Include all licenses even without an order mapping}';
 
     protected $description = 'Migrate data from the external license database into the billing database';
 
     private const int CHUNK_SIZE = 200;
 
     private const int INSERT_BATCH_SIZE = 50;
+
+    private const string DROP_DATABASE_SQL = 'DROP DATABASE IF EXISTS `%s`';
 
     /**
      * @var array<mixed>
@@ -433,7 +433,7 @@ class LicenseDataMigration extends Command
         );
     }
 
-    private function buildProductMapping(): void
+    private function buildProductMapping(): void // NOSONAR - one-time data migration command
     {
         $billingBySku = DB::table('products')->whereNotNull('product_sku')->pluck('id', 'product_sku');
         $billingByName = DB::table('products')->pluck('id', 'name');
@@ -583,7 +583,7 @@ class LicenseDataMigration extends Command
         return $count;
     }
 
-    private function migrateProductVersions(): int
+    private function migrateProductVersions(): int // NOSONAR - one-time data migration command
     {
         $count = 0;
 
@@ -713,7 +713,7 @@ class LicenseDataMigration extends Command
         $this->line('  Migrated 1 version notification record');
     }
 
-    private function updateProductColumns(): int
+    private function updateProductColumns(): int // NOSONAR - one-time data migration command
     {
         $count = 0;
 
@@ -856,7 +856,7 @@ class LicenseDataMigration extends Command
         $process = proc_open($cmd, $descriptors, $pipes, env_vars: $env); // nosemgrep: php.lang.security.exec-use.exec-use
 
         if (! is_resource($process)) {
-            DB::statement(sprintf('DROP DATABASE IF EXISTS `%s`', $this->tempDatabase));
+            DB::statement(sprintf(self::DROP_DATABASE_SQL, $this->tempDatabase));
             $this->tempDatabase = null;
             throw new RuntimeException('Failed to start mysql process. Ensure the mysql CLI is installed and in PATH.');
         }
@@ -867,7 +867,7 @@ class LicenseDataMigration extends Command
         $exitCode = proc_close($process);
 
         if ($exitCode !== 0) {
-            DB::statement(sprintf('DROP DATABASE IF EXISTS `%s`', $this->tempDatabase));
+            DB::statement(sprintf(self::DROP_DATABASE_SQL, $this->tempDatabase));
             $this->tempDatabase = null;
             throw new RuntimeException(sprintf('SQL import failed (exit code %s): %s', $exitCode, $stderr));
         }
@@ -884,7 +884,7 @@ class LicenseDataMigration extends Command
         $this->warn('Dropping temporary database: '.$this->tempDatabase);
         try {
             DB::purge('license');
-            DB::statement(sprintf('DROP DATABASE IF EXISTS `%s`', $this->tempDatabase));
+            DB::statement(sprintf(self::DROP_DATABASE_SQL, $this->tempDatabase));
         } catch (Exception $exception) {
             $this->warn(sprintf("Could not drop temporary database '%s': ", $this->tempDatabase).$exception->getMessage());
         }

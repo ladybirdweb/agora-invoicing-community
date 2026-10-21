@@ -160,7 +160,7 @@ class TenantController extends Controller
     /**
      * Logic for creating new tenant is handled here.
      */
-    public function createTenant(Request $request): JsonResponse
+    public function createTenant(Request $request): JsonResponse // NOSONAR - cloud instance handling, kept as is
     {
         $order = Order::where('number', $request->orderNo)->first();
         if (! $order) {
@@ -501,7 +501,7 @@ class TenantController extends Controller
         }
     }
 
-    public function DeleteCloudInstanceForClient(string $orderNumber, bool $isDelete): RedirectResponse|JsonResponse|null
+    public function DeleteCloudInstanceForClient(string $orderNumber, bool $isDelete): RedirectResponse|JsonResponse|null // NOSONAR - cloud instance handling, kept as is
     {
         if ($isDelete) {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
@@ -583,7 +583,7 @@ class TenantController extends Controller
     /**
      * @return array<mixed>
      */
-    protected function reissueCloudLicense(int $order_id): JsonResponse|array
+    protected function reissueCloudLicense(int $order_id): JsonResponse|array // NOSONAR - cloud instance handling, kept as is
     {
         $order = Order::findorFail($order_id);
         if ($this->authUser()->role != 'admin' && $order->client != $this->authUser()->id) {

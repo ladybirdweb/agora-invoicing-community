@@ -54,9 +54,7 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             ->groupBy('command')
             ->map(fn ($logs, $command): array => array_merge([
                 'command' => $command,
-                'name' => Lang::has('log::lang.'.$command)
-                    ? __('log::lang.'.$command)
-                    : $command,
+                'name' => $this->translatedOr((string) $command),
             ], $logs->pluck('status_count', 'status')->toArray()))->values();
     }
 
@@ -93,6 +91,12 @@ class AutomationController extends Job implements \Illuminate\Contracts\Queue\Jo
             }
         }
 
+        return $this->translatedOr($key);
+    }
+
+    /** The log module's translation of $key, else $key itself. */
+    private function translatedOr(string $key): mixed
+    {
         return Lang::has('log::lang.'.$key) ? __('log::lang.'.$key) : $key;
     }
 

@@ -44,7 +44,7 @@
 .user-dropdown .dropdown-item:hover,
 .user-dropdown .dropdown-item:focus {
     background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: #fff; /* NOSONAR - brand or theme colour, kept as designed */
 }
 
 /* ── License module form validation ────────────────────────────────────────── */

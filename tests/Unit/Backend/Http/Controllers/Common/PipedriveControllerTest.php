@@ -461,14 +461,7 @@ class PipedriveControllerTest extends DBTestCase
         $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
 
         // The save runs a real round-trip check through these public calls — stub them.
-        $mock = Mockery::mock(PipedriveController::class)->makePartial();
-        (new ReflectionClass(PipedriveController::class))->getProperty('groups')->setValue($mock, PipedriveGroups::pluck('id', 'group_name')
-            ->mapWithKeys(fn ($id, $group): array => [lcfirst((string) $group).'Id' => $id])->all());
-        $mock->shouldReceive('addOrGetOrganization')->andReturn(55);
-        $mock->shouldReceive('deleteOrganization')->with(55)->andReturn(true);
-        app()->instance(PipedriveController::class, $mock);
-
-        $response = $mock->mappingFields(new Request([
+        $response = $this->orgRoundTrip(55)->mappingFields(new Request([
             'group_id' => $org->id,
             'select1' => [['id' => $name->id]],
             'select2' => [['id' => $local->id, 'faveo_fields' => true]],
@@ -488,5 +481,90 @@ class PipedriveControllerTest extends DBTestCase
 
         $this->assertTrue($fields->firstWhere('field_key', 'name')['is_mandatory']);
         $this->assertFalse($fields->firstWhere('field_key', 'email')['is_mandatory']);
+    }
+
+    /** Partial controller whose live round-trip for Organization answers $orgResult (numeric = accepted). */
+    private function orgRoundTrip(mixed $orgResult): PipedriveController
+    {
+        $mock = Mockery::mock(PipedriveController::class)->makePartial();
+        // Same rows the tests look up with first() (the test DB may hold older group rows too).
+        (new ReflectionClass(PipedriveController::class))->getProperty('groups')->setValue($mock, collect(['Person', 'Organization', 'Deal'])
+            ->mapWithKeys(fn ($group): array => [lcfirst($group).'Id' => PipedriveGroups::where('group_name', $group)->first()->id])->all());
+        $mock->shouldReceive('addOrGetOrganization')->andReturn($orgResult);
+        $mock->shouldReceive('deleteOrganization')->andReturn(true);
+        app()->instance(PipedriveController::class, $mock);
+
+        return $mock;
+    }
+
+    public function test_mapping_enables_the_chosen_options_and_disables_the_rest(): void
+    {
+        $org = PipedriveGroups::where('group_name', 'Organization')->first();
+        $name = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'name', 'field_name' => 'Name']);
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+        $other = PipedriveLocalFields::firstOrCreate(['field_key' => 'email'], ['field_name' => 'Email']);
+        $size = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'size', 'field_name' => 'Size', 'local_field_id' => $other->id]);
+        $small = \App\Model\Common\PipedriveFieldOption::create(['pipedrive_field_id' => $size->id, 'key' => 's', 'value' => 'Small', 'status' => 0]);
+        $big = \App\Model\Common\PipedriveFieldOption::create(['pipedrive_field_id' => $size->id, 'key' => 'b', 'value' => 'Big', 'status' => 0]);
+        $huge = \App\Model\Common\PipedriveFieldOption::create(['pipedrive_field_id' => $size->id, 'key' => 'h', 'value' => 'Huge', 'status' => 1]);
+
+        $response = $this->orgRoundTrip(55)->mappingFields(new Request([
+            'group_id' => $org->id,
+            'select1' => [['id' => $name->id], $size->id],
+            'select2' => [['id' => $local->id, 'faveo_fields' => 'true'], ['id' => [$small->id, $big->id], 'faveo_fields' => false]],
+        ]));
+
+        $this->assertTrue($response->getData(true)['success']);
+        $this->assertSame($local->id, $name->refresh()->local_field_id);
+        $this->assertSame($other->id, $size->refresh()->local_field_id); // an option row doesn't touch the field's own mapping
+        $this->assertSame([1, 1, 0], [$small->refresh()->status, $big->refresh()->status, $huge->refresh()->status]);
+    }
+
+    public function test_mapping_unmaps_fields_that_are_no_longer_selected(): void
+    {
+        $org = PipedriveGroups::where('group_name', 'Organization')->first();
+        $name = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'name', 'field_name' => 'Name']);
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+        $old = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'phone', 'field_name' => 'Phone', 'local_field_id' => $local->id]);
+
+        $this->orgRoundTrip(55)->mappingFields(new Request([
+            'group_id' => $org->id,
+            'select1' => [['id' => $name->id]],
+            'select2' => [['id' => $local->id, 'faveo_fields' => true]],
+        ]));
+
+        $this->assertNull($old->refresh()->local_field_id);
+    }
+
+    public function test_mapping_is_rolled_back_when_pipedrive_rejects_the_test_record(): void
+    {
+        $org = PipedriveGroups::where('group_name', 'Organization')->first();
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+        $before = PipedriveLocalFields::firstOrCreate(['field_key' => 'email'], ['field_name' => 'Email']);
+        $name = PipedriveField::create(['pipedrive_group_id' => $org->id, 'field_key' => 'name', 'field_name' => 'Name', 'local_field_id' => $before->id]);
+
+        $response = $this->orgRoundTrip((object) ['success' => false, 'error' => 'Name is required'])->mappingFields(new Request([
+            'group_id' => $org->id,
+            'select1' => [['id' => $name->id]],
+            'select2' => [['id' => $local->id, 'faveo_fields' => true]],
+        ]));
+
+        $this->assertSame(['success' => false, 'message' => 'Name is required'], array_intersect_key($response->getData(true), ['success' => 1, 'message' => 1]));
+        $this->assertSame($before->id, $name->refresh()->local_field_id);
+    }
+
+    public function test_mapping_a_deal_needs_its_title_field(): void
+    {
+        $deal = PipedriveGroups::where('group_name', 'Deal')->first();
+        $value = PipedriveField::create(['pipedrive_group_id' => $deal->id, 'field_key' => 'value', 'field_name' => 'Value']);
+        $local = PipedriveLocalFields::firstOrCreate(['field_key' => 'company'], ['field_name' => 'Company']);
+
+        $response = $this->pipedriveController->mappingFields(new Request([
+            'group_id' => $deal->id,
+            'select1' => [['id' => $value->id]],
+            'select2' => [['id' => $local->id, 'faveo_fields' => true]],
+        ]));
+
+        $this->assertSame(__('message.title_field_deals'), $response->getData(true)['message']);
     }
 }

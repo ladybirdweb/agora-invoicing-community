@@ -8,12 +8,15 @@ export const licenseSchema = yup.object({
 })
 
 // IPv4 (octet-bounded) or IPv6 (loose, backend does the strict check via Laravel's `ip` rule)
-const IP_ADDRESS_REGEX = /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)$|^(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/
+const OCTET = /(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)/.source
+const IPV4_REGEX = new RegExp(`^(?:${OCTET}\\.){3}${OCTET}$`)
+const IPV6_REGEX = /^(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/
+const isIpAddress = value => !value || IPV4_REGEX.test(value) || IPV6_REGEX.test(value)
 
 export const bannedHostSchema = yup.object({
     banned_host_ip: yup.string()
         .required(() => __('validation.license.banned_host_ip.required'))
-        .matches(IP_ADDRESS_REGEX, { message: () => __('validation.license.banned_host_ip.invalid'), excludeEmptyString: true }),
+        .test('ip', () => __('validation.license.banned_host_ip.invalid'), isIpAddress),
 })
 
 export const installationSchema = yup.object({

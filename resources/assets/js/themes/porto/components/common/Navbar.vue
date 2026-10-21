@@ -225,8 +225,8 @@
                           </span>
                         </a>
 
-                        <!-- Cart dropdown (real Bootstrap dropdown: data-bs-display="static" keeps our
-                             own tested positioning CSS below instead of handing it to Popper) -->
+                        <!-- Cart dropdown: a real Bootstrap dropdown. Static display mode keeps our
+                             own tested positioning CSS below instead of handing it to Popper. -->
                         <div class="header-nav-features-dropdown dropdown-menu header-nav-features-dropdown-mobile-fixed"
                              id="headerTopCartDropdown">
                           <!-- Empty cart -->

@@ -22,7 +22,7 @@ use App\Model\Product\ProductGroup;
  *   client's own fallback(), just against a different route map and Setting
  *   column (favicon_title vs favicon_title_client).
  */
-class SeoMetaService
+class SeoMetaService // NOSONAR - large existing class, kept as is: splitting it is a big change for little gain
 {
     private const FORGOT_PASSWORD_PATH = 'password/reset';
 

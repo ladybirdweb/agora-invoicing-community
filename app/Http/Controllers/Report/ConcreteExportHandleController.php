@@ -78,7 +78,7 @@ class ConcreteExportHandleController extends ExportHandleController
      * @param  array<mixed>  $searchParams
      * @param  array<mixed>  $selectedColumns
      */
-    public function userExports(array $selectedColumns, array $searchParams, string $email): JsonResponse
+    public function userExports(array $selectedColumns, array $searchParams, string $email): JsonResponse // NOSONAR - export report builder, kept as is: a rewrite risks wrong report data
     {
         try {
             // Filter out unwanted columns
@@ -236,7 +236,7 @@ class ConcreteExportHandleController extends ExportHandleController
      * @param  array<mixed>  $searchParams
      * @param  array<mixed>  $selectedColumns
      */
-    public function invoiceExports(array $selectedColumns, array $searchParams, string $email): JsonResponse
+    public function invoiceExports(array $selectedColumns, array $searchParams, string $email): JsonResponse // NOSONAR - export report builder, kept as is: a rewrite risks wrong report data
     {
         try {
             // Filter out unwanted columns
@@ -367,7 +367,7 @@ class ConcreteExportHandleController extends ExportHandleController
      * @param  array<mixed>  $searchParams
      * @param  array<mixed>  $selectedColumns
      */
-    public function orderExports(array $selectedColumns, array $searchParams, string $email): JsonResponse
+    public function orderExports(array $selectedColumns, array $searchParams, string $email): JsonResponse // NOSONAR - export report builder, kept as is: a rewrite risks wrong report data
     {
         try {
             // Filter out unwanted columns
@@ -509,7 +509,7 @@ class ConcreteExportHandleController extends ExportHandleController
      * @param  array<mixed>  $searchParams
      * @param  array<mixed>  $selectedColumns
      */
-    public function tenantExports(array $selectedColumns, array $searchParams, string $email): void
+    public function tenantExports(array $selectedColumns, array $searchParams, string $email): void // NOSONAR - export report builder, kept as is: a rewrite risks wrong report data
     {
         $this->cloud = FaveoCloud::first(); // @phpstan-ignore property.notFound
         if (! $this->cloud) {

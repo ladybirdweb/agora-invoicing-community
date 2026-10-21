@@ -61,6 +61,15 @@ describe('bannedHostSchema', () => {
         await expect(bannedHostSchema.validate({ banned_host_ip: '::1' })).resolves.toBeTruthy()
     })
 
+    it.each([
+        ['0.0.0.0', true], ['255.255.255.255', true], ['256.1.1.1', false], ['1.2.3', false], ['01.2.3.4', false],
+        ['1.2.3.4.5', false], ['::', true], ['::1', true], ['fe80::1', true], ['2001:db8::ff00:42:8329', true],
+        ['1:2:3:4:5:6:7:8', true], ['1:2:3:4:5:6:7:8:9', false], ['12345::1', false], ['g::1', false],
+        [' 1.2.3.4', false], ['1.2.3.4\n', false],
+    ])('banned_host_ip %j valid: %s', async (ip, valid) => { // NOSONAR - IPs are test data
+        await expect(bannedHostSchema.isValid({ banned_host_ip: ip })).resolves.toBe(valid)
+    })
+
     it('fails when banned_host_ip is not a valid IP format', async () => {
         await expect(bannedHostSchema.validate({ banned_host_ip: 'not-an-ip' })).rejects.toThrow()
     })

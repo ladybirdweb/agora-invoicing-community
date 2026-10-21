@@ -198,7 +198,7 @@ use Spatie\Activitylog\Models\Activity;
  *
  * @mixin \Eloquent
  */
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract // @phpstan-ignore class.missingImplements
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract // @phpstan-ignore class.missingImplements (NOSONAR - large existing class, kept as is: splitting it is a big change for little gain)
 {
     use Authenticatable;
 

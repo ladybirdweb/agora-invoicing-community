@@ -162,36 +162,11 @@ class StoreController extends Controller
                 continue;
             }
 
-            $rawCost = (float) ($planPrice->add_price ?? 0);
-            $offerPct = (float) ($planPrice->offer_price ?? 0);
-            $finalCost = $offerPct > 0 ? $rawCost * (1 - $offerPct / 100) : $rawCost;
+            $option = $this->planOption($plan, $planPrice, $currency);
+            $result[] = $option;
 
-            $period = $plan->periods->first();
-            $periodName = $period->name ?? '';
-            $description = $planPrice->price_description ?? $periodName;
-
-            $months = max(1, (int) round((int) ($period->days ?? 30) / 30));
-            $perMonthCost = $finalCost / $months;
-
-            $formattedFinal = $finalCost == 0 ? __('message.free') : currencyFormat($finalCost, $currency);
-            $optionLabel = trim($formattedFinal.($description ? ' '.$description : ''));
-
-            $result[] = [
-                'id' => $plan->id,
-                'option_label' => $optionLabel,
-                'price_raw' => $finalCost,
-                'price_display' => $finalCost == 0 ? null : currencyFormat($finalCost, $currency, includeSymbol: false),
-                'price_per_month' => $finalCost == 0 ? null : currencyFormat($perMonthCost, $currency, includeSymbol: false),
-                'original_price_raw' => $offerPct > 0 ? $rawCost : null,
-                'original_display' => $offerPct > 0 ? currencyFormat($rawCost, $currency, includeSymbol: false) : null,
-                'original_price_per_month' => $offerPct > 0 ? currencyFormat($rawCost / $months, $currency, includeSymbol: false) : null,
-                'description' => $description,
-                'period' => $periodName,
-                'is_default' => false,
-            ];
-
-            if ($finalCost < $minCost) {
-                $minCost = $finalCost;
+            if ($option['price_raw'] < $minCost) {
+                $minCost = $option['price_raw'];
                 $defaultId = $plan->id;
             }
         }
@@ -201,6 +176,43 @@ class StoreController extends Controller
         }
 
         return $result;
+    }
+
+    /**
+     * One plan as the store shows it: offer price, per-month price, original price.
+     *
+     * @return array<string, mixed>
+     */
+    private function planOption(mixed $plan, mixed $planPrice, string $currency): array
+    {
+        $rawCost = (float) ($planPrice->add_price ?? 0);
+        $offerPct = (float) ($planPrice->offer_price ?? 0);
+        $hasOffer = $offerPct > 0;
+        $finalCost = $hasOffer ? $rawCost * (1 - $offerPct / 100) : $rawCost;
+        $isFree = $finalCost == 0;
+
+        $period = $plan->periods->first();
+        $periodName = $period->name ?? '';
+        $description = $planPrice->price_description ?? $periodName;
+
+        $months = max(1, (int) round((int) ($period->days ?? 30) / 30));
+        $amount = fn (float $cost): string => currencyFormat($cost, $currency, includeSymbol: false);
+
+        $formattedFinal = $isFree ? __('message.free') : currencyFormat($finalCost, $currency);
+
+        return [
+            'id' => $plan->id,
+            'option_label' => trim($formattedFinal.($description ? ' '.$description : '')),
+            'price_raw' => $finalCost,
+            'price_display' => $isFree ? null : $amount($finalCost),
+            'price_per_month' => $isFree ? null : $amount($finalCost / $months),
+            'original_price_raw' => $hasOffer ? $rawCost : null,
+            'original_display' => $hasOffer ? $amount($rawCost) : null,
+            'original_price_per_month' => $hasOffer ? $amount($rawCost / $months) : null,
+            'description' => $description,
+            'period' => $periodName,
+            'is_default' => false,
+        ];
     }
 
     /**

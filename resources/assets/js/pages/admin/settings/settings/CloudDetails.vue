@@ -334,8 +334,8 @@ const activeTab     = ref('settings')
 const showProductModal = ref(false)
 const showDCModal      = ref(false)
 
-const pendingDeleteTenant  = ref(null)   // { tenantId, orderNumber }
-const pendingDeleteProduct = ref(null)   // { id }
+const pendingDeleteTenant  = ref(null)   // tenant id and order number awaiting delete confirmation
+const pendingDeleteProduct = ref(null)   // product id awaiting delete confirmation
 
 function openProductModal()  { resetForm(); showProductModal.value = true }
 function closeProductModal() { showProductModal.value = false; productForm.cloud_product = null; productForm.cloud_free_plan = null; productForm.cloud_product_key = '' }

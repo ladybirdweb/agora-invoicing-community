@@ -54,13 +54,13 @@ abstract class PostSubscriptionHandleController
 
     abstract public function PaymentSuccessMailtoAdmin(Invoice $invoice, float|int $total, User $user, string $productName, Order $order, Payment|string $payment): void;
 
-    abstract public function FailedPaymenttoAdmin(?Invoice $invoice, float|int $total, string $productName, string $exceptionMessage, User $user, string $template, Order $order, Payment $payment): void;
+    abstract public function FailedPaymenttoAdmin(?Invoice $invoice, float|int $total, string $productName, string $exceptionMessage, User $user, string $template, Order $order, Payment $payment): void; // NOSONAR - existing payment mail signature, kept to avoid changing every caller
 
     abstract public function calculateUnitCost(string $currency, float|int $cost): float;
 
     abstract public function sendPaymentSuccessMail(int $sub, string $currency, float|int $total, User $user, string $product, string $number): void;
 
-    abstract public function sendFailedPayment(float|int|null $total, string $exceptionMessage, ?User $user, ?string $number, string $end, ?string $currency, ?Order $order, ?Product $product_details, ?Invoice $invoice, Payment|string|null $payment, bool $cancelAtGateway = true, bool $clearSubscribeId = true): void;
+    abstract public function sendFailedPayment(float|int|null $total, string $exceptionMessage, ?User $user, ?string $number, string $end, ?string $currency, ?Order $order, ?Product $product_details, ?Invoice $invoice, Payment|string|null $payment, bool $cancelAtGateway = true, bool $clearSubscribeId = true): void; // NOSONAR - existing payment mail signature, kept to avoid changing every caller
 }
 
 class ConcretePostSubscriptionHandleController extends PostSubscriptionHandleController

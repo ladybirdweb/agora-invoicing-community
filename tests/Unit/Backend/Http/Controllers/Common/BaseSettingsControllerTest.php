@@ -136,4 +136,41 @@ class BaseSettingsControllerTest extends DBTestCase
                 'message' => trans('message.please_enable_php_exec_for_cronjob_check'),
             ]);
     }
+
+    /** @return list<string> */
+    private function formatProperties(array $properties, mixed $event): array
+    {
+        return (new \ReflectionMethod(SettingsController::class, 'formatProperties'))
+            ->invoke(app(SettingsController::class), $properties, $event);
+    }
+
+    public function test_format_properties_describes_each_updated_field(): void
+    {
+        $lines = $this->formatProperties([
+            'old' => ['status' => 'Inactive', 'name' => '', 'tags' => ['a'], 'note' => '<b>x</b>', 'gone' => 'y'],
+            'attributes' => ['status' => 'Active', 'name' => 'New', 'tags' => ['a', 'b'], 'note' => '"q" & <i>z</i>'],
+        ], 'updated');
+
+        $this->assertSame([
+            'Updated Status From Inactive To Active',
+            'Updated Name From null To New',
+            'Updated Tags From [&quot;a&quot;] To [&quot;a&quot;,&quot;b&quot;]',
+            'Updated Note From x To &quot;q&quot; &amp; z',
+            'Updated Gone From y To null',
+        ], $lines);
+    }
+
+    public function test_format_properties_describes_created_fields_skipping_empty_and_placeholder_values(): void
+    {
+        $lines = $this->formatProperties(['attributes' => ['name' => 'Acme', 'blank' => '', 'zero' => 0, 'dash' => '--', 'list' => [1]]], 'created');
+
+        $this->assertSame(['Set Name To Acme', 'Set List To [1]'], $lines);
+    }
+
+    public function test_format_properties_is_empty_for_other_events_or_no_data(): void
+    {
+        $this->assertSame([], $this->formatProperties(['old' => ['a' => 1], 'attributes' => ['a' => 2]], 'deleted'));
+        $this->assertSame([], $this->formatProperties([], 'updated'));
+        $this->assertSame([], $this->formatProperties([], 'created'));
+    }
 }

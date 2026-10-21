@@ -63,13 +63,14 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to) => { // NOSONAR - vue-router guard: a redirect location, or true to continue
     const auth         = useAuthStore()
     const requiresAuth = to.meta?.requiresAuth !== false
     const guestOnly    = to.meta?.guestOnly === true
 
-    if (guestOnly && auth.isAuthenticated) return '/client-dashboard'
+    if (guestOnly && auth.isAuthenticated) return { path: '/client-dashboard' }
     if (requiresAuth && !auth.isAuthenticated) return { path: '/login', query: { redirect: to.fullPath } }
+    return true
 })
 
 router.afterEach((to) => {

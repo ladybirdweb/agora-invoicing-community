@@ -21,9 +21,8 @@ class UpdateSettingsRequest extends FormRequest
      */
     public function rules(): array
     {
-        $isV3 = $this->input('captcha_version') === 'v3_invisible';
-        $needsV2 = in_array($this->input('captcha_version'), ['v2_checkbox', 'v2_invisible'], strict: true)
-            || ($this->input('captcha_version') === 'v3_invisible' && $this->input('failover_action') === 'v2_checkbox');
+        $isV3 = $this->usesV3();
+        $needsV2 = $this->needsV2();
 
         return [
             'recaptcha_status' => ['sometimes', 'boolean'],
@@ -87,47 +86,56 @@ class UpdateSettingsRequest extends FormRequest
     public function withValidator(mixed $validator): void
     {
         $validator->after(function ($validator): void {
-            $isV3 = $this->input('captcha_version') === 'v3_invisible';
-            $needsV2 = in_array($this->input('captcha_version'), ['v2_checkbox', 'v2_invisible'], strict: true)
-                || ($this->input('captcha_version') === 'v3_invisible' && $this->input('failover_action') === 'v2_checkbox');
-
             $verifier = resolve(RecaptchaVerifier::class);
 
-            if ($isV3) {
-                if (! $this->filled('v3_g_recaptcha_response')) {
-                    $validator->errors()->add('v3_site_key', __('recaptcha::recaptcha.complete_recaptcha_v3'));
-                } elseif ($this->filled('v3_secret_key')) {
-                    $result = $verifier->verify(
-                        $this->input('v3_g_recaptcha_response'),
-                        $this->input('v3_secret_key'),
-                        'v3',
-                        (string) $this->ip(),
-                        $this->getHost(),
-                    );
-
-                    if ($result !== true) {
-                        $validator->errors()->add('v3_secret_key', $result);
-                    }
-                }
+            if ($this->usesV3()) {
+                $this->checkKeys($validator, $verifier, 'v3');
             }
 
-            if ($needsV2) {
-                if (! $this->filled('v2_g_recaptcha_response')) {
-                    $validator->errors()->add('v2_site_key', __('recaptcha::recaptcha.complete_recaptcha_v2'));
-                } elseif ($this->filled('v2_secret_key')) {
-                    $result = $verifier->verify(
-                        $this->input('v2_g_recaptcha_response'),
-                        $this->input('v2_secret_key'),
-                        'v2',
-                        (string) $this->ip(),
-                        $this->getHost()
-                    );
-
-                    if ($result !== true) {
-                        $validator->errors()->add('v2_secret_key', $result);
-                    }
-                }
+            if ($this->needsV2()) {
+                $this->checkKeys($validator, $verifier, 'v2');
             }
         });
+    }
+
+    private function usesV3(): bool
+    {
+        return $this->input('captcha_version') === 'v3_invisible';
+    }
+
+    /** v2 keys are in use: a v2 version, or v3 falling back to the v2 checkbox. */
+    private function needsV2(): bool
+    {
+        return in_array($this->input('captcha_version'), ['v2_checkbox', 'v2_invisible'], strict: true)
+            || ($this->usesV3() && $this->input('failover_action') === 'v2_checkbox');
+    }
+
+    /**
+     * The admin must have solved this version's challenge, and (when a secret is given)
+     * Google must accept it with that secret.
+     */
+    private function checkKeys(mixed $validator, RecaptchaVerifier $verifier, string $type): void
+    {
+        if (! $this->filled($type.'_g_recaptcha_response')) {
+            $validator->errors()->add($type.'_site_key', __('recaptcha::recaptcha.complete_recaptcha_'.$type));
+
+            return;
+        }
+
+        if (! $this->filled($type.'_secret_key')) {
+            return;
+        }
+
+        $result = $verifier->verify(
+            $this->input($type.'_g_recaptcha_response'),
+            $this->input($type.'_secret_key'),
+            $type,
+            (string) $this->ip(),
+            $this->getHost(),
+        );
+
+        if ($result !== true) {
+            $validator->errors()->add($type.'_secret_key', $result);
+        }
     }
 }

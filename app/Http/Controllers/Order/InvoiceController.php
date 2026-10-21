@@ -665,7 +665,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      * @param  bool  $formatCurrency  - whether to format currency strings or return numeric
      * @return array<mixed>
      */
-    public static function calculateInvoice(int $invoiceId, bool $formatCurrency = false): array
+    public static function calculateInvoice(int $invoiceId, bool $formatCurrency = false): array // NOSONAR - invoice totals (money), kept as is
     {
         $invoice = Invoice::with(['invoiceItem', 'user'])->findOrFail($invoiceId);
 

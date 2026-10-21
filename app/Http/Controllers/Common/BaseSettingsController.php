@@ -47,40 +47,64 @@ class BaseSettingsController extends PaymentSettingsController
      */
     protected function formatProperties(array $properties, mixed $event): array
     {
-        $formatted = [];
-
         $old = $properties['old'] ?? [];
         $attributes = $properties['attributes'] ?? [];
 
-        // Helper to clean and escape values
-        $escape = function ($value): string {
-            if (is_array($value) || is_object($value)) {
-                $value = json_encode($value); // handle JSON fields
-            }
-
-            return htmlspecialchars(strip_tags((string) $value), ENT_QUOTES, 'UTF-8');
+        return match ($event) {
+            'updated' => $this->updatedLogLines($old, $attributes),
+            'created' => $this->createdLogLines($attributes),
+            default => [],
         };
+    }
 
-        if ($event === 'updated') {
-            foreach ($old as $key => $value) {
-                $from = empty($value) ? 'null' : $escape($value);
-                $to = isset($attributes[$key]) ? $escape($attributes[$key]) : 'null';
+    /**
+     * "Updated <Field> From <old> To <new>" for every changed field.
+     *
+     * @param  array<mixed>  $old
+     * @param  array<mixed>  $attributes
+     * @return non-falsy-string[]
+     */
+    private function updatedLogLines(array $old, array $attributes): array
+    {
+        $formatted = [];
+        foreach ($old as $key => $value) {
+            $from = empty($value) ? 'null' : $this->escapeLogValue($value);
+            $to = isset($attributes[$key]) ? $this->escapeLogValue($attributes[$key]) : 'null';
 
-                $formatted[] = trans('message.updated').' '.ucfirst((string) $key).' '
-                    .trans('message.from').' '.$from.' '
-                    .trans('message.to').' '.$to;
-            }
+            $formatted[] = trans('message.updated').' '.ucfirst((string) $key).' '
+                .trans('message.from').' '.$from.' '
+                .trans('message.to').' '.$to;
         }
 
-        if ($event === 'created') {
-            foreach ($attributes as $key => $value) {
-                if (! empty($value) && $value !== '--') {
-                    $formatted[] = trans('message.set').' '.ucfirst((string) $key).' '
-                        .trans('message.to').' '.$escape($value);
-                }
+        return $formatted;
+    }
+
+    /**
+     * "Set <Field> To <value>" for every field given a real value.
+     *
+     * @param  array<mixed>  $attributes
+     * @return non-falsy-string[]
+     */
+    private function createdLogLines(array $attributes): array
+    {
+        $formatted = [];
+        foreach ($attributes as $key => $value) {
+            if (! empty($value) && $value !== '--') {
+                $formatted[] = trans('message.set').' '.ucfirst((string) $key).' '
+                    .trans('message.to').' '.$this->escapeLogValue($value);
             }
         }
 
         return $formatted;
+    }
+
+    /** Log value as safe text: JSON for arrays/objects, tags stripped, HTML-escaped. */
+    private function escapeLogValue(mixed $value): string
+    {
+        if (is_array($value) || is_object($value)) {
+            $value = json_encode($value); // handle JSON fields
+        }
+
+        return htmlspecialchars(strip_tags((string) $value), ENT_QUOTES, 'UTF-8');
     }
 }

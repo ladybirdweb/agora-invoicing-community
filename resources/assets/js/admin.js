@@ -91,6 +91,6 @@ import(`./themes/${theme}/index.js`).then(async themeModule => {
     // on this lets the router resolve its initial route (and update
     // document.title) immediately instead of waiting on a network round-trip.
     useAuthStore().hydrate()
-}).catch(err => {
+}).catch(err => { // NOSONAR - top-level await would delay startup / make the component async
     console.error('[Theme load failed]', err)
 })

@@ -33,6 +33,9 @@ class ProductController extends BaseProductController
     use AppliesBuildToProducts;
     use ChunkUpload;
 
+    /** A path inside the product package: no leading /, no .. segment, no backslash. */
+    private const RELATIVE_PATH_RULE = 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/';
+
     /**
      * @var Product
      */
@@ -472,8 +475,8 @@ class ProductController extends BaseProductController
             'name' => ['required', Rule::unique('products', 'name')->where('group', $request->input('group'))],
             'type' => ['required', 'exists:license_types,id'],
             'product_type' => ['required', 'in:independent,addon'],
-            'config_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
-            'license_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
+            'config_file_path' => ['nullable', 'string', 'max:255', self::RELATIVE_PATH_RULE],
+            'license_file_path' => ['nullable', 'string', 'max:255', self::RELATIVE_PATH_RULE],
             'product_path' => ['nullable', 'string', 'max:100', 'alpha_dash:ascii'], // add-on's install folder on the client, e.g. Calendar
             'description' => ['required'],
             'product_description' => ['required'],
@@ -563,15 +566,15 @@ class ProductController extends BaseProductController
         }
     }
 
-    public function updateProduct(int $productId, Request $request): JsonResponse
+    public function updateProduct(int $productId, Request $request): JsonResponse // NOSONAR - product update, kept as is for now
     {
         $validated = $request->validate([
             // Scoped to the group, not global — see productCreate for why.
             'name' => ['required', Rule::unique('products', 'name')->where('group', $request->input('group'))->ignore($productId)],
             'type' => ['required', 'exists:license_types,id'],
             'product_type' => ['required', 'in:independent,addon'],
-            'config_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
-            'license_file_path' => ['nullable', 'string', 'max:255', 'regex:/^(?!\/)(?!.*\.\.)[^\\\\]+$/'],
+            'config_file_path' => ['nullable', 'string', 'max:255', self::RELATIVE_PATH_RULE],
+            'license_file_path' => ['nullable', 'string', 'max:255', self::RELATIVE_PATH_RULE],
             'product_path' => ['nullable', 'string', 'max:100', 'alpha_dash:ascii'], // add-on's install folder on the client, e.g. Calendar
             'description' => ['required'],
             'product_description' => ['required'],

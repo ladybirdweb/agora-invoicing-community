@@ -79,4 +79,67 @@ class StoreControllerTest extends DBTestCase
         $response->assertStatus(200);
         $this->assertSame($group->name, $response->json('data.group.meta_title'));
     }
+
+    /** A plan on $product priced $price with $offer % off, billed every $days days (null = no period). */
+    private function plan(\App\Model\Product\Product $product, float $price, float $offer = 0, ?int $days = 365, ?string $description = null): \App\Model\Payment\Plan
+    {
+        $plan = \App\Model\Payment\Plan::create(['name' => 'P'.uniqid(), 'product' => $product->id, 'days' => $days ?? 0]);
+        \App\Model\Payment\PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'USD', 'add_price' => $price, 'renew_price' => $price, 'offer_price' => $offer, 'price_description' => $description]);
+        if ($days !== null) {
+            $plan->periods()->attach(\App\Model\Payment\Period::create(['name' => $days.' days', 'days' => $days])->id);
+        }
+
+        return $plan;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function plansFor(\App\Model\Product\Product $product): array
+    {
+        $controller = app(\App\Http\Controllers\Front\StoreController::class);
+
+        return (new \ReflectionMethod($controller, 'getProductPlans'))->invoke($controller, $product->fresh(), 'USD');
+    }
+
+    public function test_plans_show_offer_price_per_month_and_original_price(): void
+    {
+        $product = \App\Model\Product\Product::create(['name' => 'Plans '.uniqid()]);
+        $plan = $this->plan($product, 100, offer: 25, days: 360, description: 'per year');
+
+        $this->assertSame([[
+            'id' => $plan->id,
+            'option_label' => '$75.00 per year',
+            'price_raw' => 75.0,
+            'price_display' => '75.00',
+            'price_per_month' => '6.25',
+            'original_price_raw' => 100.0,
+            'original_display' => '100.00',
+            'original_price_per_month' => '8.33',
+            'description' => 'per year',
+            'period' => '360 days',
+            'is_default' => true,
+        ]], $this->plansFor($product));
+    }
+
+    public function test_plans_newest_first_cheapest_is_default_free_has_no_prices(): void
+    {
+        $product = \App\Model\Product\Product::create(['name' => 'Plans '.uniqid()]);
+        $paid = $this->plan($product, 50, days: 30);
+        $free = $this->plan($product, 0, days: null);
+        $dear = $this->plan($product, 90, days: 15);
+
+        $plans = $this->plansFor($product);
+
+        $this->assertSame([$dear->id, $free->id, $paid->id], array_column($plans, 'id'));
+        $this->assertSame([false, true, false], array_column($plans, 'is_default'));
+        $this->assertSame(['Free', null, null, null, ''], [$plans[1]['option_label'], $plans[1]['price_display'], $plans[1]['price_per_month'], $plans[1]['original_display'], $plans[1]['period']]);
+        $this->assertSame(['$90.00 15 days', '90.00'], [$plans[0]['option_label'], $plans[0]['price_per_month']]); // under a month counts as one month
+    }
+
+    public function test_plans_skip_a_plan_without_a_price(): void
+    {
+        $product = \App\Model\Product\Product::create(['name' => 'Plans '.uniqid()]);
+        \App\Model\Payment\Plan::create(['name' => 'Unpriced', 'product' => $product->id, 'days' => 30]);
+
+        $this->assertSame([], $this->plansFor($product));
+    }
 }

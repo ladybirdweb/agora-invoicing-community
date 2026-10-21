@@ -112,7 +112,7 @@ function onChange(val, name) {
     form[name] = val
 
     if (name === 'name' && form.platform === 'custom') {
-        const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-/, '').replace(/-$/, '')
         form.class = slug ? `social-icons-${slug}` : 'social-icons-custom'
     }
 }

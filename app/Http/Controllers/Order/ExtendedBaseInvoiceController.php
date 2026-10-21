@@ -161,7 +161,7 @@ class ExtendedBaseInvoiceController extends Controller
      * @param  array<mixed>  $invoicAmount
      * @param  array<mixed>  $invoiceChecked
      */
-    public function multiplePayment(int $clientid, array $invoiceChecked, string $payment_method,
+    public function multiplePayment(int $clientid, array $invoiceChecked, string $payment_method, // NOSONAR - applies payments to invoices (money), kept as is
         Carbon $payment_date, float|int $totalAmt, array $invoicAmount, string $payment_status, ?string $currency = null): void
     {
         try {
@@ -245,7 +245,7 @@ class ExtendedBaseInvoiceController extends Controller
      * receipt ("the client sent us 30 by check"), so that is the money being
      * allocated, not whatever else the client happens to have lying around.
      */
-    public function applyPaymentToInvoices(int $paymentId, Request $request): JsonResponse
+    public function applyPaymentToInvoices(int $paymentId, Request $request): JsonResponse // NOSONAR - applies payments to invoices (money), kept as is
     {
         $this->validate($request, [
             'payment_date' => 'required',

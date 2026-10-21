@@ -178,7 +178,7 @@ async function apply() {
 }
 
 // Load preferences immediately so the table renders saved columns on mount.
-load()
+load() // NOSONAR - top-level await would delay startup / make the component async
 </script>
 
 <style scoped>

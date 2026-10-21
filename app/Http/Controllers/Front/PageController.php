@@ -111,7 +111,8 @@ class PageController extends Controller
     {
         try {
             $set = Setting::findOrFail(1);
-            $address = preg_replace("/(?:^\R+)|(?:\R+\z)/", '', (string) $set->address);
+            // Strip blank lines at the start and the end.
+            $address = (string) preg_replace('/\R+\z/', '', (string) preg_replace('/^\R+/', '', (string) $set->address));
             $state = State::where('country_code', $set->country)->where('iso2', $set->state)->value('state_subdivision_name');
             $country = Country::where('country_code_char2', $set->country)->value('country_name');
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck')->first();
@@ -157,6 +158,22 @@ class PageController extends Controller
         return $result;
     }
 
+    /** "free", the per-month text for an active product, else the price's own description. */
+    private function describePlanPrice(Product $product, mixed $price): string
+    {
+        if (is_null($price->add_price) || $price->add_price === '' || $price->add_price == 0) {
+            return 'free';
+        }
+
+        if ($product->status) {
+            return $price->no_of_agents
+                ? 'per month for <strong>'.$price->no_of_agents.' agent</strong>'
+                : 'per month';
+        }
+
+        return (string) $price->price_description;
+    }
+
     /**
      * @param  array<int>  $days  Plan lengths to describe: yearly by default, [30, 31] for the monthly plan.
      */
@@ -178,21 +195,9 @@ class PageController extends Controller
                 ->cursor();
 
             foreach ($plans as $plan) {
-                if (in_array($plan->days, $days)) {
-                    $description = $plan->planPrice->first();
-                    if ($description) {
-                        if (is_null($description->add_price) || $description->add_price === '' || $description->add_price == 0) { // @phpstan-ignore function.impossibleType
-                            return 'free';
-                        }
-
-                        if ($product->status) {
-                            return $description->no_of_agents
-                                ? 'per month for <strong>'.$description->no_of_agents.' agent</strong>'
-                                : 'per month';
-                        }
-
-                        return (string) $description->price_description;
-                    }
+                $price = in_array($plan->days, $days) ? $plan->planPrice->first() : null;
+                if ($price) {
+                    return $this->describePlanPrice($product, $price);
                 }
             }
 

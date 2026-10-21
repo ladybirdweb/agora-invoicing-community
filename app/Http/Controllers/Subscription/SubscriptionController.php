@@ -384,7 +384,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    private function handleStripeSubscription(mixed $stripeDetails, Product $product, float|int $unitCost, string $currency, Plan $plan, Subscription $subscription, Invoice $invoice, Order $order, User $user, float|int $cost): void
+    private function handleStripeSubscription(mixed $stripeDetails, Product $product, float|int $unitCost, string $currency, Plan $plan, Subscription $subscription, Invoice $invoice, Order $order, User $user, float|int $cost): void // NOSONAR - existing payment mail signature, kept to avoid changing every caller
     {
         // Charged now, on purpose: the renewal is due and the 'active' branch below marks this
         // invoice paid and extends the dates straight away. A future start (billing_cycle_anchor)

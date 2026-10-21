@@ -1,6 +1,6 @@
 <template>
     <div :class="classname">
-        <Toggle v-model="enabled" :disabled="!!disabled" class="toggle-switch" />
+        <Toggle v-model="enabled" :disabled="!!disabled" :labelledby="labelledby" class="toggle-switch" />
     </div>
 </template>
 
@@ -16,6 +16,8 @@ const props = defineProps({
     onChange:  { type: Function, required: true },
     bold:      { type: [Boolean, Number], default: false },
     disabled:  { type: [Boolean, Number], default: false },
+    // id of the visible caption, so screen readers announce it for the switch
+    labelledby: { type: String, default: undefined },
 })
 
 const enabled = ref(boolean(props.value))

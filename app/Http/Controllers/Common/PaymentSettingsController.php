@@ -70,48 +70,25 @@ class PaymentSettingsController extends Controller
     public function readConfigs(): array|string
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
-        $directories = scandir($dir);
-        $files = [];
-        foreach ($directories as $key => $file) {
-            if ($file === '.') {
-                continue;
-            }
+        $plugins = array_filter(
+            (array) scandir($dir),
+            fn ($file): bool => $file !== '.' && $file !== '..' && is_dir($dir.DIRECTORY_SEPARATOR.$file),
+        );
 
-            if ($file === '..') {
-                continue;
-            }
-
-            if (is_dir($dir.DIRECTORY_SEPARATOR.$file)) {
-                $files[$key] = $file;
-            }
+        if ($plugins === []) {
+            return 'null';
         }
 
+        // Each plugin folder that ships a config.php, in folder order.
         $config = [];
-        $plugins = [];
-        if ($files !== []) {
-            foreach ($files as $key => $file) {
-                $plugin = $dir.$file;
-                $plugins[$key] = array_diff(scandir($plugin), ['.', '..', 'ServiceProvider.php']);
-                $plugins[$key]['file'] = $plugin;
+        foreach ($plugins as $plugin) {
+            $path = $dir.$plugin.DIRECTORY_SEPARATOR.'config.php';
+            if (file_exists($path)) {
+                $config[] = $path;
             }
-
-            foreach ($plugins as $plugin) {
-                $dir = $plugin['file'];
-                if ($dh = opendir($dir)) {
-                    while (($file = readdir($dh)) !== false) {
-                        if ($file === 'config.php') {
-                            $config[] = $dir.DIRECTORY_SEPARATOR.$file;
-                        }
-                    }
-
-                    closedir($dh);
-                }
-            }
-
-            return $config;
         }
 
-        return 'null';
+        return $config;
     }
 
     public function updatePaymentStatus(Request $request): JsonResponse

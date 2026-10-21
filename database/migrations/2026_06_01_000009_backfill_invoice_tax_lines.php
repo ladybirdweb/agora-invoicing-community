@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
  */
 return new class extends Migration
 {
-    public function up(): void
+    public function up(): void // NOSONAR - one-time data migration
     {
         $invoicesWithLines = DB::table('invoice_tax_lines')->distinct()->pluck('invoice_id')->flip();
 

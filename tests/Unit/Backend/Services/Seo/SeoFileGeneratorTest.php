@@ -249,6 +249,74 @@ class SeoFileGeneratorTest extends DBTestCase
         $this->generator->generateLlms();
     }
 
+    /** Runs generateLlms() and returns what it would write to llms.txt. */
+    private function llmsContent(): string
+    {
+        $written = null;
+        File::shouldReceive('put')->once()->with(public_path('llms.txt'), Mockery::on(function (string $content) use (&$written): bool {
+            $written = $content;
+
+            return true;
+        }))->andReturn(true);
+
+        $this->generator->generateLlms();
+
+        return (string) $written;
+    }
+
+    public function test_generate_llms_writes_the_exact_pages_section(): void
+    {
+        SeoDefaultPage::create(['page_key' => 'login', 'meta_title' => 'Sign in to {company}', 'meta_description' => '']);
+        FrontendPage::create(['name' => 'Terms', 'slug' => 'terms', 'content' => 'x', 'publish' => 1, 'type' => 'custom', 'meta_title' => '{name} page', 'meta_description' => 'All the {name}']);
+        FrontendPage::create(['name' => 'About', 'slug' => 'about', 'url' => 'https://elsewhere.test/about', 'content' => 'x', 'publish' => 1, 'type' => 'custom']);
+        FrontendPage::create(['name' => 'Draft', 'slug' => 'draft', 'content' => 'x', 'publish' => 0, 'type' => 'custom']);
+
+        $content = $this->llmsContent();
+
+        $this->assertSame(implode("\n", [
+            '# Acme Inc',
+            '',
+            '> Acme Inc — subscription billing and invoicing platform.',
+            '',
+            '## Pages',
+            '',
+            '- [Sign in to Acme Inc]('.url('/login').'): Sign in to your account.',
+            '- [Forgot Password]('.url('/password/reset').'): Reset your account password.',
+            '- [Terms page]('.url('/pages/terms').'): All the Terms',
+            '- [About](https://elsewhere.test/about): Learn more about About at Acme Inc.',
+            '- [Contact Us]('.url('/contact-us').'): Get in touch with our team.',
+            '',
+            '## Products',
+            '',
+            '- [Store]('.url('/store').'): Learn more about Store at Acme Inc.',
+        ]), substr($content, 0, strpos($content, "\n", strpos($content, '](' . url('/store') . ')'))));
+        $this->assertStringEndsWith("\n", $content);
+    }
+
+    public function test_generate_llms_does_not_add_contact_us_when_a_contactus_page_exists(): void
+    {
+        FrontendPage::create(['name' => 'Reach us', 'slug' => 'reach', 'content' => 'x', 'publish' => 1, 'type' => 'contactus']);
+
+        $this->assertStringNotContainsString('[Contact Us]', $this->llmsContent());
+    }
+
+    public function test_generate_llms_describes_each_group_by_meta_then_tagline_then_headline(): void
+    {
+        $own = ProductGroup::factory()->create(['name' => 'Own', 'hidden' => 0, 'meta_title' => '{name} T', 'meta_description' => '{name} D', 'tagline' => 'tag', 'headline' => 'head']);
+        $tag = ProductGroup::factory()->create(['name' => 'Tag', 'hidden' => null, 'tagline' => 'Tagline', 'headline' => 'Headline']);
+        $head = ProductGroup::factory()->create(['name' => 'Head', 'hidden' => 0, 'tagline' => '', 'headline' => 'Headline']);
+        $bare = ProductGroup::factory()->create(['name' => 'Bare', 'hidden' => 0, 'tagline' => null, 'headline' => null]);
+        $hidden = ProductGroup::factory()->create(['name' => 'Hidden', 'hidden' => 1]);
+
+        $content = $this->llmsContent();
+
+        $this->assertStringContainsString("\n- [Own T](".url('/store/'.$own->id).'): Own D', $content);
+        $this->assertStringContainsString("\n- [Tag](".url('/store/'.$tag->id).'): Tagline', $content);
+        $this->assertStringContainsString("\n- [Head](".url('/store/'.$head->id).'): Headline', $content);
+        $this->assertStringContainsString("\n- [Bare](".url('/store/'.$bare->id).'): Learn more about Bare at Acme Inc.', $content);
+        $this->assertStringNotContainsString(url('/store/'.$hidden->id).')', $content);
+    }
+
     // --- generateAll() ---
 
     public function test_generate_all_writes_all_three_files(): void

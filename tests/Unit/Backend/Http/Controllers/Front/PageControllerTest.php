@@ -299,6 +299,46 @@ class PageControllerTest extends DBTestCase
         $this->assertIsString($result);
     }
 
+    /** Product with one active plan of $days days priced $price (null = no price row). */
+    private function pricedProduct(array $product, int $days, ?float $price, ?int $agents = null, ?string $description = 'One Time'): \App\Model\Product\Product
+    {
+        $product = \App\Model\Product\Product::create($product + ['name' => 'Price '.uniqid()]);
+        $plan = \App\Model\Payment\Plan::create(['name' => 'P'.uniqid(), 'product' => $product->id, 'days' => $days, 'status' => 1]);
+        if ($price !== null) {
+            \App\Model\Payment\PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'USD', 'add_price' => $price, 'renew_price' => $price, 'no_of_agents' => $agents, 'price_description' => $description]);
+        }
+
+        return $product;
+    }
+
+    private function priceDescription(\App\Model\Product\Product $product, array $days = [365, 366]): string
+    {
+        return (new \App\Http\Controllers\Front\PageController)->getPriceDescription($product->id, $days);
+    }
+
+    public function test_get_price_description_for_an_active_product(): void
+    {
+        $this->assertSame('free', $this->priceDescription($this->pricedProduct(['status' => 1], 365, 0)));
+        $this->assertSame('per month', $this->priceDescription($this->pricedProduct(['status' => 1], 366, 10)));
+        $this->assertSame('per month for <strong>5 agent</strong>', $this->priceDescription($this->pricedProduct(['status' => 1], 365, 10, agents: 5)));
+        $this->assertSame('per month', $this->priceDescription($this->pricedProduct(['status' => 1], 30, 10), [30, 31]));
+    }
+
+    public function test_get_price_description_for_an_inactive_product_uses_the_plans_own_text(): void
+    {
+        $this->assertSame('One Time', $this->priceDescription($this->pricedProduct(['status' => 0], 365, 10)));
+        // No plan of the asked length: falls back to the first plan's text.
+        $this->assertSame('Per Hour', $this->priceDescription($this->pricedProduct(['status' => 0], 30, 10, description: 'Per Hour')));
+        $this->assertSame('', $this->priceDescription($this->pricedProduct(['status' => 0], 30, null)));
+    }
+
+    public function test_get_price_description_is_empty_for_contact_sales_or_no_matching_plan(): void
+    {
+        $this->assertSame('', $this->priceDescription($this->pricedProduct(['status' => 1, 'add_to_contact' => 1], 365, 10)));
+        $this->assertSame('', $this->priceDescription($this->pricedProduct(['status' => 1], 30, 10)));
+        $this->assertSame('', $this->priceDescription($this->pricedProduct(['status' => 1], 365, null)));
+    }
+
     // =========================================================================
     // transform / keyArray / valueArray — pure logic, no DB
     // =========================================================================

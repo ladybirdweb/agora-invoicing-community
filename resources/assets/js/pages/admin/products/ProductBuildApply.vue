@@ -26,12 +26,12 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-bold d-block">{{ __('message.private_release') }}</label>
-                        <Switch name="is_private" :value="form.is_private" :onChange="(v) => form.is_private = v" />
+                        <span id="is-private-label-apply" class="form-label fw-bold d-block">{{ __('message.private_release') }}</span>
+                        <Switch name="is_private" labelledby="is-private-label-apply" :value="form.is_private" :onChange="(v) => form.is_private = v" />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-bold d-block">{{ __('message.restrict_update') }}</label>
-                        <Switch name="is_restricted" :value="form.is_restricted" :onChange="(v) => form.is_restricted = v" />
+                        <span id="is-restricted-label-apply" class="form-label fw-bold d-block">{{ __('message.restrict_update') }}</span>
+                        <Switch name="is_restricted" labelledby="is-restricted-label-apply" :value="form.is_restricted" :onChange="(v) => form.is_restricted = v" />
                     </div>
 
                     <div class="col-md-12">

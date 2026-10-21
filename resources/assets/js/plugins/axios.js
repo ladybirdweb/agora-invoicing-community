@@ -53,7 +53,7 @@ http.interceptors.response.use(
             return http(error.config)
         }
 
-        return Promise.reject(error)
+        throw error
     }
 )
 

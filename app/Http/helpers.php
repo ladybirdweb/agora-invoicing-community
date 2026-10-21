@@ -562,33 +562,29 @@ function setServiceConfig(object $emailConfig): void
     $sendingProtocol = isset($emailConfig->driver) ? (string) $emailConfig->driver : null;
     if ($sendingProtocol && $sendingProtocol != 'smtp' && $sendingProtocol != 'mail') {
         $services = Config::get('services.'.$sendingProtocol);
-        if (! is_array($services)) {
-            $services = [];
-        }
         $dynamicServiceConfig = [];
 
         // loop over it and assign according to the keys given by user
-        foreach ($services as $key => $value) {
+        foreach (is_array($services) ? $services : [] as $key => $value) {
             $dynamicServiceConfig[$key] = $emailConfig->$key ?? $value;
         }
 
         // setting that service configuration
         Config::set('services.'.$sendingProtocol, $dynamicServiceConfig);
     } else {
-        $email = isset($emailConfig->email) ? (string) $emailConfig->email : '';
-        Config::set('mail.sendmail', '/usr/sbin/sendmail -t -i -f'.$email);
+        Config::set('mail.sendmail', '/usr/sbin/sendmail -t -i -f'.($emailConfig->email ?? ''));
 
-        Config::set('mail.host', isset($emailConfig->host) ? $emailConfig->host : null);
-        Config::set('mail.port', isset($emailConfig->port) ? $emailConfig->port : null);
-        Config::set('mail.password', isset($emailConfig->password) ? $emailConfig->password : null);
-        Config::set('mail.security', isset($emailConfig->encryption) ? $emailConfig->encryption : null);
+        Config::set('mail.host', $emailConfig->host ?? null);
+        Config::set('mail.port', $emailConfig->port ?? null);
+        Config::set('mail.password', $emailConfig->password ?? null);
+        Config::set('mail.security', $emailConfig->encryption ?? null);
     }
 
     // setting mail driver as $sending protocol
     Config::set('mail.driver', $sendingProtocol);
-    Config::set('mail.from.address', isset($emailConfig->email) ? (string) $emailConfig->email : '');
-    Config::set('mail.from.name', isset($emailConfig->company) ? (string) $emailConfig->company : '');
-    Config::set('mail.username', isset($emailConfig->email) ? (string) $emailConfig->email : '');
+    Config::set('mail.from.address', (string) ($emailConfig->email ?? ''));
+    Config::set('mail.from.name', (string) ($emailConfig->company ?? ''));
+    Config::set('mail.username', (string) ($emailConfig->email ?? ''));
 
     // setting the config again in the service container
     new MailServiceProvider(app())->register();
@@ -620,43 +616,37 @@ function installationStatusLabel(mixed $installedPath): string
 // return root url from long url (http://www.domain.com/path/file.php?aa=xx becomes http://www.domain.com/path/), remove scheme, www. and last slash if needed
 function getRootUrl(mixed $url, int $remove_scheme, int $remove_www, int $remove_path, int $remove_last_slash): string
 {
-    if (filter_var($url, FILTER_VALIDATE_URL)) {
-        $url_array = parse_url((string) $url); // parse URL into arrays like $url_array['scheme'], $url_array['host'], etc
-        if (! is_array($url_array)) {
-            return '';
-        }
-        $scheme = isset($url_array['scheme']) ? $url_array['scheme'] : '';
-
-        $url = str_ireplace($scheme.'://', '', $url); // make URL without scheme, so no :// is included when searching for first or last /
-
-        if ($remove_path === 1) { // remove everything after FIRST / in URL, so it becomes "real" root URL
-            $first_slash_position = stripos($url, '/'); // find FIRST slash - the end of root URL
-            if ($first_slash_position > 0) { // cut URL up to FIRST slash
-                $url = substr($url, 0, $first_slash_position + 1);
-            }
-        } else { // remove everything after LAST / in URL, so it becomes "normal" root URL
-            $last_slash_position = strripos($url, '/'); // find LAST slash - the end of root URL
-            if ($last_slash_position > 0) { // cut URL up to LAST slash
-                $url = substr($url, 0, $last_slash_position + 1);
-            }
-        }
-
-        if ($remove_scheme !== 1) { // scheme was already removed, add it again
-            $url = $scheme.'://'.$url;
-        }
-
-        if ($remove_www === 1) { // remove www.
-            $url = str_ireplace('www.', '', $url);
-        }
-
-        if ($remove_last_slash === 1) { // remove / from the end of URL if it exists
-            while (str_ends_with($url, '/')) { // use cycle in case URL already contained multiple // at the end
-                $url = substr($url, 0, -1);
-            }
-        }
+    if (! filter_var($url, FILTER_VALIDATE_URL)) {
+        return trim((string) $url);
     }
 
-    return trim((string) $url);
+    $url_array = parse_url((string) $url); // parse URL into arrays like $url_array['scheme'], $url_array['host'], etc
+    if (! is_array($url_array)) {
+        return '';
+    }
+    $scheme = $url_array['scheme'] ?? '';
+
+    $url = str_ireplace($scheme.'://', '', (string) $url); // make URL without scheme, so no :// is included when searching for first or last /
+
+    // remove_path: cut after the FIRST / ("real" root URL); otherwise after the LAST / ("normal" root URL)
+    $slash_position = $remove_path === 1 ? stripos($url, '/') : strripos($url, '/');
+    if ($slash_position > 0) {
+        $url = substr($url, 0, $slash_position + 1);
+    }
+
+    if ($remove_scheme !== 1) { // scheme was already removed, add it again
+        $url = $scheme.'://'.$url;
+    }
+
+    if ($remove_www === 1) { // remove www.
+        $url = str_ireplace('www.', '', $url);
+    }
+
+    if ($remove_last_slash === 1) { // remove every / from the end of URL (it may already end in several)
+        $url = rtrim($url, '/');
+    }
+
+    return trim($url);
 }
 
 /**

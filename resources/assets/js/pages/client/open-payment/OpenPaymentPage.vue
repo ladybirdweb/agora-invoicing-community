@@ -32,8 +32,8 @@
         </template>
       </div>
 
-      <!-- Steps: form (details + payment) → summary (review) → result. One <transition>
-           around all of them so mode="out-in" actually sequences them. -->
+      <!-- Steps: form (details + payment), then summary (review), then result. A single
+           transition wraps all three so its out-in mode actually plays them one after another. -->
       <transition name="op-slide" mode="out-in">
         <div v-if="step === 'form'" key="form" class="card shadow border-0 rounded-3">
 
@@ -641,7 +641,7 @@ const createOrder = async () => {
   order.value = data.data.order
 }
 
-const payNow = async () => {
+const payNow = async () => { // NOSONAR - client payment flow (money), kept as is
   alertStore.unsetAlert()
 
   // Create the order on first Pay attempt; reuse it on retry

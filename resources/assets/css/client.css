@@ -234,29 +234,29 @@ html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
 .social-icons li:hover.social-icons-x a, .social-icons li.social-icons-x a:focus-visible,
 .social-icons li:hover.social-icons-twitter a, .social-icons li.social-icons-twitter a:focus-visible { background: #000000 !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-facebook a, .social-icons li.social-icons-facebook a:focus-visible { background: #1877f2 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-facebook a, .social-icons li.social-icons-facebook a:focus-visible { background: #1877f2 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-instagram a, .social-icons li.social-icons-instagram a:focus-visible { background: #e4405f !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-instagram a, .social-icons li.social-icons-instagram a:focus-visible { background: #e4405f !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-linkedin a, .social-icons li.social-icons-linkedin a:focus-visible { background: #0a66c2 !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-youtube a, .social-icons li.social-icons-youtube a:focus-visible { background: #ff0000 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-youtube a, .social-icons li.social-icons-youtube a:focus-visible { background: #ff0000 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-tiktok a, .social-icons li.social-icons-tiktok a:focus-visible { background: #000000 !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-whatsapp a, .social-icons li.social-icons-whatsapp a:focus-visible { background: #25d366 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-whatsapp a, .social-icons li.social-icons-whatsapp a:focus-visible { background: #25d366 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-telegram a, .social-icons li.social-icons-telegram a:focus-visible { background: #229ed9 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-telegram a, .social-icons li.social-icons-telegram a:focus-visible { background: #229ed9 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-discord a, .social-icons li.social-icons-discord a:focus-visible { background: #5865f2 !important; color: #ffffff !important; }
 
 .social-icons li:hover.social-icons-github a, .social-icons li.social-icons-github a:focus-visible { background: #24292e !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-reddit a, .social-icons li.social-icons-reddit a:focus-visible { background: #ff4500 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-reddit a, .social-icons li.social-icons-reddit a:focus-visible { background: #ff4500 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-threads a, .social-icons li.social-icons-threads a:focus-visible { background: #000000 !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-bluesky a, .social-icons li.social-icons-bluesky a:focus-visible { background: #0285ff !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-bluesky a, .social-icons li.social-icons-bluesky a:focus-visible { background: #0285ff !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-twitch a, .social-icons li.social-icons-twitch a:focus-visible { background: #9146ff !important; color: #ffffff !important; }
 
@@ -266,34 +266,34 @@ html:not(.dark) #app-client .text-muted { color: #6c757d !important; }
 
 .social-icons li:hover.social-icons-tumblr a, .social-icons li.social-icons-tumblr a:focus-visible { background: #36465d !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-vimeo a, .social-icons li.social-icons-vimeo a:focus-visible { background: #1ab7ea !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-vimeo a, .social-icons li.social-icons-vimeo a:focus-visible { background: #1ab7ea !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-dribbble a, .social-icons li.social-icons-dribbble a:focus-visible { background: #ea4c89 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-dribbble a, .social-icons li.social-icons-dribbble a:focus-visible { background: #ea4c89 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-behance a, .social-icons li.social-icons-behance a:focus-visible { background: #1769ff !important; color: #ffffff !important; }
 
 .social-icons li:hover.social-icons-slack a, .social-icons li.social-icons-slack a:focus-visible { background: #4a154b !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-gitlab a, .social-icons li.social-icons-gitlab a:focus-visible { background: #fc6d26 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-gitlab a, .social-icons li.social-icons-gitlab a:focus-visible { background: #fc6d26 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-spotify a, .social-icons li.social-icons-spotify a:focus-visible { background: #1ed760 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-spotify a, .social-icons li.social-icons-spotify a:focus-visible { background: #1ed760 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-soundcloud a, .social-icons li.social-icons-soundcloud a:focus-visible { background: #ff5500 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-soundcloud a, .social-icons li.social-icons-soundcloud a:focus-visible { background: #ff5500 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-stackoverflow a, .social-icons li.social-icons-stackoverflow a:focus-visible { background: #f48024 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-stackoverflow a, .social-icons li.social-icons-stackoverflow a:focus-visible { background: #f48024 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-medium a, .social-icons li.social-icons-medium a:focus-visible { background: #000000 !important; color: #ffffff !important; }
 
-.social-icons li:hover.social-icons-mastodon a, .social-icons li.social-icons-mastodon a:focus-visible { background: #6364ff !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-mastodon a, .social-icons li.social-icons-mastodon a:focus-visible { background: #6364ff !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-wechat a, .social-icons li.social-icons-wechat a:focus-visible { background: #07c160 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-wechat a, .social-icons li.social-icons-wechat a:focus-visible { background: #07c160 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-patreon a, .social-icons li.social-icons-patreon a:focus-visible { background: #ff424d !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-patreon a, .social-icons li.social-icons-patreon a:focus-visible { background: #ff424d !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
-.social-icons li:hover.social-icons-phone a, .social-icons li.social-icons-phone a:focus-visible { background: #28a745 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-phone a, .social-icons li.social-icons-phone a:focus-visible { background: #28a745 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-email a, .social-icons li.social-icons-email a:focus-visible,
-.social-icons li:hover.social-icons-envelope a, .social-icons li.social-icons-envelope a:focus-visible { background: #ea4335 !important; color: #ffffff !important; }
+.social-icons li:hover.social-icons-envelope a, .social-icons li.social-icons-envelope a:focus-visible { background: #ea4335 !important; color: #ffffff !important; } /* NOSONAR - brand or theme colour, kept as designed */
 
 .social-icons li:hover.social-icons-globe a, .social-icons li.social-icons-globe a:focus-visible { background: #0077b6 !important; color: #ffffff !important; }
 

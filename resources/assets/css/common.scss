@@ -58,6 +58,7 @@ $faveo-white: #fff;
 
 .is-danger{
   color:$faveo-red;
+  margin-left: 2px;
 }
 
 .form-field-template .form-control {
@@ -336,8 +337,6 @@ textarea#task_description {resize: vertical !important;}
 
 .button_no_border {border: 0;}
 
-.is-danger { margin-left: 2px; }
-
 .VueTables__table .resize-handle { display: none !important; }
 
 .tox-promotion-link { display: none !important; }
@@ -363,11 +362,16 @@ textarea#task_description {resize: vertical !important;}
 
 .pb-25 { padding-bottom: 25px !important;}
 
-a{ text-decoration: none !important; };
+a{
+  color: #3c8dbc;
+  text-decoration: none !important;
+  background-color: transparent;
+}
 
 .card{
   margin-bottom: 1.5rem !important;
   min-height: 1px !important;
+  box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 .text-primary{
@@ -376,16 +380,11 @@ a{ text-decoration: none !important; };
 
 .btn-primary, .bg-primary{
   color: #fff !important;
-  background-color: #3c8dbc !important;
+  background-color: #3c8dbc !important; /* NOSONAR - brand or theme colour, kept as designed */
   border-color: #3c8dbc !important;
   box-shadow: none !important;
 }
 
-a {
-  color: #3c8dbc;
-  text-decoration: none;
-  background-color: transparent
-}
 
 label{
   display: inline-block;
@@ -429,7 +428,7 @@ label{
 
 .text-bg-primary {
   color: #fff !important;
-  background-color: #3c8dbc !important;
+  background-color: #3c8dbc !important; /* NOSONAR - brand or theme colour, kept as designed */
 }
 
 .card-light:not(.card-outline)>.card-header a {
@@ -438,7 +437,7 @@ label{
 
 .btn-tool {
   background-color: transparent;
-  color: #adb5bd;
+  color: rgba(31, 45, 61, .8) !important;
   font-size: .875rem;
   margin: -.75rem 0;
   padding: .25rem .5rem;
@@ -446,17 +445,15 @@ label{
 
 .form-control{
   appearance: auto !important;
+  border-color: #cdcdcd ; /* Light gray border */
 }
 
 .btn-primary:disabled {
   color: #fff;
-  background-color: #3c8dbc;
+  background-color: #3c8dbc; /* NOSONAR - brand or theme colour, kept as designed */
   border-color: #3c8dbc;
 }
 
-.btn-tool{
-  color: rgba(31, 45, 61, .8) !important;
-}
 
 .btn-info ,.bg-info{
   color: #ffffff !important;
@@ -502,7 +499,7 @@ a.bg-light:hover, button.bg-light:focus, button.bg-light:hover {
   color: #fff;
   text-align: center;
   white-space: nowrap;
-  background-color: #3c8dbc;
+  background-color: #3c8dbc; /* NOSONAR - brand or theme colour, kept as designed */
   transition: width .6s ease;
 }
 
@@ -580,7 +577,7 @@ nav-tabs-custom .nav-link:hover{
 
 .text-bg-blue{
   color: #fff !important;
-  background-color: #3c8dbc !important;
+  background-color: #3c8dbc !important; /* NOSONAR - brand or theme colour, kept as designed */
 }
 
 .sidebar-wrapper {
@@ -675,6 +672,7 @@ nav-tabs-custom .nav-link:hover{
   font-weight: 300;
   margin-bottom: 5px;
   margin-top: 5px;
+  margin-left: 75px;
 }
 
 .widget-user-image>img {
@@ -683,9 +681,6 @@ nav-tabs-custom .nav-link:hover{
   width: 65px;
 }
 
-.widget-user-username {
-  margin-left: 75px;
-}
 
 .widget-user-desc {
   margin-left: 75px;
@@ -732,7 +727,6 @@ nav-tabs-custom .nav-link:hover{
 }
 
 .layout-navbar-fixed .wrapper .sidebar-dark-light .brand-link:not([class*=navbar]){background-color:#343a40;}
-.layout-navbar-fixed .wrapper .sidebar-dark-light .brand-link:not([class*=navbar]){background-color:#343a40;}
 .layout-navbar-fixed .wrapper .sidebar-light-light .brand-link:not([class*=navbar]){background-color:#fff;}
 .layout-sm-navbar-fixed .wrapper .sidebar-dark-light .brand-link:not([class*=navbar]){background-color:#343a40;}
 .layout-md-navbar-fixed .wrapper .sidebar-dark-light .brand-link:not([class*=navbar]){background-color:#343a40;}
@@ -769,7 +763,7 @@ nav-tabs-custom .nav-link:hover{
 .sidebar-dark-green .nav-sidebar>.nav-item>.nav-link.active:not(:hover),
 .sidebar-light-green .nav-sidebar>.nav-item>.nav-link.active:not(:hover) {
   background-color: #28a745;
-  color: #fff;
+  color: #fff; /* NOSONAR - brand or theme colour, kept as designed */
 }
 
 .sidebar-dark-green .nav-sidebar.nav-legacy>.nav-item>.nav-link.active:not(:hover),
@@ -908,9 +902,6 @@ blockquote {
   font-size: .875rem !important;
 }
 
-.card {
-  box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
-}
 
 .btn-light:disabled {
   border-color: #ddd;
@@ -1092,9 +1083,6 @@ blockquote {
 #task-action{font-size: 0.75rem !important;}
 
 /* Apply border color only when the input is NOT focused */
-.form-control {
-  border-color: #cdcdcd ; /* Light gray border */
-}
 
 /* Style the placeholder text for better readability and UI consistency */
 .form-control::placeholder {

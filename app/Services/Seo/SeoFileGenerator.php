@@ -87,10 +87,6 @@ class SeoFileGenerator
         $company = $set?->company ?: ($set?->favicon_title_client ?: 'Faveo Invoicing');
         $formatter = app(SeoTemplateFormatter::class);
 
-        $defaultPages = SeoDefaultPage::whereIn('page_key', ['login', 'forgot_password'])->get()->keyBy('page_key');
-        $login = $defaultPages->get('login');
-        $forgotPassword = $defaultPages->get('forgot_password');
-
         $lines = [
             '# '.$company,
             '',
@@ -98,6 +94,28 @@ class SeoFileGenerator
             '',
             '## Pages',
             '',
+            ...$this->llmsPageLines($formatter),
+            '',
+            '## Products',
+            '',
+            ...$this->llmsProductLines($formatter),
+        ];
+
+        File::put(public_path('llms.txt'), implode("\n", $lines)."\n");
+    }
+
+    /**
+     * llms.txt "Pages": login, forgot password, every published page, and Contact Us.
+     *
+     * @return list<string>
+     */
+    private function llmsPageLines(SeoTemplateFormatter $formatter): array
+    {
+        $defaultPages = SeoDefaultPage::whereIn('page_key', ['login', 'forgot_password'])->get()->keyBy('page_key');
+        $login = $defaultPages->get('login');
+        $forgotPassword = $defaultPages->get('forgot_password');
+
+        $lines = [
             '- ['.($formatter->resolveShortcodes($login?->meta_title, 'Login') ?: 'Login').']('.url('/login').'): '.($formatter->resolveShortcodes($login?->meta_description, 'Login') ?: 'Sign in to your account.'),
             '- ['.($formatter->resolveShortcodes($forgotPassword?->meta_title, self::FORGOT_PASSWORD_TITLE) ?: self::FORGOT_PASSWORD_TITLE).']('.url('/password/reset').'): '.($formatter->resolveShortcodes($forgotPassword?->meta_description, self::FORGOT_PASSWORD_TITLE) ?: 'Reset your account password.'),
         ];
@@ -120,11 +138,17 @@ class SeoFileGenerator
             $lines[] = '- [Contact Us]('.url(self::CONTACT_US_PATH).'): Get in touch with our team.';
         }
 
-        $lines[] = '';
-        $lines[] = '## Products';
-        $lines[] = '';
+        return $lines;
+    }
 
-        $lines[] = '- ['.$formatter->title('Store').']('.url('/store').'): '.$formatter->description('Store');
+    /**
+     * llms.txt "Products": the store, then every visible product group.
+     *
+     * @return list<string>
+     */
+    private function llmsProductLines(SeoTemplateFormatter $formatter): array
+    {
+        $lines = ['- ['.$formatter->title('Store').']('.url('/store').'): '.$formatter->description('Store')];
 
         foreach ($this->visibleGroups(['id', 'name', 'headline', 'tagline', 'meta_title', 'meta_description']) as $group) {
             $title = $formatter->resolveShortcodes($group->meta_title, $group->name) ?: $formatter->title($group->name);
@@ -133,7 +157,7 @@ class SeoFileGenerator
             $lines[] = '- ['.$title.']('.url('/store/'.$group->id).'): '.$description;
         }
 
-        File::put(public_path('llms.txt'), implode("\n", $lines)."\n");
+        return $lines;
     }
 
     /**

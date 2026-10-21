@@ -60,4 +60,46 @@ class PaymentSettingsControllerTest extends DBTestCase
 
         $this->assertTrue(is_array($result) || is_string($result));
     }
+
+    /** readConfigs() against a throwaway app path whose Plugins folder holds $layout (dir => has config.php). */
+    private function readConfigsFrom(array $layout, array $looseFiles = []): array|string
+    {
+        $app = sys_get_temp_dir().'/plugins_'.uniqid();
+        \Illuminate\Support\Facades\File::makeDirectory($app.'/Plugins', recursive: true);
+        foreach ($layout as $plugin => $hasConfig) {
+            \Illuminate\Support\Facades\File::makeDirectory($app.'/Plugins/'.$plugin);
+            \Illuminate\Support\Facades\File::put($app.'/Plugins/'.$plugin.'/ServiceProvider.php', '<?php');
+            if ($hasConfig) {
+                \Illuminate\Support\Facades\File::put($app.'/Plugins/'.$plugin.'/config.php', '<?php return [];');
+            }
+        }
+        foreach ($looseFiles as $file) {
+            \Illuminate\Support\Facades\File::put($app.'/Plugins/'.$file, 'x');
+        }
+
+        $original = app_path();
+        $this->app->useAppPath($app);
+        try {
+            $result = (new \App\Http\Controllers\Common\PaymentSettingsController)->readConfigs();
+        } finally {
+            $this->app->useAppPath($original);
+            \Illuminate\Support\Facades\File::deleteDirectory($app);
+        }
+
+        return is_array($result) ? array_map(fn ($path) => str_replace($app, 'APP', $path), $result) : $result;
+    }
+
+    public function test_read_configs_lists_each_plugin_config_in_folder_order(): void
+    {
+        $this->assertSame(
+            ['APP/Plugins/Razorpay/config.php', 'APP/Plugins/Stripe/config.php'],
+            $this->readConfigsFrom(['Stripe' => true, 'Helper' => false, 'Razorpay' => true], ['notes.txt']),
+        );
+    }
+
+    public function test_read_configs_is_an_empty_list_without_configs_and_null_without_plugins(): void
+    {
+        $this->assertSame([], $this->readConfigsFrom(['Helper' => false]));
+        $this->assertSame('null', $this->readConfigsFrom([], ['notes.txt']));
+    }
 }

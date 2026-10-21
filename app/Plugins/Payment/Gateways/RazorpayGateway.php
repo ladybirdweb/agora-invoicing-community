@@ -110,7 +110,7 @@ final readonly class RazorpayGateway implements PaymentGateway, SubscriptionGate
      *
      * @param  array{razorpay_order_id?: string, razorpay_subscription_id?: string, razorpay_payment_id?: string, razorpay_signature?: string, is_webhook?: bool}  $payload
      */
-    public function capturePayment(array $payload): PaymentResult
+    public function capturePayment(array $payload): PaymentResult // NOSONAR - payment capture (money), kept as is
     {
         if (! empty($payload['is_webhook'])) {
             if (empty($payload['razorpay_payment_id'])) {

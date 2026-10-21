@@ -120,6 +120,7 @@ class Kernel extends ConsoleKernel
 
     private function isInstalled(): bool
     {
-        return File::exists(base_path('.env')) && config('custom.db_install') == 1;
+        // The env file actually loaded: .env in production, .env.testing under APP_ENV=testing (CI).
+        return File::exists(app()->environmentFilePath()) && config('custom.db_install') == 1;
     }
 }

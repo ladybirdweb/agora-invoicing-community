@@ -73,13 +73,13 @@ class BaseAuthController extends Controller
     protected function userNeedVerified(User $user): bool
     {
         /** @var StatusSetting $setting */
-        $setting = StatusSetting::first(['emailverification_status', 'msg91_status']);
+        $setting = StatusSetting::first(['emailverification_status', 'msg91_status', 'mobileverification_status']);
 
         if ($setting->emailverification_status == 1 && $user->email_verified != 1) {
             return false;
         }
 
-        if ($setting->msg91_status == 1 && $user->mobile_verified != 1) {
+        if ($setting->mobileVerificationEnabled() && $user->mobile_verified != 1) {
             return false;
         }
 

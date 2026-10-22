@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useCartStore } from '@/core/stores/cart'
 import { useAlertStore } from '@/core/stores/alert'
@@ -127,6 +127,10 @@ import { useAuthStore } from '@/core/stores/auth'
 const router     = useRouter()
 const route      = useRoute()
 const cartStore  = useCartStore()
+
+// Removing the last item swaps the table for the short "empty" message — bring it into view
+// instead of leaving the user scrolled down past it.
+watch(() => cartStore.items.length === 0, (empty) => { if (empty) window.scrollTo({ top: 0 }) })
 const alertStore = useAlertStore()
 const authStore  = useAuthStore()
 

@@ -45,6 +45,31 @@ class ReportsControllerTest extends LicenseTestCase
 
     #[Test]
     #[Group('license-admin')]
+    public function searching_by_status_word_matches_stored_status_value(): void
+    {
+        $text = 'status-search-'.uniqid();
+        foreach ([1, 0] as $status) {
+            LicenseReport::create([
+                'report_text' => $text,
+                'report_date_time' => now(),
+                'report_system' => 1,
+                'report_status' => $status,
+            ]);
+        }
+
+        // "Error" is the badge text for report_status 0 — it must find the error row, not nothing.
+        $json = $this->assertSuccessfulJson($this->controller->reportArraySystem($this->moduleRequest([
+            'search_query' => 'Error',
+            'perPage' => 100,
+        ])));
+        $rows = collect($json['data']['data'])->where('report_text', $text);
+
+        $this->assertCount(1, $rows);
+        $this->assertSame(0, $rows->first()['report_status']);
+    }
+
+    #[Test]
+    #[Group('license-admin')]
     public function report_array_cracking_returns_unassigned_non_upgrade_reports(): void
     {
         $report = LicenseReport::create([

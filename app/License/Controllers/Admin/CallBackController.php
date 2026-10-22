@@ -136,7 +136,7 @@ class CallBackController extends Controller
             $page_message = 'Callback could not be deleted because of this reason: '.$error_details;
         }
 
-        LicenseHelper::logAdminReport(strip_tags($page_message), 1, 1, $action_success);
+        LicenseHelper::logAdminReport(strip_tags($page_message), $action_success);
 
         return successResponse($page_message, $removed_records, 200);
     }

@@ -321,7 +321,7 @@ class ProductController extends BaseProductController
 
             // Newest = last added (highest id), same as the client's version popup. Sorting the
             // version text would put v9 above v10, so the Version column uses added order too.
-            $columns = ['id' => 'id', 'version' => 'id', 'title' => 'title', 'release_type' => 'release_type', 'status' => 'status'];
+            $columns = ['id' => 'id', 'version' => 'id', 'title' => 'title', 'release_type' => 'release_type', 'status' => 'status', 'created_at' => 'created_at', 'updated_at' => 'updated_at'];
             $sortField = $columns[$request->input('sort-field', '')] ?? 'id';
 
             $uploads = ProductUpload::where('product_id', $productId)
@@ -345,6 +345,7 @@ class ProductController extends BaseProductController
                 'file' => $u->file,
                 'status' => $u->status,
                 'created_at' => $u->created_at,
+                'updated_at' => $u->updated_at,
             ]);
 
             return successResponse('', $uploads);

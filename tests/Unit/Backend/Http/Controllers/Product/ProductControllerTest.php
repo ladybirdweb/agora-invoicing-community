@@ -147,6 +147,23 @@ class ProductControllerTest extends DBTestCase
         $response->assertJson(['success' => true]);
     }
 
+    public function test_get_product_uploads_returns_and_sorts_by_created_and_updated_dates(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = Product::factory()->create();
+        $older = ProductUpload::factory()->create(['product_id' => $product->id]);
+        $newer = ProductUpload::factory()->create(['product_id' => $product->id]);
+        // The first-added version was edited most recently.
+        ProductUpload::whereKey($older->id)->update(['updated_at' => now()->addDay()]);
+
+        $rows = $this->getJson("/product/uploads/{$product->id}?sort-field=updated_at&sort-order=desc")
+            ->assertOk()->json('data.data');
+
+        $this->assertSame([$older->id, $newer->id], array_column($rows, 'id'));
+        $this->assertArrayHasKey('created_at', $rows[0]);
+        $this->assertArrayHasKey('updated_at', $rows[0]);
+    }
+
     public function test_get_product_by_id_returns_200(): void
     {
         // Covers lines 238+: getProduct

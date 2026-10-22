@@ -51,7 +51,7 @@ class DownloadFileControllerTest extends LicenseTestCase
         $validator->shouldReceive('isValidAfuRequest')->once()->andReturn(true);
         $validator->shouldReceive('isBanned')->once()->andReturn(false);
         $validator->shouldReceive('verifyAfuScriptSignature')->once()->andReturn(true);
-        $validator->shouldReceive('verifyDateTime')->once()->andReturn(false);
+        $validator->shouldReceive('isPastDate')->andReturnUsing(fn ($date) => new LicenseValidator()->isPastDate($date));
 
         Attach::shouldReceive('exists')->once()->with('products/release.zip')->andReturn(false);
 
@@ -81,7 +81,7 @@ class DownloadFileControllerTest extends LicenseTestCase
         $validator->shouldReceive('isValidAfuRequest')->once()->andReturn(true);
         $validator->shouldReceive('isBanned')->once()->andReturn(false);
         $validator->shouldReceive('verifyAfuScriptSignature')->once()->andReturn(true);
-        $validator->shouldReceive('verifyDateTime')->once()->andReturn(false);
+        $validator->shouldReceive('isPastDate')->andReturnUsing(fn ($date) => new LicenseValidator()->isPastDate($date));
 
         Attach::shouldReceive('exists')->once()->with('products/release.zip')->andReturn(true);
 
@@ -121,7 +121,7 @@ class DownloadFileControllerTest extends LicenseTestCase
         $validator->shouldReceive('isValidAfuRequest')->once()->andReturn(true);
         $validator->shouldReceive('isBanned')->once()->andReturn(false);
         $validator->shouldReceive('verifyAfuScriptSignature')->once()->andReturn(true);
-        $validator->shouldReceive('verifyDateTime')->once()->andReturn(false);
+        $validator->shouldReceive('isPastDate')->andReturnUsing(fn ($date) => new LicenseValidator()->isPastDate($date));
 
         Attach::shouldReceive('exists')->once()->with('products/release.zip')->andReturn(true);
 

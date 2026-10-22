@@ -97,7 +97,7 @@ const options = reactive({
         product_title: 'dt-name',
         license_ip: 'dt-code',
         license_domain: 'dt-text',
-        license_code: 'dt-code',
+        license_code: 'dt-license',
         client_email: 'dt-email',
         license_order_number: 'dt-number',
         installation_counts: 'dt-number',
@@ -185,6 +185,7 @@ const options = reactive({
 }
 :deep(.dt-name)   { width: 180px; }
 :deep(.dt-code)   { width: 120px; }
+:deep(.dt-license) { width: 220px; }
 :deep(.dt-email)  { width: 220px; }
 :deep(.dt-text)   { width: 250px; }
 :deep(.dt-date)   { width: 160px; }

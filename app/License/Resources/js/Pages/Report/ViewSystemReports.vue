@@ -28,7 +28,8 @@ const endPoint = '/api/admin/reportSystem'
 const columns = ['report_text', 'user_formatted', 'report_date_time', 'report_status']
 
 const options = reactive({
-    sortable: ['report_text', 'user_formatted', 'report_date_time', 'report_status'],
+    // No user sort: user_formatted is an email-or-"System" label the API can't order by.
+    sortable: ['report_text', 'report_date_time', 'report_status'],
     filterable: ['report_text'],
     requestAdapter: makeRequestAdapter('report_date_time'),
     responseAdapter({ data }) {

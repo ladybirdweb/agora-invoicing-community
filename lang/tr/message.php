@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Lisans Görünümü',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Mobil Doğrulama)',
+    'activate_msg91_for_mobile_verification' => 'Mobil doğrulama için MSG91 gereklidir. Bu seçeneği etkinleştirmek için MSG91’i etkinleştirin.',
     'terms_heading' => 'Kayıt Sayfasında Şartları Göster',
     'github_heading' => 'GitHub',
     'license_invalid' => 'Lütfen geçerli bilgileri girin.',

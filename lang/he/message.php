@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'תצוגת רישיון',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (אימות נייד)',
+    'activate_msg91_for_mobile_verification' => 'אימות נייד דורש את MSG91. הפעל את MSG91 כדי לאפשר אפשרות זו.',
     'terms_heading' => 'הצג תנאים בדף הרישום',
     'github_heading' => 'Github',
     'license_invalid' => 'אנא הזן פרטים חוקיים.',

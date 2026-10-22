@@ -221,6 +221,7 @@ table                             { border-collapse: collapse; }
 .dt-amount{min-width:130px;max-width:130px;}
 .dt-number{min-width:130px;max-width:130px;}
 .dt-code{min-width:120px;max-width:120px;}
+.dt-license{min-width:220px;max-width:220px;} /* XXXX-XXXX-XXXX-XXXX on one line */
 .dt-text{min-width:250px;max-width:250px;}
 .dt-badge{min-width:90px;max-width:90px;}
 

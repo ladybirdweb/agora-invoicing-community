@@ -30,6 +30,9 @@ class InstallationController extends Controller
 
         if ($request->input('delete_record') == 1) {
             $removed = $this->deleteInstallation($id);
+            if ($removed > 0) {
+                LicenseHelper::logAdminReport(sprintf('Deleted %s installation(s).', $removed), 1);
+            }
 
             return response()->json([
                 'api_action_success' => 1,
@@ -58,7 +61,7 @@ class InstallationController extends Controller
 
         $name = $installation->product->name;
         $pageMessage = sprintf('%s installation on %s (%s) updated.', $name, $installation->installation_domain, $installation->installation_ip);
-        LicenseHelper::logAdminReport(strip_tags($pageMessage), 0, 1, 1);
+        LicenseHelper::logAdminReport(strip_tags($pageMessage), 1);
 
         return response()->json([
             'api_action_success' => 1,

@@ -1152,6 +1152,7 @@ return [
     'license_view' => '라이선스 보기',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg91(모바일 인증)',
+    'activate_msg91_for_mobile_verification' => '모바일 인증에는 MSG91이 필요합니다. 이 옵션을 사용하려면 MSG91을 활성화하세요.',
     'terms_heading' => '회원가입 페이지에서 약관 표시',
     'github_heading' => 'Github',
     'license_invalid' => '유효한 세부 정보를 입력하세요.',

@@ -428,7 +428,7 @@ class ProfileVerificationController extends BaseAuthController
 
         return [
             'email' => (bool) ($status->emailverification_status ?? false),
-            'mobile' => (bool) ($status->msg91_status ?? false),
+            'mobile' => (bool) $status?->mobileVerificationEnabled(),
         ];
     }
 }

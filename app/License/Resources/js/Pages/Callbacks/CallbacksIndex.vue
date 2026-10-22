@@ -73,7 +73,7 @@ function updateData(value) {
             requestAdapter: buildRequestAdapter,
             responseAdapter: buildResponseAdapter,
             columnsClasses: {
-                license: 'dt-code',
+                license: 'dt-license',
                 product_title: 'dt-name',
                 callback_ip: 'dt-code',
                 callback_domain: 'dt-text',

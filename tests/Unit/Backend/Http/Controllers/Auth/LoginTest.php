@@ -80,7 +80,7 @@ class LoginTest extends DBTestCase
         $user = User::factory()->create(['mobile_verified' => 0, 'password' => Hash::make('password')]);
         StatusSetting::updateOrCreate(
             ['id' => 1],
-            ['msg91_status' => 1, 'emailverification_status' => 0]
+            ['msg91_status' => 1, 'mobileverification_status' => 1, 'emailverification_status' => 0]
         );
         $this->withoutMiddleware();
         $response = $this->postJson('/login', ['email_username' => $user->email, 'password1' => 'password', 'login' => [
@@ -127,7 +127,7 @@ class LoginTest extends DBTestCase
         $this->withoutMiddleware();
         StatusSetting::updateOrCreate(
             ['id' => 1],
-            ['emailverification_status' => 1, 'msg91_status' => 1]
+            ['emailverification_status' => 1, 'msg91_status' => 1, 'mobileverification_status' => 1]
         );
         VerificationAttempt::create(['user_id' => $user->id, 'mobile_attempt' => 2, 'email_attempt' => 3]);
         $response = $this->postJson('/login', ['email_username' => $user->email, 'password1' => 'password',  'login' => [

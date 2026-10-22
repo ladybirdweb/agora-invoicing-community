@@ -166,6 +166,7 @@ class ProfileVerificationControllerTest extends DBTestCase
             [
                 'emailverification_status' => 1,
                 'msg91_status' => 1,
+                'mobileverification_status' => 1,
                 'recaptcha_status' => 0,
             ]
         );

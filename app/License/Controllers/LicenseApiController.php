@@ -18,21 +18,6 @@ class LicenseApiController extends Controller
     }
 
     /**
-     * GET /api/licenseInfo.
-     */
-    public function licenseInfo(Request $request): JsonResponse
-    {
-        $licenseCode = $request->input('license_code');
-        $info = $this->licenseService->getLicenseInfo($licenseCode);
-
-        if (! $info) {
-            return errorResponse('License not found', 404);
-        }
-
-        return successResponse('license_info', $info);
-    }
-
-    /**
      * GET /api/IndividuallicenseInfo.
      */
     public function individualLicenseInfo(Request $request): JsonResponse

@@ -42,12 +42,12 @@ describe('ViewLicenseReports.vue', () => {
     })
 
     it('initializes sortable options', () => {
-        expect(wrapper.vm.options.sortable).toContain('product_title')
+        expect(wrapper.vm.options.sortable).toContain('license')
         expect(wrapper.vm.options.sortable).toContain('report_text')
     })
 
     it('initializes filterable options', () => {
-        expect(wrapper.vm.options.filterable).toContain('product_title')
+        expect(wrapper.vm.options.filterable).toContain('report_text')
     })
 
     it('endPoint contains reportLicense', () => {

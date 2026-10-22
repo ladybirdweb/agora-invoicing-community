@@ -26,14 +26,24 @@ const visible = computed(() =>
 
 let timer = null
 
-watch(visible, (val) => {
+// Scroll only when the alert is off screen, and only as far as needed — an alert already
+// in view shouldn't make the page jump.
+function revealAlert() {
+    const el = alertEl.value
+    if (!el) return
+    const { top, bottom } = el.getBoundingClientRect()
+    if (top >= 70 && bottom <= window.innerHeight) return // 70 = scroll-margin-top (fixed header)
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
+}
+
+// Keyed on the message too, so a new alert replacing a shown one restarts its timer and is revealed.
+watch(() => visible.value && store.message, (val) => {
     clearTimeout(timer)
     if (val) {
         const duration = store.duration || 7000
         timer = setTimeout(() => store.unsetAlert(), duration)
-        nextTick(() => {
-            alertEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        })
+        nextTick(revealAlert)
     }
 }, { immediate: true })
 

@@ -174,6 +174,10 @@ class LicenseInstallControllerTest extends LicenseTestCase
         $this->createInstallation(['license' => $license, 'installation_domain' => 'elsewhere.test']);
 
         $this->assertSame('notification_license_limit', $this->installCase($license, registers: false));
+        // A rejected install is reported as an error, not a success.
+        $report = \App\License\Models\LicenseReport::where('license_code', $license->license_code)->latest('id')->first();
+        $this->assertSame(0, $report->report_status);
+        $this->assertSame(0, $report->report_system); // a License Report, not a System Report
     }
 
     #[Test]

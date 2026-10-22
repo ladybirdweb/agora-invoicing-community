@@ -1152,6 +1152,7 @@ return [
     'license_view' => '许可证查看',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91（手机验证）',
+    'activate_msg91_for_mobile_verification' => '手机验证需要 MSG91。请启用 MSG91 以开启此选项。',
     'terms_heading' => '注册页面显示条款',
     'github_heading' => 'GitHub',
     'license_invalid' => '请输入有效的详细信息。',

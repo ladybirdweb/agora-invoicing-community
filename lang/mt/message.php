@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'View Liċenzja',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Verifika tal-Mowbajl)',
+    'activate_msg91_for_mobile_verification' => 'Il-verifika tal-mobile teħtieġ MSG91. Attiva MSG91 biex tippermetti din l-għażla.',
     'terms_heading' => 'Uri Termini fil-Paġna tar-Reġistrazzjoni',
     'github_heading' => 'Github',
     'license_invalid' => 'Jekk jogħġbok daħħal dettalji validi.',

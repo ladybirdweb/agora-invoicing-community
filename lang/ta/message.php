@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'உரிமம் பார்வை',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91(மொபைல் உறுதிப்படுத்தல்)',
+    'activate_msg91_for_mobile_verification' => 'மொபைல் சரிபார்ப்புக்கு MSG91 தேவை. இந்த விருப்பத்தை இயக்க MSG91 ஐச் செயல்படுத்தவும்.',
     'terms_heading' => 'பதிவுப் பக்கத்தில் விதிமுறைகளை காட்டு',
     'github_heading' => 'Github',
     'license_invalid' => 'தயவுசெய்து செல்லுபடியாகும் விவரங்களை உள்ளிடவும்.',

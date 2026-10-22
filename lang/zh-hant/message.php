@@ -1152,6 +1152,7 @@ return [
     'license_view' => '許可證查看',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg91（手機驗證）',
+    'activate_msg91_for_mobile_verification' => '手機驗證需要 MSG91。請啟用 MSG91 以開啟此選項。',
     'terms_heading' => '註冊頁面顯示條款',
     'github_heading' => 'GitHub',
     'license_invalid' => '請輸入有效的資料。',

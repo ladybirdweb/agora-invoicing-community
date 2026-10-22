@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Просмотр лицензии',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (проверка мобильного телефона)',
+    'activate_msg91_for_mobile_verification' => 'Для проверки мобильного номера требуется MSG91. Активируйте MSG91, чтобы включить этот параметр.',
     'terms_heading' => 'Показать условия на странице регистрации',
     'github_heading' => 'Github',
     'license_invalid' => 'Пожалуйста, введите корректные данные.',

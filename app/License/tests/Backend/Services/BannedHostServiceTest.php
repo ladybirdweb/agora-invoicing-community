@@ -50,6 +50,10 @@ class BannedHostServiceTest extends LicenseTestCase
         }
 
         $this->assertDatabaseHas('license_banned_hosts', ['banned_host_ip' => '203.0.113.6']);
+        // The ban shows in System Reports (once, not on every later failure).
+        $service->recordFailedLicensing('203.0.113.6');
+        $this->assertSame(1, \App\License\Models\LicenseReport::where('report_system', 1)
+            ->where('report_text', 'like', 'Host 203.0.113.6 auto-banned%')->count());
     }
 
     #[Test]

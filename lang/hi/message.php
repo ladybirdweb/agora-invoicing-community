@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'लाइसेंस दृश्य',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (मोबाइल सत्यापन)',
+    'activate_msg91_for_mobile_verification' => 'मोबाइल सत्यापन के लिए MSG91 आवश्यक है। यह विकल्प चालू करने के लिए MSG91 सक्रिय करें।',
     'terms_heading' => 'पंजीकरण पृष्ठ पर शर्तें दिखाएं',
     'github_heading' => 'Github',
     'license_invalid' => 'कृपया मान्य विवरण दर्ज करें।',

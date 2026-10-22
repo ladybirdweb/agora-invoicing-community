@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'عرض الترخيص',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (التحقق من الجوال)',
+    'activate_msg91_for_mobile_verification' => 'يتطلب التحقق من الجوال خدمة MSG91. فعّل MSG91 لتمكين هذا الخيار.',
     'terms_heading' => 'عرض الشروط في صفحة التسجيل',
     'github_heading' => 'GitHub',
     'license_invalid' => 'يرجى إدخال تفاصيل صالحة.',

@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Tampilan Lisensi',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Verifikasi Mobile)',
+    'activate_msg91_for_mobile_verification' => 'Verifikasi seluler memerlukan MSG91. Aktifkan MSG91 untuk mengaktifkan opsi ini.',
     'terms_heading' => 'Tampilkan Syarat di Halaman Registrasi',
     'github_heading' => 'Github',
     'license_invalid' => 'Silakan masukkan data yang valid.',

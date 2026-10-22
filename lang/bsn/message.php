@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Pogled licence',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg91 (Verifikacija mobilnog)',
+    'activate_msg91_for_mobile_verification' => 'Verifikacija mobilnog broja zahtijeva MSG91. Aktivirajte MSG91 da biste omogućili ovu opciju.',
     'terms_heading' => 'Prikaži Uvjete na Registracijskoj Stranici',
     'github_heading' => 'GitHub',
     'license_invalid' => 'Unesite ispravne podatke.',

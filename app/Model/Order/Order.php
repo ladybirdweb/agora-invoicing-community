@@ -157,8 +157,10 @@ class Order extends BaseModel
      */
     public function scopeNeedsRenewal(\Illuminate\Database\Eloquent\Builder $query): void
     {
+        // One Time plans never expire — only their optional updates do — so they're not renewals due.
         $query->where('order_status', '!=', 'Terminated')
-            ->whereHas('subscription', fn ($q) => $q->where('update_ends_at', '<', now())->where('is_deleted', '!=', 1));
+            ->whereHas('subscription', fn ($q) => $q->where('update_ends_at', '<', now())->where('is_deleted', '!=', 1)
+                ->whereDoesntHave('plan.periods', fn ($p) => $p->where('name', 'One Time')));
     }
 
     /**

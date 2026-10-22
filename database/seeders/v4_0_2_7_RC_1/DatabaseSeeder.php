@@ -38,6 +38,23 @@ class DatabaseSeeder extends Seeder
         $this->updateTimeZones();
         $this->backfillSelectedTemplates();
         $this->moveCronSettingsToConditions();
+        $this->seedMobileVerificationStatus();
+    }
+
+    /**
+     * Mobile verification got its own flag (it used to be msg91_status itself). Start it from
+     * msg91_status so nothing changes on upgrade. Only fills it while still unset, so a re-run
+     * never overrides what an admin has chosen since.
+     */
+    public function seedMobileVerificationStatus(): void
+    {
+        if (! Schema::hasColumn('status_settings', 'mobileverification_status')) {
+            return;
+        }
+
+        DB::table('status_settings')
+            ->whereNull('mobileverification_status')
+            ->update(['mobileverification_status' => DB::raw('COALESCE(msg91_status, 0)')]);
     }
 
     /**

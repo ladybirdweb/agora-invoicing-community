@@ -878,6 +878,7 @@ class SettingsController extends BaseSettingsController
             'sending_status' => Setting::value('sending_status'),
             'emailverification_status' => StatusSetting::value('emailverification_status'),
             'msg91_status' => StatusSetting::value('msg91_status'),
+            'mobileverification_status' => StatusSetting::value('mobileverification_status'),
             'verification_preference' => ApiKey::value('verification_preference'),
         ]);
     }
@@ -886,9 +887,12 @@ class SettingsController extends BaseSettingsController
     {
         $data = $request->only(['email_enabled', 'mobile_enabled', 'preferred_verification']);
 
+        // Mobile verification has its own flag; msg91_status (MSG91 on/off) belongs to the
+        // integration settings and must not be switched from here.
         StatusSetting::query()->first()?->update([
             'emailverification_status' => $data['email_enabled'],
-            'msg91_status' => $data['mobile_enabled'],
+            // Not sent while MSG91 is off (the switch is greyed out): keep the saved choice then.
+            ...(array_key_exists('mobile_enabled', $data) ? ['mobileverification_status' => $data['mobile_enabled']] : []),
         ]);
         ApiKey::query()->first()?->update([
             'verification_preference' => $data['preferred_verification'] ?? null,

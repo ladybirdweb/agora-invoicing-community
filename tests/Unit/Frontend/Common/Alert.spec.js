@@ -26,6 +26,29 @@ describe('Alert.vue', () => {
         expect(wrapper.find('[role="alert"]').exists()).toBe(false)
     })
 
+    it('scrolls only when the alert is off screen', async () => {
+        const scroll = globalThis.HTMLElement.prototype.scrollIntoView
+        const rect = jest.spyOn(globalThis.HTMLElement.prototype, 'getBoundingClientRect')
+        const store = useAlertStore()
+        store.component_name = 'test'
+        store.type = 'danger'
+
+        // Already in view: page stays put.
+        scroll.mockClear()
+        rect.mockReturnValue({ top: 200, bottom: 250 })
+        store.message = 'First'
+        await wrapper.vm.$nextTick(); await wrapper.vm.$nextTick()
+        expect(scroll).not.toHaveBeenCalled()
+
+        // Off screen (scrolled past): a replacing message is revealed.
+        rect.mockReturnValue({ top: -300, bottom: -250 })
+        store.message = 'Second'
+        await wrapper.vm.$nextTick(); await wrapper.vm.$nextTick()
+        expect(scroll).toHaveBeenCalledWith(expect.objectContaining({ block: 'nearest' }))
+
+        rect.mockRestore()
+    })
+
     it('shows alert when store has matching component_name', async () => {
         const store = useAlertStore()
         store.type = 'success'

@@ -48,14 +48,14 @@ class LicenseInstallController extends Controller
 
         // Verify license signature
         if (! $this->validator->verifyScriptSignature($license_signature, $product_id, $root_url, $client_email, $license_code)) {
-            $this->createReport($product_id ?? null, userId: null, licenseCode: $license_code, text: 'Invalid license signature', system: 1);
+            $this->createReport($product_id ?? null, userId: null, licenseCode: $license_code, text: 'Invalid license signature');
 
             return $this->notificationResponse('notification_invalid_signature', []);
         }
 
         // Check banned hosts
         if ($this->validator->isBanned($ip)) {
-            $this->createReport($product_id ?? null, userId: null, licenseCode: $license_code, text: 'Host banned: '.$ip, system: 1);
+            $this->createReport($product_id ?? null, userId: null, licenseCode: $license_code, text: 'Host banned: '.$ip);
 
             return $this->notificationResponse('notification_host_banned', []);
         }
@@ -63,7 +63,7 @@ class LicenseInstallController extends Controller
         // Verify product exists
         $product = $this->validator->validateProduct($product_id);
         if (! $product instanceof Product) {
-            $this->createReport(productId: null, userId: null, licenseCode: $license_code, text: 'Product not found (ID: '.$product_id.')', system: 1);
+            $this->createReport(productId: null, userId: null, licenseCode: $license_code, text: 'Product not found (ID: '.$product_id.')');
 
             return $this->notificationResponse('notification_product_not_found', []);
         }
@@ -72,7 +72,7 @@ class LicenseInstallController extends Controller
         $license = $this->validator->findLicense($license_code, $client_email, $product_id);
 
         if (! $license instanceof License) {
-            $this->createReport($product_id, userId: null, licenseCode: $license_code, text: 'License not found', system: 1);
+            $this->createReport($product_id, userId: null, licenseCode: $license_code, text: 'License not found');
 
             return $this->notificationResponse('notification_license_not_found', [], $product);
         }
@@ -80,7 +80,7 @@ class LicenseInstallController extends Controller
         // Validate license (status, expiry, IP, domain restrictions)
         $validation = $this->validator->validateLicense($license, $product_id, $client_email, $ip, $root_url);
         if (! $validation['valid']) {
-            $this->createReport($product_id, $license->user_id, $license->license_code, $validation['error'], 1);
+            $this->createReport($product_id, $license->user_id, $license->license_code, $validation['error']);
 
             return $this->notificationResponse($this->mapErrorToNotification($validation['error']), $validation['data'] ?? [], $product, $license);
         }
@@ -91,7 +91,7 @@ class LicenseInstallController extends Controller
         $conflict = $this->installationConflict($license, $product_id, $ip, $installation_domain, $client_id);
         if ($conflict !== null) {
             [$notification, $report] = $conflict;
-            $this->createReport($product_id, $license->user_id, $license->license_code, $report, 1);
+            $this->createReport($product_id, $license->user_id, $license->license_code, $report);
 
             return $this->notificationResponse($notification, [], $product, $license);
         }

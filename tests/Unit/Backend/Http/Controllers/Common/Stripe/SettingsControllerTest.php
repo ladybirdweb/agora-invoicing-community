@@ -534,6 +534,46 @@ class SettingsControllerTest extends DBTestCase
         ]]);
     }
 
+    public function test_contact_option_does_not_change_msg91_status(): void
+    {
+        // Mobile verification has its own flag: Contact Options must not re-activate a
+        // deactivated MSG91 (it used to, by writing msg91_status from mobile_enabled).
+        StatusSetting::query()->update(['msg91_status' => 0, 'mobileverification_status' => 0]);
+
+        $this->postJson('/verificationSettings', [
+            'email_enabled' => 1,
+            'mobile_enabled' => 1,
+            'preferred_verification' => 'mobile',
+        ])->assertStatus(200);
+
+        $this->assertSame(0, (int) StatusSetting::value('msg91_status'));
+        $this->assertSame(1, (int) StatusSetting::value('mobileverification_status'));
+        // Wanted, but MSG91 can't send it, so nobody is asked for a mobile OTP.
+        $this->assertFalse(StatusSetting::first()->mobileVerificationEnabled());
+    }
+
+    public function test_mobile_otp_needs_both_mobile_verification_and_msg91(): void
+    {
+        foreach ([[1, 1, true], [1, 0, false], [0, 1, false], [0, 0, false]] as [$msg91, $mobile, $expected]) {
+            StatusSetting::query()->update(['msg91_status' => $msg91, 'mobileverification_status' => $mobile]);
+
+            $this->assertSame($expected, StatusSetting::first()->mobileVerificationEnabled(), "msg91=$msg91 mobile=$mobile");
+        }
+    }
+
+    public function test_contact_option_keeps_mobile_choice_when_not_sent(): void
+    {
+        // While MSG91 is off the page greys the switch out and doesn't send it.
+        StatusSetting::query()->update(['mobileverification_status' => 1]);
+
+        $this->postJson('/verificationSettings', [
+            'email_enabled' => 1,
+            'preferred_verification' => 'email',
+        ])->assertStatus(200);
+
+        $this->assertSame(1, (int) StatusSetting::value('mobileverification_status'));
+    }
+
     public function test_updates_contact_option_for_mobile_only(): void
     {
         // To test updating contact options for mobile only
@@ -552,7 +592,7 @@ class SettingsControllerTest extends DBTestCase
 
         $this->assertDatabaseHas('status_settings', [
             'emailverification_status' => 0,
-            'msg91_status' => 1,
+            'mobileverification_status' => 1,
         ]);
 
         $this->assertDatabaseHas('api_keys', [
@@ -578,7 +618,7 @@ class SettingsControllerTest extends DBTestCase
 
         $this->assertDatabaseHas('status_settings', [
             'emailverification_status' => 1,
-            'msg91_status' => 0,
+            'mobileverification_status' => 0,
         ]);
 
         $this->assertDatabaseHas('api_keys', [
@@ -604,7 +644,7 @@ class SettingsControllerTest extends DBTestCase
 
         $this->assertDatabaseHas('status_settings', [
             'emailverification_status' => 1,
-            'msg91_status' => 1,
+            'mobileverification_status' => 1,
         ]);
 
         $this->assertDatabaseHas('api_keys', [
@@ -630,7 +670,7 @@ class SettingsControllerTest extends DBTestCase
 
         $this->assertDatabaseHas('status_settings', [
             'emailverification_status' => 1,
-            'msg91_status' => 1,
+            'mobileverification_status' => 1,
         ]);
 
         $this->assertDatabaseHas('api_keys', [
@@ -662,7 +702,7 @@ class SettingsControllerTest extends DBTestCase
 
         $this->assertDatabaseHas('status_settings', [
             'emailverification_status' => 0,
-            'msg91_status' => 1,
+            'mobileverification_status' => 1,
         ]);
 
         $this->assertDatabaseHas('api_keys', [

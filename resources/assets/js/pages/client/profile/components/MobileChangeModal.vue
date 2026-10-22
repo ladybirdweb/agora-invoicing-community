@@ -184,6 +184,7 @@ function onSubmit() {
 }
 
 async function submitOtp() {
+    if (busy.value) return // a repeat click would re-send the used code and show "OTP not valid"
     busy.value = true
     try {
         if (step.value === 'verify_mobile') {

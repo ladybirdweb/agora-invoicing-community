@@ -412,11 +412,13 @@ import DeleteModal from '@/components/Reusable/DeleteModal.vue'
 import BulkActionIcons from '@/components/Reusable/BulkActionIcons.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
 import { makeRequestAdapter } from '@/helpers/tableUtils'
+import { useDateTime } from '@/core/composables/useDateTime'
 
 const COMPONENT = 'products-edit'
 const baseUrl = useBaseUrl()
 const route = useRoute()
 const router = useRouter()
+const { formatDateTime } = useDateTime()
 
 const { errors, setErrors, setFieldError } = useForm()
 
@@ -483,7 +485,7 @@ const releaseTypeBadges = {
     beta:         { label: __('message.beta'),         class: 'badge bg-info text-dark' },
 }
 
-const versionColumns = ['select', 'title', 'version', 'description', 'release_type', 'file', 'action']
+const versionColumns = ['select', 'title', 'version', 'description', 'release_type', 'file', 'created_at', 'updated_at', 'action']
 const versionTableOptions = reactive({
     headings: {
         select:       () => h('div',{}, [h('input', { type: 'checkbox', checked: allVersionsSelected.value, onChange: toggleAllVersions })]),
@@ -492,11 +494,13 @@ const versionTableOptions = reactive({
         description:  __('message.description'),
         release_type: __('message.release_type'),
         file:         __('message.file'),
+        created_at:   __('message.created_at'),
+        updated_at:   __('message.updated_at'),
         action:       __('message.actions'),
     },
     columnsClasses: {
         select: 'dt-select', title: 'dt-name', version: 'dt-code', description: 'dt-name',
-        release_type: 'dt-name', file: 'dt-name', action: 'dt-action',
+        release_type: 'dt-name', file: 'dt-name', created_at: 'dt-date', updated_at: 'dt-date', action: 'dt-action',
     },
     templates: {
         select:       (f, row) => h('div', {}, [h('input', { type: 'checkbox', checked: selectedVersions.value.includes(row.id), onChange: () => toggleVersion(row.id) })]),
@@ -507,9 +511,11 @@ const versionTableOptions = reactive({
             ? h('span', { class: releaseTypeBadges[row.release_type]?.class ?? 'badge bg-secondary' }, releaseTypeBadges[row.release_type]?.label ?? row.release_type)
             : '—',
         file:         (f, row) => row.file || '—',
+        created_at:   (f, row) => row.created_at ? formatDateTime(row.created_at) : '—',
+        updated_at:   (f, row) => row.updated_at ? formatDateTime(row.updated_at) : '—',
         action:       (f, row) => h(VersionTableActions, { productId: route.params.id, versionId: row.id, baseUrl, onDeleted: () => dtVersionRef.value?.refresh() }),
     },
-    sortable: ['title', 'version', 'release_type'],
+    sortable: ['title', 'version', 'release_type', 'created_at', 'updated_at'],
     filterable: true,
     requestAdapter: makeRequestAdapter('id'),
     responseAdapter({ data }) {

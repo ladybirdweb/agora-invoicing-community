@@ -43,7 +43,7 @@ class ReportsController extends Controller
         }
 
         $page_message = $this->whichReportDeleted($whichReport, $this->action_success, $this->removed_records, $this->error_details);
-        LicenseHelper::logAdminReport(strip_tags((string) $page_message), 1, 1, $this->action_success); // @phpstan-ignore cast.string
+        LicenseHelper::logAdminReport(strip_tags((string) $page_message), $this->action_success); // @phpstan-ignore cast.string
 
         return response(['message' => $page_message]);
     }
@@ -241,20 +241,13 @@ class ReportsController extends Controller
         return successResponse(__('license::lang.report_update'), $updateReports, 200);
     }
 
+    /** report_status is stored as 1/0, so the "Success"/"Error" badge text must map back to it for search. */
     private function reportStatusFormatter(mixed $status): mixed
     {
-        if (strtolower($status) === 'success') {
-            $status = 'success';
-        }
-
-        if (strtolower($status) === 'error') {
-            $status = 'error';
-        }
-
-        if (strtolower($status) === 'pending') {
-            return 'pending';
-        }
-
-        return $status;
+        return match (strtolower((string) $status)) {
+            'success' => 1,
+            'error' => 0,
+            default => $status,
+        };
     }
 }

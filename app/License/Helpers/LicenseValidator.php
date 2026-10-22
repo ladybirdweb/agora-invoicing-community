@@ -7,8 +7,10 @@ use App\License\Models\LicenseBannedHost;
 use App\License\Models\LicensePlugin;
 use App\Model\Product\Product;
 use App\User;
+use Carbon\Exceptions\InvalidFormatException;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class LicenseValidator
 {
@@ -113,9 +115,8 @@ class LicenseValidator
             ];
         }
 
-        // Check expiration (validate date format first, matching original)
-        if ($this->verifyDateTime($license->license_expire_date, 'Y-m-d')
-            && $license->license_expire_date < now()->format('Y-m-d')) {
+        // Check expiration
+        if ($this->isPastDate($license->license_expire_date)) {
             return [
                 'valid' => false,
                 'error' => 'license_expired',
@@ -221,6 +222,25 @@ class LicenseValidator
         }
 
         return str_ireplace('www.', '', (string) (parse_url($url, PHP_URL_HOST) ?? ''));
+    }
+
+    /**
+     * Whether an expiry date's day is already over. Empty, unreadable and the "0000-00-00"
+     * sentinel all mean "never expires" (Carbon would parse the sentinel as year -1). The stored
+     * value carries a time ("2026-10-22 00:00:00"), so compare the day only: it stays valid
+     * through its last day.
+     */
+    public function isPastDate(?string $date): bool
+    {
+        if (in_array($date, [null, ''], strict: true) || str_starts_with($date, '0000')) {
+            return false;
+        }
+
+        try {
+            return Date::parse($date)->startOfDay()->lt(Date::today());
+        } catch (InvalidFormatException) {
+            return false;
+        }
     }
 
     /**

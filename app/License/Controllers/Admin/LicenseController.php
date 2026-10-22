@@ -390,23 +390,6 @@ class LicenseController extends Controller
         }
     }
 
-    public function licenseInfo(Request $request): JsonResponse
-    {
-        $license = License::with(['addonProducts.latestVersion'])->where('license_code', $request->input('license_code'))->firstOrFail();
-        $product = Product::find($license->product_id);
-
-        $addons = $license->addonProducts->map(fn ($product): array => [ // @phpstan-ignore method.unresolvableReturnType, argument.unresolvableType
-            'id' => $product->id,
-            'product_name' => $product->name,
-            'product_attributes' => $product->product_attributes, // @phpstan-ignore property.notFound
-            'product_attributes_license' => $product->pivot->product_attributes_license ?? null,
-            'latest_version' => $product->latestVersion?->version,
-            'latest_version_file' => $product->latestVersion?->file,
-        ]);
-
-        return successResponse(__('license::lang.license_info'), ['license' => $license, 'product' => $product, 'addons' => $addons], 200);
-    }
-
     public function individualLicenseInfo(Request $request): JsonResponse
     {
         $license = License::where('license_code', $request->input('license_code'))->with('licenseOptions')->first();

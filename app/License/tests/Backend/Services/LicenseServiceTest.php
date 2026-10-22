@@ -116,30 +116,20 @@ class LicenseServiceTest extends LicenseTestCase
 
     #[Test]
     #[Group('license-service')]
-    public function license_info_and_individual_info_return_addons_and_options(): void
+    public function individual_info_returns_license_options(): void
     {
         $license = $this->createLicense();
-        $plugin = $this->createProduct(['name' => 'Service Plugin']);
-        $version = $this->createVersion($plugin, ['version' => '3.2.1', 'file' => 'plugin-3.2.1.zip']);
-
-        LicensePlugin::create(['license_id' => $license->id, 'product_id' => $plugin->id]);
         $option = LicenseOption::create([
             'option_key' => 'seat_count',
             'option_value' => '25',
             'option_group' => (string) $license->id,
         ]);
 
-        $info = $this->service->getLicenseInfo($license->license_code);
         $individualInfo = $this->service->getIndividualLicenseInfo($license->license_code);
 
-        $this->assertSame($license->license_code, $info['license']['license_code']);
-        $this->assertSame($plugin->id, $info['addons'][0]['product_id']);
-        $this->assertSame($version->version, $info['addons'][0]['latest_version']);
-        $this->assertSame('25', $info['addons'][0]['product_attributes_license']['seat_count']);
         $this->assertSame($option->id, $individualInfo[0]['id']);
         $this->assertSame('seat_count', $individualInfo[0]['key']);
         $this->assertSame('25', $individualInfo[0]['value']);
-        $this->assertNull($this->service->getLicenseInfo('missing-license'));
         $this->assertSame([], $this->service->getIndividualLicenseInfo('missing-license'));
     }
 

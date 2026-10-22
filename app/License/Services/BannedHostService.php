@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\License\Services;
 
+use App\License\Helpers\LicenseHelper;
 use App\License\Models\LicenseBannedHost;
 use App\License\Models\LicenseFailedLicensing;
 use App\License\Models\LicenseSecuritySetting;
@@ -40,10 +41,13 @@ class BannedHostService
         $record->update(['failed_licensing_last_attempt_date' => now()->toDateString()]);
 
         if ($record->failed_licensing_attempts >= $limit) {
-            LicenseBannedHost::firstOrCreate(
+            $ban = LicenseBannedHost::firstOrCreate(
                 ['banned_host_ip' => $ip],
                 ['comments' => sprintf('Auto-banned: %d failed licensing attempts reached.', $limit)]
             );
+            if ($ban->wasRecentlyCreated) {
+                LicenseHelper::logAdminReport(sprintf('Host %s auto-banned (maximum failed licensing attempts (%d) reached).', $ip, $limit), 1);
+            }
         }
     }
 }

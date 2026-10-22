@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Vue de licence',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Vérification mobile)',
+    'activate_msg91_for_mobile_verification' => 'La vérification mobile nécessite MSG91. Activez MSG91 pour utiliser cette option.',
     'terms_heading' => 'Afficher les conditions sur la page d\'inscription',
     'github_heading' => 'Github',
     'license_invalid' => 'Veuillez saisir des informations valides.',

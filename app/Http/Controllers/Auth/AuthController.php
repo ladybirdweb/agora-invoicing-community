@@ -374,9 +374,9 @@ class AuthController extends BaseAuthController
         $eid = Crypt::encrypt($user->email);
 
         /** @var StatusSetting $setting */
-        $setting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
+        $setting = StatusSetting::select('emailverification_status', 'msg91_status', 'mobileverification_status')->first();
 
-        $isMobileVerified = ! ($setting->msg91_status == 1 && $user->mobile_verified != 1);
+        $isMobileVerified = ! ($setting->mobileVerificationEnabled() && $user->mobile_verified != 1);
         $isEmailVerified = ! ($setting->emailverification_status == 1 && $user->email_verified != 1);
 
         $verification_preference = ApiKey::value('verification_preference') ?? ($isEmailVerified ? 'email' : 'mobile');

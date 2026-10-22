@@ -140,7 +140,7 @@ class SettingsControllerTest extends DBTestCase
         $this->assertDatabaseHas('status_settings', [
             'id' => $statusSetting->id,
             'emailverification_status' => 1,
-            'msg91_status' => 0,
+            'mobileverification_status' => 0,
         ]);
 
         $this->assertDatabaseHas('api_keys', [

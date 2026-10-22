@@ -136,6 +136,19 @@ describe('Verify.vue', () => {
         expect(reqs.length).toBe(1)
     })
 
+    it('sends the code once when submitted twice in a row', async () => {
+        axiosMock.onPost('/otp/verify').reply(200, { data: {} })
+
+        await flushPromises()
+
+        await wrapper.find('form').trigger('submit')
+        await wrapper.find('form').trigger('submit')
+        await flushPromises()
+
+        const reqs = axiosMock.history.post.filter(r => r.url === '/otp/verify')
+        expect(reqs.length).toBe(1)
+    })
+
     it('goes straight to login (no success toast) once the last step is verified', async () => {
         axiosMock.onPost('/otp/verify').reply(200, { data: {} })
 
@@ -146,7 +159,9 @@ describe('Verify.vue', () => {
 
         // Login shows the "registration complete" notice via ?verified=1 instead.
         expect(successHandler).not.toHaveBeenCalled()
-        expect(wrapper.find('form').exists()).toBe(false)
+        // No in-page "all set" step: the form stays put, locked, until the browser leaves.
+        expect(wrapper.find('form').exists()).toBe(true)
+        expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeDefined()
     })
 
     it('calls errorHandler when OTP verify API returns 500', async () => {

@@ -336,6 +336,10 @@ const isEmpty = computed(() =>
   mode.value === 'invoice' ? !invoice.value.id : cartStore.items.length === 0
 )
 
+// Removing the last item swaps the page for the short "empty" message — bring it into view
+// instead of leaving the user scrolled down past it.
+watch(isEmpty, (empty) => { if (empty) window.scrollTo({ top: 0 }) })
+
 // Re-run whenever the invoice id changes — including switching from one
 // invoice straight to another, or from an invoice back to plain cart checkout.
 watch(invoiceId, (id) => {

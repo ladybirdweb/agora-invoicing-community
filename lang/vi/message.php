@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Xem giấy phép',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Xác minh di động)',
+    'activate_msg91_for_mobile_verification' => 'Xác minh di động yêu cầu MSG91. Hãy kích hoạt MSG91 để bật tùy chọn này.',
     'terms_heading' => 'Hiển thị Điều khoản trên Trang Đăng ký',
     'github_heading' => 'Github',
     'license_invalid' => 'Vui lòng nhập thông tin hợp lệ.',

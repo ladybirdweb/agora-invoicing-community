@@ -80,8 +80,7 @@ class GetVersionsController extends Controller
         }
 
         // Check version expiration
-        if ($this->validator->verifyDateTime($version->version_expire_date, 'Y-m-d')
-            && $version->version_expire_date < date('Y-m-d')) {
+        if ($this->validator->isPastDate($version->version_expire_date)) {
             return $this->notificationResponse('notification_version_expired', [], $product, $version);
         }
 

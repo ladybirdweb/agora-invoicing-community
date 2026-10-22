@@ -134,7 +134,8 @@ class RegisterController extends Controller
                 'email_validation_status',
                 'mobile_validation_status',
                 'emailverification_status',
-                'msg91_status'
+                'msg91_status',
+                'mobileverification_status'
             )->first();
 
             if ($status->email_validation_status) {
@@ -189,7 +190,7 @@ class RegisterController extends Controller
             $user->setAttribute('manager', $managerSettings->get('sales') ? $user->assignManagerByPosition('manager') : null);
             $user->save();
 
-            $need_verify = ($status->emailverification_status || $status->msg91_status) ? 1 : 0;
+            $need_verify = ($status->emailverification_status || $status->mobileVerificationEnabled()) ? 1 : 0;
 
             event(new UserRegisteredEvent($user, 'register'));
 

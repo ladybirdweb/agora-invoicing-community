@@ -49,6 +49,13 @@ const base = resolveBasePath(el?.dataset?.adminUrl, '/admin')
 const router = createRouter({
     history: createWebHistory(base),
     routes,
+    // New page → top; Back/Forward → where the user was; same page with only the query/hash
+    // changed (filters, tabs, pagination) → stay put.
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) return savedPosition
+        if (to.path === from.path) return false
+        return { top: 0 }
+    },
 })
 
 // Auth navigation guard

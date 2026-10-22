@@ -79,6 +79,14 @@ import(`./themes/${theme}/index.js`).then(async themeModule => {
     app.use(ClientTable, {}, 'bootstrap4', {})
     app.use(FloatingVue)
 
+    // Timezone/formats are known from the page itself — apply them before mount, so pages that take
+    // "today" once at setup (e.g. system logs' default date) don't get the UTC date instead.
+    useDateTimeStore().init({
+        timezone:   el?.dataset?.systemTimezone,
+        dateFormat: el?.dataset?.dateFormat,
+        timeFormat: el?.dataset?.timeFormat,
+    })
+    useDateTimeStore().setUserTimezone(el?.dataset?.userTimezone)
     // Boot datetime settings — non-blocking, UTC fallback stays active until resolved
     useDateTimeStore().bootstrap()
 

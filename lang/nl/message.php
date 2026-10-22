@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Licentieweergave',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Mobiele verificatie)',
+    'activate_msg91_for_mobile_verification' => 'Mobiele verificatie vereist MSG91. Activeer MSG91 om deze optie in te schakelen.',
     'terms_heading' => 'Toon voorwaarden op registratiepagina',
     'github_heading' => 'Github',
     'license_invalid' => 'Voer geldige gegevens in.',

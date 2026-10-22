@@ -61,10 +61,10 @@ abstract class BaseExternalSyncListener implements ShouldQueue
     private function isUserFullyVerified(User $user): bool
     {
         /** @var StatusSetting $settings */
-        $settings = StatusSetting::select('emailverification_status', 'msg91_status')->first();
+        $settings = StatusSetting::select('emailverification_status', 'msg91_status', 'mobileverification_status')->first();
 
         $isEmailVerified = ! $settings->emailverification_status || $user->email_verified;
-        $isMobileVerified = ! $settings->msg91_status || $user->mobile_verified;
+        $isMobileVerified = ! $settings->mobileVerificationEnabled() || $user->mobile_verified;
 
         return $isEmailVerified && $isMobileVerified;
     }

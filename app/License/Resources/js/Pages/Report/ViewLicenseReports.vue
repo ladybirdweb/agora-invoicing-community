@@ -28,9 +28,9 @@ const endPoint = '/api/admin/reportLicense'
 const columns = ['report_text', 'user', 'license', 'report_date_time', 'report_status']
 
 const options = reactive({
-    sortable: ['product_title', 'report_text', 'report_date_time', 'report_status'],
-    filterable: ['product_title', 'report_text'],
-    requestAdapter: makeRequestAdapter('report_date_time'),
+    sortable: ['report_text', 'license', 'report_date_time', 'report_status'],
+    filterable: ['report_text'],
+    requestAdapter: makeRequestAdapter('report_date_time', null, { license: 'license_code' }),
     responseAdapter({ data }) {
         return {
             data: data.data.data.map(data => {
@@ -42,7 +42,7 @@ const options = reactive({
         }
     },
     columnsClasses: {
-        license: 'dt-code',
+        license: 'dt-license',
         user: 'dt-email',
         report_date_time: 'dt-date',
         report_text: 'dt-text',

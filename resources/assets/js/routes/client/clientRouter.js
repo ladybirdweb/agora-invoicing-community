@@ -61,6 +61,13 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(base),
     routes,
+    // New page → top; Back/Forward → where the user was; same page with only the query/hash
+    // changed (filters, tabs, pagination) → stay put.
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) return savedPosition
+        if (to.path === from.path) return false
+        return { top: 0 }
+    },
 })
 
 router.beforeEach((to) => { // NOSONAR - vue-router guard: a redirect location, or true to continue

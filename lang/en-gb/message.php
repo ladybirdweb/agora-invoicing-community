@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'License View',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'MSG91 Settings',
+    'activate_msg91_for_mobile_verification' => 'Mobile verification requires MSG91. Activate MSG91 to enable this option.',
     'terms_heading' => 'Show Terms on Registration Page',
     'github_heading' => 'GitHub',
     'license_invalid' => 'Please enter valid details.',

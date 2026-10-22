@@ -203,7 +203,7 @@ trait AflCallbackHelpers
     /**
      * Create license report.
      */
-    protected function createReport(?int $productId, ?int $userId, ?string $licenseCode, string $text, int $system): void
+    protected function createReport(?int $productId, ?int $userId, ?string $licenseCode, string $text): void
     {
         LicenseReport::create([
             'product_id' => $productId ?: null,
@@ -211,8 +211,11 @@ trait AflCallbackHelpers
             'license_code' => $licenseCode,
             'report_date_time' => now(),
             'report_text' => $text,
-            'report_system' => $system,
-            'report_status' => 1,
+            // A licensing report, never a system one: these show under License (or Cracking) Reports,
+            // while System Reports keeps admin/system actions.
+            'report_system' => 0,
+            // Every caller logs a rejected install/verify (bad signature, limit reached…), so it's an error.
+            'report_status' => 0,
         ]);
     }
 }

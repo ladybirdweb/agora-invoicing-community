@@ -42,7 +42,7 @@ const options = reactive({
         }
     },
     columnsClasses: {
-        license_code: 'dt-code',
+        license_code: 'dt-license',
         report_date_time: 'dt-date',
         report_status: 'dt-status',
         report_text: 'dt-text',

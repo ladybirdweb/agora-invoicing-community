@@ -20,9 +20,15 @@
                             <Switch name="email_enabled" :value="form.email_enabled" :onChange="(val) => { form.email_enabled = val; syncPreference() }" />
                             <span>{{ __('message.email') }}</span>
                         </div>
-                        <div class="col-sm-4 d-flex align-items-center gap-2">
-                            <Switch name="mobile_enabled" :value="form.mobile_enabled" :onChange="(val) => { form.mobile_enabled = val; syncPreference() }" />
-                            <span>{{ __('message.mobile') }}</span>
+                        <div class="col-sm-4">
+                            <!-- Mobile OTP needs MSG91 to send it, so the switch only works while MSG91 is active.
+                                 Tooltip sits on the wrapper: a disabled switch gets no hover events. -->
+                            <div class="d-inline-flex align-items-center gap-2"
+                                 v-tooltip="msg91Active ? null : __('message.activate_msg91_for_mobile_verification')">
+                                <Switch name="mobile_enabled" :value="form.mobile_enabled" :disabled="!msg91Active" labelledby="mobile-enabled-label"
+                                        :onChange="(val) => { form.mobile_enabled = val; syncPreference() }" />
+                                <span id="mobile-enabled-label">{{ __('message.mobile') }}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -64,6 +70,7 @@ const COMPONENT = 'contact-options'
 
 const loading = ref(true)
 const saving  = ref(false)
+const msg91Active = ref(false)
 
 const form = reactive({
     email_enabled:          false,
@@ -98,7 +105,9 @@ onMounted(async () => {
         const res = await http.get(`/contact-option`)
         const d   = res.data?.data ?? {}
         form.email_enabled          = Boolean(d.emailverification_status)
-        form.mobile_enabled         = Boolean(d.msg91_status)
+        msg91Active.value           = Boolean(d.msg91_status)
+        // Without MSG91 nothing can be sent, so mobile verification is effectively off.
+        form.mobile_enabled         = msg91Active.value && Boolean(d.mobileverification_status)
         form.preferred_verification = d.verification_preference ?? ''
         syncPreference()
     } catch (e) {
@@ -113,7 +122,8 @@ async function submit() {
     try {
         const res = await http.post(`/verificationSettings`, {
             email_enabled:          form.email_enabled  ? 1 : 0,
-            mobile_enabled:         form.mobile_enabled ? 1 : 0,
+            // Only while MSG91 is active: otherwise the switch is greyed out and the saved choice is kept.
+            ...(msg91Active.value ? { mobile_enabled: form.mobile_enabled ? 1 : 0 } : {}),
             preferred_verification: form.preferred_verification,
         })
         successHandler(res, COMPONENT)

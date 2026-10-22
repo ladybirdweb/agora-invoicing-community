@@ -13,37 +13,6 @@ class LicenseApiControllerTest extends LicenseTestCase
 {
     #[Test]
     #[Group('license-api')]
-    public function license_info_returns_service_payload(): void
-    {
-        $service = Mockery::mock(LicenseService::class);
-        $service->shouldReceive('getLicenseInfo')->once()->with('LIC-API')->andReturn([
-            'license' => ['license_code' => 'LIC-API'],
-        ]);
-
-        $response = new LicenseApiController($service)->licenseInfo($this->moduleRequest([
-            'license_code' => 'LIC-API',
-        ]));
-        $json = $this->assertSuccessfulJson($response);
-
-        $this->assertSame('LIC-API', $json['data']['license']['license_code']);
-    }
-
-    #[Test]
-    #[Group('license-api')]
-    public function license_info_returns_404_when_service_has_no_license(): void
-    {
-        $service = Mockery::mock(LicenseService::class);
-        $service->shouldReceive('getLicenseInfo')->once()->with('missing')->andReturn(null);
-
-        $response = new LicenseApiController($service)->licenseInfo($this->moduleRequest([
-            'license_code' => 'missing',
-        ]));
-
-        $this->assertErrorJson($response, 404);
-    }
-
-    #[Test]
-    #[Group('license-api')]
     public function individual_license_info_and_order_delegate_to_service(): void
     {
         $service = Mockery::mock(LicenseService::class);

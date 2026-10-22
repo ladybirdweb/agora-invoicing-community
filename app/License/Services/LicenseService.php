@@ -264,61 +264,6 @@ class LicenseService
     }
 
     /**
-     * Get license info with addons
-     * Mirrors: GET /api/licenseInfo.
-     *
-     * @return array<mixed>
-     */
-    public function getLicenseInfo(string $licenseCode): ?array
-    {
-        $license = License::where('license_code', $licenseCode)
-            ->with(['product', 'user', 'plugins.product'])
-            ->first();
-
-        if (! $license) {
-            return null;
-        }
-
-        $pluginProductIds = $license->plugins->pluck('product_id')->unique()->filter()->values();
-
-        $latestVersions = ProductUpload::whereIn('product_id', $pluginProductIds)
-            ->active()
-            ->orderByDesc('id')
-            ->get()
-            ->unique('product_id')
-            ->keyBy('product_id');
-
-        $licenseOptions = LicenseOption::where('option_group', (string) $license->id)
-            ->get()
-            ->pluck('option_value', 'option_key')
-            ->toArray();
-
-        $addons = [];
-        foreach ($license->plugins as $plugin) {
-            $product = $plugin->product;
-            // @phpstan-ignore if.alwaysTrue (BelongsTo may return null for orphaned product_id)
-            if ($product) {
-                $latestVersion = $latestVersions->get($product->id);
-
-                $addons[] = [
-                    'product_id' => $product->id,
-                    'product_name' => $product->name ?? $product->product_title ?? '',
-                    'product_attributes' => [],
-                    'product_attributes_license' => $licenseOptions,
-                    'latest_version' => $latestVersion ? $latestVersion->version : null,
-                    'latest_version_file' => $latestVersion ? $latestVersion->file : null,
-                ];
-            }
-        }
-
-        return [
-            'license' => $license->toArray(),
-            'product' => $license->product ? $license->product->toArray() : null, // @phpstan-ignore ternary.alwaysTrue
-            'addons' => $addons,
-        ];
-    }
-
-    /**
      * Get individual license info (options)
      * Mirrors: GET /api/IndividuallicenseInfo.
      *

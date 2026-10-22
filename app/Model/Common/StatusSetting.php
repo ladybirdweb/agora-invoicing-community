@@ -16,6 +16,7 @@ use Spatie\Activitylog\Models\Activity;
  * @property int $mailchimp_status
  * @property int $twitter_status
  * @property int $msg91_status
+ * @property int|null $mobileverification_status
  * @property int $emailverification_status
  * @property int $recaptcha_status
  * @property int $email_validation_status
@@ -93,7 +94,7 @@ class StatusSetting extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['stripe_auto_renewal', 'razorpay_auto_renewal', 'github_status', 'mailchimp_status', 'twitter_status', 'msg91_status', 'emailverification_status', 'recaptcha_status', 'update_status', 'zoho_status', 'rzp_status', 'mailchimp_product_status', 'mailchimp_ispaid_status', 'terms', 'pipedrive_status', 'domain_check', 'email_validation_status', 'cloud_button', 'whatsapp_status'];
+    protected $fillable = ['stripe_auto_renewal', 'razorpay_auto_renewal', 'github_status', 'mailchimp_status', 'twitter_status', 'msg91_status', 'mobileverification_status', 'emailverification_status', 'recaptcha_status', 'update_status', 'zoho_status', 'rzp_status', 'mailchimp_product_status', 'mailchimp_ispaid_status', 'terms', 'pipedrive_status', 'domain_check', 'email_validation_status', 'cloud_button', 'whatsapp_status'];
 
     protected string $logName = 'api_key';
 
@@ -107,6 +108,7 @@ class StatusSetting extends Model
         'mailchimp_status',
         'twitter_status',
         'msg91_status',
+        'mobileverification_status',
         'emailverification_status',
         'recaptcha_status',
         'update_status',
@@ -138,6 +140,7 @@ class StatusSetting extends Model
             'mailchimp_status' => ['Mailchimp Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'twitter_status' => ['Twitter Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'msg91_status' => ['Msg91 Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
+            'mobileverification_status' => ['Mobile Verification Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'emailverification_status' => ['Email Verification Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'recaptcha_status' => ['Recaptcha Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
             'update_status' => ['Update Status', fn ($value): array|string => (int) $value === 1 ? __('message.enable') : __('message.disable')],
@@ -179,9 +182,18 @@ class StatusSetting extends Model
         };
     }
 
+    /**
+     * Whether users must verify their mobile by OTP: the admin wants it (Contact Options) and MSG91
+     * is on to send it. msg91_status alone only says SMS can be sent.
+     */
+    public function mobileVerificationEnabled(): bool
+    {
+        return (int) $this->msg91_status === 1 && (int) $this->mobileverification_status === 1;
+    }
+
     public function getLogUrl(mixed $id = null): ?string
     {
-        $fields = ['emailverification_status', 'msg91_status'];
+        $fields = ['emailverification_status', 'mobileverification_status'];
         $cloud = ['cloud_button'];
 
         if ($this->wasChanged($fields)) {
@@ -197,7 +209,7 @@ class StatusSetting extends Model
 
     public function getLogName(): string
     {
-        $fields = ['emailverification_status', 'msg91_status'];
+        $fields = ['emailverification_status', 'mobileverification_status'];
         $cloud = ['cloud_button'];
 
         if ($this->wasChanged($fields)) {

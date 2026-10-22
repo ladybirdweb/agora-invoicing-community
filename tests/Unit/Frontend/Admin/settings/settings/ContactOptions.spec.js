@@ -57,4 +57,32 @@ describe('ContactOptions.vue', () => {
             expect(postUrls.some(u => u.includes('verificationSettings'))).toBe(true)
         }
     })
+
+    it('greys Mobile out and keeps its saved value while MSG91 is off', async () => {
+        await flushPromises()   // fixture: msg91_status 0
+        const mobile = wrapper.findAll('switch-stub').find(s => s.attributes('name') === 'mobile_enabled')
+        expect(mobile.attributes('disabled')).toBe('true')
+
+        await wrapper.vm.submit()
+        await flushPromises()
+        const body = JSON.parse(globalThis.mockHttp.history.post.at(-1).data)
+        expect(body).not.toHaveProperty('mobile_enabled')
+    })
+
+    it('lets Mobile be switched and sends it while MSG91 is active', async () => {
+        globalThis.mockHttp.onGet(/\/contact-option/).reply(200, {
+            data: { emailverification_status: 1, msg91_status: 1, mobileverification_status: 1, verification_preference: 'email' },
+        })
+        const w = mount(ContactOptions, {
+            global: { plugins: [createTestingPinia()], stubs: ['AppAlert', 'inline-loader', 'loader', 'action-button', 'Switch', 'DynamicSelect'] },
+        })
+        await flushPromises()
+        const mobile = w.findAll('switch-stub').find(s => s.attributes('name') === 'mobile_enabled')
+        expect(mobile.attributes('disabled')).toBe('false')
+
+        await w.vm.submit()
+        await flushPromises()
+        const body = JSON.parse(globalThis.mockHttp.history.post.at(-1).data)
+        expect(body.mobile_enabled).toBe(1)
+    })
 })

@@ -2,9 +2,9 @@
 
 namespace App\License\Helpers;
 
+use App\License\Models\LicenseReport;
 use DateTime;
-use Exception;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LicenseHelper
 {
@@ -54,25 +54,23 @@ class LicenseHelper
         return str_ireplace('www.', '', (string) (parse_url($url, PHP_URL_HOST) ?? ''));
     }
 
-    public static function logAdminReport(string $reportText, mixed $accountId, int $reportSystem, int $reportStatus): int
+    /**
+     * Log an admin/system action to System Reports, attributed to the signed-in admin
+     * (none for automatic actions such as auto-bans, which then show as "System").
+     */
+    public static function logAdminReport(string $reportText, int $reportStatus): void
     {
-        if ($reportText === '' || $reportText === '0' || ! self::validateIntegerValue($reportSystem, 0, 1)) {
-            return 0;
+        if ($reportText === '' || $reportText === '0') {
+            return;
         }
 
-        try {
-            DB::table('afl_reports')->insertOrIgnore([
-                'account_id' => $accountId,
-                'report_date_time' => date('Y-m-d H:i:s'),
-                'report_text' => $reportText,
-                'report_system' => $reportSystem,
-                'report_status' => $reportStatus,
-            ]);
-
-            return 1;
-        } catch (Exception) {
-            return 0;
-        }
+        LicenseReport::create([
+            'user_id' => Auth::id(),
+            'report_date_time' => now(),
+            'report_text' => $reportText,
+            'report_system' => 1,
+            'report_status' => $reportStatus,
+        ]);
     }
 
     public static function formatClient(?string $licenseCode, ?string $clientEmail): string

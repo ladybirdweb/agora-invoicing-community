@@ -52,7 +52,7 @@ const options = reactive({
     },
     columnsClasses: {
         product_title: 'dt-name',
-        license: 'dt-code',
+        license: 'dt-license',
         client_email: 'dt-email',
         installation_domain: 'dt-text',
         installation_ip: 'dt-code',

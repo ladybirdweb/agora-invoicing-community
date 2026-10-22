@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'ライセンスビュー',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg91（モバイル認証）',
+    'activate_msg91_for_mobile_verification' => 'モバイル認証にはMSG91が必要です。このオプションを有効にするには、MSG91を有効化してください。',
     'terms_heading' => '登録ページに利用規約を表示',
     'github_heading' => 'GitHub',
     'license_invalid' => '有効な詳細を入力してください。',

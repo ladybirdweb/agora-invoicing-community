@@ -1152,6 +1152,7 @@ return [
     'license_view' => 'Lisensvisning',
     'recaptcha_heading' => 'Google reCAPTCHA',
     'msg91_heading' => 'Msg 91 (Mobilverifisering)',
+    'activate_msg91_for_mobile_verification' => 'Mobilverifisering krever MSG91. Aktiver MSG91 for å slå på dette alternativet.',
     'terms_heading' => 'Vis vilkår på registreringsside',
     'github_heading' => 'Github',
     'license_invalid' => 'Vennligst oppgi gyldige detaljer.',

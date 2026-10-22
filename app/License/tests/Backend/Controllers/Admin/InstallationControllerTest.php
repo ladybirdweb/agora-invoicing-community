@@ -100,6 +100,8 @@ class InstallationControllerTest extends LicenseTestCase
         $this->assertSame(1, $json['action_success']);
         $this->assertDatabaseMissing('installations', ['id' => $installation->id]);
         $this->assertDatabaseMissing('installations', ['id' => $pluginInstallation->id]);
+        // The admin action is recorded in System Reports.
+        $this->assertDatabaseHas('license_reports', ['report_system' => 1, 'report_text' => 'Deleted 2 installation(s).']);
     }
 
     #[Test]

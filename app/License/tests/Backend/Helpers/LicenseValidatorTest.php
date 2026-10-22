@@ -94,6 +94,33 @@ class LicenseValidatorTest extends LicenseTestCase
 
     #[Test]
     #[Group('license-callbacks')]
+    public function is_past_date_reads_stored_datetimes_and_treats_empty_as_never(): void
+    {
+        $validator = new LicenseValidator;
+
+        // Stored values carry a time: the bug was that this format skipped the expiry check.
+        $this->assertTrue($validator->isPastDate(now()->subDay()->format('Y-m-d').' 00:00:00'));
+        $this->assertFalse($validator->isPastDate(now()->format('Y-m-d').' 00:00:00')); // valid on its last day
+        $this->assertFalse($validator->isPastDate(now()->addDay()->format('Y-m-d').' 00:00:00'));
+        $this->assertTrue($validator->isPastDate('2001-01-01'));
+
+        foreach ([null, '', '0000-00-00 00:00:00', 'not-a-date'] as $never) {
+            $this->assertFalse($validator->isPastDate($never), var_export($never, true));
+        }
+    }
+
+    #[Test]
+    #[Group('license-callbacks')]
+    public function validate_license_rejects_a_saved_license_whose_expiry_day_has_passed(): void
+    {
+        // Re-read, so the expiry comes back from the DB as "Y-m-d 00:00:00", as in production.
+        $license = $this->openLicense(['license_expire_date' => now()->subDay()->toDateString()])->fresh();
+
+        $this->assertSame('license_expired', $this->check($license)['error'] ?? null);
+    }
+
+    #[Test]
+    #[Group('license-callbacks')]
     public function validate_license_checks_comma_separated_ips(): void
     {
         $license = $this->openLicense(['license_ip' => '10.0.0.1, 127.0.0.1']);

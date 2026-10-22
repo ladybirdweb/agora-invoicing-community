@@ -14,12 +14,12 @@
             <template v-else>
                 <!-- Current order info -->
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted">{{ __('message.current_plan') }}</span>
-                    <span class="fw-bold text-dark">{{ order?.current_plan || '—' }}</span>
+                    <span class="fw-semibold text-dark">{{ __('message.current_plan') }}</span>
+                    <span class="text-dark">{{ order?.current_plan || '—' }}</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                    <span class="text-muted">{{ __('message.agents') }}</span>
-                    <span class="fw-bold text-dark">{{ order?.agents || __('message.unlimited') }}</span>
+                    <span class="fw-semibold text-dark">{{ __('message.agents') }}</span>
+                    <span class="text-dark">{{ order?.agents || __('message.unlimited') }}</span>
                 </div>
 
                 <DynamicSelect name="plan"
@@ -31,8 +31,8 @@
 
                 <!-- Price summary -->
                 <div v-if="price" class="d-flex justify-content-between align-items-center border-top pt-3 mt-1">
-                    <span class="text-muted">{{ __('message.price_to_be_paid') }}</span>
-                    <span class="fw-bold text-dark fs-6">{{ price }}</span>
+                    <span class="fw-bold text-dark">{{ __('message.price_to_be_paid') }}</span>
+                    <span class="fw-bold text-dark fs-5">{{ price }}</span>
                 </div>
             </template>
         </template>

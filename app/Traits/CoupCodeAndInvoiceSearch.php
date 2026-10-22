@@ -96,7 +96,8 @@ trait CoupCodeAndInvoiceSearch
                         (float) $payment->amount,
                         CreditTransaction::TYPE_MANUAL_GRANT,
                         invoiceId: $invoices->first()?->id,
-                        note: 'Reversed on deletion of payment #'.$payment->id,
+                        // Clients see this note but never payment ids, so name the invoice by its number.
+                        note: 'Reversed on deletion of payment'.($invoices->first()?->number ? ' for invoice #'.$invoices->first()->number : ''),
                     );
                 }
 

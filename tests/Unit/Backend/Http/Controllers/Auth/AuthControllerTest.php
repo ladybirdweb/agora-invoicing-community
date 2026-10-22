@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Backend\Http\Controllers\Auth;
 
+use App\Http\Controllers\Common\Sms\SmsOtpController;
 use App\Model\Common\StatusSetting;
 use App\User;
+use Cache;
 use Crypt;
+use RateLimiter;
 use Tests\DBTestCase;
 
 class AuthControllerTest extends DBTestCase
@@ -159,9 +162,23 @@ class AuthControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $user = User::factory()->create(['mobile_verified' => 1]);
-        $response = $this->postJson('/otp/send', ['eid' => Crypt::encrypt($user->email)]);
+        $response = $this->withSession(['verification_user_id' => $user->id])
+            ->postJson('/otp/send', ['eid' => Crypt::encrypt($user->email)]);
         $response->assertStatus(400);
-        $response->assertJson(['success' => false]);
+        $response->assertJson(['success' => false, 'message' => __('message.mobile_already_verified')]);
+    }
+
+    public function test_request_otp_rejects_eid_of_another_user_than_the_session(): void
+    {
+        $this->withoutMiddleware();
+        $this->mock(SmsOtpController::class)->shouldNotReceive('sendOtp');
+        $victim = User::factory()->create(['mobile_verified' => 0]);
+        $attacker = User::factory()->create();
+
+        $response = $this->withSession(['verification_user_id' => $attacker->id])
+            ->postJson('/otp/send', ['eid' => Crypt::encrypt($victim->email)]);
+
+        $response->assertStatus(400);
     }
 
     public function test_request_otp_for_nonexistent_user_returns_400(): void
@@ -315,6 +332,18 @@ class AuthControllerTest extends DBTestCase
         $response->assertJsonValidationErrors(['otp'], 'message');
     }
 
+    public function test_verify_email_non_numeric_otp_returns_412(): void
+    {
+        $this->withoutMiddleware();
+        $user = User::factory()->create(['active' => 0]);
+        $response = $this->postJson('/email/verify', [
+            'eid' => Crypt::encrypt($user->email),
+            'otp' => '12ab56',
+        ]);
+        $response->assertStatus(412);
+        $response->assertJsonValidationErrors(['otp' => __('message.otp_must_be_6_digits')], 'message');
+    }
+
     public function test_verify_email_with_wrong_token_returns_400(): void
     {
         $this->withoutMiddleware();
@@ -357,12 +386,27 @@ class AuthControllerTest extends DBTestCase
     }
 
     // =========================================================================
-    // GET /auth/verify-config — public SPA config endpoint
+    // GET /auth/verify-config — guarded by the verification lockout middleware
     // =========================================================================
 
-    public function test_verify_config_returns_200(): void
+    public function test_verify_config_without_verification_session_redirects_to_login(): void
     {
-        $this->getJson('/auth/verify-config')->assertStatus(200);
+        $this->getJson('/auth/verify-config')->assertRedirect(url('login'));
+    }
+
+    public function test_verify_config_blocked_after_max_failed_attempts(): void
+    {
+        $this->withSession(['verification_user_id' => 999999002]);
+        RateLimiter::clear('mobile-verify:999999002');
+        for ($i = 0; $i < 3; $i++) {
+            RateLimiter::hit('mobile-verify:999999002', 600);
+        }
+
+        $this->getJson('/auth/verify-config')->assertStatus(429);
+
+        RateLimiter::clear('mobile-verify:999999002');
+        Cache::forget('penalty_level:verify:999999002');
+        Cache::forget('penalty_applied:verify:mobile-verify:999999002');
     }
 
     // =========================================================================

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Logger;
 
 class SmsOtpController extends Controller
@@ -199,12 +200,14 @@ class SmsOtpController extends Controller
     {
         return match ($message) {
             'Please enter atleast one number to send sms.', 'Mobile no. empty or not numeric', 'Mobile number empty or not numeric' => __('message.enter_your_mobile'),
-            'OTP expired', 'otp_expired' => __('message.email_verification.token_expired'),
+            // "already verified": this number's OTP session was used up (e.g. by another flow), so ask for a fresh code.
+            'OTP expired', 'otp_expired', 'Mobile no. already verified' => __('message.email_verification.token_expired'),
             'Mobile no. not found', 'OTP not match' => __('message.otp_invalid'),
             'Max limit reached for this otp verification' => __('message.otp_verification.max_attempts_exceeded', ['time' => 'later']),
             'No OTP request found to retryotp' => __('message.otp_verification.resend_failure'),
             'OTP retry count maxed out' => __('message.otp_verification.resend_max_attempts_exceeded', ['time' => 'later']),
-            default => __('message.msg_service_down'),
+            // Unrecognised replies (e.g. "IP is not whitelisted") are logged so the real cause isn't hidden.
+            default => tap(__('message.msg_service_down'), fn () => Log::warning('MSG91 error: '.$message)),
         };
     }
 

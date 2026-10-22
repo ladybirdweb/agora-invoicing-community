@@ -223,9 +223,11 @@ class ProfileVerificationController extends BaseAuthController
         ]);
 
         try {
+            // Verify against the number that gets saved (dial_code + new_mobile), never the separate
+            // mobile_to_verify — otherwise an OTP for one number could save a different one.
             $response = resolve(SmsOtpController::class)->sendVerifyOTP(
                 $request->otp,
-                $request->mobile_to_verify,
+                $request->input('dial_code').$request->input('new_mobile'),
                 auth()->id(),
                 'profile-update'
             );

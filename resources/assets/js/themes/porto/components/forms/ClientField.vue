@@ -78,6 +78,7 @@
                    :autocomplete="autocomplete || undefined"
                    :spellcheck="spellcheckAttr"
                    :inputmode="inputmode"
+                   :maxlength="maxlength"
                    :placeholder="placeholder"
                    :disabled="disabled"
                    @input="onInput"
@@ -108,6 +109,8 @@ const props = defineProps({
     // undefined = browser default (auto-off for email/password/username fields)
     spellcheck:   { type: Boolean, default: undefined },
     inputmode:    { type: String,  default: undefined },
+    // Strip anything but 0-9 in the box itself (OTP codes), not just in the bound value.
+    digitsOnly:   { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue', 'change', 'focus', 'blur'])
@@ -119,7 +122,10 @@ const errorId = computed(() => `${fieldId.value}-error`)
 const spellcheckAttr = computed(() => props.spellcheck
     ?? ((['email', 'password'].includes(props.type) || /username|email/.test(props.autocomplete)) ? false : undefined))
 
-const onInput  = (e) => emit('update:modelValue', e.target.value)
+const onInput  = (e) => {
+    if (props.digitsOnly) e.target.value = e.target.value.replace(/\D/g, '')
+    emit('update:modelValue', e.target.value)
+}
 const onChange = (e) => { emit('update:modelValue', e.target.value); emit('change', e.target.value) }
 </script>
 

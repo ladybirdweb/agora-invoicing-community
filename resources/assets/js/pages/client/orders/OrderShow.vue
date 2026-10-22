@@ -499,8 +499,8 @@
                 <template #fields>
                     <AppAlert componentName="domain-modal" />
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                        <span class="text-muted">{{ __('message.current_cloud_domain') }}</span>
-                        <span class="fw-bold text-dark">{{ cloud?.installation_path || '—' }}</span>
+                        <span class="fw-semibold text-dark">{{ __('message.current_cloud_domain') }}</span>
+                        <span class="text-dark">{{ cloud?.installation_path || '—' }}</span>
                     </div>
                     <ClientField type="text" name="newDomain" required
                                  :label="__('message.enter_domain_new_name')"
@@ -524,14 +524,14 @@
                 </template>
                 <template #fields>
                     <AppAlert componentName="agents-modal" />
-                    <div class="bg-light rounded px-3 py-3 mb-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">{{ __('message.current_no_agents') }}</span>
-                            <span class="fw-bold text-dark">{{ cloud?.current_agents || '—' }}</span>
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-dark">{{ __('message.current_no_agents') }}</span>
+                            <span class="text-dark">{{ cloud?.current_agents || '—' }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">{{ __('message.price_per_agent') }}</span>
-                            <span class="fw-bold text-dark">{{ cloud?.price_per_agent || '—' }}</span>
+                            <span class="fw-semibold text-dark">{{ __('message.price_per_agent') }}</span>
+                            <span class="text-dark">{{ cloud?.price_per_agent || '—' }}</span>
                         </div>
                     </div>
 
@@ -559,16 +559,16 @@
                          the final number below is calculated from. -->
                     <div v-if="agentChanged" class="cost-breakdown rounded p-3 mb-1">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-color-grey">{{ __('message.new_agent_count_cost', { count: agentForm.number }) }}</span>
-                            <span class="fw-bold text-dark">{{ agentNewCost }}</span>
+                            <span class="fw-semibold text-dark">{{ __('message.new_agent_count_cost', { count: agentForm.number }) }}</span>
+                            <span class="text-dark">{{ agentNewCost }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                            <span class="text-color-grey">{{ __('message.unused_current_agents_credit', { count: cloud?.current_agents }) }}</span>
-                            <span class="fw-bold text-success">−{{ agentCurrentCost }}</span>
+                            <span class="fw-semibold text-dark">{{ __('message.unused_current_agents_credit', { count: cloud?.current_agents }) }}</span>
+                            <span class="text-success">−{{ agentCurrentCost }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold text-dark">{{ __('message.price_due_today') }}</span>
-                            <span class="fw-bold text-dark fs-6">{{ agentCost }}</span>
+                            <span class="fw-bold text-dark fs-5">{{ agentCost }}</span>
                         </div>
                     </div>
 
@@ -594,8 +594,8 @@
                 <template #fields>
                     <AppAlert componentName="plan-modal" />
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                        <span class="text-muted">{{ __('message.current_plan') }}</span>
-                        <span class="fw-bold text-dark">{{ cloud?.current_plan_name || '—' }}</span>
+                        <span class="fw-semibold text-dark">{{ __('message.current_plan') }}</span>
+                        <span class="text-dark">{{ cloud?.current_plan_name || '—' }}</span>
                     </div>
 
                     <DynamicSelect name="planId" required
@@ -613,20 +613,20 @@
                     <template v-if="planCost">
                         <div class="cost-breakdown rounded p-3 mt-2 mb-1">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-color-grey">{{ __('message.total_credits_remaining') }}</span>
-                                <span class="fw-bold text-dark">{{ planCost.currency_symbol }}{{ planCost.priceoldplan }}</span>
+                                <span class="fw-semibold text-dark">{{ __('message.total_credits_remaining') }}</span>
+                                <span class="text-dark">{{ planCost.currency_symbol }}{{ planCost.priceoldplan }}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                                <span class="text-color-grey">{{ __('message.price_for_new_plan') }}</span>
-                                <span class="fw-bold text-dark">{{ planCost.currency_symbol }}{{ planCost.pricenewplan }}</span>
+                                <span class="fw-semibold text-dark">{{ __('message.price_for_new_plan') }}</span>
+                                <span class="text-dark">{{ planCost.currency_symbol }}{{ planCost.pricenewplan }}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                                <span class="text-color-grey">{{ __('message.credit_deducted_label') }}</span>
-                                <span class="fw-bold text-success">−{{ planCost.currency_symbol }}{{ planCost.credit_applied }}</span>
+                                <span class="fw-semibold text-dark">{{ __('message.credit_deducted_label') }}</span>
+                                <span class="text-success">−{{ planCost.currency_symbol }}{{ planCost.credit_applied }}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-dark">{{ __('message.price_due_today') }}</span>
-                                <span class="fw-bold text-dark fs-6">{{ planCost.currency_symbol }}{{ planCost.price_to_be_paid }}</span>
+                                <span class="fw-bold text-dark fs-5">{{ planCost.currency_symbol }}{{ planCost.price_to_be_paid }}</span>
                             </div>
                         </div>
 
@@ -634,8 +634,8 @@
                              one costs) doesn't just vanish — called out here,
                              clearly apart from the payment math above. -->
                         <div v-if="planFutureCredit > 0" class="future-credit-callout rounded p-3 mb-1 d-flex justify-content-between align-items-center">
-                            <span class="text-dark">{{ __('message.future_plan_credit_label') }}</span>
-                            <span class="fw-bold text-success fs-6">+{{ planCost.currency_symbol }}{{ planCost.discount }}</span>
+                            <span class="fw-semibold text-dark">{{ __('message.future_plan_credit_label') }}</span>
+                            <span class="text-success fs-6">+{{ planCost.currency_symbol }}{{ planCost.discount }}</span>
                         </div>
                     </template>
                 </template>

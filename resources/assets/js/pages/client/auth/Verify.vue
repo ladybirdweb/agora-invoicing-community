@@ -32,6 +32,7 @@
                             <form v-if="current && !done" @submit.prevent="verify" novalidate>
                                 <ClientField name="otp" type="text" :label="__('message.enter_code')" required
                                              :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
+                                             digits-only :maxlength="6"
                                              :placeholder="__('message.otp_placeholder')"
                                              :model-value="form.otp" :error="errors.otp"
                                              @update:modelValue="onOtpInput" />
@@ -49,7 +50,7 @@
                                         <div class="d-flex align-items-center gap-2">
                                             <button type="button"
                                                     class="btn btn-link text-primary text-decoration-none fw-semibold p-0"
-                                                    :disabled="cooldown > 0" @click="resend('text')">
+                                                    :disabled="cooldown > 0 || locked" @click="resend('text')">
                                                 <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_otp') }}
                                             </button>
                                             <span v-if="cooldown > 0" class="text-muted fw-semibold">
@@ -58,12 +59,12 @@
                                         </div>
                                         <button v-if="current.type === 'mobile'" type="button"
                                                 class="btn btn-link text-primary text-decoration-none fw-semibold p-0 mt-1"
-                                                :disabled="cooldown > 0" @click="resend('voice')">
+                                                :disabled="cooldown > 0 || locked" @click="resend('voice')">
                                             <i class="fas fa-phone-alt me-1" aria-hidden="true"></i>{{ __('message.otp_call') }}
                                         </button>
                                     </div>
                                     <div class="col-6 text-end">
-                                        <button type="submit" class="btn btn-primary btn-lg" :disabled="saving">
+                                        <button type="submit" class="btn btn-primary btn-lg" :disabled="saving || locked">
                                             <i v-if="saving" class="fas fa-circle-notch fa-spin me-1" aria-hidden="true"></i>
                                             {{ saving ? __('message.verifying') : __('message.verify') }}
                                         </button>
@@ -110,6 +111,7 @@ const loading   = ref(true)
 const saving    = ref(false)
 const done      = ref(false)
 const eid       = ref('')
+const locked    = ref(false)
 const steps     = ref([])
 const stepIndex = ref(0)
 const { cooldown, start: startCooldown, stop: stopCooldown } = useCooldown(COOLDOWN)
@@ -133,8 +135,9 @@ onMounted(async () => {
         const res  = await http.get(`/auth/verify-config`)
         const data = res.data?.data ?? {}
 
-        if (data.redirect) {
-            globalThis.location.href = data.redirect
+        // No eid = no verification session (the lockout middleware redirected us).
+        if (data.redirect || !data.eid) {
+            globalThis.location.href = data.redirect ?? `${baseUrl}/login`
             return
         }
 
@@ -162,11 +165,21 @@ onMounted(async () => {
         sendInitial()
     } catch (e) {
         loading.value = false
-        errorHandler(e, COMPONENT, { setErrors })
+        onError(e)
     }
 })
 
 watch(stepIndex, () => captchaRef.value?.reset())
+
+// 429 = max attempts reached: show the server's message, lock the form, then back to login.
+function onError(e) {
+    errorHandler(e, COMPONENT, { setErrors })
+    if (e?.response?.status === 429 && !locked.value) {
+        locked.value = true
+        stopCooldown()
+        setTimeout(() => { globalThis.location.href = `${baseUrl}/login` }, 5000)
+    }
+}
 
 function onOtpInput(value) {
     form.otp = String(value).replace(/\D/g, '').slice(0, 6)
@@ -180,7 +193,7 @@ async function sendInitial() {
         await http.post(url, { eid: eid.value })
         startCooldown()
     } catch (e) {
-        errorHandler(e, COMPONENT, { setErrors })
+        onError(e)
     }
 }
 
@@ -195,7 +208,7 @@ async function resend(type) {
         successHandler(res, COMPONENT)
         startCooldown()
     } catch (e) {
-        errorHandler(e, COMPONENT, { setErrors })
+        onError(e)
     }
 }
 
@@ -208,11 +221,11 @@ async function verify() {
     saving.value = true
     const url = current.value.type === 'mobile' ? `${baseUrl}/otp/verify` : `${baseUrl}/email/verify`
     try {
-        const res = await http.post(url, { eid: eid.value, otp: form.otp, ...captchaPayload })
+        await http.post(url, { eid: eid.value, otp: form.otp, ...captchaPayload })
         form.otp = ''
 
         if (stepIndex.value < steps.value.length - 1) {
-            successHandler(res, COMPONENT)
+            // No "verified" alert between steps: the progress bar ticks and the next code is sent.
             stepIndex.value++
             stopCooldown()
             sendInitial()
@@ -228,7 +241,7 @@ async function verify() {
             return
         }
         captchaRef.value?.reset()
-        errorHandler(e, COMPONENT, { setErrors })
+        onError(e)
     } finally {
         saving.value = false
     }

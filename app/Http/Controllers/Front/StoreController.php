@@ -59,11 +59,13 @@ class StoreController extends Controller
             )
             ->orderBy('id')
             ->get()
+            // Cheapest PAID plan (after offer): cloud products all carry a free trial plan,
+            // so sorting on the plain minimum tied them all at 0 and left them in id order.
             ->sortBy(fn ($p) => $p->planRelation
                 ->flatMap(fn ($pl) => $pl->planPrice)
-                ->pluck('add_price')
-                ->filter(fn ($v): bool => $v !== null)
-                ->min() ?? PHP_INT_MAX
+                ->map(fn ($pp): float => (float) $pp->add_price * (1 - (float) ($pp->offer_price ?? 0) / 100))
+                ->filter(fn (float $v): bool => $v > 0)
+                ->min() ?? 0
             )
             ->values();
 

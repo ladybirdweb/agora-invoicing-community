@@ -32,7 +32,7 @@
                              :error="otpError" />
                 <div class="d-flex align-items-center gap-2 mt-2">
                     <button type="button" class="btn btn-link text-primary p-0 fw-semibold text-decoration-none"
-                            :disabled="cooldown > 0" @click="resend">
+                            :disabled="cooldown > 0 || locked" @click="resend">
                         <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>{{ __('message.resend_otp') }}
                     </button>
                     <span v-if="cooldown > 0" class="text-muted fw-semibold">{{ String(cooldown).padStart(2, '0') }}s</span>
@@ -53,12 +53,12 @@
             <action-button v-if="step !== 'done'" action="cancel" @click="close" />
             <action-button v-if="step === 'enter'"
                            action="confirm" :label="__('message.send_otp')"
-                           :loading="busy" :disabled="!newMobile" @click="submitMobile" />
+                           :loading="busy" :disabled="!newMobile || locked" @click="submitMobile" />
             <action-button v-else-if="step === 'done'"
                            action="confirm" :label="__('message.done')" @click="close" />
             <action-button v-else
                            action="confirm" :label="__('message.verify')"
-                           :loading="busy" :disabled="otp.length !== 6" @click="submitOtp" />
+                           :loading="busy" :disabled="otp.length !== 6 || locked" @click="submitOtp" />
         </template>
     </Modal>
 </template>
@@ -91,6 +91,7 @@ const otp         = ref('')
 const mobileError = ref('')
 const otpError    = ref('')
 const busy        = ref(false)
+const locked      = ref(false)
 const doneMessage = ref('')
 const { cooldown, start: startCooldown, stop: stopCooldown } = useCooldown(COOLDOWN)
 
@@ -114,7 +115,18 @@ function reset() {
     mobileError.value = ''
     otpError.value = ''
     doneMessage.value = ''
+    locked.value = false
     stopCooldown()
+}
+
+// 429 = max attempts reached: show the server's message, lock the popup, then close it.
+function onError(e) {
+    errorHandler(e, COMPONENT)
+    if (e?.response?.status === 429 && !locked.value) {
+        locked.value = true
+        stopCooldown()
+        setTimeout(close, 5000)
+    }
 }
 
 function close() {
@@ -158,7 +170,7 @@ async function submitMobile() {
             startCooldown()
         }
     } catch (e) {
-        errorHandler(e, COMPONENT)
+        onError(e)
     } finally {
         busy.value = false
     }
@@ -166,7 +178,7 @@ async function submitMobile() {
 
 // Enter key submits the current step (same guards as the footer buttons).
 function onSubmit() {
-    if (busy.value) return
+    if (busy.value || locked.value) return
     if (step.value === 'enter') { if (newMobile.value) submitMobile() }
     else if (step.value !== 'done' && otp.value.length === 6) submitOtp()
 }
@@ -207,8 +219,8 @@ async function submitOtp() {
     } catch (e) {
         // A rejected code belongs under the OTP field, not in the page alert.
         const msg = e?.response?.data?.message
-        if (msg && e.response.status < 500 && e.config?.url?.includes('verify-otp')) otpError.value = msg
-        else errorHandler(e, COMPONENT)
+        if (msg && e.response.status < 500 && e.response.status !== 429 && e.config?.url?.includes('verify-otp')) otpError.value = msg
+        else onError(e)
     } finally {
         busy.value = false
     }
@@ -224,7 +236,7 @@ async function resend() {
         successHandler(res, COMPONENT)
         startCooldown()
     } catch (e) {
-        errorHandler(e, COMPONENT)
+        onError(e)
     }
 }
 

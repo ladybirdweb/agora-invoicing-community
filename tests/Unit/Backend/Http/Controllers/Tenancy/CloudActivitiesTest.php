@@ -1395,6 +1395,8 @@ class CloudActivitiesTest extends DBTestCase
             'currency' => 'USD',
             'amount' => '100',
             'type' => \App\Model\Order\CreditTransaction::TYPE_DOWNGRADE_PRORATION,
+            // The client reads this note, so it names order numbers, not ids.
+            'note' => sprintf('Plan downgrade: terminated order #%s, new order #%s', $order1->number, $order2->number),
         ]);
     }
 

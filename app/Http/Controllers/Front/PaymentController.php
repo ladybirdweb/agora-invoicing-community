@@ -70,6 +70,7 @@ class PaymentController extends Controller
             ],
             'items' => $items->map(function ($item) use ($model) {
                 $data = $item->toArray();
+                $data['agents'] = agentCount($item->agents);
                 $data['image'] = Product::find($item->product_id)?->image;
                 $data['subtotal'] = currencyFormat($item->subtotal, $model->currency, includeSymbol: false);
 

@@ -80,6 +80,9 @@ class OrderPolicy
         return match (true) {
             ! $this->owns($user, $order) && $user->role !== 'admin' => Response::denyWithStatus(403, __('message.no_permission_for_action')),
             $this->isTerminated($order) => Response::deny(__('message.no_permission_for_action')),
+            // Cloud is hosted for the client; the self-hosted build is never theirs to download,
+            // whatever the product's download permission says.
+            $this->isCloud($order) => Response::deny(__('message.no_permission_for_action')),
             ($permissions['downloadPermission'] ?? 0) != 1 => Response::deny(__('message.no_permission_for_action')),
             ! $order->subscription instanceof Subscription => Response::deny(__('message.no_order_exists_invoice')),
             // "Keep old downloads" off: everything stops once the updates period is over.
@@ -107,6 +110,11 @@ class OrderPolicy
     public function deploy(User $user, Order $order): Response
     {
         if (! Setting::where('id', 1)->value('deployment_enabled')) {
+            return Response::deny(__('message.no_permission_for_action'));
+        }
+
+        // A plugin isn't a standalone app — it goes on top of an install, so there's nothing to deploy.
+        if (strcasecmp(trim((string) $order->productRelation?->licenseType?->name), 'plugin') === 0) {
             return Response::deny(__('message.no_permission_for_action'));
         }
 

@@ -154,7 +154,6 @@ Route::middleware('installAgora')->group(function (): void {
     Route::get('honeypot', fn (): JsonResponse => successResponse('honeypot', honeypotData()));
     Route::get('auth/login-config', [LoginController::class,        'loginConfig']);
     Route::get('auth/reset-validate/{token}', [ResetPasswordController::class, 'showResetForm']);
-    Route::get('auth/verify-config', [AuthController::class,          'verifyConfig']);
 
     Route::post('login', [LoginController::class, 'login'])
         ->name('login')
@@ -190,6 +189,8 @@ Route::middleware('installAgora')->group(function (): void {
 
     // OTP / email verification
     Route::middleware(['blockFailedVerifications:verify', 'session.timeout:10,verify'])->group(function (): void {
+        // Verify page config: a locked-out or expired user must not get the OTP form back.
+        Route::get('auth/verify-config', [AuthController::class, 'verifyConfig']);
         Route::post('otp/send', [AuthController::class, 'requestOtp']);
         Route::post('resend_otp', [AuthController::class, 'retryOTP']);
         Route::post('send-email', [AuthController::class, 'sendEmail']);

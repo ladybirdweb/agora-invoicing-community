@@ -121,7 +121,7 @@ class ZohoCampaignsApi extends ZohoBaseApi
 
         if (isset($response['status']) && $response['status'] === 'error') {
             // If there are no other subscribers the api will return error 2502 with message "Yet,There are no contacts in this list."
-            if ($response['code'] === '2502') {
+            if ((string) ($response['code'] ?? '') === '2502') {
                 return [];
             }
 
@@ -237,7 +237,7 @@ class ZohoCampaignsApi extends ZohoBaseApi
 
         if (isset($response['status']) && $response['status'] === 'error') {
             // 992 = "No tags found to display": an account with no tags yet.
-            if ($response['code'] === '992') {
+            if ((string) ($response['code'] ?? '') === '992') {
                 return [];
             }
 
@@ -270,7 +270,7 @@ class ZohoCampaignsApi extends ZohoBaseApi
             ->json();
 
         if (isset($response['status']) && $response['status'] === 'error') {
-            throw match ($response['code']) {
+            throw match ((string) ($response['code'] ?? '')) {
                 '993' => ContactNotFoundException::fromResponse($response),
                 '992', '9001' => TagNotFoundException::fromResponse($response),
                 default => ZohoCampaignsApiException::fromResponse($response),
@@ -300,7 +300,7 @@ class ZohoCampaignsApi extends ZohoBaseApi
 
         if (isset($response['status']) && $response['status'] === 'error') {
             // Same codes as tagAssociate(): 993 is a missing contact despite Zoho's "tag not found" message.
-            throw match ($response['code']) {
+            throw match ((string) ($response['code'] ?? '')) {
                 '993' => ContactNotFoundException::fromResponse($response),
                 '992', '9001' => TagNotFoundException::fromResponse($response),
                 default => ZohoCampaignsApiException::fromResponse($response),

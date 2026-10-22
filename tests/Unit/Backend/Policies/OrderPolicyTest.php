@@ -105,6 +105,16 @@ class OrderPolicyTest extends DBTestCase
         $this->assertTrue($this->policy->download($this->owner, $notAllowed)->denied());
     }
 
+    public function test_cloud_orders_can_never_download_even_with_the_permission_on(): void
+    {
+        $order = $this->order(['Can be Downloaded', 'Allow Downloads Before Updates Expire'], ['update_ends_at' => now()->addMonth()]);
+        $plan = Plan::factory()->create(['product' => $order->getRawOriginal('product')]);
+        CloudProducts::create(['cloud_product' => $order->getRawOriginal('product'), 'cloud_free_plan' => $plan->id]);
+
+        $this->assertTrue($this->policy->download($this->owner, $order)->denied());
+        $this->assertTrue($this->policy->downloadVersion($this->owner, $order, now()->subDay()->toDateTimeString())->denied());
+    }
+
     public function test_download_is_refused_for_terminated_orders_and_orders_without_subscription(): void
     {
         $terminated = $this->order(subscription: ['update_ends_at' => now()->addMonth()], order: ['order_status' => 'Terminated']);
@@ -162,6 +172,17 @@ class OrderPolicyTest extends DBTestCase
         Setting::where('id', 1)->update(['deployment_enabled' => 1]);
         $this->assertTrue($this->policy->deploy($this->owner, $order)->allowed());
         $this->assertTrue($this->policy->deploy($this->owner, $this->order([], ['update_ends_at' => now()->addMonth()]))->denied());
+    }
+
+    public function test_plugins_can_be_downloaded_but_never_deployed(): void
+    {
+        Setting::where('id', 1)->update(['deployment_enabled' => 1]);
+        $order = $this->order(subscription: ['update_ends_at' => now()->addMonth()]);
+        $order->productRelation->licenseType->update(['name' => 'plugin']);
+        $order = $order->fresh();
+
+        $this->assertTrue($this->policy->download($this->owner, $order)->allowed());
+        $this->assertTrue($this->policy->deploy($this->owner, $order)->denied());
     }
 
     // deleteCloud

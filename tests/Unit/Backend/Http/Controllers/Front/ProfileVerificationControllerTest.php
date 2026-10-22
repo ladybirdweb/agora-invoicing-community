@@ -187,8 +187,10 @@ class ProfileVerificationControllerTest extends DBTestCase
                 'type' => 'success',
                 'message' => 'Request successfully completed',
             ]);
+        // The OTP must be checked against the number being saved (dial code + new_mobile).
         $smsController->shouldReceive('sendVerifyOTP')
             ->once()
+            ->withArgs(fn (string $otp, string $mobile): bool => $mobile === '918123456789')
             ->andReturn([
                 'type' => 'success',
                 'message' => __('message.otp_verified'),
@@ -207,8 +209,9 @@ class ProfileVerificationControllerTest extends DBTestCase
         ])->assertStatus(200);
 
         // Step 2: Verify mobile OTP — stores verified mobile in session
+        // A different mobile_to_verify must be ignored, not verified in place of new_mobile.
         $this->postJson('/profile/mobile/verify-otp', [
-            'mobile_to_verify' => $newMobile,
+            'mobile_to_verify' => '919999999999',
             'otp' => '123456',
             'new_mobile' => $newMobile,
             'dial_code' => $dialCode,

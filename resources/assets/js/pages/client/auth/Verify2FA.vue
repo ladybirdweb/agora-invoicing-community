@@ -7,6 +7,7 @@
             <form v-if="!useRecovery" @submit.prevent="submitTotp" novalidate>
                 <ClientField name="totp" type="text" :label="__('message.authentication_code')"
                              :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
+                             digits-only :maxlength="6"
                              :model-value="form.totp" :error="errors.totp"
                              @update:modelValue="onTotpInput" />
 

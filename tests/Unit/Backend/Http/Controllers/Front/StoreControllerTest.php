@@ -135,6 +135,31 @@ class StoreControllerTest extends DBTestCase
         $this->assertSame(['$90.00 15 days', '90.00'], [$plans[0]['option_label'], $plans[0]['price_per_month']]); // under a month counts as one month
     }
 
+    public function test_products_sort_by_cheapest_paid_plan_ignoring_free_trial_plans(): void
+    {
+        $tmpl = \App\Model\Common\PricingTemplate::first();
+        if (! $tmpl) {
+            $this->markTestSkipped('No pricing template to attach a group to.');
+        }
+        $group = \App\Model\Product\ProductGroup::create(['name' => 'Cloud '.uniqid(), 'pricing_templates_id' => $tmpl->id, 'hidden' => 0]);
+        $currency = getCurrencyForClient((string) auth()->user()->country);
+
+        // Created dearest first, and each carries a free trial plan like the cloud products do.
+        $names = [];
+        foreach (['Enterprise' => 300, 'SME' => 200, 'Startup' => 100] as $name => $price) {
+            $product = \App\Model\Product\Product::create(['name' => $name.' '.uniqid(), 'group' => $group->id, 'hidden' => 0]);
+            foreach ([0, $price] as $amount) {
+                $plan = \App\Model\Payment\Plan::create(['name' => 'P'.uniqid(), 'product' => $product->id, 'days' => 30, 'status' => 1]);
+                \App\Model\Payment\PlanPrice::create(['plan_id' => $plan->id, 'currency' => $currency, 'add_price' => $amount, 'renew_price' => $amount, 'offer_price' => 0]);
+            }
+            $names[$name] = $product->name;
+        }
+
+        $listed = array_column($this->getJson("/store/{$group->id}/products")->assertOk()->json('data.products'), 'name');
+
+        $this->assertSame([$names['Startup'], $names['SME'], $names['Enterprise']], $listed);
+    }
+
     public function test_plans_skip_a_plan_without_a_price(): void
     {
         $product = \App\Model\Product\Product::create(['name' => 'Plans '.uniqid()]);

@@ -275,6 +275,9 @@ class CloudExtraActivities extends Controller
             }
 
             $items = $this->getThePaymentCalculation($delta, $order->serial_key, $order->id, agentAction: $agentAction);
+            if ($items === []) {
+                return errorResponse(trans('message.cart_plan_no_price_in_currency'));
+            }
             $invoice = new RenewController()->renewBySubId($sub->id, $items['planId'], '', $items['price'], '', isAgentIncrease: false, agents: $desiredAgents);
             if (! $invoice instanceof InvoiceItem) {
                 return errorResponse(trans('message.something_went_wrong'));
@@ -435,6 +438,9 @@ class CloudExtraActivities extends Controller
             $currency = userCurrencyAndPrice('', $planTarget);
             $ends_at = (string) $sub->ends_at;
             $base_price = $currency['plan']?->add_price;
+            if ($base_price === null) {
+                return [];
+            }
             $oldAgents = (int) substr($oldLicense, 12, 16);
             $planDays = (int) $plan->days;
 
@@ -815,7 +821,12 @@ class CloudExtraActivities extends Controller
             $currency ?? getCurrencyForClient((string) $client->country),
             $discount,
             CreditTransaction::TYPE_DOWNGRADE_PRORATION,
-            note: sprintf('Plan downgrade: terminated order #%d, new order #%d', $terminatedOrderId, $newActiveOrderId),
+            // Order numbers, not ids: this note is shown to the client in their credit history.
+            note: sprintf(
+                'Plan downgrade: terminated order #%s, new order #%s',
+                Order::whereKey($terminatedOrderId)->value('number') ?? $terminatedOrderId,
+                Order::whereKey($newActiveOrderId)->value('number') ?? $newActiveOrderId,
+            ),
         );
     }
 
@@ -847,6 +858,9 @@ class CloudExtraActivities extends Controller
             $ends_at = (string) Subscription::where('order_id', $order->id)->value('ends_at');
             $planDays = (int) Plan::where('id', $planId)->value('days');
             $base_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency['currency'])->value('add_price');
+            if ($base_price === null) {
+                return errorResponse(trans('message.cart_plan_no_price_in_currency'));
+            }
 
             // A single net "price to pay" wasn't enough for the client to see
             // what they're actually paying for — so this also exposes the

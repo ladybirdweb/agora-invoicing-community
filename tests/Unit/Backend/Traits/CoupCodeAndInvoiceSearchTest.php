@@ -221,6 +221,28 @@ class CoupCodeAndInvoiceSearchTest extends DBTestCase
         $this->assertSame('pending', $updatedStatus);
     }
 
+    public function test_deleting_a_credit_payment_returns_the_credit_with_the_invoice_number_in_the_note(): void
+    {
+        $user = User::factory()->create();
+        $invoice = Invoice::factory()->create(['user_id' => $user->id, 'status' => 'success', 'grand_total' => 100.0]);
+        $payment = Payment::create([
+            'user_id' => $user->id,
+            'amount' => 100.0,
+            'payment_method' => 'Credit Balance',
+            'payment_status' => 'success',
+            'currency' => $invoice->currency,
+        ]);
+        $payment->invoices()->attach($invoice->id, ['amount' => 100.0]);
+
+        $this->deleteJson('/payments', ['payment_ids' => [$payment->id]])->assertStatus(200);
+
+        // Clients read this note in their credit history and never see payment ids.
+        $this->assertDatabaseHas('credit_transactions', [
+            'user_id' => $user->id,
+            'note' => 'Reversed on deletion of payment for invoice #'.$invoice->number,
+        ]);
+    }
+
     public function test_delete_bulk_payments_with_partial_payment_sets_partially_paid(): void
     {
         $user = User::factory()->create();

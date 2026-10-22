@@ -60,7 +60,8 @@ class AuthController extends BaseAuthController
             $email = Crypt::decrypt($request->eid);
 
             // Find the user by email
-            $user = User::where('email', $email)->firstOrFail();
+            // eid must belong to the user in this session: attempt limits are counted for that user.
+            $user = User::where('email', $email)->where('id', Session::get('verification_user_id'))->firstOrFail();
 
             if ($user->mobile_verified) {
                 return errorResponse(__('message.mobile_already_verified'));
@@ -108,7 +109,8 @@ class AuthController extends BaseAuthController
             $email = Crypt::decrypt($request->eid);
             $type = $request->input('type');
 
-            $user = User::where('email', $email)->firstOrFail();
+            // eid must belong to the user in this session: attempt limits are counted for that user.
+            $user = User::where('email', $email)->where('id', Session::get('verification_user_id'))->firstOrFail();
 
             RateLimiter::hit('mobile-otp:'.$user->id, 600);
 
@@ -141,7 +143,8 @@ class AuthController extends BaseAuthController
         try {
             $email = Crypt::decrypt($request->eid);
 
-            $user = User::where('email', $email)->firstOrFail();
+            // eid must belong to the user in this session: attempt limits are counted for that user.
+            $user = User::where('email', $email)->where('id', Session::get('verification_user_id'))->firstOrFail();
 
             $existingToken = AccountActivate::where('email', $email)->latest()->first();
             if ($existingToken && $method !== 'GET' && ! $existingToken->updated_at?->addMinutes(10)->isPast()) {
@@ -182,7 +185,8 @@ class AuthController extends BaseAuthController
             $otp = $request->otp;
 
             // Find the user by email
-            $user = User::where('email', $email)->firstOrFail();
+            // eid must belong to the user in this session: attempt limits are counted for that user.
+            $user = User::where('email', $email)->where('id', Session::get('verification_user_id'))->firstOrFail();
 
             // Validate OTP
             if (! is_numeric($request->otp)) {
@@ -219,13 +223,13 @@ class AuthController extends BaseAuthController
     {
         $request->validate([
             'eid' => ['required', 'string'],
-            'otp' => ['required', 'string', 'size:6'],
+            'otp' => ['required', 'string', 'digits:6'],
         ],
             [
                 'eid.required' => __('validation.verify_otp.eid_required'),  // Translating for eid field
                 'eid.string' => __('validation.verify_otp.eid_string'),
                 'otp.required' => __('validation.verify_otp.otp_required'),
-                'otp.size' => __('validation.verify_otp.otp_size'),
+                'otp.digits' => __('message.otp_must_be_6_digits'),
             ]);
 
         try {
@@ -233,7 +237,8 @@ class AuthController extends BaseAuthController
             // Decrypt the email
             $email = Crypt::decrypt($request->eid);
 
-            $user = User::where('email', $email)->firstOrFail();
+            // eid must belong to the user in this session: attempt limits are counted for that user.
+            $user = User::where('email', $email)->where('id', Session::get('verification_user_id'))->firstOrFail();
 
             $account = AccountActivate::where('email', $email)->latest()->firstOrFail(['token', 'updated_at']);
 

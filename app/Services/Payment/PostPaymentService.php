@@ -96,14 +96,44 @@ class PostPaymentService
                 OrderInvoiceRelation::where('invoice_id', $invoice->id)->pluck('order_id')
             )->whereIn('product', cloudPopupProducts())->value('number');
 
-            new TenantController(new Client, new FaveoCloud)->createTenant(
-                new Request(['orderNo' => $orderNumber, 'domain' => $invoice->cloud_domain])
-            );
+            if ($orderNumber) {
+                $this->provisionCloudTenantAfterCommit($invoice, (string) $orderNumber);
+            }
         }
 
         $this->activateRazorpayAutoRenewalOptIn($invoice, $gateway);
 
         return ['status' => 'success'];
+    }
+
+    /**
+     * Create the cloud tenant only once the order and its license are committed.
+     *
+     * InvoicePaymentService::confirm() runs fulfilment inside a DB transaction. The
+     * cloud server provisions the tenant synchronously and the new instance calls
+     * straight back to /api/licenseInstall on a separate DB connection, so a license
+     * inserted in the still-open transaction is invisible to it ("License not found"),
+     * the instance lands on its licence error page and no installation row is ever
+     * written — which is what the Tenants page needs to map the tenant to its order.
+     * afterCommit() runs the callback immediately when no transaction is open
+     * (e.g. the credit-balance path), so both callers are covered.
+     */
+    private function provisionCloudTenantAfterCommit(Invoice $invoice, string $orderNumber): void
+    {
+        $domain = (string) $invoice->cloud_domain;
+
+        DB::afterCommit(function () use ($orderNumber, $domain): void {
+            try {
+                new TenantController(new Client, new FaveoCloud)->createTenant(
+                    new Request(['orderNo' => $orderNumber, 'domain' => $domain])
+                );
+            } catch (Throwable $throwable) {
+                // The payment and order are already committed; a provisioning failure
+                // must not surface as a failed payment. createTenant() logs its own
+                // failures and posts to Google Chat; this only catches what escapes it.
+                Logger::exception($throwable);
+            }
+        });
     }
 
     /**

@@ -7,10 +7,16 @@ namespace Tests\Unit\Backend\Services\Payment;
 use App\Model\Cart\Cart;
 use App\Model\Cart\CartItem;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
+use App\Model\Payment\Plan;
+use App\Model\Product\CloudProducts;
+use App\Model\Product\Product;
 use App\Services\Payment\AutoRenewalActivationService;
 use App\Services\Payment\PostPaymentService;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Tests\DBTestCase;
 
@@ -322,6 +328,39 @@ class PostPaymentServiceTest extends DBTestCase
         } catch (\Throwable $e) {
             $this->assertTrue(true);
         }
+    }
+
+    /**
+     * The cloud server provisions the tenant synchronously and the new instance calls
+     * back to /api/licenseInstall on another DB connection. If the tenant is created
+     * while the payment transaction is still open, that callback can't see the license
+     * ("License not found") and the tenant never gets mapped to its order.
+     */
+    public function test_cloud_tenant_creation_is_deferred_until_the_payment_transaction_commits(): void
+    {
+        $this->getLoggedInUser('user');
+        $product = Product::factory()->create();
+        $plan = Plan::factory()->create(['product' => $product->id]);
+        CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $plan->id]);
+
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->create([
+            'user_id' => $this->user->id, 'grand_total' => 100.0, 'status' => 'pending', 'cloud_domain' => '-rejected-',
+        ]);
+        // An already-executed order keeps executeOrders() out of the picture.
+        $order = Order::factory()->create(['product' => $product->id, 'client' => $this->user->id, 'order_status' => 'executed']);
+        OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $invoice->id]);
+
+        $pending = static fn (): int => count(app('db.transactions')->callbackApplicableTransactions()->last()?->getCallbacks() ?? []);
+
+        $added = null;
+        DB::transaction(function () use ($invoice, $pending, &$added): void {
+            $before = $pending();
+            $this->service->handle($invoice, 'Stripe');
+            $added = $pending() - $before;
+        });
+
+        $this->assertGreaterThanOrEqual(1, $added, 'tenant creation must wait for the commit, not run inside the transaction');
     }
 
     // =========================================================================

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Backend\Http\Controllers\Report;
 
+use Illuminate\Support\Facades\File;
 use App\ExportDetail;
 use App\ReportSetting;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -63,7 +64,9 @@ class ReportControllerTest extends DBTestCase
     public function test_it_deletes_bulk_reports_successfully(): void
     {
         $folderName = 'users_export_'.auth()->id().'_'.now()->format('Ymd_His').'_XLSX';
-        $folderPath = storage_path('app/public/export/'.$folderName);
+        $folderPath = storage_path('app/exports/'.$folderName);
+        File::ensureDirectoryExists($folderPath);
+        file_put_contents($folderPath.'/users_part1.xlsx', 'dummy');
 
         $report = ExportDetail::create([
             'user_id' => auth()->id(),
@@ -84,6 +87,7 @@ class ReportControllerTest extends DBTestCase
         $this->assertDatabaseMissing('export_details', [
             'id' => $report->id,
         ]);
+        $this->assertDirectoryDoesNotExist($folderPath);
     }
 
     public function test_it_deletes_report_and_removes_existing_file(): void
@@ -101,9 +105,8 @@ class ReportControllerTest extends DBTestCase
 
         $response = $this->deleteJson('/reports', ['select' => [$report->id]]);
 
-        @unlink($filePath);
-
         $response->assertStatus(200)->assertJson(['success' => true]);
+        $this->assertFileDoesNotExist($filePath);
     }
 
     public function test_it_returns_error_if_bulk_delete_has_no_ids(): void

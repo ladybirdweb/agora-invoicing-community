@@ -235,7 +235,7 @@ class OrderController extends BaseOrderController
         ];
     }
 
-    public function getOrder(int $id): JsonResponse
+    public function getOrder(int $id, LicenseService $licenseService): JsonResponse
     {
         $order = $this->order
             ->with([
@@ -263,7 +263,7 @@ class OrderController extends BaseOrderController
             ->orderBy('id', 'desc')
             ->first(['payment_method', 'date']);
 
-        $license = resolve(LicenseService::class)->findByCode($order->serial_key);
+        $license = $licenseService->findByCode($order->serial_key);
 
         return successResponse('', [
             'order' => $order,

@@ -201,7 +201,7 @@ class ClientController extends BaseClientController
      * Single order's full detail (license, autorenew, WhatsApp, deploy info,
      * etc.) — split out from getClientOrder() below, which is list-only.
      */
-    public function getClientOrderDetail(int $id): JsonResponse
+    public function getClientOrderDetail(string $id): JsonResponse
     {
         $order = $this->getClientPanelOrdersData()->where('id', $id)->first();
         if (! $order) {

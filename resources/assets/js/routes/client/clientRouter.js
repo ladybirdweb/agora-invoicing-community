@@ -62,11 +62,10 @@ const router = createRouter({
     history: createWebHistory(base),
     routes,
     // New page → top; Back/Forward → where the user was; same page with only the query/hash
-    // changed (filters, tabs, pagination) → stay put.
+    // changed (filters, tabs, pagination) → stay put ({} = scrollTo with no top/left, i.e. no move).
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) return savedPosition
-        if (to.path === from.path) return false
-        return { top: 0 }
+        return to.path === from.path ? {} : { top: 0 }
     },
 })
 

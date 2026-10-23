@@ -40,22 +40,6 @@ class LicenseApiController extends Controller
     }
 
     /**
-     * GET|POST /api/pluginLicense.
-     */
-    public function pluginLicense(Request $request): JsonResponse
-    {
-        $licenseCodes = $request->input('license_code', $request->input('license_codes', []));
-
-        if (is_string($licenseCodes)) {
-            $licenseCodes = json_decode($licenseCodes, associative: true) ?? [$licenseCodes];
-        }
-
-        $result = $this->licenseService->getPluginLicenses($licenseCodes);
-
-        return successResponse('', $result);
-    }
-
-    /**
      * POST /api/LicenseReissue.
      */
     public function reissueLicenseCloud(Request $request): JsonResponse

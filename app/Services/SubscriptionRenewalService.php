@@ -13,6 +13,10 @@ use Throwable;
 
 class SubscriptionRenewalService
 {
+    public function __construct(private LicenseService $licenseService, private InstallationService $installService)
+    {
+    }
+
     /**
      * Extend subscription dates by the plan's days, then sync with the license server.
      *
@@ -82,17 +86,16 @@ class SubscriptionRenewalService
 
     public function updateInstallationLimit(Subscription $sub, int $limit): void
     {
-        $licenseService = resolve(LicenseService::class);
         /** @var Order $order */
         $order = Order::find($sub->order_id);
         $ipAndDomain = LicenseService::parseIpAndDomain($order->domain);
-        $existingLicense = $licenseService->findByCode($order->serial_key);
+        $existingLicense = $this->licenseService->findByCode($order->serial_key);
 
         if (! $existingLicense) {
             return;
         }
 
-        $licenseService->update($existingLicense->id, [
+        $this->licenseService->update($existingLicense->id, [
             'license_order_number' => $order->number,
             'license_domain' => $ipAndDomain['domain'],
             'license_ip' => $ipAndDomain['ip'],
@@ -122,8 +125,6 @@ class SubscriptionRenewalService
     private function syncLicenseServer(Subscription $sub, mixed $licenseExpiry, mixed $updatesExpiry, mixed $supportExpiry): void
     {
         try {
-            $installService = resolve(InstallationService::class);
-            $licenseService = resolve(LicenseService::class);
 
             /** @var Order $subOrder */
             $subOrder = $sub->order;
@@ -131,13 +132,13 @@ class SubscriptionRenewalService
             $domain = $subOrder->domain;
             $orderNo = $subOrder->number;
             $ipAndDomain = LicenseService::parseIpAndDomain($domain);
-            $existingLicense = $licenseService->findByCode($licenseCode);
+            $existingLicense = $this->licenseService->findByCode($licenseCode);
 
             if (! $existingLicense) {
                 return;
             }
 
-            $licenseService->update($existingLicense->id, [
+            $this->licenseService->update($existingLicense->id, [
                 'license_order_number' => $orderNo,
                 'license_domain' => $ipAndDomain['domain'],
                 'license_ip' => $ipAndDomain['ip'],
@@ -145,7 +146,7 @@ class SubscriptionRenewalService
                 'license_expire_date' => $licenseExpiry ? Date::parse($licenseExpiry)->format('Y-m-d') : null,
                 'license_updates_date' => $updatesExpiry ? Date::parse($updatesExpiry)->format('Y-m-d') : null,
                 'license_support_date' => $supportExpiry ? Date::parse($supportExpiry)->format('Y-m-d') : null,
-                'license_limit' => $installService->countActiveInstallations($licenseCode) ?: 2,
+                'license_limit' => $this->installService->countActiveInstallations($licenseCode) ?: 2,
             ]);
         } catch (Throwable $throwable) {
             Logger::exception($throwable);

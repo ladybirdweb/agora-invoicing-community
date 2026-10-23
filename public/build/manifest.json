@@ -3393,7 +3393,7 @@
     "src": "node_modules/intl-tel-input/dist/img/flags@2x.webp"
   },
   "resources/assets/js/admin.js": {
-    "file": "assets/admin-B99DqPQd.js",
+    "file": "assets/admin-NDULiHGW.js",
     "name": "admin",
     "src": "resources/assets/js/admin.js",
     "isEntry": true,
@@ -3541,7 +3541,7 @@
     ]
   },
   "resources/assets/js/client.js": {
-    "file": "assets/client-O-41mVZ4.js",
+    "file": "assets/client-BWWXkXtR.js",
     "name": "client",
     "src": "resources/assets/js/client.js",
     "isEntry": true,
@@ -4311,7 +4311,7 @@
     ]
   },
   "resources/assets/js/pages/admin/invoices/InvoiceIndex.vue": {
-    "file": "assets/InvoiceIndex-CGhNdgj1.js",
+    "file": "assets/InvoiceIndex-hLZBlM9_.js",
     "name": "InvoiceIndex",
     "src": "resources/assets/js/pages/admin/invoices/InvoiceIndex.vue",
     "isDynamicEntry": true,
@@ -4353,7 +4353,7 @@
     ]
   },
   "resources/assets/js/pages/admin/orders/OrderIndex.vue": {
-    "file": "assets/OrderIndex-CfzldlfU.js",
+    "file": "assets/OrderIndex-C2fTc8ag.js",
     "name": "OrderIndex",
     "src": "resources/assets/js/pages/admin/orders/OrderIndex.vue",
     "isDynamicEntry": true,
@@ -5833,7 +5833,7 @@
     ]
   },
   "resources/assets/js/pages/admin/users/UserIndex.vue": {
-    "file": "assets/UserIndex-CSu8IcAL.js",
+    "file": "assets/UserIndex-CKbXEAdg.js",
     "name": "UserIndex",
     "src": "resources/assets/js/pages/admin/users/UserIndex.vue",
     "isDynamicEntry": true,
@@ -6061,7 +6061,7 @@
     ]
   },
   "resources/assets/js/pages/client/checkout/CheckoutPage.vue": {
-    "file": "assets/CheckoutPage-iERhe5M_.js",
+    "file": "assets/CheckoutPage-CVu7-d0g.js",
     "name": "CheckoutPage",
     "src": "resources/assets/js/pages/client/checkout/CheckoutPage.vue",
     "isDynamicEntry": true,
@@ -6077,7 +6077,7 @@
       "_Modal-BM66qobF.js"
     ],
     "css": [
-      "assets/CheckoutPage-CpeUzVnU.css"
+      "assets/CheckoutPage-DyLAZpR3.css"
     ]
   },
   "resources/assets/js/pages/client/checkout/PaymentSuccessPage.vue": {
@@ -6241,7 +6241,7 @@
     ]
   },
   "resources/assets/js/pages/client/orders/OrderShow.vue": {
-    "file": "assets/OrderShow-T2nNRDKS.js",
+    "file": "assets/OrderShow-4rcQtFFv.js",
     "name": "OrderShow",
     "src": "resources/assets/js/pages/client/orders/OrderShow.vue",
     "isDynamicEntry": true,
@@ -6265,7 +6265,7 @@
       "_RenewModal-CwXIwfmY.js"
     ],
     "css": [
-      "assets/OrderShow-DbEUXyGj.css"
+      "assets/OrderShow-D59458Y4.css"
     ]
   },
   "resources/assets/js/pages/client/pages/ContactUsPage.vue": {
@@ -6292,7 +6292,7 @@
     ]
   },
   "resources/assets/js/pages/client/pages/PageView.vue": {
-    "file": "assets/PageView-Cb_F5Enm.js",
+    "file": "assets/PageView-CqYBG-Ov.js",
     "name": "PageView",
     "src": "resources/assets/js/pages/client/pages/PageView.vue",
     "isDynamicEntry": true,

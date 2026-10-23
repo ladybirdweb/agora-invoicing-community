@@ -933,7 +933,7 @@ class HomeControllerTest extends DBTestCase
         ]);
 
         $controller = new \App\Http\Controllers\HomeController;
-        $result = $controller->updateLicenseCode($request);
+        $result = $controller->updateLicenseCode($request, app(\App\License\Services\LicenseService::class));
         $this->assertNull($result);
     }
 

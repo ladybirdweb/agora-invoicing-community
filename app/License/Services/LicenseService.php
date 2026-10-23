@@ -87,8 +87,7 @@ class LicenseService
     }
 
     /**
-     * Get plugin licenses for given license codes
-     * Mirrors: GET /api/pluginLicense.
+     * Get plugin licenses for given license codes (used by GET /api/pluginInfo).
      *
      * @param  array<mixed>  $licenseCodes
      * @return array<mixed>
@@ -119,6 +118,10 @@ class LicenseService
                         'product_id' => $product->id,
                         'product_name' => $product->name ?? $product->product_title ?? '',
                         'product_sku' => $product->product_sku ?? '',
+                        'product_key' => $product->product_key,
+                        'product_description' => $product->product_description,
+                        'license_code' => $license->license_code,
+                        'path' => $product->product_path,
                         'latest_version' => $latestVersion ? $latestVersion->version : null,
                         'latest_version_file' => $latestVersion ? $latestVersion->file : null,
                     ];

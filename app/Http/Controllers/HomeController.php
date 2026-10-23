@@ -623,7 +623,7 @@ class HomeController extends BaseHomeController
         ]);
     }
 
-    public function getDetailsForAClient(Request $request): string
+    public function getDetailsForAClient(Request $request, LicenseService $licenseService): string
     {
         $client = $request->input('client');
 
@@ -653,7 +653,7 @@ class HomeController extends BaseHomeController
 
         $licenses = array_merge([$license], $licenses);
 
-        $pluginLicenses = resolve(LicenseService::class)->getPluginLicenses($licenses);
+        $pluginLicenses = $licenseService->getPluginLicenses($licenses);
 
         $updatedProducts = [];
         foreach ($pluginLicenses as $real) {

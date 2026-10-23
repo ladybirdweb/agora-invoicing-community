@@ -39,6 +39,39 @@ class DatabaseSeeder extends Seeder
         $this->backfillSelectedTemplates();
         $this->moveCronSettingsToConditions();
         $this->seedMobileVerificationStatus();
+        $this->moveExportsOutOfPublicStorage();
+    }
+
+    /**
+     * Report exports used to be written under storage/app/public/export, which the public/storage
+     * symlink serves to anyone without login. Move them to storage/app/exports (reachable only via
+     * the admin download route) and point the stored paths there, and delete leftover localized-license
+     * key files. Safe to run again.
+     */
+    public function moveExportsOutOfPublicStorage(): void
+    {
+        $old = storage_path('app/public/export');
+        $new = storage_path('app/exports');
+
+        if (File::isDirectory($old)) {
+            File::ensureDirectoryExists($new);
+            foreach (File::directories($old) as $dir) {
+                File::moveDirectory($dir, $new.'/'.basename($dir), overwrite: true);
+            }
+            foreach (File::files($old) as $file) {
+                File::move($file->getPathname(), $new.'/'.$file->getFilename());
+            }
+            File::deleteDirectory($old);
+        }
+
+        // Match the suffix only: rows may carry the absolute path of an older install location.
+        DB::table('export_details')
+            ->where('file_path', 'like', '%/storage/app/public/export/%')
+            ->update(['file_path' => DB::raw("REPLACE(file_path, '/storage/app/public/export/', '/storage/app/exports/')")]);
+
+        // The removed localized-license feature left per-order RSA key pairs and license files
+        // in the same public folder. Nothing reads them any more, so delete them.
+        File::delete(File::glob(storage_path('app/public/{privateKey-,publicKey-,faveo-license-}*.txt'), GLOB_BRACE));
     }
 
     /**

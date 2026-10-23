@@ -25,7 +25,7 @@ class DownloadExportedFileTest extends DBTestCase
         $this->getLoggedInUser('admin');
 
         $this->tmp = sys_get_temp_dir().'/export_dl_'.uniqid();
-        File::makeDirectory($this->tmp.'/storage/app/public/export', recursive: true);
+        File::makeDirectory($this->tmp.'/storage/app/exports', recursive: true);
         File::makeDirectory($this->tmp.'/source/sub', recursive: true);
         File::put($this->tmp.'/source/users.csv', 'a,b');
         File::put($this->tmp.'/source/sub/orders.csv', 'c,d');
@@ -99,14 +99,14 @@ class DownloadExportedFileTest extends DBTestCase
     public function test_a_zip_that_cannot_be_opened_is_reported(): void
     {
         $export = $this->export($this->tmp.'/source');
-        File::makeDirectory($this->tmp.'/storage/app/public/export/'.$export->file.'.zip'); // a folder where the zip should go
+        File::makeDirectory($this->tmp.'/storage/app/exports/'.$export->file.'.zip'); // a folder where the zip should go
 
         $this->getJson('/download-exported-file/'.$export->id)->assertJson(['success' => false, 'message' => __('message.failed_create_zip_file')]);
     }
 
     public function test_a_missing_export_folder_fails_on_close_as_a_general_export_error(): void
     {
-        File::deleteDirectory($this->tmp.'/storage/app/public/export');
+        File::deleteDirectory($this->tmp.'/storage/app/exports');
         $export = $this->export($this->tmp.'/source');
 
         $this->getJson('/download-exported-file/'.$export->id)->assertJson(['success' => false, 'message' => __('message.export_failed').__('message.sorry_something_wrong')]);

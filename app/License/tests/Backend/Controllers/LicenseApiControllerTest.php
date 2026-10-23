@@ -36,23 +36,6 @@ class LicenseApiControllerTest extends LicenseTestCase
 
     #[Test]
     #[Group('license-api')]
-    public function plugin_license_accepts_json_string_codes(): void
-    {
-        $service = Mockery::mock(LicenseService::class);
-        $service->shouldReceive('getPluginLicenses')->once()->with(['LIC-A', 'LIC-B'])->andReturn([
-            ['product_id' => 10],
-        ]);
-
-        $response = new LicenseApiController($service)->pluginLicense($this->moduleRequest([
-            'license_code' => json_encode(['LIC-A', 'LIC-B']),
-        ], 'POST'));
-        $json = $this->assertSuccessfulJson($response);
-
-        $this->assertSame(10, $json['data'][0]['product_id']);
-    }
-
-    #[Test]
-    #[Group('license-api')]
     public function reissue_license_cloud_deletes_installations_through_service(): void
     {
         $service = Mockery::mock(LicenseService::class);

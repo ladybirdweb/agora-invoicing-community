@@ -181,6 +181,12 @@ class ClientControllerTest extends DBTestCase
             ->assertJson(['success' => false]);
     }
 
+    public function test_get_client_order_detail_returns_404_for_non_numeric_id(): void
+    {
+        // The SPA once sent /get-my-order/undefined while navigating away; that used to 500.
+        $this->getJson('/get-my-order/undefined')->assertStatus(404);
+    }
+
     public function test_get_client_order_detail_returns_single_order(): void
     {
         $product = Product::first() ?? Product::create(['name' => 'Test Product '.uniqid()]);

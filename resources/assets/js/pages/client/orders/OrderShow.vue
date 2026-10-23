@@ -40,9 +40,9 @@
             <!-- Instance deleted (expiry cron, or by the client/admin): the order still reads
                  "Executed", so say why Renew is gone and the helpdesk no longer loads. -->
             <div v-if="order.is_cloud_deleted && order.status !== 'Terminated'" class="row justify-content-center mb-4">
-                <div class="col-lg-12 alert alert-secondary mb-0">
+                <div class="col-lg-12 alert alert-danger mb-0">
                     <strong>{{ __('message.instance_deleted') }}</strong>
-                    <p class="mb-0 mt-1">{{ __('message.cloud_instance_deleted_no_renew') }}</p>
+                    <p class="mb-0 mt-1 text-reset">{{ __('message.cloud_instance_deleted_no_renew') }}</p>
                 </div>
             </div>
 
@@ -1559,6 +1559,8 @@ async function submitPlan() {
 // #X" link) — since Vue Router reuses this component instance rather than
 // remounting it for a same-route param change.
 watch(orderId, async () => {
+    // Navigating away (e.g. back to /my-orders) clears the param before this page unmounts.
+    if (!orderId.value) return
     loading.value = true
     activeTab.value = route.query.tab || 'license'
     // Cloud tab data belongs to whichever order was open before — drop it so

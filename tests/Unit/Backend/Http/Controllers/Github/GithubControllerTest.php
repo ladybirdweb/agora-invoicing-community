@@ -23,6 +23,18 @@ class GithubControllerTest extends DBTestCase
         parent::tearDown();
     }
 
+    public function test_releases_throws_when_github_returns_an_error_object(): void
+    {
+        \App\Model\Github\Github::firstOrCreate(['id' => 1], ['username' => 'test', 'password' => 'test']);
+        Http::fake([
+            'api.github.com/repos/owner/missing/releases*' => Http::response(['message' => 'Not Found', 'documentation_url' => 'https://docs.github.com'], 404),
+        ]);
+
+        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+
+        resolve(\App\Http\Controllers\Github\GithubApiController::class)->releases('owner', 'missing');
+    }
+
     public function test_post_settings_returns_error_when_credentials_invalid(): void
     {
         Http::fake([

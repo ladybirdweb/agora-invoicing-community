@@ -83,7 +83,8 @@ class ReportController extends Controller
                 foreach ($reports as $report) {
                     if (file_exists($report->file_path)) {
                         $relativeFilePath = str_replace(storage_path('app/'), '', $report->file_path);
-                        Storage::delete($relativeFilePath);
+                        // Exports are folders of xlsx parts; Storage::delete() alone leaves them on disk.
+                        is_dir($report->file_path) ? Storage::deleteDirectory($relativeFilePath) : Storage::delete($relativeFilePath);
                     }
 
                     $report->delete();

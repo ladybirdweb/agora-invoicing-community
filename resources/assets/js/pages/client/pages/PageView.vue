@@ -57,7 +57,8 @@ async function loadPage(slug) {
 }
 
 // Re-fetch when navigating directly between pages (slug changes, same route).
-watch(() => route.params.slug, (slug) => loadPage(slug), { immediate: true })
+// slug is gone when navigating away (the route updates before this page unmounts).
+watch(() => route.params.slug, (slug) => slug && loadPage(slug), { immediate: true })
 
 // Clear the override when leaving so other routes keep their own titles.
 onUnmounted(() => setPageTitle(null))

@@ -74,8 +74,6 @@ Route::middleware('throttle:10,1')->group(function (): void {
 Route::middleware('throttle:120,1')->group(function (): void {
     Route::get('/api/IndividuallicenseInfo', [LicenseApiController::class, 'individualLicenseInfo']);
     Route::get('/api/getOrder', [LicenseApiController::class, 'getOrder']);
-    Route::get('/api/pluginLicense', [LicenseApiController::class, 'pluginLicense']);
-    Route::post('/api/pluginLicense', [LicenseApiController::class, 'pluginLicense']);
     Route::post('/api/LicenseReissue', [LicenseApiController::class, 'reissueLicenseCloud']);
 });
 

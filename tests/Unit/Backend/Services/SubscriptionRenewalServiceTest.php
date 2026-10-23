@@ -23,7 +23,7 @@ class SubscriptionRenewalServiceTest extends DBTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new SubscriptionRenewalService();
+        $this->service = app(SubscriptionRenewalService::class);
     }
 
     private function makeSubscription(array $attrs = []): Subscription

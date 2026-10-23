@@ -161,7 +161,7 @@ class ClientController extends AdvanceSearchController
             }
 
             $zipFileName = $exportDetail->file.'.zip';
-            $zipFilePath = storage_path('app/public/export/'.$zipFileName);
+            $zipFilePath = storage_path('app/exports/'.$zipFileName);
             if (! $this->zipExport($filePath, $zipFilePath)) {
                 return errorResponse(__('message.failed_create_zip_file'));
             }

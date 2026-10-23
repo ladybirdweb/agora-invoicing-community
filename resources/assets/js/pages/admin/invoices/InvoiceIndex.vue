@@ -108,7 +108,10 @@ function parseInvoiceQuery(query) {
 
 const activeFilters = ref(parseInvoiceQuery(route.query))
 
+// Skip the change caused by navigating away (the route updates before this page unmounts).
+const ownPath = route.path
 watch(() => route.query, (newQuery) => {
+    if (route.path !== ownPath) return
     activeFilters.value = parseInvoiceQuery(newQuery)
     dtRef.value?.refresh()
 }, { deep: true })

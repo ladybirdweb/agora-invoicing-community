@@ -279,7 +279,7 @@ class BaseHomeController extends Controller
         return is_string($ip) ? $ip : null;
     }
 
-    public function updateLicenseCode(Request $request): ?JsonResponse
+    public function updateLicenseCode(Request $request, LicenseService $licenseService): ?JsonResponse
     {
         try {
             $licCode = $request->input('licenseCode'); // The license code already existing for older client
@@ -297,7 +297,7 @@ class BaseHomeController extends Controller
                 $licExpiry = $this->getLicenseExpiryDate($existingLicense);
                 $updExpiry = $this->getUpdatesExpiryDate($existingLicense);
                 $supExpiry = $this->getSupportExpiryDate($existingLicense);
-                resolve(LicenseService::class)->create([
+                $licenseService->create([
                     'product_id' => $existingLicense->product,
                     'user_id' => $existingLicense->client,
                     'license_code' => $serial_key,

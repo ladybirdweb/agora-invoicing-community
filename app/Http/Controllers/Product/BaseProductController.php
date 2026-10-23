@@ -269,11 +269,11 @@ class BaseProductController extends ExtendedBaseProductController
         return ['agent' => $agentModifyPermission, 'quantity' => $quantityModifyPermission];
     }
 
-    public function getProductUsingLicenseCode(Request $request): JsonResponse
+    public function getProductUsingLicenseCode(Request $request, LicenseService $licenseService): JsonResponse
     {
         $license_code = $request->input('license_code');
 
-        $licenseRecord = resolve(LicenseService::class)->findByCode($license_code);
+        $licenseRecord = $licenseService->findByCode($license_code);
         $product = $licenseRecord ? [collect($licenseRecord)->toArray()] : [];
 
         if ($product === []) {

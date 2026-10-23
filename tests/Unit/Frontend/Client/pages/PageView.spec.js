@@ -1,10 +1,10 @@
 jest.mock('@/helpers/extraLogics', () => ({ lang: (key) => key, getIdFromUrl: jest.fn(() => 0) }))
 jest.mock('@/helpers/responseHandler', () => ({ successHandler: jest.fn(), errorHandler: jest.fn() }))
 jest.mock('@/helpers/formUtils.js', () => ({ validateForm: jest.fn(() => Promise.resolve(true)), scrollToFirstError: jest.fn() }))
-jest.mock('vue-router', () => ({
-    useRouter: () => ({ push: jest.fn() }),
-    useRoute: () => ({ params: { slug: 'about-us' }, query: {} }),
-}))
+jest.mock('vue-router', () => {
+    const route = require('vue').reactive({ params: { slug: 'about-us' }, query: {} })
+    return { useRouter: () => ({ push: jest.fn() }), useRoute: () => route, mockRoute: route }
+})
 jest.mock('@/core/composables/useBreadcrumb.js', () => ({ setPageTitle: jest.fn() }))
 
 import { mount } from '@vue/test-utils'
@@ -39,6 +39,18 @@ describe('PageView.vue', () => {
     afterEach(() => {
         axiosMock.restore()
         jest.clearAllMocks()
+    })
+
+    it('does not fetch when navigating away clears the slug', async () => {
+        const { mockRoute } = require('vue-router')
+        await flushPromises()
+        axiosMock.resetHistory()
+
+        mockRoute.params = {}
+        await flushPromises()
+        mockRoute.params = { slug: 'about-us' }
+
+        expect(axiosMock.history.get).toHaveLength(0)
     })
 
     it('is a vue instance', () => {

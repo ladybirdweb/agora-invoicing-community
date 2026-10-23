@@ -342,7 +342,10 @@ watch(isEmpty, (empty) => { if (empty) window.scrollTo({ top: 0 }) })
 
 // Re-run whenever the invoice id changes — including switching from one
 // invoice straight to another, or from an invoice back to plain cart checkout.
+const ownPath = route.path
 watch(invoiceId, (id) => {
+  // Navigating away also clears ?invoice (before unmount) — don't reload the cart for that.
+  if (route.path !== ownPath) return
   selectedGateway.value = null
   useCredit.value = false
   showAutoRenewModal.value = false

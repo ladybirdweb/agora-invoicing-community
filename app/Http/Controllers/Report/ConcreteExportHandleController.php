@@ -183,7 +183,7 @@ class ConcreteExportHandleController extends ExportHandleController
             $id = $user->id;
             $timestamp = now()->format('Ymd_His');
             $folderName = 'users_export_'.$id.'_'.$timestamp.'_XLSX';
-            $folderPath = storage_path('app/public/export/'.$folderName);
+            $folderPath = storage_path('app/exports/'.$folderName);
 
             // Create directory if it doesn't exist
             if (! file_exists($folderPath)) {
@@ -195,7 +195,7 @@ class ConcreteExportHandleController extends ExportHandleController
                 $export = new UsersExport($selectedColumns, $chunk, $index + 1);
                 $fileName = 'users_'.$id.'_part'.($index + 1).'.xlsx';
 
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+                Excel::store($export, 'exports/'.$folderName.'/'.$fileName);
             }
 
             // Save export details
@@ -309,7 +309,7 @@ class ConcreteExportHandleController extends ExportHandleController
             $id = $user->id;
             $timestamp = now()->format('Ymd_His');
             $folderName = 'invoices_export_'.$id.'_'.$timestamp.'_XLSX';
-            $folderPath = storage_path('app/public/export/'.$folderName);
+            $folderPath = storage_path('app/exports/'.$folderName);
 
             // Create directory if it doesn't exist
             if (! file_exists($folderPath)) {
@@ -326,7 +326,7 @@ class ConcreteExportHandleController extends ExportHandleController
                 $export = new InvoiceExport($selectedColumns, $chunk, $index + 1);
                 $fileName = 'invoices_'.$id.'_part'.($index + 1).'.xlsx';
 
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+                Excel::store($export, 'exports/'.$folderName.'/'.$fileName);
             }
 
             // Save export details
@@ -453,7 +453,7 @@ class ConcreteExportHandleController extends ExportHandleController
             $id = $user->id;
             $timestamp = now()->format('Ymd_His');
             $folderName = 'orders_export_'.$id.'_'.$timestamp.'_XLSX';
-            $folderPath = storage_path('app/public/export/'.$folderName);
+            $folderPath = storage_path('app/exports/'.$folderName);
 
             // Create directory if it doesn't exist
             if (! file_exists($folderPath)) {
@@ -470,7 +470,7 @@ class ConcreteExportHandleController extends ExportHandleController
                 $export = new OrderExport($selectedColumns, $chunk, $index + 1);
                 $fileName = 'orders_'.$id.'_part'.($index + 1).'.xlsx';
 
-                Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+                Excel::store($export, 'exports/'.$folderName.'/'.$fileName);
             }
 
             // Create ExportDetail record
@@ -689,7 +689,7 @@ class ConcreteExportHandleController extends ExportHandleController
         $id = $user->id;
         $timestamp = now()->format('Ymd_His');
         $folderName = 'tenants_export_'.$id.'_'.$timestamp.'_XLSX';
-        $folderPath = storage_path('app/public/export/'.$folderName);
+        $folderPath = storage_path('app/exports/'.$folderName);
 
         // Create directory
         if (! file_exists($folderPath)) {
@@ -705,7 +705,7 @@ class ConcreteExportHandleController extends ExportHandleController
             $export = new TenatExport($this->selectedColumns, $chunk, $index + 1);
             $fileName = 'tenants_'.$id.'_part'.($index + 1).'.xlsx';
 
-            Excel::store($export, 'public/export/'.$folderName.'/'.$fileName);
+            Excel::store($export, 'exports/'.$folderName.'/'.$fileName);
         }
 
         $exportDetail = ExportDetail::create([

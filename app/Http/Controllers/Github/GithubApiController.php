@@ -39,13 +39,14 @@ class GithubApiController
 
     /**
      * A repository's releases, newest first — the latest 100 (GitHub's maximum per call;
-     * its default is only 30).
+     * its default is only 30). Throws on a GitHub error (bad repo/token, rate limit), whose
+     * body is an error object, not a release list.
      *
      * @return array<mixed>
      */
     public function releases(string $owner, string $repo): array
     {
-        return $this->http->get(sprintf('/repos/%s/%s/releases', $owner, $repo), ['per_page' => 100])->json() ?? [];
+        return $this->http->get(sprintf('/repos/%s/%s/releases', $owner, $repo), ['per_page' => 100])->throw()->json() ?? [];
     }
 
     /**

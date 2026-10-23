@@ -720,7 +720,7 @@ const tenantTableOptions = reactive({
             onClick: () => confirmDeleteTenant(row.action?.delete?.tenant_id, row.action?.delete?.order_number),
         }, [h('i', { class: 'fas fa-trash' })]),
     },
-    sortable:   [],
+    sortable:   DEFAULT_TENANT_COLUMNS.filter(c => c !== 'action'),
     filterable: true,
     requestAdapter: makeRequestAdapter('created_at'),
     requestFunction(data) {

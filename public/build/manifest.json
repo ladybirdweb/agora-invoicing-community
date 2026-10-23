@@ -3393,7 +3393,7 @@
     "src": "node_modules/intl-tel-input/dist/img/flags@2x.webp"
   },
   "resources/assets/js/admin.js": {
-    "file": "assets/admin-NDULiHGW.js",
+    "file": "assets/admin-B9017gtV.js",
     "name": "admin",
     "src": "resources/assets/js/admin.js",
     "isEntry": true,
@@ -5311,7 +5311,7 @@
     ]
   },
   "resources/assets/js/pages/admin/settings/settings/CloudDetails.vue": {
-    "file": "assets/CloudDetails-62-4Qghk.js",
+    "file": "assets/CloudDetails-B9mtMSdM.js",
     "name": "CloudDetails",
     "src": "resources/assets/js/pages/admin/settings/settings/CloudDetails.vue",
     "isDynamicEntry": true,
@@ -5334,7 +5334,7 @@
       "_ColumnSelector-CwsqKMc6.js"
     ],
     "css": [
-      "assets/CloudDetails-CLi3y0e5.css"
+      "assets/CloudDetails-D303AZTe.css"
     ]
   },
   "resources/assets/js/pages/admin/settings/settings/CompanySettings.vue": {

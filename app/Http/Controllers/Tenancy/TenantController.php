@@ -33,6 +33,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Lang;
@@ -46,6 +47,23 @@ class TenantController extends Controller
     private const AUTO_DELETION = 'Auto deletion';
     private const USERS_PAGE = 'admin/users/';
     private const REASON_SEPARATOR = '. Reason: ';
+    public const TENANTS_CACHE_KEY = 'cloud_tenants';
+
+    /** Tenants table column => where getTenants() keeps its value. */
+    private const TENANT_SORT_KEYS = [
+        'order' => 'order.order_id',
+        'user' => 'user.name',
+        'email' => 'user.email',
+        'mobile' => 'user.mobile',
+        'country' => 'user.country',
+        'expiry' => 'dates.subscription_expiry',
+        'deletion' => 'dates.deletion_date',
+        'plan' => 'order.subscription',
+        'tenant' => 'tenant_id',
+        'domain' => 'domain',
+        'db_name' => 'database.name',
+        'db_username' => 'database.username',
+    ];
 
     private mixed $cloud = null;
 
@@ -76,7 +94,6 @@ class TenantController extends Controller
         try {
             $searchQuery = $request->input('search-query', '');
             $sortOrder = $request->input('sort-order', 'asc');
-            $sortField = $request->input('sort-field', 'created_at');
             $limit = (int) $request->input('limit', 10);
             $page = (int) $request->input('page', 1);
 
@@ -88,20 +105,38 @@ class TenantController extends Controller
                 return errorResponse(__('message.cloud_invalid_message'));
             }
 
-            $response = $this->client->request('GET', // @phpstan-ignore property.notFound
-                $this->cloud->cloud_central_domain.'/tenants',
-                ['query' => ['key' => $keys->app_key]]
-            );
+            // Short cache: paging/searching the table shouldn't re-hit the cloud each time.
+            // Cleared whenever a tenant is created or deleted.
+            $data = Cache::remember(self::TENANTS_CACHE_KEY, 30, function () use ($keys) {
+                $response = $this->client->request('GET', // @phpstan-ignore property.notFound
+                    $this->cloud->cloud_central_domain.'/tenants',
+                    ['query' => ['key' => $keys->app_key]]
+                );
 
-            $data = json_decode((string) $response->getBody(), associative: true);
+                return json_decode((string) $response->getBody(), associative: true);
+            });
 
             $tenants = collect((array) ($data['message'] ?? []))->reject(fn ($t): bool => $t === null);
 
-            $tenantList = $tenants->map(function (array $model): array {
-                $order_id = $this->getOrderId($model['domain']);
-                $order_number = $order_id ? Order::select('id', 'number')->find($order_id)?->number : null;
-                $userData = $this->getUserData($order_id);
-                $subData = $this->getSubscriptionDataForCloud($order_id);
+            // Look everything up in a handful of queries instead of several per tenant.
+            $orderIds = Order::idsForDomains($tenants->pluck('domain')->filter()->values()->all());
+            $orders = Order::with([
+                'user:id,first_name,last_name,email,mobile,mobile_code,country',
+                'subscription:id,order_id,plan_id,ends_at',
+            ])->select('id', 'number', 'client')->findMany(array_values($orderIds))->keyBy('id');
+            $countries = Country::whereIn('country_code_char2', $orders->pluck('user.country')->filter()->unique())
+                ->pluck('country_name', 'country_code_char2');
+            $paidPlanIds = PlanPrice::whereIn('plan_id', $orders->pluck('subscription.plan_id')->filter()->unique())
+                ->latest()->get(['plan_id', 'add_price'])->unique('plan_id')
+                ->filter(fn (PlanPrice $price): bool => (bool) $price->add_price)->pluck('plan_id')->all();
+            $cloudDays = (int) Condition::dayCount('cloud');
+
+            $tenantList = $tenants->map(function (array $model) use ($orderIds, $orders, $countries, $paidPlanIds, $cloudDays): array {
+                $order_id = $orderIds[strtolower((string) ($model['domain'] ?? ''))] ?? null;
+                $order = $order_id ? $orders->get($order_id) : null;
+                $order_number = $order?->number;
+                $userData = $this->getUserData($order?->user, $countries->all());
+                $subData = $this->getSubscriptionDataForCloud($order?->subscription, $paidPlanIds, $cloudDays);
 
                 return [
                     'tenant_id' => $model['id'] ?? null,
@@ -136,11 +171,26 @@ class TenantController extends Controller
             });
 
             if ($searchQuery) {
-                $tenantList = $tenantList->filter(fn ($item): bool => isset($item['user']['name']) &&
-                    str_contains(strtolower($item['user']['name']), strtolower((string) $searchQuery)));
+                $needle = strtolower(trim((string) $searchQuery));
+                $tenantList = $tenantList->filter(fn (array $item): bool => collect([
+                    $item['domain'], $item['tenant_id'], $item['order']['order_number'],
+                    $item['user']['name'] ?? null, $item['user']['email'] ?? null,
+                    $item['database']['name'], $item['database']['username'],
+                ])->contains(fn ($value): bool => str_contains(strtolower((string) $value), $needle)));
             }
 
-            $tenantList = $tenantList->sortBy($sortField, SORT_REGULAR, $sortOrder)->values();
+            // The cloud sends no creation date, so the default "newest" = newest order.
+            // Empty values always go last, whichever direction.
+            $sortKey = self::TENANT_SORT_KEYS[$request->input('sort-field')] ?? 'order.order_id';
+            $value = static function (array $row) use ($sortKey): mixed {
+                $value = data_get($row, $sortKey);
+
+                return is_string($value) ? strtolower($value) : $value;
+            };
+            $tenantList = $tenantList->sortBy([
+                fn (array $a, array $b): int => ($value($a) === null) <=> ($value($b) === null),
+                fn (array $a, array $b): int => $sortOrder === 'asc' ? $value($a) <=> $value($b) : $value($b) <=> $value($a),
+            ])->values();
 
             $total = $tenantList->count();
             $offset = ($page - 1) * $limit;
@@ -162,6 +212,8 @@ class TenantController extends Controller
      */
     public function createTenant(Request $request): JsonResponse // NOSONAR - cloud instance handling, kept as is
     {
+        Cache::forget(self::TENANTS_CACHE_KEY);
+
         $order = Order::where('number', $request->orderNo)->first();
         if (! $order) {
             return errorResponse(__('message.something_went_wrong'));
@@ -347,6 +399,8 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request): JsonResponse
     {
+        Cache::forget(self::TENANTS_CACHE_KEY);
+
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             if (! $keys) {
@@ -503,6 +557,8 @@ class TenantController extends Controller
 
     public function DeleteCloudInstanceForClient(string $orderNumber, bool $isDelete): RedirectResponse|JsonResponse|null // NOSONAR - cloud instance handling, kept as is
     {
+        Cache::forget(self::TENANTS_CACHE_KEY);
+
         if ($isDelete) {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             if (! $keys) {
@@ -740,23 +796,12 @@ class TenantController extends Controller
         }
     }
 
-    private function getOrderId(string $domain): ?int
-    {
-        return Order::idForDomain($domain);
-    }
-
     /**
+     * @param  array<string, string>  $countries  country code => name
      * @return array<mixed>
      */
-    private function getUserData(?int $order_id): ?array
+    private function getUserData(?User $user, array $countries): ?array
     {
-        if (! $order_id) {
-            return null;
-        }
-
-        $userId = Order::where('id', $order_id)->value('client');
-        $user = User::select('id', 'first_name', 'last_name', 'email', 'mobile', 'mobile_code', 'country')->find($userId);
-
         if (! $user instanceof User) {
             return null;
         }
@@ -768,38 +813,27 @@ class TenantController extends Controller
             'mobile' => ($user->mobile_code && $user->mobile)
                 ? '+'.$user->mobile_code.' '.$user->mobile
                 : null,
-            'country' => Country::where('country_code_char2', $user->country)->value('country_name'),
+            'country' => $countries[$user->country] ?? null,
             'profile' => url(self::USERS_PAGE.$user->id),
         ];
     }
 
     /**
+     * @param  array<int, mixed>  $paidPlanIds
      * @return array<mixed>
      */
-    private function getSubscriptionDataForCloud(?int $order_id): ?array
+    private function getSubscriptionDataForCloud(?Subscription $subscription, array $paidPlanIds, int $cloudDays): ?array
     {
-        if (! $order_id) {
+        if (! $subscription instanceof Subscription) {
             return null;
         }
-
-        $subscription = Subscription::select('id', 'order_id', 'plan_id', 'ends_at')->where('order_id', $order_id)->first();
-
-        if (! $subscription) {
-            return null;
-        }
-
-        $plan_id = $subscription->plan_id;
-        $price = PlanPrice::where('plan_id', $plan_id)->latest()->value('add_price');
-        $plan = $price ? 'Paid Subscription' : 'Free Trial';
 
         $expiry = Date::parse($subscription->ends_at);
-        $cloud_days = (int) Condition::dayCount('cloud');
-        $deletion_date = $cloud_days !== 0 ? $expiry->copy()->addDays($cloud_days)->toISOString() : null;
 
         return [
             'subscription_expiry' => $expiry->toISOString(),
-            'deletion_date' => $deletion_date,
-            'plan' => $plan,
+            'deletion_date' => $cloudDays !== 0 ? $expiry->copy()->addDays($cloudDays)->toISOString() : null,
+            'plan' => in_array($subscription->plan_id, $paidPlanIds) ? 'Paid Subscription' : 'Free Trial',
         ];
     }
 

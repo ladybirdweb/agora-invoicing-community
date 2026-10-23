@@ -210,6 +210,7 @@ class CloudExtraActivities extends Controller
                 'product_id' => $order->getRawOriginal('product'),
             ]);
 
+            \Cache::forget(TenantController::TENANTS_CACHE_KEY);
             $this->jobsForCloudDomain($newDomain);
 
             return successResponse(trans('message.cloud_domain_change'));

@@ -318,16 +318,33 @@ class Order extends BaseModel
      */
     public static function idForDomain(string $domain): ?int
     {
-        $codes = Installation::where('installation_domain', $domain)->select('license_code')
-            ->union(InstallationLog::where('installation_domain', $domain)->select('license_code'));
+        return static::idsForDomains([$domain])[strtolower($domain)] ?? null;
+    }
 
-        $id = static::join('licenses', 'licenses.license_order_number', '=', 'orders.number')
-            ->whereIn('licenses.license_code', $codes)
+    /**
+     * {@see idForDomain} for many domains in one query.
+     *
+     * @param  array<int, string>  $domains
+     * @return array<string, int> lower-cased domain => order id
+     */
+    public static function idsForDomains(array $domains): array
+    {
+        if ($domains === []) {
+            return [];
+        }
+
+        $codes = Installation::whereIn('installation_domain', $domains)->select('installation_domain', 'license_code')
+            ->union(InstallationLog::whereIn('installation_domain', $domains)->select('installation_domain', 'license_code'));
+
+        return \DB::query()->fromSub($codes, 'd')
+            ->join('licenses', 'licenses.license_code', '=', 'd.license_code')
+            ->join('orders', 'orders.number', '=', 'licenses.license_order_number')
             ->whereIn('orders.product', cloudPopupProducts())
-            ->latest('orders.id')
-            ->value('orders.id');
-
-        return $id === null ? null : (int) $id;
+            ->groupBy('d.installation_domain')
+            ->selectRaw('d.installation_domain as domain, MAX(orders.id) as id')
+            ->pluck('id', 'domain')
+            ->mapWithKeys(fn ($id, $domain): array => [strtolower((string) $domain) => (int) $id])
+            ->all();
     }
 
     #[Override]

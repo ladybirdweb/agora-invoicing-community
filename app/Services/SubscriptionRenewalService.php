@@ -125,7 +125,6 @@ class SubscriptionRenewalService
     private function syncLicenseServer(Subscription $sub, mixed $licenseExpiry, mixed $updatesExpiry, mixed $supportExpiry): void
     {
         try {
-
             /** @var Order $subOrder */
             $subOrder = $sub->order;
             $licenseCode = $subOrder->serial_key;

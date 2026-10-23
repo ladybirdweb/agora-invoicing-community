@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Backend\Http\Controllers\Report;
 
-use Illuminate\Support\Facades\File;
 use App\ExportDetail;
 use App\ReportSetting;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\File;
 use Tests\DBTestCase;
 
 class ReportControllerTest extends DBTestCase

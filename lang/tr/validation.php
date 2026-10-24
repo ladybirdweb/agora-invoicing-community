@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Kullanım alanı zorunludur.',
             'numeric' => 'Kullanım alanı bir sayı olmalıdır.',
+            'integer' => 'Kullanım alanı tam sayı olmalıdır.',
             'min' => 'Kullanım alanı en az :min olmalıdır.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Ülke Hindistan olduğunda, eyalet alanı zorunludur.',
+        ],
+        'role' => [
+            'required' => 'Rol alanı zorunludur.',
         ],
         'timezone_id' => [
             'required' => 'Zaman dilimi alanı zorunludur.',

@@ -176,6 +176,42 @@ class CampaignsTest extends DBTestCase
         Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'tag/add'));
     }
 
+    public function test_it_creates_tag_when_zoho_reports_missing_tag_as_993(): void
+    {
+        Http::fake([
+            '*/api/v1.1/getmailinglists*' => Http::response([
+                'list_of_details' => [
+                    ['listname' => 'Test List', 'listkey' => 'test_list_key'],
+                ],
+            ], 200),
+            '*/tag/associate*' => Http::sequence()
+                ->push(['status' => 'error', 'code' => '993', 'message' => 'Specified tag not found'], 200)
+                ->push(['response' => ['message' => 'success']], 200),
+            '*/tag/add*' => Http::response(['response' => ['message' => 'Tag created']], 200),
+        ]);
+
+        $this->campaigns->attachTag('test@example.com', 'NewTag');
+
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'tag/add'));
+    }
+
+    public function test_it_strips_characters_zoho_rejects_from_tag_names(): void
+    {
+        Http::fake([
+            '*/api/v1.1/getmailinglists*' => Http::response([
+                'list_of_details' => [
+                    ['listname' => 'Test List', 'listkey' => 'test_list_key'],
+                ],
+            ], 200),
+            '*/tag/associate*' => Http::response(['response' => ['message' => 'success']], 200),
+        ]);
+
+        $this->campaigns->attachTag('test@example.com', ' ServiceDesk  SME (Recurring) ');
+
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'associate')
+            && $request['tagName'] === 'ServiceDesk SME Recurring');
+    }
+
     public function test_it_detaches_tag_from_contact(): void
     {
         Http::fake([

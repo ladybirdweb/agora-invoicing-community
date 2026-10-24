@@ -68,6 +68,7 @@
                             <DynamicSelect
                                 name="role"
                                 :label="__('message.role')"
+                                :required="true"
                                 :elements="roleOptions"
                                 :value="form.role"
                                 :error="errors.role"

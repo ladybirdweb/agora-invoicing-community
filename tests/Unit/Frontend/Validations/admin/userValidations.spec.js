@@ -10,10 +10,15 @@ describe('userCreateSchema', () => {
         mobile:      '+1234567890',
         country:     { id: 1, name: 'USA' },
         timezone_id: { id: 1, name: 'UTC' },
+        role:        { id: 'user', name: 'User' },
     }
 
     it('passes with valid data', async () => {
         await expect(userCreateSchema.validate(valid)).resolves.toBeTruthy()
+    })
+
+    it('fails when role is missing', async () => {
+        await expect(userCreateSchema.validate({ ...valid, role: null })).rejects.toThrow()
     })
 
     it('fails when first_name is empty', async () => {
@@ -63,10 +68,15 @@ describe('userEditSchema', () => {
         address:     '456 Elm St',
         mobile:      '+9876543210',
         timezone_id: { id: 2, name: 'EST' },
+        role:        { id: 'user', name: 'User' },
     }
 
     it('passes with valid data', async () => {
         await expect(userEditSchema.validate(valid)).resolves.toBeTruthy()
+    })
+
+    it('fails when role is missing', async () => {
+        await expect(userEditSchema.validate({ ...valid, role: null })).rejects.toThrow()
     })
 
     it('passes without country (not in edit schema)', async () => {

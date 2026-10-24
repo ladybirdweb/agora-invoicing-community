@@ -292,7 +292,7 @@
                                   :aria-current="lang.locale.toLowerCase() === currentLocale ? 'true' : undefined"
                                   @click="selectLang(lang)">
                                 <span :class="`fi fi-${flagCodeFor(lang.locale)}`" aria-hidden="true"></span>
-                                <span class="flex-grow-1">{{ lang.name }}{{ nativeName(lang.locale) ? ` (${nativeName(lang.locale)})` : '' }}</span>
+                                <span class="flex-grow-1">{{ lang.name }}{{ lang.translation ? ` (${lang.translation})` : '' }}</span>
                                 <i v-if="lang.locale.toLowerCase() === currentLocale" class="fas fa-check lang-active-check" aria-hidden="true"></i>
                               </button>
                             </li>
@@ -363,7 +363,6 @@ import { RouterLink, useRouter } from 'vue-router'
 import { __ } from '@/plugins/i18n'
 import { useAuthStore } from '@/core/stores/auth'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
-import { nativeName } from '@/core/utils/language.js'
 
 const router     = useRouter()
 const cartStore  = useCartStore()

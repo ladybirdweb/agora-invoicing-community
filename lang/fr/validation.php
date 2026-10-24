@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Le champ utilisations est requis.',
             'numeric' => 'Le champ utilisations doit être un nombre.',
+            'integer' => 'Le champ utilisations doit être un nombre entier.',
             'min' => 'Le champ utilisations doit être au moins :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Le champ état est requis lorsque le pays est l\'Inde.',
+        ],
+        'role' => [
+            'required' => 'Le champ rôle est obligatoire.',
         ],
         'timezone_id' => [
             'required' => 'Le champ fuseau horaire est requis.',

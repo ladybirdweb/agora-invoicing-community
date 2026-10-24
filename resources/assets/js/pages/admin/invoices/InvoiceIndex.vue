@@ -66,7 +66,7 @@
         :deleteUrl="apiUrl"
         :deleteData="pendingBulkDelete"
         :title="__('message.Delete')"
-        :message="__('message.are_you_sure')"
+        :message="__('message.delete_selected_invoices_confirm', { count: pendingBulkDelete.invoice_ids.length })"
         :componentName="'invoices-index'"
         @deleted="() => { pendingBulkDelete = null; selectedInvoices = []; dtRef?.refresh() }"
     />

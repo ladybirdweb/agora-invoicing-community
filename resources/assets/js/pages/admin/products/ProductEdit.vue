@@ -387,7 +387,7 @@
             :deleteUrl="versionDeleteUrl"
             :deleteData="pendingDeleteVersions"
             :title="__('message.Delete')"
-            :message="__('message.are_you_sure')"
+            :message="__('message.delete_selected_versions_confirm', { count: pendingDeleteVersions.select.length })"
             componentName="products-edit"
             @deleted="() => { pendingDeleteVersions = null; selectedVersions = []; dtVersionRef?.refresh() }"
         />

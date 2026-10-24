@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'O campo usos é obrigatório.',
             'numeric' => 'O campo usos deve ser um número.',
+            'integer' => 'O campo usos deve ser um número inteiro.',
             'min' => 'O campo usos deve ser no mínimo :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'O campo estado é obrigatório quando o país for a Índia.',
+        ],
+        'role' => [
+            'required' => 'O campo função é obrigatório.',
         ],
         'timezone_id' => [
             'required' => 'O campo fuso horário é obrigatório.',

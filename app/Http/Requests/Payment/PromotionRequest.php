@@ -34,7 +34,7 @@ class PromotionRequest extends Request
             'code' => 'required',
             'type' => 'required|exists:promotion_types,id',
             'applied' => 'required',
-            'uses' => 'required|numeric',
+            'uses' => 'required|integer|min:0',
             'start' => 'required',
             'expiry' => 'required|after:start',
         ];
@@ -87,6 +87,7 @@ class PromotionRequest extends Request
             'applied.date' => __('validation.coupon_form.applied.date'),
             'uses.required' => __('validation.coupon_form.uses.required'),
             'uses.numeric' => __('validation.coupon_form.uses.numeric'),
+            'uses.integer' => __('validation.coupon_form.uses.integer'),
             'uses.min' => __('validation.coupon_form.uses.min'),
             'start.required' => __('validation.coupon_form.start.required'),
             'start.date' => __('validation.coupon_form.start.date'),

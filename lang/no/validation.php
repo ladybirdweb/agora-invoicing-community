@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Feltet for antall bruk er påkrevd.',
             'numeric' => 'Feltet for antall bruk må være et tall.',
+            'integer' => 'Bruksfeltet må være et heltall.',
             'min' => 'Feltet for antall bruk må være minst :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Stat-feltet er påkrevd når landet er India.',
+        ],
+        'role' => [
+            'required' => 'Rollefeltet er påkrevd.',
         ],
         'timezone_id' => [
             'required' => 'Tidszone-feltet er påkrevd.',

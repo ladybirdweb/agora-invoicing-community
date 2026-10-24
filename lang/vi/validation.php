@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Trường số lần sử dụng là bắt buộc.',
             'numeric' => 'Trường số lần sử dụng phải là một số.',
+            'integer' => 'Trường số lần sử dụng phải là số nguyên.',
             'min' => 'Trường số lần sử dụng phải ít nhất là :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Trường tiểu bang là bắt buộc khi quốc gia là Ấn Độ.',
+        ],
+        'role' => [
+            'required' => 'Trường vai trò là bắt buộc.',
         ],
         'timezone_id' => [
             'required' => 'Trường múi giờ là bắt buộc.',

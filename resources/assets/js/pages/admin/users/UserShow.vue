@@ -425,7 +425,7 @@
         :deleteUrl="bulkDelete.url"
         :deleteData="bulkDelete.data"
         :title="__('message.confirm_delete') || 'Confirm Delete'"
-        :message="__('message.are_you_sure') || 'Are you sure?'"
+        :message="bulkDelete.message"
         :componentName="COMPONENT"
         @deleted="onBulkDeleted"
     />
@@ -481,12 +481,15 @@ function selectCheckbox(selRef, toggleRow, row) {
 const bulkDelete = ref(null)
 function startBulkDelete(kind) {
     const cfg = {
-        invoices: { sel: selInvoices, url: `${baseUrl}/invoices`, key: 'invoice_ids', dt: invDtRef },
-        payments: { sel: selPayments, url: `${baseUrl}/payments`, key: 'payment_ids', dt: payDtRef },
-        orders:   { sel: selOrders,   url: `${baseUrl}/orders`,   key: 'order_ids',   dt: ordDtRef },
+        invoices: { sel: selInvoices, url: `${baseUrl}/invoices`, key: 'invoice_ids', dt: invDtRef, msg: 'message.delete_selected_invoices_confirm' },
+        payments: { sel: selPayments, url: `${baseUrl}/payments`, key: 'payment_ids', dt: payDtRef, msg: 'message.delete_selected_payments_confirm' },
+        orders:   { sel: selOrders,   url: `${baseUrl}/orders`,   key: 'order_ids',   dt: ordDtRef,  msg: 'message.order_delete_selected' },
     }[kind]
     if (!cfg.sel.value.length) return
-    bulkDelete.value = { url: cfg.url, data: { [cfg.key]: [...cfg.sel.value] }, sel: cfg.sel, dt: cfg.dt }
+    bulkDelete.value = {
+        url: cfg.url, data: { [cfg.key]: [...cfg.sel.value] }, sel: cfg.sel, dt: cfg.dt,
+        message: __(cfg.msg, { count: cfg.sel.value.length }),
+    }
 }
 function onBulkDeleted() {
     if (bulkDelete.value) {

@@ -46,7 +46,7 @@
                  :aria-current="lang.locale === currentLocale ? 'true' : undefined"
                  @click.prevent="selectLang(lang)">
                 <span :class="`fi fi-${flagCode(lang.locale)}`"></span>
-                <span>{{ lang.name }}{{ nativeName(lang.locale) ? ` (${nativeName(lang.locale)})` : '' }}</span>
+                <span>{{ lang.name }}{{ lang.translation ? ` (${lang.translation})` : '' }}</span>
               </a>
             </li>
 
@@ -101,7 +101,6 @@ import {useSidebar} from '@/core/composables/useSidebar.js'
 import {useNotification} from '@/core/composables/useNotification.js'
 import http, {parseErrorMessage} from '@/plugins/axios.js'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
-import {nativeName} from '@/core/utils/language.js'
 
 const {isOpen, toggle} = useSidebar()
 const {notify} = useNotification()

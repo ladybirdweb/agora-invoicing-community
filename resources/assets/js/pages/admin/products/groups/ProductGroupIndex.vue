@@ -33,7 +33,7 @@
         :deleteUrl="`${baseUrl}/group`"
         :deleteData="pendingBulkDelete"
         :title="__('message.Delete')"
-        :message="__('message.are_you_sure')"
+        :message="__('message.delete_selected_product_groups_confirm', { count: pendingBulkDelete.select.length })"
         componentName="groups-index"
         @deleted="() => { pendingBulkDelete = null; selectedGroups = []; dtRef?.refresh() }"
     />

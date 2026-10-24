@@ -119,6 +119,7 @@
             :onClose="() => showBulkDelete = false"
             :deleteUrl="`${baseUrl}/third-party-delete`"
             :deleteData="{ select: selected }"
+            :message="__('message.delete_selected_third_party_apps_confirm', { count: selected.length })"
             :componentName="COMPONENT"
             @deleted="onBulkDeleted"
         />

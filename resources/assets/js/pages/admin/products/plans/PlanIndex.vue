@@ -33,7 +33,7 @@
         :deleteUrl="`${baseUrl}/plans`"
         :deleteData="pendingBulkDelete"
         :title="__('message.Delete')"
-        :message="__('message.are_you_sure')"
+        :message="__('message.delete_selected_plans_confirm', { count: pendingBulkDelete.select.length })"
         componentName="plans-index"
         @deleted="() => { pendingBulkDelete = null; selectedPlans = []; dtRef?.refresh() }"
     />

@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => '使用次數欄位為必填項。',
             'numeric' => '使用次數必須為數字。',
+            'integer' => '使用次數必須為整數。',
             'min' => '使用次數至少為 :min。',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => '當國家為印度時，州欄位為必填項。',
+        ],
+        'role' => [
+            'required' => '角色欄位為必填。',
         ],
         'timezone_id' => [
             'required' => '時區欄位為必填項。',

@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Il-qasam tal-użi huwa meħtieġ.',
             'numeric' => 'Il-qasam tal-użi għandu jkun numru.',
+            'integer' => 'Il-qasam tal-użi għandu jkun numru sħiħ.',
             'min' => 'Il-qasam tal-użi għandu jkun mill-inqas :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Il-qasam tal-istat huwa meħtieġ meta l-pajjiż ikun l-Indja.',
+        ],
+        'role' => [
+            'required' => 'Il-qasam tar-rwol huwa meħtieġ.',
         ],
         'timezone_id' => [
             'required' => 'Il-qasam tat-tferrigħ huwa meħtieġ.',

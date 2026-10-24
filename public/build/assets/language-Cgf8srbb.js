@@ -1,1 +1,0 @@
-function e(e){try{return new Intl.DisplayNames([e],{type:`language`}).of(e)??``}catch{return``}}export{e as t};

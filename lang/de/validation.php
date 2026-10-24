@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Das Verwendungsfeld ist erforderlich.',
             'numeric' => 'Das Verwendungsfeld muss eine Zahl sein.',
+            'integer' => 'Das Feld Verwendungen muss eine ganze Zahl sein.',
             'min' => 'Das Verwendungsfeld muss mindestens :min betragen.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Das Bundeslandfeld ist erforderlich, wenn das Land Indien ist.',
+        ],
+        'role' => [
+            'required' => 'Das Feld Rolle ist erforderlich.',
         ],
         'timezone_id' => [
             'required' => 'Das Zeitzonenfeld ist erforderlich.',

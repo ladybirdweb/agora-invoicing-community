@@ -85,6 +85,7 @@
             :onClose="() => showBulkDelete = false"
             :deleteUrl="`${baseUrl}/delete-license-type`"
             :deleteData="{ select: selected }"
+            :message="__('message.delete_selected_license_types_confirm', { count: selected.length })"
             componentName="license-type-index"
             @deleted="onBulkDeleted"
         />

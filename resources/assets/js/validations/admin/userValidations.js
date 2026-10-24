@@ -11,6 +11,7 @@ export const userCreateSchema = yup.object({
     address:     yup.string().required(() => __('validation.users.address.required')),
     mobile:      yup.string().required(() => __('validation.users.mobile.required')),
     country:     reqSelect(() => __('validation.users.country.required')),
+    role:        reqSelect(() => __('validation.users.role.required')),
     timezone_id: reqSelect(() => __('validation.users.timezone_id.required')),
 })
 
@@ -23,5 +24,6 @@ export const userEditSchema = yup.object({
     company:     yup.string().required(() => __('validation.users.company.required')),
     address:     yup.string().required(() => __('validation.users.address.required')),
     mobile:      yup.string().required(() => __('validation.users.mobile.required')),
+    role:        reqSelect(() => __('validation.users.role.required')),
     timezone_id: reqSelect(() => __('validation.users.timezone_id.required')),
 })

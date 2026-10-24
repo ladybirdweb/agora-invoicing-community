@@ -35,7 +35,7 @@
                         />
                     </div>
                     <div class="col-md-4">
-                        <TextField name="value" :label="__('message.value')" :required="true" type="number" :value="form.value" :onChange="onChange" :error="errors.value" />
+                        <TextField name="value" :label="__('message.value')" :required="true" type="number" :value="form.value" :onChange="onChange" :error="errors.value" @keydown="(e) => blockInvalidKey(e, String(form.type) === '1')" />
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@
                         />
                     </div>
                     <div class="col-md-4">
-                        <TextField name="uses" :label="__('message.uses')" :required="true" type="number" :value="form.uses" :onChange="onChange" :error="errors.uses" />
+                        <TextField name="uses" :label="__('message.uses')" :required="true" type="number" :value="form.uses" :onChange="onChange" :error="errors.uses" @keydown="blockInvalidKey" />
                     </div>
                     <div class="col-md-4">
                         <DatePicker name="start" :label="__('message.start')" :required="true" :value="form.start" :onChange="onChange" format="YYYY-MM-DD" :error="errors.start" />
@@ -83,7 +83,7 @@ import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
-import { validateForm } from '@/helpers/formUtils.js'
+import { validateForm, blockInvalidKey } from '@/helpers/formUtils.js'
 import { couponSchema } from '@/validations/admin/couponValidations'
 import TextField from '@/components/Reusable/FormField/TextField.vue'
 import TreeSelect from '@/components/Reusable/FormField/TreeSelect.vue'

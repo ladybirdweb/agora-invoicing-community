@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'El campo de usos es obligatorio.',
             'numeric' => 'El campo de usos debe ser un número.',
+            'integer' => 'El campo usos debe ser un número entero.',
             'min' => 'El campo de usos debe ser al menos :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'El campo de estado es obligatorio cuando el país es India.',
+        ],
+        'role' => [
+            'required' => 'El campo rol es obligatorio.',
         ],
         'timezone_id' => [
             'required' => 'El campo de zona horaria es obligatorio.',

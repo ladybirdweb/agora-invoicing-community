@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => '使用次数字段为必填项。',
             'numeric' => '使用次数字段必须是数字。',
+            'integer' => '使用次数必须为整数。',
             'min' => '使用次数字段不能少于:min。',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => '当国家为印度时，州字段为必填项。',
+        ],
+        'role' => [
+            'required' => '角色字段为必填项。',
         ],
         'timezone_id' => [
             'required' => '时区字段为必填项。',

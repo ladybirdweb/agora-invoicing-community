@@ -133,7 +133,7 @@
         :deleteUrl="`${baseUrl}/tax/delete`"
         :deleteData="pendingBulkDelete"
         :title="__('message.Delete')"
-        :message="__('message.are_you_sure')"
+        :message="__('message.delete_selected_tax_rates_confirm', { count: pendingBulkDelete.select.length })"
         :componentName="COMPONENT"
         @deleted="() => { pendingBulkDelete = null; selected = []; dtRef?.refresh() }"
     />

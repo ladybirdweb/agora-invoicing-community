@@ -139,7 +139,7 @@ import { useForm } from 'vee-validate'
 import http from '@/plugins/axios'
 import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import { planSchema } from '@/validations/admin/planValidations'
-import { validateForm } from '@/helpers/formUtils.js'
+import { validateForm, blockInvalidKey } from '@/helpers/formUtils.js'
 import DynamicSelect from '@/components/Reusable/FormField/DynamicSelect.vue'
 import TreeSelect from '@/components/Reusable/FormField/TreeSelect.vue'
 import { useBaseUrl } from '@/core/composables/useBaseUrl'
@@ -200,15 +200,6 @@ async function loadProductMode(productId) {
     } catch {
         productShowAgent.value = null
     }
-}
-
-// type="number" still lets you type +, -, e/E (scientific notation) and,
-// for the integer-only fields, a decimal point - none of which are valid
-// here (PlanRequest requires plain non-negative integers; offer_price is
-// the one exception that allows a decimal).
-function blockInvalidKey(e, allowDecimal = false) {
-    const blocked = allowDecimal ? ['e', 'E', '+', '-'] : ['e', 'E', '+', '-', '.']
-    if (blocked.includes(e.key)) e.preventDefault()
 }
 
 function addRow() {

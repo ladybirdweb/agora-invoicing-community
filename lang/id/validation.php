@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Kolom penggunaan wajib diisi.',
             'numeric' => 'Kolom penggunaan harus berupa angka.',
+            'integer' => 'Kolom penggunaan harus berupa bilangan bulat.',
             'min' => 'Kolom penggunaan minimal harus :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Kolom provinsi wajib diisi jika negara adalah India.',
+        ],
+        'role' => [
+            'required' => 'Kolom peran wajib diisi.',
         ],
         'timezone_id' => [
             'required' => 'Kolom zona waktu wajib diisi.',

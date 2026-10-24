@@ -43,3 +43,10 @@ export async function validateForm(schema, form, setErrors) {
         return false
     }
 }
+
+// type="number" still lets you type +, -, e/E (scientific notation) and a decimal point.
+// Use on @keydown for fields the backend wants as plain non-negative numbers.
+export function blockInvalidKey(e, allowDecimal = false) {
+    const blocked = allowDecimal ? ['e', 'E', '+', '-'] : ['e', 'E', '+', '-', '.']
+    if (blocked.includes(e.key)) e.preventDefault()
+}

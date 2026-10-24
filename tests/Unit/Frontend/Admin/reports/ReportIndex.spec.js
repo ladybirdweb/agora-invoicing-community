@@ -41,7 +41,7 @@ describe('ReportIndex.vue', () => {
 
     it('renders DeleteModal stub when pendingBulkDelete is set', async () => {
         expect(wrapper.find('delete-modal-stub').exists()).toBe(false)
-        wrapper.vm.pendingBulkDelete = { report_ids: [1] }
+        wrapper.vm.pendingBulkDelete = { select: [1] }
         await wrapper.vm.$nextTick()
         expect(wrapper.find('delete-modal-stub').exists()).toBe(true)
     })

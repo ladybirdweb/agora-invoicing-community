@@ -39,6 +39,7 @@ class ClientRequest extends Request
                     'timezone_id' => ['required'],
                     'user_name' => ['unique:users,user_name', 'unique:users,email', 'unique:settings,email', 'unique:settings,company_email'],
                     'zip' => ['regex:/^[a-zA-Z0-9]+$/'],
+                    'role' => ['required', 'in:user,admin'],
                     'position' => ['prohibited_if:role,user'],
                 ];
 
@@ -55,6 +56,7 @@ class ClientRequest extends Request
                     'timezone_id' => ['required'],
                     'user_name' => 'unique:users,user_name,'.$id.'|unique:users,email,'.$id.'|unique:settings,email|unique:settings,company_email',
                     'zip' => ['regex:/^[a-zA-Z0-9]+$/'],
+                    'role' => ['required', 'in:user,admin'],
                     'position' => ['prohibited_if:role,user'],
                 ];
 
@@ -79,6 +81,8 @@ class ClientRequest extends Request
             'country.exists' => __('validation.users.country.exists'),
             'state.required_if' => __('validation.users.state.required_if'),
             'timezone_id.required' => __('validation.users.timezone_id.required'),
+            'role.required' => __('validation.users.role.required'),
+            'role.in' => __('validation.users.role.required'),
             'user_name.required' => __('validation.users.user_name.required'),
             'user_name.unique' => __('validation.users.user_name.unique'),
             'zip.regex' => __('validation.users.zip.regex'),

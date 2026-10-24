@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Het gebruiksveld is verplicht.',
             'numeric' => 'Het gebruiksveld moet een getal zijn.',
+            'integer' => 'Het veld gebruik moet een geheel getal zijn.',
             'min' => 'Het gebruiksveld moet minimaal :min zijn.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Het provincieveld is verplicht wanneer het land India is.',
+        ],
+        'role' => [
+            'required' => 'Het veld rol is verplicht.',
         ],
         'timezone_id' => [
             'required' => 'Het tijdzoneveld is verplicht.',

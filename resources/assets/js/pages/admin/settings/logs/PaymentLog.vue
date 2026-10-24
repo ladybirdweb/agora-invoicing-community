@@ -71,6 +71,7 @@
             :onClose="() => showBulkDeleteModal = false"
             :deleteUrl="`${baseUrl}/paymentlog-delete`"
             :deleteData="{ ids: selected }"
+            :message="__('message.delete_selected_payment_logs_confirm', { count: selected.length })"
             :componentName="COMPONENT"
             @deleted="onBulkDeleted"
         />

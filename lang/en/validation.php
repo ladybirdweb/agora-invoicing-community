@@ -455,6 +455,7 @@ return [
         'uses' => [
             'required' => 'The uses field is required.',
             'numeric' => 'The uses field must be a number.',
+            'integer' => 'The uses field must be a whole number.',
             'min' => 'The uses field must be at least :min.',
         ],
         'start' => [
@@ -636,6 +637,9 @@ return [
         ],
         'state' => [
             'required_if' => 'The state field is required for this country.',
+        ],
+        'role' => [
+            'required' => 'The role field is required.',
         ],
         'timezone_id' => [
             'required' => 'The timezone field is required.',

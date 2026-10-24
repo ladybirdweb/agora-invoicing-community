@@ -36,6 +36,18 @@ class PromotionRequestTest extends TestCase
         $this->assertArrayHasKey('uses', $v->errors()->toArray());
     }
 
+    public function test_uses_must_be_a_non_negative_whole_number(): void
+    {
+        $base = ['code' => 'PROMO10', 'type' => '2', 'applied' => '2025-01-01',
+            'start' => '2025-01-01', 'expiry' => '2025-12-31', 'value' => 50];
+        foreach (['2.5', -1] as $bad) {
+            $v = validator([...$base, 'uses' => $bad], (new PromotionRequest())->rules());
+            $this->assertArrayHasKey('uses', $v->errors()->toArray(), "uses=$bad should fail");
+        }
+        $v = validator([...$base, 'uses' => 0], (new PromotionRequest())->rules());
+        $this->assertArrayNotHasKey('uses', $v->errors()->toArray());
+    }
+
     public function test_validation_fails_when_expiry_before_start(): void
     {
         $data = ['code' => 'PROMO10', 'type' => '2', 'applied' => '2025-01-01',

@@ -173,9 +173,13 @@ class Campaigns
      */
     public function attachTag(string $email, string $tag): void
     {
+        $tag = $this->tagName($tag);
+
         try {
             $this->zohoApi->tagAssociate($tag, $email);
-        } catch (TagNotFoundException) {
+        } catch (TagNotFoundException|ContactNotFoundException) {
+            // Zoho answers a missing tag with 993 too, which reads as "contact not found".
+            // Create and retry; if the contact really is missing, the retry throws again.
             $this->zohoApi->tagCreate($tag);
 
             $this->zohoApi->tagAssociate($tag, $email);
@@ -190,11 +194,22 @@ class Campaigns
      */
     public function detachTag(string $email, string $tag): void
     {
+        $tag = $this->tagName($tag);
+
         try {
             $this->zohoApi->tagDeassociate($tag, $email);
         } catch (TagNotFoundException|ContactNotFoundException) {
             // Tag or contact not in Zoho: nothing to detach.
         }
+    }
+
+    /**
+     * Zoho rejects tag names with anything but letters, digits, spaces and - _ . '
+     * ("Pattern doesn't Match"), e.g. product names like "ServiceDesk SME (Recurring)".
+     */
+    protected function tagName(string $tag): string
+    {
+        return trim((string) preg_replace(['/[^\p{L}\p{N} _.\'-]/u', '/\s+/'], ['', ' '], $tag));
     }
 
     /**

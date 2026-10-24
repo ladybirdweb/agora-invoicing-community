@@ -398,6 +398,7 @@ return [
         'uses' => [
             'required' => 'Polje za broj korištenja je obavezno.',
             'numeric' => 'Polje za broj korištenja mora biti broj.',
+            'integer' => 'Polje upotrebe mora biti cijeli broj.',
             'min' => 'Polje za broj korištenja mora biti najmanje :min.',
         ],
         'start' => [
@@ -566,6 +567,9 @@ return [
         ],
         'state' => [
             'required_if' => 'Polje za državu je obavezno kada je zemlja Indija.',
+        ],
+        'role' => [
+            'required' => 'Polje uloga je obavezno.',
         ],
         'timezone_id' => [
             'required' => 'Polje za vremensku zonu je obavezno.',

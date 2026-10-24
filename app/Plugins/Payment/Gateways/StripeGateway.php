@@ -70,7 +70,7 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
     public function createPayment(PaymentRequest $request): PaymentSession
     {
         try {
-            $session = $this->client()->checkout->sessions->create([ // @phpstan-ignore argument.type
+            $params = [
                 'mode' => 'payment',
                 'ui_mode' => 'embedded',
                 // Completion is handled by the embedded checkout onComplete
@@ -97,14 +97,10 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
                 ]),
                 'customer_creation' => $request->saveForFutureUse ? 'always' : null,
                 'metadata' => $this->stringMetadata($request->metadata),
-            ], [
-                // Stable across retries for the same reference + amount, so a
-                // double submit reuses one session instead of creating duplicates.
-                // saveForFutureUse is part of the key too — it changes the actual
-                // params sent (customer + setup_future_usage), and Stripe rejects
-                // reusing a key with different params (e.g. re-checking out the
-                // same invoice with the auto-renew checkbox toggled differently).
-                'idempotency_key' => 'pay_'.$request->reference.'_'.md5($request->currency.'|'.$request->amount.'|'.($request->saveForFutureUse ? 1 : 0)),
+            ];
+
+            $session = $this->client()->checkout->sessions->create($params, [ // @phpstan-ignore argument.type
+                'idempotency_key' => $this->idempotencyKey('pay', $request->reference, $params),
             ]);
 
             return new PaymentSession(
@@ -160,7 +156,11 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
                     $customerParams['address'] = $shipping['address'];
                 }
 
-                $params['customer'] = $this->client()->customers->create($customerParams)->id;
+                // Keyed like the intent below: clicking Pay again gets the same Customer back
+                // instead of a new one, which would change the intent's params under its key.
+                $params['customer'] = $this->client()->customers->create($customerParams, [
+                    'idempotency_key' => $this->idempotencyKey('cus', $request->reference, $customerParams),
+                ])->id;
                 $params['setup_future_usage'] = 'off_session';
             }
 
@@ -173,10 +173,7 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
             }
 
             $intent = $this->client()->paymentIntents->create($params, [ // @phpstan-ignore argument.type
-                // Stable across retries for the same reference + amount, so a double
-                // submit reuses one intent instead of creating duplicates. saveForFutureUse
-                // is part of the key too — see createPayment()'s idempotency_key comment.
-                'idempotency_key' => 'pi_'.$request->reference.'_'.md5($request->currency.'|'.$request->amount.'|'.($request->saveForFutureUse ? 1 : 0)),
+                'idempotency_key' => $this->idempotencyKey('pi', $request->reference, $params),
             ]);
 
             return new PaymentSession(
@@ -400,6 +397,19 @@ final readonly class StripeGateway implements CardPaymentGateway, PaymentGateway
         } catch (ApiErrorException $apiErrorException) {
             throw new PaymentException($apiErrorException->getMessage(), (int) $apiErrorException->getCode(), $apiErrorException);
         }
+    }
+
+    /**
+     * Stripe replays a request sent again with the same key, but rejects the key when the
+     * params differ ("Keys for idempotent requests can only be used with the same parameters").
+     * Hashing everything sent means a repeat Pay click reuses the same object, while any change
+     * (amount, credit, auto-renew, the customer's name/email/address) gets a fresh one.
+     *
+     * @param  array<string, mixed>  $params
+     */
+    private function idempotencyKey(string $prefix, string $reference, array $params): string
+    {
+        return $prefix.'_'.$reference.'_'.md5(json_encode($params, JSON_THROW_ON_ERROR));
     }
 
     private function client(): StripeClient

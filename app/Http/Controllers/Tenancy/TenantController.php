@@ -23,7 +23,7 @@ use App\Model\Product\CloudProducts;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Services\Payment\AutoRenewalActivationService;
-use App\ThirdPartyApp;
+use App\Services\Cloud\CloudApi;
 use App\User;
 use Auth;
 use DB;
@@ -75,6 +75,11 @@ class TenantController extends Controller
         $this->middleware('auth', ['except' => ['verifyThirdPartyToken']]);
     }
 
+    private function cloudApi(): CloudApi
+    {
+        return new CloudApi($this->client, $this->cloud); // @phpstan-ignore property.notFound
+    }
+
     public function enableCloud(Request $request): JsonResponse
     {
         try {
@@ -92,29 +97,20 @@ class TenantController extends Controller
     public function getTenants(Request $request): JsonResponse
     {
         try {
+            $this->cloudApi()->keys();
+        } catch (\RuntimeException $e) {
+            return errorResponse($e->getMessage()); // "Invalid App key provided. Please contact admin."
+        }
+
+        try {
             $searchQuery = $request->input('search-query', '');
             $sortOrder = $request->input('sort-order', 'asc');
             $limit = (int) $request->input('limit', 10);
             $page = (int) $request->input('page', 1);
 
-            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')
-                ->select('app_key', 'app_secret')
-                ->first();
-
-            if (! $keys || empty($keys->app_key)) {
-                return errorResponse(__('message.cloud_invalid_message'));
-            }
-
             // Short cache: paging/searching the table shouldn't re-hit the cloud each time.
             // Cleared whenever a tenant is created or deleted.
-            $data = Cache::remember(self::TENANTS_CACHE_KEY, 30, function () use ($keys) {
-                $response = $this->client->request('GET', // @phpstan-ignore property.notFound
-                    $this->cloud->cloud_central_domain.'/tenants',
-                    ['query' => ['key' => $keys->app_key]]
-                );
-
-                return json_decode((string) $response->getBody(), associative: true);
-            });
+            $data = Cache::remember(self::TENANTS_CACHE_KEY, 30, fn (): array => $this->cloudApi()->get('/tenants'));
 
             $tenants = collect((array) ($data['message'] ?? []))->reject(fn ($t): bool => $t === null);
 
@@ -202,7 +198,9 @@ class TenantController extends Controller
             ]);
 
             return successResponse(__('message.tenants_fetched_successfully'), $paginator);
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            Logger::exception($e);
+
             return errorResponse(__('message.something_went_wrong'), 500);
         }
     }
@@ -265,28 +263,13 @@ class TenantController extends Controller
             }
 
             $licCode = $order->serial_key;
-            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-            if (! $keys?->app_key) {// Validate if the app key to be sent is valid or not
-                return errorResponse(trans('message.something_bad'));
-            }
+            $api = $this->cloudApi();
+            $api->keys(); // no app key → nothing to send; fail before storing a token
 
+            // The cloud calls verifyThirdPartyToken back with this token.
             $token = Str::random(32);
             DB::table('third_party_tokens')->insert(['user_id' => $userId, 'token' => $token]);
-            $data = ['domain' => $faveoCloud, 'app_key' => $keys->app_key, 'token' => $token, 'lic_code' => $licCode, 'username' => $userEmail, 'userId' => $userId, 'timestamp' => time(), 'product' => $product, 'product_id' => $order->product];
-            $encodedData = http_build_query($data);
-            $hashedSignature = hash_hmac('sha256', $encodedData, (string) $keys->app_secret);
-            $response = $this->client->request( // @phpstan-ignore property.notFound
-                'POST',
-                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-            );
-            $response = explode('{', (string) $response->getBody());
-
-            $response = '{'.$response[1];
-
-            $result = json_decode($response, true);
-            if (! is_array($result)) {
-                return errorResponse(trans('message.something_bad'));
-            }
+            $result = $api->send('POST', '/tenants', ['domain' => $faveoCloud, 'token' => $token, 'lic_code' => $licCode, 'username' => $userEmail, 'userId' => $userId, 'product' => $product, 'product_id' => $order->product]);
             if (($result['status'] ?? null) == 'fails') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
                 if (($result['message'] ?? null) == 'Domain already taken. Please select a different domain') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
                     $toDisplay = preg_replace('/\s+/', '', (string) $product);
@@ -297,6 +280,7 @@ class TenantController extends Controller
 
                 $this->prepareMessages($faveoCloud, $userEmail);
 
+                Logger::exception(new Exception(sprintf('Cloud tenant create failed for %s: %s', $faveoCloud, json_encode($result))));
                 $this->googleChat($result['message'] ?? '');
 
                 return errorResponse(trans('message.something_bad'));
@@ -402,23 +386,7 @@ class TenantController extends Controller
         Cache::forget(self::TENANTS_CACHE_KEY);
 
         try {
-            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-            if (! $keys) {
-                return errorResponse(__('message.something_went_wrong_try_again'));
-            }
-            $token = Str::random(32);
-            $data = ['id' => $request->input('id'), 'app_key' => $keys->app_key, 'deleteTenant' => true, 'token' => $token, 'timestamp' => time()];
-            $encodedData = http_build_query($data);
-            $hashedSignature = hash_hmac('sha256', $encodedData, (string) $keys->app_secret);
-            $response = $this->client->request( // @phpstan-ignore property.notFound
-                'DELETE',
-                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-            );
-            $responseBody = (string) $response->getBody();
-            $responseArray = json_decode($responseBody, true);
-            if (! is_array($responseArray)) {
-                return errorResponse(__('message.cloud_deleted_failed'));
-            }
+            $responseArray = $this->cloudApi()->send('DELETE', '/tenants', ['id' => $request->input('id'), 'deleteTenant' => true]);
             $user = Auth::user()->email ?? self::AUTO_DELETION; // also runs from the expiry cron, with no logged-in user
 
             if (($responseArray['status'] ?? null) == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
@@ -455,7 +423,7 @@ class TenantController extends Controller
                 $this->statusChange($request->orderId);
             }
 
-            $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.$responseBody);
+            $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.json_encode($responseArray));
 
             return errorResponse(__('message.cloud_deleted_failed'));
         } catch (Exception $exception) {
@@ -560,11 +528,6 @@ class TenantController extends Controller
         Cache::forget(self::TENANTS_CACHE_KEY);
 
         if ($isDelete) {
-            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-            if (! $keys) {
-                return errorResponse(__('message.something_went_wrong_try_again'));
-            }
-            $token = Str::random(32);
             $order = Order::where('number', $orderNumber)->where('client', $this->authUser()->id)->first();
             if (! $order instanceof Order) {
                 return errorResponse(__('message.something_wrong_cloud_instance'));
@@ -577,60 +540,47 @@ class TenantController extends Controller
             }
             $order_id = $order->id;
             $installation_path = $order->installedDomains()->first();
-            $response = $this->client->request( // @phpstan-ignore property.notFound
-                'GET',
-                $this->cloud->cloud_central_domain.'/tenants', [
-                    'query' => [
-                        'key' => $keys->app_key,
-                    ],
-                ]
-            );
-            $responseBody = (string) $response->getBody();
-            $response = json_decode($responseBody);
-            $domainArray = $response->message;
-            $counter = count($domainArray);
-            for ($i = 0; $i < $counter; $i++) {
-                if (! is_null($domainArray[$i]) && $domainArray[$i]->domain == $installation_path) {
-                    $data = ['id' => $domainArray[$i]->id, 'app_key' => $keys->app_key, 'deleteTenant' => true, 'token' => $token, 'timestamp' => time()];
-                    $encodedData = http_build_query($data);
-                    $hashedSignature = hash_hmac('sha256', $encodedData, (string) $keys->app_secret);
-                    $response = $this->client->request( // @phpstan-ignore property.notFound
-                        'DELETE',
-                        $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-                    );
-                    $responseBody = (string) $response->getBody();
-                    $response = json_decode($responseBody);
-                    $user = $this->authUser()->email ?? self::AUTO_DELETION;
-                    if ($response->status == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
-                        $this->deleteCronForTenant($domainArray[$i]->id);
-                        $this->reissueCloudLicense($order_id);
-                        // Only the instance goes; the order stays, marked the same way the admin delete does.
-                        $this->statusChange($order_id);
-                        DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
-
-                        $loggingUser = Auth::check()
-                            ? "<a href='".url(self::USERS_PAGE.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
-                            : self::AUTO_DELETION;
-
-                        logActivity(
-                            sprintf('Cloud instance <b>%s</b> deleted by <b>%s</b>', $installation_path, $loggingUser),
-                            'deleted',
-                            'Cloud'
-                        );
-
-                        $this->googleChat('Hello, it has come to my notice that '.$user.' has deleted this cloud instance '.$installation_path);
-
-                        return successResponse(__('message.cloud_deleted_successfully'));
-                    }
-
-                    Logger::exception(new Exception($response->message));
-                    $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.$responseBody);
-
-                    return errorResponse(__('message.cloud_deleted_failed'));
+            try {
+                $api = $this->cloudApi();
+                $tenant = collect((array) ($api->get('/tenants')['message'] ?? []))
+                    ->first(fn ($t): bool => is_array($t) && ($t['domain'] ?? null) == $installation_path);
+                if (! $tenant) {
+                    return errorResponse(__('message.something_wrong_cloud_instance'));
                 }
+                $response = $api->send('DELETE', '/tenants', ['id' => $tenant['id'], 'deleteTenant' => true]);
+            } catch (Exception $exception) {
+                Logger::exception($exception);
+
+                return errorResponse(__('message.cloud_deleted_failed'));
             }
 
-            return errorResponse(__('message.something_wrong_cloud_instance'));
+            $user = $this->authUser()->email ?? self::AUTO_DELETION;
+            if (($response['status'] ?? null) == 'success') { // nosemgrep: php.lang.security.md5-loose-equality.md5-loose-equality
+                $this->deleteCronForTenant($tenant['id']);
+                $this->reissueCloudLicense($order_id);
+                // Only the instance goes; the order stays, marked the same way the admin delete does.
+                $this->statusChange($order_id);
+                DB::table('free_trial_allowed')->where('domain', $installation_path)->delete();
+
+                $loggingUser = Auth::check()
+                    ? "<a href='".url(self::USERS_PAGE.Auth::id())."'>".$this->authUser()->first_name.' '.$this->authUser()->last_name.'</a>'
+                    : self::AUTO_DELETION;
+
+                logActivity(
+                    sprintf('Cloud instance <b>%s</b> deleted by <b>%s</b>', $installation_path, $loggingUser),
+                    'deleted',
+                    'Cloud'
+                );
+
+                $this->googleChat('Hello, it has come to my notice that '.$user.' has deleted this cloud instance '.$installation_path);
+
+                return successResponse(__('message.cloud_deleted_successfully'));
+            }
+
+            Logger::exception(new Exception((string) json_encode($response)));
+            $this->googleChat('Tenant deletion failed for '.$user.self::REASON_SEPARATOR.json_encode($response));
+
+            return errorResponse(__('message.cloud_deleted_failed'));
         }
 
         return null;

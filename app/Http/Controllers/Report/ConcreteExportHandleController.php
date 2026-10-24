@@ -19,7 +19,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\ReportSetting;
-use App\ThirdPartyApp;
+use App\Services\Cloud\CloudApi;
 use App\Traits\CoupCodeAndInvoiceSearch;
 use App\User;
 use Carbon\Carbon;
@@ -515,35 +515,12 @@ class ConcreteExportHandleController extends ExportHandleController
         if (! $this->cloud) {
             throw new Exception('FaveoCloud configuration not found.');
         }
-        $client = new Client;
-
         // Similar logic to export users but for orders
         $this->selectedColumns = array_filter($this->selectedColumns, fn ($column): bool => ! in_array($column, ['checkbox', 'action']));
 
-        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-        if (! $keys) {
-            throw new Exception(__('message.cloud_invalid_message'));
-        }
+        $responseData = (new CloudApi(new Client, $this->cloud))->get('/tenants');
 
-        if (! $keys->app_key) {
-            // Validate if the app key to be sent is valid or not
-            throw new Exception(__('message.cloud_invalid_message'));
-        }
-
-        $response = $client->request(
-            'GET',
-            $this->cloud->cloud_central_domain.'/tenants',
-            [
-                'query' => [
-                    'key' => $keys->app_key,
-                ],
-            ]
-        );
-
-        $responseBody = (string) $response->getBody();
-        $responseData = json_decode($responseBody);
-
-        $tenats = collect((array) ($responseData->message ?? []))->reject(fn ($item): bool => $item === null);
+        $tenats = collect((array) ($responseData['message'] ?? []))->reject(fn ($item): bool => $item === null)->map(fn ($item): object => (object) $item);
         $filteredTenants = $tenats->map(function ($tenats): array {
             $tenantData = [];
             $order_id = Order::idForDomain((string) $tenats->domain);

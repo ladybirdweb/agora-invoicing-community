@@ -590,9 +590,10 @@ class TenantControllerTest extends DBTestCase
             'cloud_cname' => 'test',
         ]);
 
-        // Only 1 request — method returns early after detecting non-array JSON (no googleChat)
+        // Unreadable reply → the error path, which also alerts Google Chat (second request)
         $client = $this->bindMockClientWithResponses([
             new Response(200, [], 'not-valid-json'),
+            new Response(200, [], ''),
         ]);
 
         $controller = new TenantController($client, $cloud);

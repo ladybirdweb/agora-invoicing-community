@@ -21,7 +21,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\CloudProducts;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\ThirdPartyApp;
+use App\Services\Cloud\CloudApi;
 use App\Traits\TaxCalculation;
 use App\User;
 use Crypt;
@@ -36,7 +36,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Lang;
 use Logger;
 use RuntimeException;
@@ -56,32 +55,9 @@ class CloudExtraActivities extends Controller
         $this->middleware('auth', ['except' => ['verifyThirdPartyToken']]);
     }
 
-    /**
-     * @param  array<mixed>  $data
-     */
-    private function cloudApiPost(string $endpoint, array $data): object
+    private function cloudApi(): CloudApi
     {
-        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
-        if (! $keys) {
-            throw new Exception('Missing faveo_app_key setting');
-        }
-        $data = array_merge($data, ['app_key' => $keys->app_key, 'token' => Str::random(32), 'timestamp' => time()]);
-        $hashedSignature = hash_hmac('sha256', http_build_query($data), (string) $keys->app_secret);
-
-        $response = $this->client->request('POST', $this->cloud->cloud_central_domain.$endpoint, [
-            'form_params' => $data,
-            'headers' => ['signature' => $hashedSignature],
-        ]);
-
-        // The cloud can print notices before its JSON, so start at the first brace. Cutting at the
-        // second brace instead (the old way) broke any reply with a nested object into null.
-        $body = (string) $response->getBody();
-        $result = json_decode(substr($body, (int) strpos($body, '{')));
-        if (! is_object($result)) {
-            throw new Exception(sprintf('Cloud %s returned an unreadable response: %s', $endpoint, Str::limit($body, 500)));
-        }
-
-        return $result;
+        return new CloudApi($this->client, $this->cloud);
     }
 
     /**
@@ -211,7 +187,7 @@ class CloudExtraActivities extends Controller
                 return errorResponse(trans('message.cname'));
             }
 
-            $result = (array) $this->cloudApiPost('/changeDomain', [
+            $result = $this->cloudApi()->send('POST', '/changeDomain', [
                 'currentDomain' => $currentDomain,
                 'newDomain' => $newDomain,
                 'lic_code' => $order->serial_key,
@@ -766,15 +742,16 @@ class CloudExtraActivities extends Controller
             // Self-hosted orders have no tenant to push to — rewriting the
             // license above is the whole job for them.
             if (! empty($installation_path)) {
-                $result = $this->cloudApiPost('/performAgentUpgradeOrDowngrade', [
+                $result = $this->cloudApi()->send('POST', '/performAgentUpgradeOrDowngrade', [
                     'licenseCode' => $licenseCode,
                     'installation_path' => $installation_path,
                     'product_id' => $product_id,
                     'old_lic_code' => $oldLicense,
                 ]);
 
-                $resultArray = (array) $result;
-                if (($resultArray['status'] ?? null) == 'fails') {
+                if (($result['status'] ?? null) == 'fails') {
+                    Logger::exception(new Exception(sprintf('Cloud agent change to %s failed for order %d: %s', $newAgents, $orderId, json_encode($result))));
+
                     return errorResponse(trans('message.change_agents_failed'));
                 }
             }
@@ -799,12 +776,16 @@ class CloudExtraActivities extends Controller
     ): void {
         $this->doTheActivity($terminatedOrderId, $newActiveOrderId, $discount, $currency);
 
-        $this->cloudApiPost('/performProductUpgradeOrDowngrade', [
+        $result = $this->cloudApi()->send('POST', '/performProductUpgradeOrDowngrade', [
             'licenseCode' => $licenseCode,
             'installation_path' => $installationPath,
             'product_id' => $productID,
             'old_lic_code' => $oldLicenseCode,
         ]);
+        // Paid for already, so billing still switches orders; the instance needs fixing by hand.
+        if (($result['status'] ?? null) !== 'success') {
+            Logger::exception(new Exception(sprintf('Cloud plan change failed for %s (order %d → %d), apply it manually: %s', $installationPath, $terminatedOrderId, $newActiveOrderId, json_encode($result))));
+        }
 
         Order::where('id', $terminatedOrderId)->update(['order_status' => 'Terminated']);
         DB::table('terminated_order_upgrade')->insert([
@@ -904,16 +885,11 @@ class CloudExtraActivities extends Controller
      */
     public function checkDomain(string $domain): bool
     {
-        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->first(['app_key', 'app_secret']);
-
-        if (! $keys || empty($keys->app_key)) {
-            throw new Exception(__('message.something_bad'));
-        }
+        $api = $this->cloudApi();
+        $key = $api->keys()->app_key;
 
         try {
-            $body = (string) $this->client->request('POST', $this->cloud->cloud_central_domain.'/checkDomain', [
-                'form_params' => ['domain' => $domain, 'key' => $keys->app_key],
-            ])->getBody();
+            $body = $api->raw('POST', '/checkDomain', ['form_params' => ['domain' => $domain, 'key' => $key]]);
         } catch (GuzzleException $e) {
             // Guzzle errors are RuntimeExceptions carrying the raw response HTML — never surface that.
             Logger::exception($e);

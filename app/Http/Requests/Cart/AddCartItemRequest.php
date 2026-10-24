@@ -65,8 +65,12 @@ class AddCartItemRequest extends FormRequest
                 return;
             }
 
-            if (! new CloudExtraActivities(new Client, new FaveoCloud)->checkDomain(strtolower($domain).'.'.cloudSubDomain())) {
-                $validator->errors()->add('domain', __('message.domain_taken'));
+            try {
+                if (! new CloudExtraActivities(new Client, new FaveoCloud)->checkDomain(strtolower($domain).'.'.cloudSubDomain())) {
+                    $validator->errors()->add('domain', __('message.domain_taken'));
+                }
+            } catch (\RuntimeException $e) { // cloud unreachable or not configured; checkDomain's messages are client-safe
+                $validator->errors()->add('domain', $e->getMessage());
             }
         }];
     }

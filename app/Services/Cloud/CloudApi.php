@@ -72,7 +72,7 @@ class CloudApi
 
     /**
      * The cloud can print notices before its JSON, so read from the first brace. (Cutting at the
-     * second brace, as some callers used to, broke any reply with a nested object.)
+     * second brace, as some callers used to, broke any reply with a nested object.).
      *
      * @return array<mixed>
      */

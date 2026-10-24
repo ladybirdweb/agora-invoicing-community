@@ -66,13 +66,35 @@ class SocialAuthControllerTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_admin_account_is_never_linked_by_email(): void
+    public function test_email_of_soft_deleted_user_is_not_parked_for_completion(): void
     {
-        $admin = User::factory()->create(['role' => 'admin', 'active' => 1]);
-        $this->provider($admin->email, ['email_verified' => true]);
+        $user = User::factory()->create(['role' => 'user', 'active' => 1]);
+        $user->delete();
+        $this->provider($user->email, ['email_verified' => true]);
+
+        $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=inactive');
+        $this->assertNull(session('social_signup'));
+    }
+
+    public function test_email_used_as_someones_username_is_not_parked_for_completion(): void
+    {
+        $email = 'taken-'.uniqid().'@example.com';
+        User::factory()->create(['user_name' => $email]);
+        $this->provider($email, ['email_verified' => true]);
 
         $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=email_exists');
-        $this->assertGuest();
+        $this->assertNull(session('social_signup'));
+    }
+
+    public function test_admin_account_links_by_verified_email_and_logs_in(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'active' => 1, 'email_verified' => 1, 'mobile_verified' => 1, 'is_2fa_enabled' => 0]);
+        $this->provider($admin->email, ['email_verified' => true]);
+
+        $this->get('/auth/callback/google');
+
+        $this->assertAuthenticatedAs($admin);
+        $this->assertSame(1, SocialAccount::where('user_id', $admin->id)->where('provider', 'google')->count());
     }
 
     public function test_verified_email_links_and_logs_in(): void

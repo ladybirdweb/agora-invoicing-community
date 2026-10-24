@@ -97,7 +97,7 @@ class DashboardTest extends DBTestCase
         Invoice::factory()->create(['user_id' => $user->id, 'status' => 'pending']);
         $plan = Plan::create(['id' => 'mt_rand(1,99)', 'name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id,
-            'version' => 'v6.0.0', 'update_ends_at' => $date]);
+            'version' => 'v6.0.0', 'ends_at' => $date]);
         $response = $this->call('get', 'client-dashboard-details');
         $content = $response->json();
         $this->assertEquals(1, $content['data']['order_renewals_count']);
@@ -118,7 +118,7 @@ class DashboardTest extends DBTestCase
         Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id,
             // Clearly not expired yet: exactly "now" turns into the past a second later, and the
             // count is "expired before now" — so this flipped to 1 whenever the clock ticked.
-            'version' => 'v6.0.0', 'update_ends_at' => Date::now()->addDay()]);
+            'version' => 'v6.0.0', 'ends_at' => Date::now()->addDay()]);
         $response = $this->call('get', 'client-dashboard-details');
         $content = $response->json();
         $this->assertEquals(0, $content['data']['order_renewals_count']);

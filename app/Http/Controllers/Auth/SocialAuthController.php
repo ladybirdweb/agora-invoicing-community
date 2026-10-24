@@ -151,6 +151,9 @@ class SocialAuthController extends BaseAuthController
             'client_secret' => $details->client_secret,
             // Fixed by our route; the admin registers this exact URL with the provider.
             'redirect' => url('auth/callback/'.$provider),
+            // Socialite's "twitter" defaults to OAuth 1.0a (API key/secret); the admin form takes the
+            // OAuth 2.0 Client ID/Secret the X portal issues, which OAuth 1 rejects with a 401.
+            'oauth' => 2,
         ]);
 
         return Socialite::driver($driver);
@@ -176,9 +179,8 @@ class SocialAuthController extends BaseAuthController
         $existing = $email ? User::where('email', $email)->first() : null;
 
         if ($existing) {
-            // Only trust the email if the provider says it is verified, and never hand an admin account
-            // to someone who only controls an email address at a third party.
-            if (! $this->emailVerifiedByProvider($provider, $socialUser) || $existing->role === 'admin') {
+            // Only trust the email if the provider says it is verified. Admins included; 2FA still applies in finish().
+            if (! $this->emailVerifiedByProvider($provider, $socialUser)) {
                 return $this->errorUrl('email_exists');
             }
 
@@ -194,6 +196,16 @@ class SocialAuthController extends BaseAuthController
             SocialAccount::create(['user_id' => $existing->id, 'provider' => $provider, 'provider_id' => $providerId]);
 
             return $this->finish($existing);
+        }
+
+        // complete() locks this email and validates it unique against more than live users; if it's
+        // already taken there (deleted user, someone's username, the company email) the form can never pass.
+        if ($email && User::onlyTrashed()->where('email', $email)->exists()) {
+            return $this->errorUrl('inactive');
+        }
+        if ($email && (User::where('user_name', $email)->exists()
+            || DB::table('settings')->where('email', $email)->orWhere('company_email', $email)->exists())) {
+            return $this->errorUrl('email_exists');
         }
 
         $name = trim((string) $socialUser->getName());

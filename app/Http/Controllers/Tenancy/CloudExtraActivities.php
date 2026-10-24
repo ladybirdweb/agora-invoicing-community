@@ -73,7 +73,15 @@ class CloudExtraActivities extends Controller
             'headers' => ['signature' => $hashedSignature],
         ]);
 
-        return json_decode('{'.explode('{', (string) $response->getBody())[1]);
+        // The cloud can print notices before its JSON, so start at the first brace. Cutting at the
+        // second brace instead (the old way) broke any reply with a nested object into null.
+        $body = (string) $response->getBody();
+        $result = json_decode(substr($body, (int) strpos($body, '{')));
+        if (! is_object($result)) {
+            throw new Exception(sprintf('Cloud %s returned an unreadable response: %s', $endpoint, Str::limit($body, 500)));
+        }
+
+        return $result;
     }
 
     /**
@@ -203,12 +211,15 @@ class CloudExtraActivities extends Controller
                 return errorResponse(trans('message.cname'));
             }
 
-            $this->cloudApiPost('/changeDomain', [
+            $result = (array) $this->cloudApiPost('/changeDomain', [
                 'currentDomain' => $currentDomain,
                 'newDomain' => $newDomain,
                 'lic_code' => $order->serial_key,
                 'product_id' => $order->getRawOriginal('product'),
             ]);
+            if (($result['status'] ?? null) !== 'success') {
+                throw new Exception('Cloud changeDomain failed: '.json_encode($result));
+            }
 
             \Cache::forget(TenantController::TENANTS_CACHE_KEY);
             $this->jobsForCloudDomain($newDomain);

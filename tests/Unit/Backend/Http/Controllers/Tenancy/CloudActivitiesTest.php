@@ -1300,7 +1300,7 @@ class CloudActivitiesTest extends DBTestCase
 
         // Mock two requests: LicenseService.updateLicenseCode may call Guzzle, plus the cloud API call
         $this->bindMockClientWithResponses([
-            new \GuzzleHttp\Psr7\Response(200, [], '{'.json_encode(['status' => 'success']).'}'),
+            new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'success'])),
         ]);
 
         $controller = new CloudExtraActivities(new Client, $cloud);
@@ -1317,6 +1317,23 @@ class CloudActivitiesTest extends DBTestCase
         }
     }
 
+    public function test_cloud_api_post_reads_nested_json_after_notices_and_throws_on_garbage(): void
+    {
+        \App\ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        $cloud = \App\Model\Common\FaveoCloud::firstOrCreate([], ['cloud_central_domain' => 'https://cloud.test.local', 'cloud_cname' => 'test']);
+        $client = new Client(['handler' => \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'Notice: x'.json_encode(['status' => 'fails', 'message' => ['a' => 1]])),
+            new \GuzzleHttp\Psr7\Response(200, [], '<html>oops</html>'),
+        ]))]);
+        $post = new \ReflectionMethod(CloudExtraActivities::class, 'cloudApiPost');
+        $controller = new CloudExtraActivities($client, $cloud);
+
+        $this->assertSame('fails', $post->invoke($controller, '/x', [])->status);
+
+        $this->expectException(\Exception::class);
+        $post->invoke($controller, '/x', []);
+    }
+
     public function test_do_the_agent_altering_returns_error_when_api_returns_fails(): void
     {
         \App\ThirdPartyApp::firstOrCreate(
@@ -1331,7 +1348,7 @@ class CloudActivitiesTest extends DBTestCase
 
         // API returns 'fails' status
         $this->bindMockClientWithResponses([
-            new \GuzzleHttp\Psr7\Response(200, [], '{'.json_encode(['status' => 'fails', 'message' => 'error']).'}'),
+            new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'fails', 'message' => 'error'])),
         ]);
 
         $controller = new CloudExtraActivities(new Client, $cloud);

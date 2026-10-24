@@ -3684,7 +3684,6 @@ return [
     'social_error' => [
         'cancelled' => '登入已取消。',
         'failed' => '無法透過該供應商登入。請重試或使用其他方式。',
-        'email_exists' => '使用此電子郵件的帳戶已存在。請使用密碼登入。',
         'inactive' => '您的帳戶尚未啟用，請聯絡支援人員。',
     ],
     'product_path' => '外掛程式資料夾',

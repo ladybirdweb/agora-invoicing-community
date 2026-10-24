@@ -1355,6 +1355,7 @@ return [
     'terms_error' => 'The provided terms and condition url is invalid.',
     'github_invalid' => 'Authentication failed. Please check your GitHub username and personal access token.',
     'github_valid' => 'Github settings successfully saved.',
+    'github_repository_invalid' => 'GitHub repository not found. Check the owner and repository name, and that the GitHub settings token can access it.',
     'pat' => 'Personal Access Token',
     'invalid_recaptcha_key' => 'The Google reCAPTCHA site key is invalid',
     'status_change' => 'Status has changed',
@@ -4167,7 +4168,8 @@ return [
     'social_error' => [
         'cancelled' => 'Sign-in was cancelled.',
         'failed' => 'We could not sign you in with that provider. Please try again or use another method.',
-        'email_exists' => 'An account with this email already exists. Please log in with your password.',
+        'email_unverified' => 'An account with this email already exists, but your sign-in provider has not confirmed this email. Log in with your password, or confirm the email with the provider and try again.',
+        'email_taken' => 'This email is already in use on this site, so a new account cannot be created with it. Please log in, or sign in with an account that uses a different email.',
         'inactive' => 'Your account is not active. Please contact support.',
     ],
     'update_profile' => 'Update Profile',

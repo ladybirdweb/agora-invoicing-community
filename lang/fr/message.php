@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'La connexion a été annulée.',
         'failed' => 'Nous n\'avons pas pu vous connecter avec ce fournisseur. Veuillez réessayer ou utiliser une autre méthode.',
-        'email_exists' => 'Un compte avec cet e-mail existe déjà. Veuillez vous connecter avec votre mot de passe.',
         'inactive' => 'Votre compte n\'est pas actif. Veuillez contacter l\'assistance.',
     ],
     'product_path' => 'Dossier du plugin',

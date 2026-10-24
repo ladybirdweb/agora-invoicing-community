@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Đăng nhập đã bị hủy.',
         'failed' => 'Chúng tôi không thể đăng nhập cho bạn bằng nhà cung cấp đó. Vui lòng thử lại hoặc dùng phương thức khác.',
-        'email_exists' => 'Đã có tài khoản với email này. Vui lòng đăng nhập bằng mật khẩu của bạn.',
         'inactive' => 'Tài khoản của bạn chưa được kích hoạt. Vui lòng liên hệ bộ phận hỗ trợ.',
     ],
     'product_path' => 'Thư mục plugin',

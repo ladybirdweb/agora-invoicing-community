@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Prijava je otkazana.',
         'failed' => 'Nismo mogli da vas prijavimo putem tog pružatelja usluge. Molimo pokušajte ponovo ili koristite drugi način.',
-        'email_exists' => 'Račun s ovom e-poštom već postoji. Molimo prijavite se svojom lozinkom.',
         'inactive' => 'Vaš račun nije aktivan. Molimo kontaktirajte podršku.',
     ],
     'product_path' => 'Folder dodatka',

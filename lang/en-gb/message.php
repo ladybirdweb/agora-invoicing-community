@@ -3716,7 +3716,6 @@ return [
     'social_error' => [
         'cancelled' => 'Sign-in was cancelled.',
         'failed' => 'We could not sign you in with that provider. Please try again or use another method.',
-        'email_exists' => 'An account with this email already exists. Please log in with your password.',
         'inactive' => 'Your account is not active. Please contact support.',
     ],
     'product_path' => 'Plugin Folder',

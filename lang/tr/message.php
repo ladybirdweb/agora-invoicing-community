@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Giriş iptal edildi.',
         'failed' => 'Bu sağlayıcıyla giriş yapamadık. Lütfen tekrar deneyin veya başka bir yöntem kullanın.',
-        'email_exists' => 'Bu e-postaya sahip bir hesap zaten var. Lütfen şifrenizle giriş yapın.',
         'inactive' => 'Hesabınız etkin değil. Lütfen destek ile iletişime geçin.',
     ],
     'product_path' => 'Eklenti Klasörü',

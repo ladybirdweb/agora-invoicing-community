@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Proses masuk dibatalkan.',
         'failed' => 'Kami tidak dapat memasukkan Anda dengan penyedia tersebut. Silakan coba lagi atau gunakan metode lain.',
-        'email_exists' => 'Akun dengan email ini sudah ada. Silakan masuk dengan kata sandi Anda.',
         'inactive' => 'Akun Anda tidak aktif. Silakan hubungi dukungan.',
     ],
     'product_path' => 'Folder Plugin',

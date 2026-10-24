@@ -181,7 +181,7 @@ class SocialAuthController extends BaseAuthController
         if ($existing) {
             // Only trust the email if the provider says it is verified. Admins included; 2FA still applies in finish().
             if (! $this->emailVerifiedByProvider($provider, $socialUser)) {
-                return $this->errorUrl('email_exists');
+                return $this->errorUrl('email_unverified');
             }
 
             // An unverified account may have been registered by someone else with this email. The
@@ -205,7 +205,7 @@ class SocialAuthController extends BaseAuthController
         }
         if ($email && (User::where('user_name', $email)->exists()
             || DB::table('settings')->where('email', $email)->orWhere('company_email', $email)->exists())) {
-            return $this->errorUrl('email_exists');
+            return $this->errorUrl('email_taken');
         }
 
         $name = trim((string) $socialUser->getName());

@@ -3684,7 +3684,6 @@ return [
     'social_error' => [
         'cancelled' => 'O login foi cancelado.',
         'failed' => 'Não foi possível fazer login com esse provedor. Tente novamente ou use outro método.',
-        'email_exists' => 'Já existe uma conta com este e-mail. Faça login com sua senha.',
         'inactive' => 'Sua conta não está ativa. Entre em contato com o suporte.',
     ],
     'product_path' => 'Pasta do plugin',

@@ -8,6 +8,7 @@ use App\Facades\Attach;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Http;
 use Tests\DBTestCase;
 
 class ProductControllerTest extends DBTestCase
@@ -80,6 +81,7 @@ class ProductControllerTest extends DBTestCase
     public function test_create_missing_name_has_specific_error_message(): void
     {
         $this->getLoggedInUser('admin');
+        Http::fake(['api.github.com/*' => Http::response(['id' => 1])]);
         $response = $this->postJson('/product', [
             'type' => '1', 'group' => '1', 'subscription' => '1', 'currency' => 'USD',
             'github_owner' => 'owner', 'github_repository' => 'repo',
@@ -87,6 +89,29 @@ class ProductControllerTest extends DBTestCase
 
         $response->assertStatus(412);
         $this->assertSame('The name field is required.', $response->json('message.name'));
+    }
+
+    public function test_create_rejects_github_repository_github_cannot_find(): void
+    {
+        $this->getLoggedInUser('admin');
+        Http::fake(['api.github.com/repos/owner/typo' => Http::response(['message' => 'Not Found'], 404)]);
+
+        $response = $this->postJson('/product', ['github_owner' => 'owner', 'github_repository' => 'typo']);
+
+        $response->assertStatus(412);
+        $this->assertSame(__('message.github_repository_invalid'), $response->json('message.github_repository'));
+    }
+
+    public function test_update_accepts_github_repository_github_can_find(): void
+    {
+        $this->getLoggedInUser('admin');
+        Http::fake(['api.github.com/repos/owner/repo' => Http::response(['id' => 1])]);
+        $product = Product::factory()->create();
+
+        $response = $this->patchJson("/product/{$product->id}", ['github_owner' => 'owner', 'github_repository' => 'repo']);
+
+        $response->assertStatus(412); // other required fields missing
+        $this->assertNull($response->json('message.github_repository'));
     }
 
     public function test_create_blocked_for_client_returns_302(): void

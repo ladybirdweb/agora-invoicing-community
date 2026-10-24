@@ -3684,7 +3684,6 @@ return [
     'social_error' => [
         'cancelled' => 'Inloggen is geannuleerd.',
         'failed' => 'We konden u niet inloggen met die provider. Probeer het opnieuw of gebruik een andere methode.',
-        'email_exists' => 'Er bestaat al een account met dit e-mailadres. Log in met uw wachtwoord.',
         'inactive' => 'Uw account is niet actief. Neem contact op met de ondersteuning.',
     ],
     'product_path' => 'Pluginmap',

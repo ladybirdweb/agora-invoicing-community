@@ -60,6 +60,14 @@ class GithubApiController
     }
 
     /**
+     * Whether the stored credentials can see this repository (false for a typo or no access).
+     */
+    public function repositoryExists(string $owner, string $repo): bool
+    {
+        return $this->http->get(sprintf('/repos/%s/%s', $owner, $repo))->successful();
+    }
+
+    /**
      * The tag name of the latest stable release.
      */
     public function latestTag(string $owner, string $repo): ?string

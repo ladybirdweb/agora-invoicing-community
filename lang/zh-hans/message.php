@@ -3699,7 +3699,6 @@ return [
     'social_error' => [
         'cancelled' => '登录已取消。',
         'failed' => '无法通过该提供商登录。请重试或使用其他方式。',
-        'email_exists' => '使用此邮箱的账户已存在。请使用密码登录。',
         'inactive' => '您的账户未激活，请联系支持人员。',
     ],
     'product_path' => '插件文件夹',

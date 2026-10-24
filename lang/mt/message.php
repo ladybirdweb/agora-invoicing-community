@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Is-sign-in ġie kkanċellat.',
         'failed' => 'Ma stajniex nidħlulek b\'dak il-fornitur. Jekk jogħġbok erġa\' pprova jew uża metodu ieħor.',
-        'email_exists' => 'Diġà teżisti kont b\'dan l-email. Jekk jogħġbok idħol bil-password tiegħek.',
         'inactive' => 'Il-kont tiegħek mhuwiex attiv. Jekk jogħġbok ikkuntattja l-appoġġ.',
     ],
     'product_path' => 'Folder tal-plugin',

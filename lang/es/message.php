@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Se canceló el inicio de sesión.',
         'failed' => 'No pudimos iniciar sesión con ese proveedor. Inténtelo de nuevo o utilice otro método.',
-        'email_exists' => 'Ya existe una cuenta con este correo electrónico. Inicie sesión con su contraseña.',
         'inactive' => 'Su cuenta no está activa. Póngase en contacto con soporte.',
     ],
     'product_path' => 'Carpeta del plugin',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Facades\Attach;
 use App\Http\Controllers\AutoUpdate\AutoUpdateController;
+use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\License\Services\ProductBundleStampingService;
 use App\Model\Common\StatusSetting;
@@ -466,6 +467,27 @@ class ProductController extends BaseProductController
         }
     }
 
+    /**
+     * Owner + repository must point at a repo the saved GitHub credentials can reach,
+     * otherwise a typo is saved silently and the version lookup just comes back empty.
+     */
+    private function githubRepositoryRule(Request $request): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) use ($request): void {
+            if (! $request->filled('github_owner') || blank($value)) {
+                return;
+            }
+            try {
+                $exists = resolve(GithubApiController::class)->repositoryExists((string) $request->input('github_owner'), (string) $value);
+            } catch (Exception) {
+                $exists = false; // no GitHub settings row yet
+            }
+            if (! $exists) {
+                $fail(__('message.github_repository_invalid'));
+            }
+        };
+    }
+
     public function productCreate(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -490,7 +512,7 @@ class ProductController extends BaseProductController
             'parent' => ['nullable', 'integer'],
             'shoping_cart_link' => ['nullable', 'string', 'max:255'],
             'github_owner' => ['nullable', 'string', 'max:225'],
-            'github_repository' => ['nullable', 'string', 'max:225'],
+            'github_repository' => ['nullable', 'string', 'max:225', $this->githubRepositoryRule($request)],
             'version' => ['nullable', 'string', 'max:225'],
         ], [
             'type.exists' => __('validation.product_controller.type_required'),
@@ -589,7 +611,7 @@ class ProductController extends BaseProductController
             'parent' => ['nullable', 'integer'],
             'shoping_cart_link' => ['nullable', 'string', 'max:255'],
             'github_owner' => ['nullable', 'string', 'max:225'],
-            'github_repository' => ['nullable', 'string', 'max:225'],
+            'github_repository' => ['nullable', 'string', 'max:225', $this->githubRepositoryRule($request)],
             'version' => ['nullable', 'string', 'max:225'],
         ], [
             'name.required' => __('validation.product_controller.name_required'),

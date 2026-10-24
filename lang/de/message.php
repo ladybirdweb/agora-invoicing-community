@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Die Anmeldung wurde abgebrochen.',
         'failed' => 'Wir konnten Sie mit diesem Anbieter nicht anmelden. Bitte versuchen Sie es erneut oder verwenden Sie eine andere Methode.',
-        'email_exists' => 'Ein Konto mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich mit Ihrem Passwort an.',
         'inactive' => 'Ihr Konto ist nicht aktiv. Bitte wenden Sie sich an den Support.',
     ],
     'product_path' => 'Plugin-Ordner',

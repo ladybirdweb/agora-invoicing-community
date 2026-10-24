@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'Påloggingen ble avbrutt.',
         'failed' => 'Vi kunne ikke logge deg på med den leverandøren. Prøv igjen eller bruk en annen metode.',
-        'email_exists' => 'Det finnes allerede en konto med denne e-postadressen. Logg på med passordet ditt.',
         'inactive' => 'Kontoen din er ikke aktiv. Kontakt kundestøtte.',
     ],
     'product_path' => 'Plugin-mappe',

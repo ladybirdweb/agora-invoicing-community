@@ -3688,7 +3688,6 @@ return [
     'social_error' => [
         'cancelled' => 'L\'accesso è stato annullato.',
         'failed' => 'Non è stato possibile effettuare l\'accesso con questo provider. Riprova o usa un altro metodo.',
-        'email_exists' => 'Esiste già un account con questa e-mail. Accedi con la tua password.',
         'inactive' => 'Il tuo account non è attivo. Contatta il supporto.',
     ],
     'product_path' => 'Cartella del plugin',

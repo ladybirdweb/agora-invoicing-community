@@ -61,7 +61,7 @@ class SocialAuthControllerTest extends TestCase
         $user = User::factory()->create(['role' => 'user', 'active' => 1]);
         $this->provider($user->email, ['email_verified' => false]);
 
-        $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=email_exists');
+        $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=email_unverified');
         $this->assertSame(0, SocialAccount::where('user_id', $user->id)->count());
         $this->assertGuest();
     }
@@ -82,7 +82,7 @@ class SocialAuthControllerTest extends TestCase
         User::factory()->create(['user_name' => $email]);
         $this->provider($email, ['email_verified' => true]);
 
-        $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=email_exists');
+        $this->get('/auth/callback/google')->assertRedirect(url('login').'?social_error=email_taken');
         $this->assertNull(session('social_signup'));
     }
 

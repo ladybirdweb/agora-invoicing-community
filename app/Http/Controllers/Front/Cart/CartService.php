@@ -527,7 +527,9 @@ class CartService // NOSONAR - large existing class, kept as is: splitting it is
                 'tax_rate_id' => $tax['tax_rate_id'],
                 'tax_breakdown' => $tax['breakdown'], // stripped before persist; drives invoice_tax_lines
                 'subtotal' => $lineTotal,
-                'domain' => $line->domain ?: '',
+                // A cloud item's domain is the instance name (it goes to invoice cloud_domain). Kept off the
+                // item so the order/license don't lock to it — that lock blocks a later custom domain.
+                'domain' => in_array($line->product_id, cloudPopupProducts()) ? '' : ($line->domain ?: ''),
                 'plan_id' => $line->plan_id ?? 0,
                 'agents' => $line->agents,
             ];

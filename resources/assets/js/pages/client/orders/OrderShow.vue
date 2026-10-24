@@ -1404,8 +1404,8 @@ async function submitBinding() {
         const bound = decodeActivationCode(bindingForm.activationCode)
         order.value.license_domain     = bound.domain
         order.value.license_machine_id = bound.machine_id
-        successHandler(res, 'client-page')
         closeBindingModal()
+        successHandler(res, 'client-page')
         triggerDownload(pendingDownloadProductId.value)
         showDownloadModal.value = true
     } catch (e) {
@@ -1450,8 +1450,10 @@ async function submitDomain() {
             newDomain: domainForm.newDomain,
             order_id:  cloud.value.order_id,
         })
-        successHandler(res, 'client-page')
+        cloud.value.installation_path = domainForm.newDomain
+        // Close first: closing clears alerts, which would wipe the success message.
         closeDomainModal()
+        successHandler(res, 'client-page')
     } catch (e) {
         errorHandler(e, 'domain-modal')
     } finally {

@@ -1004,6 +1004,39 @@ class CloudActivitiesTest extends DBTestCase
         ])->assertStatus(400)->assertJson(['message' => __('message.nothing_changed')]);
     }
 
+    public function test_change_domain_reports_success_when_the_cloud_confirms(): void
+    {
+        $user = User::factory()->create(['email' => 'change-dom-ok-'.uniqid().'@test.local']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $order = $this->liveCloudOrder($user, 'old.example.com');
+        \App\ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        config(['custom.cloud_job_url' => 'https://jobs.example.test']);
+        $this->bindMockClientWithResponses([
+            new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'success'])), // cloud changeDomain
+            new \GuzzleHttp\Psr7\Response(200, [], ''),                                   // server job for the new domain
+        ]);
+
+        // Contains the cloud CNAME (faveocloud.test) without being a subdomain of it, so no live DNS lookup.
+        $this->postJson('/change/domain', ['newDomain' => 'myfaveocloud.test', 'order_id' => $order->id])
+            ->assertOk()->assertJson(['message' => __('message.cloud_domain_change')]);
+    }
+
+    public function test_change_domain_keeps_the_old_domain_when_the_cloud_refuses(): void
+    {
+        $user = User::factory()->create(['email' => 'change-dom-no-'.uniqid().'@test.local']);
+        $this->actingAs($user);
+        $this->withoutMiddleware();
+        $order = $this->liveCloudOrder($user, 'old.example.com');
+        \App\ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        $this->bindMockClientWithResponses([new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'fails', 'message' => 'x']))]);
+
+        $this->postJson('/change/domain', ['newDomain' => 'myfaveocloud.test', 'order_id' => $order->id])
+            ->assertStatus(400)->assertJson(['message' => __('message.wrong_domain')]);
+
+        $this->assertSame(['old.example.com'], $order->installedDomains()->all());
+    }
+
     public function test_change_domain_returns_error_for_same_domain(): void
     {
         $user = User::factory()->create(['email' => 'change-dom-3-'.uniqid().'@test.local']);

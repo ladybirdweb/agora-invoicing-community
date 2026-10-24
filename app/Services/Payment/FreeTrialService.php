@@ -57,7 +57,7 @@ class FreeTrialService
         // license from a separate connection and can't see uncommitted rows.
         $order = DB::transaction(function () use ($user, $domain, $plan, $product, $currency): Order {
             $invoice = $this->createInvoice($user, $plan, $currency, $domain);
-            $this->createInvoiceItem($invoice, $product, $plan, $currency, $domain);
+            $this->createInvoiceItem($invoice, $product, $plan, $currency);
 
             $order = (new OrderController)->executeOrder($invoice->id)->firstWhere('product', $product->id);
 
@@ -109,7 +109,7 @@ class FreeTrialService
         ]);
     }
 
-    private function createInvoiceItem(Invoice $invoice, Product $product, Plan $plan, string $currency, string $domain): InvoiceItem
+    private function createInvoiceItem(Invoice $invoice, Product $product, Plan $plan, string $currency): InvoiceItem
     {
         $price = (float) (PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->value('add_price') ?? 0);
         $agents = PlanPrice::where('plan_id', $plan->id)->value('no_of_agents');
@@ -123,7 +123,9 @@ class FreeTrialService
             'tax_name' => 'null',
             'tax_percentage' => $product->planRelation()->where('id', $plan->id)->value('allow_tax'),
             'subtotal' => 0,
-            'domain' => $domain,
+            // No domain: the instance name lives on invoice cloud_domain. On the item it would become the
+            // license's domain lock and block moving the instance to a custom domain later.
+            'domain' => '',
             'plan_id' => $plan->id,
             'agents' => $agents,
         ]);

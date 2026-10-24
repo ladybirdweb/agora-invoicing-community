@@ -96,6 +96,17 @@ class FreeTrialServiceTest extends DBTestCase
         $this->assertTrue(true);
     }
 
+    public function test_trial_invoice_item_carries_no_domain_so_the_license_is_not_domain_locked(): void
+    {
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Trial '.uniqid(), 'product' => $product->id, 'days' => 14]);
+        $invoice = \App\Model\Order\Invoice::factory()->create(['cloud_domain' => 'acme']);
+
+        $item = (new \ReflectionMethod(FreeTrialService::class, 'createInvoiceItem'))->invoke($this->service, $invoice, $product, $plan, 'USD');
+
+        $this->assertSame('', $item->domain); // the instance name stays on the invoice only
+    }
+
     // --- provision() ---
     // provision() orchestrates OrderController + TenantController (external HTTP) +
     // Invoice creation, making it unsuitable for unit testing. Integration tests

@@ -101,9 +101,13 @@ class ClientController extends BaseClientController
         $search = trim((string) $request->input('search-query', ''));
 
         if ($search !== '' && $search !== '0') {
-            $query->where(function (Builder $q) use ($search): void {
+            // Search what the table shows: invoice no, order no, and the Paid/Unpaid label.
+            $label = strtolower($search);
+            $query->where(function (Builder $q) use ($search, $label): void {
                 $q->where('number', 'like', likePattern($search))
-                    ->orWhere('status', 'like', likePattern($search));
+                    ->orWhereHas('orders', fn (Builder $o) => $o->where('number', 'like', likePattern($search)))
+                    ->when(str_starts_with('paid', $label), fn (Builder $q) => $q->orWhere('status', 'success'))
+                    ->when(str_starts_with('unpaid', $label), fn (Builder $q) => $q->orWhere('status', '!=', 'success'));
             });
         }
 

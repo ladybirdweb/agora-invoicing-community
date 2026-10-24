@@ -10,7 +10,7 @@
             <form @submit.prevent="onSubmit">
             <!-- Step 1: enter the new mobile -->
             <template v-if="step === 'enter'">
-                <PhoneField name="newMobile" required
+                <PhoneField ref="phoneRef" name="newMobile" required
                             :label="__('message.enter_new_mobile_no')"
                             :value="newMobile"
                             :error="mobileError"
@@ -28,6 +28,7 @@
                              :label="__('message.enter_code')"
                              v-model="otp"
                              :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
+                             digits-only :maxlength="6"
                              :placeholder="__('message.otp_placeholder')"
                              :error="otpError" />
                 <div class="d-flex align-items-center gap-2 mt-2">
@@ -58,7 +59,7 @@
                            action="confirm" :label="__('message.done')" @click="close" />
             <action-button v-else
                            action="confirm" :label="__('message.verify')"
-                           :loading="busy" :disabled="otp.length !== 6 || locked" @click="submitOtp" />
+                           :loading="busy" :disabled="locked" @click="submitOtp" />
         </template>
     </Modal>
 </template>
@@ -72,6 +73,7 @@ import Modal from '@/themes/porto/components/common/Modal.vue'
 import AppAlert from '@/components/Reusable/Alert.vue'
 import PhoneField from '@/components/Reusable/FormField/PhoneField.vue'
 import { useCooldown } from '@/core/composables/useCooldown'
+import { otpSchema } from '@/validations/client/authSchemas.js'
 
 const props = defineProps({
     show:         { type: Boolean, default: false },
@@ -88,7 +90,9 @@ const newMobile   = ref('')
 const dialCode    = ref('')
 const countryIso  = ref('')
 const otp         = ref('')
-const mobileError = ref('')
+const phoneRef    = ref(null)
+// undefined (not '') so PhoneField's own invalid-number message can show.
+const mobileError = ref(undefined)
 const otpError    = ref('')
 const busy        = ref(false)
 const locked      = ref(false)
@@ -112,7 +116,7 @@ function reset() {
     dialCode.value = props.currentCode || ''
     countryIso.value = (props.currentIso || '').toUpperCase()
     otp.value = ''
-    mobileError.value = ''
+    mobileError.value = undefined
     otpError.value = ''
     doneMessage.value = ''
     locked.value = false
@@ -136,7 +140,7 @@ function close() {
 
 function onMobileInput(value) {
     newMobile.value = String(value).replace(/\D/g, '')
-    mobileError.value = ''
+    mobileError.value = undefined
 }
 
 function onCountryChange({ iso, dialCode: dc }) {
@@ -148,11 +152,13 @@ const cleanMobile = () => newMobile.value.replace(/\D/g, '')
 const fullMobile  = () => (dialCode.value + newMobile.value).replace(/\D/g, '')
 
 async function submitMobile() {
-    mobileError.value = ''
+    mobileError.value = undefined
     if (!cleanMobile()) {
         mobileError.value = __('message.mobile_required')
         return
     }
+    // Same libphonenumber check the registration form runs.
+    if (!phoneRef.value?.validate()) return
     busy.value = true
     try {
         const res = await http.post(`/profile/mobile/send-otp`, {
@@ -180,11 +186,13 @@ async function submitMobile() {
 function onSubmit() {
     if (busy.value || locked.value) return
     if (step.value === 'enter') { if (newMobile.value) submitMobile() }
-    else if (step.value !== 'done' && otp.value.length === 6) submitOtp()
+    else if (step.value !== 'done') submitOtp()
 }
 
 async function submitOtp() {
     if (busy.value) return // a repeat click would re-send the used code and show "OTP not valid"
+    // Same OTP rule as the Verify page: show the error under the field instead of disabling the button.
+    try { otpSchema.validateSync({ otp: otp.value }) } catch (e) { otpError.value = e.message; return }
     busy.value = true
     try {
         if (step.value === 'verify_mobile') {

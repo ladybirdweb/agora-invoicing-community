@@ -5,6 +5,7 @@ namespace Tests\Unit\Backend\Http\Controllers\Front;
 use App\License\Models\License;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Product\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -104,6 +105,21 @@ class ClientControllerTest extends DBTestCase
         $invoices = $response->json('data.data');
         $this->assertNotEmpty($invoices);
         $this->assertEquals('UNIQUE-NUM-XYZ', $invoices[0]['number']);
+    }
+
+    public function test_get_invoices_search_matches_what_the_table_shows(): void
+    {
+        $paid = Invoice::factory()->create(['user_id' => $this->user->id, 'number' => 'SRCH-1', 'status' => 'success']);
+        $unpaid = Invoice::factory()->create(['user_id' => $this->user->id, 'number' => 'SRCH-2', 'status' => 'pending']);
+        $order = Order::factory()->create(['client' => $this->user->id, 'number' => 98761234]);
+        OrderInvoiceRelation::create(['order_id' => $order->id, 'invoice_id' => $paid->id]);
+
+        $numbers = fn (string $q): array => collect($this->getJson('/get-my-invoices?limit=100&search-query='.$q)->json('data.data'))
+            ->pluck('number')->filter(fn ($n): bool => str_starts_with($n, 'SRCH-'))->values()->all();
+
+        $this->assertSame(['SRCH-1'], $numbers('98761234'));
+        $this->assertSame(['SRCH-2'], $numbers('Unpaid'));
+        $this->assertSame(['SRCH-1'], $numbers('Paid'));
     }
 
     public function test_get_invoices_search_returns_empty_for_no_match(): void

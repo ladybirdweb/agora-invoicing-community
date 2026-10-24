@@ -160,6 +160,31 @@ class StoreControllerTest extends DBTestCase
         $this->assertSame([$names['Startup'], $names['SME'], $names['Enterprise']], $listed);
     }
 
+    public function test_a_free_product_stays_first_when_a_paid_plan_is_added_to_it(): void
+    {
+        $tmpl = \App\Model\Common\PricingTemplate::first();
+        if (! $tmpl) {
+            $this->markTestSkipped('No pricing template to attach a group to.');
+        }
+        $group = \App\Model\Product\ProductGroup::create(['name' => 'Perpetual '.uniqid(), 'pricing_templates_id' => $tmpl->id, 'hidden' => 0]);
+        $currency = getCurrencyForClient((string) auth()->user()->country);
+
+        // Freelancer is free, plus a paid plan dearer than Startup's; Startup has no free plan.
+        $names = [];
+        foreach (['Startup' => [100], 'Freelancer' => [0, 500]] as $name => $prices) {
+            $product = \App\Model\Product\Product::create(['name' => $name.' '.uniqid(), 'group' => $group->id, 'hidden' => 0]);
+            foreach ($prices as $amount) {
+                $plan = \App\Model\Payment\Plan::create(['name' => 'P'.uniqid(), 'product' => $product->id, 'days' => 365, 'status' => 1]);
+                \App\Model\Payment\PlanPrice::create(['plan_id' => $plan->id, 'currency' => $currency, 'add_price' => $amount, 'renew_price' => $amount, 'offer_price' => 0]);
+            }
+            $names[$name] = $product->name;
+        }
+
+        $listed = array_column($this->getJson("/store/{$group->id}/products")->assertOk()->json('data.products'), 'name');
+
+        $this->assertSame([$names['Freelancer'], $names['Startup']], $listed);
+    }
+
     public function test_plans_skip_a_plan_without_a_price(): void
     {
         $product = \App\Model\Product\Product::create(['name' => 'Plans '.uniqid()]);

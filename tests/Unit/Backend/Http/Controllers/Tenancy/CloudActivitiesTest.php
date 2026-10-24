@@ -1400,6 +1400,82 @@ class CloudActivitiesTest extends DBTestCase
     }
 
     // =========================================================================
+    // doTheAgentAltering — license is only kept when the cloud took the change
+    // =========================================================================
+
+    /**
+     * @return array{0: CloudExtraActivities, 1: Order}
+     */
+    private function agentAlteringSetup(array $cloudResponses): array
+    {
+        ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        $cloud = FaveoCloud::firstOrCreate([], ['cloud_central_domain' => 'https://cloud.test.local', 'cloud_cname' => 'test']);
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $order = Order::factory()->create(['client' => $user->id, 'product' => $product->id, 'serial_key' => \Crypt::encrypt('TESTAGENTLIC0002')]);
+        License::create(['product_id' => $product->id, 'license_code' => 'TESTAGENTLIC0002', 'license_order_number' => $order->number]);
+
+        $client = new Client(['handler' => \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler($cloudResponses))]);
+
+        return [new CloudExtraActivities($client, $cloud), $order];
+    }
+
+    public function test_do_the_agent_altering_keeps_new_license_when_cloud_succeeds(): void
+    {
+        [$controller, $order] = $this->agentAlteringSetup([
+            new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'success'])),
+        ]);
+
+        $response = $controller->doTheAgentAltering('4', 'TESTAGENTLIC0002', $order->id, 'tenant.example.test', $order->product);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('TESTAGENTLIC0004', $order->fresh()->serial_key);
+        $this->assertDatabaseHas('licenses', ['license_order_number' => $order->number, 'license_code' => 'TESTAGENTLIC0004']);
+        $this->assertDatabaseMissing('licenses', ['license_code' => 'TESTAGENTLIC0002']);
+    }
+
+    public function test_do_the_agent_altering_reverts_license_when_cloud_returns_500(): void
+    {
+        [$controller, $order] = $this->agentAlteringSetup([
+            new \GuzzleHttp\Psr7\Response(500, [], json_encode(['success' => false, 'message' => 'Internal server error'])),
+        ]);
+
+        $response = $controller->doTheAgentAltering('4', 'TESTAGENTLIC0002', $order->id, 'tenant.example.test', $order->product);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(trans('message.change_agents_failed'), json_decode($response->getContent(), true)['message']);
+        $this->assertSame('TESTAGENTLIC0002', $order->fresh()->serial_key);
+        $this->assertDatabaseHas('licenses', ['license_order_number' => $order->number, 'license_code' => 'TESTAGENTLIC0002']);
+        $this->assertDatabaseMissing('licenses', ['license_code' => 'TESTAGENTLIC0004']);
+    }
+
+    public function test_do_the_agent_altering_reverts_license_when_cloud_says_fails(): void
+    {
+        [$controller, $order] = $this->agentAlteringSetup([
+            new \GuzzleHttp\Psr7\Response(200, [], json_encode(['status' => 'fails', 'message' => 'domain_not_found'])),
+        ]);
+
+        $response = $controller->doTheAgentAltering('4', 'TESTAGENTLIC0002', $order->id, 'tenant.example.test', $order->product);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('TESTAGENTLIC0002', $order->fresh()->serial_key);
+        $this->assertDatabaseHas('licenses', ['license_code' => 'TESTAGENTLIC0002']);
+        $this->assertDatabaseMissing('licenses', ['license_code' => 'TESTAGENTLIC0004']);
+    }
+
+    public function test_do_the_agent_altering_self_hosted_rewrites_license_without_calling_cloud(): void
+    {
+        // No queued response: any HTTP call would throw from the empty MockHandler.
+        [$controller, $order] = $this->agentAlteringSetup([]);
+
+        $response = $controller->doTheAgentAltering('4', 'TESTAGENTLIC0002', $order->id, null, $order->product);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('TESTAGENTLIC0004', $order->fresh()->serial_key);
+        $this->assertDatabaseHas('licenses', ['license_code' => 'TESTAGENTLIC0004']);
+    }
+
+    // =========================================================================
     // doTheActivity — direct controller call covers the discount-is-null branch
     // =========================================================================
 

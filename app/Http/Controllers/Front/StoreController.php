@@ -12,6 +12,7 @@ use App\User;
 use Auth;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 
 class StoreController extends Controller
 {
@@ -59,14 +60,13 @@ class StoreController extends Controller
             )
             ->orderBy('id')
             ->get()
-            // Cheapest PAID plan (after offer): cloud products all carry a free trial plan,
-            // so sorting on the plain minimum tied them all at 0 and left them in id order.
-            ->sortBy(fn ($p) => $p->planRelation
-                ->flatMap(fn ($pl) => $pl->planPrice)
-                ->map(fn ($pp): float => (float) $pp->add_price * (1 - (float) ($pp->offer_price ?? 0) / 100))
-                ->filter(fn (float $v): bool => $v > 0)
-                ->min() ?? 0
-            )
+            // Cheapest plan (after offer) first, so a free product like Freelancer stays first
+            // even once a paid plan is added to it; ties (cloud products all carry a free
+            // trial) are broken by the cheapest PAID plan.
+            ->sortBy([
+                fn ($a, $b): int => $this->storePrices($a)->min() <=> $this->storePrices($b)->min(),
+                fn ($a, $b): int => ($this->storePrices($a)->filter()->min() ?? 0) <=> ($this->storePrices($b)->filter()->min() ?? 0),
+            ])
             ->values();
 
         return successResponse('', [
@@ -92,6 +92,18 @@ class StoreController extends Controller
                 ])->values(),
             'products' => $products->map(fn (Product $p): array => $this->transformProduct($p, $currency))->values(),
         ]);
+    }
+
+    /**
+     * Every loaded plan price of the product, after its offer.
+     *
+     * @return Collection<int, float>
+     */
+    private function storePrices(Product $product): Collection
+    {
+        return $product->planRelation
+            ->flatMap(fn ($pl) => $pl->planPrice)
+            ->map(fn ($pp): float => (float) $pp->add_price * (1 - (float) ($pp->offer_price ?? 0) / 100));
     }
 
     private function resolveCurrency(): string

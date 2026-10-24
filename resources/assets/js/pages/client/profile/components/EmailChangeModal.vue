@@ -27,6 +27,7 @@
                              :label="__('message.enter_code')"
                              v-model="otp"
                              :autocomplete="'one-time-code'" inputmode="numeric" :spellcheck="false"
+                             digits-only :maxlength="6"
                              :placeholder="__('message.otp_placeholder')"
                              :error="otpError" />
                 <div class="d-flex align-items-center gap-2 mt-2">
@@ -57,7 +58,7 @@
                            action="confirm" :label="__('message.done')" @click="close" />
             <action-button v-else
                            action="confirm" :label="__('message.verify')"
-                           :loading="busy" :disabled="otp.length !== 6 || locked" @click="submitOtp" />
+                           :loading="busy" :disabled="locked" @click="submitOtp" />
         </template>
     </Modal>
 </template>
@@ -70,6 +71,7 @@ import { successHandler, errorHandler } from '@/helpers/responseHandler.js'
 import Modal from '@/themes/porto/components/common/Modal.vue'
 import AppAlert from '@/components/Reusable/Alert.vue'
 import { useCooldown } from '@/core/composables/useCooldown'
+import { EMAIL_RE, otpSchema } from '@/validations/client/authSchemas.js'
 
 const props = defineProps({
     show:         { type: Boolean, default: false },
@@ -127,12 +129,13 @@ function close() {
     emit('update:show', false)
 }
 
-const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) // NOSONAR
 
 async function submitEmail() {
     emailError.value = ''
-    if (!isEmail(newEmail.value)) {
-        emailError.value = __('message.login_validation.email_regex')
+    newEmail.value = newEmail.value.trim()
+    // Same rule as the registration form.
+    if (!EMAIL_RE.test(newEmail.value)) {
+        emailError.value = __('message.contact_error_email')
         return
     }
     if (newEmail.value.toLowerCase() === props.currentEmail.toLowerCase()) {
@@ -165,10 +168,13 @@ async function submitEmail() {
 function onSubmit() {
     if (busy.value || locked.value) return
     if (step.value === 'enter') { if (newEmail.value) submitEmail() }
-    else if (step.value !== 'done' && otp.value.length === 6) submitOtp()
+    else if (step.value !== 'done') submitOtp()
 }
 
 async function submitOtp() {
+    if (busy.value) return
+    // Same OTP rule as the Verify page: show the error under the field instead of disabling the button.
+    try { otpSchema.validateSync({ otp: otp.value }) } catch (e) { otpError.value = e.message; return }
     busy.value = true
     try {
         if (step.value === 'verify_old') {

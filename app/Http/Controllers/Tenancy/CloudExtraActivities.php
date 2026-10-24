@@ -736,21 +736,32 @@ class CloudExtraActivities extends Controller
             };
 
             $licenseCode = substr($oldLicense, 0, -4).$lastFour;
+            $oldSerialKey = Order::where('id', $orderId)->value('serial_key');
             resolve(LicenseService::class)->updateLicenseCode($oldLicense, $licenseCode);
             Order::where('id', $orderId)->update(['serial_key' => Crypt::encrypt(substr($licenseCode, 0, 12).$lastFour)]);
 
             // Self-hosted orders have no tenant to push to — rewriting the
             // license above is the whole job for them.
             if (! empty($installation_path)) {
-                $result = $this->cloudApi()->send('POST', '/performAgentUpgradeOrDowngrade', [
-                    'licenseCode' => $licenseCode,
-                    'installation_path' => $installation_path,
-                    'product_id' => $product_id,
-                    'old_lic_code' => $oldLicense,
-                ]);
+                try {
+                    $result = $this->cloudApi()->send('POST', '/performAgentUpgradeOrDowngrade', [
+                        'licenseCode' => $licenseCode,
+                        'installation_path' => $installation_path,
+                        'product_id' => $product_id,
+                        'old_lic_code' => $oldLicense,
+                    ]);
+                } catch (Exception $exception) {
+                    // The tenant never got the change (cloud down, 5xx, unreadable reply), so
+                    // billing must not claim the new seat count either: put the license back.
+                    $this->revertAgentAltering($oldLicense, $licenseCode, $orderId, $oldSerialKey);
+                    Logger::exception(new Exception(sprintf('Cloud agent change to %s failed for order %d, license reverted: %s', $newAgents, $orderId, $exception->getMessage()), 0, $exception));
 
-                if (($result['status'] ?? null) == 'fails') {
-                    Logger::exception(new Exception(sprintf('Cloud agent change to %s failed for order %d: %s', $newAgents, $orderId, json_encode($result))));
+                    return errorResponse(trans('message.change_agents_failed'));
+                }
+
+                if (($result['status'] ?? null) !== 'success') {
+                    $this->revertAgentAltering($oldLicense, $licenseCode, $orderId, $oldSerialKey);
+                    Logger::exception(new Exception(sprintf('Cloud agent change to %s failed for order %d, license reverted: %s', $newAgents, $orderId, json_encode($result))));
 
                     return errorResponse(trans('message.change_agents_failed'));
                 }
@@ -761,6 +772,21 @@ class CloudExtraActivities extends Controller
             Logger::exception($exception);
 
             return errorResponse(trans('message.wrong_agents'));
+        }
+    }
+
+    /**
+     * Undo the license rewrite done ahead of a cloud agent change that did not go through,
+     * so billing and the tenant keep agreeing on the seat count (and installedDomains()
+     * keeps finding the tenant by its license).
+     */
+    private function revertAgentAltering(string $oldLicense, string $newLicense, int $orderId, ?string $oldSerialKey): void
+    {
+        try {
+            resolve(LicenseService::class)->updateLicenseCode($newLicense, $oldLicense);
+            Order::where('id', $orderId)->update(['serial_key' => $oldSerialKey]);
+        } catch (Exception $exception) {
+            Logger::exception($exception);
         }
     }
 

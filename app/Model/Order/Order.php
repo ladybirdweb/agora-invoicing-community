@@ -301,12 +301,31 @@ class Order extends BaseModel
      */
     public function installedDomains(): \Illuminate\Support\Collection
     {
-        $codes = License::where('license_order_number', $this->number)->select('license_code');
+        // Match on the license minus its last four digits, not the exact code: a cloud
+        // agent change rewrites those digits (the seat count) in billing, but the tenant
+        // keeps checking in with the code it still holds until the cloud applies the
+        // change. An exact match would lose the tenant the moment that push fails.
+        $prefixes = License::where('license_order_number', $this->number)
+            ->pluck('license_code')
+            ->map(fn ($code): string => strlen((string) $code) > 4 ? substr((string) $code, 0, -4) : (string) $code)
+            ->filter()
+            ->unique()
+            ->values();
 
-        return InstallationLog::whereIn('license_code', $codes)
+        if ($prefixes->isEmpty()) {
+            return collect();
+        }
+
+        $byPrefix = fn ($query) => $query->where(function ($q) use ($prefixes): void {
+            foreach ($prefixes as $prefix) {
+                $q->orWhere('license_code', 'like', $prefix.'%');
+            }
+        });
+
+        return $byPrefix(InstallationLog::query())
             ->latest('installation_last_active_date')
             ->pluck('installation_domain')
-            ->merge(Installation::whereIn('license_code', $codes)->latest('updated_at')->pluck('installation_domain'))
+            ->merge($byPrefix(Installation::query())->latest('updated_at')->pluck('installation_domain'))
             ->filter()
             ->reject(fn ($domain): bool => $domain === cloudCentralDomain())
             ->unique()

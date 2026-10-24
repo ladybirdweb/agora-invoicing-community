@@ -59,7 +59,11 @@ function onBlur() {
     localError.value = iti.isValidNumberPrecise()
         ? ''
         : __('validation.phone_number', { attribute: props.label || __('message.mobile') })
+    return !localError.value
 }
+
+// Lets a parent run the same number check on submit, not just on blur.
+defineExpose({ validate: onBlur })
 
 function numbersOnly(e) {
     const code = e.which ?? e.keyCode

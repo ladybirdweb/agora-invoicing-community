@@ -386,7 +386,7 @@ class PipedriveControllerTest extends DBTestCase
         $mock->shouldReceive('findPersonIdByEmail')->andReturn(null);
         $mock->shouldReceive('addPerson')->andReturn((object) ['success' => false, 'error' => 'Name is required']);
 
-        $this->expectExceptionMessage('Person: Name is required');
+        $this->expectExceptionMessageIsOrContains('Person: Name is required');
         $mock->syncUser($user);
     }
 

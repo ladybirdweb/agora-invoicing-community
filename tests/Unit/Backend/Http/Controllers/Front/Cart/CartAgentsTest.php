@@ -454,7 +454,7 @@ class CartAgentsTest extends DBTestCase
         $code = $this->coupon(for: $a, value: '10', type: 2);
         \App\Model\Payment\Promotion::where('code', $code)->update(['uses' => 0]);
 
-        $this->expectExceptionMessage(__('message.invalid_coupon_code'));
+        $this->expectExceptionMessageIsOrContains(__('message.invalid_coupon_code'));
 
         $this->service->applyCoupon($this->request(), $code);
     }
@@ -572,7 +572,7 @@ class CartAgentsTest extends DBTestCase
         [$code] = $this->singleUseCouponInCart();
         \App\Model\Order\Invoice::factory()->create(['status' => 'success', 'coupon_code' => $code]);
 
-        $this->expectExceptionMessage(__('message.usage-of-code-completed'));
+        $this->expectExceptionMessageIsOrContains(__('message.usage-of-code-completed'));
         $this->service->applyCoupon($this->request(), $code);
     }
 }

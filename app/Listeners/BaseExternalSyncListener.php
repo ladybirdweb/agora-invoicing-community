@@ -8,6 +8,7 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Jobs\SyncJob;
 use Logger;
 use Throwable;
 
@@ -41,7 +42,20 @@ abstract class BaseExternalSyncListener implements ShouldQueue
             return;
         }
 
-        $this->sync($event->user);
+        try {
+            $this->sync($event->user);
+        } catch (Throwable $exception) {
+            // On the sync driver this runs inside the HTTP request, and a thrown error would abort
+            // the request and skip every listener registered after this one. Log it and move on.
+            // On a real queue, rethrow so the job keeps its retries and failed() reporting.
+            if ($this->job === null || $this->job instanceof SyncJob) {
+                Logger::exception($exception);
+
+                return;
+            }
+
+            throw $exception;
+        }
     }
 
     public function failed(UserRegisteredEvent $event, Throwable $exception): void

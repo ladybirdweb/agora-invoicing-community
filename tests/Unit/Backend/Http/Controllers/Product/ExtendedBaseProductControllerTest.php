@@ -34,7 +34,7 @@ class ExtendedBaseProductControllerTest extends DBTestCase
         $product = Product::factory()->create(['github_owner' => 'faveo', 'github_repository' => 'helpdesk']);
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage(trans('message.file_not_exist'));
+        $this->expectExceptionMessageIsOrContains(trans('message.file_not_exist'));
 
         $this->controller()->download($product, null, null);
     }
@@ -45,7 +45,7 @@ class ExtendedBaseProductControllerTest extends DBTestCase
         $version = ProductUpload::factory()->create(['product_id' => $product->id, 'file' => '']);
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage(trans('message.file_not_exist'));
+        $this->expectExceptionMessageIsOrContains(trans('message.file_not_exist'));
 
         $this->controller()->download($product, $version);
     }
@@ -58,7 +58,7 @@ class ExtendedBaseProductControllerTest extends DBTestCase
         Attach::shouldReceive('exists')->once()->with('products/release.zip')->andReturn(false);
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage(trans('message.file_not_exist'));
+        $this->expectExceptionMessageIsOrContains(trans('message.file_not_exist'));
 
         $this->controller()->download($product, $version);
     }

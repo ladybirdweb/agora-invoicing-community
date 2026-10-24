@@ -104,7 +104,7 @@ class InvoicePaymentServiceTest extends DBTestCase
         $this->payments->shouldNotReceive('start', 'startCardPayment');
 
         $this->assertTrue($promo->isUsedUp());
-        $this->expectExceptionMessage(__('message.usage-of-code-completed'));
+        $this->expectExceptionMessageIsOrContains(__('message.usage-of-code-completed'));
 
         $this->service->start($second, 'Razorpay');
     }

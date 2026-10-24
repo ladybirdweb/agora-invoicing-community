@@ -237,7 +237,7 @@ class TaxRatesAndCodeExpiryControllerDBTest extends DBTestCase
         ]);
         \App\Model\Payment\PromoProductRelation::create(['promotion_id' => $promo->id, 'product_id' => $couponProduct->id]);
 
-        $this->expectExceptionMessage(__('message.invalid_coupon_code'));
+        $this->expectExceptionMessageIsOrContains(__('message.invalid_coupon_code'));
 
         $this->controller->getGrandTotal($promo->code, 100.0, 100.0, $invoiceProduct->id, 'USD', (string) $this->user->id);
     }

@@ -141,6 +141,47 @@ class SyncUserToPipedriveTest extends TestCase
         StatusSetting::where('id', 1)->update(['pipedrive_status' => 0]);
     }
 
+    // --- handle(): a failing sync is isolated on the sync driver, rethrown on a real queue ---
+
+    public function test_handle_swallows_sync_failure_when_not_on_a_real_queue(): void
+    {
+        StatusSetting::where('id', 1)->update(['pipedrive_status' => 1]);
+        ApiKey::where('id', 1)->update(['require_pipedrive_user_verification' => 0]);
+
+        $user = User::factory()->create();
+        $event = new UserRegisteredEvent($user, 'register');
+
+        $mockPipedrive = Mockery::mock(PipedriveController::class);
+        $mockPipedrive->shouldReceive('addUserToPipedrive')->once()->andThrow(new \RuntimeException('API key has been disabled'));
+        $this->app->instance(PipedriveController::class, $mockPipedrive);
+
+        // No job attached = running inline (sync driver): the error is logged, not thrown.
+        (new SyncUserToPipedrive())->handle($event);
+
+        $this->assertTrue(true);
+    }
+
+    public function test_handle_rethrows_sync_failure_on_a_real_queue(): void
+    {
+        StatusSetting::where('id', 1)->update(['pipedrive_status' => 1]);
+        ApiKey::where('id', 1)->update(['require_pipedrive_user_verification' => 0]);
+
+        $user = User::factory()->create();
+        $event = new UserRegisteredEvent($user, 'register');
+
+        $mockPipedrive = Mockery::mock(PipedriveController::class);
+        $mockPipedrive->shouldReceive('addUserToPipedrive')->once()->andThrow(new \RuntimeException('API key has been disabled'));
+        $this->app->instance(PipedriveController::class, $mockPipedrive);
+
+        $listener = new SyncUserToPipedrive();
+        $listener->setJob(Mockery::mock(\Illuminate\Contracts\Queue\Job::class));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageIsOrContains('API key has been disabled');
+
+        $listener->handle($event);
+    }
+
     // --- failed(): logs the exception ---
 
     public function test_failed_logs_exception(): void

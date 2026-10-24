@@ -4167,9 +4167,9 @@ return [
     'social_complete_hint' => 'You signed in with :provider. We just need a few more details to finish setting up your account.',
     'social_error' => [
         'cancelled' => 'Sign-in was cancelled.',
-        'failed' => 'We could not sign you in with that provider. Please try again or use another method.',
-        'email_unverified' => 'An account with this email already exists, but your sign-in provider has not confirmed this email. Log in with your password, or confirm the email with the provider and try again.',
-        'email_taken' => 'This email is already in use on this site, so a new account cannot be created with it. Please log in, or sign in with an account that uses a different email.',
+        'failed' => 'Sign-in failed. Please try again.',
+        'email_unverified' => 'This email is already registered. Please log in with your password.',
+        'email_taken' => 'This email is already in use. Please try a different account.',
         'inactive' => 'Your account is not active. Please contact support.',
     ],
     'update_profile' => 'Update Profile',

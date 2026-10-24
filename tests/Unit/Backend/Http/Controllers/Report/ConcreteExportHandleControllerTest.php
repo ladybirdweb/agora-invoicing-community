@@ -351,7 +351,7 @@ class ConcreteExportHandleControllerTest extends DBTestCase
         \App\Model\Common\FaveoCloud::query()->delete(); // remove all so we can test missing-config branch
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('FaveoCloud configuration not found.');
+        $this->expectExceptionMessageIsOrContains('FaveoCloud configuration not found.');
 
         $this->controller->tenantExports(['domain'], [], $this->user->email);
     }

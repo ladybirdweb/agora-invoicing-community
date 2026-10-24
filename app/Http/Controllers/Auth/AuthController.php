@@ -208,7 +208,7 @@ class AuthController extends BaseAuthController
 
             if (! Auth::check() && $this->userNeedVerified($user)) {
                 // dispatch the job to add user to external services
-                event(new UserRegisteredEvent($user, 'verify'));
+                UserRegisteredEvent::dispatchSafely($user, 'verify');
 
                 Session::flash('success', __('message.registration_complete'));
             }
@@ -261,7 +261,7 @@ class AuthController extends BaseAuthController
 
             if (! Auth::check() && $this->userNeedVerified($user)) {
                 // dispatch the job to add user to external services
-                event(new UserRegisteredEvent($user, 'verify'));
+                UserRegisteredEvent::dispatchSafely($user, 'verify');
 
                 Session::flash('success', __('message.registration_complete'));
             }

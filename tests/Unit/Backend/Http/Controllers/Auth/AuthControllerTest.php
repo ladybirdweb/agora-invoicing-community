@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Backend\Http\Controllers\Auth;
 
+use App\Events\UserRegisteredEvent;
 use App\Http\Controllers\Common\Sms\SmsOtpController;
 use App\Model\Common\StatusSetting;
 use App\User;
 use Cache;
 use Crypt;
+use Event;
 use RateLimiter;
 use Tests\DBTestCase;
 
@@ -306,6 +308,36 @@ class AuthControllerTest extends DBTestCase
         ]);
         $response->assertStatus(400);
         $response->assertJson(['success' => false]);
+    }
+
+    // A broken external integration (e.g. a disabled Mailchimp API key) must not turn a
+    // successful OTP check into an error: the user is verified, the sync failure is only logged.
+    public function test_verify_otp_succeeds_when_external_sync_listener_throws(): void
+    {
+        $this->withoutMiddleware();
+        StatusSetting::where('id', 1)->update([
+            'emailverification_status' => 0,
+            'mobileverification_status' => 1,
+            'msg91_status' => 1,
+        ]);
+        $user = User::factory()->create(['mobile_verified' => 0, 'email_verified' => 1, 'active' => 1]);
+
+        $this->mock(SmsOtpController::class)
+            ->shouldReceive('sendVerifyOTP')->once()
+            ->andReturn(['type' => 'success', 'message' => 'verified']);
+
+        Event::listen(UserRegisteredEvent::class, function (): void {
+            throw new \RuntimeException('API key has been disabled');
+        });
+
+        $response = $this->withSession(['verification_user_id' => $user->id])->postJson('/otp/verify', [
+            'eid' => Crypt::encrypt($user->email),
+            'otp' => '123456',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+        $this->assertSame(1, (int) $user->fresh()->mobile_verified);
     }
 
     // =========================================================================

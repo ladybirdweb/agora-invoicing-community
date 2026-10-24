@@ -192,7 +192,7 @@ class RegisterController extends Controller
 
             $need_verify = ($status->emailverification_status || $status->mobileVerificationEnabled()) ? 1 : 0;
 
-            event(new UserRegisteredEvent($user, 'register'));
+            UserRegisteredEvent::dispatchSafely($user, 'register');
 
             Session::put([
                 'justStarted' => true,

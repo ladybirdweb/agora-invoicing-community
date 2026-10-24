@@ -74,7 +74,7 @@
         :message="__('message.suspend_selected_users_confirm', { count: pendingBulkDelete.user_ids.length })"
         :btnLabel="__('message.Suspend')"
         :componentName="COMPONENT"
-        @deleted="() => { pendingBulkDelete = null; selectedUsers.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedUsers = []; dtRef?.refresh() }"
     />
 </template>
 

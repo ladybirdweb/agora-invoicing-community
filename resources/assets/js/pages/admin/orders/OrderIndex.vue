@@ -64,7 +64,7 @@
         :title="__('message.Delete')"
         :message="__('message.order_delete_selected', { count: pendingBulkDelete.order_ids.length })"
         componentName="orders-index"
-        @deleted="() => { pendingBulkDelete = null; selectedOrders.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedOrders = []; dtRef?.refresh() }"
     />
 </template>
 

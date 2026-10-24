@@ -723,7 +723,7 @@ class SettingsController extends BaseSettingsController
             $sortOrder = $sortOrder === 'asc' ? 'asc' : 'desc';
             // amount is stored formatted ("₹4,95,600.50") — sort on the number, not the text.
             $paymentSortMap = [
-                'user' => $contactName,
+                'user' => 'TRIM('.$contactName.')', // names can carry stray spaces; sort what the column shows
                 'amount' => "REGEXP_REPLACE(payment_logs.amount, '[^0-9.]', '') + 0",
             ];
             $logs = isset($paymentSortMap[$sortField])
@@ -738,7 +738,8 @@ class SettingsController extends BaseSettingsController
                 'order' => $row->order ?? '—',
                 'order_id' => $row->order_id, // @phpstan-ignore property.notFound
                 'amount' => $row->amount ?? '—',
-                'payment_method' => ucfirst($row->payment_method ?? '—'),
+                // Some old rows stored an empty list ("[]") as the method.
+                'payment_method' => in_array($row->payment_method, [null, '', '[]'], true) ? '—' : ucfirst((string) $row->payment_method),
                 'payment_type' => ucfirst($row->payment_type ?? '—'),
                 'status' => ucfirst($row->status ?? '—'),
                 'exception' => $row->status === 'failed' ? $row->exception : null,

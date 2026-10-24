@@ -44,12 +44,34 @@ async function readWithProgress(response, item) {
     return new Blob(chunks, { type: response.headers.get('content-type') ?? '' })
 }
 
+// No progress for these: the browser's own download bar shows it.
+function handToBrowser(item) {
+    const a = document.createElement('a')
+    a.href  = item.url
+    a.click()
+    item.status = 'started'
+}
+
 async function run(item) {
     Object.assign(item, { status: 'preparing', startedAt: Date.now(), loaded: 0, total: 0, error: '' })
     item.controller = new AbortController()
 
+    // Another site's file (GitHub release links in the versions list) can't be fetched from
+    // here — the browser blocks cross-site fetch (CORS). A plain download has no such check.
+    if (new URL(item.url, globalThis.location.href).origin !== globalThis.location.origin) {
+        handToBrowser(item)
+        return
+    }
+
     try {
-        const response = await fetch(item.url, { signal: item.controller.signal })
+        // Don't follow redirects: GitHub-hosted releases redirect to codeload.github.com, which
+        // doesn't allow cross-site fetch (CORS), so reading it here always failed.
+        const response = await fetch(item.url, { signal: item.controller.signal, redirect: 'manual' })
+
+        if (response.type === 'opaqueredirect') {
+            handToBrowser(item) // let the browser follow the redirect itself
+            return
+        }
 
         if (! response.ok) {
             const json = await response.json().catch(() => ({}))

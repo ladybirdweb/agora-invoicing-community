@@ -244,7 +244,7 @@
         :showModal="true"
         :onClose="() => pendingDeleteTenant = null"
         :deleteUrl="`${baseUrl}/delete-tenant`"
-        :deleteData="{ id: pendingDeleteTenant.tenantId, orderId: pendingDeleteTenant.orderNumber }"
+        :deleteData="{ id: pendingDeleteTenant.tenantId, orderId: pendingDeleteTenant.orderId }"
         :title="__('message.delete_tenant')"
         :message="__('message.are_you_sure')"
         :componentName="COMPONENT"
@@ -612,8 +612,8 @@ async function exportTenants() {
     }
 }
 
-function confirmDeleteTenant(tenantId, orderNumber) {
-    pendingDeleteTenant.value = { tenantId, orderNumber }
+function confirmDeleteTenant(tenantId, orderId) {
+    pendingDeleteTenant.value = { tenantId, orderId }
 }
 
 // report_columns.key (type 'tenats') ↔ DataTable column names
@@ -717,7 +717,7 @@ const tenantTableOptions = reactive({
         action:      (f, row) => h('button', {
             class:   'btn btn-light table_btn',
             title:   __('message.Delete'),
-            onClick: () => confirmDeleteTenant(row.action?.delete?.tenant_id, row.action?.delete?.order_number),
+            onClick: () => confirmDeleteTenant(row.action?.delete?.tenant_id, row.action?.delete?.order_id),
         }, [h('i', { class: 'fas fa-trash' })]),
     },
     sortable:   DEFAULT_TENANT_COLUMNS.filter(c => c !== 'action'),

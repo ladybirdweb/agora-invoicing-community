@@ -1,7 +1,15 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 export function useTableSelection(dtRef) {
     const selected = ref([])
+
+    // Keep only rows still on screen whenever the table reloads (page, search, filter, after a
+    // delete) — otherwise a bulk action's "N selected" also counts rows the admin can't see.
+    watch(() => dtRef.value?.tableData, (data) => {
+        const ids = new Set((data ?? []).map(r => r.id))
+        const kept = selected.value.filter(id => ids.has(id))
+        if (kept.length !== selected.value.length) selected.value = kept
+    })
 
     const allSelected = computed(() => {
         const data = dtRef.value?.tableData ?? []

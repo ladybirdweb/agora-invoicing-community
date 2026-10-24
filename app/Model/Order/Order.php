@@ -350,8 +350,27 @@ class Order extends BaseModel
     #[Override]
     public function delete(): bool
     {
+        // Stop gateway auto-renewal first, or the client keeps being charged for a deleted order.
+        foreach (Subscription::where('order_id', $this->id)->get() as $subscription) {
+            try {
+                resolve(\App\Services\Payment\AutoRenewalActivationService::class)->deactivate($subscription, cancelAtGateway: true);
+            } catch (\Throwable $throwable) {
+                \Logger::exception($throwable);
+            }
+        }
+
         $this->invoices()->detach();
         $this->subscription()->delete();
+        \App\Auto_renewal::where('order_id', $this->id)->delete();
+        \App\WhatsappIntegrationUser::where('order_id', $this->id)->delete();
+
+        // The license and everything tied to it go with the order, as the admin license delete does
+        // (license_plugins cascade). license_reports stay as the audit trail.
+        $codes = License::where('license_order_number', $this->number)->pluck('license_code');
+        Installation::whereIn('license_code', $codes)->delete();
+        InstallationLog::whereIn('license_code', $codes)->delete();
+        \App\License\Models\LicenseCallback::whereIn('license_code', $codes)->delete();
+        License::where('license_order_number', $this->number)->delete();
 
         return (bool) parent::delete();
     }

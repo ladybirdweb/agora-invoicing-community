@@ -244,6 +244,15 @@ class PlanController extends ExtendedPlanController
             return errorResponse(__('message.select-a-row'));
         }
 
+        // A plan that subscriptions (renewals) or a cloud product's free trial still use can't go.
+        $inUse = Plan::whereIn('id', $ids)
+            ->where(fn ($q) => $q->whereIn('id', Subscription::select('plan_id'))
+                ->orWhereIn('id', DB::table('cloud_products')->select('cloud_free_plan')))
+            ->pluck('name');
+        if ($inUse->isNotEmpty()) {
+            return errorResponse(__('message.plan_in_use', ['names' => $inUse->implode(', ')]));
+        }
+
         try {
             DB::transaction(function () use ($ids): void {
                 $plans = Plan::whereIn('id', $ids)->get();

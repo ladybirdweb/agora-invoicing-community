@@ -72,4 +72,26 @@ class SoftDeleteControllerTest extends DBTestCase
     {
         $this->deleteJson('/permanent-delete-client', ['id' => 1])->assertStatus(401);
     }
+
+    public function test_permanent_delete_removes_the_users_money_and_license_records(): void
+    {
+        $this->getLoggedInUser('admin');
+        $user = \App\User::factory()->create(['role' => 'user']);
+        $order = \App\Model\Order\Order::factory()->create(['client' => $user->id]);
+        \App\License\Models\License::create(['product_id' => $order->product, 'license_code' => 'P'.$order->number, 'license_order_number' => $order->number]);
+        $invoice = \App\Model\Order\Invoice::factory()->create(['user_id' => $user->id]);
+        \App\Model\Order\InvoiceTaxLine::create(['invoice_id' => $invoice->id, 'label' => 'GST', 'rate' => 18, 'compound' => 0, 'amount' => 1]);
+        $payment = \App\Model\Order\Payment::create(['user_id' => $user->id, 'amount' => 10, 'payment_method' => 'Credit Balance', 'payment_status' => 'success']);
+        \App\Model\Order\CreditTransaction::create(['user_id' => $user->id, 'currency' => 'USD', 'amount' => 5, 'type' => \App\Model\Order\CreditTransaction::TYPE_MANUAL_GRANT]);
+        \App\Model\Order\UserCreditBalance::create(['user_id' => $user->id, 'currency' => 'USD', 'balance' => 5]);
+        $user->delete();
+
+        $this->deleteJson('/permanent-delete-client', ['user_ids' => [$user->id]])->assertOk();
+
+        $this->assertDatabaseMissing('licenses', ['license_order_number' => $order->number]);
+        $this->assertDatabaseMissing('invoice_tax_lines', ['invoice_id' => $invoice->id]);
+        $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
+        $this->assertDatabaseMissing('credit_transactions', ['user_id' => $user->id]);
+        $this->assertDatabaseMissing('user_credit_balances', ['user_id' => $user->id]);
+    }
 }

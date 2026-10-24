@@ -103,6 +103,12 @@ class LicenseSettingsController extends LicensePermissionsController
                 return errorResponse(__('message.select-a-row'));
             }
 
+            // Deleting a type used to delete every product of that type with it. Refuse instead.
+            $inUse = $this->licenseType->whereIn('id', $ids)->whereHas('products')->pluck('name');
+            if ($inUse->isNotEmpty()) {
+                return errorResponse(__('message.license_type_in_use', ['names' => $inUse->implode(', ')]));
+            }
+
             foreach ($ids as $id) {
                 /** @var LicenseType|null $type */
                 $type = $this->licenseType->find($id);

@@ -156,6 +156,7 @@ class Plan extends BaseModel
     {
         return DB::transaction(function () {
             $this->planPrice()->delete();
+            $this->periods()->detach();
 
             return parent::delete();
         });

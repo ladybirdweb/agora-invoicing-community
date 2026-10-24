@@ -480,9 +480,17 @@ class SettingsControllerTest extends DBTestCase
     {
         $this->getLoggedInUser('admin');
         $this->withoutMiddleware();
-        // Covers 'user' sort → users.first_name mapping
-        $response = $this->getJson('/get-payment-log-api?sort-field=user&sort-order=asc');
-        $response->assertStatus(200);
+        // A stray leading space in a name must not move it to the top of A→Z.
+        $tag = 'srt'.uniqid();
+        foreach ([' Zed', 'Abe'] as $first) {
+            $user = \App\User::factory()->create(['first_name' => $first, 'last_name' => $tag]);
+            \App\Payment_log::insert(['date' => now(), 'from' => $user->email, 'status' => 'success', 'payment_method' => '[]', 'order' => '', 'amount' => '₹1']);
+        }
+
+        $rows = $this->getJson('/get-payment-log-api?sort-field=user&sort-order=asc&search-query='.$tag)->assertOk()->json('data.data');
+
+        $this->assertSame(['Abe '.$tag, 'Zed '.$tag], array_column($rows, 'user'));
+        $this->assertSame('—', $rows[0]['payment_method']); // an old "[]" method shows as empty
     }
 
     public function test_get_payment_log_api_invalid_sort_falls_back(): void

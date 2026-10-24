@@ -496,6 +496,76 @@ class TenantControllerTest extends DBTestCase
     // destroyTenant — full Guzzle-mocked scenarios
     // =========================================================================
 
+    public function test_tenant_list_delete_action_carries_the_order_id_not_the_number(): void
+    {
+        ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        FaveoCloud::updateOrCreate(['id' => 1], ['cloud_central_domain' => 'https://cloud.test.local', 'cloud_cname' => 'test']);
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Cloud '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        \App\Model\Product\CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $plan->id]);
+        $order = \App\Model\Order\Order::factory()->create(['product' => $product->id]);
+        $code = 'TEN'.uniqid();
+        \App\License\Models\License::create(['product_id' => $order->product, 'license_code' => $code, 'license_order_number' => $order->number]);
+        \App\License\Models\Installation::create(['product_id' => $order->product, 'license_code' => $code, 'installation_domain' => 'acme.test.local']);
+        \Illuminate\Support\Facades\Cache::forget(TenantController::TENANTS_CACHE_KEY);
+        $this->bindMockClientWithResponses([
+            new Response(200, [], json_encode(['message' => [['id' => 'acme.test.local', 'domain' => 'acme.test.local']]])),
+        ]);
+
+        $row = $this->getJson('/get-tenants')->assertOk()->json('data.data.0');
+
+        // destroyTenant() looks the order up by id; the number found nothing, so is_deleted was never set.
+        $this->assertSame($order->id, $row['action']['delete']['order_id']);
+    }
+
+    public function test_tenant_list_sorts_the_order_column_by_order_number(): void
+    {
+        ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        FaveoCloud::updateOrCreate(['id' => 1], ['cloud_central_domain' => 'https://cloud.test.local', 'cloud_cname' => 'test']);
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Cloud '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        \App\Model\Product\CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $plan->id]);
+        // Created in this order, so ids ascend while numbers descend.
+        foreach (['b.test.local' => '90000002', 'a.test.local' => '10000001'] as $domain => $number) {
+            $order = \App\Model\Order\Order::factory()->create(['product' => $product->id, 'number' => $number]);
+            \App\License\Models\License::create(['product_id' => $product->id, 'license_code' => 'S'.$number, 'license_order_number' => $number]);
+            \App\License\Models\Installation::create(['product_id' => $product->id, 'license_code' => 'S'.$number, 'installation_domain' => $domain]);
+        }
+        \Illuminate\Support\Facades\Cache::forget(TenantController::TENANTS_CACHE_KEY);
+        $this->bindMockClientWithResponses([new Response(200, [], json_encode(['message' => [
+            ['id' => 'b.test.local', 'domain' => 'b.test.local'], ['id' => 'a.test.local', 'domain' => 'a.test.local'],
+        ]]))]);
+
+        $rows = $this->getJson('/get-tenants?sort-field=order&sort-order=asc')->assertOk()->json('data.data');
+
+        $this->assertSame(['10000001', '90000002'], array_map(fn ($r) => (string) $r['order']['order_number'], $rows));
+    }
+
+    public function test_client_deleting_their_instance_marks_the_subscription_deleted(): void
+    {
+        $this->setCloudConfig();
+        $client = User::factory()->create(['role' => 'user']);
+        $this->actingAs($client);
+        ThirdPartyApp::firstOrCreate(['app_name' => 'faveo_app_key'], ['app_key' => 'test-key', 'app_secret' => 'test-secret']);
+        FaveoCloud::updateOrCreate(['id' => 1], ['cloud_central_domain' => 'https://cloud.test.local', 'cloud_cname' => 'test']);
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Cloud '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        \App\Model\Product\CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $plan->id]);
+        $order = \App\Model\Order\Order::factory()->create(['client' => $client->id, 'product' => $product->id, 'order_status' => 'executed']);
+        $sub = Subscription::factory()->create(['order_id' => $order->id, 'product_id' => $product->id, 'user_id' => $client->id, 'plan_id' => $plan->id, 'is_deleted' => 0]);
+        \App\License\Models\License::create(['product_id' => $product->id, 'license_code' => 'C'.$order->number, 'license_order_number' => $order->number]);
+        \App\License\Models\Installation::create(['product_id' => $product->id, 'license_code' => 'C'.$order->number, 'installation_domain' => 'mine.test.local']);
+        $this->bindMockClientWithResponses([
+            new Response(200, [], json_encode(['message' => [['id' => 'mine.test.local', 'domain' => 'mine.test.local']]])), // tenant list
+            new Response(200, [], json_encode(['status' => 'success'])),                                               // DELETE tenant
+            new Response(200, [], ''), new Response(200, [], ''), new Response(200, [], ''),                           // cron jobs, chat
+        ]);
+
+        $this->delete('/delete/domain/'.$order->number.'/1')->assertOk();
+
+        $this->assertSame(1, (int) $sub->fresh()->is_deleted);
+    }
+
     public function test_destroy_tenant_returns_success_when_api_returns_success_status(): void
     {
         $this->setCloudConfig();

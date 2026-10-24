@@ -293,6 +293,25 @@ class OrderControllerTest extends DBTestCase
         $response->assertJson(['success' => true]);
     }
 
+    public function test_delete_bulk_orders_removes_the_orders_license_and_installations(): void
+    {
+        $this->getLoggedInUser('admin');
+        $order = Order::factory()->create();
+        $code = 'DEL'.uniqid();
+        \App\License\Models\License::create(['product_id' => $order->product, 'license_code' => $code, 'license_order_number' => $order->number]);
+        \App\License\Models\Installation::create(['product_id' => $order->product, 'license_code' => $code, 'installation_domain' => 'gone.example.com']);
+        \App\License\Models\InstallationLog::create(['license_code' => $code, 'installation_domain' => 'gone.example.com']);
+        \App\Auto_renewal::create(['order_id' => $order->id, 'user_id' => $order->client, 'payment_method' => 'stripe', 'customer_id' => 'cus_x', 'payment_intent_id' => 'pm_x']);
+
+        $this->deleteJson('/orders', ['order_ids' => [$order->id]])->assertOk();
+
+        $this->assertDatabaseMissing('auto_renewals', ['order_id' => $order->id]);
+
+        $this->assertDatabaseMissing('licenses', ['license_code' => $code]);
+        $this->assertDatabaseMissing('installations', ['license_code' => $code]);
+        $this->assertDatabaseMissing('installation_logs', ['license_code' => $code]);
+    }
+
     public function test_get_order_returns_full_order_data(): void
     {
         // Covers lines 189+: getOrder response transform

@@ -51,7 +51,7 @@ class TenantController extends Controller
 
     /** Tenants table column => where getTenants() keeps its value. */
     private const TENANT_SORT_KEYS = [
-        'order' => 'order.order_id',
+        'order' => 'order.order_number', // the column shows the number; ids would look unsorted
         'user' => 'user.name',
         'email' => 'user.email',
         'mobile' => 'user.mobile',
@@ -159,7 +159,7 @@ class TenantController extends Controller
                     'action' => [
                         'delete' => [
                             'tenant_id' => $model['id'],
-                            'order_number' => $order_number,
+                            'order_id' => $order_id, // destroyTenant's orderId is the order's id, not its number
                             'delete_url' => url(sprintf('tenants/%s/delete', $model['id'])),
                         ],
                     ],

@@ -359,6 +359,10 @@ class Product extends BaseModel
         $this->tax()->delete();
         $this->price()->delete();
         $this->PromoRelation()->delete();
+        \App\Model\Product\CloudProducts::where('cloud_product', $this->id)->delete(); // first: it points at a plan
+        // Plan::delete() takes prices and periods. Cart lines are left: the cart drops them itself and tells the client.
+        $this->planRelation()->get()->each->delete();
+        $this->productUpload()->delete(); // records only; the release files stay in storage
 
         return parent::delete();
     }

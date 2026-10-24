@@ -35,7 +35,7 @@
         :title="__('message.Delete')"
         :message="__('message.are_you_sure')"
         componentName="coupons-index"
-        @deleted="() => { pendingBulkDelete = null; selectedCoupons.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedCoupons = []; dtRef?.refresh() }"
     />
 </template>
 

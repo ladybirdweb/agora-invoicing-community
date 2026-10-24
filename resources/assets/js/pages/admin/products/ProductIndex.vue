@@ -38,7 +38,7 @@
         :title="__('message.Delete')"
         :message="__('message.are_you_sure')"
         componentName="products-index"
-        @deleted="() => { pendingBulkDelete = null; selectedProducts.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedProducts = []; dtRef?.refresh() }"
     />
 </template>
 

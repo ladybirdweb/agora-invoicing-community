@@ -7,28 +7,23 @@ namespace Tests\Unit\Backend\Listeners;
 use App\Events\UserOrderDelete;
 use App\Listeners\CloudDeletion;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Tests\TestCase;
+use Tests\DBTestCase;
 
-class CloudDeletionTest extends TestCase
+class CloudDeletionTest extends DBTestCase
 {
     public function test_implements_should_queue(): void
     {
         $this->assertInstanceOf(ShouldQueue::class, new CloudDeletion());
     }
 
-    public function test_handle_executes_without_fatal_error(): void
+    public function test_handle_asks_the_cloud_to_delete_and_logs_when_it_cannot(): void
     {
-        $event = new UserOrderDelete('test-domain', 'order-123');
-        $listener = new CloudDeletion();
+        config(['custom.google_chat' => null]); // no real webhook call
+        \App\ThirdPartyApp::where('app_name', 'faveo_app_key')->delete(); // so no real cloud call either
 
-        // handle() calls TenantController->destroyTenant() which needs cloud config.
-        // In test env it may throw — we only need line 29 covered.
-        try {
-            $listener->handle($event);
-        } catch (\Throwable) {
-            // Expected — no cloud config in test env
-        }
+        new CloudDeletion()->handle(new UserOrderDelete('test-domain', 'order-123'));
 
-        $this->assertTrue(true);
+        // Without an app key the cloud can't be reached; that must be logged, not thrown.
+        $this->assertDatabaseHas('exception_logs', ['message' => __('message.cloud_invalid_message')]);
     }
 }

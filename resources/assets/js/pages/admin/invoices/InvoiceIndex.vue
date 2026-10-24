@@ -68,7 +68,7 @@
         :title="__('message.Delete')"
         :message="__('message.are_you_sure')"
         :componentName="'invoices-index'"
-        @deleted="() => { pendingBulkDelete = null; selectedInvoices.value = []; dtRef?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedInvoices = []; dtRef?.refresh() }"
     />
 </template>
 

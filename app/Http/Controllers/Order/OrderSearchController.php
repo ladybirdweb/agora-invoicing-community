@@ -177,8 +177,9 @@ class OrderSearchController extends Controller
                 $q->where('ends_at', '<', $now);
             });
         } elseif ($renewal === 'active_subscription') {
+            // No end date = lifetime license, which never expires.
             $query->whereHas('subscription', function (\Illuminate\Contracts\Database\Query\Builder $q) use ($now): void {
-                $q->where('ends_at', '>=', $now);
+                $q->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>=', $now));
             });
         } elseif ($renewal === 'expiring_subscription') {
             $thirtyDaysFromNow = $now->copy()->addDays(30);

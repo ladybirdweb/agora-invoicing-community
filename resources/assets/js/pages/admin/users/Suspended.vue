@@ -33,7 +33,7 @@
         :title="__('message.Delete')"
         :message="__('message.delete_selected_users_confirm', { count: pendingBulkDelete.user_ids.length })"
         :componentName="COMPONENT"
-        @deleted="() => { pendingBulkDelete = null; selected.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selected = []; dtRef?.refresh() }"
     />
 </template>
 

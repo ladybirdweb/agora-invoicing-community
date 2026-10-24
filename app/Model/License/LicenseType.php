@@ -101,7 +101,6 @@ class LicenseType extends Model
     public function delete()
     {
         $this->permissions()->detach();
-        $this->products()->delete();
 
         return parent::delete();
     }

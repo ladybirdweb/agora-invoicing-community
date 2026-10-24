@@ -35,7 +35,7 @@
         :title="__('message.Delete')"
         :message="__('message.are_you_sure')"
         componentName="groups-index"
-        @deleted="() => { pendingBulkDelete = null; selectedGroups.value = []; dtRef.value?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selectedGroups = []; dtRef?.refresh() }"
     />
 </template>
 

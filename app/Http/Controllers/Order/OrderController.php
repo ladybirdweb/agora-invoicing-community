@@ -172,13 +172,14 @@ class OrderController extends BaseOrderController
                 }
 
                 $threshold = now()->subDays(OrderSearchController::ACTIVE_INSTALL_DAYS);
+                // Installs that never reported a version (cloud license installs) still count —
+                // the installation filters do — so they show as "—" rather than vanishing.
                 $versions = $order->installationLogs
-                    ->whereNotNull('version_number')->where('version_number', '!=', '')
                     ->sortByDesc('installation_last_active_date')
-                    ->unique('version_number')
+                    ->unique(fn ($log) => (string) $log->version_number)
                     ->values()
                     ->map(fn ($log) => [
-                        'version' => $log->version_number,
+                        'version' => $log->version_number ?: '—',
                         'active' => $log->installation_last_active_date && $log->installation_last_active_date >= $threshold,
                     ])
                     ->all();
@@ -339,7 +340,8 @@ class OrderController extends BaseOrderController
                 event(new UserOrderDelete($domain, $orderId));
             }
 
-            $this->order->whereIn('id', $orders->pluck('id'))->delete();
+            // Per model, so Order::delete() also removes its subscription, invoice links and license.
+            $orders->each->delete();
 
             return successResponse(__('message.deleted-successfully'));
         } catch (Exception $exception) {

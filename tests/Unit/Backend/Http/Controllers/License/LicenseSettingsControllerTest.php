@@ -94,4 +94,15 @@ class LicenseSettingsControllerTest extends DBTestCase
         $this->assertDatabaseMissing('license_types', ['id' => $type2->id]);
         $this->assertDatabaseHas('license_types', ['id' => $type3->id]);
     }
+
+    public function test_delete_license_type_in_use_is_refused_and_keeps_its_products(): void
+    {
+        $type = LicenseType::factory()->create();
+        $product = \App\Model\Product\Product::factory()->create(['type' => $type->id]);
+
+        $this->deleteJson('/delete-license-type', ['select' => [$type->id]])->assertStatus(400);
+
+        $this->assertDatabaseHas('license_types', ['id' => $type->id]);
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
+    }
 }

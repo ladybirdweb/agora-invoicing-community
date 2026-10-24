@@ -84,10 +84,20 @@ class SoftDeleteController extends ClientController
                     ->flatMap(fn (Order $order) => $order->installedDomains()->map(fn ($domain) => [$domain, $order->id]));
 
                 DB::transaction(function () use ($user): void {
-                    $user->invoiceItem()->delete();
-                    $user->orderRelation()->delete();
-                    $user->invoice()->delete();
-                    $user->order()->delete();
+                    // Model deletes, not query deletes: Invoice::delete()/Order::delete() clean up items,
+                    // tax lines, links, licenses and gateway auto-renewal.
+                    $user->order()->get()->each->delete();
+                    $user->invoice()->get()->each->delete();
+                    \App\Model\Order\Payment::where('user_id', $user->id)->get()->each(function ($payment): void {
+                        $payment->invoices()->detach();
+                        $payment->delete();
+                    });
+                    \App\Model\Order\CreditTransaction::where('user_id', $user->id)->delete();
+                    \App\Model\Order\UserCreditBalance::where('user_id', $user->id)->delete();
+                    DB::table('free_trial_allowed')->where('user_id', $user->id)->delete();
+                    DB::table('third_party_tokens')->where('user_id', $user->id)->delete();
+                    DB::table('verification_attempts')->where('user_id', $user->id)->delete();
+                    $user->tokens()->delete();
                     $user->subscription()->delete();
                     $user->comments()->delete();
                     $user->auto_renewal()->delete();

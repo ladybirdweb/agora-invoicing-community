@@ -803,4 +803,17 @@ class ProductControllerTest extends DBTestCase
 
         $response->assertStatus(200)->assertJson(['success' => true]);
     }
+
+    public function test_deleting_a_product_removes_its_plans_and_cloud_setting(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Gone '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        \App\Model\Product\CloudProducts::create(['cloud_product' => $product->id, 'cloud_free_plan' => $plan->id]);
+
+        $this->deleteJson('/products', ['product_ids' => [$product->id]])->assertOk();
+
+        $this->assertDatabaseMissing('plans', ['id' => $plan->id]);
+        $this->assertDatabaseMissing('cloud_products', ['cloud_product' => $product->id]);
+    }
 }

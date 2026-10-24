@@ -175,6 +175,11 @@ class GroupController extends Controller
             return errorResponse(__('message.select-a-row'));
         }
 
+        $inUse = ProductGroup::whereIn('id', $ids)->whereIn('id', Product::select('group'))->pluck('name');
+        if ($inUse->isNotEmpty()) {
+            return errorResponse(__('message.group_in_use', ['names' => $inUse->implode(', ')]));
+        }
+
         try {
             DB::transaction(function () use ($ids): void {
                 $groups = ProductGroup::whereIn('id', $ids)->get();

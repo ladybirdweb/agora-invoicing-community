@@ -289,4 +289,15 @@ class GroupControllerTest extends DBTestCase
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
     }
+
+    public function test_group_with_products_cannot_be_deleted(): void
+    {
+        $this->getLoggedInUser('admin');
+        $group = \App\Model\Product\ProductGroup::create(['name' => 'Busy '.uniqid(), 'hidden' => 0, 'pricing_templates_id' => 1]);
+        \App\Model\Product\Product::factory()->create(['group' => $group->id]);
+
+        $this->deleteJson('/group', ['select' => [$group->id]])->assertStatus(400);
+
+        $this->assertDatabaseHas('product_groups', ['id' => $group->id]);
+    }
 }

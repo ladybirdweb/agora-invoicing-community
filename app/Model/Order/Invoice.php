@@ -301,6 +301,7 @@ class Invoice extends BaseModel
         // Installations are not touched: they belong to the licence, not to an invoice —
         // deleting an old invoice must not wipe a live order's installed domains.
         $this->invoiceItem()->delete();
+        InvoiceTaxLine::where('invoice_id', $this->id)->delete();
         // Detach, never delete: a payment may be settling other invoices too,
         // and the money arrived regardless of what happens to this invoice.
         $this->payments()->detach();

@@ -50,7 +50,7 @@
         :title="__('message.Delete')"
         :message="__('message.are_you_sure')"
         :componentName="COMPONENT"
-        @deleted="() => { pendingBulkDelete = null; selected.value = []; dtRef?.refresh() }"
+        @deleted="() => { pendingBulkDelete = null; selected = []; dtRef?.refresh() }"
     />
 </template>
 

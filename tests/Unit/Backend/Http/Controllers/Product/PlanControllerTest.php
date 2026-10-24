@@ -242,4 +242,16 @@ class PlanControllerTest extends DBTestCase
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
     }
+
+    public function test_plan_used_by_a_subscription_cannot_be_deleted(): void
+    {
+        $this->getLoggedInUser('admin');
+        $product = \App\Model\Product\Product::factory()->create();
+        $plan = \App\Model\Payment\Plan::create(['name' => 'Used '.uniqid(), 'product' => $product->id, 'days' => 30]);
+        \App\Model\Product\Subscription::factory()->create(['plan_id' => $plan->id, 'product_id' => $product->id]);
+
+        $this->deleteJson('/plans', ['select' => [$plan->id]])->assertStatus(400);
+
+        $this->assertDatabaseHas('plans', ['id' => $plan->id]);
+    }
 }

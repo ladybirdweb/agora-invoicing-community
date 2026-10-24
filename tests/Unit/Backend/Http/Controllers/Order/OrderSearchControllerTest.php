@@ -168,6 +168,35 @@ class OrderSearchControllerTest extends DBTestCase
         $this->assertEquals(0, $result->count());
     }
 
+    public function test_active_subscription_filter_includes_lifetime_subscriptions(): void
+    {
+        $this->getLoggedInUser('admin');
+        $lifetime = \App\Model\Order\Order::factory()->create();
+        \App\Model\Product\Subscription::factory()->create(['order_id' => $lifetime->id, 'ends_at' => null]);
+        $expired = \App\Model\Order\Order::factory()->create();
+        \App\Model\Product\Subscription::factory()->create(['order_id' => $expired->id, 'ends_at' => now()->subDay()]);
+
+        $ids = fn (string $f) => $this->controller->advanceOrderSearch(new \Illuminate\Http\Request(['renewal' => $f]))
+            ->whereIn('orders.id', [$lifetime->id, $expired->id])->pluck('orders.id')->all();
+
+        $this->assertSame([$lifetime->id], $ids('active_subscription')); // no end date = never expires
+        $this->assertSame([$expired->id], $ids('expired_subscription'));
+    }
+
+    public function test_an_install_without_a_version_still_shows_in_the_order_list(): void
+    {
+        $this->getLoggedInUser('admin');
+        $order = \App\Model\Order\Order::factory()->create();
+        $code = 'NV'.uniqid();
+        \App\License\Models\License::create(['product_id' => $order->product, 'license_code' => $code, 'license_order_number' => $order->number]);
+        \App\License\Models\InstallationLog::create(['license_code' => $code, 'installation_domain' => 'cloud.test', 'version_number' => null, 'installation_last_active_date' => now()]);
+
+        $row = collect($this->getJson('/orders?order_no='.$order->number)->assertOk()->json('data.data'))->firstWhere('id', $order->id);
+
+        // The "Active installation" filter counts it, so the list must show it too.
+        $this->assertSame([['version' => '—', 'active' => true]], $row['versions']);
+    }
+
     public function test_installation_and_version_filters_split_orders_without_a_product(): void
     {
         $this->getLoggedInUser('admin');

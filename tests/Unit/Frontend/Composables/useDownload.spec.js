@@ -39,6 +39,29 @@ describe('useDownload', () => {
         expect(downloadTray.items[0]).toMatchObject({ name: 'report.zip', status: 'started' })
     })
 
+    it('hands another site\'s file (a GitHub release link) straight to the browser', async () => {
+        const url = 'https://codeload.github.com/faveo/helpdesk/legacy.zip/refs/tags/v9.4.3.8'
+
+        await useDownload().downloadFile(url, 'Helpdesk v9.4.3.8')
+
+        expect(fetch).not.toHaveBeenCalled() // GitHub refuses cross-site fetch
+        expect(anchor.href).toBe(url)
+        expect(anchor.click).toHaveBeenCalled()
+        expect(downloadTray.items[0].status).toBe('started')
+    })
+
+    it('hands a redirected download (GitHub releases) to the browser instead of fetching it', async () => {
+        // codeload.github.com refuses cross-site fetch, so following the redirect here always failed.
+        globalThis.fetch.mockResolvedValue({ type: 'opaqueredirect', ok: false, status: 0 })
+
+        await useDownload().downloadFile('/api/download/github', 'Helpdesk v9.4.3.8')
+
+        expect(fetch).toHaveBeenCalledWith('/api/download/github', expect.objectContaining({ redirect: 'manual' }))
+        expect(anchor.href).toBe('/api/download/github')
+        expect(anchor.click).toHaveBeenCalled()
+        expect(downloadTray.items[0].status).toBe('started')
+    })
+
     it('keeps the caller name in the tray but saves as download.zip when the server sends no filename', async () => {
         globalThis.fetch.mockResolvedValue(ok())
 
